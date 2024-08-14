@@ -1,4 +1,4 @@
-import { APIWebsiteInfo, CrawlLink } from "../crawler";
+import { APIWebsiteInfo } from "../crawler";
 import { Products } from "@/models/interface";
 
 const domain = "https://vn.msi.com";
@@ -14,48 +14,45 @@ const mapping: { [key in Products]?: string } = {
 const CrawlInfo: APIWebsiteInfo<any, any> = {
   domain,
 
-  path(product: Products) {
+  save: "parts",
+
+  path(product: Products, page = 1) {
     if (mapping[product]) {
       const url = new URL(`${domain}/api/v1/product/getProductList`);
 
       url.searchParams.set("product_line", mapping[product]!);
+      url.searchParams.set("page_number", page.toString());
       url.searchParams.set("page_size", "500");
 
-      return { url };
+      return { url, page, product };
     }
 
     return null;
   },
 
-  next(link: CrawlLink): CrawlLink {
-    let page = link.url.searchParams.get("page_number");
-
-    if (!page) {
-      page = "1";
-    }
-    link.url.searchParams.set("page_number", (Number(page) + 1).toString());
-
-    return link;
-  },
-
-  async extract(response: Response) {
+  async extract(link, response) {
     const data = await response.json();
 
     if (data.result && Array.isArray(data.result.getProductList)) {
+      let pages = null;
+
+      if (link.page == 1) {
+        pages =
+          Math.ceil(data.result.count / data.result.getProductList.length) ?? 0;
+      }
+
       return {
         list: data.result.getProductList ?? [],
-        pages:
-          Math.ceil(data.result.count / data.result.getProductList.length) ??
-          null,
+        pages,
       };
     }
 
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse: function (raw: any): Promise<any> {
+  parse: function (raw: any) {
     return raw;
   },
 };
 
-export default { info: CrawlInfo, save: "parts" };
+export default CrawlInfo;

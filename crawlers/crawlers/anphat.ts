@@ -21,28 +21,20 @@ const mapping: Record<Products, string> = {
 const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
   domain,
 
-  path(product) {
+  save: "sellers",
+
+  path(product, page = 1) {
     if (mapping[product]) {
       const url = new URL(`${domain}/${mapping[product]}`);
+      url.searchParams.set("page", page.toString());
 
-      return { url };
+      return { url, page, product };
     }
 
     return null;
   },
 
-  next(link) {
-    let page = link.url.searchParams.get("page");
-
-    if (!page) {
-      page = "1";
-    }
-    link.url.searchParams.set("page", (Number(page) + 1).toString());
-
-    return link;
-  },
-
-  async extract(response) {
+  async extract(link, response) {
     const dom = new JSDOM(await response.text()).window.document;
     const itemContainer = dom.querySelector(".product-list-container");
 
@@ -51,16 +43,20 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
         .getElementsByTagName("b")
         .item(0)
         ?.textContent?.match(/\d+/);
-
       const list = [...itemContainer.querySelectorAll(".p-item")];
+      let pages = null;
 
-      return { list, pages: Math.ceil(Number(total) / list.length) };
+      if (link.page == 1) {
+        pages = Math.ceil(Number(total) / list.length);
+      }
+
+      return { list, pages };
     }
 
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  async parse(object) {
+  parse(object) {
     const name = object.querySelector(".p-name")?.textContent?.trim();
     const price = Number(
       object
@@ -78,4 +74,4 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
   },
 };
 
-export default { info: CrawlInfo, save: "sellers" };
+export default CrawlInfo;

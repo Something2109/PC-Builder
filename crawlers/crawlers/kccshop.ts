@@ -1,4 +1,4 @@
-import { APIWebsiteInfo, CrawlLink } from "../crawler";
+import { APIWebsiteInfo } from "../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
@@ -21,35 +21,27 @@ const mapping: { [key in Products]?: string } = {
 const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
   domain,
 
-  path(product: Products): CrawlLink | null {
+  save: "parts",
+
+  path(product: Products, page = 1) {
     if (mapping[product]) {
       const url = new URL(`${domain}/${mapping[product]}/`);
+      url.searchParams.set("page", page.toString());
 
-      return { url };
+      return { url, page, product };
     }
 
     return null;
   },
 
-  next(link: CrawlLink): CrawlLink {
-    let page = link.url.searchParams.get("page");
-
-    if (!page) {
-      page = "1";
-    }
-    link.url.searchParams.set("page", (Number(page) + 1).toString());
-
-    return link;
-  },
-
-  async extract(response: Response) {
+  async extract(link, response) {
     const dom = new JSDOM(await response.text()).window.document;
     const itemContainer = dom.getElementById("js-category-holder");
 
     if (itemContainer) {
       const list = [...dom.querySelectorAll(".p-item")];
 
-      return { list, pages: null };
+      return { list, pages: link.page + 1 };
     }
 
     if (dom.querySelector(".alert-mess")) return { list: [], pages: null };
@@ -57,7 +49,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  async parse(item) {
+  parse(item) {
     const name = item.querySelector(".p-name")?.textContent;
     const price =
       Number(
@@ -78,4 +70,4 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
   },
 };
 
-export default { info: CrawlInfo, save: "sellers" };
+export default CrawlInfo;

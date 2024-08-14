@@ -1,48 +1,70 @@
+import path from "path";
+import fs from "fs";
 import { Products } from "@/models/interface";
 
 type CrawlLink = {
   url: URL;
-  method?: RequestInit["method"];
-  body?: RequestInit["body"];
+  page: number;
+  product: Products;
+} & RequestInit;
+
+type Request = {
+  link: CrawlLink;
+  info: APIWebsiteInfo<unknown, unknown>;
 };
+
+type Result = { domain: string; product: Products; list: unknown[] };
 
 type ProductMapping = { [key in Products]?: any[] };
 
 interface APIWebsiteInfo<ResponseType, ReturnType> {
+  /**
+   * The website domain.
+   */
   domain: string;
 
   /**
-   * Create the URL to crawl data from the product enum
-   * @param product The product enum to crawl from
+   * The save path of the crawled data.
    */
-  path(product: Products): CrawlLink | null;
+  save: string;
 
   /**
-   * Create the next page to continue crawlling data from the previous URL
-   * @param url The previous URL
+   * Create the URL to crawl data from the product enum.
+   * @param product The product enum to crawl from.
    */
-  next(link: CrawlLink): CrawlLink;
+  path(product: Products, page: number): CrawlLink | null;
 
   /**
-   * Extract the data list from the response object
-   * @param response The response object to extract data
+   * Extract the data list from the response object.
+   * @param response The response object to extract data.
    */
   extract(
+    link: CrawlLink,
     response: Response
-  ): Promise<{ list: ResponseType[]; pages: number | null }>;
+  ): Promise<{
+    list: ResponseType[];
+    pages: number | null;
+  }>;
 
   /**
-   * Parse each item from the result of the extract function to the useful data
-   * @param raw The raw data object to parse from
+   * Parse each item from the result of the extract function to the useful data.
+   * @param raw The raw data object to parse from.
    */
-  parse(raw: ResponseType): Promise<ReturnType>;
+  parse(raw: ResponseType): ReturnType;
 }
 
+const WebsitePerFetch = 3;
+const FetchEachLoop = 10;
+
 class Crawler {
+  private static dataPath = path.join(".", "data");
+  private static websites: APIWebsiteInfo<unknown, unknown>[] = [];
+  private static requests: Request[] = [];
+
   /**
-   * Specify if the parameter object is a crawler object
-   * @param object The object to specify
-   * @returns True if object is a crawler
+   * Specify if the parameter object is a crawler object.
+   * @param object The object to specify.
+   * @returns True if object is a crawler.
    */
   static isCrawlInfo(object?: any): object is APIWebsiteInfo<any, any> {
     return (
@@ -50,8 +72,6 @@ class Crawler {
       "domain" in object &&
       "path" in object &&
       typeof object["path"] == "function" &&
-      "next" in object &&
-      typeof object.next == "function" &&
       "extract" in object &&
       typeof object.extract == "function" &&
       "parse" in object &&
@@ -59,126 +79,167 @@ class Crawler {
     );
   }
 
-  static async crawl(info: APIWebsiteInfo<any, any>): Promise<ProductMapping> {
-    const crawler = new WebsiteCrawler(info);
-
-    const result: ProductMapping = {};
-    const promises = Object.values(Products).map((product) =>
-      crawler.crawl(product).then((data) => {
-        if (data.length > 0) result[product as Products] = data;
-      })
-    );
-    await Promise.all(promises);
-
-    return result;
-  }
-}
-
-class WebsiteCrawler<T> {
-  private info: APIWebsiteInfo<unknown, T>;
-
-  constructor(info: APIWebsiteInfo<unknown, T>) {
-    this.info = info;
+  /**
+   * Add a website to initiate crawl.
+   * @param info The info to crawl.
+   */
+  static add(info: APIWebsiteInfo<unknown, unknown>): void {
+    this.websites.push(info);
   }
 
-  async crawl(product: Products): Promise<T[]> {
-    const link = this.info.path(product);
+  /**
+   * The crawl function.
+   * Call this to start the crawling process.
+   */
+  static async crawl() {
+    while (this.websites.length > 0) {
+      this.start();
 
-    try {
-      if (link) {
-        let response = await this.fetch(link);
-        let { list, pages } = await this.info.extract(response);
+      const result: Result[] = [];
 
-        list.push(
-          ...(pages
-            ? await this.crawlParalel(this.info.next(link), --pages)
-            : await this.crawlSequential(this.info.next(link)))
+      while (this.requests.length > 0) {
+        const promises = this.requests
+          .splice(0, FetchEachLoop)
+          .map((link) => this.fetchRequest(link));
+
+        result.push(
+          ...(await Promise.all(promises)).filter((result) => result != null)
         );
 
-        return await Promise.all(list.map((raw) => this.info.parse(raw)));
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      const data = this.map(result);
+      this.save(data);
+    }
+  }
+
+  /**
+   * Start the crawling process of websites
+   * by adding the new fetch request to the request queue
+   * from the website list.
+   */
+  private static start() {
+    this.websites.splice(0, WebsitePerFetch).forEach((info) => {
+      Object.values(Products).map((product) => {
+        const link = info.path(product, 1);
+        if (link) {
+          this.requests.push({ link, info });
+        }
+      });
+    });
+  }
+
+  /**
+   * The fetching process of a request.
+   * @param param The request object of the process.
+   * @returns The result of the process.
+   */
+  private static async fetchRequest({
+    link,
+    info,
+  }: Request): Promise<Result | null> {
+    const { url } = link;
+
+    try {
+      const response = await fetch(url, link);
+
+      if (response.ok) {
+        const { list, pages } = await info.extract(link, response);
+
+        if (list.length > 0 && pages) this.next({ link, info }, pages);
+
+        console.log(
+          `Extracted ${list.length} data of ${
+            link.product
+          } from ${link.url.toString()}, page: ${link.page}`
+        );
+
+        return {
+          domain: info.domain,
+          product: link.product,
+          list: list.map((raw) => info.parse(raw)),
+        };
       }
     } catch (error) {
-      console.error(`Error while fetching ${link?.url}`);
+      console.error(
+        `Error crawling ${link.url.toString()}, page: ${link.page}`
+      );
       console.error(error);
     }
 
-    return [];
+    return null;
   }
 
   /**
-   * Continuously fetch data from the URL until no new data can be acquired.
-   * @param url The URL to fetch data from
-   * @returns The data crawled from the URL
+   * Get the next requests of the request data and
+   * push it to the request queue.
+   * @param param0 The current request object.
+   * @param pages The number of next requests from the current one.
    */
-  private async crawlSequential(link: CrawlLink): Promise<unknown[]> {
-    const result: unknown[] = [];
-
-    let fetching = true;
-    while (fetching) {
-      let response = await this.fetch(link);
-      let { list } = await this.info.extract(response);
-
-      result.push(...list);
-      link = this.info.next(link);
-
-      fetching = list.length > 0;
-    }
-
-    return result;
-  }
-
-  /**
-   * Paralelly crawl the data with the specified number of page to fetch
-   * @param url The URL to fetch
-   * @param pages The number of pages to fetch
-   * @returns The data crawled from the URL
-   */
-  private async crawlParalel(
-    link: CrawlLink,
-    pages: number
-  ): Promise<unknown[]> {
-    const result: unknown[] = [];
-
-    if (pages > 0) {
-      const promises = [];
-      while (pages > 0) {
-        promises.push(this.fetch(link));
-        link = this.info.next(link);
-        pages--;
-      }
-
-      const responses = await Promise.all(promises);
-      const data = await Promise.all(
-        responses.map((res) => this.info.extract(res))
-      );
-      data.forEach(({ list }) => result.push(...list));
-    }
-
-    return result;
-  }
-
-  /**
-   * Fetch the data from the URL with a number of trying time
-   * @param url The URL to fetch data
-   * @returns The successful response object or throw error
-   */
-  private async fetch({ url, method, body }: CrawlLink): Promise<Response> {
-    let unsuccess = 0;
-
-    while (unsuccess < 1) {
-      const response = await fetch(url, {
-        method,
-        body,
+  private static next({ link, info }: Request, pages: number) {
+    let nextPage = link.page;
+    while (nextPage < pages) {
+      nextPage++;
+      this.requests.push({
+        link: info.path(link.product, nextPage)!,
+        info,
       });
+    }
+  }
 
-      if (response.ok) {
-        return response;
+  /**
+   * Map the crawled data based on the origin website and the product type.
+   * @param result The result of the requests.
+   * @returns The mapped data object.
+   */
+  private static map(result: Result[]): Record<string, ProductMapping> {
+    const data: Record<string, ProductMapping> = {};
+
+    result.forEach(({ domain, product, list }) => {
+      if (!data[domain]) {
+        data[domain] = {};
       }
 
-      unsuccess++;
+      if (!data[domain][product]) {
+        data[domain][product] = [];
+      }
+
+      data[domain][product].push(...list);
+    }, {});
+
+    return data;
+  }
+
+  /**
+   * Save the mapped data object to the file system.
+   * @param result The mapped data object.
+   */
+  private static save(result: Record<string, ProductMapping>) {
+    if (!fs.existsSync(this.dataPath)) {
+      fs.mkdirSync(this.dataPath);
     }
 
-    throw new Error(`Too many failed attempt at fetching data from ${url}`);
+    Object.entries(result).forEach(([key, value]) => {
+      const savePath = path.join(
+        this.dataPath,
+        key.replaceAll(/(https:\/\/|www.|\.com|\.vn|\.)+/g, "")
+      );
+
+      if (!fs.existsSync(savePath)) {
+        fs.mkdirSync(savePath);
+      }
+
+      Object.entries(value).forEach(([product, list]) => {
+        console.log(
+          `Fetched ${list.length} products of ${product} from ${key}`
+        );
+        fs.writeFileSync(
+          path.join(savePath, `${product}.json`),
+          JSON.stringify(list)
+        );
+      });
+    });
   }
 }
 

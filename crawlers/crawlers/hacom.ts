@@ -37,46 +37,40 @@ type HacomPartDataAPI = {
 const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
   domain,
 
-  path(product) {
+  save: "parts",
+
+  path(product, page = 1) {
     if (mapping[product]) {
       const url = new URL(`${domain}/ajax/get_json.php`);
 
       url.searchParams.set("action", "product");
       url.searchParams.set("action_type", "product-list");
+      url.searchParams.set("page", page.toString());
       url.searchParams.set("show", "500");
       url.searchParams.set("category", mapping[product]);
 
-      return { url };
+      return { url, page, product };
     }
 
     return null;
   },
 
-  next(link) {
-    let page = link.url.searchParams.get("page");
-
-    if (!page) {
-      page = "1";
-    }
-    link.url.searchParams.set("page", (Number(page) + 1).toString());
-
-    return link;
-  },
-
-  async extract(response: Response) {
+  async extract(link, response) {
     const data: HacomJSONResponse = await response.json();
+    let pages = null;
+
+    if (link.page == 1) {
+      pages = Math.ceil(data.total / data.list.length);
+    }
 
     if (Array.isArray(data.list)) {
-      return {
-        list: data.list,
-        pages: Math.ceil(data.total / data.list.length),
-      };
+      return { list: data.list, pages };
     }
 
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  async parse(object) {
+  parse(object) {
     return new SellerProduct({
       name: object.productName,
       price: Number(object.price),
@@ -87,4 +81,4 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
   },
 };
 
-export default { info: CrawlInfo, save: "sellers" };
+export default CrawlInfo;

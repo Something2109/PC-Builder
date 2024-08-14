@@ -1,4 +1,4 @@
-import { APIWebsiteInfo, CrawlLink } from "../crawler";
+import { APIWebsiteInfo } from "../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
 import { Products } from "@/models/interface";
 
@@ -38,41 +38,36 @@ type GearvnPartDataAPI = {
 const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, SellerProduct> = {
   domain,
 
-  path(product: Products) {
+  save: "sellers",
+
+  path(product: Products, page = 1) {
     if (mapping[product]) {
       const url = new URL(
         `${domain}/collections/${mapping[product]}/products.json`
       );
       url.searchParams.set("include", "metafields[product]");
+      url.searchParams.set("page", page.toString());
       url.searchParams.set("limit", "500");
 
-      return { url };
+      return { url, page, product };
     }
     return null;
   },
 
-  next(link: CrawlLink): CrawlLink {
-    let page = link.url.searchParams.get("page");
-
-    if (!page) {
-      page = "1";
-    }
-    link.url.searchParams.set("page", (Number(page) + 1).toString());
-
-    return link;
-  },
-
-  async extract(response: Response) {
+  async extract(link, response) {
     const data: GearvnJSONResponse = await response.json();
 
     if (Array.isArray(data.products)) {
-      return { list: data.products, pages: null };
+      return {
+        list: data.products,
+        pages: link.page + 1,
+      };
     }
 
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  async parse(object) {
+  parse(object) {
     return new SellerProduct({
       name: object.title,
       price: Number(object.variants[0].price),
@@ -83,4 +78,4 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, SellerProduct> = {
   },
 };
 
-export default { info: CrawlInfo, save: "sellers" };
+export default CrawlInfo;

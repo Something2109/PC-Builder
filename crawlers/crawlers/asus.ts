@@ -1,4 +1,4 @@
-import { APIWebsiteInfo, CrawlLink } from "../crawler";
+import { APIWebsiteInfo } from "../crawler";
 import { Products } from "@/models/interface";
 
 const domain = "https://odinapi.asus.com";
@@ -13,6 +13,8 @@ const mapping: { [key in Products]?: string } = {
 const CrawlInfo: APIWebsiteInfo<any, any> = {
   domain,
 
+  save: "parts",
+
   path(product: Products) {
     if (mapping[product]) {
       const url = new URL(`${domain}/recent-data/apiv2/SeriesFilterResult`);
@@ -22,34 +24,28 @@ const CrawlInfo: APIWebsiteInfo<any, any> = {
       url.searchParams.set("ProductLevel1Code", "motherboards-components");
       url.searchParams.set("ProductLevel2Code", mapping[product]);
 
-      return { url };
+      return { url, page: 1, product };
     }
 
     return null;
   },
 
-  async extract(response: Response) {
+  async extract(link, response) {
     const data = await response.json();
 
     if (data.Result) {
       return {
         list: data.Result.ProductList ?? [],
-        pages:
-          Math.ceil(data.Result.TotalCount / data.Result.ProductList.length) ??
-          null,
+        pages: null,
       };
     }
 
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  next(link: CrawlLink) {
-    return link;
-  },
-
-  parse: function (raw: any): Promise<any> {
+  parse: function (raw: any) {
     return raw;
   },
 };
 
-export default { info: CrawlInfo, save: "parts" };
+export default CrawlInfo;
