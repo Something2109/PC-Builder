@@ -18,7 +18,7 @@ const title: { [key in Products]: string } = {
 
 export default function PartList({ path }: { path: string }) {
   return (
-    <nav className="flex flex-row justify-between flex-wrap gap-2 my-2">
+    <nav className="flex flex-row justify-between flex-wrap gap-2">
       {Object.values(Products).map((part) => (
         <LinkButton
           image={`/images/icons/${part}.png`}
@@ -43,7 +43,7 @@ function LinkButton({ image, dark_image, title, link }: LinkButtonProps) {
   if (!dark_image) dark_image = image;
 
   const normal =
-    "flex flex-row rounded-xl border-2 border-line p-1 md:border-4 hover:border-blue-500";
+    "flex flex-row rounded-lg lg:rounded-xl border-2 border-line p-1 md:border-4 hover:border-blue-500";
   const dark = "dark:hover:bg-blue-500";
   return (
     <Link className={`${normal} ${dark}`} href={link}>
