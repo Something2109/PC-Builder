@@ -17,6 +17,7 @@ type ContentContainer = {
 
 type ArticleType = SectionType & {
   author: string;
+  standfirst: string;
   createdAt: Date;
 };
 

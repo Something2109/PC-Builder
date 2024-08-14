@@ -15,6 +15,7 @@ function Article({ article }: { article: ArticleType }) {
   return (
     <article>
       <h1 className="font-bold text-4xl my-5">{article.title}</h1>
+      <Paragraph>{article.standfirst}</Paragraph>
       {article.content.map((content, index) => (
         <ContentRenderer
           content={content}
