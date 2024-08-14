@@ -17,10 +17,10 @@ class MockDatabase {
   }
 
   static get sellers(): Readonly<Seller> {
-    if (!this.objects.introduction) {
-      this.objects.introduction = new Seller(this.path);
+    if (!this.objects.sellers) {
+      this.objects.sellers = new Seller(this.path);
     }
-    return this.objects.introduction as Seller;
+    return this.objects.sellers as Seller;
   }
 }
 
