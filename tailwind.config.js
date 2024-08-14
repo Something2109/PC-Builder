@@ -14,7 +14,8 @@ module.exports = {
         line: "#cbd5e1",
         header: "#2563eb",
         navigation: "#3b82f6",
-        background: "#0f172a"
+        background: "#0f172a",
+        price: "#dc2626"
       }
     },
   },
