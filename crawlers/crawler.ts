@@ -13,7 +13,11 @@ type Request = {
   info: APIWebsiteInfo<unknown, unknown>;
 };
 
-type Result = { domain: string; product: Products; list: unknown[] };
+type Result = {
+  info: APIWebsiteInfo<unknown, unknown>;
+  product: Products;
+  list: unknown[];
+};
 
 type ProductMapping = { [key in Products]?: any[] };
 
@@ -156,7 +160,7 @@ class Crawler {
         );
 
         return {
-          domain: info.domain,
+          info,
           product: link.product,
           list: list.map((raw) => info.parse(raw)),
         };
@@ -196,16 +200,21 @@ class Crawler {
   private static map(result: Result[]): Record<string, ProductMapping> {
     const data: Record<string, ProductMapping> = {};
 
-    result.forEach(({ domain, product, list }) => {
-      if (!data[domain]) {
-        data[domain] = {};
+    result.forEach(({ info, product, list }) => {
+      const key = path.join(
+        info.save,
+        info.domain.replaceAll(/(https:\/\/|www.|\.com|\.vn|\.)+/g, "")
+      );
+
+      if (!data[key]) {
+        data[key] = {};
       }
 
-      if (!data[domain][product]) {
-        data[domain][product] = [];
+      if (!data[key][product]) {
+        data[key][product] = [];
       }
 
-      data[domain][product].push(...list);
+      data[key][product].push(...list);
     }, {});
 
     return data;
