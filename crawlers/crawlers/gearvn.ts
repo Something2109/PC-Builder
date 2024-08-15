@@ -49,17 +49,21 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, SellerProduct> = {
       url.searchParams.set("page", page.toString());
       url.searchParams.set("limit", "500");
 
-      return { url, page, product };
+      return { url, type: "page", page, product };
     }
     return null;
   },
 
   async extract(link, response) {
+    if (link.type != "page") {
+      return { list: [], links: [], pages: null };
+    }
     const data: GearvnJSONResponse = await response.json();
 
     if (Array.isArray(data.products)) {
       return {
         list: data.products,
+        links: [],
         pages: link.page + 1,
       };
     }

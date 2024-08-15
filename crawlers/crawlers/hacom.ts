@@ -37,7 +37,7 @@ type HacomPartDataAPI = {
 const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
   domain,
 
-  save: "parts",
+  save: "sellers",
 
   path(product, page = 1) {
     if (mapping[product]) {
@@ -49,13 +49,15 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
       url.searchParams.set("show", "500");
       url.searchParams.set("category", mapping[product]);
 
-      return { url, page, product };
+      return { url, type: "page", page, product };
     }
 
     return null;
   },
 
   async extract(link, response) {
+    if (link.type != "page") return { list: [], links: [], pages: null };
+
     const data: HacomJSONResponse = await response.json();
     let pages = null;
 
@@ -64,7 +66,7 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
     }
 
     if (Array.isArray(data.list)) {
-      return { list: data.list, pages };
+      return { list: data.list, links: [], pages };
     }
 
     throw new Error(`There's possibly a change in the API of ${domain}`);

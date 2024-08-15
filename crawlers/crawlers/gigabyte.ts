@@ -1,4 +1,4 @@
-import { APIWebsiteInfo } from "../crawler";
+import { APIWebsiteInfo, CrawlLink } from "../crawler";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
 
@@ -13,7 +13,7 @@ const mapping: { [key in Products]?: string } = {
   [Products.AIO]: "40",
 };
 
-const CrawlInfo: APIWebsiteInfo<Element, string> = {
+const CrawlInfo: APIWebsiteInfo<any, any> = {
   domain,
 
   save: "parts",
@@ -27,35 +27,69 @@ const CrawlInfo: APIWebsiteInfo<Element, string> = {
       formBody.set("PageSize", "500");
       formBody.set("PageNumber", page.toString());
 
-      return { url, page, product, method: "POST", body: formBody };
+      return {
+        url,
+        type: "page",
+        page,
+        product,
+        method: "POST",
+        body: formBody,
+      };
     }
 
     return null;
   },
 
   async extract(link, response) {
-    const data = await response.text();
+    const list = [];
+    let links: CrawlLink[] = [];
+    let pages = null;
 
-    const html = new JSDOM(data).window.document;
+    if (link.type == "page") {
+      const data = await response.text();
+      const dom = new JSDOM(data).window.document;
 
-    if (html) {
-      const list = [...html.querySelectorAll(".product_list_box")];
-      let pages = null;
+      links = [...dom.querySelectorAll(".WTB_button")].map((raw) => {
+        return {
+          url: new URL(
+            `${domain}/api/ProductSpec/${raw.getAttribute("data-ProductId")}`
+          ),
+          type: "product",
+          product: link.product,
+        };
+      });
 
       if (link.page == 1) {
-        pages = Number(html.querySelector(".pageMaximumPage")?.textContent);
+        pages = Number(dom.querySelector(".pageMaximumPage")?.textContent);
+      }
+    } else {
+      const data = await response.json();
+      if (
+        !data ||
+        !Array.isArray(data.ProductSpecList) ||
+        !data.ProductSpecList[0]
+      ) {
+        throw new Error(`There's possibly a change in the API of ${domain}`);
       }
 
-      return { list, pages };
+      list.push(data.ProductSpecList[0]);
     }
 
-    throw new Error(`There's possibly a change in the API of ${domain}`);
+    return { list, links, pages };
   },
 
-  parse(raw: Element): string {
-    const info = raw.querySelector(".product_info_text_col");
+  parse(raw: {
+    Name: string;
+    ProductSpecData: { Name: string; Description: string }[];
+  }) {
+    const result: { [key in string]: string } = {};
 
-    return `${domain}${info?.getElementsByTagName("a").item(0)?.href}`;
+    result["Model"] = raw["Name"];
+    raw.ProductSpecData.forEach((row) => {
+      result[row["Name"]] = row["Description"];
+    });
+
+    return result;
   },
 };
 

@@ -1,5 +1,6 @@
-import { APIWebsiteInfo } from "../crawler";
+import { APIWebsiteInfo, CrawlLink } from "../crawler";
 import { Products } from "@/models/interface";
+import { JSDOM } from "jsdom";
 
 const domain = "https://odinapi.asus.com";
 const mapping: { [key in Products]?: string } = {
@@ -10,7 +11,7 @@ const mapping: { [key in Products]?: string } = {
   [Products.AIO]: "cooling",
 };
 
-const CrawlInfo: APIWebsiteInfo<any, any> = {
+const CrawlInfo: APIWebsiteInfo<Element, any> = {
   domain,
 
   save: "parts",
@@ -24,27 +25,75 @@ const CrawlInfo: APIWebsiteInfo<any, any> = {
       url.searchParams.set("ProductLevel1Code", "motherboards-components");
       url.searchParams.set("ProductLevel2Code", mapping[product]);
 
-      return { url, page: 1, product };
+      return { url, type: "page", page: 1, product };
     }
 
     return null;
   },
 
   async extract(link, response) {
-    const data = await response.json();
+    const list: Element[] = [];
+    let links: CrawlLink[] = [];
 
-    if (data.Result) {
-      return {
-        list: data.Result.ProductList ?? [],
-        pages: null,
-      };
+    if (link.type == "page") {
+      const data = await response.json();
+      if (!data || !data.Result || !Array.isArray(data.Result.ProductList)) {
+        throw new Error(`There's possibly a change in the API of ${domain}`);
+      }
+
+      links = data.Result.ProductList.map((raw: { ProductURL: string }) => {
+        const url: string = raw.ProductURL;
+        return {
+          url: new URL(`${url}${url.includes("rog") ? "" : "tech"}spec`),
+          type: "product",
+          product: link.product,
+        };
+      });
+
+      console.log(links.length);
+    } else {
+      const dom = new JSDOM(await response.text()).window.document;
+
+      let table = dom.getElementById("productTableBody");
+      if (link.url.hostname.includes("rog")) {
+        table = dom.querySelector(".specContent");
+      }
+
+      if (!table) {
+        throw new Error(`Cannot find content table in ${link.url}`);
+      }
+
+      list.push(table);
     }
 
-    throw new Error(`There's possibly a change in the API of ${domain}`);
+    return { list, links, pages: null };
   },
 
-  parse: function (raw: any) {
-    return raw;
+  parse(raw: Element) {
+    const result: { [key in string]: string } = {};
+    let rowClass = ".TechSpec__rowTable__1LR9D",
+      titleClass = ".rowTableTitle",
+      contentClass = ".rowTableItemViewBox";
+
+    if (raw.id !== "productTableBody") {
+      rowClass = ".ProductSpecSingle__productSpecItemRow__BKwUK";
+      titleClass = ".ProductSpecSingle__productSpecItemTitle__HKAZq";
+      contentClass = ".ProductSpecSingle__productSpecItemContent__oJI5w";
+
+      result["Model"] = raw
+        .querySelector(".ProductSpecSingle__specProductName__bl-tB")
+        ?.textContent?.trim()!;
+    }
+
+    raw.querySelectorAll(rowClass).forEach((row: Element) => {
+      const title = row.querySelector(titleClass);
+      const content = row.querySelector(contentClass);
+      if (title && title.textContent && content && content.textContent) {
+        result[title.textContent.trim()] = content.textContent.trim();
+      }
+    });
+
+    return result;
   },
 };
 

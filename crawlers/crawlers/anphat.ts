@@ -28,7 +28,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
       const url = new URL(`${domain}/${mapping[product]}`);
       url.searchParams.set("page", page.toString());
 
-      return { url, page, product };
+      return { url, type: "page", page, product };
     }
 
     return null;
@@ -38,7 +38,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
     const dom = new JSDOM(await response.text()).window.document;
     const itemContainer = dom.querySelector(".product-list-container");
 
-    if (itemContainer) {
+    if (link.type == "page" && itemContainer) {
       const total = itemContainer
         .getElementsByTagName("b")
         .item(0)
@@ -50,7 +50,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
         pages = Math.ceil(Number(total) / list.length);
       }
 
-      return { list, pages };
+      return { list, links: [], pages };
     }
 
     throw new Error(`There's possibly a change in the API of ${domain}`);

@@ -21,30 +21,33 @@ const mapping: { [key in Products]?: string } = {
 const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
   domain,
 
-  save: "parts",
+  save: "sellers",
 
   path(product: Products, page = 1) {
     if (mapping[product]) {
       const url = new URL(`${domain}/${mapping[product]}/`);
       url.searchParams.set("page", page.toString());
 
-      return { url, page, product };
+      return { url, type: "page", page, product };
     }
 
     return null;
   },
 
   async extract(link, response) {
+    if (link.type != "page") return { list: [], links: [], pages: null };
+
     const dom = new JSDOM(await response.text()).window.document;
     const itemContainer = dom.getElementById("js-category-holder");
 
     if (itemContainer) {
       const list = [...dom.querySelectorAll(".p-item")];
 
-      return { list, pages: link.page + 1 };
+      return { list, links: [], pages: link.page + 1 };
     }
 
-    if (dom.querySelector(".alert-mess")) return { list: [], pages: null };
+    if (dom.querySelector(".alert-mess"))
+      return { list: [], links: [], pages: null };
 
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },

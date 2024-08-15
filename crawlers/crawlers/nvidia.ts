@@ -16,7 +16,7 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
     if (mapping[product]) {
       const url = new URL(`${domain}/${mapping[product]}`);
 
-      return { url, page: 1, product };
+      return { url, type: "page", page: 1, product };
     }
 
     return null;
@@ -30,10 +30,9 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
 
     return {
       list: [...tables],
+      links: [],
       pages: null,
     };
-
-    throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
   parse(raw: HTMLTableElement) {

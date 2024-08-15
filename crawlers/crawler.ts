@@ -2,14 +2,25 @@ import path from "path";
 import fs from "fs";
 import { Products } from "@/models/interface";
 
-type CrawlLink = {
+type BaseLink = {
   url: URL;
-  page: number;
+  type: "page" | "product";
   product: Products;
 } & RequestInit;
 
-type Request = {
-  link: CrawlLink;
+type PageLink = {
+  type: "page";
+  page: number;
+} & BaseLink;
+
+type ProductLink = {
+  type: "product";
+} & BaseLink;
+
+type CrawlLink = PageLink | ProductLink;
+
+type Request<link extends CrawlLink> = {
+  link: link;
   info: APIWebsiteInfo<unknown, unknown>;
 };
 
@@ -21,7 +32,7 @@ type Result = {
 
 type ProductMapping = { [key in Products]?: any[] };
 
-interface APIWebsiteInfo<ResponseType, ReturnType> {
+interface APIWebsiteInfo<RawType, ReturnType> {
   /**
    * The website domain.
    */
@@ -36,7 +47,7 @@ interface APIWebsiteInfo<ResponseType, ReturnType> {
    * Create the URL to crawl data from the product enum.
    * @param product The product enum to crawl from.
    */
-  path(product: Products, page: number): CrawlLink | null;
+  path(product: Products, page: number): PageLink | null;
 
   /**
    * Extract the data list from the response object.
@@ -46,7 +57,8 @@ interface APIWebsiteInfo<ResponseType, ReturnType> {
     link: CrawlLink,
     response: Response
   ): Promise<{
-    list: ResponseType[];
+    list: RawType[];
+    links: CrawlLink[];
     pages: number | null;
   }>;
 
@@ -54,7 +66,7 @@ interface APIWebsiteInfo<ResponseType, ReturnType> {
    * Parse each item from the result of the extract function to the useful data.
    * @param raw The raw data object to parse from.
    */
-  parse(raw: ResponseType): ReturnType;
+  parse(raw: RawType, product?: Products): ReturnType;
 }
 
 const WebsitePerFetch = 3;
@@ -63,7 +75,8 @@ const FetchEachLoop = 10;
 class Crawler {
   private static dataPath = path.join(".", "data");
   private static websites: APIWebsiteInfo<unknown, unknown>[] = [];
-  private static requests: Request[] = [];
+  private static requests: Request<CrawlLink>[] = [];
+  private static errors: { link: CrawlLink; error: unknown }[] = [];
 
   /**
    * Specify if the parameter object is a crawler object.
@@ -110,12 +123,24 @@ class Crawler {
           ...(await Promise.all(promises)).filter((result) => result != null)
         );
 
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 250));
       }
 
       const data = this.map(result);
       this.save(data);
     }
+
+    if (this.errors.length > 0) {
+      const date = new Date();
+      fs.writeFileSync(
+        path.join(this.dataPath, `errors-${date}.json`),
+        JSON.stringify(this.errors),
+        {
+          flag: "a",
+        }
+      );
+    }
+    this.errors.length = 0;
   }
 
   /**
@@ -142,34 +167,41 @@ class Crawler {
   private static async fetchRequest({
     link,
     info,
-  }: Request): Promise<Result | null> {
-    const { url } = link;
+  }: Request<CrawlLink>): Promise<Result | null> {
+    const { url, method, body } = link;
 
+    console.log(`fetching ${url}`);
     try {
-      const response = await fetch(url, link);
-
-      if (response.ok) {
-        const { list, pages } = await info.extract(link, response);
-
-        if (list.length > 0 && pages) this.next({ link, info }, pages);
-
-        console.log(
-          `Extracted ${list.length} data of ${
-            link.product
-          } from ${link.url.toString()}, page: ${link.page}`
-        );
-
-        return {
-          info,
-          product: link.product,
-          list: list.map((raw) => info.parse(raw)),
-        };
+      const response = await fetch(url, { method, body });
+      if (!response.ok) {
+        throw new Error(`Response code: ${response.status}`);
       }
-    } catch (error) {
-      console.error(
-        `Error crawling ${link.url.toString()}, page: ${link.page}`
+
+      const { list, links, pages } = await info.extract(link, response);
+
+      if (
+        link.type == "page" &&
+        pages &&
+        (list.length > 0 || links.length > 0)
+      ) {
+        this.next({ link, info }, pages);
+      }
+
+      this.requests.push(
+        ...links.map((value) => {
+          return { link: value, info };
+        })
       );
+
+      return {
+        info,
+        product: link.product,
+        list: list.map((raw) => info.parse(raw, link.product)),
+      };
+    } catch (error: unknown) {
+      console.error(`Error crawling ${link.url.toString()}.`);
       console.error(error);
+      this.errors.push({ link, error });
     }
 
     return null;
@@ -181,7 +213,7 @@ class Crawler {
    * @param param0 The current request object.
    * @param pages The number of next requests from the current one.
    */
-  private static next({ link, info }: Request, pages: number) {
+  private static async next({ link, info }: Request<PageLink>, pages: number) {
     let nextPage = link.page;
     while (nextPage < pages) {
       nextPage++;

@@ -1,4 +1,4 @@
-import { APIWebsiteInfo } from "../crawler";
+import { APIWebsiteInfo, CrawlLink } from "../crawler";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
 
@@ -11,7 +11,7 @@ const mapping: { [key in Products]?: string } = {
   [Products.AIO]: "353",
 };
 
-const CrawlInfo: APIWebsiteInfo<Element, string> = {
+const CrawlInfo: APIWebsiteInfo<Element, any> = {
   domain,
 
   save: "parts",
@@ -24,36 +24,68 @@ const CrawlInfo: APIWebsiteInfo<Element, string> = {
       formBody.set("Func", "firstGetProduct");
       formBody.set("Val", `${mapping[product]}|||${page}`);
 
-      return { url, page, product, method: "POST", body: formBody };
+      return {
+        url,
+        type: "page",
+        page,
+        product,
+        method: "POST",
+        body: formBody,
+      };
     }
 
     return null;
   },
 
   async extract(link, response) {
-    const data = await response.json();
+    const list = [];
+    let links: CrawlLink[] = [];
+    let pages = null;
 
-    const html = new JSDOM(data["html"]).window.document;
-    const page = new JSDOM(data["page"]).window.document.querySelectorAll(
-      ".num"
-    );
+    if (link.type == "page") {
+      const data = await response.json();
 
-    if (html && page) {
-      const list = [...html.querySelectorAll(".item")];
-      let pages = null;
+      const html = new JSDOM(data["html"]).window.document;
+      links = [...html.querySelectorAll(".item")].map((raw) => {
+        return {
+          url: new URL(
+            `${domain}${raw
+              .getAttribute("href")
+              ?.replace("product", "specification")}-Specification`
+          ),
+          type: "product",
+          product: link.product,
+        };
+      });
 
       if (link.page == 1) {
-        pages = Math.ceil(data["num"] / list.length);
+        pages = Math.ceil(data["num"] / links.length);
+      }
+    } else {
+      const dom = new JSDOM(await response.text()).window.document;
+
+      const table = dom.querySelector(".list-inner");
+      if (!table) {
+        throw new Error(`Cannot find content table in ${link.url}`);
       }
 
-      return { list, pages };
+      list.push(table);
     }
 
-    throw new Error(`There's possibly a change in the API of ${domain}`);
+    return { list, links, pages };
   },
 
-  parse(raw: Element): string {
-    return `${domain}${raw.getAttribute("href")}`;
+  parse(raw: Element) {
+    const result: { [key in string]: string } = {};
+
+    raw.querySelectorAll(".list-descr").forEach((row) => {
+      const [title, content] = row.querySelectorAll(".list-block");
+      if (title && content && title.textContent && content.textContent) {
+        result[title.textContent] = content.textContent;
+      }
+    });
+
+    return result;
   },
 };
 
