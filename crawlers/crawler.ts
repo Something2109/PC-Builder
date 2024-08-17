@@ -133,11 +133,8 @@ class Crawler {
     if (this.errors.length > 0) {
       const date = new Date();
       fs.writeFileSync(
-        path.join(this.dataPath, `errors-${date}.json`),
-        JSON.stringify(this.errors),
-        {
-          flag: "a",
-        }
+        path.join(this.dataPath, `errors-${date.getTime()}.json`),
+        JSON.stringify(this.errors)
       );
     }
     this.errors.length = 0;
@@ -198,10 +195,11 @@ class Crawler {
         product: link.product,
         list: list.map((raw) => info.parse(raw, link.product)),
       };
-    } catch (error: unknown) {
+    } catch (err: unknown) {
+      const error = err as Error;
       console.error(`Error crawling ${link.url.toString()}.`);
       console.error(error);
-      this.errors.push({ link, error });
+      this.errors.push({ link, error: error.message });
     }
 
     return null;
@@ -213,7 +211,7 @@ class Crawler {
    * @param param0 The current request object.
    * @param pages The number of next requests from the current one.
    */
-  private static async next({ link, info }: Request<PageLink>, pages: number) {
+  private static next({ link, info }: Request<PageLink>, pages: number) {
     let nextPage = link.page;
     while (nextPage < pages) {
       nextPage++;
