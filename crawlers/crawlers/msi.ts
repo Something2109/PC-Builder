@@ -62,11 +62,7 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
     } else {
       const dom = new JSDOM(await response.text()).window.document;
 
-      let table = dom.querySelector(".table-specifications");
-
-      if (!table) {
-        table = dom.querySelector(".pdtb");
-      }
+      let table = dom.getElementById("product");
 
       if (!table) {
         throw new Error(`Cannot find content table in ${link.url}`);
@@ -81,7 +77,13 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
   parse: function (raw: Element) {
     const result: { [key in string]: string } = {};
 
-    if (raw.className.includes("table-specifications")) {
+    const imgSrc = raw.querySelector(".img-container img")?.getAttribute("src");
+    if (imgSrc) {
+      result["img"] = imgSrc;
+    }
+
+    let table = raw.querySelector(".table-specifications");
+    if (table) {
       raw.querySelectorAll(".row").forEach((row) => {
         const title = row.children[0];
         const content = row.children[1];
@@ -91,6 +93,7 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
         }
       });
     } else {
+      table = raw.querySelector(".pdtb");
       raw.querySelectorAll(".td").forEach((row) => {
         const title = row.removeChild(row.children[0]);
         if (title && title.textContent && row.textContent) {

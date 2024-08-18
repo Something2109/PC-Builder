@@ -71,6 +71,7 @@ interface APIWebsiteInfo<RawType, ReturnType> {
 
 const WebsitePerFetch = 3;
 const FetchEachLoop = 10;
+const DelayTime = 5000;
 
 class Crawler {
   private static dataPath = path.join(".", "data");
@@ -123,7 +124,7 @@ class Crawler {
           ...(await Promise.all(promises)).filter((result) => result != null)
         );
 
-        await new Promise((resolve) => setTimeout(resolve, 250));
+        await new Promise((resolve) => setTimeout(resolve, DelayTime));
       }
 
       const data = this.map(result);

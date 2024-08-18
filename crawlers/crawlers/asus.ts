@@ -49,8 +49,6 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
           product: link.product,
         };
       });
-
-      console.log(links.length);
     } else {
       const dom = new JSDOM(await response.text()).window.document;
 
@@ -73,18 +71,22 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
     const result: { [key in string]: string } = {};
     let rowClass = ".TechSpec__rowTable__1LR9D",
       titleClass = ".rowTableTitle",
-      contentClass = ".rowTableItemViewBox";
+      contentClass = ".rowTableItemViewBox",
+      imgClass =
+        ".TechSpec__rowTableItems__KYWXp.TechSpec__rowImage__35vd6 img";
 
     if (raw.id !== "productTableBody") {
       rowClass = ".ProductSpecSingle__productSpecItemRow__BKwUK";
       titleClass = ".ProductSpecSingle__productSpecItemTitle__HKAZq";
       contentClass = ".ProductSpecSingle__productSpecItemContent__oJI5w";
+      imgClass = ".ProductSpecSingle__productSpecItemImage__dtblM img";
 
       result["Model"] = raw
         .querySelector(".ProductSpecSingle__specProductName__bl-tB")
         ?.textContent?.trim()!;
     }
 
+    result["img"] = raw.querySelector(imgClass)?.getAttribute("src")!;
     raw.querySelectorAll(rowClass).forEach((row: Element) => {
       const title = row.querySelector(titleClass);
       const content = row.querySelector(contentClass);
