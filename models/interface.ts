@@ -12,6 +12,12 @@ enum Products {
   FAN = "fan",
 }
 
+enum Tables {
+  CPU = "cpu",
+  GPU = "gpu",
+  GRAPHIC_CARD = "graphic_card",
+}
+
 interface BaseInformation {
   id: string;
   name: string;
@@ -86,4 +92,4 @@ interface MotherBoard extends BaseInformation {
   expansion_slots: Connector[];
 }
 
-export { Products };
+export { Products, Tables };
