@@ -2,7 +2,7 @@ import { APIWebsiteInfo } from "../crawler";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
 
-const domain = "https://vn.msi.com";
+const domain = "https://www.msi.com";
 const mapping: { [key in Products]?: string } = {
   [Products.GPU]: "vga",
   [Products.MAIN]: "mb",
@@ -76,6 +76,11 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
 
   parse: function (raw: Element) {
     const result: { [key in string]: string } = {};
+
+    const model = raw.querySelector(".text-center h3")?.textContent;
+    if (model) {
+      result["Model"] = model;
+    }
 
     const imgSrc = raw.querySelector(".img-container img")?.getAttribute("src");
     if (imgSrc) {
