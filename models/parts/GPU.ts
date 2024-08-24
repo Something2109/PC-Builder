@@ -1,4 +1,4 @@
-import { Model, DataTypes, UUIDV4 } from "sequelize";
+import { Model, DataTypes, UUIDV4, ModelStatic } from "sequelize";
 import { Connection } from "../Database";
 import { Tables } from "../interface";
 
@@ -40,7 +40,29 @@ type APIGPUProperties = {
   features: GraphicFeatures;
 };
 
-class GPU extends Model {}
+class GPU extends Model {
+  declare id: string;
+  declare name: string;
+  declare brand: string;
+  declare family: string;
+  declare series: string;
+  declare launch_date?: Date;
+
+  declare core_count?: number;
+  declare execution_unit?: number;
+  declare base_frequency?: number;
+  declare boost_frequency?: number;
+  declare extra_cores: GPUCore;
+
+  declare memory_size?: number;
+  declare memory_type?: string;
+  declare memory_bus?: number;
+
+  declare tdp: number;
+  declare minimum_psu?: number;
+
+  declare features: GraphicFeatures;
+}
 
 GPU.init(
   {
@@ -51,7 +73,6 @@ GPU.init(
     },
     name: {
       type: DataTypes.STRING,
-      unique: true,
       allowNull: false,
     },
     brand: {
@@ -114,9 +135,6 @@ GPU.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    minimum_psu: {
-      type: DataTypes.INTEGER,
-    },
 
     features: {
       type: DataTypes.TEXT,
@@ -146,4 +164,4 @@ GPU.init(
   }
 );
 
-export { GPU, type APIGPUProperties, type GraphicFeatures };
+export { GPU, APIGPUProperties, GraphicFeatures };
