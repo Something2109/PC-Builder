@@ -130,4 +130,79 @@ class FrequencyUnits {
   }
 }
 
-export { MemoryUnits, FrequencyUnits };
+type LengthUnitName = "mm" | "cm" | "dm" | "m" | "km";
+
+class LengthUnits {
+  static readonly ratio: Record<LengthUnitName, number> = {
+    mm: 1 / 1000,
+    cm: 1 / 100,
+    dm: 1 / 10,
+    m: 1,
+    km: 1000,
+  };
+
+  private static read(str?: string): number | undefined {
+    if (str) {
+      const mb_str = str.match(/\d+(.\d+)?/);
+      const unit = this.unit(str);
+
+      if (mb_str && unit) {
+        let num = Number(mb_str[0]) * this.ratio[unit];
+
+        return num;
+      }
+    }
+
+    return undefined;
+  }
+
+  static unit(str: string): LengthUnitName | undefined {
+    const unit = str.match(/[cdmk]?m/);
+
+    if (unit) {
+      return unit[0] as LengthUnitName;
+    }
+  }
+
+  static mm(str?: string) {
+    const num = this.read(str);
+
+    if (num) {
+      return num / this.ratio["mm"];
+    }
+
+    return undefined;
+  }
+
+  static cm(str?: string) {
+    const num = this.read(str);
+
+    if (num) {
+      return num / this.ratio["cm"];
+    }
+
+    return undefined;
+  }
+
+  static m(str?: string) {
+    const num = this.read(str);
+
+    if (num) {
+      return num / this.ratio["m"];
+    }
+
+    return undefined;
+  }
+
+  static km(str?: string) {
+    const num = this.read(str);
+
+    if (num) {
+      return num / this.ratio["km"];
+    }
+
+    return undefined;
+  }
+}
+
+export { MemoryUnits, FrequencyUnits, LengthUnits };
