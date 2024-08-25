@@ -1,4 +1,4 @@
-import { Model, DataTypes, UUIDV4, ModelStatic } from "sequelize";
+import { Model, DataTypes, UUIDV4 } from "sequelize";
 import { Connection } from "../Database";
 import { Tables } from "../interface";
 
@@ -164,4 +164,4 @@ GPU.init(
   }
 );
 
-export { GPU, APIGPUProperties, GraphicFeatures };
+export { GPU, type APIGPUProperties, type GraphicFeatures };
