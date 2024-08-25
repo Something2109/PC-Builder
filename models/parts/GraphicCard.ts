@@ -10,7 +10,10 @@ type APIDisplayInterface = {
 };
 
 type APIGraphicCardProperties = {
+  url: string;
+  image_url: string;
   name: string;
+  code_name: string;
   brand: string;
   series: string;
   launch_date?: Date;
@@ -30,7 +33,10 @@ type APIGraphicCardProperties = {
 };
 
 class GraphicCard extends Model {
+  declare url: string;
+  declare image_url: string;
   declare name: string;
+  declare code_name: string;
   declare brand: string;
   declare series: string;
   declare launch_date?: Date;
@@ -54,7 +60,20 @@ GraphicCard.init(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
+    url: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+    },
+    image_url: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    code_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -114,4 +133,4 @@ GraphicCard.belongsTo(GPU, {
   foreignKey: "gpu_id",
 });
 
-export { GraphicCard, type APIGraphicCardProperties, type APIDisplayInterface };
+export { GraphicCard, APIGraphicCardProperties, APIDisplayInterface };
