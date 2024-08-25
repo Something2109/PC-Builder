@@ -1,4 +1,4 @@
-import { APIWebsiteInfo } from "../crawler";
+import { APIWebsiteInfo } from "../../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
@@ -43,8 +43,12 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
         .getElementsByTagName("b")
         .item(0)
         ?.textContent?.match(/\d+/);
-      const list = [...itemContainer.querySelectorAll(".p-item")];
-      let pages = null;
+      const list = [...itemContainer.querySelectorAll(".p-item")].map(
+        (raw) => ({
+          raw,
+        })
+      );
+      let pages;
 
       if (link.page == 1) {
         pages = Math.ceil(Number(total) / list.length);
@@ -56,19 +60,19 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse(object) {
-    const name = object.querySelector(".p-name")?.textContent?.trim();
+  parse({ raw }) {
+    const name = raw.querySelector(".p-name")?.textContent?.trim();
     const price = Number(
-      object
+      raw
         .querySelector(".p-price")
         ?.textContent?.replaceAll(".", "")
         ?.match(/\d+/)
     );
-    const link = `${domain}${object
+    const link = `${domain}${raw
       .querySelector(".p-name")
       ?.getAttribute("href")}`;
-    const img = object.querySelector(".fit-img")?.getAttribute("data-src");
-    const availability = Boolean(object.querySelector(".btn-in-stock"));
+    const img = raw.querySelector(".fit-img")?.getAttribute("data-src");
+    const availability = Boolean(raw.querySelector(".btn-in-stock"));
 
     return new SellerProduct({ name, price, link, img, availability });
   },

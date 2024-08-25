@@ -1,4 +1,4 @@
-import { APIWebsiteInfo } from "../crawler";
+import { APIWebsiteInfo } from "../../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
@@ -38,11 +38,13 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
     const dom = new JSDOM(await response.text()).window.document;
     const itemContainer = dom.querySelector(".product-list");
 
-    const list = [];
-    let pages = null;
+    let list: { raw: Element }[] = [];
+    let pages;
 
     if (link.type == "page" && itemContainer) {
-      list.push(...itemContainer.querySelectorAll(".product-col"));
+      list = [...itemContainer.querySelectorAll(".product-col")].map((raw) => ({
+        raw,
+      }));
 
       if (link.page == 1) {
         const pageList = dom.querySelectorAll(".page-item");
@@ -58,7 +60,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
     return { list, links: [], pages };
   },
 
-  parse(raw) {
+  parse({ raw }) {
     const name = raw.querySelector(".product-name")?.textContent;
     const link = `${domain}${raw
       .querySelector(".image_thumb")

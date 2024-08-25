@@ -1,4 +1,4 @@
-import { APIWebsiteInfo, CrawlLink } from "../crawler";
+import { APIWebsiteInfo, CrawlLink } from "../../crawler";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
 
@@ -8,7 +8,7 @@ const mapping: { [key in Products]?: string } = {
   [Products.SSD]: "ssd",
 };
 
-const CrawlInfo: APIWebsiteInfo<Document, any> = {
+const CrawlInfo: APIWebsiteInfo<Document, Record<string, string>> = {
   domain,
 
   save: "parts",
@@ -23,34 +23,39 @@ const CrawlInfo: APIWebsiteInfo<Document, any> = {
     return null;
   },
 
-  async extract(link, response) {
-    const list = [];
-    let links: CrawlLink[] = [];
-    let pages = null;
+  extract: {
+    page: async (link, response) => {
+      let links: CrawlLink[] = [];
 
-    const dom = new JSDOM(await response.text()).window.document;
+      const dom = new JSDOM(await response.text()).window.document;
 
-    if (link.type == "page") {
-      links = [...dom.querySelectorAll(".c-productCard4__header__link")].map(
-        (raw) => {
-          console.log(raw.getAttribute("href"));
-          return {
-            url: new URL(`${domain}${raw.getAttribute("href")}`),
-            type: "product",
-            product: link.product,
-          };
-        }
-      );
-    } else {
-      list.push(dom);
-    }
+      links = [...dom.querySelectorAll(".c-productCard4__image")].map((raw) => {
+        return {
+          url: new URL(`${domain}${raw.getAttribute("href")}`),
+          type: "product",
+          product: link.product,
+          result: {
+            url: `${domain}${raw.getAttribute("href")}`,
+            img: `${raw.querySelector("img")?.getAttribute("src")}`,
+          },
+        };
+      });
 
-    return { list, links, pages };
+      return { links };
+    },
+
+    product: async (link, response) => {
+      const list = [];
+
+      const dom = new JSDOM(await response.text()).window.document;
+
+      list.push({ raw: dom, result: link.result as Record<string, string> });
+
+      return list;
+    },
   },
 
-  parse(raw) {
-    const result: { [key in string]: string } = {};
-
+  parse({ raw, result }) {
     let table = raw.querySelector(".c-table__main");
 
     if (!table) {

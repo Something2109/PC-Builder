@@ -1,4 +1,4 @@
-import { APIWebsiteInfo } from "../crawler";
+import { APIWebsiteInfo } from "../../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
 import { Products } from "@/models/interface";
 
@@ -56,29 +56,35 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
   },
 
   async extract(link, response) {
-    if (link.type != "page") return { list: [], links: [], pages: null };
+    if (link.type != "page") return { list: [], links: [] };
 
     const data: HacomJSONResponse = await response.json();
-    let pages = null;
+    let pages;
 
     if (link.page == 1) {
       pages = Math.ceil(data.total / data.list.length);
     }
 
     if (Array.isArray(data.list)) {
-      return { list: data.list, links: [], pages };
+      return {
+        list: data.list.map((raw) => ({
+          raw,
+        })),
+        links: [],
+        pages,
+      };
     }
 
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse(object) {
+  parse({ raw }) {
     return new SellerProduct({
-      name: object.productName,
-      price: Number(object.price),
-      link: `https://hacom.vn${object.productUrl}`,
-      img: object.productImage.large,
-      availability: Number(object.quantity) !== 0,
+      name: raw.productName,
+      price: Number(raw.price),
+      link: `https://hacom.vn${raw.productUrl}`,
+      img: raw.productImage.large,
+      availability: Number(raw.quantity) !== 0,
     });
   },
 };

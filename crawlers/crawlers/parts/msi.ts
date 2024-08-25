@@ -1,4 +1,4 @@
-import { APIWebsiteInfo } from "../crawler";
+import { APIWebsiteInfo } from "../../crawler";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
 
@@ -31,12 +31,11 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
     return null;
   },
 
-  async extract(link, response) {
-    const list = [];
-    let links = [];
-    let pages = null;
+  extract: {
+    page: async (link, response) => {
+      let links = [];
+      let pages;
 
-    if (link.type == "page") {
       const data = await response.json();
 
       if (!Array.isArray(data.result.getProductList)) {
@@ -51,6 +50,9 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
             ),
             type: "product",
             product: link.product,
+            result: {
+              url: `${domain}/${raw["product_line"]}/${raw["link"]}`,
+            },
           };
         }
       );
@@ -59,7 +61,13 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
         pages =
           Math.ceil(data.result.count / data.result.getProductList.length) ?? 0;
       }
-    } else {
+
+      return { links, pages };
+    },
+
+    product: async (link, response) => {
+      const list = [];
+
       const dom = new JSDOM(await response.text()).window.document;
 
       let table = dom.getElementById("product");
@@ -68,18 +76,19 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
         throw new Error(`Cannot find content table in ${link.url}`);
       }
 
-      list.push(table);
-    }
+      list.push({
+        raw: table,
+        result: link.result,
+      });
 
-    return { list, links, pages };
+      return list;
+    },
   },
 
-  parse: function (raw: Element) {
-    const result: { [key in string]: string } = {};
-
+  parse: function ({ raw, result }) {
     const model = raw.querySelector(".text-center h3")?.textContent;
     if (model) {
-      result["Model"] = model;
+      result["Model"] = model.trim();
     }
 
     const imgSrc = raw.querySelector(".img-container img")?.getAttribute("src");
@@ -99,12 +108,28 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
       });
     } else {
       table = raw.querySelector(".pdtb");
-      raw.querySelectorAll(".td").forEach((row) => {
-        const title = row.removeChild(row.children[0]);
-        if (title && title.textContent && row.textContent) {
-          result[title.textContent.trim()] = row.textContent.trim();
+      if (table) {
+        raw.querySelectorAll(".td").forEach((row) => {
+          const title = row.removeChild(row.children[0]);
+          if (title && title.textContent && row.textContent) {
+            result[title.textContent.trim()] = row.textContent.trim();
+          }
+        });
+      } else {
+        table = raw.querySelector(".container-fluid");
+        if (table) {
+          table.querySelectorAll("tr").forEach((row) => {
+            const title = row.querySelector("th");
+            const content = row.querySelector("td");
+
+            if (title && content && title.textContent && content.textContent) {
+              result[title.textContent.trim()] = content.textContent.trim();
+            }
+          });
+        } else {
+          throw new Error(`Cannot find table`);
         }
-      });
+      }
     }
 
     return result;

@@ -1,4 +1,4 @@
-import { APIWebsiteInfo } from "../crawler";
+import { APIWebsiteInfo } from "../../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
 import { Products } from "@/models/interface";
 
@@ -56,13 +56,15 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, SellerProduct> = {
 
   async extract(link, response) {
     if (link.type != "page") {
-      return { list: [], links: [], pages: null };
+      return { list: [], links: [] };
     }
     const data: GearvnJSONResponse = await response.json();
 
     if (Array.isArray(data.products)) {
       return {
-        list: data.products,
+        list: data.products.map((raw) => ({
+          raw,
+        })),
         links: [],
         pages: link.page + 1,
       };
@@ -71,13 +73,13 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, SellerProduct> = {
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse(object) {
+  parse({ raw }) {
     return new SellerProduct({
-      name: object.title,
-      price: Number(object.variants[0].price),
-      link: `${domain}/products/${object.handle}`,
-      img: object.image.src,
-      availability: object.available,
+      name: raw.title,
+      price: Number(raw.variants[0].price),
+      link: `${domain}/products/${raw.handle}`,
+      img: raw.image.src,
+      availability: raw.available,
     });
   },
 };

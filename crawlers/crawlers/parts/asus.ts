@@ -1,4 +1,4 @@
-import { APIWebsiteInfo, CrawlLink } from "../crawler";
+import { APIWebsiteInfo, CrawlLink } from "../../crawler";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
 
@@ -11,7 +11,7 @@ const mapping: { [key in Products]?: string } = {
   [Products.AIO]: "cooling",
 };
 
-const CrawlInfo: APIWebsiteInfo<Element, any> = {
+const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
   domain,
 
   save: "parts",
@@ -31,11 +31,10 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
     return null;
   },
 
-  async extract(link, response) {
-    const list: Element[] = [];
-    let links: CrawlLink[] = [];
+  extract: {
+    page: async (link, response) => {
+      let links: CrawlLink[] = [];
 
-    if (link.type == "page") {
       const data = await response.json();
       if (!data || !data.Result || !Array.isArray(data.Result.ProductList)) {
         throw new Error(`There's possibly a change in the API of ${domain}`);
@@ -47,11 +46,17 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
           url: new URL(`${url}${url.includes("rog") ? "" : "tech"}spec`),
           type: "product",
           product: link.product,
+          result: { url },
         };
       });
-    } else {
-      const dom = new JSDOM(await response.text()).window.document;
 
+      return { links };
+    },
+
+    product: async (link, response) => {
+      const list = [];
+
+      const dom = new JSDOM(await response.text()).window.document;
       let table = dom.getElementById("productTableBody");
       if (link.url.hostname.includes("rog")) {
         table = dom.querySelector(".specContent");
@@ -61,14 +66,16 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
         throw new Error(`Cannot find content table in ${link.url}`);
       }
 
-      list.push(table);
-    }
+      list.push({
+        raw: table,
+        result: link.result as Record<string, string>,
+      });
 
-    return { list, links, pages: null };
+      return list;
+    },
   },
 
-  parse(raw: Element) {
-    const result: { [key in string]: string } = {};
+  parse({ raw, result }) {
     let rowClass = ".TechSpec__rowTable__1LR9D",
       titleClass = ".rowTableTitle",
       contentClass = ".rowTableItemViewBox",
@@ -94,7 +101,6 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
         result[title.textContent.trim()] = content.textContent.trim();
       }
     });
-
     return result;
   },
 };

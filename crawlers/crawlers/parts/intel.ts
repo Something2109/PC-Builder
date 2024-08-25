@@ -1,4 +1,4 @@
-import { APIWebsiteInfo, CrawlLink } from "../crawler";
+import { APIWebsiteInfo, CrawlLink } from "../../crawler";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
 
@@ -30,13 +30,13 @@ const CrawlInfo: APIWebsiteInfo<Document, any> = {
     return null;
   },
 
-  async extract(link, response) {
-    const dom = new JSDOM(await response.text()).window.document;
-    const list = [];
-    let links: CrawlLink[] = [];
-    let pages = null;
+  extract: {
+    page: async (link, response) => {
+      let links: CrawlLink[] = [];
+      let pages;
 
-    if (link.type == "page") {
+      const dom = new JSDOM(await response.text()).window.document;
+
       links = [
         ...dom.querySelectorAll(
           ".ark-product-name.ark-accessible-color.component a"
@@ -51,23 +51,25 @@ const CrawlInfo: APIWebsiteInfo<Document, any> = {
       if (links.length > 0) {
         pages = link.page + 1;
       }
-    } else {
+      return { links, pages };
+    },
+
+    product: async (link, response) => {
+      const dom = new JSDOM(await response.text()).window.document;
+      const list = [];
       const element = dom.querySelector(".specs-blade.specifications");
 
       if (!element) {
         throw new Error(`Cannot find content table in ${link.url}`);
       }
 
-      list.push(dom);
-    }
+      list.push({ raw: dom });
 
-    return { list, links, pages };
-
-    throw new Error(`There's possibly a change in the API of ${domain}`);
+      return list;
+    },
   },
 
-  parse: function (raw) {
-    const result: { [key in string]: string } = {};
+  parse: function ({ raw, result }) {
     const title = raw.querySelector(".product-family-title-text .h1");
 
     if (title && title.textContent) {

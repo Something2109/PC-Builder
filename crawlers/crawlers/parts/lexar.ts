@@ -1,4 +1,4 @@
-import { APIWebsiteInfo, CrawlLink } from "../crawler";
+import { APIWebsiteInfo, CrawlLink } from "../../crawler";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
 
@@ -8,7 +8,7 @@ const mapping: { [key in Products]?: string } = {
   [Products.SSD]: "ssd-en-gb",
 };
 
-const CrawlInfo: APIWebsiteInfo<Element, any> = {
+const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
   domain,
 
   save: "parts",
@@ -25,39 +25,50 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
     return null;
   },
 
-  async extract(link, response) {
-    const dom = new JSDOM(await response.text()).window.document;
-    const list = [];
-    let links: CrawlLink[] = [];
+  extract: {
+    page: async (link, response) => {
+      let links: CrawlLink[] = [];
 
-    if (link.type == "page") {
-      links = [...dom.querySelectorAll(".woocommerce-loop-product__title")].map(
+      const dom = new JSDOM(await response.text()).window.document;
+      links = [...dom.querySelectorAll(".product.type-product")].map(
         (element) => {
+          const url = element.querySelector("a")!.getAttribute("href")!;
+          console.log(url);
           return {
-            url: new URL(element.getElementsByTagName("a")[0]?.href),
+            url: new URL(url),
             type: "product",
             product: link.product,
+            result: {
+              url,
+              img: element.querySelector("img")?.getAttribute("src"),
+            },
           };
         }
       );
-    } else {
+
+      return { links };
+    },
+
+    product: async (link, response) => {
+      const dom = new JSDOM(await response.text()).window.document;
+      const list = [];
+
       const element = dom.querySelector(".product-table");
 
       if (!element) {
         throw new Error(`Cannot find content table in ${link.url}`);
       }
 
-      list.push(element);
-    }
+      list.push({
+        raw: element,
+        result: link.result as Record<string, string>,
+      });
 
-    return { list, links, pages: null };
-
-    throw new Error(`There's possibly a change in the API of ${domain}`);
+      return list;
+    },
   },
 
-  parse: function (raw) {
-    const result: { [key in string]: string } = {};
-
+  parse: function ({ raw, result }) {
     const rows = raw.querySelectorAll(".wpb_text_column.wpb_content_element");
 
     for (let i = 0; i < rows.length; i += 2) {
