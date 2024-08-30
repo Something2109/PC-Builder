@@ -1,6 +1,7 @@
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { Products } from "@/models/interface";
+import { RedirectButton } from "./utils/Button";
 
 const title: { [key in Products]: string } = {
   [Products.CPU]: "CPU",
@@ -42,11 +43,8 @@ type LinkButtonProps = {
 function LinkButton({ image, dark_image, title, link }: LinkButtonProps) {
   if (!dark_image) dark_image = image;
 
-  const normal =
-    "flex flex-row rounded-lg lg:rounded-xl border-2 border-line p-1 md:border-4 hover:border-blue-500";
-  const dark = "dark:hover:bg-blue-500";
   return (
-    <Link className={`${normal} ${dark}`} href={link}>
+    <RedirectButton className="flex flex-row" href={link}>
       <picture className="size-6 md:size-8">
         <Image
           src={image}
@@ -64,6 +62,6 @@ function LinkButton({ image, dark_image, title, link }: LinkButtonProps) {
         />
       </picture>
       <p className="pl-2 md:my-auto md:text-xl font-medium">{title}</p>
-    </Link>
+    </RedirectButton>
   );
 }
