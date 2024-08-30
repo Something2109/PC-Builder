@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Article from "@/components/article";
+import { Article } from "@/components/article";
 import { ArticleType } from "@/models/articles/article";
 
 export default function PartListPage({ params }: { params: { part: string } }) {

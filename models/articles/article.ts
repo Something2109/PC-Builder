@@ -1,15 +1,4 @@
-type ContentType = string | ImageType | ListType | SectionType;
-
-enum ArticleComponentType {
-  SECTION = "section",
-  PARAGRAPH = "paragraph",
-  IMAGE = "image",
-  LIST = "list",
-}
-
-type ArticleComponent = {
-  type: ArticleComponentType;
-};
+type ContentType = ParagraphType | ImageType | ListType | SectionType;
 
 type ContentContainer = {
   content: Array<ContentType>;
@@ -22,18 +11,32 @@ type ArticleType = SectionType & {
 };
 
 type SectionType = {
+  type: "section";
   title: string;
 } & ContentContainer;
 
-type ImageType = ArticleComponent & {
-  type: ArticleComponentType.IMAGE;
+type ListType = {
+  type: "list";
+  symbol: string;
+} & ContentContainer;
+
+type ImageType = {
+  type: "image";
   src: string;
   alt?: string;
   caption: string;
 };
 
-type ListType = {
-  symbol: string;
-} & ContentContainer;
+type ParagraphType = {
+  type: "paragraph";
+  content: string;
+};
 
-export type { ArticleType, SectionType, ImageType, ListType, ContentType };
+export type {
+  ArticleType,
+  SectionType,
+  ImageType,
+  ListType,
+  ContentType,
+  ParagraphType,
+};

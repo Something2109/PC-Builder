@@ -34,19 +34,16 @@ function ContentRenderer({
   content: ContentType;
   prefix: string;
 }) {
-  if (typeof content === "string") {
-    return <Paragraph>{content}</Paragraph>;
+  switch (content.type) {
+    case "paragraph":
+      return <Paragraph>{content.content}</Paragraph>;
+    case "image":
+      return <Picture img={content} />;
+    case "list":
+      return <List section={content} />;
+    case "section":
+      return <Section section={content} prefix={prefix} />;
   }
-  if ("src" in content && "caption" in content) {
-    return <Picture img={content} />;
-  }
-  if ("symbol" in content && "content" in content) {
-    return <List section={content} />;
-  }
-  if ("title" in content && "content" in content) {
-    return <Section section={content} prefix={prefix} />;
-  }
-  console.log("Error in rendering content");
 }
 
 function Section({
@@ -70,7 +67,7 @@ function Section({
   );
 }
 
-function Paragraph({ children }: { children: React.ReactNode }) {
+function Paragraph({ children }: { children: string }) {
   return <p className="text-xl my-2">{children}</p>;
 }
 
@@ -95,49 +92,4 @@ function List({ section }: { section: ListType }) {
   );
 }
 
-function ArticleInput({
-  path,
-  article,
-}: {
-  path: string;
-  article: ArticleType;
-}) {
-  return (
-    <form
-      method="POST"
-      action={path}
-      className="rounded-2xl border-2 p-2 flex flex-col"
-    >
-      <label htmlFor="title" className="hidden">
-        Title
-      </label>
-      <textarea
-        name="title"
-        id="title"
-        className="rounded-xl border-2 h-fit font-bold text-4xl break-words my-5 p-2"
-      >
-        {article.title}
-      </textarea>
-      {/* {article.content.map((content, index) => (
-        <ContentRenderer
-          content={content}
-          prefix={`${index + 1}.`}
-          key={useId()}
-        />
-      ))} */}
-    </form>
-  );
-}
-
-function ParagraphInput({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <label htmlFor="asd">Paragraph</label>
-      <textarea id="asd" className="text-xl my-2">
-        {children}
-      </textarea>
-    </>
-  );
-}
-
-export default Article;
+export { Article };
