@@ -12,15 +12,18 @@ import {
 import React from "react";
 
 function Article({ article }: { article: ArticleType }) {
+  let sectionCount = 1;
   return (
-    <article>
+    <article className="flex flex-col gap-2 w-full">
       <h1 className="font-bold text-4xl my-5">{article.title}</h1>
       <Paragraph>{article.standfirst}</Paragraph>
       {article.content.map((content, index) => (
         <ContentRenderer
           content={content}
-          prefix={`${index + 1}.`}
-          key={useId()}
+          prefix={`${
+            content.type === "section" ? sectionCount++ : sectionCount
+          }.`}
+          key={`${index + 1}.${content.type}`}
         />
       ))}
     </article>
@@ -53,14 +56,17 @@ function Section({
   section: SectionType;
   prefix: string;
 }) {
+  let sectionCount = 1;
   return (
-    <section className="my-4">
-      <h1 className="font-bold text-2xl my-2">{`${prefix} ${section.title}`}</h1>
+    <section className="flex flex-col gap-1 w-full">
+      <h1 className="font-bold text-2xl">{`${prefix} ${section.title}`}</h1>
       {section.content.map((content, index) => (
         <ContentRenderer
           content={content}
-          prefix={`${prefix}${index + 1}`}
-          key={useId()}
+          prefix={`${prefix}${
+            content.type === "section" ? sectionCount++ : sectionCount
+          }.`}
+          key={`${prefix}${index}.${content.type}`}
         />
       ))}
     </section>
@@ -68,7 +74,7 @@ function Section({
 }
 
 function Paragraph({ children }: { children: string }) {
-  return <p className="text-xl my-2">{children}</p>;
+  return <p className="text-xl">{children}</p>;
 }
 
 function Picture({ img }: { img: ImageType }) {
