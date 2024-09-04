@@ -4,7 +4,7 @@ import { Button } from "@/components/utils/Button";
 import { ImageType } from "@/models/articles/article";
 import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
-import { InputArea, InputContentParameters } from "./utils";
+import { InputArea, ContentProps } from "./utils";
 
 export function Picture({ img }: { img: ImageType }) {
   return (
@@ -15,10 +15,7 @@ export function Picture({ img }: { img: ImageType }) {
   );
 }
 
-export function PictureInput({
-  content,
-  updateSelf,
-}: InputContentParameters<ImageType>) {
+export function PictureInput({ content, updateSelf }: ContentProps<ImageType>) {
   const [src, setSource] = useState<string>("");
   const origin = useRef(content.src);
 

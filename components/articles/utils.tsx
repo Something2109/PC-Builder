@@ -1,9 +1,10 @@
-import { ContentType } from "@/models/articles/article";
+import { ContentContainer, ContentType } from "@/models/articles/article";
 import { Paragraph, ParagraphInput } from "./Paragraph";
 import { Picture, PictureInput } from "./Image";
 import { List, ListInput } from "./List";
 import { Section, SectionInput } from "./Section";
 import { Button } from "@/components/utils/Button";
+import { Component } from "react";
 
 export function RowWrapper({
   className,
@@ -36,7 +37,7 @@ export function ContentRenderer({
   }
 }
 
-export type InputContentParameters<T extends ContentType> = {
+export type ContentProps<T extends ContentType> = {
   content: T;
   prefix?: string;
   updateSelf: ReturnType<typeof updateContent<any>>;
@@ -46,7 +47,7 @@ export function InputRenderer({
   content,
   prefix,
   updateSelf,
-}: InputContentParameters<ContentType>) {
+}: ContentProps<ContentType>) {
   let element: React.ReactNode;
 
   switch (content.type) {

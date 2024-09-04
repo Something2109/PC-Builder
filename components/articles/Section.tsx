@@ -6,7 +6,7 @@ import {
   AddRow,
   ContentRenderer,
   InputArea,
-  InputContentParameters,
+  ContentProps,
   InputRenderer,
   RowWrapper,
   updateContent,
@@ -41,7 +41,7 @@ export function SectionInput({
   content,
   prefix,
   updateSelf,
-}: InputContentParameters<SectionType>) {
+}: ContentProps<SectionType>) {
   const [count, setCount] = useState(content.content.length);
 
   let sectionCount = 1;

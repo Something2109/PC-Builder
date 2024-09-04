@@ -3,7 +3,7 @@
 import { Button } from "@/components/utils/Button";
 import { ParagraphType } from "@/models/articles/article";
 import { useCallback, useState } from "react";
-import { InputArea, InputContentParameters, RowWrapper } from "./utils";
+import { InputArea, ContentProps, RowWrapper } from "./utils";
 
 export function Paragraph({ children }: { children: string }) {
   return <p className="text-xl">{children}</p>;
@@ -13,7 +13,7 @@ export function ParagraphInput({
   content,
   prefix,
   updateSelf,
-}: InputContentParameters<ParagraphType>) {
+}: ContentProps<ParagraphType>) {
   const [change, setChange] = useState(content.content.length);
 
   const onChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {

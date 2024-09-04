@@ -5,7 +5,7 @@ import {
   AddRow,
   ContentRenderer,
   InputArea,
-  InputContentParameters,
+  ContentProps,
   InputRenderer,
   RowWrapper,
   updateContent,
@@ -29,7 +29,7 @@ export function ListInput({
   content,
   prefix,
   updateSelf,
-}: InputContentParameters<ListType>) {
+}: ContentProps<ListType>) {
   const [count, setCount] = useState(content.content.length);
 
   return (
