@@ -2,6 +2,7 @@ import { ArticleType } from "./articles/article";
 import { Products } from "./interface";
 import fs from "fs";
 import { SellerProduct } from "./sellers/SellerProduct";
+import path from "path";
 
 class MockDatabase {
   private static path = "./data";
@@ -22,6 +23,13 @@ class MockDatabase {
     }
     return this.objects.sellers as Seller;
   }
+
+  static get images(): Readonly<Images> {
+    if (!this.objects.images) {
+      this.objects.images = new Images();
+    }
+    return this.objects.images as Images;
+  }
 }
 
 interface DatabaseObject {
@@ -31,8 +39,8 @@ interface DatabaseObject {
 class Articles implements DatabaseObject {
   path: string;
 
-  constructor(path: string) {
-    this.path = `${path}/articles`;
+  constructor(root: string) {
+    this.path = path.join(root, "articles");
   }
 
   getIntroduction(product: Products) {
@@ -49,13 +57,73 @@ class Articles implements DatabaseObject {
     }
     return null;
   }
+
+  setIntroduction(product: Products, article: ArticleType) {
+    try {
+      if (Object.values(Products).includes(product)) {
+        fs.writeFileSync(
+          `${this.path}/introduction/${product}.json`,
+          JSON.stringify(article)
+        );
+        return article;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    return null;
+  }
+}
+
+class Images implements DatabaseObject {
+  path: string;
+
+  constructor() {
+    this.path = path.join("public", "images");
+  }
+
+  set(image: string, ...save: string[]): string | undefined {
+    try {
+      let savePath = this.path;
+
+      for (const folder of save) {
+        savePath = path.join(savePath, folder);
+        if (!fs.existsSync(savePath)) fs.mkdirSync(savePath);
+      }
+
+      let [filename, data] = image.split(";base64,");
+      filename = `${new Date().getTime()}.${filename.slice(
+        filename.lastIndexOf("/") + 1
+      )}`;
+      savePath = path.join(savePath, filename);
+
+      fs.writeFileSync(savePath, data, { encoding: "base64" });
+
+      return `/images/${save.join("/")}/${filename}`;
+    } catch (err) {
+      console.error(err);
+    }
+    return undefined;
+  }
+
+  remove(...save: string[]) {
+    let savePath = this.path;
+
+    for (const folder of save) {
+      savePath = path.join(savePath, folder);
+      if (!fs.existsSync(savePath)) fs.mkdirSync(savePath);
+    }
+
+    fs.readdirSync(savePath).forEach((filename) => {
+      fs.rmSync(path.join(savePath, filename));
+    });
+  }
 }
 
 class Seller implements DatabaseObject {
   path: string;
 
-  constructor(path: string) {
-    this.path = `${path}/sellers`;
+  constructor(root: string) {
+    this.path = path.join(root, "sellers");
   }
 
   getProducts(
