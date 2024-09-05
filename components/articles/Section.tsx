@@ -11,7 +11,7 @@ import {
   RowWrapper,
   updateContent,
 } from "./utils";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 export function Section({
   section,
@@ -65,7 +65,7 @@ export function SectionInput({
           key={new Date().getTime() + index}
           content={inner}
           prefix={
-            inner.type === "section" ? `${prefix}${sectionCount}.` : undefined
+            inner.type === "section" ? `${prefix}${sectionCount++}.` : undefined
           }
           updateSelf={updateContent(content.content, inner, setCount)}
         />

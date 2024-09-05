@@ -16,15 +16,23 @@ export function Picture({ img }: { img: ImageType }) {
 }
 
 export function PictureInput({ content, updateSelf }: ContentProps<ImageType>) {
-  const [src, setSource] = useState<string>("");
   const origin = useRef(content.src);
 
-  const addImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const getImageFromSrc = useCallback(() => {
+    return content.src.length > 0 ? (
+      <Image src={content.src} width={800} height={450} alt={content.caption} />
+    ) : (
+      <input type="file" placeholder="Image" onChange={(e) => addImage(e)} />
+    );
+  }, []);
+  const [img, setImg] = useState<React.ReactNode | null>(getImageFromSrc());
+
+  const addImage = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const image = e.target.files[0];
 
       content.src = URL.createObjectURL(image);
-      setSource(content.src);
+      setImg(getImageFromSrc());
 
       console.log(content);
 
@@ -38,37 +46,28 @@ export function PictureInput({ content, updateSelf }: ContentProps<ImageType>) {
         reader.readAsDataURL(image);
       }
     }
-  };
+  }, []);
 
-  const resetImage = () => {
+  const resetImage = useCallback(() => {
     content.src = origin.current;
-    setSource(content.src);
+    setImg(getImageFromSrc());
 
     console.log(content);
-  };
+  }, []);
 
-  const removeImage = () => {
+  const removeImage = useCallback(() => {
     URL.revokeObjectURL(content.src);
     content.image = undefined;
 
     content.src = "";
-    setSource(content.src);
+    setImg(getImageFromSrc());
 
     console.log(content);
-  };
-  console.log(origin.current);
+  }, []);
+
   return (
     <picture className="*:mx-auto *:my-2 w-full text-center border-2 rounded-xl p-3">
-      {content.src.length > 0 ? (
-        <Image
-          src={content.src}
-          width={800}
-          height={450}
-          alt={content.caption}
-        />
-      ) : (
-        <input type="file" placeholder="Image" onChange={(e) => addImage(e)} />
-      )}
+      {img}
 
       <InputArea
         rows={1}

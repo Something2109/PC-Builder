@@ -123,4 +123,4 @@ function NotificationBar({
   ) : undefined;
 }
 
-export { Article };
+export { Article, EditableArticle };

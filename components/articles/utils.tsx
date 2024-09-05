@@ -1,10 +1,9 @@
-import { ContentContainer, ContentType } from "@/models/articles/article";
+import { ContentType } from "@/models/articles/article";
 import { Paragraph, ParagraphInput } from "./Paragraph";
 import { Picture, PictureInput } from "./Image";
 import { List, ListInput } from "./List";
 import { Section, SectionInput } from "./Section";
 import { Button } from "@/components/utils/Button";
-import { Component } from "react";
 
 export function RowWrapper({
   className,
