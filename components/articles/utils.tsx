@@ -10,7 +10,12 @@ import { Picture, PictureInput } from "./Image";
 import { List, ListInput } from "./List";
 import { Section, SectionInput } from "./Section";
 import { Button } from "@/components/utils/Button";
-import { HTMLAttributes, TextareaHTMLAttributes, FormEvent } from "react";
+import {
+  HTMLAttributes,
+  TextareaHTMLAttributes,
+  useRef,
+  useEffect,
+} from "react";
 
 export function RowWrapper({
   className,
@@ -76,7 +81,6 @@ export function InputRenderer(props: ContentProps<ContentType>) {
 
 export function InputArea({
   className,
-  rows,
   ...rest
 }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   let classList = ["w-full bg-transparent resize-none overflow-y-hidden"];
@@ -84,20 +88,20 @@ export function InputArea({
     classList.push(className);
   }
 
-  rows = rows ?? 1;
-  const resize = (e: FormEvent<HTMLTextAreaElement>) => {
-    const textarea = e.target as HTMLTextAreaElement;
-    textarea.style.height = "auto";
-    textarea.style.height = textarea.scrollHeight + "px";
+  const textarea = useRef<HTMLTextAreaElement>(null);
+  const resize = () => {
+    textarea.current!.style.height = "auto";
+    textarea.current!.style.height = textarea.current!.scrollHeight + "px";
   };
+  useEffect(resize, []);
 
   return (
     <textarea
-      {...rest}
-      rows={rows}
+      ref={textarea}
+      rows={1}
       className={classList.join(" ")}
-      onFocus={resize}
       onInput={resize}
+      {...rest}
     />
   );
 }
