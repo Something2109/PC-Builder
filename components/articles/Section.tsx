@@ -11,7 +11,7 @@ import {
   RowWrapper,
   updateContent,
 } from "./utils";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 
 export function Section({
   section,
@@ -50,7 +50,6 @@ export function SectionInput({
       <RowWrapper>
         <h1 className="font-bold text-2xl">{prefix}</h1>
         <InputArea
-          rows={1}
           placeholder="Title"
           className="font-bold text-2xl"
           defaultValue={content.title}

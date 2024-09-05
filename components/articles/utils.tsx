@@ -4,17 +4,18 @@ import { Picture, PictureInput } from "./Image";
 import { List, ListInput } from "./List";
 import { Section, SectionInput } from "./Section";
 import { Button } from "@/components/utils/Button";
+import { HTMLAttributes, TextareaHTMLAttributes, FormEvent } from "react";
 
 export function RowWrapper({
   className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className={`flex flex-row gap-1 w-full ${className}`}>{children}</div>
-  );
+  ...rest
+}: HTMLAttributes<HTMLDivElement>) {
+  let classList = ["flex flex-row gap-1 w-full"];
+  if (className) {
+    classList.push(className);
+  }
+
+  return <div className={classList.join(" ")} {...rest} />;
 }
 
 export function ContentRenderer({
@@ -88,25 +89,29 @@ export function InputRenderer({
 }
 
 export function InputArea({
-  rows,
-  placeholder,
   className,
-  defaultValue,
-  onChange,
-}: {
-  rows: number;
-  placeholder: string;
-  className?: string;
-  defaultValue: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-}) {
+  rows,
+  ...rest
+}: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  let classList = ["w-full bg-transparent resize-none overflow-y-hidden"];
+  if (className) {
+    classList.push(className);
+  }
+
+  rows = rows ?? 1;
+  const resize = (e: FormEvent<HTMLTextAreaElement>) => {
+    const textarea = e.target as HTMLTextAreaElement;
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+  };
+
   return (
     <textarea
+      {...rest}
       rows={rows}
-      placeholder={placeholder}
-      className={`w-full bg-transparent resize-none ${className}`}
-      defaultValue={defaultValue}
-      onChange={(e) => onChange(e)}
+      className={classList.join(" ")}
+      onFocus={resize}
+      onInput={resize}
     />
   );
 }

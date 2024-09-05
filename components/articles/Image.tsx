@@ -70,7 +70,6 @@ export function PictureInput({ content, updateSelf }: ContentProps<ImageType>) {
       {img}
 
       <InputArea
-        rows={1}
         className="text-center"
         placeholder="Caption"
         defaultValue={content.caption}

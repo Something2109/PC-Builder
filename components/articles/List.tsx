@@ -25,11 +25,7 @@ export function List({ section }: { section: ListType }) {
   );
 }
 
-export function ListInput({
-  content,
-  prefix,
-  updateSelf,
-}: ContentProps<ListType>) {
+export function ListInput({ content, updateSelf }: ContentProps<ListType>) {
   const [count, setCount] = useState(content.content.length);
 
   return (
@@ -37,14 +33,10 @@ export function ListInput({
       <RowWrapper>
         <p>Symbol: </p>
         <InputArea
-          rows={1}
           placeholder="Symbol"
           className="font-bold"
           defaultValue={content.symbol}
-          onChange={(e) => {
-            content.symbol = e.target.value;
-            setCount((prev) => ++prev);
-          }}
+          onChange={(e) => (content.symbol = e.target.value)}
         />
         {content.content.length === 0 ? (
           <Button onClick={() => updateSelf.remove()}>Remove</Button>
