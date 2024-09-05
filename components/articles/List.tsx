@@ -38,9 +38,11 @@ export function ListInput({ content, updateSelf }: ContentProps<ListType>) {
           defaultValue={content.symbol}
           onChange={(e) => (content.symbol = e.target.value)}
         />
+        <Button onClick={updateSelf.shiftUp}>Up</Button>
         {content.content.length === 0 ? (
-          <Button onClick={() => updateSelf.remove()}>Remove</Button>
+          <Button onClick={updateSelf.remove}>Remove</Button>
         ) : undefined}
+        <Button onClick={updateSelf.shiftDown}>Down</Button>
       </RowWrapper>
       {content.content.map((inner, index) => (
         <InputRenderer
