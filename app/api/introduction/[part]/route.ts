@@ -54,15 +54,22 @@ export async function POST(
         );
       }
 
-      if (content.type === "image" && content.image) {
-        const link = Database.images.set(
-          content.image,
-          "articles",
-          "introduction",
-          params.part
-        );
-        content.src = link ?? "";
-        content.image = undefined;
+      if (content.type === "image") {
+        if (content.image) {
+          const link = Database.images.set(
+            content.image,
+            "articles",
+            "introduction",
+            params.part
+          );
+          content.src = link ?? "";
+          content.image = undefined;
+        }
+
+        if (content.initial) {
+          Database.images.remove(`public/${content.initial}`);
+          delete content.initial;
+        }
       }
 
       if (content.type === "section" || content.type === "list") {
