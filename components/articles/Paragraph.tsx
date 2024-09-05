@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/utils/Button";
 import { ParagraphType } from "@/models/articles/article";
-import { InputArea, ContentProps, RowWrapper, ColumnWrapper } from "./utils";
+import { RowWrapper, ColumnWrapper } from "@/components/utils/FlexWrapper";
+import { InputArea, ContentProps } from "./utils";
 
 export function Paragraph({ children }: { children: string }) {
   return <p className="text-xl">{children}</p>;

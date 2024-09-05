@@ -2,9 +2,10 @@
 
 import { Button } from "@/components/utils/Button";
 import { ImageType } from "@/models/articles/article";
+import { RowWrapper, ColumnWrapper } from "@/components/utils/FlexWrapper";
 import Image from "next/image";
 import { useCallback, useState } from "react";
-import { InputArea, ContentProps, RowWrapper, ColumnWrapper } from "./utils";
+import { InputArea, ContentProps } from "./utils";
 
 export function Picture({ img }: { img: ImageType }) {
   return (

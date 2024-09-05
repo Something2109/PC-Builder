@@ -1,17 +1,17 @@
 "use client";
 
 import { ListType } from "@/models/articles/article";
+import { RowWrapper } from "@/components/utils/FlexWrapper";
+import { Button } from "@/components/utils/Button";
 import {
   AddRow,
   ContentRenderer,
   InputArea,
   ContentProps,
   InputRenderer,
-  RowWrapper,
   updateContent,
 } from "./utils";
 import { useState } from "react";
-import { Button } from "@/components/utils/Button";
 
 export function List({ section }: { section: ListType }) {
   return (

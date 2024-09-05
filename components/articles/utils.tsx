@@ -10,36 +10,8 @@ import { Picture, PictureInput } from "./Image";
 import { List, ListInput } from "./List";
 import { Section, SectionInput } from "./Section";
 import { Button } from "@/components/utils/Button";
-import {
-  HTMLAttributes,
-  TextareaHTMLAttributes,
-  useRef,
-  useEffect,
-} from "react";
-
-export function RowWrapper({
-  className,
-  ...rest
-}: HTMLAttributes<HTMLDivElement>) {
-  let classList = ["flex flex-row gap-1 justify-center"];
-  if (className) {
-    classList.push(className);
-  }
-
-  return <div className={classList.join(" ")} {...rest} />;
-}
-
-export function ColumnWrapper({
-  className,
-  ...rest
-}: HTMLAttributes<HTMLDivElement>) {
-  let classList = ["flex flex-col gap-1 justify-center"];
-  if (className) {
-    classList.push(className);
-  }
-
-  return <div className={classList.join(" ")} {...rest} />;
-}
+import { RowWrapper } from "@/components/utils/FlexWrapper";
+import { TextareaHTMLAttributes, useRef, useEffect } from "react";
 
 export function ContentRenderer({
   content,

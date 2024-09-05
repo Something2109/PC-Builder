@@ -2,13 +2,13 @@
 
 import { Button } from "@/components/utils/Button";
 import { SectionType } from "@/models/articles/article";
+import { RowWrapper } from "@/components/utils/FlexWrapper";
 import {
   AddRow,
   ContentRenderer,
   InputArea,
   ContentProps,
   InputRenderer,
-  RowWrapper,
   updateContent,
 } from "./utils";
 import { useState } from "react";
