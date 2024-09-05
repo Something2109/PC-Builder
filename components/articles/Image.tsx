@@ -16,8 +16,6 @@ export function Picture({ img }: { img: ImageType }) {
 }
 
 export function PictureInput({ content, updateSelf }: ContentProps<ImageType>) {
-  const origin = useRef(content.src);
-
   const getImageFromSrc = useCallback(() => {
     return content.src.length > 0 ? (
       <Image src={content.src} width={800} height={450} alt={content.caption} />
@@ -38,7 +36,7 @@ export function PictureInput({ content, updateSelf }: ContentProps<ImageType>) {
 
       const reader = new FileReader();
       if (reader) {
-        reader.onloadend = (ev) => {
+        reader.onloadend = () => {
           if (reader.result) {
             content.image = reader.result.toString();
           }
@@ -49,7 +47,12 @@ export function PictureInput({ content, updateSelf }: ContentProps<ImageType>) {
   }, []);
 
   const resetImage = useCallback(() => {
-    content.src = origin.current;
+    removeImage();
+
+    if (content.initial) {
+      content.src = content.initial;
+      delete content.initial;
+    }
     setImg(getImageFromSrc());
 
     console.log(content);
@@ -57,8 +60,11 @@ export function PictureInput({ content, updateSelf }: ContentProps<ImageType>) {
 
   const removeImage = useCallback(() => {
     URL.revokeObjectURL(content.src);
-    content.image = undefined;
+    delete content.image;
 
+    if (!content.initial) {
+      content.initial = content.src;
+    }
     content.src = "";
     setImg(getImageFromSrc());
 
@@ -76,14 +82,16 @@ export function PictureInput({ content, updateSelf }: ContentProps<ImageType>) {
         onChange={(e) => (content.caption = e.target.value)}
       />
       <div className="flex flex-row gap-1 justify-around">
-        <Button onClick={() => updateSelf.shiftUp()}>Up</Button>
+        <Button onClick={updateSelf.shiftUp}>Up</Button>
         {content.src.length === 0 ? (
-          <Button onClick={() => updateSelf.remove()}>Remove</Button>
+          <Button onClick={updateSelf.remove}>Remove</Button>
         ) : (
-          <Button onClick={() => removeImage()}>Remove image</Button>
+          <Button onClick={removeImage}>Remove image</Button>
         )}
-        <Button onClick={() => resetImage()}>Reset</Button>
-        <Button onClick={() => updateSelf.shiftDown()}>Down</Button>
+        {content.initial ? (
+          <Button onClick={resetImage}>Reset</Button>
+        ) : undefined}
+        <Button onClick={updateSelf.shiftDown}>Down</Button>
       </div>
     </picture>
   );

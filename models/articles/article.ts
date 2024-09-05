@@ -27,6 +27,7 @@ type ImageType = {
   src: string;
   alt?: string;
   image?: string;
+  initial?: string;
   caption: string;
 };
 
