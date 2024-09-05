@@ -2,8 +2,7 @@
 
 import { Button } from "@/components/utils/Button";
 import { ParagraphType } from "@/models/articles/article";
-import { useCallback, useState } from "react";
-import { InputArea, ContentProps, RowWrapper } from "./utils";
+import { InputArea, ContentProps, RowWrapper, ColumnWrapper } from "./utils";
 
 export function Paragraph({ children }: { children: string }) {
   return <p className="text-xl">{children}</p>;
@@ -23,11 +22,11 @@ export function ParagraphInput({
         defaultValue={content.content}
         onChange={(e) => (content.content = e.target.value)}
       />
-      <div className="flex flex-col gap-1">
+      <ColumnWrapper>
         <Button onClick={() => updateSelf.shiftUp()}>Up</Button>
         <Button onClick={() => updateSelf.remove()}>Remove</Button>
         <Button onClick={() => updateSelf.shiftDown()}>Down</Button>
-      </div>
+      </ColumnWrapper>
     </RowWrapper>
   );
 }

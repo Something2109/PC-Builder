@@ -1,4 +1,10 @@
-import { ContentType } from "@/models/articles/article";
+import {
+  ContentType,
+  ImageType,
+  ListType,
+  ParagraphType,
+  SectionType,
+} from "@/models/articles/article";
 import { Paragraph, ParagraphInput } from "./Paragraph";
 import { Picture, PictureInput } from "./Image";
 import { List, ListInput } from "./List";
@@ -10,7 +16,19 @@ export function RowWrapper({
   className,
   ...rest
 }: HTMLAttributes<HTMLDivElement>) {
-  let classList = ["flex flex-row gap-1 w-full"];
+  let classList = ["flex flex-row gap-1 justify-center"];
+  if (className) {
+    classList.push(className);
+  }
+
+  return <div className={classList.join(" ")} {...rest} />;
+}
+
+export function ColumnWrapper({
+  className,
+  ...rest
+}: HTMLAttributes<HTMLDivElement>) {
+  let classList = ["flex flex-col gap-1 justify-center"];
   if (className) {
     classList.push(className);
   }
@@ -43,49 +61,17 @@ export type ContentProps<T extends ContentType> = {
   updateSelf: ReturnType<typeof updateContent<any>>;
 };
 
-export function InputRenderer({
-  content,
-  prefix,
-  updateSelf,
-}: ContentProps<ContentType>) {
-  let element: React.ReactNode;
-
-  switch (content.type) {
+export function InputRenderer(props: ContentProps<ContentType>) {
+  switch (props.content.type) {
     case "paragraph":
-      element = (
-        <ParagraphInput
-          content={content}
-          prefix={prefix}
-          updateSelf={updateSelf}
-        />
-      );
-      break;
+      return <ParagraphInput {...(props as ContentProps<ParagraphType>)} />;
     case "section":
-      element = (
-        <SectionInput
-          content={content}
-          prefix={prefix}
-          updateSelf={updateSelf}
-        />
-      );
-      break;
+      return <SectionInput {...(props as ContentProps<SectionType>)} />;
     case "image":
-      element = (
-        <PictureInput
-          content={content}
-          prefix={prefix}
-          updateSelf={updateSelf}
-        />
-      );
-      break;
+      return <PictureInput {...(props as ContentProps<ImageType>)} />;
     case "list":
-      element = (
-        <ListInput content={content} prefix={prefix} updateSelf={updateSelf} />
-      );
-      break;
+      return <ListInput {...(props as ContentProps<ListType>)} />;
   }
-
-  return element;
 }
 
 export function InputArea({
@@ -130,7 +116,7 @@ export function AddRow({
   }
 
   return (
-    <div className="flex flex-row gap-2 w-full">
+    <RowWrapper>
       <Button onClick={() => add({ type: "section", title: "", content: [] })}>
         Add Section
       </Button>
@@ -143,7 +129,7 @@ export function AddRow({
       <Button onClick={() => add({ type: "list", symbol: "*", content: [] })}>
         Add List
       </Button>
-    </div>
+    </RowWrapper>
   );
 }
 

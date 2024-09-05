@@ -3,8 +3,8 @@
 import { Button } from "@/components/utils/Button";
 import { ImageType } from "@/models/articles/article";
 import Image from "next/image";
-import { useCallback, useRef, useState } from "react";
-import { InputArea, ContentProps } from "./utils";
+import { useCallback, useState } from "react";
+import { InputArea, ContentProps, RowWrapper, ColumnWrapper } from "./utils";
 
 export function Picture({ img }: { img: ImageType }) {
   return (
@@ -72,16 +72,17 @@ export function PictureInput({ content, updateSelf }: ContentProps<ImageType>) {
   }, []);
 
   return (
-    <picture className="*:mx-auto *:my-2 w-full text-center border-2 rounded-xl p-3">
-      {img}
-
-      <InputArea
-        className="text-center"
-        placeholder="Caption"
-        defaultValue={content.caption}
-        onChange={(e) => (content.caption = e.target.value)}
-      />
-      <div className="flex flex-row gap-1 justify-around">
+    <RowWrapper className="border-2 rounded-xl p-3">
+      <picture className="*:mx-auto *:my-2 text-center">
+        {img}
+        <InputArea
+          className="text-center"
+          placeholder="Caption"
+          defaultValue={content.caption}
+          onChange={(e) => (content.caption = e.target.value)}
+        />
+      </picture>
+      <ColumnWrapper>
         <Button onClick={updateSelf.shiftUp}>Up</Button>
         {content.src.length === 0 ? (
           <Button onClick={updateSelf.remove}>Remove</Button>
@@ -92,7 +93,7 @@ export function PictureInput({ content, updateSelf }: ContentProps<ImageType>) {
           <Button onClick={resetImage}>Reset</Button>
         ) : undefined}
         <Button onClick={updateSelf.shiftDown}>Down</Button>
-      </div>
-    </picture>
+      </ColumnWrapper>
+    </RowWrapper>
   );
 }
