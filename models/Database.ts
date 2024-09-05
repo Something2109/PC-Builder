@@ -1,7 +1,8 @@
 import { ArticleType } from "./articles/article";
 import { Products } from "./interface";
-import fs from "fs";
 import { SellerProduct } from "./sellers/SellerProduct";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
 import path from "path";
 
 class MockDatabase {
@@ -91,9 +92,7 @@ class Images implements DatabaseObject {
       }
 
       let [filename, data] = image.split(";base64,");
-      filename = `${new Date().getTime()}.${filename.slice(
-        filename.lastIndexOf("/") + 1
-      )}`;
+      filename = `${uuidv4()}.${filename.slice(filename.lastIndexOf("/") + 1)}`;
       savePath = path.join(savePath, filename);
 
       fs.writeFileSync(savePath, data, { encoding: "base64" });
@@ -105,17 +104,16 @@ class Images implements DatabaseObject {
     return undefined;
   }
 
-  remove(...save: string[]) {
-    let savePath = this.path;
+  remove(imagePath: string) {
+    try {
+      fs.rmSync(imagePath);
 
-    for (const folder of save) {
-      savePath = path.join(savePath, folder);
-      if (!fs.existsSync(savePath)) fs.mkdirSync(savePath);
+      return imagePath;
+    } catch (err) {
+      console.error(err);
     }
 
-    fs.readdirSync(savePath).forEach((filename) => {
-      fs.rmSync(path.join(savePath, filename));
-    });
+    return null;
   }
 }
 
