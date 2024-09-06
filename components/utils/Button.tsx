@@ -1,9 +1,5 @@
 import Link from "next/link";
-import {
-  ButtonHTMLAttributes,
-  AnchorHTMLAttributes,
-  HTMLAttributes,
-} from "react";
+import { ButtonHTMLAttributes } from "react";
 
 const normal =
   "rounded-lg lg:rounded-xl border-2 border-line p-1 md:border-4 hover:border-blue-500";
