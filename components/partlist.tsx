@@ -1,5 +1,4 @@
 import Image, { StaticImageData } from "next/image";
-import Link from "next/link";
 import { Products } from "@/models/interface";
 import { RedirectButton } from "./utils/Button";
 
@@ -61,7 +60,7 @@ function LinkButton({ image, dark_image, title, link }: LinkButtonProps) {
           height="128"
         />
       </picture>
-      <p className="pl-2 md:my-auto md:text-xl font-medium">{title}</p>
+      <p className="pl-2 md:my-auto md:text-xl">{title}</p>
     </RedirectButton>
   );
 }

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ButtonHTMLAttributes } from "react";
 
 const normal =
-  "block rounded-lg lg:rounded-xl border-2 border-line p-1 md:border-4 text-center";
+  "block rounded-lg lg:rounded-xl border-2 border-line p-1 md:border-4 text-center font-medium";
 const light = "hover:border-blue-500";
 const dark = "dark:hover:bg-blue-500";
 

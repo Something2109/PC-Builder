@@ -48,7 +48,7 @@ export default function PartListPage({ params }: { params: { part: string } }) {
 
   return data ? (
     <>
-      <RowWrapper className="sticky top-32 *:w-full bg-background">
+      <RowWrapper className="sticky top-32 *:w-full bg-white dark:bg-background">
         <RedirectButton href={`/introduction/${params.part}`}>
           Back
         </RedirectButton>
