@@ -17,9 +17,17 @@ export default function ListItem({ item }: { item: SellerProduct }) {
         />
       </picture>
 
-      <div className="text-wrap ml-3 lg:ml-0 lg:mt-2">
-        <h3 className="text-xs sm:text-sm md:text-md font-bold">{item.name}</h3>
-        <h5 className="text-xs">{`${item.price} đ`}</h5>
+      <div className="size-full ml-3 flex flex-col justify-between font-bold lg:ml-0 lg:mt-2">
+        <h3 className="mb-2 text-xs sm:text-sm md:text-md">{item.name}</h3>
+
+        <div className="flex flex-row justify-between">
+          <h5 className="text-price">{`${item.price.toLocaleString()}đ`}</h5>
+          {item.availability ? (
+            <h5 className="text-green-500">Còn hàng</h5>
+          ) : (
+            <h5 className="text-red-600">Hết hàng</h5>
+          )}
+        </div>
       </div>
     </a>
   );
