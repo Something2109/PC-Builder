@@ -2,14 +2,15 @@ import Link from "next/link";
 import { ButtonHTMLAttributes } from "react";
 
 const normal =
-  "rounded-lg lg:rounded-xl border-2 border-line p-1 md:border-4 hover:border-blue-500";
+  "block rounded-lg lg:rounded-xl border-2 border-line p-1 md:border-4 text-center";
+const light = "hover:border-blue-500";
 const dark = "dark:hover:bg-blue-500";
 
 function Button({
   className,
   ...rest
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
-  let classList = [normal, dark];
+  let classList = [normal, light, dark];
   if (className) {
     classList.push(className);
   }
@@ -18,7 +19,7 @@ function Button({
 }
 
 function RedirectButton({ className, ...rest }: Parameters<typeof Link>[0]) {
-  let classList = [normal, dark];
+  let classList = [normal, light, dark];
   if (className) {
     classList.push(className);
   }
