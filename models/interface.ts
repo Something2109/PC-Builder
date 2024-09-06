@@ -1,3 +1,6 @@
+import { DataTypes, Model } from "sequelize";
+import { Connection } from "./Database";
+
 enum Products {
   CPU = "cpu",
   GPU = "gpu",
@@ -16,80 +19,65 @@ enum Tables {
   CPU = "cpu",
   GPU = "gpu",
   GRAPHIC_CARD = "graphic_card",
+  MAIN = "mainboard",
+  RAM = "ram",
+  SSD = "ssd",
+  HDD = "hdd",
+  PSU = "psu",
+  CASE = "case",
 }
 
-interface BaseInformation {
-  id: string;
-  name: string;
-  brand: string;
+abstract class BasePartTable extends Model {
+  declare id: string;
+  declare name: string;
+  declare code_name: string;
+  declare brand: string;
+  declare series: string;
+
+  declare launch_date?: Date;
+  declare url?: string;
+  declare image_url?: string;
 }
 
-interface BaseProcessor extends BaseInformation {
-  cores: Core[];
-  memory: MemorySpecification;
+const BaseInformation = {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  code_name: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false,
+  },
+  brand: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  series: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 
-  base_power: number;
-  max_temp: number;
-}
+  launch_date: {
+    type: DataTypes.DATE,
+  },
+  url: {
+    type: DataTypes.STRING,
+  },
+  image_url: {
+    type: DataTypes.STRING,
+  },
+};
 
-interface Core {
-  type: string;
-  threads: number;
-  count: number;
+const BaseModelOptions = {
+  sequelize: Connection,
+  freezeTableName: true,
+  underscored: true,
+};
 
-  base_frequency: number;
-  turbo_frequency: number;
-}
-
-interface MemorySpecification {
-  type: string;
-  frequency: number;
-  capacity: number;
-  bandwidth: number;
-}
-
-interface CPU extends BaseProcessor {
-  cores: Core[];
-
-  L1_cache: number;
-  L2_cache: number;
-  L3_cache: number;
-
-  socket: string;
-  max_power: number;
-  max_memory: number;
-
-  GPU?: GPU;
-}
-
-interface GPU extends BaseProcessor {
-  max_resolution: { width: number; height: number; refresh_rate: number };
-}
-
-interface Connector {
-  type: string;
-  version: string;
-}
-
-interface GraphicCard extends BaseInformation {
-  gpu: GPU;
-
-  PCIe: string;
-  slot: number;
-  connectors: Connector[];
-
-  recommended_power: number;
-  power_connector?: string;
-}
-
-interface MotherBoard extends BaseInformation {
-  socket: string;
-  chipset: string;
-
-  memory: MemorySpecification;
-  memory_slot: number;
-
-  expansion_slots: Connector[];
-}
-
-export { Products, Tables };
+export { Products, Tables, BasePartTable, BaseInformation, BaseModelOptions };
