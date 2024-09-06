@@ -1,6 +1,10 @@
-import { DataTypes, Model } from "sequelize";
-import { Connection } from "../Database";
-import { Tables } from "../interface";
+import { DataTypes } from "sequelize";
+import {
+  BasePartTable,
+  BaseInformation,
+  BaseModelOptions,
+  Tables,
+} from "../interface";
 
 type APICPUCore = {
   [key in string]: {
@@ -11,44 +15,13 @@ type APICPUCore = {
   };
 };
 
-type APICPUProperties = {
-  name: string;
-  brand: string;
-  family: string;
-  series: string;
-  launch_date?: Date;
-
-  socket: string;
-  total_cores: number;
-  total_threads: number;
-  base_frequency?: number;
-  turbo_frequency?: number;
-  cores?: string;
-
-  L2_cache?: number;
-  L3_cache?: number;
-
-  max_memory?: number;
-  max_memory_channel?: number;
-  max_memory_bandwidth?: number;
-
-  tdp: number;
-  lithography: string;
-};
-
-class CPU extends Model {
-  declare name: string;
-  declare brand: string;
-  declare family: string;
-  declare series: string;
-  declare launch_date?: Date;
-
+class CPU extends BasePartTable {
   declare socket: string;
   declare total_cores: number;
   declare total_threads: number;
   declare base_frequency?: number;
   declare turbo_frequency?: number;
-  declare cores: APICPUCore;
+  declare cores?: APICPUCore;
 
   declare L2_cache?: number;
   declare L3_cache?: number;
@@ -63,31 +36,7 @@ class CPU extends Model {
 
 CPU.init(
   {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    name: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-    },
-    brand: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    family: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    series: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    launch_date: {
-      type: DataTypes.DATE,
-    },
+    ...BaseInformation,
 
     socket: {
       type: DataTypes.STRING,
@@ -159,7 +108,7 @@ CPU.init(
     },
   },
   {
-    sequelize: Connection,
+    ...BaseModelOptions,
     modelName: Tables.CPU,
     validate: {
       coreValidate() {
@@ -171,4 +120,4 @@ CPU.init(
   }
 );
 
-export { CPU, type APICPUCore, type APICPUProperties };
+export { CPU, type APICPUCore };

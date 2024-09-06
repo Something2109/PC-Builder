@@ -1,6 +1,10 @@
-import { DataTypes, Model } from "sequelize";
-import { Connection } from "../Database";
-import { Tables } from "../interface";
+import { DataTypes } from "sequelize";
+import {
+  BasePartTable,
+  BaseInformation,
+  BaseModelOptions,
+  Tables,
+} from "../interface";
 import { GPU } from "./GPU";
 
 type APIDisplayInterface = {
@@ -9,38 +13,7 @@ type APIDisplayInterface = {
   DVI_D?: number;
 };
 
-type APIGraphicCardProperties = {
-  url: string;
-  image_url: string;
-  name: string;
-  code_name: string;
-  brand: string;
-  series: string;
-  launch_date?: Date;
-
-  width: number;
-  length: number;
-  height: number;
-
-  base_frequency: number;
-  boost_frequency: number;
-
-  pcie?: number;
-  minimum_psu?: number;
-  power_connector?: string;
-
-  gpu_id: string;
-};
-
-class GraphicCard extends Model {
-  declare url: string;
-  declare image_url: string;
-  declare name: string;
-  declare code_name: string;
-  declare brand: string;
-  declare series: string;
-  declare launch_date?: Date;
-
+class GraphicCard extends BasePartTable {
   declare width: number;
   declare length: number;
   declare height: number;
@@ -48,46 +21,16 @@ class GraphicCard extends Model {
   declare base_frequency: number;
   declare boost_frequency: number;
 
-  declare pcie?: string;
+  declare pcie?: number;
   declare minimum_psu?: number;
   declare power_connector?: string;
+
+  declare gpu_id: string;
 }
 
 GraphicCard.init(
   {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    url: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-    },
-    image_url: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    code_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    brand: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    series: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    launch_date: {
-      type: DataTypes.DATE,
-    },
+    ...BaseInformation,
 
     width: {
       type: DataTypes.FLOAT,
@@ -122,15 +65,22 @@ GraphicCard.init(
     },
   },
   {
-    sequelize: Connection,
+    ...BaseModelOptions,
     modelName: Tables.GRAPHIC_CARD,
   }
 );
+
 GPU.hasMany(GraphicCard, {
-  foreignKey: "gpu_id",
+  foreignKey: {
+    name: "gpu_id",
+    allowNull: false,
+  },
 });
 GraphicCard.belongsTo(GPU, {
-  foreignKey: "gpu_id",
+  foreignKey: {
+    name: "gpu_id",
+    allowNull: false,
+  },
 });
 
-export { GraphicCard, APIGraphicCardProperties, APIDisplayInterface };
+export { GraphicCard, type APIDisplayInterface };

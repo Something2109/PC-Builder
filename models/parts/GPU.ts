@@ -1,6 +1,10 @@
-import { Model, DataTypes, UUIDV4 } from "sequelize";
-import { Connection } from "../Database";
-import { Tables } from "../interface";
+import { DataTypes } from "sequelize";
+import {
+  BaseInformation,
+  BaseModelOptions,
+  BasePartTable,
+  Tables,
+} from "../interface";
 
 type GPUCore = {
   [key in string]: {
@@ -17,37 +21,7 @@ type GraphicFeatures = {
   CUDA?: string;
 };
 
-type APIGPUProperties = {
-  name: string;
-  brand: string;
-  family: string;
-  series: string;
-  launch_date?: Date;
-
-  core_count?: number;
-  execution_unit?: number;
-  base_frequency?: number;
-  boost_frequency?: number;
-  extra_cores: GPUCore;
-
-  memory_size?: number;
-  memory_type?: string;
-  memory_bus?: number;
-
-  tdp: number;
-  minimum_psu?: number;
-
-  features: GraphicFeatures;
-};
-
-class GPU extends Model {
-  declare id: string;
-  declare name: string;
-  declare brand: string;
-  declare family: string;
-  declare series: string;
-  declare launch_date?: Date;
-
+class GPU extends BasePartTable {
   declare core_count?: number;
   declare execution_unit?: number;
   declare base_frequency?: number;
@@ -66,30 +40,7 @@ class GPU extends Model {
 
 GPU.init(
   {
-    id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: UUIDV4,
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    brand: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    family: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    series: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    launch_date: {
-      type: DataTypes.DATE,
-    },
+    ...BaseInformation,
 
     core_count: {
       type: DataTypes.INTEGER,
@@ -149,7 +100,7 @@ GPU.init(
     },
   },
   {
-    sequelize: Connection,
+    ...BaseModelOptions,
     modelName: Tables.GPU,
     validate: {
       coreValidate() {
@@ -164,4 +115,4 @@ GPU.init(
   }
 );
 
-export { GPU, type APIGPUProperties, type GraphicFeatures };
+export { GPU, type GraphicFeatures };
