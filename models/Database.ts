@@ -5,39 +5,6 @@ import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import path from "path";
 
-import { Options, Sequelize } from "sequelize";
-import mysql2 from "mysql2";
-require("dotenv").config();
-
-if (
-  !(
-    process.env.DATABASE_NAME &&
-    process.env.DATABASE_HOST &&
-    process.env.DATABASE_PORT &&
-    process.env.DATABASE_USERNAME &&
-    process.env.DATABASE_PASSWORD
-  )
-) {
-  throw new Error("Not enough env variables specified");
-}
-
-const options: Options = {
-  host: process.env.DATABASE_HOST,
-  port: Number(process.env.DATABASE_PORT),
-  dialect: "mysql",
-};
-
-if (options.dialect === "mysql") {
-  options.dialectModule = mysql2;
-}
-
-const Connection = new Sequelize(
-  process.env.DATABASE_NAME,
-  process.env.DATABASE_USERNAME,
-  process.env.DATABASE_PASSWORD,
-  options
-);
-
 class MockDatabase {
   private static path = "./data";
   private static objects: {
@@ -192,4 +159,4 @@ class Seller implements DatabaseObject {
   }
 }
 
-export { MockDatabase as Database, Connection };
+export { MockDatabase as Database };
