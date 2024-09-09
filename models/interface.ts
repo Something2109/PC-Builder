@@ -2,6 +2,12 @@ import { DataTypes, Model, Options, Sequelize } from "sequelize";
 import mysql2 from "mysql2";
 require("dotenv").config();
 
+enum Topics {
+  INTRODUCTION = "introduction",
+  GUIDE = "guide",
+  FORUM = "forum",
+}
+
 enum Products {
   CPU = "cpu",
   GPU = "gpu",
@@ -112,6 +118,7 @@ const BaseModelOptions = {
 };
 
 export {
+  Topics,
   Products,
   Tables,
   BasePartTable,
