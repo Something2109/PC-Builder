@@ -1,5 +1,5 @@
-import { ArticleType } from "./articles/article";
-import { Products } from "./interface";
+import { Article, ArticleType } from "./articles/article";
+import { Products, Connection } from "./interface";
 import { SellerProduct } from "./sellers/SellerProduct";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
@@ -44,14 +44,33 @@ class Articles implements DatabaseObject {
     this.path = path.join(root, "articles");
   }
 
-  getIntroduction(product: Products) {
-    try {
-      if (Object.values(Products).includes(product)) {
-        const data = fs
-          .readFileSync(`${this.path}/introduction/${product}.json`)
-          .toString();
+  /**
+   * @deprecated
+   */
+  async getIntroduction(product: Products) {
+    return this.get("introduction", product);
+  }
 
-        return JSON.parse(data) as ArticleType;
+  /**
+   * @deprecated
+   */
+  async setIntroduction(product: Products, article: ArticleType) {
+    return this.set("introduction", product, article);
+  }
+
+  async get(topic: string, part: Products): Promise<ArticleType | null> {
+    try {
+      const save = await Article.findOne({ where: { topic, part } });
+
+      if (save) {
+        return {
+          type: "article",
+          title: save.title,
+          author: save.author,
+          standfirst: save.standfirst,
+          createdAt: save.createdAt,
+          content: save.content,
+        };
       }
     } catch (error) {
       console.error(error);
@@ -59,13 +78,21 @@ class Articles implements DatabaseObject {
     return null;
   }
 
-  setIntroduction(product: Products, article: ArticleType) {
+  async set(topic: string, part: Products, article: ArticleType) {
     try {
-      if (Object.values(Products).includes(product)) {
-        fs.writeFileSync(
-          `${this.path}/introduction/${product}.json`,
-          JSON.stringify(article)
-        );
+      if (Object.values(Products).includes(part)) {
+        const { type, ...data } = article;
+
+        let save = await Article.findOne({ where: { topic, part } });
+
+        if (!save) {
+          save = Article.build({ topic, part, ...data });
+        } else {
+          save.set({ ...data });
+        }
+
+        await save.save();
+
         return article;
       }
     } catch (error) {
@@ -158,5 +185,7 @@ class Seller implements DatabaseObject {
     };
   }
 }
+
+Connection.sync();
 
 export { MockDatabase as Database };
