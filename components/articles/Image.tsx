@@ -5,18 +5,21 @@ import { ImageType } from "@/models/articles/article";
 import { RowWrapper, ColumnWrapper } from "@/components/utils/FlexWrapper";
 import Image from "next/image";
 import { useCallback, useState } from "react";
-import { InputArea, ContentProps } from "./utils";
+import { ContentProps, InputArea, InputContentProps } from "./utils";
 
-export function Picture({ img }: { img: ImageType }) {
+export function Picture({ content }: ContentProps<ImageType>) {
   return (
     <picture className="*:mx-auto *:my-2 text-center">
-      <Image src={img.src} width={800} height={450} alt={img.caption} />
-      <p>{img.caption}</p>
+      <Image src={content.src} width={800} height={450} alt={content.caption} />
+      <p>{content.caption}</p>
     </picture>
   );
 }
 
-export function PictureInput({ content, updateSelf }: ContentProps<ImageType>) {
+export function PictureInput({
+  content,
+  updateSelf,
+}: InputContentProps<ImageType>) {
   const getImageFromSrc = useCallback(() => {
     return content.src.length > 0 ? (
       <Image src={content.src} width={800} height={450} alt={content.caption} />

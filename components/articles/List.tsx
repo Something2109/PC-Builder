@@ -5,27 +5,31 @@ import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { Button } from "@/components/utils/Button";
 import {
   AddRow,
+  ContentProps,
   ContentRenderer,
   InputArea,
-  ContentProps,
+  InputContentProps,
   InputRenderer,
   updateContent,
 } from "./utils";
 import { useState } from "react";
 
-export function List({ section }: { section: ListType }) {
+export function List({ content }: ContentProps<ListType>) {
   return (
     <ul>
-      {section.content.map((content, index) => (
+      {content.content.map((inner, index) => (
         <li key={new Date().getTime() + index}>
-          <ContentRenderer content={content} prefix={section.symbol} />
+          <ContentRenderer content={inner} prefix={content.symbol} />
         </li>
       ))}
     </ul>
   );
 }
 
-export function ListInput({ content, updateSelf }: ContentProps<ListType>) {
+export function ListInput({
+  content,
+  updateSelf,
+}: InputContentProps<ListType>) {
   const [count, setCount] = useState(content.content.length);
 
   return (

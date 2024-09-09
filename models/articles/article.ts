@@ -107,7 +107,7 @@ Article.init(
       },
     },
 
-    created_at: DataTypes.DATE,
+    created_at: { type: DataTypes.DATE, defaultValue: new Date() },
     content_json: {
       type: DataTypes.TEXT,
       allowNull: false,

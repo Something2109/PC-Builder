@@ -5,32 +5,27 @@ import { SectionType } from "@/models/articles/article";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 import {
   AddRow,
+  ContentProps,
   ContentRenderer,
   InputArea,
-  ContentProps,
+  InputContentProps,
   InputRenderer,
   updateContent,
 } from "./utils";
 import { useState } from "react";
 
-export function Section({
-  section,
-  prefix,
-}: {
-  section: SectionType;
-  prefix: string;
-}) {
+export function Section({ content, prefix }: ContentProps<SectionType>) {
   let sectionCount = 1;
   return (
     <section className="flex flex-col gap-1 w-full">
-      <h1 className="font-bold text-2xl">{`${prefix} ${section.title}`}</h1>
-      {section.content.map((content, index) => (
+      <h1 className="font-bold text-2xl">{`${prefix} ${content.title}`}</h1>
+      {content.content.map((inner, index) => (
         <ContentRenderer
-          content={content}
-          prefix={`${prefix}${
-            content.type === "section" ? sectionCount++ : undefined
-          }.`}
-          key={`${prefix}${index}.${content.type}`}
+          content={inner}
+          prefix={
+            inner.type === "section" ? `${prefix}${sectionCount++}.` : undefined
+          }
+          key={`${prefix}${index}.${inner.type}`}
         />
       ))}
     </section>
@@ -41,7 +36,7 @@ export function SectionInput({
   content,
   prefix,
   updateSelf,
-}: ContentProps<SectionType>) {
+}: InputContentProps<SectionType>) {
   const [count, setCount] = useState(content.content.length);
 
   let sectionCount = 1;

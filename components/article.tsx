@@ -16,13 +16,11 @@ function Article({ article }: { article: ArticleType }) {
   return (
     <article className="flex flex-col gap-2 w-full">
       <h1 className="font-bold text-4xl my-5">{article.title}</h1>
-      <Paragraph>{article.standfirst}</Paragraph>
+      <Paragraph content={{ type: "paragraph", content: article.standfirst }} />
       {article.content.map((content, index) => (
         <ContentRenderer
           content={content}
-          prefix={`${
-            content.type === "section" ? sectionCount++ : sectionCount
-          }.`}
+          prefix={`${content.type === "section" ? sectionCount++ : undefined}.`}
           key={`${index + 1}.${content.type}`}
         />
       ))}
