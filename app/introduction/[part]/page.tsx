@@ -5,9 +5,16 @@ import { Database } from "@/models/Database";
 import { Products } from "@/models/interface";
 import { notFound, redirect } from "next/navigation";
 
-export default function PartListPage({ params }: { params: { part: string } }) {
+export default async function PartListPage({
+  params,
+}: {
+  params: { part: string };
+}) {
   if (Object.values(Products).includes(params.part as Products)) {
-    const data = Database.articles.getIntroduction(params.part as Products);
+    const data = await Database.articles.get(
+      "introduction",
+      params.part as Products
+    );
 
     if (!data) {
       return redirect(`/introduction/${params.part}/edit`);

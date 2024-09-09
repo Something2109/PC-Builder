@@ -12,7 +12,10 @@ export async function GET(
   { params }: { params: { part: string } }
 ) {
   if (Object.values(Products).includes(params.part as Products)) {
-    const article = Database.articles.getIntroduction(params.part as Products);
+    const article = await Database.articles.get(
+      "introduction",
+      params.part as Products
+    );
 
     if (article) {
       return NextResponse.json(article);
@@ -77,7 +80,8 @@ export async function POST(
       }
     }
 
-    const result = Database.articles.setIntroduction(
+    const result = await Database.articles.set(
+      "introduction",
       params.part as Products,
       article
     );
