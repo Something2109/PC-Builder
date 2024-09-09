@@ -11,7 +11,7 @@ export function NotificationBar({
 }) {
   return (
     <RowWrapper
-      className={`rounded-xl p-2 justify-between font-bold ${
+      className={`rounded-xl p-2 justify-between font-bold text-line ${
         alert ? "bg-red-700" : "bg-green-700"
       }`}
     >
