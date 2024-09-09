@@ -9,17 +9,22 @@ import { BaseModelOptions, Tables } from "../interface";
 
 type ContentType = ParagraphType | ImageType | ListType | SectionType;
 
+type ArticleSummary = {
+  url: string;
+  title: string;
+  author: string;
+  standfirst: string;
+  createdAt: Date;
+};
+
 type ContentContainer = {
   content: Array<ContentType>;
 };
 
 type ArticleType = {
   type: "article";
-  title: string;
-  author: string;
-  standfirst: string;
-  createdAt: Date;
-} & ContentContainer;
+} & Omit<ArticleSummary, "url"> &
+  ContentContainer;
 
 type SectionType = {
   type: "section";
@@ -196,6 +201,7 @@ export class ValidateArticle {
 }
 
 export type {
+  ArticleSummary,
   ArticleType,
   SectionType,
   ImageType,
