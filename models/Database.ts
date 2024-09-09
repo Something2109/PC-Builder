@@ -1,4 +1,4 @@
-import { Article, ArticleType } from "./articles/article";
+import { Article, ArticleSummary, ArticleType } from "./articles/article";
 import { Products, Connection } from "./interface";
 import { SellerProduct } from "./sellers/SellerProduct";
 import { v4 as uuidv4 } from "uuid";
@@ -56,6 +56,29 @@ class Articles implements DatabaseObject {
    */
   async setIntroduction(product: Products, article: ArticleType) {
     return this.set("introduction", product, article);
+  }
+
+  async getSummary(topic: string): Promise<ArticleSummary[]> {
+    try {
+      const save = await Article.findAll({ where: { topic } });
+      save.map((article) => ({
+        title: article.title,
+        author: article.author,
+        standfirst: article.standfirst,
+        createdAt: article.createdAt,
+      }));
+
+      return save.map((article) => ({
+        url: `/${topic}/${article.part}`,
+        title: article.title,
+        author: article.author,
+        standfirst: article.standfirst,
+        createdAt: article.createdAt,
+      }));
+    } catch (error) {
+      console.error(error);
+    }
+    return [];
   }
 
   async get(topic: string, part: Products): Promise<ArticleType | null> {
