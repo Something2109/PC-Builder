@@ -54,19 +54,22 @@ export default function PartTopicEditPage({
 
   return data ? (
     <>
-      <RowWrapper className="sticky top-32 *:w-full bg-white dark:bg-background">
-        <RedirectButton href={pageLink}>Back</RedirectButton>
-        <Button onClick={save}>Save</Button>
-      </RowWrapper>
-      <EditableArticle article={data as ArticleType} />
+      <ColumnWrapper className="sticky top-32 bg-white dark:bg-background">
+        <RowWrapper className="*:w-full">
+          <RedirectButton href={pageLink}>Back</RedirectButton>
+          <Button onClick={save}>Save</Button>
+        </RowWrapper>
 
-      {notification ? (
-        <NotificationBar
-          message={notification.message}
-          remove={() => setNoti(null)}
-          alert={notification.alert}
-        />
-      ) : undefined}
+        {notification ? (
+          <NotificationBar
+            message={notification.message}
+            remove={() => setNoti(null)}
+            alert={notification.alert}
+          />
+        ) : undefined}
+      </ColumnWrapper>
+
+      <EditableArticle article={data as ArticleType} />
     </>
   ) : (
     <h1>{error.message}</h1>
