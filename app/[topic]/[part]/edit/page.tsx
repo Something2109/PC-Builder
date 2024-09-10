@@ -49,6 +49,14 @@ export default function PartTopicEditPage({
       setNoti({ message: "Save successful", alert: false });
     } else {
       setNoti({ message: (await response.json()).message, alert: true });
+      setData({
+        type: "article",
+        title: "",
+        author: "admin",
+        standfirst: "",
+        createdAt: new Date(),
+        content: [],
+      });
     }
   }
 
