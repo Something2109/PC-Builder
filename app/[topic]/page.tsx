@@ -3,11 +3,11 @@ import { ColumnWrapper } from "@/components/utils/FlexWrapper";
 import { Database } from "@/models/Database";
 
 export default async function TopicPage({
-  params,
+  params: { topic },
 }: {
   params: { topic: string };
 }) {
-  const articleSumaries = await Database.articles.getSummary(params.topic);
+  const articleSumaries = await Database.articles.getSummary({ topic });
 
   return (
     <>
