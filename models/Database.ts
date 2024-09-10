@@ -58,23 +58,22 @@ class Articles implements DatabaseObject {
     return this.set("introduction", product, article);
   }
 
-  async getSummary(topic: string): Promise<ArticleSummary[]> {
+  async getSummary(criteria: {
+    topic: string;
+    part?: Products;
+  }): Promise<ArticleSummary[]> {
     try {
-      const save = await Article.findAll({ where: { topic } });
-      save.map((article) => ({
+      const toType = (article: Article) => ({
+        url: `/${article.topic}/${article.part}`,
         title: article.title,
         author: article.author,
         standfirst: article.standfirst,
         createdAt: article.createdAt,
-      }));
+      });
 
-      return save.map((article) => ({
-        url: `/${topic}/${article.part}`,
-        title: article.title,
-        author: article.author,
-        standfirst: article.standfirst,
-        createdAt: article.createdAt,
-      }));
+      const save = await Article.findAll({ where: criteria });
+
+      return save.map((article) => toType(article));
     } catch (error) {
       console.error(error);
     }
