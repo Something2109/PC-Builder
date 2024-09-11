@@ -62,7 +62,7 @@ export default function PartTopicEditPage({
 
   return data ? (
     <>
-      <ColumnWrapper className="sticky top-32 bg-white dark:bg-background">
+      <ColumnWrapper className="sticky top-16 md:top-32 bg-white dark:bg-background">
         <RowWrapper className="*:w-full">
           <RedirectButton href={pageLink}>Back</RedirectButton>
           <Button onClick={save}>Save</Button>
