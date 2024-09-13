@@ -1,5 +1,5 @@
 import PartList from "@/components/partlist";
-import { Topics } from "@/models/interface";
+import { Topics } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 
 export default function TopicLayout({
