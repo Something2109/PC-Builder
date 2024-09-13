@@ -1,4 +1,4 @@
-import { APIWebsiteInfo } from "../crawler";
+import { APIWebsiteInfo } from "../../crawler";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
 
@@ -16,7 +16,7 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
     if (mapping[product]) {
       const url = new URL(`${domain}/${mapping[product]}`);
 
-      return { url, page: 1, product };
+      return { url, type: "product", page: 1, product };
     }
 
     return null;
@@ -26,21 +26,17 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
     const htmlText = await new Response(response.body).text();
 
     const document = new JSDOM(htmlText).window.document;
-    const tables = document.getElementsByTagName("table");
+    const list = [...document.getElementsByTagName("table")].map(
+      (raw: HTMLTableElement) => ({ raw })
+    );
 
     return {
-      list: [...tables],
-      pages: null,
+      list,
+      links: [],
     };
-
-    throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse(raw: HTMLTableElement) {
-    const result: {
-      [key in string]: { [key in string]: string | null };
-    } = {};
-
+  parse({ raw, result }) {
     const col_num: number = raw.rows[0].cells.length;
     let property_idx = 0;
 

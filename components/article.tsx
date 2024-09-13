@@ -20,7 +20,7 @@ function Article({ article }: { article: ArticleType }) {
       {article.content.map((content, index) => (
         <ContentRenderer
           content={content}
-          prefix={`${content.type === "section" ? sectionCount++ : undefined}.`}
+          prefix={content.type === "section" ? `${sectionCount++}.` : undefined}
           key={`${index + 1}.${content.type}`}
         />
       ))}
@@ -50,7 +50,7 @@ function EditableArticle({ article }: { article: ArticleType }) {
         <InputRenderer
           key={new Date().getTime() + index}
           content={content}
-          prefix={`${content.type === "section" ? sectionCount++ : undefined}.`}
+          prefix={content.type === "section" ? `${sectionCount++}.` : undefined}
           updateSelf={updateContent(article.content, content, setChange)}
         />
       ))}

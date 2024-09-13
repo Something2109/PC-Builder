@@ -1,4 +1,4 @@
-import { APIWebsiteInfo } from "../crawler";
+import { APIWebsiteInfo } from "../../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
 import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
@@ -28,7 +28,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
       const url = new URL(`${domain}/${mapping[product]}`);
       url.searchParams.set("page", page.toString());
 
-      return { url, page, product };
+      return { url, type: "page", page, product };
     }
 
     return null;
@@ -38,37 +38,41 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
     const dom = new JSDOM(await response.text()).window.document;
     const itemContainer = dom.querySelector(".product-list-container");
 
-    if (itemContainer) {
+    if (link.type == "page" && itemContainer) {
       const total = itemContainer
         .getElementsByTagName("b")
         .item(0)
         ?.textContent?.match(/\d+/);
-      const list = [...itemContainer.querySelectorAll(".p-item")];
-      let pages = null;
+      const list = [...itemContainer.querySelectorAll(".p-item")].map(
+        (raw) => ({
+          raw,
+        })
+      );
+      let pages;
 
       if (link.page == 1) {
         pages = Math.ceil(Number(total) / list.length);
       }
 
-      return { list, pages };
+      return { list, links: [], pages };
     }
 
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse(object) {
-    const name = object.querySelector(".p-name")?.textContent?.trim();
+  parse({ raw }) {
+    const name = raw.querySelector(".p-name")?.textContent?.trim();
     const price = Number(
-      object
+      raw
         .querySelector(".p-price")
         ?.textContent?.replaceAll(".", "")
         ?.match(/\d+/)
     );
-    const link = `${domain}${object
+    const link = `${domain}${raw
       .querySelector(".p-name")
       ?.getAttribute("href")}`;
-    const img = object.querySelector(".fit-img")?.getAttribute("data-src");
-    const availability = Boolean(object.querySelector(".btn-in-stock"));
+    const img = raw.querySelector(".fit-img")?.getAttribute("data-src");
+    const availability = Boolean(raw.querySelector(".btn-in-stock"));
 
     return new SellerProduct({ name, price, link, img, availability });
   },
