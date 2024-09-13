@@ -24,6 +24,7 @@ enum Products {
 
 enum Tables {
   ARTICLE = "article",
+  PART = "part_information",
   CPU = "cpu",
   GPU = "gpu",
   GRAPHIC_CARD = "graphic_card",
@@ -64,65 +65,10 @@ const Connection = new Sequelize(
   options
 );
 
-abstract class BasePartTable extends Model {
-  declare id: string;
-  declare name: string;
-  declare code_name: string;
-  declare brand: string;
-  declare series: string;
-
-  declare launch_date?: Date;
-  declare url?: string;
-  declare image_url?: string;
-}
-
-const BaseInformation = {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true,
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  code_name: {
-    type: DataTypes.STRING,
-    unique: true,
-    allowNull: false,
-  },
-  brand: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  series: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-
-  launch_date: {
-    type: DataTypes.DATE,
-  },
-  url: {
-    type: DataTypes.STRING,
-  },
-  image_url: {
-    type: DataTypes.STRING,
-  },
-};
-
 const BaseModelOptions = {
   sequelize: Connection,
   freezeTableName: true,
   underscored: true,
 };
 
-export {
-  Topics,
-  Products,
-  Tables,
-  BasePartTable,
-  Connection,
-  BaseInformation,
-  BaseModelOptions,
-};
+export { Topics, Products, Tables, Connection, BaseModelOptions };
