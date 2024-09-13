@@ -4,23 +4,49 @@ import {
   ValidateArticle,
 } from "@/models/articles/article";
 import { Database } from "@/models/Database";
-import { Products } from "@/models/interface";
+import { Products, Topics } from "@/models/interface";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { part: string } }
+  { params }: { params: { topic: string; part: string } }
 ) {
-  if (Object.values(Products).includes(params.part as Products)) {
-    const article = Database.articles.getIntroduction(params.part as Products);
+  try {
+    if (!Object.values(Topics).includes(params.topic as Topics)) {
+      throw new Error(
+        `Cannot find the topic ${params.topic}. Check if the path is correct`
+      );
+    }
+
+    if (!Object.values(Products).includes(params.part as Products)) {
+      throw new Error(
+        `Cannot find the topic ${params.part}. Check if the path is correct`
+      );
+    }
+
+    const article = await Database.articles.get(
+      params.topic as Topics,
+      params.part as Products
+    );
 
     if (article) {
       return NextResponse.json(article);
     }
+  } catch (err) {
+    const error = err as Error;
+    return NextResponse.json(
+      {
+        message: error.message,
+      },
+      {
+        status: 404,
+      }
+    );
   }
+
   return NextResponse.json(
     {
-      message: "Cannot find the article you need. Check if the path is correct",
+      message: `Cannot find the article from /${params.topic}/${params.part}`,
     },
     {
       status: 404,
@@ -30,11 +56,19 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { part: string } }
+  { params }: { params: { topic: string; part: string } }
 ) {
   try {
+    if (!Object.values(Topics).includes(params.topic as Topics)) {
+      throw new Error(
+        `Cannot find the topic ${params.topic}. Check if the path is correct`
+      );
+    }
+
     if (!Object.values(Products).includes(params.part as Products)) {
-      throw new Error("The product link is incorrect");
+      throw new Error(
+        `Cannot find the topic ${params.part}. Check if the path is correct`
+      );
     }
 
     const article = await request.json();
@@ -59,7 +93,7 @@ export async function POST(
           const link = Database.images.set(
             content.image,
             "articles",
-            "introduction",
+            params.topic,
             params.part
           );
           content.src = link ?? "";
@@ -77,7 +111,8 @@ export async function POST(
       }
     }
 
-    const result = Database.articles.setIntroduction(
+    const result = await Database.articles.set(
+      params.topic as Topics,
       params.part as Products,
       article
     );

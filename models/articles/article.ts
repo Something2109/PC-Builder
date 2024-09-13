@@ -1,4 +1,21 @@
+import {
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  Model,
+} from "sequelize";
+import { BaseModelOptions, Tables } from "../interface";
+
 type ContentType = ParagraphType | ImageType | ListType | SectionType;
+
+type ArticleSummary = {
+  url: string;
+  title: string;
+  author: string;
+  standfirst: string;
+  createdAt: Date;
+};
 
 type ContentContainer = {
   content: Array<ContentType>;
@@ -6,11 +23,8 @@ type ContentContainer = {
 
 type ArticleType = {
   type: "article";
-  title: string;
-  author: string;
-  standfirst: string;
-  createdAt: Date;
-} & ContentContainer;
+} & Omit<ArticleSummary, "url"> &
+  ContentContainer;
 
 type SectionType = {
   type: "section";
@@ -35,6 +49,72 @@ type ParagraphType = {
   type: "paragraph";
   content: string;
 };
+
+export class Article
+  extends Model<InferAttributes<Article>, InferCreationAttributes<Article>>
+  implements Omit<ArticleType, "type">
+{
+  declare topic: string;
+  declare part: string;
+  declare title: string;
+  declare author: string;
+  declare standfirst: string;
+  declare createdAt: Date;
+  declare content: ContentType[];
+
+  declare content_json: CreationOptional<string>;
+  declare created_at: CreationOptional<Date>;
+}
+
+Article.init(
+  {
+    topic: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+    },
+    part: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+    },
+
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    author: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "admin",
+    },
+    standfirst: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return new Date(this.getDataValue("created_at"));
+      },
+    },
+    content: {
+      type: DataTypes.VIRTUAL,
+      set(val: ContentType[]) {
+        this.setDataValue("content_json", JSON.stringify(val));
+      },
+      get(): ContentType[] {
+        const data = this.getDataValue("content_json");
+        return JSON.parse(data);
+      },
+    },
+
+    created_at: { type: DataTypes.DATE, defaultValue: new Date() },
+    content_json: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+  },
+  { ...BaseModelOptions, modelName: Tables.ARTICLE }
+);
 
 export class ValidateArticle {
   private static isContentContainer(content: any): content is ContentContainer {
@@ -121,6 +201,7 @@ export class ValidateArticle {
 }
 
 export type {
+  ArticleSummary,
   ArticleType,
   SectionType,
   ImageType,

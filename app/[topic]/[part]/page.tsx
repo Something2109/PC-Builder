@@ -5,21 +5,26 @@ import { Database } from "@/models/Database";
 import { Products } from "@/models/interface";
 import { notFound, redirect } from "next/navigation";
 
-export default function PartListPage({ params }: { params: { part: string } }) {
+export default async function PartTopicPage({
+  params,
+}: {
+  params: { topic: string; part: string };
+}) {
   if (Object.values(Products).includes(params.part as Products)) {
-    const data = Database.articles.getIntroduction(params.part as Products);
+    const data = await Database.articles.get(
+      params.topic,
+      params.part as Products
+    );
+    const editLink = `/${params.topic}/${params.part}/edit`;
 
     if (!data) {
-      return redirect(`/introduction/${params.part}/edit`);
+      return redirect(editLink);
     }
 
     return (
       <>
         <Article article={data as ArticleType} />
-        <RedirectButton
-          href={`/introduction/${params.part}/edit`}
-          className={"font-bold"}
-        >
+        <RedirectButton href={editLink} className={"font-bold"}>
           Edit
         </RedirectButton>
       </>

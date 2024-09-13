@@ -13,41 +13,40 @@ import { Button } from "@/components/utils/Button";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { TextareaHTMLAttributes, useRef, useEffect } from "react";
 
-export function ContentRenderer({
-  content,
-  prefix,
-}: {
-  content: ContentType;
-  prefix: string;
-}) {
-  switch (content.type) {
-    case "paragraph":
-      return <Paragraph>{content.content}</Paragraph>;
-    case "image":
-      return <Picture img={content} />;
-    case "list":
-      return <List section={content} />;
-    case "section":
-      return <Section section={content} prefix={prefix} />;
-  }
-}
-
 export type ContentProps<T extends ContentType> = {
   content: T;
   prefix?: string;
-  updateSelf: ReturnType<typeof updateContent<any>>;
 };
 
-export function InputRenderer(props: ContentProps<ContentType>) {
+export function ContentRenderer(props: ContentProps<ContentType>) {
   switch (props.content.type) {
     case "paragraph":
-      return <ParagraphInput {...(props as ContentProps<ParagraphType>)} />;
-    case "section":
-      return <SectionInput {...(props as ContentProps<SectionType>)} />;
+      return <Paragraph {...(props as ContentProps<ParagraphType>)} />;
     case "image":
-      return <PictureInput {...(props as ContentProps<ImageType>)} />;
+      return <Picture {...(props as ContentProps<ImageType>)} />;
     case "list":
-      return <ListInput {...(props as ContentProps<ListType>)} />;
+      return <List {...(props as ContentProps<ListType>)} />;
+    case "section":
+      return <Section {...(props as ContentProps<SectionType>)} />;
+  }
+}
+
+export type InputContentProps<T extends ContentType> = {
+  updateSelf: ReturnType<typeof updateContent<any>>;
+} & ContentProps<T>;
+
+export function InputRenderer(props: InputContentProps<ContentType>) {
+  switch (props.content.type) {
+    case "paragraph":
+      return (
+        <ParagraphInput {...(props as InputContentProps<ParagraphType>)} />
+      );
+    case "section":
+      return <SectionInput {...(props as InputContentProps<SectionType>)} />;
+    case "image":
+      return <PictureInput {...(props as InputContentProps<ImageType>)} />;
+    case "list":
+      return <ListInput {...(props as InputContentProps<ListType>)} />;
   }
 }
 
