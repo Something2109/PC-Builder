@@ -4,7 +4,7 @@ import { JSDOM } from "jsdom";
 
 const domain = "https://odinapi.asus.com";
 const mapping: { [key in Products]?: string } = {
-  [Products.GPU]: "graphics-cards",
+  [Products.GRAPHIC_CARD]: "graphics-cards",
   [Products.MAIN]: "motherboards",
   [Products.PSU]: "power-supply-units",
   [Products.CASE]: "cases",

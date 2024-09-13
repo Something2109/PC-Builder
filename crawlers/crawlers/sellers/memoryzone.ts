@@ -4,9 +4,9 @@ import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
 
 const domain = "https://memoryzone.com.vn";
-const mapping: { [key in Products]: string } = {
+const mapping: { [key in Products]?: string } = {
   [Products.CPU]: "cpu-may-tinh",
-  [Products.GPU]: "vga",
+  [Products.GRAPHIC_CARD]: "vga",
   [Products.MAIN]: "mainboard-pc",
   [Products.RAM]: "ram-pc",
   [Products.SSD]: "ssd",

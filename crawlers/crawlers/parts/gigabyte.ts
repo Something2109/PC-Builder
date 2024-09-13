@@ -4,7 +4,7 @@ import { JSDOM } from "jsdom";
 
 const domain = "https://www.gigabyte.com";
 const mapping: { [key in Products]?: string } = {
-  [Products.GPU]: "3",
+  [Products.GRAPHIC_CARD]: "3",
   [Products.MAIN]: "2",
   [Products.RAM]: "53",
   [Products.SSD]: "54",

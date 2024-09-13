@@ -4,9 +4,9 @@ import { Products } from "@/models/interface";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.anphatpc.com.vn";
-const mapping: Record<Products, string> = {
+const mapping: { [key in Products]?: string } = {
   [Products.CPU]: "cpu-bo-vi-xu-ly.html",
-  [Products.GPU]: "vga-card-man-hinh.html",
+  [Products.GRAPHIC_CARD]: "vga-card-man-hinh.html",
   [Products.MAIN]: "bo-mach-chu.html",
   [Products.RAM]: "bo-nho-trong.html",
   [Products.SSD]: "o-cung-ssd_dm1030.html",
