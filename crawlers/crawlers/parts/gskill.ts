@@ -1,10 +1,10 @@
 import { APIWebsiteInfo, CrawlLink } from "../../crawler";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.gskill.com";
 const mapping: { [key in Products]?: string } = {
-  // [Products.RAM]: "165",
+  [Products.RAM]: "165",
   [Products.SSD]: "9",
   [Products.PSU]: "90",
   [Products.CASE]: "365",
@@ -80,6 +80,21 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
       const table = dom.querySelector(".list-inner");
       if (!table) {
         throw new Error(`Cannot find content table in ${link.url}`);
+      }
+
+      const result = link.result as Record<string, string>;
+
+      const code_name = dom.querySelector(".title");
+      if (code_name) {
+        result["Code Name"] = code_name.innerHTML;
+      }
+
+      const model = dom.querySelector(".sub-title");
+      if (model && model.innerHTML) {
+        result["Model"] = model.innerHTML.slice(
+          0,
+          model.innerHTML.indexOf("<br>")
+        );
       }
 
       list.push({

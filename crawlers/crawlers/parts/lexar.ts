@@ -1,5 +1,5 @@
 import { APIWebsiteInfo, CrawlLink } from "../../crawler";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.lexar.com";
@@ -8,7 +8,7 @@ const mapping: { [key in Products]?: string } = {
   [Products.SSD]: "ssd-en-gb",
 };
 
-const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
+const CrawlInfo: APIWebsiteInfo<Element[], Record<string, string>[]> = {
   domain,
 
   save: "parts",
@@ -38,10 +38,12 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
             url: new URL(url),
             type: "product",
             product: link.product,
-            result: {
-              url,
-              img: element.querySelector("img")?.getAttribute("src"),
-            },
+            result: [
+              {
+                url,
+                img: element.querySelector("img")?.getAttribute("src"),
+              },
+            ],
           };
         }
       );
@@ -53,32 +55,42 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
       const dom = new JSDOM(await response.text()).window.document;
       const list = [];
 
-      const element = dom.querySelector(".product-table");
+      const model = dom.querySelector(".product_title")?.textContent;
+      const raw = [...dom.querySelectorAll(".product-table")];
 
-      if (!element) {
+      if (raw.length == 0 || !model) {
         throw new Error(`Cannot find content table in ${link.url}`);
       }
 
-      list.push({
-        raw: element,
-        result: link.result as Record<string, string>,
-      });
+      const result = link.result as Record<string, string>;
+      result["Model"] = model;
+
+      list.push({ raw, result });
 
       return list;
     },
   },
 
   parse: function ({ raw, result }) {
-    const rows = raw.querySelectorAll(".wpb_text_column.wpb_content_element");
+    result.push(
+      ...raw.map((table) => {
+        const data: Record<string, string> = {};
+        const rows = table.querySelectorAll(
+          ".wpb_text_column.wpb_content_element"
+        );
 
-    for (let i = 0; i < rows.length; i += 2) {
-      const title = rows.item(i).textContent;
-      const content = rows.item(i + 1).textContent;
+        for (let i = 0; i < rows.length; i += 2) {
+          const title = rows.item(i).textContent;
+          const content = rows.item(i + 1).innerHTML;
 
-      if (title && content) {
-        result[title] = content;
-      }
-    }
+          if (title && content) {
+            data[title] = content;
+          }
+        }
+
+        return data;
+      })
+    );
 
     return result;
   },

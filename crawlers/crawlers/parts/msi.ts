@@ -1,10 +1,10 @@
 import { APIWebsiteInfo } from "../../crawler";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.msi.com";
 const mapping: { [key in Products]?: string } = {
-  [Products.GPU]: "vga",
+  [Products.GRAPHIC_CARD]: "vga",
   [Products.MAIN]: "mb",
   [Products.SSD]: "storage",
   [Products.PSU]: "Power-Supply",

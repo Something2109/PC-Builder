@@ -1,12 +1,12 @@
 import { APIWebsiteInfo } from "../../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://memoryzone.com.vn";
-const mapping: { [key in Products]: string } = {
+const mapping: { [key in Products]?: string } = {
   [Products.CPU]: "cpu-may-tinh",
-  [Products.GPU]: "vga",
+  [Products.GRAPHIC_CARD]: "vga",
   [Products.MAIN]: "mainboard-pc",
   [Products.RAM]: "ram-pc",
   [Products.SSD]: "ssd",

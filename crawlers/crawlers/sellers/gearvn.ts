@@ -1,11 +1,11 @@
 import { APIWebsiteInfo } from "../../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 
 const domain = "https://gearvn.com";
-const mapping = {
+const mapping: { [key in Products]?: string } = {
   [Products.CPU]: "cpu-bo-vi-xu-ly",
-  [Products.GPU]: "vga-card-man-hinh",
+  [Products.GRAPHIC_CARD]: "vga-card-man-hinh",
   [Products.MAIN]: "mainboard-bo-mach-chu",
   [Products.RAM]: "ram-pc",
   [Products.SSD]: "ssd-o-cung-the-ran",
