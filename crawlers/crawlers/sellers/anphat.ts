@@ -1,6 +1,6 @@
 import { APIWebsiteInfo } from "../../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.anphatpc.com.vn";
@@ -23,7 +23,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
 
   save: "sellers",
 
-  path(product, page = 1) {
+  path(product: Products, page = 1) {
     if (mapping[product]) {
       const url = new URL(`${domain}/${mapping[product]}`);
       url.searchParams.set("page", page.toString());

@@ -1,5 +1,5 @@
 import { APIWebsiteInfo, CrawlLink } from "../../crawler";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://ark.intel.com";

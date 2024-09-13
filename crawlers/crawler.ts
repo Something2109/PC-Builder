@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 
 type BaseLink = {
   url: URL;

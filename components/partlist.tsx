@@ -1,10 +1,11 @@
 import Image, { StaticImageData } from "next/image";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 import { RedirectButton } from "./utils/Button";
 
 const title: { [key in Products]: string } = {
   [Products.CPU]: "CPU",
   [Products.GPU]: "GPU",
+  [Products.GRAPHIC_CARD]: "Graphic Card",
   [Products.MAIN]: "Mainboard",
   [Products.RAM]: "RAM",
   [Products.SSD]: "SSD",
