@@ -1,5 +1,5 @@
 import { Database } from "@/models/Database";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
