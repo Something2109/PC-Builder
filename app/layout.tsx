@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/header";
 import NavigationBar from "@/components/navigation";
 import "@/css/globals.css";
+import Footer from "@/components/footer";
 
 export default function RootLayout({
   children,
@@ -23,7 +24,10 @@ export default function RootLayout({
       <body className="dark:text-line dark:bg-background overflow-y-scroll">
         <Header toggle={() => setToggle(!toggle)} />
         <NavigationBar toggle={toggle} />
-        <main className="container w-11/12 mx-auto mt-2">{children}</main>
+        <main className="container w-11/12 min-h-screen mx-auto *:my-2">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

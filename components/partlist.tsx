@@ -1,6 +1,6 @@
 import Image, { StaticImageData } from "next/image";
-import Link from "next/link";
 import { Products } from "@/models/interface";
+import { RedirectButton } from "./utils/Button";
 
 const title: { [key in Products]: string } = {
   [Products.CPU]: "CPU",
@@ -18,7 +18,7 @@ const title: { [key in Products]: string } = {
 
 export default function PartList({ path }: { path: string }) {
   return (
-    <nav className="flex flex-row justify-between flex-wrap gap-2 my-2">
+    <nav className="flex flex-row justify-between flex-wrap gap-2">
       {Object.values(Products).map((part) => (
         <LinkButton
           image={`/images/icons/${part}.png`}
@@ -42,11 +42,8 @@ type LinkButtonProps = {
 function LinkButton({ image, dark_image, title, link }: LinkButtonProps) {
   if (!dark_image) dark_image = image;
 
-  const normal =
-    "flex flex-row rounded-xl border-2 border-line p-1 md:border-4 hover:border-blue-500";
-  const dark = "dark:hover:bg-blue-500";
   return (
-    <Link className={`${normal} ${dark}`} href={link}>
+    <RedirectButton className="flex flex-row" href={link}>
       <picture className="size-6 md:size-8">
         <Image
           src={image}
@@ -63,7 +60,7 @@ function LinkButton({ image, dark_image, title, link }: LinkButtonProps) {
           height="128"
         />
       </picture>
-      <p className="pl-2 md:my-auto md:text-xl font-medium">{title}</p>
-    </Link>
+      <p className="pl-2 md:my-auto md:text-xl">{title}</p>
+    </RedirectButton>
   );
 }

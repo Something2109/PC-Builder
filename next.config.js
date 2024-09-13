@@ -3,6 +3,9 @@ const nextConfig = {
   env: {
     seller: "kccshop",
   },
+  experimental: {
+    serverComponentsExternalPackages: ['sequelize'],
+  },
   images: {
     remotePatterns: [
       {
