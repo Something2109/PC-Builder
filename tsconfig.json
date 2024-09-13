@@ -6,6 +6,7 @@
       "@/components/*": ["components/*"],
       "@/css/*": ["public/stylesheets/*"],
       "@/models/*": ["models/*"],
+      "@/utils/*": ["utils/*"],
       "@/images/*": ["public/images/*"]
     },
     "target": "ES2015",
