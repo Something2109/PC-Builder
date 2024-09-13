@@ -1,9 +1,12 @@
 import {
-  BaseInformation,
-  BaseModelOptions,
-  BasePartTable,
-  Tables,
-} from "../interface";
+  DataTypes,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+} from "sequelize";
+import { BaseModelOptions, Tables } from "../interface";
+import { PartInformation } from "./Part";
 
 type FanSize = 120 | 140;
 
@@ -27,7 +30,9 @@ type HardDriveSupport = {
   combo: number;
 };
 
-class Case extends BasePartTable {
+class Case extends Model<InferAttributes<Case>, InferCreationAttributes<Case>> {
+  declare id: ForeignKey<string>;
+
   declare form_factor: string;
   declare width: number;
   declare length: number;
@@ -50,9 +55,73 @@ class Case extends BasePartTable {
 }
 
 Case.init(
-  { ...BaseInformation },
+  {
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+    },
+
+    form_factor: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    width: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    length: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    height: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    io_ports: {
+      type: DataTypes.VIRTUAL,
+    },
+    mb_support: {
+      type: DataTypes.VIRTUAL,
+    },
+
+    expansion_slot: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    max_cooler_height: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    aio_support: {
+      type: DataTypes.VIRTUAL,
+    },
+    fan_support: {
+      type: DataTypes.VIRTUAL,
+    },
+    hard_drive_support: {
+      type: DataTypes.VIRTUAL,
+    },
+
+    psu_support: {
+      type: DataTypes.VIRTUAL,
+    },
+    max_psu_length: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+  },
   {
     ...BaseModelOptions,
     modelName: Tables.CASE,
   }
 );
+
+PartInformation.hasOne(Case, {
+  foreignKey: "id",
+});
+Case.belongsTo(PartInformation, {
+  foreignKey: "id",
+});
+
+export { Case };

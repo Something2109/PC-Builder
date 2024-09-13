@@ -88,11 +88,7 @@ class Articles implements DatabaseObject {
       if (save) {
         return {
           type: "article",
-          title: save.title,
-          author: save.author,
-          standfirst: save.standfirst,
-          createdAt: save.createdAt,
-          content: save.content,
+          ...save.toJSON(),
         };
       }
     } catch (error) {
@@ -106,13 +102,8 @@ class Articles implements DatabaseObject {
       if (Object.values(Products).includes(part)) {
         const { type, ...data } = article;
 
-        let save = await Article.findOne({ where: { topic, part } });
-
-        if (!save) {
-          save = Article.build({ topic, part, ...data });
-        } else {
-          save.set({ ...data });
-        }
+        let [save] = await Article.findOrBuild({ where: { topic, part } });
+        save.set({ ...data });
 
         await save.save();
 

@@ -1,12 +1,16 @@
-import { DataTypes } from "sequelize";
 import {
-  BasePartTable,
-  BaseInformation,
-  BaseModelOptions,
-  Tables,
-} from "../interface";
+  DataTypes,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+} from "sequelize";
+import { BaseModelOptions, Tables } from "../interface";
+import { PartInformation } from "./Part";
 
-class RAM extends BasePartTable {
+class SSD extends Model<InferAttributes<SSD>, InferCreationAttributes<SSD>> {
+  declare id: ForeignKey<string>;
+
   declare memory_type: string;
   declare read_speed: number;
   declare write_speed: number;
@@ -19,9 +23,13 @@ class RAM extends BasePartTable {
   declare protocol_version: number;
 }
 
-RAM.init(
+SSD.init(
   {
-    ...BaseInformation,
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+    },
 
     memory_type: { type: DataTypes.STRING, allowNull: false },
     read_speed: { type: DataTypes.INTEGER },
@@ -40,4 +48,11 @@ RAM.init(
   }
 );
 
-export { RAM };
+PartInformation.hasOne(SSD, {
+  foreignKey: "id",
+});
+SSD.belongsTo(PartInformation, {
+  foreignKey: "id",
+});
+
+export { SSD };

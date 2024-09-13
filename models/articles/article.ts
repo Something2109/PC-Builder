@@ -59,11 +59,10 @@ export class Article
   declare title: string;
   declare author: string;
   declare standfirst: string;
-  declare createdAt: Date;
+  declare createdAt: CreationOptional<Date>;
   declare content: ContentType[];
 
   declare content_json: CreationOptional<string>;
-  declare created_at: CreationOptional<Date>;
 }
 
 Article.init(
@@ -91,10 +90,7 @@ Article.init(
       allowNull: false,
     },
     createdAt: {
-      type: DataTypes.VIRTUAL,
-      get() {
-        return new Date(this.getDataValue("created_at"));
-      },
+      type: DataTypes.DATE,
     },
     content: {
       type: DataTypes.VIRTUAL,
@@ -107,7 +103,6 @@ Article.init(
       },
     },
 
-    created_at: { type: DataTypes.DATE, defaultValue: new Date() },
     content_json: {
       type: DataTypes.TEXT,
       allowNull: false,
