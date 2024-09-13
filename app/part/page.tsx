@@ -1,5 +1,5 @@
 "use client";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
 import { useEffect, useState, useId } from "react";
 import ListItem from "./_component/PartItem";
