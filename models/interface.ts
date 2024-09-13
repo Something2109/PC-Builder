@@ -11,6 +11,7 @@ enum Topics {
 enum Products {
   CPU = "cpu",
   GPU = "gpu",
+  GRAPHIC_CARD = "graphic_card",
   MAIN = "mainboard",
   RAM = "ram",
   SSD = "ssd",
