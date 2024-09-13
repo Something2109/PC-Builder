@@ -1,6 +1,6 @@
 import { APIWebsiteInfo } from "../../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 
 const domain = "https://gearvn.com";
 const mapping: { [key in Products]?: string } = {

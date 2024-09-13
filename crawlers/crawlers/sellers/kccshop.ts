@@ -1,6 +1,6 @@
-import { APIWebsiteInfo } from "../crawler";
+import { APIWebsiteInfo } from "../../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://kccshop.vn";
@@ -21,50 +21,54 @@ const mapping: { [key in Products]?: string } = {
 const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
   domain,
 
-  save: "parts",
+  save: "sellers",
 
   path(product: Products, page = 1) {
     if (mapping[product]) {
       const url = new URL(`${domain}/${mapping[product]}/`);
       url.searchParams.set("page", page.toString());
 
-      return { url, page, product };
+      return { url, type: "page", page, product };
     }
 
     return null;
   },
 
   async extract(link, response) {
+    if (link.type != "page") return { list: [], links: [] };
+
     const dom = new JSDOM(await response.text()).window.document;
     const itemContainer = dom.getElementById("js-category-holder");
 
     if (itemContainer) {
-      const list = [...dom.querySelectorAll(".p-item")];
+      const list = [...dom.querySelectorAll(".p-item")].map((raw) => ({
+        raw,
+      }));
 
-      return { list, pages: link.page + 1 };
+      return { list, links: [], pages: link.page + 1 };
     }
 
-    if (dom.querySelector(".alert-mess")) return { list: [], pages: null };
+    if (dom.querySelector(".alert-mess")) return { list: [], links: [] };
 
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse(item) {
-    const name = item.querySelector(".p-name")?.textContent;
+  parse({ raw }) {
+    const name = raw.querySelector(".p-name")?.textContent;
     const price =
       Number(
-        item
+        raw
           .querySelector(".p-price")
           ?.textContent?.replaceAll(".", "")
           .match(/\d+/)
       ) ?? 0;
-    const link = `https://kccshop.vn${item
+    const link = `https://kccshop.vn${raw
       .querySelector(".p-img")
       ?.getAttribute("href")}`;
-    const img = `https://kccshop.vn${item
+    const img = `https://kccshop.vn${raw
       .querySelector(".p-img")
       ?.children[0].getAttribute("src")}`;
-    const availability = Boolean(item.querySelector(".color-green"));
+    const availability = Boolean(raw.querySelector(".color-green"));
 
     return new SellerProduct({ name, price, link, img, availability });
   },

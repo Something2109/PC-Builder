@@ -1,6 +1,7 @@
 import { Article, ArticleSummary, ArticleType } from "./articles/article";
-import { Products, Connection } from "./interface";
+import { Connection } from "./interface";
 import { SellerProduct } from "./sellers/SellerProduct";
+import { Products } from "@/utils/Enum";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import path from "path";

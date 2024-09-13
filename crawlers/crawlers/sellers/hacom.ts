@@ -1,6 +1,6 @@
 import { APIWebsiteInfo } from "../../crawler";
 import { SellerProduct } from "@/models/sellers/SellerProduct";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 
 const domain = "https://hacom.vn";
 const mapping: { [key in Products]?: string } = {
@@ -39,7 +39,7 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
 
   save: "sellers",
 
-  path(product, page = 1) {
+  path(product: Products, page = 1) {
     if (mapping[product]) {
       const url = new URL(`${domain}/ajax/get_json.php`);
 
