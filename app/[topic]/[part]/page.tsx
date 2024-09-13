@@ -2,7 +2,7 @@ import { Article } from "@/components/article";
 import { RedirectButton } from "@/components/utils/Button";
 import { ArticleType } from "@/models/articles/article";
 import { Database } from "@/models/Database";
-import { Products } from "@/models/interface";
+import { Products } from "@/utils/Enum";
 import { notFound, redirect } from "next/navigation";
 
 export default async function PartTopicPage({
