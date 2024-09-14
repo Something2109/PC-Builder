@@ -9,6 +9,8 @@ import { BaseModelOptions, Tables } from "@/models/interface";
 
 type PartInformationType = {
   id: CreationOptional<string>;
+
+  part: string;
   name: string;
   code_name: string;
   brand: string;

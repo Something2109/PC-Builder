@@ -1,6 +1,5 @@
 import { Options, Sequelize } from "sequelize";
 import mysql2 from "mysql2";
-require("dotenv").config();
 
 enum Tables {
   ARTICLE = "article",
@@ -14,6 +13,9 @@ enum Tables {
   HDD = "hdd",
   PSU = "psu",
   CASE = "case",
+  COOLER = "cooler",
+  AIO = "aio",
+  FAN = "fan",
 }
 
 if (
