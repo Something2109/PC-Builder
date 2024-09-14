@@ -1,10 +1,30 @@
 import { Article, ArticleSummary, ArticleType } from "./articles/article";
+import { PartInformation, PartInformationType } from "./parts/Part";
 import { Connection } from "./interface";
 import { SellerProduct } from "./sellers/SellerProduct";
 import { Products } from "@/utils/Enum";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import path from "path";
+import {
+  InferAttributes,
+  Model,
+  ModelStatic,
+  Op,
+  WhereOptions,
+} from "sequelize";
+import { CPU } from "./parts/CPU";
+import { GPU } from "./parts/GPU";
+import { GraphicCard } from "./parts/GraphicCard";
+import { Mainboard } from "./parts/Mainboard";
+import { RAM } from "./parts/RAM";
+import { SSD } from "./parts/SSD";
+import { HDD } from "./parts/HDD";
+import { PSU } from "./parts/PSU";
+import { Case } from "./parts/Case";
+import { Cooler } from "./parts/Cooler";
+import { AIO } from "./parts/AIO";
+import { Fan } from "./parts/Fan";
 
 class MockDatabase {
   private static path = "./data";
@@ -12,23 +32,31 @@ class MockDatabase {
     [key in string]: DatabaseObject;
   } = {};
 
+  static initiate() {
+    this.objects.introduction = new Articles(this.path);
+    this.objects.sellers = new Seller(this.path);
+    this.objects.images = new Images();
+
+    Connection.sync();
+  }
+
   static get articles(): Readonly<Articles> {
     if (!this.objects.introduction) {
-      this.objects.introduction = new Articles(this.path);
+      this.initiate();
     }
     return this.objects.introduction as Articles;
   }
 
   static get sellers(): Readonly<Seller> {
     if (!this.objects.sellers) {
-      this.objects.sellers = new Seller(this.path);
+      this.initiate();
     }
     return this.objects.sellers as Seller;
   }
 
   static get images(): Readonly<Images> {
     if (!this.objects.images) {
-      this.objects.images = new Images();
+      this.initiate();
     }
     return this.objects.images as Images;
   }
@@ -199,7 +227,5 @@ class Seller implements DatabaseObject {
     };
   }
 }
-
-Connection.sync();
 
 export { MockDatabase as Database };
