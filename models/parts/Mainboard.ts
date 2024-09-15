@@ -1,11 +1,19 @@
-import { DataTypes } from "sequelize";
 import {
-  BaseInformation,
-  BaseModelOptions,
-  BasePartTable,
-  Tables,
-} from "../interface";
-class Mainboard extends BasePartTable {
+  DataTypes,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+} from "sequelize";
+import { BaseModelOptions, Tables } from "../interface";
+import { PartInformation } from "./Part";
+
+class Mainboard extends Model<
+  InferAttributes<Mainboard>,
+  InferCreationAttributes<Mainboard>
+> {
+  declare id: ForeignKey<string>;
+
   declare form_factor: string;
 
   declare socket: string;
@@ -18,9 +26,29 @@ class Mainboard extends BasePartTable {
 
 Mainboard.init(
   {
-    ...BaseInformation,
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+    },
 
     socket: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    form_factor: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    ram_type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    expansion_slots: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    io_ports: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -30,5 +58,12 @@ Mainboard.init(
     modelName: Tables.MAIN,
   }
 );
+
+PartInformation.hasOne(Mainboard, {
+  foreignKey: "id",
+});
+Mainboard.belongsTo(PartInformation, {
+  foreignKey: "id",
+});
 
 export { Mainboard };

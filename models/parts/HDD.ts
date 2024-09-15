@@ -1,12 +1,16 @@
-import { DataTypes } from "sequelize";
 import {
-  BaseInformation,
-  BaseModelOptions,
-  BasePartTable,
-  Tables,
-} from "../interface";
+  DataTypes,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+} from "sequelize";
+import { BaseModelOptions, Tables } from "../interface";
+import { PartInformation } from "./Part";
 
-class HDD extends BasePartTable {
+class HDD extends Model<InferAttributes<HDD>, InferCreationAttributes<HDD>> {
+  declare id: ForeignKey<string>;
+
   declare rotational_speed: number;
   declare read_speed: number;
   declare write_speed: number;
@@ -20,7 +24,11 @@ class HDD extends BasePartTable {
 
 HDD.init(
   {
-    ...BaseInformation,
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+    },
 
     rotational_speed: { type: DataTypes.INTEGER },
     read_speed: { type: DataTypes.INTEGER },
@@ -37,5 +45,12 @@ HDD.init(
     modelName: Tables.HDD,
   }
 );
+
+PartInformation.hasOne(HDD, {
+  foreignKey: "id",
+});
+HDD.belongsTo(PartInformation, {
+  foreignKey: "id",
+});
 
 export { HDD };

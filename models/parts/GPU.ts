@@ -1,10 +1,13 @@
-import { DataTypes } from "sequelize";
 import {
-  BaseInformation,
-  BaseModelOptions,
-  BasePartTable,
-  Tables,
-} from "../interface";
+  CreationOptional,
+  DataTypes,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+} from "sequelize";
+import { BaseModelOptions, Tables } from "../interface";
+import { PartInformation } from "./Part";
 
 type GPUCore = {
   [key in string]: {
@@ -21,7 +24,29 @@ type GraphicFeatures = {
   CUDA?: string;
 };
 
-class GPU extends BasePartTable {
+type GPUType = {
+  core_count?: number;
+  execution_unit?: number;
+  base_frequency?: number;
+  boost_frequency?: number;
+  extra_cores: GPUCore;
+
+  memory_size?: number;
+  memory_type?: string;
+  memory_bus?: number;
+
+  tdp: number;
+  minimum_psu?: number;
+
+  features: GraphicFeatures;
+
+  extra_cores_json: string | null;
+  features_json: string | null;
+};
+
+class GPU extends Model<InferAttributes<GPU>, InferCreationAttributes<GPU>> {
+  declare id: ForeignKey<string>;
+
   declare core_count?: number;
   declare execution_unit?: number;
   declare base_frequency?: number;
@@ -36,11 +61,18 @@ class GPU extends BasePartTable {
   declare minimum_psu?: number;
 
   declare features: GraphicFeatures;
+
+  declare extra_cores_json: CreationOptional<string | null>;
+  declare features_json: CreationOptional<string | null>;
 }
 
 GPU.init(
   {
-    ...BaseInformation,
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+    },
 
     core_count: {
       type: DataTypes.INTEGER,
@@ -49,20 +81,19 @@ GPU.init(
       type: DataTypes.INTEGER,
     },
     extra_cores: {
-      type: DataTypes.STRING,
-      async get(): Promise<GPUCore | undefined> {
-        const data = this.getDataValue("extra_cores");
+      type: DataTypes.VIRTUAL,
+      get(): GPUCore | undefined {
+        const data = this.getDataValue("extra_cores_json");
         if (data) {
           return JSON.parse(data) as GPUCore;
         }
         return undefined;
       },
-      async set(value: GPUCore | undefined) {
+      set(value: GPUCore | undefined) {
         if (value) {
-          this.setDataValue("extra_cores", JSON.stringify(value));
-        } else {
-          this.setDataValue("extra_cores", null);
+          this.setDataValue("extra_cores_json", JSON.stringify(value));
         }
+        this.setDataValue("extra_cores_json", null);
       },
     },
     base_frequency: {
@@ -88,15 +119,27 @@ GPU.init(
     },
 
     features: {
-      type: DataTypes.TEXT,
-      async get(): Promise<GraphicFeatures> {
-        const json = this.getDataValue("features");
+      type: DataTypes.VIRTUAL,
+      get(): GraphicFeatures | null {
+        const json = this.getDataValue("features_json");
+        if (json) {
+          return JSON.parse(json) as GraphicFeatures;
+        }
+        return null;
+      },
+      set(value: GraphicFeatures | null) {
+        if (value) {
+          this.setDataValue("features_json", JSON.stringify(value));
+        }
+        this.setDataValue("features_json", null);
+      },
+    },
 
-        return JSON.parse(json) as GraphicFeatures;
-      },
-      async set(value: GraphicFeatures) {
-        this.setDataValue("features", JSON.stringify(value));
-      },
+    extra_cores_json: {
+      type: DataTypes.STRING,
+    },
+    features_json: {
+      type: DataTypes.TEXT,
     },
   },
   {
@@ -114,5 +157,12 @@ GPU.init(
     },
   }
 );
+
+PartInformation.hasOne(GPU, {
+  foreignKey: "id",
+});
+GPU.belongsTo(PartInformation, {
+  foreignKey: "id",
+});
 
 export { GPU, type GraphicFeatures };
