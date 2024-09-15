@@ -1,16 +1,20 @@
 import { Database } from "@/models/Database";
 import { Products } from "@/utils/Enum";
-import { SellerProduct } from "@/models/sellers/SellerProduct";
+import { PartInformationType } from "@/models/parts/Part";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const responseList: {
-    [key in Products]?: SellerProduct[];
+    [key in Products]?: PartInformationType[];
   } = {};
 
-  Object.values(Products).forEach((product) => {
-    responseList[product] = Database.sellers.getProducts(product, 1, 10).list;
-  });
+  const promises = Object.values(Products).map((product) =>
+    Database.parts
+      .list({ part: [product], limit: 10 })
+      .then((data) => (responseList[product] = data.list))
+  );
+
+  await Promise.all(promises);
 
   return NextResponse.json(responseList);
 }

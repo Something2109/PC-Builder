@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params: { part } }: { params: { part: string } }
+  { params: { part, id } }: { params: { part: string; id: string } }
 ) {
   let page = Number(request.nextUrl.searchParams.get("page"));
   if (page < 1) {
@@ -12,9 +12,11 @@ export async function GET(
   }
 
   if (Object.values(Products).includes(part as Products)) {
-    const data = await Database.parts.list({ part: [part as Products], page });
+    const article = await Database.parts.get(part as Products, id);
 
-    return NextResponse.json(data);
+    if (article) {
+      return NextResponse.json(article);
+    }
   }
 
   return NextResponse.json(
