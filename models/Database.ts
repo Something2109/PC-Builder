@@ -1,5 +1,5 @@
 import { Article, ArticleSummary, ArticleType } from "./articles/article";
-import { PartInformation, PartInformationType } from "./parts/Part";
+import { PartInformation } from "./parts/Part";
 import { Connection } from "./interface";
 import { SellerProduct } from "./sellers/SellerProduct";
 import { Products } from "@/utils/Enum";
@@ -25,6 +25,7 @@ import { Case } from "./parts/Case";
 import { Cooler } from "./parts/Cooler";
 import { AIO } from "./parts/AIO";
 import { Fan } from "./parts/Fan";
+import { PartType } from "@/utils/interface/Parts";
 
 class MockDatabase {
   private static path = "./data";
@@ -309,7 +310,7 @@ class PartPick implements DatabaseObject {
     return { total: 0, list: [] };
   }
 
-  async get(part: Products, id: string) {
+  async get(part: Products, id: string): Promise<PartType.BasicInfo | null> {
     try {
       const save = await PartInformation.findByPk(id, {
         include: {
@@ -325,6 +326,22 @@ class PartPick implements DatabaseObject {
     }
 
     return null;
+  }
+
+  async raw(part: Products, id: string) {
+    try {
+      const save = await PartInformation.findByPk(id, {
+        attributes: ["raw"],
+      });
+
+      if (save) {
+        return save.raw;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    return undefined;
   }
 }
 

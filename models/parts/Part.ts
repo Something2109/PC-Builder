@@ -6,30 +6,17 @@ import {
   Model,
 } from "sequelize";
 import { BaseModelOptions, Tables } from "@/models/interface";
-
-type PartInformationType = {
-  id: CreationOptional<string>;
-
-  part: string;
-  name: string;
-  code_name: string;
-  brand: string;
-  family?: string;
-  series: string;
-
-  launch_date?: Date;
-  url?: string;
-  image_url?: string;
-};
+import { PartType } from "@/utils/interface/Parts";
 
 class PartInformation
   extends Model<
     InferAttributes<PartInformation>,
     InferCreationAttributes<PartInformation>
   >
-  implements PartInformationType
+  implements PartType.BasicInfo
 {
   declare id: CreationOptional<string>;
+
   declare part: string;
   declare name: string;
   declare code_name: string;
@@ -40,6 +27,7 @@ class PartInformation
   declare launch_date?: Date;
   declare url?: string;
   declare image_url?: string;
+
   declare raw?: string;
 }
 
@@ -100,4 +88,4 @@ PartInformation.init(
   }
 );
 
-export { PartInformation, type PartInformationType };
+export { PartInformation };

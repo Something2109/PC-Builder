@@ -8,6 +8,7 @@ import {
 } from "sequelize";
 import { BaseModelOptions, Tables } from "../interface";
 import { PartInformation } from "./Part";
+import { PartType } from "@/utils/interface/Parts";
 
 type GPUCore = {
   [key in string]: {
@@ -24,26 +25,6 @@ type GraphicFeatures = {
   CUDA?: string;
 };
 
-type GPUType = {
-  core_count?: number;
-  execution_unit?: number;
-  base_frequency?: number;
-  boost_frequency?: number;
-  extra_cores: GPUCore;
-
-  memory_size?: number;
-  memory_type?: string;
-  memory_bus?: number;
-
-  tdp: number;
-  minimum_psu?: number;
-
-  features: GraphicFeatures;
-
-  extra_cores_json: string | null;
-  features_json: string | null;
-};
-
 class GPU extends Model<InferAttributes<GPU>, InferCreationAttributes<GPU>> {
   declare id: ForeignKey<string>;
 
@@ -51,7 +32,7 @@ class GPU extends Model<InferAttributes<GPU>, InferCreationAttributes<GPU>> {
   declare execution_unit?: number;
   declare base_frequency?: number;
   declare boost_frequency?: number;
-  declare extra_cores: GPUCore;
+  declare extra_cores: PartType.GPU.Core;
 
   declare memory_size?: number;
   declare memory_type?: string;
@@ -85,11 +66,11 @@ GPU.init(
       get(): GPUCore | undefined {
         const data = this.getDataValue("extra_cores_json");
         if (data) {
-          return JSON.parse(data) as GPUCore;
+          return JSON.parse(data) as PartType.GPU.Core;
         }
         return undefined;
       },
-      set(value: GPUCore | undefined) {
+      set(value: PartType.GPU.Core | undefined) {
         if (value) {
           this.setDataValue("extra_cores_json", JSON.stringify(value));
         }
@@ -120,14 +101,14 @@ GPU.init(
 
     features: {
       type: DataTypes.VIRTUAL,
-      get(): GraphicFeatures | null {
+      get(): PartType.GPU.Features | null {
         const json = this.getDataValue("features_json");
         if (json) {
-          return JSON.parse(json) as GraphicFeatures;
+          return JSON.parse(json) as PartType.GPU.Features;
         }
         return null;
       },
-      set(value: GraphicFeatures | null) {
+      set(value: PartType.GPU.Features | null) {
         if (value) {
           this.setDataValue("features_json", JSON.stringify(value));
         }
@@ -165,4 +146,11 @@ GPU.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { GPU, type GraphicFeatures };
+PartInformation.hasOne(GPU, {
+  foreignKey: "id",
+});
+GPU.belongsTo(PartInformation, {
+  foreignKey: "id",
+});
+
+export { GPU };
