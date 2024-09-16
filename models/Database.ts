@@ -2,7 +2,7 @@ import { Article, ArticleSummary, ArticleType } from "./articles/article";
 import { PartInformation } from "./parts/Part";
 import { Connection } from "./interface";
 import { SellerProduct } from "./sellers/SellerProduct";
-import { Products } from "@/utils/Enum";
+import { Products, Topics } from "@/utils/Enum";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import path from "path";
@@ -97,7 +97,7 @@ class Articles implements DatabaseObject {
   }
 
   async getSummary(criteria: {
-    topic: string;
+    topic: Topics;
     part?: Products;
   }): Promise<ArticleSummary[]> {
     try {

@@ -13,7 +13,9 @@ export async function GET(
       );
     }
 
-    const article = await Database.articles.getSummary(params.topic as Topics);
+    const article = await Database.articles.getSummary({
+      topic: params.topic as Topics,
+    });
 
     return NextResponse.json(article);
   } catch (err) {
