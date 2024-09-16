@@ -8,39 +8,11 @@ import {
 } from "sequelize";
 import { BaseModelOptions, Tables } from "../interface";
 import { PartInformation } from "./Part";
-
-type APICPUCore = {
-  [key in string]: {
-    count?: number;
-
-    base_frequency: number;
-    turbo_frequency?: number;
-  };
-};
-
-type CPUType = {
-  socket: string;
-  total_cores: number;
-  total_threads: number;
-  base_frequency?: number;
-  turbo_frequency?: number;
-  cores?: APICPUCore;
-
-  L2_cache?: number;
-  L3_cache?: number;
-  max_memory?: number;
-  max_memory_channel?: number;
-  max_memory_bandwidth?: number;
-
-  tdp: number;
-  lithography: string;
-
-  core_json: CreationOptional<string | null>;
-};
+import { PartType } from "@/utils/interface/Parts";
 
 class CPU
   extends Model<InferAttributes<CPU>, InferCreationAttributes<CPU>>
-  implements CPUType
+  implements PartType.CPU.Info
 {
   declare id: ForeignKey<string>;
 
@@ -49,7 +21,7 @@ class CPU
   declare total_threads: number;
   declare base_frequency?: number;
   declare turbo_frequency?: number;
-  declare cores?: APICPUCore;
+  declare cores?: PartType.CPU.Core;
 
   declare L2_cache?: number;
   declare L3_cache?: number;
@@ -94,14 +66,14 @@ CPU.init(
     },
     cores: {
       type: DataTypes.VIRTUAL,
-      get(): APICPUCore | undefined {
+      get(): PartType.CPU.Core | undefined {
         const json = this.getDataValue("core_json");
         if (json) {
-          return JSON.parse(json) as APICPUCore;
+          return JSON.parse(json) as PartType.CPU.Core;
         }
         return undefined;
       },
-      set(value: APICPUCore | undefined) {
+      set(value: PartType.CPU.Core | undefined) {
         if (value) {
           const json = JSON.stringify(value);
           this.setDataValue("core_json", json);
@@ -164,4 +136,4 @@ CPU.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { CPU, type CPUType, type APICPUCore };
+export { CPU };
