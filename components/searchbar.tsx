@@ -39,13 +39,18 @@ export function SearchBar({ q, part }: { q?: string; part?: string }) {
     }, 500);
   };
 
+  const onBlur = () => {
+    clearTimeout(timeout);
+    setSearch("");
+  };
+
   const onEnter = () => {
+    input.current?.blur();
     const search = input.current?.value;
     if (search && search.length > 0) {
       timeout = setTimeout(() => {
         clearTimeout(timeout);
         router.push(`/search?q=${search}`);
-        setResult([]);
       }, 500);
     }
   };
@@ -59,6 +64,8 @@ export function SearchBar({ q, part }: { q?: string; part?: string }) {
           type="text"
           placeholder="Search"
           className=" focus:outline-none w-full bg-transparent border-black dark:border-line"
+          onFocus={onChange}
+          onBlur={onBlur}
           onChange={onChange}
           onKeyDown={(e) => {
             if (e.key == "Enter") onEnter();
