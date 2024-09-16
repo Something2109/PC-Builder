@@ -91,7 +91,7 @@ export function AddRow({
   }
 
   return (
-    <RowWrapper>
+    <RowWrapper className="justify-center">
       <Button onClick={() => add({ type: "section", title: "", content: [] })}>
         Add Section
       </Button>

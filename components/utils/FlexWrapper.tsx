@@ -4,7 +4,7 @@ export function RowWrapper({
   className,
   ...rest
 }: HTMLAttributes<HTMLDivElement>) {
-  let classList = ["flex flex-row gap-1 justify-center"];
+  let classList = ["flex flex-row gap-1"];
   if (className) {
     classList.push(className);
   }
@@ -16,7 +16,7 @@ export function ColumnWrapper({
   className,
   ...rest
 }: HTMLAttributes<HTMLDivElement>) {
-  let classList = ["flex flex-col gap-1 justify-center"];
+  let classList = ["flex flex-col gap-1"];
   if (className) {
     classList.push(className);
   }

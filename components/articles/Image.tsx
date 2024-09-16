@@ -76,7 +76,7 @@ export function PictureInput({
   }, []);
 
   return (
-    <RowWrapper className="border-2 rounded-xl p-3">
+    <RowWrapper className="border-2 rounded-xl p-3 justify-between">
       <picture className="*:mx-auto *:my-2 text-center">
         {img}
         <InputArea
@@ -86,7 +86,7 @@ export function PictureInput({
           onChange={(e) => (content.caption = e.target.value)}
         />
       </picture>
-      <ColumnWrapper>
+      <ColumnWrapper className="justify-center">
         <Button onClick={updateSelf.shiftUp}>Up</Button>
         {content.src.length === 0 ? (
           <Button onClick={updateSelf.remove}>Remove</Button>
