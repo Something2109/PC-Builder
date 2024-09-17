@@ -14,7 +14,12 @@ export default function PaginationBar({
   if (total > 0) {
     if (current > 1) {
       components.push(
-        <PaginationButton path={path} title={"<"} num={current - 1} />
+        <PaginationButton
+          key="Pagination-Back"
+          path={path}
+          title={"<"}
+          num={current - 1}
+        />
       );
     }
 
@@ -23,14 +28,24 @@ export default function PaginationBar({
     for (let i = min; i <= max; i++) {
       if (i !== current) {
         components.push(
-          <PaginationButton path={path} title={String(i)} num={i} />
+          <PaginationButton
+            key={`Pagination-${i}`}
+            path={path}
+            title={String(i)}
+            num={i}
+          />
         );
       }
     }
 
     if (current < total) {
       components.push(
-        <PaginationButton path={path} title={">"} num={current + 1} />
+        <PaginationButton
+          key="Pagination-Forward"
+          path={path}
+          title={">"}
+          num={current + 1}
+        />
       );
     }
   }
