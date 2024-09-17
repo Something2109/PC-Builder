@@ -3,12 +3,12 @@
 import { PartInformation as PartInformationType } from "@/models/parts/Part";
 import { useRouter } from "next/navigation";
 import { ChangeEventHandler, useEffect, useRef, useState } from "react";
-import { ColumnWrapper } from "./utils/FlexWrapper";
+import { ColumnWrapper, RowWrapper } from "./utils/FlexWrapper";
 
 export function SearchBar({ q, part }: { q?: string; part?: string }) {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
-  const [search, setSearch] = useState<string>(q ?? "");
+  const [search, setSearch] = useState<string>("");
   const [result, setResult] = useState<PartInformationType[]>([]);
   let timeout: NodeJS.Timeout | undefined = undefined;
 
@@ -56,8 +56,8 @@ export function SearchBar({ q, part }: { q?: string; part?: string }) {
   };
 
   return (
-    <div className="flex flex-col rounded-2xl border-2">
-      <div className="flex flex-row my-1 px-4">
+    <ColumnWrapper className="rounded-2xl border-2 py-1">
+      <RowWrapper className="px-4">
         <input
           ref={input}
           defaultValue={q}
@@ -74,21 +74,21 @@ export function SearchBar({ q, part }: { q?: string; part?: string }) {
         <button type="button" onClick={onEnter}>
           Search
         </button>
-      </div>
+      </RowWrapper>
 
-      <ColumnWrapper>
+      <ColumnWrapper className="empty:hidden">
         {result.map((value) => {
           return (
             <a
               href={`/part/${value.part}/${value.id}`}
               key={`search-${value.id}`}
-              className="px-4 py-1 rounded-2xl hover:bg-line"
+              className="px-4 py-1 rounded-xl hover:bg-line dark:hover:text-background"
             >
               {value.name}
             </a>
           );
         })}
       </ColumnWrapper>
-    </div>
+    </ColumnWrapper>
   );
 }
