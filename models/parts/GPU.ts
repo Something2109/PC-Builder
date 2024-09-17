@@ -10,23 +10,12 @@ import { BaseModelOptions, Tables } from "../interface";
 import { PartInformation } from "./Part";
 import { PartType } from "@/utils/interface/Parts";
 
-type GPUCore = {
-  [key in string]: {
-    generation?: number;
-    count?: number;
-  };
-};
-
-type GraphicFeatures = {
-  DirectX?: string;
-  OpenGL?: string;
-  OpenCL?: string;
-  Vulkan?: string;
-  CUDA?: string;
-};
-
-class GPU extends Model<InferAttributes<GPU>, InferCreationAttributes<GPU>> {
+class GPU
+  extends Model<InferAttributes<GPU>, InferCreationAttributes<GPU>>
+  implements PartType.GPU.Info
+{
   declare id: ForeignKey<string>;
+  declare family?: string;
 
   declare core_count?: number;
   declare execution_unit?: number;
@@ -41,7 +30,7 @@ class GPU extends Model<InferAttributes<GPU>, InferCreationAttributes<GPU>> {
   declare tdp: number;
   declare minimum_psu?: number;
 
-  declare features: GraphicFeatures;
+  declare features: PartType.GPU.Features;
 
   declare extra_cores_json: CreationOptional<string | null>;
   declare features_json: CreationOptional<string | null>;
@@ -63,7 +52,7 @@ GPU.init(
     },
     extra_cores: {
       type: DataTypes.VIRTUAL,
-      get(): GPUCore | undefined {
+      get(): PartType.GPU.Core | undefined {
         const data = this.getDataValue("extra_cores_json");
         if (data) {
           return JSON.parse(data) as PartType.GPU.Core;

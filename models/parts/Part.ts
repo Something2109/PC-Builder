@@ -21,7 +21,6 @@ class PartInformation
   declare name: string;
   declare code_name: string;
   declare brand: string;
-  declare family?: string;
   declare series: string;
 
   declare launch_date?: Date;
@@ -54,9 +53,6 @@ PartInformation.init(
     brand: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    family: {
-      type: DataTypes.STRING,
     },
     series: {
       type: DataTypes.STRING,

@@ -1,10 +1,11 @@
 export namespace PartType {
   export type BasicInfo = {
+    id: string;
+
     part: string;
     name: string;
     code_name: string;
     brand: string;
-    family?: string;
     series: string;
 
     launch_date?: Date;
@@ -23,6 +24,8 @@ export namespace PartType {
     };
 
     export type Info = {
+      family?: string;
+
       socket: string;
       total_cores: number;
       total_threads: number;
@@ -58,6 +61,8 @@ export namespace PartType {
     };
 
     export type Info = {
+      family?: string;
+
       core_count?: number;
       execution_unit?: number;
       base_frequency?: number;
