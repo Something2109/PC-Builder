@@ -7,7 +7,7 @@ export default function PartPicture({
   part: PartType.BasicInfo;
   className?: string;
 }) {
-  const classlist = ["aspect-square *:m-auto"];
+  const classlist = ["rounded-lg bg-white aspect-square *:m-auto"];
   if (className) {
     classlist.push(className);
   }
@@ -15,22 +15,15 @@ export default function PartPicture({
 
   return (
     <picture className={classlist.join(" ")}>
-      {image_url ? (
-        <img src={image_url} alt={name} className={imgClass} />
-      ) : (
-        <>
-          <img
-            src={`/images/icons/${part}.png`}
-            alt={name}
-            className={`dark:hidden ${imgClass}`}
-          />
-          <img
-            src={`/images/icons/${part}-dark.png`}
-            alt={name}
-            className={`hidden dark:block ${imgClass}`}
-          />
-        </>
-      )}
+      <img
+        src={image_url ?? ""}
+        alt={name}
+        className={imgClass}
+        onError={({ currentTarget }) => {
+          currentTarget.onerror = null;
+          currentTarget.src = `/images/icons/${part}.png`;
+        }}
+      />
     </picture>
   );
 }
