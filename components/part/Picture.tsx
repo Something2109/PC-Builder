@@ -1,3 +1,5 @@
+"use client";
+
 import { PartType } from "@/utils/interface/Parts";
 
 export default function PartPicture({
@@ -12,16 +14,17 @@ export default function PartPicture({
     classlist.push(className);
   }
   const imgClass = "max-w-full max-h-full";
+  const defaultUrl = `/images/icons/${part}.png`;
 
   return (
     <picture className={classlist.join(" ")}>
       <img
-        src={image_url ?? ""}
+        src={image_url ?? defaultUrl}
         alt={name}
         className={imgClass}
         onError={({ currentTarget }) => {
           currentTarget.onerror = null;
-          currentTarget.src = `/images/icons/${part}.png`;
+          currentTarget.src = defaultUrl;
         }}
       />
     </picture>
