@@ -15,6 +15,7 @@ class CPU
   implements PartType.CPU.Info
 {
   declare id: ForeignKey<string>;
+  declare family: string;
 
   declare socket: string;
   declare total_cores: number;
@@ -42,6 +43,9 @@ CPU.init(
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
+    },
+    family: {
+      type: DataTypes.STRING,
     },
 
     socket: {
