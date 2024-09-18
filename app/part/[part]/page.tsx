@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import PaginationBar from "@/components/pagination";
 import { SearchBar } from "@/components/searchbar";
-import PartPanel from "@/components/part/Panel";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
+import PartTable from "@/components/part/Table";
 
 export default function PartListPage({ params }: { params: { part: string } }) {
   const [page, setPage] = useState(1);
@@ -25,15 +25,13 @@ export default function PartListPage({ params }: { params: { part: string } }) {
 
   return (
     <>
-      <RowWrapper className="w-full justify-between">
-        <h1 id="list">{`${data.total} ${params.part.toLocaleUpperCase()}`}</h1>
+      <RowWrapper className="w-full justify-between items-center">
+        <h1 className="text-xl font-bold" id="list">{`${
+          data.total
+        } ${params.part.toLocaleUpperCase()}`}</h1>
         <SearchBar part={params.part} />
       </RowWrapper>
-      <div className="grid grid-cols-1 lg:grid-cols-5 xl:grid-flow-col-6 gap-1 xl:gap-3">
-        {data.list.map((item: any, index) => (
-          <PartPanel item={item} key={index} />
-        ))}
-      </div>
+      <PartTable data={data.list} />
       <PaginationBar
         path={setPage}
         current={page}
