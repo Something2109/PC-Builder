@@ -13,6 +13,12 @@ export namespace PartType {
     image_url?: string;
   };
 
+  type ParticularAttributes = "id" | "name" | "code_name" | "url" | "image_url";
+
+  export type Filterables = Exclude<keyof BasicInfo, ParticularAttributes>;
+
+  export type FilterOptions = FilterOptionsType<BasicInfo, Filterables>;
+
   export namespace CPU {
     export type Core = {
       [key in string]: {
@@ -42,6 +48,17 @@ export namespace PartType {
       tdp: number;
       lithography: string;
     };
+
+    type BasicAttributes =
+      | "socket"
+      | "total_cores"
+      | "total_threads"
+      | "base_frequency"
+      | "turbo_frequency"
+      | "L3_cache"
+      | "tdp";
+
+    export type Filterables = BasicAttributes;
   }
 
   export namespace GPU {
@@ -78,5 +95,46 @@ export namespace PartType {
 
       features: Features;
     };
+
+    type BasicAttributes =
+      | "base_frequency"
+      | "boost_frequency"
+      | "memory_size"
+      | "memory_type"
+      | "tdp"
+      | "minimum_psu";
+
+    export type Filterables = BasicAttributes;
+  }
+
+  export namespace GraphicCard {
+    export type Info = {
+      width: number;
+      length: number;
+      height: number;
+
+      base_frequency: number;
+      boost_frequency: number;
+
+      pcie?: number;
+      minimum_psu?: number;
+      power_connector?: string;
+
+      gpu?: GPU.Info;
+    };
+
+    type BasicAttributes =
+      | "width"
+      | "length"
+      | "height"
+      | "base_frequency"
+      | "boost_frequency"
+      | "minimum_psu";
+
+    export type Filterables = BasicAttributes;
   }
 }
+
+type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
+  [key in Attributes]?: Required<Info>[key][];
+};

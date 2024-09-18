@@ -1,7 +1,7 @@
 import { Products } from "./Enum";
 
-class Extract {
-  static ProductRegexp = (() => {
+class SearchString {
+  private static ProductRegexp = (() => {
     const result: any = {};
 
     Object.values(Products).forEach((value) => {
@@ -14,7 +14,7 @@ class Extract {
     return result as Record<Products, RegExp>;
   })();
 
-  static products(str: string) {
+  static toProducts(str: string) {
     const part: Products[] = [];
 
     Object.entries(this.ProductRegexp).forEach(([key, regexp]) => {
@@ -29,4 +29,4 @@ class Extract {
   }
 }
 
-export { Extract };
+export { SearchString };
