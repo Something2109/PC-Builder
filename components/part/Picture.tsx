@@ -9,7 +9,7 @@ export default function PartPicture({
   part: PartType.BasicInfo;
   className?: string;
 }) {
-  const classlist = ["rounded-lg bg-white aspect-square *:m-auto"];
+  const classlist = ["rounded-lg bg-white aspect-square *:m-auto p-1"];
   if (className) {
     classlist.push(className);
   }
