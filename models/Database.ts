@@ -259,15 +259,18 @@ class PartPick implements DatabaseObject {
     };
   }
 
-  async list(options: FilterOptions & PageOptions) {
+  async list(options?: PartType.FilterOptions & PageOptions) {
     try {
-      const part = options.part;
-      const page = (options?.page ?? 1) - 1;
-      const limit = options?.limit ?? 50;
+      let { page, limit, ...rest } = options ?? {};
+      page = (page ?? 1) - 1;
+      limit = limit ?? 50;
 
-      const total = await PartInformation.count({ where: { part } });
-      const save = await PartInformation.findAll({
-        where: { part },
+      const total = await PartInformation.scope({
+        method: ["filter", rest],
+      }).count();
+      const save = await PartInformation.scope({
+        method: ["filter", rest],
+      }).findAll({
         limit,
         offset: page * limit,
       });
@@ -280,22 +283,19 @@ class PartPick implements DatabaseObject {
     return { total: 0, list: [] };
   }
 
-  async search(str: string, options?: FilterOptions & PageOptions) {
+  async search(str: string, options?: PartType.FilterOptions & PageOptions) {
     try {
-      const page = (options?.page ?? 1) - 1;
-      const limit = options?.limit ?? 50;
+      let { page, limit, ...rest } = options ?? {};
+      page = (page ?? 1) - 1;
+      limit = limit ?? 50;
 
-      const where: WhereOptions<InferAttributes<PartInformation>> = {
-        name: { [Op.like]: `%${str}%` },
-      };
-
-      if (options && options.part) {
-        where.part = { [Op.in]: options.part };
-      }
-
-      const total = await PartInformation.count({ where });
-      const save = await PartInformation.findAll({
-        where,
+      const total = await PartInformation.scope({
+        method: ["filter", rest],
+      }).count({ where: { name: { [Op.like]: `%${str}%` } } });
+      const save = await PartInformation.scope({
+        method: ["filter", rest],
+      }).findAll({
+        where: { name: { [Op.like]: `%${str}%` } },
         limit,
         offset: page * limit,
       });
@@ -344,11 +344,6 @@ class PartPick implements DatabaseObject {
     return undefined;
   }
 }
-
-type FilterOptions = {
-  brand?: string;
-  part?: Products[];
-};
 
 type PageOptions = {
   page?: number;
