@@ -86,10 +86,10 @@ GraphicCard.init(
   }
 );
 
-PartInformation.hasOne(GPU, {
+PartInformation.hasOne(GraphicCard, {
   foreignKey: "id",
 });
-GPU.belongsTo(PartInformation, {
+GraphicCard.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
