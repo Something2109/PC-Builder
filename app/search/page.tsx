@@ -3,21 +3,25 @@ import PartPanel from "@/components/part/Panel";
 import { SearchBar } from "@/components/searchbar";
 import { Database } from "@/models/Database";
 import { Extract } from "@/utils/Extract";
+import { SearchParams } from "@/utils/SearchParams";
 
 export default async function Page({
-  searchParams: { q, page },
+  searchParams,
 }: {
-  searchParams: { q?: string; page?: number };
+  searchParams: { [key: string]: string };
 }) {
-  q = q ?? "";
-  page = Number(page ?? 1);
+  let search = searchParams["q"] ?? "";
 
-  const { str, part } = Extract.products(q);
-  const data = await Database.parts.search(str, {
-    page,
-    limit: 50,
-    part: part.length > 0 ? part : undefined,
-  });
+  const params = new URLSearchParams(searchParams);
+  const options = {
+    ...SearchParams.toFilterOptions(params),
+    ...SearchParams.toPageOptions(params),
+  };
+
+  const { str, part } = Extract.products(search);
+  if (!options.part && part.length > 0) options.part = part;
+
+  const data = await Database.parts.search(str, options);
 
   if (!data) {
     return;
@@ -25,7 +29,7 @@ export default async function Page({
 
   return (
     <>
-      <SearchBar q={q} />
+      <SearchBar q={search} />
       <h1 id="list">{`${data.total} Result${data.total > 1 ? "s" : ""}`}</h1>
       <div className="grid grid-cols-1 lg:grid-cols-5 xl:grid-flow-col-6 gap-1 xl:gap-3">
         {data.list.map((item: any, index) => (
@@ -33,8 +37,8 @@ export default async function Page({
         ))}
       </div>
       <PaginationBar
-        path={`/search?q=${q}`}
-        current={page}
+        path={`/search?q=${search}`}
+        current={options.page}
         total={Math.floor(data.total / 50)}
       />
     </>

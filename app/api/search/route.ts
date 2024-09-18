@@ -1,22 +1,20 @@
 import { Database } from "@/models/Database";
-import { Products } from "@/utils/Enum";
 import { Extract } from "@/utils/Extract";
+import { SearchParams } from "@/utils/SearchParams";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   let search = request.nextUrl.searchParams.get("q") ?? "";
-  const partParams = request.nextUrl.searchParams.get("part");
-  const page = Number(request.nextUrl.searchParams.get("page") ?? "1");
-  const limit = Number(request.nextUrl.searchParams.get("limit") ?? "50");
 
-  let { str, part } = Extract.products(search);
-  if (partParams) part = partParams.split(",") as Products[];
+  const options = {
+    ...SearchParams.toFilterOptions(request.nextUrl.searchParams),
+    ...SearchParams.toPageOptions(request.nextUrl.searchParams),
+  };
 
-  const responseList = await Database.parts.search(str, {
-    page,
-    limit,
-    part: part.length > 0 ? part : undefined,
-  });
+  const { str, part } = Extract.products(search);
+  if (!options.part && part.length > 0) options.part = part;
+
+  const responseList = await Database.parts.search(str, options);
 
   return NextResponse.json(responseList);
 }
