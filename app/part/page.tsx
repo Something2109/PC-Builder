@@ -2,12 +2,13 @@
 import { Products } from "@/utils/Enum";
 import { useEffect, useState } from "react";
 import PartPanel from "@/components/part/Panel";
-import { PartInformationType } from "@/models/parts/Part";
+import { PartType } from "@/utils/interface/Parts";
+import { SearchBar } from "@/components/searchbar";
 
 export default function List() {
   const [data, setList] = useState<Record<
     Products,
-    PartInformationType[]
+    PartType.BasicInfo[]
   > | null>();
   const [error, setError] = useState(null);
 
@@ -26,6 +27,7 @@ export default function List() {
 
   return (
     <>
+      <SearchBar />
       {Object.entries(data).map(([key, value]) => {
         return (
           <div key={`${key}-${value.length}`}>
