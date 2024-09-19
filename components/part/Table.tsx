@@ -1,12 +1,16 @@
 import { PartType } from "@/utils/interface/Parts";
 import { RowWrapper } from "../utils/FlexWrapper";
 import PartPicture from "./Picture";
+import { TableHTMLAttributes } from "react";
 
 const tableRow = "*:p-2 border-b-2 xl:table-row";
 
-export default function PartTable({ data }: { data: PartType.BasicInfo[] }) {
+export default function PartTable({
+  data,
+  ...rest
+}: { data: PartType.BasicInfo[] } & TableHTMLAttributes<HTMLTableElement>) {
   return (
-    <table className="w-full xl:w-3/4">
+    <table {...rest}>
       <thead className="font-bold">
         <tr className={`hidden ${tableRow}`}>
           <td>Name</td>
