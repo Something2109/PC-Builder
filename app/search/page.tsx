@@ -2,7 +2,7 @@ import PaginationBar from "@/components/pagination";
 import PartPanel from "@/components/part/Panel";
 import { SearchBar } from "@/components/searchbar";
 import { Database } from "@/models/Database";
-import { Extract } from "@/utils/Extract";
+import { SearchString } from "@/utils/SearchString";
 import { SearchParams } from "@/utils/SearchParams";
 
 export default async function Page({
@@ -18,7 +18,7 @@ export default async function Page({
     ...SearchParams.toPageOptions(params),
   };
 
-  const { str, part } = Extract.products(search);
+  const { str, part } = SearchString.toProducts(search);
   if (!options.part && part.length > 0) options.part = part;
 
   const data = await Database.parts.search(str, options);
