@@ -1,4 +1,5 @@
 import PartPicture from "@/components/part/Picture";
+import { RedirectButton } from "@/components/utils/Button";
 import { ColumnWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
 import { ObjectTable } from "@/components/utils/ObjectTable";
 import { Database } from "@/models/Database";
@@ -26,6 +27,11 @@ export default async function PartDetailPage({
         <ColumnWrapper className="w-2/3 p-5">
           <h1 className="text-4xl font-bold">{name}</h1>
           <ObjectTable object={rest} />
+          {url ? (
+            <RedirectButton href={url} target="_blank">
+              To brand page
+            </RedirectButton>
+          ) : undefined}
         </ColumnWrapper>
       </RowWrapper>
       <RowWrapper className="w-full align-top">
