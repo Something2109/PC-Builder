@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, InputHTMLAttributes } from "react";
 
 const normal =
   "block rounded-lg lg:rounded-xl border-2 border-line p-1 md:border-4 text-center font-medium";
@@ -18,6 +18,18 @@ function Button({
   return <button type="button" className={classList.join(" ")} {...rest} />;
 }
 
+function SubmitButton({
+  className,
+  ...rest
+}: InputHTMLAttributes<HTMLInputElement>) {
+  let classList = [normal, light, dark];
+  if (className) {
+    classList.push(className);
+  }
+
+  return <input type="submit" className={classList.join(" ")} {...rest} />;
+}
+
 function RedirectButton({ className, ...rest }: Parameters<typeof Link>[0]) {
   let classList = [normal, light, dark];
   if (className) {
@@ -27,4 +39,4 @@ function RedirectButton({ className, ...rest }: Parameters<typeof Link>[0]) {
   return <Link className={classList.join(" ")} {...rest} />;
 }
 
-export { Button, RedirectButton };
+export { Button, SubmitButton, RedirectButton };
