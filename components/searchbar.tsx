@@ -63,7 +63,7 @@ export function SearchBar({ q, part }: { q?: string; part?: string }) {
           defaultValue={q}
           type="text"
           placeholder="Search"
-          className=" focus:outline-none w-full bg-transparent border-black dark:border-line"
+          className=" focus:outline-none w-full bg-transparent"
           onFocus={onChange}
           onBlur={onBlur}
           onChange={onChange}
