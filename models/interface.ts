@@ -16,6 +16,7 @@ enum Tables {
   COOLER = "cooler",
   AIO = "aio",
   FAN = "fan",
+  RETAIL_PRODUCT = "retail_product",
 }
 
 if (
