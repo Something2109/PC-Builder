@@ -1,11 +1,13 @@
-import { DataTypes } from "sequelize";
 import {
-  BasePartTable,
-  BaseInformation,
-  BaseModelOptions,
-  Tables,
-} from "../interface";
+  DataTypes,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+} from "sequelize";
+import { BaseModelOptions, Tables } from "../interface";
 import { GPU } from "./GPU";
+import { PartInformation } from "./Part";
 
 type APIDisplayInterface = {
   HDMI?: number;
@@ -13,7 +15,12 @@ type APIDisplayInterface = {
   DVI_D?: number;
 };
 
-class GraphicCard extends BasePartTable {
+class GraphicCard extends Model<
+  InferAttributes<GraphicCard>,
+  InferCreationAttributes<GraphicCard>
+> {
+  declare id: ForeignKey<string>;
+
   declare width: number;
   declare length: number;
   declare height: number;
@@ -25,12 +32,16 @@ class GraphicCard extends BasePartTable {
   declare minimum_psu?: number;
   declare power_connector?: string;
 
-  declare gpu_id: string;
+  declare gpu_id: ForeignKey<string>;
 }
 
 GraphicCard.init(
   {
-    ...BaseInformation,
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+    },
 
     width: {
       type: DataTypes.FLOAT,
@@ -63,6 +74,11 @@ GraphicCard.init(
     power_connector: {
       type: DataTypes.STRING,
     },
+
+    gpu_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
   },
   {
     ...BaseModelOptions,
@@ -70,17 +86,18 @@ GraphicCard.init(
   }
 );
 
+PartInformation.hasOne(GraphicCard, {
+  foreignKey: "id",
+});
+GraphicCard.belongsTo(PartInformation, {
+  foreignKey: "id",
+});
+
 GPU.hasMany(GraphicCard, {
-  foreignKey: {
-    name: "gpu_id",
-    allowNull: false,
-  },
+  foreignKey: "gpu_id",
 });
 GraphicCard.belongsTo(GPU, {
-  foreignKey: {
-    name: "gpu_id",
-    allowNull: false,
-  },
+  foreignKey: "gpu_id",
 });
 
 export { GraphicCard, type APIDisplayInterface };

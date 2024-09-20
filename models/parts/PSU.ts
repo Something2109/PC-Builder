@@ -1,12 +1,16 @@
-import { DataTypes } from "sequelize";
 import {
-  BasePartTable,
-  BaseInformation,
-  BaseModelOptions,
-  Tables,
-} from "../interface";
+  DataTypes,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+} from "sequelize";
+import { BaseModelOptions, Tables } from "../interface";
+import { PartInformation } from "./Part";
 
-class PSU extends BasePartTable {
+class PSU extends Model<InferAttributes<PSU>, InferCreationAttributes<PSU>> {
+  declare id: ForeignKey<string>;
+
   declare wattage: number;
   declare efficiency: string;
 
@@ -24,7 +28,14 @@ class PSU extends BasePartTable {
 
 PSU.init(
   {
-    ...BaseInformation,
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+    },
+
+    wattage: { type: DataTypes.INTEGER, allowNull: false },
+    efficiency: { type: DataTypes.STRING, allowNull: false },
 
     form_factor: { type: DataTypes.STRING, allowNull: false },
     width: { type: DataTypes.INTEGER, allowNull: false },
@@ -42,5 +53,12 @@ PSU.init(
     modelName: Tables.PSU,
   }
 );
+
+PartInformation.hasOne(PSU, {
+  foreignKey: "id",
+});
+PSU.belongsTo(PartInformation, {
+  foreignKey: "id",
+});
 
 export { PSU };

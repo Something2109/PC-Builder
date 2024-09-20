@@ -1,27 +1,28 @@
-import { DataTypes } from "sequelize";
 import {
-  BasePartTable,
-  BaseInformation,
-  BaseModelOptions,
-  Tables,
-} from "../interface";
+  CreationOptional,
+  DataTypes,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+} from "sequelize";
+import { BaseModelOptions, Tables } from "../interface";
+import { PartInformation } from "./Part";
+import { PartType } from "@/utils/interface/Parts";
 
-type APICPUCore = {
-  [key in string]: {
-    count?: number;
+class CPU
+  extends Model<InferAttributes<CPU>, InferCreationAttributes<CPU>>
+  implements PartType.CPU.Info
+{
+  declare id: ForeignKey<string>;
+  declare family: string;
 
-    base_frequency: number;
-    turbo_frequency?: number;
-  };
-};
-
-class CPU extends BasePartTable {
   declare socket: string;
   declare total_cores: number;
   declare total_threads: number;
   declare base_frequency?: number;
   declare turbo_frequency?: number;
-  declare cores?: APICPUCore;
+  declare cores?: PartType.CPU.Core;
 
   declare L2_cache?: number;
   declare L3_cache?: number;
@@ -32,11 +33,20 @@ class CPU extends BasePartTable {
 
   declare tdp: number;
   declare lithography: string;
+
+  declare core_json: CreationOptional<string | null>;
 }
 
 CPU.init(
   {
-    ...BaseInformation,
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+    },
+    family: {
+      type: DataTypes.STRING,
+    },
 
     socket: {
       type: DataTypes.STRING,
@@ -59,23 +69,22 @@ CPU.init(
       allowNull: true,
     },
     cores: {
-      type: DataTypes.STRING,
-      async get(): Promise<APICPUCore | null> {
-        const json = this.getDataValue("cores");
+      type: DataTypes.VIRTUAL,
+      get(): PartType.CPU.Core | undefined {
+        const json = this.getDataValue("core_json");
         if (json) {
-          return JSON.parse(json) as APICPUCore;
+          return JSON.parse(json) as PartType.CPU.Core;
         }
-        return json;
+        return undefined;
       },
-      async set(value: APICPUCore | undefined) {
+      set(value: PartType.CPU.Core | undefined) {
         if (value) {
           const json = JSON.stringify(value);
-          this.setDataValue("cores", json);
+          this.setDataValue("core_json", json);
         } else {
-          this.setDataValue("cores", null);
+          this.setDataValue("core_json", null);
         }
       },
-      allowNull: true,
     },
     L2_cache: {
       type: DataTypes.FLOAT,
@@ -106,6 +115,10 @@ CPU.init(
     lithography: {
       type: DataTypes.STRING,
     },
+
+    core_json: {
+      type: DataTypes.STRING,
+    },
   },
   {
     ...BaseModelOptions,
@@ -120,4 +133,11 @@ CPU.init(
   }
 );
 
-export { CPU, type APICPUCore };
+PartInformation.hasOne(CPU, {
+  foreignKey: "id",
+});
+CPU.belongsTo(PartInformation, {
+  foreignKey: "id",
+});
+
+export { CPU };
