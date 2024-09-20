@@ -30,6 +30,18 @@ function SubmitButton({
   return <input type="submit" className={classList.join(" ")} {...rest} />;
 }
 
+function InputButton({
+  className,
+  ...rest
+}: InputHTMLAttributes<HTMLInputElement>) {
+  let classList = [normal, light, dark];
+  if (className) {
+    classList.push(className);
+  }
+
+  return <input className={classList.join(" ")} {...rest} />;
+}
+
 function RedirectButton({ className, ...rest }: Parameters<typeof Link>[0]) {
   let classList = [normal, light, dark];
   if (className) {
@@ -39,4 +51,4 @@ function RedirectButton({ className, ...rest }: Parameters<typeof Link>[0]) {
   return <Link className={classList.join(" ")} {...rest} />;
 }
 
-export { Button, SubmitButton, RedirectButton };
+export { Button, SubmitButton, InputButton, RedirectButton };
