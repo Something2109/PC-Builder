@@ -13,7 +13,7 @@ export default function PartPicture({
   if (className) {
     classlist.push(className);
   }
-  const imgClass = "max-w-full max-h-full";
+  const imgClass = "max-w-full max-h-full size-full";
   const defaultUrl = `/images/icons/${part}.png`;
 
   return (
