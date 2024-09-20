@@ -8,8 +8,6 @@ const FilterOptions: {
   part: (param: string | null) => split(param),
   brand: (param: string | null) => split(param),
   series: (param: string | null) => split(param),
-  launch_date: (param: string | null) =>
-    split(param).map((value) => new Date(value)),
 };
 
 function split(param: string | null): string[] | null {
