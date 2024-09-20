@@ -36,7 +36,7 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
     };
   },
 
-  parse({ raw, result }) {
+  async parse({ raw, result }) {
     const col_num: number = raw.rows[0].cells.length;
     let property_idx = 0;
 

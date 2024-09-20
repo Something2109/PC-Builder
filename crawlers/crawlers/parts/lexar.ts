@@ -65,13 +65,14 @@ const CrawlInfo: APIWebsiteInfo<Element[], Record<string, string>[]> = {
       const result = link.result as Record<string, string>;
       result["Model"] = model;
 
-      list.push({ raw, result });
+      list.push({ raw, result: [result] });
 
       return list;
     },
   },
 
-  parse: function ({ raw, result }) {
+  parse: async ({ raw, result }) => {
+    result = result ?? [];
     result.push(
       ...raw.map((table) => {
         const data: Record<string, string> = {};

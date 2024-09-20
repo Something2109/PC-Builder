@@ -98,7 +98,7 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
     },
   },
 
-  parse({
+  async parse({
     raw,
     result,
   }: {

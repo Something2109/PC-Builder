@@ -106,7 +106,8 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
     },
   },
 
-  parse({ raw, result }) {
+  async parse({ raw, result }) {
+    result = result ?? {};
     raw.querySelectorAll(".list-descr").forEach((row) => {
       const [title, content] = row.querySelectorAll(".list-block");
       if (title && content && title.textContent && content.textContent) {

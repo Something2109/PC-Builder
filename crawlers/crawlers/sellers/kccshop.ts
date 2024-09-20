@@ -1,5 +1,5 @@
 import { APIWebsiteInfo } from "../../crawler";
-import { SellerProduct } from "@/models/sellers/SellerProduct";
+import { RetailProduct, SellerProduct } from "@/models/sellers/SellerProduct";
 import { Products } from "@/utils/Enum";
 import { JSDOM } from "jsdom";
 
@@ -53,8 +53,8 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse({ raw }) {
-    const name = raw.querySelector(".p-name")?.textContent;
+  async parse({ raw }) {
+    const name = raw.querySelector(".p-name")?.textContent!;
     const price =
       Number(
         raw
@@ -69,6 +69,10 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
       .querySelector(".p-img")
       ?.children[0].getAttribute("src")}`;
     const availability = Boolean(raw.querySelector(".color-green"));
+
+    const [save] = await RetailProduct.findOrBuild({ where: { link } });
+    save.set({ name, price, img, availability });
+    await save.save();
 
     return new SellerProduct({ name, price, link, img, availability });
   },

@@ -1,5 +1,5 @@
 import { APIWebsiteInfo } from "../../crawler";
-import { SellerProduct } from "@/models/sellers/SellerProduct";
+import { RetailProduct, SellerProduct } from "@/models/sellers/SellerProduct";
 import { Products } from "@/utils/Enum";
 import { JSDOM } from "jsdom";
 
@@ -60,8 +60,8 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
     return { list, links: [], pages };
   },
 
-  parse({ raw }) {
-    const name = raw.querySelector(".product-name")?.textContent;
+  async parse({ raw }) {
+    const name = raw.querySelector(".product-name")?.textContent!;
     const link = `${domain}${raw
       .querySelector(".image_thumb")
       ?.getAttribute("href")}`;
@@ -79,6 +79,10 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
           .match(/\d+/)
       );
     }
+
+    const [save] = await RetailProduct.findOrBuild({ where: { link } });
+    save.set({ name, price, img, availability });
+    await save.save();
 
     return new SellerProduct({ name, price, link, img, availability });
   },

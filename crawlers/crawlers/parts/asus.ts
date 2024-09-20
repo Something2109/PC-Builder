@@ -75,7 +75,9 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
     },
   },
 
-  parse({ raw, result }) {
+  async parse({ raw, result }) {
+    result = result ?? {};
+
     let rowClass = ".TechSpec__rowTable__1LR9D",
       titleClass = ".rowTableTitle",
       contentClass = ".rowTableItemViewBox",

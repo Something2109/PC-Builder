@@ -1,5 +1,5 @@
 import { APIWebsiteInfo } from "../../crawler";
-import { SellerProduct } from "@/models/sellers/SellerProduct";
+import { RetailProduct, SellerProduct } from "@/models/sellers/SellerProduct";
 import { Products } from "@/utils/Enum";
 
 const domain = "https://gearvn.com";
@@ -73,14 +73,18 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, SellerProduct> = {
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse({ raw }) {
-    return new SellerProduct({
-      name: raw.title,
-      price: Number(raw.variants[0].price),
-      link: `${domain}/products/${raw.handle}`,
-      img: raw.image.src,
-      availability: raw.available,
-    });
+  async parse({ raw }) {
+    const name = raw.title;
+    const price = Number(raw.variants[0].price);
+    const link = `${domain}/products/${raw.handle}`;
+    const img = raw.image.src;
+    const availability = raw.available;
+
+    const [save] = await RetailProduct.findOrBuild({ where: { link } });
+    save.set({ name, price, img, availability });
+    await save.save();
+
+    return new SellerProduct({ name, price, link, img, availability });
   },
 };
 

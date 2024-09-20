@@ -55,8 +55,9 @@ const CrawlInfo: APIWebsiteInfo<Document, Record<string, string>> = {
     },
   },
 
-  parse({ raw, result }) {
+  async parse({ raw, result }) {
     let table = raw.querySelector(".c-table__main");
+    result = result ?? {};
 
     if (!table) {
       throw new Error(`Cannot find content table`);

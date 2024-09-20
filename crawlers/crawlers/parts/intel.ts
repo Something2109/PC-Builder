@@ -69,7 +69,7 @@ const CrawlInfo: APIWebsiteInfo<Document, any> = {
     },
   },
 
-  parse: function ({ raw, result }) {
+  parse: async ({ raw, result }) => {
     const title = raw.querySelector(".product-family-title-text .h1");
 
     if (title && title.textContent) {

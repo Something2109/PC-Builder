@@ -85,7 +85,7 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
     },
   },
 
-  parse: function ({ raw, result }) {
+  parse: async ({ raw, result }) => {
     const model = raw.querySelector(".text-center h3")?.textContent;
     if (model) {
       result["Model"] = model.trim();
