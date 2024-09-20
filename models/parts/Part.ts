@@ -50,6 +50,7 @@ PartInformation.init(
     },
     code_name: {
       type: DataTypes.STRING,
+      unique: true,
       allowNull: false,
     },
     brand: {
@@ -122,17 +123,6 @@ const filter: {
       [Op.in]: filter,
     },
   }),
-  launch_date: (filter: Date[]) => {
-    if (filter.length > 1) {
-      filter.sort();
-      return {
-        launch_date: {
-          [Op.between]: [filter[0], filter[filter.length - 1]],
-        },
-      };
-    }
-    return {};
-  },
 };
 
 export { PartInformation };
