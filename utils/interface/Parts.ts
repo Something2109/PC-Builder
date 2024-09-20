@@ -13,7 +13,13 @@ export namespace PartType {
     image_url?: string;
   };
 
-  type ParticularAttributes = "id" | "name" | "code_name" | "url" | "image_url";
+  type ParticularAttributes =
+    | "id"
+    | "name"
+    | "code_name"
+    | "url"
+    | "image_url"
+    | "launch_date";
 
   export type Filterables = Exclude<keyof BasicInfo, ParticularAttributes>;
 
