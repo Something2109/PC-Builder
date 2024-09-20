@@ -12,7 +12,7 @@ export default function PartTable({
 }: { data: PartType.BasicInfo[] } & TableHTMLAttributes<HTMLTableElement>) {
   return (
     <table {...rest}>
-      <thead className="font-bold sticky top-32 border-b-2 bg-white dark:bg-background">
+      <thead className="font-bold sticky top-32 border-b-2 bg-white dark:bg-background transition-all ease-in-out duration-500 delay-0">
         <tr className={`hidden ${tableRow}`}>
           <td>Name</td>
           <td>Brand</td>
