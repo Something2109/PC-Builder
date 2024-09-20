@@ -14,8 +14,8 @@ try {
     throw new Error(`The file in ${filedir} is not a crawler`);
   }
 
-  Crawler.add(info);
-  Crawler.crawl();
+  const crawler = new Crawler(info);
+  crawler.crawl();
 } catch (err) {
   console.log(err);
 }

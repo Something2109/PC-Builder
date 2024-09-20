@@ -20,19 +20,19 @@ type ProductLink = {
 
 type CrawlLink = PageLink | ProductLink;
 
-type ExtractFunction<RawType> =
-  | DefaultExtractFunction<RawType>
+type ExtractFunction<RawType, ReturnType> =
+  | DefaultExtractFunction<RawType, ReturnType>
   | {
       page: ExtractPageFunction;
 
-      product: ExtractProductFunction<RawType>;
+      product: ExtractProductFunction<RawType, ReturnType>;
     };
 
-type DefaultExtractFunction<RawType> = (
+type DefaultExtractFunction<RawType, ReturnType> = (
   link: CrawlLink,
   response: Response
 ) => Promise<{
-  list: ParseInput<RawType, unknown>[];
+  list: ParseInput<RawType, ReturnType>[];
   links: CrawlLink[];
   pages?: number;
 }>;
@@ -45,19 +45,19 @@ type ExtractPageFunction = (
   pages?: number;
 }>;
 
-type ExtractProductFunction<RawType> = (
+type ExtractProductFunction<RawType, ReturnType> = (
   link: ProductLink,
   response: Response
-) => Promise<ParseInput<RawType, unknown>[]>;
+) => Promise<ParseInput<RawType, ReturnType>[]>;
 
 type ParseInput<RawType, ReturnType> = {
   raw: RawType;
   result?: ReturnType;
 };
 
-type Result = {
+type Result<T> = {
   product: Products;
-  list: unknown[];
+  list: T[];
 };
 
 type ProductMapping = { [key in Products]?: any[] };
@@ -83,23 +83,23 @@ interface APIWebsiteInfo<RawType, ReturnType> {
    * Extract the data list from the response object.
    * @param response The response object to extract data.
    */
-  extract: ExtractFunction<RawType>;
+  extract: ExtractFunction<RawType, ReturnType>;
 
   /**
    * Parse each item from the result of the extract function to the useful data.
    * @param raw The raw data object to parse from.
    */
-  parse(input: Required<ParseInput<RawType, ReturnType>>): ReturnType;
+  parse(input: ParseInput<RawType, ReturnType>): Promise<ReturnType>;
 }
 
 const FetchEachLoop = 10;
 const DelayTime = 5000;
 
-class Crawler {
-  private static info: APIWebsiteInfo<unknown, unknown>;
-  private static dataPath = path.join(".", "data");
-  private static requests: CrawlLink[] = [];
-  private static errors: { link: CrawlLink; error: unknown }[] = [];
+class Crawler<RawType, ReturnType> {
+  private readonly info: APIWebsiteInfo<RawType, ReturnType>;
+  private dataPath = path.join(".", "data");
+  private requests: CrawlLink[] = [];
+  private errors: { link: CrawlLink; error: unknown }[] = [];
 
   /**
    * Specify if the parameter object is a crawler object.
@@ -122,11 +122,7 @@ class Crawler {
     );
   }
 
-  /**
-   * Add a website to initiate crawl.
-   * @param info The info to crawl.
-   */
-  static add(info: APIWebsiteInfo<unknown, unknown>): void {
+  constructor(info: APIWebsiteInfo<RawType, ReturnType>) {
     this.info = info;
   }
 
@@ -134,23 +130,32 @@ class Crawler {
    * The crawl function.
    * Call this to start the crawling process.
    */
-  static async crawl(products?: Products[]) {
+  async crawl(products?: Products[]) {
     if (!this.info) {
       throw new Error("No website info specified");
     }
 
     this.start(products);
 
-    const result: Result[] = [];
+    const result: Result<ReturnType>[] = [];
 
     while (this.requests.length > 0) {
       const promises = this.requests
         .splice(0, FetchEachLoop)
         .map((link) => this.fetchRequest(link));
 
-      result.push(
-        ...(await Promise.all(promises)).filter((result) => result != null)
+      const responses = (await Promise.all(promises)).filter(
+        (result) => result != null
       );
+
+      const returnResult = responses.map(({ list, product }) =>
+        Promise.all(list.map((raw) => this.parseRaw(raw))).then((result) => ({
+          list: result.filter((value) => value !== null),
+          product,
+        }))
+      );
+
+      result.push(...(await Promise.all(returnResult)));
 
       await new Promise((resolve) => setTimeout(resolve, DelayTime));
     }
@@ -173,7 +178,7 @@ class Crawler {
    * by adding the new fetch request to the request queue
    * from the website list.
    */
-  private static start(products?: Products[]) {
+  private start(products?: Products[]) {
     if (!products) {
       products = Object.values(Products);
     }
@@ -191,7 +196,9 @@ class Crawler {
    * @param param The request object of the process.
    * @returns The result of the process.
    */
-  private static async fetchRequest(link: CrawlLink): Promise<Result | null> {
+  private async fetchRequest(
+    link: CrawlLink
+  ): Promise<Result<ParseInput<RawType, ReturnType>> | null> {
     const { url, method, body } = link;
 
     console.log(`fetching ${url}`);
@@ -201,7 +208,7 @@ class Crawler {
         throw new Error(`Response code: ${response.status}`);
       }
 
-      let list: ParseInput<unknown, unknown>[] = [],
+      let list: ParseInput<RawType, ReturnType>[] = [],
         links: CrawlLink[] = [],
         pages;
 
@@ -225,11 +232,7 @@ class Crawler {
 
       return {
         product: link.product,
-        list: list.map(({ raw, result }) => {
-          if (!result) result = {};
-
-          return this.info.parse({ raw, result });
-        }),
+        list,
       };
     } catch (err: unknown) {
       const error = err as Error;
@@ -241,13 +244,26 @@ class Crawler {
     return null;
   }
 
+  private async parseRaw(
+    raw: ParseInput<RawType, ReturnType>
+  ): Promise<ReturnType | null> {
+    try {
+      return await this.info.parse(raw);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error(`Error parsing ${raw}.`);
+      console.error(error);
+    }
+    return null;
+  }
+
   /**
    * Get the next requests of the request data and
    * push it to the request queue.
    * @param param0 The current request object.
    * @param pages The number of next requests from the current one.
    */
-  private static next(link: PageLink, pages: number) {
+  private next(link: PageLink, pages: number) {
     let nextPage = link.page;
     while (nextPage < pages) {
       nextPage++;
@@ -260,7 +276,7 @@ class Crawler {
    * @param result The result of the requests.
    * @returns The mapped data object.
    */
-  private static map(result: Result[]): Record<string, ProductMapping> {
+  private map(result: Result<ReturnType>[]): Record<string, ProductMapping> {
     const data: Record<string, ProductMapping> = {};
 
     result.forEach(({ product, list }) => {
@@ -287,7 +303,7 @@ class Crawler {
    * Save the mapped data object to the file system.
    * @param result The mapped data object.
    */
-  private static save(result: Record<string, ProductMapping>) {
+  private save(result: Record<string, ProductMapping>) {
     if (!fs.existsSync(this.dataPath)) {
       fs.mkdirSync(this.dataPath);
     }
