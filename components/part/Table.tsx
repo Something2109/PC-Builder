@@ -3,7 +3,8 @@ import { RowWrapper } from "../utils/FlexWrapper";
 import PartPicture from "./Picture";
 import { TableHTMLAttributes } from "react";
 
-const tableRow = "*:p-2 border-b-2 xl:table-row";
+const tableRow = "*:p-2 border-b-2 lg:table-row";
+const label = "lg:hidden";
 
 export default function PartTable({
   data,
@@ -11,7 +12,7 @@ export default function PartTable({
 }: { data: PartType.BasicInfo[] } & TableHTMLAttributes<HTMLTableElement>) {
   return (
     <table {...rest}>
-      <thead className="font-bold">
+      <thead className="font-bold sticky top-32 border-b-2 bg-white dark:bg-background">
         <tr className={`hidden ${tableRow}`}>
           <td>Name</td>
           <td>Brand</td>
@@ -35,19 +36,19 @@ export default function PartTable({
             </td>
             <td>
               <RowWrapper>
-                <p className="xl:hidden">Brand:</p>
+                <p className={label}>Brand:</p>
                 {item.brand}
               </RowWrapper>
             </td>
             <td>
               <RowWrapper>
-                <p className="xl:hidden">Series:</p>
+                <p className={label}>Series:</p>
                 {item.series}
               </RowWrapper>
             </td>
             <td>
               <RowWrapper>
-                <p className="xl:hidden">Code Name:</p>
+                <p className={label}>Code Name:</p>
                 {item.code_name}
               </RowWrapper>
             </td>
