@@ -1,6 +1,9 @@
 import PartPicture from "@/components/part/Picture";
 import { RedirectButton } from "@/components/utils/Button";
-import { ColumnWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
+import {
+  ColumnWrapper,
+  ResponsiveWrapper,
+} from "@/components/utils/FlexWrapper";
 import { ObjectTable } from "@/components/utils/ObjectTable";
 import { Database } from "@/models/Database";
 import { Products } from "@/utils/Enum";
@@ -21,10 +24,10 @@ export default async function PartDetailPage({
 
   return (
     <>
-      <RowWrapper className="w-full">
-        <PartPicture className="w-1/3" part={partInfo} />
+      <ResponsiveWrapper className="w-full">
+        <PartPicture className="w-full lg:w-1/3" part={partInfo} />
 
-        <ColumnWrapper className="w-2/3 p-5">
+        <ColumnWrapper className="w-full lg:w-2/3 p-5">
           <h1 className="text-4xl font-bold">{name}</h1>
           <ObjectTable object={rest} />
           {url ? (
@@ -33,8 +36,8 @@ export default async function PartDetailPage({
             </RedirectButton>
           ) : undefined}
         </ColumnWrapper>
-      </RowWrapper>
-      <RowWrapper className="w-full align-top">
+      </ResponsiveWrapper>
+      <ResponsiveWrapper className="w-full align-top">
         <ColumnWrapper className="basis-1/2">
           <h1 className="text-4xl font-bold">Raw</h1>
           <ObjectTable object={raw ? JSON.parse(raw) : undefined} />
@@ -43,7 +46,7 @@ export default async function PartDetailPage({
           <h1 className="text-4xl font-bold">Details</h1>
           <ObjectTable object={rest} />
         </ColumnWrapper>
-      </RowWrapper>
+      </ResponsiveWrapper>
     </>
   );
 }
