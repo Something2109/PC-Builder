@@ -310,6 +310,39 @@ class PartPick implements DatabaseObject {
     return { total: 0, list: [] };
   }
 
+  async filter(
+    str: string,
+    options?: PartType.FilterOptions
+  ): Promise<PartType.FilterOptions> {
+    const result: PartType.FilterOptions = {};
+
+    try {
+      const PartFilter = PartInformation.scope({
+        method: ["filter", options],
+      });
+
+      for (const filter of ["part", "brand", "series"]) {
+        if (options) {
+          const filtered = options[filter as PartType.Filterables];
+          if (filtered && filtered.length > 0) {
+            result[filter as PartType.Filterables] = filtered;
+            continue;
+          }
+        }
+        result[filter as PartType.Filterables] = (
+          await PartFilter.findAll({
+            where: { name: { [Op.like]: `%${str}%` } },
+            attributes: [filter],
+            group: filter,
+          })
+        ).map((value) => value[filter as PartType.Filterables]);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    return result;
+  }
+
   async get(part: Products, id: string): Promise<PartType.BasicInfo | null> {
     try {
       const save = await PartInformation.findByPk(id, {
