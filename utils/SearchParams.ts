@@ -5,12 +5,29 @@ const FilterOptions: {
     param: string | null
   ) => PartType.FilterOptions[key] | null;
 } = {
-  part: (param: string | null) => param?.split(","),
-  brand: (param: string | null) => param?.split(","),
-  series: (param: string | null) => param?.split(","),
+  part: (param: string | null) => split(param),
+  brand: (param: string | null) => split(param),
+  series: (param: string | null) => split(param),
   launch_date: (param: string | null) =>
-    param?.split(",").map((value) => new Date(value)),
+    split(param).map((value) => new Date(value)),
 };
+
+function split(param: string | null): string[] | null {
+  if (param && param.length > 0) {
+    return param.split(",");
+  }
+  return null;
+}
+
+function toSearchParams(options: PartType.FilterOptions): URLSearchParams {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(options).forEach(([key, value]) => {
+    searchParams.set(key, value.join(","));
+  });
+
+  return searchParams;
+}
 
 const SearchParams = {
   toFilterOptions: (searchParams: URLSearchParams) => {
@@ -37,4 +54,4 @@ const SearchParams = {
   },
 };
 
-export { SearchParams };
+export { SearchParams, toSearchParams };
