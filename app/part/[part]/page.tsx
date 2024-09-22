@@ -29,6 +29,7 @@ export default function PartListPage({ params }: { params: { part: string } }) {
     ).then((response) => {
       if (response.ok) {
         response.json().then((data) => setList(data));
+        window.scroll({ top: 0, left: 0, behavior: "smooth" });
       } else {
         response.json().then((data) => setError(data.message));
       }
