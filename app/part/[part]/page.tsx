@@ -56,7 +56,7 @@ export default function PartListPage({ params }: { params: { part: string } }) {
           <PaginationBar
             path={setPage}
             current={page}
-            total={Math.floor(data.total / 50)}
+            total={Math.ceil(data.total / 50)}
           />
         </ColumnWrapper>
       </ResponsiveWrapper>
