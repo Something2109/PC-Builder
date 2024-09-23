@@ -50,15 +50,12 @@ CPU.init(
 
     socket: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     total_cores: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
     total_threads: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
     base_frequency: {
       type: DataTypes.FLOAT,

@@ -36,9 +36,9 @@ HDD.init(
     capacity: { type: DataTypes.TINYINT },
     cache: { type: DataTypes.INTEGER },
 
-    form_factor: { type: DataTypes.STRING, allowNull: false },
-    protocol: { type: DataTypes.STRING, allowNull: false },
-    protocol_version: { type: DataTypes.TINYINT, allowNull: false },
+    form_factor: { type: DataTypes.STRING },
+    protocol: { type: DataTypes.STRING },
+    protocol_version: { type: DataTypes.TINYINT },
   },
   {
     ...BaseModelOptions,

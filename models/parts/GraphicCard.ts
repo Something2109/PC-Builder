@@ -45,24 +45,19 @@ GraphicCard.init(
 
     width: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
     length: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
     height: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
 
     base_frequency: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
     boost_frequency: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
 
     pcie: {
@@ -77,7 +72,6 @@ GraphicCard.init(
 
     gpu_id: {
       type: DataTypes.UUID,
-      allowNull: false,
     },
   },
   {

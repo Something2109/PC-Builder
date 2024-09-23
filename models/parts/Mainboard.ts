@@ -34,23 +34,18 @@ Mainboard.init(
 
     socket: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     form_factor: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     ram_type: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     expansion_slots: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     io_ports: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
   },
   {

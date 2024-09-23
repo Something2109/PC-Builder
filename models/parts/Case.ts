@@ -64,19 +64,15 @@ Case.init(
 
     form_factor: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     width: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
     length: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
     height: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
     io_ports: {
       type: DataTypes.VIRTUAL,
@@ -87,11 +83,9 @@ Case.init(
 
     expansion_slot: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
     max_cooler_height: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
     aio_support: {
       type: DataTypes.VIRTUAL,
@@ -108,7 +102,6 @@ Case.init(
     },
     max_psu_length: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
   },
   {

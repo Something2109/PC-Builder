@@ -85,7 +85,6 @@ GPU.init(
 
     tdp: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
 
     features: {
