@@ -12,18 +12,26 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [toggle, setToggle] = useState(false);
+  const [navbar, setNavbar] = useState(false);
+  const [dark, setDark] = useState(true);
   const pathname = usePathname();
 
   useEffect(() => {
-    setToggle(false); // Close the navigation panel
+    setNavbar(false); // Close the navigation panel
   }, [pathname]);
 
   return (
     <html lang="en">
-      <body className="dark:text-line dark:bg-background overflow-y-scroll">
-        <Header toggle={() => setToggle(!toggle)} />
-        <NavigationBar toggle={toggle} />
+      <body
+        className={`${
+          dark ? "dark" : ""
+        } transition-all ease-in-out duration-500 delay-0 dark:text-line dark:bg-background overflow-y-scroll`}
+      >
+        <Header
+          setNavbar={() => setNavbar(!navbar)}
+          setDark={() => setDark(!dark)}
+        />
+        <NavigationBar toggle={navbar} />
         <main className="container w-11/12 min-h-screen mx-auto *:my-2">
           {children}
         </main>

@@ -1,11 +1,15 @@
 "use client";
 import { Products } from "@/utils/Enum";
-import { SellerProduct } from "@/models/sellers/SellerProduct";
-import { useEffect, useState, useId } from "react";
-import ListItem from "./_component/PartItem";
+import { useEffect, useState } from "react";
+import PartPanel from "@/components/part/Panel";
+import { PartType } from "@/utils/interface/Parts";
+import { SearchBar } from "@/components/searchbar";
 
 export default function List() {
-  const [data, setList] = useState<Record<Products, SellerProduct[]> | null>();
+  const [data, setList] = useState<Record<
+    Products,
+    PartType.BasicInfo[]
+  > | null>();
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -23,13 +27,14 @@ export default function List() {
 
   return (
     <>
+      <SearchBar />
       {Object.entries(data).map(([key, value]) => {
         return (
           <div key={`${key}-${value.length}`}>
             <h1 className="font-bold text-2xl my-2">{key.toUpperCase()}</h1>
             <div className="grid grid-cols-1 lg:grid-cols-5 xl:grid-flow-col-6 gap-1 xl:gap-3">
               {value.map((value) => {
-                return <ListItem item={value} key={value.name}></ListItem>;
+                return <PartPanel item={value} key={value.name} />;
               })}
             </div>
           </div>

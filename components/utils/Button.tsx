@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, InputHTMLAttributes } from "react";
 
 const normal =
-  "block rounded-lg lg:rounded-xl border-2 border-line p-1 md:border-4 text-center font-medium";
-const light = "hover:border-blue-500";
+  "block cursor-pointer rounded-lg lg:rounded-xl border-2 border-line p-1 md:border-4 text-center font-medium";
+const light = "hover:border-blue-500 hover:bg-line";
 const dark = "dark:hover:bg-blue-500";
 
 function Button({
@@ -18,6 +18,30 @@ function Button({
   return <button type="button" className={classList.join(" ")} {...rest} />;
 }
 
+function SubmitButton({
+  className,
+  ...rest
+}: InputHTMLAttributes<HTMLInputElement>) {
+  let classList = [normal, light, dark];
+  if (className) {
+    classList.push(className);
+  }
+
+  return <input type="submit" className={classList.join(" ")} {...rest} />;
+}
+
+function InputButton({
+  className,
+  ...rest
+}: InputHTMLAttributes<HTMLInputElement>) {
+  let classList = [normal, light, dark];
+  if (className) {
+    classList.push(className);
+  }
+
+  return <input className={classList.join(" ")} {...rest} />;
+}
+
 function RedirectButton({ className, ...rest }: Parameters<typeof Link>[0]) {
   let classList = [normal, light, dark];
   if (className) {
@@ -27,4 +51,4 @@ function RedirectButton({ className, ...rest }: Parameters<typeof Link>[0]) {
   return <Link className={classList.join(" ")} {...rest} />;
 }
 
-export { Button, RedirectButton };
+export { Button, SubmitButton, InputButton, RedirectButton };

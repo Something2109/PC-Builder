@@ -31,7 +31,7 @@ export function ParagraphInput({
         defaultValue={content.content}
         onChange={(e) => (content.content = e.target.value)}
       />
-      <ColumnWrapper>
+      <ColumnWrapper className="justify-center">
         <Button onClick={() => updateSelf.shiftUp()}>Up</Button>
         <Button onClick={() => updateSelf.remove()}>Remove</Button>
         <Button onClick={() => updateSelf.shiftDown()}>Down</Button>

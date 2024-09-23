@@ -1,30 +1,36 @@
 import { Database } from "@/models/Database";
 import { Products } from "@/utils/Enum";
+import { SearchParams } from "@/utils/SearchParams";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { part: string } }
+  { params: { part } }: { params: { part: string } }
 ) {
-  let page = Number(request.nextUrl.searchParams.get("page"));
-  if (page < 1) {
-    page = 1;
-  }
-
-  if (Object.values(Products).includes(params.part as Products)) {
-    const article = Database.sellers.getProducts(params.part as Products, page);
-
-    if (article) {
-      return NextResponse.json(article);
+  try {
+    if (!Object.values(Products).includes(part as Products)) {
+      throw new Error(
+        "Cannot find the part you need. Check if the path is correct"
+      );
     }
-  }
 
-  return NextResponse.json(
-    {
-      message: "Cannot find the part you need. Check if the path is correct",
-    },
-    {
-      status: 404,
-    }
-  );
+    const options = {
+      ...SearchParams.toFilterOptions(request.nextUrl.searchParams),
+      ...SearchParams.toPageOptions(request.nextUrl.searchParams),
+    };
+    options.part = [part];
+
+    const data = await Database.parts.list(options);
+
+    return NextResponse.json(data);
+  } catch (err) {
+    return NextResponse.json(
+      {
+        message: (err as Error).message,
+      },
+      {
+        status: 404,
+      }
+    );
+  }
 }

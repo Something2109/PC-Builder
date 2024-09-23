@@ -1,44 +1,65 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import ListItem from "../_component/PartItem";
-import { redirect, usePathname, useSearchParams } from "next/navigation";
+import { createContext, useEffect, useState } from "react";
 import PaginationBar from "@/components/pagination";
+import {
+  ColumnWrapper,
+  ResponsiveWrapper,
+} from "@/components/utils/FlexWrapper";
+import PartTable from "@/components/part/Table";
+import { FilterBar } from "@/components/filterbar";
+import { toSearchParams } from "@/utils/SearchParams";
+import { PartType } from "@/utils/interface/Parts";
+
+const OptionContext = createContext<PartType.FilterOptions & { q?: string }>(
+  {}
+);
 
 export default function PartListPage({ params }: { params: { part: string } }) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  let current = Number(searchParams.get("page"));
-  if (current && current < 1) {
-    redirect(pathname);
-  } else if (current == 0) {
-    current = 1;
-  }
-
-  const [data, setList] = useState({ list: [], pages: 0 });
+  const [page, setPage] = useState(1);
+  const [options, setOptions] = useState<PartType.FilterOptions>({
+    part: [params.part],
+  });
+  const [data, setList] = useState({ total: 0, list: [] });
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`/api/part/${params.part}?${searchParams}`).then((response) => {
+    fetch(
+      `/api/part/${params.part}?page=${page}&${toSearchParams(options)}`
+    ).then((response) => {
       if (response.ok) {
         response.json().then((data) => setList(data));
+        window.scroll({ top: 0, left: 0, behavior: "smooth" });
       } else {
         response.json().then((data) => setError(data.message));
       }
     });
-  }, []);
+  }, [page, options]);
 
   if (error) return <h1>{error}</h1>;
 
   return (
-    <>
-      <div className="grid grid-cols-1 lg:grid-cols-5 xl:grid-flow-col-6 gap-1 xl:gap-3">
-        {data.list.map((item: any, index) => (
-          <ListItem item={item} key={index} />
-        ))}
-      </div>
-      <PaginationBar path={pathname} current={current} total={data.pages} />
-    </>
+    <OptionContext.Provider value={options}>
+      <ResponsiveWrapper className="w-full">
+        <ColumnWrapper className="hidden lg:block lg:w-1/5">
+          <FilterBar
+            context={OptionContext}
+            defaultOptions={{ part: [params.part] }}
+            set={setOptions}
+          />
+        </ColumnWrapper>
+        <ColumnWrapper className="lg:w-4/5">
+          <h1 className="text-xl font-bold" id="list">{`${
+            data.total
+          } ${params.part.toLocaleUpperCase()}`}</h1>
+          <PartTable data={data.list} className="w-full" />
+          <PaginationBar
+            path={setPage}
+            current={page}
+            total={Math.ceil(data.total / 50)}
+          />
+        </ColumnWrapper>
+      </ResponsiveWrapper>
+    </OptionContext.Provider>
   );
 }

@@ -1,12 +1,11 @@
 import { ArticleSummary } from "@/models/articles/article";
 import { ColumnWrapper } from "./FlexWrapper";
-import Image from "next/image";
 import Link from "next/link";
 
 const normal =
-  "flex flex-col-reverse md:flex-row gap-3 rounded-lg lg:rounded-xl border-3 border-line p-3 md:border-4";
-const light = "hover:border-blue-500";
-const dark = "dark:hover:bg-blue-500";
+  "flex flex-col-reverse lg:flex-row p-3 lg:gap-3 border-t-2 border-line lg:rounded-xl lg:border-2";
+const light = "hover:lg:border-blue-500 hover:bg-line";
+const dark = "dark:hover:bg-blue-500 dark:hover:border-blue-500";
 const max_char = 200;
 
 function ArticleLink({
@@ -21,20 +20,16 @@ function ArticleLink({
 
   return (
     <Link className={classList.join(" ")} {...rest}>
-      <picture className="lg:w-64 aspect-video content-center">
-        <Image
+      <picture className="w-full *:w-full lg:min-w-48 lg:max-w-48 aspect-video content-center">
+        <img
           src="/images/icons/pc.png"
           alt="thumbnail"
           className="dark:hidden"
-          width="512"
-          height="512"
         />
-        <Image
+        <img
           src="/images/icons/pc-dark.png"
           alt="thumbnail"
           className="hidden dark:block"
-          width="512"
-          height="512"
         />
       </picture>
       <ColumnWrapper className="h-fit">
