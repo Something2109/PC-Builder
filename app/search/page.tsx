@@ -39,7 +39,7 @@ export default async function Page({
       <PaginationBar
         path={`/search?q=${search}`}
         current={options.page}
-        total={Math.floor(data.total / 50)}
+        total={Math.floor(data.total / Number(process.env.PageSize))}
       />
     </>
   );
