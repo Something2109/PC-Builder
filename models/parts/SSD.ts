@@ -31,16 +31,16 @@ SSD.init(
       primaryKey: true,
     },
 
-    memory_type: { type: DataTypes.STRING, allowNull: false },
+    memory_type: { type: DataTypes.STRING },
     read_speed: { type: DataTypes.INTEGER },
     write_speed: { type: DataTypes.INTEGER },
     capacity: { type: DataTypes.TINYINT },
     cache: { type: DataTypes.INTEGER },
     tbw: { type: DataTypes.INTEGER },
 
-    form_factor: { type: DataTypes.STRING, allowNull: false },
-    protocol: { type: DataTypes.STRING, allowNull: false },
-    protocol_version: { type: DataTypes.TINYINT, allowNull: false },
+    form_factor: { type: DataTypes.STRING },
+    protocol: { type: DataTypes.STRING },
+    protocol_version: { type: DataTypes.TINYINT },
   },
   {
     ...BaseModelOptions,

@@ -6,13 +6,7 @@ import { Products, Topics } from "@/utils/Enum";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import path from "path";
-import {
-  InferAttributes,
-  Model,
-  ModelStatic,
-  Op,
-  WhereOptions,
-} from "sequelize";
+import { Model, ModelStatic, Op } from "sequelize";
 import { CPU } from "./parts/CPU";
 import { GPU } from "./parts/GPU";
 import { GraphicCard } from "./parts/GraphicCard";
@@ -211,7 +205,7 @@ class Seller implements DatabaseObject {
     pages: number;
   } {
     page = page ?? 1;
-    pageSize = pageSize ?? 50;
+    pageSize = pageSize ?? Number(process.env.PageSize ?? 50);
     try {
       if (Object.values(Products).includes(product)) {
         const data = JSON.parse(
@@ -263,7 +257,7 @@ class PartPick implements DatabaseObject {
     try {
       let { page, limit, ...rest } = options ?? {};
       page = (page ?? 1) - 1;
-      limit = limit ?? 50;
+      limit = limit ?? Number(process.env.PageSize ?? 50);
 
       const total = await PartInformation.scope({
         method: ["filter", rest],
@@ -287,7 +281,7 @@ class PartPick implements DatabaseObject {
     try {
       let { page, limit, ...rest } = options ?? {};
       page = (page ?? 1) - 1;
-      limit = limit ?? 50;
+      limit = limit ?? Number(process.env.PageSize ?? 50);
 
       const total = await PartInformation.scope({
         method: ["filter", rest],

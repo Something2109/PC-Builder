@@ -46,7 +46,9 @@ const SearchParams = {
 
   toPageOptions: (searchParams: URLSearchParams) => {
     const page = Number(searchParams.get("page") ?? "1");
-    const limit = Number(searchParams.get("limit") ?? "50");
+    const limit = Number(
+      searchParams.get("limit") ?? Number(process.env.PageSize)
+    );
 
     return { page, limit };
   },

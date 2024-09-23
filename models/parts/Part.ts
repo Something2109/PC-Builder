@@ -42,24 +42,19 @@ PartInformation.init(
 
     part: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     code_name: {
       type: DataTypes.STRING,
       unique: true,
-      allowNull: false,
     },
     brand: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     series: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
 
     launch_date: {

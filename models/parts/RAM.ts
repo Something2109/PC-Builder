@@ -31,12 +31,11 @@ RAM.init(
       primaryKey: true,
     },
 
-    speed: { type: DataTypes.INTEGER, allowNull: false },
-    capacity: { type: DataTypes.INTEGER, allowNull: false },
-    voltage: { type: DataTypes.FLOAT, allowNull: false },
+    speed: { type: DataTypes.INTEGER },
+    capacity: { type: DataTypes.INTEGER },
+    voltage: { type: DataTypes.FLOAT },
     latency: {
       type: DataTypes.VIRTUAL,
-      allowNull: false,
       async get(): Promise<number[]> {
         const data = this.getDataValue("latency_json");
 
@@ -46,10 +45,10 @@ RAM.init(
         this.setDataValue("latency_json", JSON.stringify(value));
       },
     },
-    kit: { type: DataTypes.TINYINT, allowNull: false, defaultValue: 1 },
+    kit: { type: DataTypes.TINYINT, defaultValue: 1 },
 
-    type: { type: DataTypes.STRING, allowNull: false },
-    form_factor: { type: DataTypes.STRING, allowNull: false },
+    type: { type: DataTypes.STRING },
+    form_factor: { type: DataTypes.STRING },
     latency_json: { type: DataTypes.STRING },
   },
   {

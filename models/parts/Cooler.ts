@@ -33,15 +33,12 @@ Cooler.init(
 
     width: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
     length: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
     height: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
   },
   {
