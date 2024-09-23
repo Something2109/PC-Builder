@@ -259,17 +259,14 @@ class PartPick implements DatabaseObject {
       page = (page ?? 1) - 1;
       limit = limit ?? Number(process.env.PageSize ?? 50);
 
-      const total = await PartInformation.scope({
+      const { rows, count } = await PartInformation.scope({
         method: ["filter", rest],
-      }).count();
-      const save = await PartInformation.scope({
-        method: ["filter", rest],
-      }).findAll({
+      }).findAndCountAll({
         limit,
         offset: page * limit,
       });
 
-      return { total, list: save.map((value) => value.toJSON()) };
+      return { total: count, list: rows.map((value) => value.toJSON()) };
     } catch (err) {
       console.error(err);
     }
@@ -283,19 +280,16 @@ class PartPick implements DatabaseObject {
       page = (page ?? 1) - 1;
       limit = limit ?? Number(process.env.PageSize ?? 50);
 
-      const total = await PartInformation.scope({
+      const { rows, count } = await PartInformation.scope({
         method: ["filter", rest],
-      }).count({ where: { name: { [Op.like]: `%${str}%` } } });
-      const save = await PartInformation.scope({
-        method: ["filter", rest],
-      }).findAll({
+      }).findAndCountAll({
         where: { name: { [Op.like]: `%${str}%` } },
         limit,
         offset: page * limit,
       });
 
-      if (save) {
-        return { total, list: save.map((value) => value.toJSON()) };
+      if (count) {
+        return { total: count, list: rows.map((value) => value.toJSON()) };
       }
     } catch (err) {
       console.error(err);
