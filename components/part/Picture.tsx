@@ -1,12 +1,10 @@
 "use client";
 
-import { PartType } from "@/utils/interface/Parts";
-
 export default function PartPicture({
   part: { image_url, part, name },
   className,
 }: {
-  part: PartType.BasicInfo;
+  part: { image_url?: string; part: string; name: string };
   className?: string;
 }) {
   const classlist = ["rounded-lg bg-white aspect-square *:m-auto p-1"];
