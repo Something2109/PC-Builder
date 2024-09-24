@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  HTMLInputTypeAttribute,
   InputHTMLAttributes,
   TextareaHTMLAttributes,
   useEffect,
@@ -8,6 +9,12 @@ import {
 } from "react";
 
 const defaultStyle = "w-full bg-transparent resize-none overflow-y-hidden px-1";
+const defaultValueList: { [key in HTMLInputTypeAttribute]?: string | number } =
+  {
+    text: "",
+    date: new Date().toISOString().slice(0, 10),
+    number: 0,
+  };
 
 export function TextArea({
   className,
@@ -38,12 +45,24 @@ export function TextArea({
 
 export function Input({
   className,
+  type,
+  defaultValue,
   ...rest
 }: InputHTMLAttributes<HTMLInputElement>) {
   const classList = [defaultStyle];
   if (className) {
     classList.push(className);
   }
+  if (type) {
+    defaultValue = defaultValue ?? defaultValueList[type] ?? undefined;
+  }
 
-  return <input className={classList.join(" ")} {...rest} />;
+  return (
+    <input
+      className={classList.join(" ")}
+      type={type}
+      defaultValue={defaultValue}
+      {...rest}
+    />
+  );
 }
