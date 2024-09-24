@@ -5,7 +5,7 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, Tables } from "../interface";
+import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
 import { PartInformation } from "./Part";
 
 class SSD extends Model<InferAttributes<SSD>, InferCreationAttributes<SSD>> {
@@ -44,6 +44,7 @@ SSD.init(
   },
   {
     ...BaseModelOptions,
+    defaultScope: PartDefaultScope,
     modelName: Tables.RAM,
   }
 );

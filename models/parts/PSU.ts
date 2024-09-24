@@ -5,7 +5,7 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, Tables } from "../interface";
+import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
 import { PartInformation } from "./Part";
 
 class PSU extends Model<InferAttributes<PSU>, InferCreationAttributes<PSU>> {
@@ -50,6 +50,7 @@ PSU.init(
   },
   {
     ...BaseModelOptions,
+    defaultScope: PartDefaultScope,
     modelName: Tables.PSU,
   }
 );

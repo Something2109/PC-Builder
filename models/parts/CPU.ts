@@ -6,7 +6,7 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, Tables } from "../interface";
+import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
 import { PartInformation } from "./Part";
 import { PartType } from "@/utils/interface/Parts";
 
@@ -119,6 +119,7 @@ CPU.init(
   },
   {
     ...BaseModelOptions,
+    defaultScope: PartDefaultScope,
     modelName: Tables.CPU,
     validate: {
       coreValidate() {

@@ -5,7 +5,7 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, Tables } from "../interface";
+import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
 import { PartInformation } from "./Part";
 
 type FanSize = 120 | 140;
@@ -26,6 +26,7 @@ AIO.init(
   },
   {
     ...BaseModelOptions,
+    ...PartDefaultScope,
     modelName: Tables.AIO,
   }
 );

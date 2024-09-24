@@ -5,7 +5,7 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, Tables } from "../interface";
+import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
 import { PartInformation } from "./Part";
 
 type FanSize = 120 | 140;
@@ -43,6 +43,7 @@ Cooler.init(
   },
   {
     ...BaseModelOptions,
+    defaultScope: PartDefaultScope,
     modelName: Tables.COOLER,
   }
 );

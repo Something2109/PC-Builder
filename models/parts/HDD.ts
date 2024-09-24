@@ -5,7 +5,7 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, Tables } from "../interface";
+import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
 import { PartInformation } from "./Part";
 
 class HDD extends Model<InferAttributes<HDD>, InferCreationAttributes<HDD>> {
@@ -42,6 +42,7 @@ HDD.init(
   },
   {
     ...BaseModelOptions,
+    defaultScope: PartDefaultScope,
     modelName: Tables.HDD,
   }
 );

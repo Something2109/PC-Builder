@@ -53,5 +53,10 @@ const BaseModelOptions = {
   freezeTableName: true,
   underscored: true,
 };
+const PartDefaultScope = {
+  attributes: {
+    exclude: ["id", "createdAt", "updatedAt"],
+  },
+};
 
-export { Tables, Connection, BaseModelOptions };
+export { Tables, Connection, BaseModelOptions, PartDefaultScope };

@@ -5,7 +5,7 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, Tables } from "../interface";
+import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
 import { GPU } from "./GPU";
 import { PartInformation } from "./Part";
 
@@ -76,6 +76,7 @@ GraphicCard.init(
   },
   {
     ...BaseModelOptions,
+    defaultScope: PartDefaultScope,
     modelName: Tables.GRAPHIC_CARD,
   }
 );
