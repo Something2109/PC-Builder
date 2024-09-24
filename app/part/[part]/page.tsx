@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import PaginationBar from "@/components/pagination";
 import {
   ColumnWrapper,
@@ -10,6 +10,7 @@ import PartTable from "@/components/part/Table";
 import { FilterBar } from "@/components/filterbar";
 import { toSearchParams } from "@/utils/SearchParams";
 import { PartType } from "@/utils/interface/Parts";
+import PartPicture from "@/components/part/Picture";
 
 const OptionContext = createContext<PartType.FilterOptions & { q?: string }>(
   {}
@@ -38,15 +39,22 @@ export default function PartListPage({ params }: { params: { part: string } }) {
 
   if (error) return <h1>{error}</h1>;
 
+  const filter = useMemo(
+    () => (
+      <FilterBar
+        context={OptionContext}
+        defaultOptions={{ part: [params.part] }}
+        set={setOptions}
+      />
+    ),
+    [options]
+  );
+
   return (
     <OptionContext.Provider value={options}>
       <ResponsiveWrapper className="w-full">
         <ColumnWrapper className="hidden lg:block lg:w-1/5">
-          <FilterBar
-            context={OptionContext}
-            defaultOptions={{ part: [params.part] }}
-            set={setOptions}
-          />
+          {filter}
         </ColumnWrapper>
         <ColumnWrapper className="lg:w-4/5">
           <h1 className="text-xl font-bold" id="list">{`${
