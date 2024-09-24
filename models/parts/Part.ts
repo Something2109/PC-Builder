@@ -94,6 +94,11 @@ PartInformation.init(
 
         return { where };
       },
+      detail: {
+        attributes: {
+          exclude: ["id", "createdAt", "updatedAt"],
+        },
+      },
     },
   }
 );

@@ -333,7 +333,7 @@ class PartPick implements DatabaseObject {
 
   async get(part: Products, id: string): Promise<PartType.BasicInfo | null> {
     try {
-      const save = await PartInformation.findByPk(id, {
+      const save = await PartInformation.scope("detail").findByPk(id, {
         include: {
           model: this.models[part],
         },
@@ -347,22 +347,6 @@ class PartPick implements DatabaseObject {
     }
 
     return null;
-  }
-
-  async raw(part: Products, id: string) {
-    try {
-      const save = await PartInformation.findByPk(id, {
-        attributes: ["raw"],
-      });
-
-      if (save) {
-        return save.raw;
-      }
-    } catch (err) {
-      console.error(err);
-    }
-
-    return undefined;
   }
 }
 
