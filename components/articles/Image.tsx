@@ -3,9 +3,10 @@
 import { Button } from "@/components/utils/Button";
 import { ImageType } from "@/models/articles/article";
 import { RowWrapper, ColumnWrapper } from "@/components/utils/FlexWrapper";
+import { TextArea } from "@/components/utils/Input";
 import Image from "next/image";
 import { useCallback, useState } from "react";
-import { ContentProps, InputArea, InputContentProps } from "./utils";
+import { ContentProps, InputContentProps } from "./utils";
 
 export function Picture({ content }: ContentProps<ImageType>) {
   return (
@@ -79,7 +80,7 @@ export function PictureInput({
     <RowWrapper className="border-2 rounded-xl p-3 justify-between">
       <picture className="*:mx-auto *:my-2 text-center">
         {img}
-        <InputArea
+        <TextArea
           className="text-center"
           placeholder="Caption"
           defaultValue={content.caption}

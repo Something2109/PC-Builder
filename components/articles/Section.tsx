@@ -3,11 +3,11 @@
 import { Button } from "@/components/utils/Button";
 import { SectionType } from "@/models/articles/article";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
+import { TextArea } from "@/components/utils/Input";
 import {
   AddRow,
   ContentProps,
   ContentRenderer,
-  InputArea,
   InputContentProps,
   InputRenderer,
   updateContent,
@@ -44,7 +44,7 @@ export function SectionInput({
     <section className="flex flex-col gap-2 w-full border-2 rounded-xl p-3">
       <RowWrapper>
         <h1 className="font-bold text-2xl">{prefix}</h1>
-        <InputArea
+        <TextArea
           placeholder="Title"
           className="font-bold text-2xl"
           defaultValue={content.title}

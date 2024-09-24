@@ -11,7 +11,6 @@ import { List, ListInput } from "./List";
 import { Section, SectionInput } from "./Section";
 import { Button } from "@/components/utils/Button";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
-import { TextareaHTMLAttributes, useRef, useEffect } from "react";
 
 export type ContentProps<T extends ContentType> = {
   content: T;
@@ -48,33 +47,6 @@ export function InputRenderer(props: InputContentProps<ContentType>) {
     case "list":
       return <ListInput {...(props as InputContentProps<ListType>)} />;
   }
-}
-
-export function InputArea({
-  className,
-  ...rest
-}: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  let classList = ["w-full bg-transparent resize-none overflow-y-hidden"];
-  if (className) {
-    classList.push(className);
-  }
-
-  const textarea = useRef<HTMLTextAreaElement>(null);
-  const resize = () => {
-    textarea.current!.style.height = "auto";
-    textarea.current!.style.height = textarea.current!.scrollHeight + "px";
-  };
-  useEffect(resize, []);
-
-  return (
-    <textarea
-      ref={textarea}
-      rows={1}
-      className={classList.join(" ")}
-      onInput={resize}
-      {...rest}
-    />
-  );
 }
 
 export function AddRow({

@@ -3,7 +3,8 @@
 import { Button } from "@/components/utils/Button";
 import { ParagraphType } from "@/models/articles/article";
 import { RowWrapper, ColumnWrapper } from "@/components/utils/FlexWrapper";
-import { ContentProps, InputArea, InputContentProps } from "./utils";
+import { TextArea } from "@/components/utils/Input";
+import { ContentProps, InputContentProps } from "./utils";
 
 export function Paragraph({ content, prefix }: ContentProps<ParagraphType>) {
   const paragraph = <p className="text-xl">{content.content}</p>;
@@ -25,7 +26,7 @@ export function ParagraphInput({
   return (
     <RowWrapper>
       {prefix ? <p>{prefix}</p> : undefined}
-      <InputArea
+      <TextArea
         placeholder="Paragragh"
         className="text-xl"
         defaultValue={content.content}

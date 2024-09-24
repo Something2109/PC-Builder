@@ -3,11 +3,11 @@
 import { ListType } from "@/models/articles/article";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { Button } from "@/components/utils/Button";
+import { TextArea } from "@/components/utils/Input";
 import {
   AddRow,
   ContentProps,
   ContentRenderer,
-  InputArea,
   InputContentProps,
   InputRenderer,
   updateContent,
@@ -36,7 +36,7 @@ export function ListInput({
     <section className="flex flex-col gap-2 w-full border-2 rounded-xl p-3">
       <RowWrapper>
         <p>Symbol: </p>
-        <InputArea
+        <TextArea
           placeholder="Symbol"
           className="font-bold"
           defaultValue={content.symbol}
