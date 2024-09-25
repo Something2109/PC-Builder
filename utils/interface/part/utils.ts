@@ -64,6 +64,22 @@ const PSUFormFactors = [
 
 type PSUFormFactorType = (typeof PSUFormFactors)[number];
 
+const PSUModulars = ["Non-Modular", "Semi-Modular", "Full-Modular"];
+
+type PSUModularType = (typeof PSUModulars)[number];
+
+const PSUEfficiencies = [
+  "None",
+  "80 Plus",
+  "80 PLUS Bronze",
+  "80 PLUS Silver",
+  "80 PLUS Gold",
+  "80 PLUS Platinum",
+  "80 PLUS Titanium",
+];
+
+type PSUEfficiencyType = (typeof PSUModulars)[number];
+
 const CaseFormFactors = [
   "Mini-Tower",
   "Micro-Tower",
@@ -103,6 +119,8 @@ export {
   HDDFormFactors,
   HDDProtocols,
   PSUFormFactors,
+  PSUModulars,
+  PSUEfficiencies,
   CaseFormFactors,
   CaseSide,
   FanFormFactors,
@@ -121,6 +139,8 @@ export type {
   HDDFormFactorType,
   HDDProtocolType,
   PSUFormFactorType,
+  PSUModularType,
+  PSUEfficiencyType,
   CaseFormFactorType,
   CaseSideType,
   FanFormFactorType,

@@ -1,14 +1,15 @@
-import { PSUFormFactorType } from "./utils";
+import { PSUEfficiencyType, PSUFormFactorType, PSUModularType } from "./utils";
 
 export namespace PSU {
   export type Info = {
     wattage: number;
-    efficiency: string;
+    efficiency: PSUEfficiencyType;
 
     form_factor: PSUFormFactorType;
     width: number;
     length: number;
     height: number;
+    modular: PSUModularType;
 
     atx_pin: number;
     cpu_pin: number;
@@ -21,6 +22,7 @@ export namespace PSU {
     "wattage",
     "efficiency",
     "form_factor",
+    "modular",
   ] as const;
 
   type BasicAttributes = (typeof BasicAttrList)[number];
