@@ -10,7 +10,7 @@ import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
-} from "../interface";
+} from "../../interface";
 import { PartInformation } from "./Part";
 import RAM from "@/utils/interface/part/RAM";
 import {
@@ -86,4 +86,4 @@ RAMModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { RAMModel as RAM };
+export { RAMModel };

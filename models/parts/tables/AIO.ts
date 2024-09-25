@@ -11,7 +11,7 @@ import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
-} from "../interface";
+} from "../../interface";
 import { PartInformation } from "./Part";
 import {
   AIOFormFactors,
@@ -81,4 +81,4 @@ AIOModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { AIOModel as AIO };
+export { AIOModel };

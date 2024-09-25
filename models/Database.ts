@@ -1,37 +1,23 @@
 import { Article, ArticleSummary, ArticleType } from "./articles/article";
-import { PartInformation } from "./parts/Part";
 import { Connection } from "./interface";
 import { SellerProduct } from "./sellers/SellerProduct";
 import { Products, Topics } from "@/utils/Enum";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import path from "path";
-import { Model, ModelStatic, Op } from "sequelize";
-import { CPU } from "./parts/CPU";
-import { GPU } from "./parts/GPU";
-import { GraphicCard } from "./parts/GraphicCard";
-import { Mainboard } from "./parts/Mainboard";
-import { RAM } from "./parts/RAM";
-import { SSD } from "./parts/SSD";
-import { HDD } from "./parts/HDD";
-import { PSU } from "./parts/PSU";
-import { Case } from "./parts/Case";
-import { Cooler } from "./parts/Cooler";
-import { AIO } from "./parts/AIO";
-import { Fan } from "./parts/Fan";
-import { PartType } from "@/utils/interface/Parts";
+import { PartAccess } from "./parts/PartAccess";
 
 class MockDatabase {
   private static path = "./data";
   private static objects: {
-    [key in string]: DatabaseObject;
+    [key in string]: Object;
   } = {};
 
   static initiate() {
     this.objects.introduction = new Articles(this.path);
     this.objects.sellers = new Seller(this.path);
     this.objects.images = new Images();
-    this.objects.part = new PartPick();
+    this.objects.part = new PartAccess();
 
     Connection.sync();
   }
@@ -57,11 +43,11 @@ class MockDatabase {
     return this.objects.images as Images;
   }
 
-  static get parts(): Readonly<PartPick> {
+  static get parts(): Readonly<PartAccess> {
     if (!this.objects.part) {
       this.initiate();
     }
-    return this.objects.part as PartPick;
+    return this.objects.part as PartAccess;
   }
 }
 
@@ -230,132 +216,5 @@ class Seller implements DatabaseObject {
     };
   }
 }
-
-class PartPick implements DatabaseObject {
-  path: string;
-  models: { [key in Products]: ModelStatic<Model> };
-
-  constructor() {
-    this.path = path.join("part", "cpu");
-    this.models = {
-      [Products.CPU]: CPU,
-      [Products.GPU]: GPU,
-      [Products.GRAPHIC_CARD]: GraphicCard,
-      [Products.MAIN]: Mainboard,
-      [Products.RAM]: RAM,
-      [Products.SSD]: SSD,
-      [Products.HDD]: HDD,
-      [Products.PSU]: PSU,
-      [Products.CASE]: Case,
-      [Products.COOLER]: Cooler,
-      [Products.AIO]: AIO,
-      [Products.FAN]: Fan,
-    };
-  }
-
-  async list(options?: PartType.FilterOptions & PageOptions) {
-    try {
-      let { page, limit, ...rest } = options ?? {};
-      page = (page ?? 1) - 1;
-      limit = limit ?? Number(process.env.PageSize ?? 50);
-
-      const { rows, count } = await PartInformation.scope({
-        method: ["filter", rest],
-      }).findAndCountAll({
-        limit,
-        offset: page * limit,
-      });
-
-      return { total: count, list: rows.map((value) => value.toJSON()) };
-    } catch (err) {
-      console.error(err);
-    }
-
-    return { total: 0, list: [] };
-  }
-
-  async search(str: string, options?: PartType.FilterOptions & PageOptions) {
-    try {
-      let { page, limit, ...rest } = options ?? {};
-      page = (page ?? 1) - 1;
-      limit = limit ?? Number(process.env.PageSize ?? 50);
-
-      const { rows, count } = await PartInformation.scope({
-        method: ["filter", rest],
-      }).findAndCountAll({
-        where: { name: { [Op.like]: `%${str}%` } },
-        limit,
-        offset: page * limit,
-      });
-
-      if (count) {
-        return { total: count, list: rows.map((value) => value.toJSON()) };
-      }
-    } catch (err) {
-      console.error(err);
-    }
-
-    return { total: 0, list: [] };
-  }
-
-  async filter(
-    str: string,
-    options?: PartType.FilterOptions
-  ): Promise<PartType.FilterOptions> {
-    const result: PartType.FilterOptions = {};
-
-    try {
-      const PartFilter = PartInformation.scope({
-        method: ["filter", options],
-      });
-
-      for (const filter of ["part", "brand", "series"]) {
-        if (options) {
-          const filtered = options[filter as PartType.Filterables];
-          if (filtered && filtered.length > 0) {
-            result[filter as PartType.Filterables] = filtered;
-            continue;
-          }
-        }
-        result[filter as PartType.Filterables] = (
-          await PartFilter.findAll({
-            where: { name: { [Op.like]: `%${str}%` } },
-            attributes: [filter],
-            group: filter,
-          })
-        ).map((value) => value[filter as PartType.Filterables]);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-    return result;
-  }
-
-  async get(
-    part: Products,
-    id: string
-  ): Promise<PartType.DetailInfo<typeof part> | null> {
-    try {
-      const save = await PartInformation.scope("detail").findByPk(id, {
-        include: {
-          model: this.models[part],
-        },
-      });
-
-      if (save) {
-        return save.toJSON() as unknown as PartType.DetailInfo<typeof part>;
-      }
-    } catch (err) {
-      console.error(err);
-    }
-
-    return null;
-  }
-}
-
-type PageOptions = {
-  page?: number;
-  limit?: number;
-};
 
 export { MockDatabase as Database };

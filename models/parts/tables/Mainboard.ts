@@ -10,7 +10,7 @@ import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
-} from "../interface";
+} from "../../interface";
 import { PartInformation } from "./Part";
 import Mainboard from "@/utils/interface/part/Mainboard";
 import {
@@ -85,4 +85,4 @@ MainboardModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { MainboardModel as Mainboard };
+export { MainboardModel };

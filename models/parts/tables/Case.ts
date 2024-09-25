@@ -10,7 +10,7 @@ import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
-} from "../interface";
+} from "../../interface";
 import { PartInformation } from "./Part";
 import {
   CaseFormFactors,
@@ -100,4 +100,4 @@ CaseModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { CaseModel as Case };
+export { CaseModel };

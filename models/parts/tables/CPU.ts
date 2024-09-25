@@ -11,7 +11,7 @@ import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
-} from "../interface";
+} from "../../interface";
 import { PartInformation } from "./Part";
 import CPU from "@/utils/interface/part/CPU";
 
@@ -112,4 +112,4 @@ CPUModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { CPUModel as CPU };
+export { CPUModel };

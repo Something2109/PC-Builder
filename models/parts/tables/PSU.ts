@@ -10,7 +10,7 @@ import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
-} from "../interface";
+} from "../../interface";
 import { PartInformation } from "./Part";
 import PSU from "@/utils/interface/part/PSU";
 import {
@@ -78,4 +78,4 @@ PSUModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { PSUModel as PSU };
+export { PSUModel };

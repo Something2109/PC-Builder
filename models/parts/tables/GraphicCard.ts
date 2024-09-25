@@ -11,8 +11,8 @@ import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
-} from "../interface";
-import { GPU as GPUModel } from "./GPU";
+} from "../../interface";
+import { GPUModel } from "./GPU";
 import { PartInformation } from "./Part";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
 import GPU from "@/utils/interface/part/GPU";
@@ -107,4 +107,4 @@ GraphicCardModel.belongsTo(GPUModel, {
   foreignKey: "gpu_id",
 });
 
-export { GraphicCardModel as GraphicCard, type APIDisplayInterface };
+export { GraphicCardModel, type APIDisplayInterface };

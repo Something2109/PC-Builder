@@ -10,7 +10,7 @@ import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
-} from "../interface";
+} from "../../interface";
 import { PartInformation } from "./Part";
 import HDD from "@/utils/interface/part/HDD";
 import {
@@ -72,4 +72,4 @@ HDDModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { HDDModel as HDD };
+export { HDDModel };

@@ -11,7 +11,7 @@ import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
-} from "../interface";
+} from "../../interface";
 import { PartInformation } from "./Part";
 import GPU from "@/utils/interface/part/GPU";
 
@@ -127,4 +127,4 @@ GPUModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { GPUModel as GPU };
+export { GPUModel };

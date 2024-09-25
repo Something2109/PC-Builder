@@ -10,7 +10,7 @@ import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
-} from "../interface";
+} from "../../interface";
 import { PartInformation } from "./Part";
 import SSD from "@/utils/interface/part/SSD";
 import {
@@ -76,4 +76,4 @@ SSDModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { SSDModel as SSD };
+export { SSDModel };

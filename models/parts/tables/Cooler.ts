@@ -10,7 +10,7 @@ import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
-} from "../interface";
+} from "../../interface";
 import { PartInformation } from "./Part";
 import Cooler from "@/utils/interface/part/Cooler";
 import {
@@ -67,4 +67,4 @@ CoolerModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { CoolerModel as Cooler };
+export { CoolerModel };
