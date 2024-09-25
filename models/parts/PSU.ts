@@ -5,28 +5,41 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
+import {
+  BaseModelOptions,
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+} from "../interface";
 import { PartInformation } from "./Part";
+import PSU from "@/utils/interface/part/PSU";
+import {
+  PSUFormFactors,
+  PSUFormFactorType,
+} from "@/utils/interface/part/utils";
 
-class PSU extends Model<InferAttributes<PSU>, InferCreationAttributes<PSU>> {
-  declare id: ForeignKey<string>;
+class PSUModel
+  extends Model<InferAttributes<PSUModel>, InferCreationAttributes<PSUModel>>
+  implements PartDetailTable<PSU.Info>
+{
+  declare id: ForeignKey<PartInformation["id"]>;
 
-  declare wattage: number;
-  declare efficiency: string;
+  declare wattage: number | null;
+  declare efficiency: string | null;
 
-  declare form_factor: string;
-  declare width: number;
-  declare length: number;
-  declare height: number;
+  declare form_factor: PSUFormFactorType | null;
+  declare width: number | null;
+  declare length: number | null;
+  declare height: number | null;
 
-  declare atx_pin: number;
-  declare cpu_pin: number;
-  declare pcie_pin: number;
-  declare sata_pin: number;
-  declare peripheral_pin: number;
+  declare atx_pin: number | null;
+  declare cpu_pin: number | null;
+  declare pcie_pin: number | null;
+  declare sata_pin: number | null;
+  declare peripheral_pin: number | null;
 }
 
-PSU.init(
+PSUModel.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -37,7 +50,10 @@ PSU.init(
     wattage: { type: DataTypes.INTEGER },
     efficiency: { type: DataTypes.STRING },
 
-    form_factor: { type: DataTypes.STRING },
+    form_factor: {
+      type: DataTypes.STRING,
+      validate: { isIn: [PSUFormFactors] },
+    },
     width: { type: DataTypes.INTEGER },
     length: { type: DataTypes.INTEGER },
     height: { type: DataTypes.INTEGER },
@@ -55,11 +71,11 @@ PSU.init(
   }
 );
 
-PartInformation.hasOne(PSU, {
+PartInformation.hasOne(PSUModel, {
   foreignKey: "id",
 });
-PSU.belongsTo(PartInformation, {
+PSUModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { PSU };
+export { PSUModel as PSU };

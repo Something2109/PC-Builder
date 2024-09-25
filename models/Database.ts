@@ -331,7 +331,10 @@ class PartPick implements DatabaseObject {
     return result;
   }
 
-  async get(part: Products, id: string): Promise<PartType.BasicInfo | null> {
+  async get(
+    part: Products,
+    id: string
+  ): Promise<PartType.DetailInfo<typeof part> | null> {
     try {
       const save = await PartInformation.scope("detail").findByPk(id, {
         include: {
@@ -340,7 +343,7 @@ class PartPick implements DatabaseObject {
       });
 
       if (save) {
-        return save.toJSON();
+        return save.toJSON() as unknown as PartType.DetailInfo<typeof part>;
       }
     } catch (err) {
       console.error(err);

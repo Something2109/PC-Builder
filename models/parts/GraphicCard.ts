@@ -4,10 +4,18 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Model,
+  NonAttribute,
 } from "sequelize";
-import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
-import { GPU } from "./GPU";
+import {
+  BaseModelOptions,
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+} from "../interface";
+import { GPU as GPUModel } from "./GPU";
 import { PartInformation } from "./Part";
+import GraphicCard from "@/utils/interface/part/GraphicCard";
+import GPU from "@/utils/interface/part/GPU";
 
 type APIDisplayInterface = {
   HDMI?: number;
@@ -15,27 +23,31 @@ type APIDisplayInterface = {
   DVI_D?: number;
 };
 
-class GraphicCard extends Model<
-  InferAttributes<GraphicCard>,
-  InferCreationAttributes<GraphicCard>
-> {
-  declare id: ForeignKey<string>;
+class GraphicCardModel
+  extends Model<
+    InferAttributes<GraphicCardModel>,
+    InferCreationAttributes<GraphicCardModel>
+  >
+  implements PartDetailTable<GraphicCard.Info>
+{
+  declare id: ForeignKey<PartInformation["id"]>;
 
-  declare width: number;
-  declare length: number;
-  declare height: number;
+  declare width: number | null;
+  declare length: number | null;
+  declare height: number | null;
 
-  declare base_frequency: number;
-  declare boost_frequency: number;
+  declare base_frequency: number | null;
+  declare boost_frequency: number | null;
 
-  declare pcie?: number;
-  declare minimum_psu?: number;
-  declare power_connector?: string;
+  declare pcie: number | null;
+  declare minimum_psu: number | null;
+  declare power_connector: string | null;
 
-  declare gpu_id: ForeignKey<string>;
+  declare gpu: NonAttribute<GPU.Info>;
+  declare gpu_id: ForeignKey<GPUModel["id"]>;
 }
 
-GraphicCard.init(
+GraphicCardModel.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -81,18 +93,18 @@ GraphicCard.init(
   }
 );
 
-PartInformation.hasOne(GraphicCard, {
+PartInformation.hasOne(GraphicCardModel, {
   foreignKey: "id",
 });
-GraphicCard.belongsTo(PartInformation, {
+GraphicCardModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-GPU.hasMany(GraphicCard, {
+GPUModel.hasMany(GraphicCardModel, {
   foreignKey: "gpu_id",
 });
-GraphicCard.belongsTo(GPU, {
+GraphicCardModel.belongsTo(GPUModel, {
   foreignKey: "gpu_id",
 });
 
-export { GraphicCard, type APIDisplayInterface };
+export { GraphicCardModel as GraphicCard, type APIDisplayInterface };

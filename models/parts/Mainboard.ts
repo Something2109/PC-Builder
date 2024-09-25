@@ -5,26 +5,44 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
+import {
+  BaseModelOptions,
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+} from "../interface";
 import { PartInformation } from "./Part";
+import Mainboard from "@/utils/interface/part/Mainboard";
+import {
+  MainboardFormFactors,
+  MainboardFormFactorType,
+  RAMFormFactors,
+  RAMFormFactorType,
+  RAMProtocols,
+  RAMProtocolType,
+} from "@/utils/interface/part/utils";
 
-class Mainboard extends Model<
-  InferAttributes<Mainboard>,
-  InferCreationAttributes<Mainboard>
-> {
-  declare id: ForeignKey<string>;
+class MainboardModel
+  extends Model<
+    InferAttributes<MainboardModel>,
+    InferCreationAttributes<MainboardModel>
+  >
+  implements PartDetailTable<Mainboard.Info>
+{
+  declare id: ForeignKey<PartInformation["id"]>;
 
-  declare form_factor: string;
+  declare form_factor: MainboardFormFactorType | null;
+  declare socket: string | null;
 
-  declare socket: string;
+  declare ram_form_factor: RAMFormFactorType | null;
+  declare ram_protocol: RAMProtocolType | null;
+  declare ram_slot: number | null;
 
-  declare ram_type: string;
-  declare expansion_slots: number;
-
-  declare io_ports: {};
+  declare expansion_slots: number | null;
+  declare io_ports: {} | null;
 }
 
-Mainboard.init(
+MainboardModel.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -37,16 +55,21 @@ Mainboard.init(
     },
     form_factor: {
       type: DataTypes.STRING,
+      validate: { isIn: [MainboardFormFactors] },
     },
-    ram_type: {
+
+    ram_form_factor: {
       type: DataTypes.STRING,
+      validate: { isIn: [RAMFormFactors] },
     },
-    expansion_slots: {
+    ram_protocol: {
       type: DataTypes.STRING,
+      validate: { isIn: [RAMProtocols] },
     },
-    io_ports: {
-      type: DataTypes.STRING,
-    },
+    ram_slot: { type: DataTypes.TINYINT },
+
+    expansion_slots: { type: DataTypes.TINYINT },
+    io_ports: { type: DataTypes.STRING },
   },
   {
     ...BaseModelOptions,
@@ -55,11 +78,11 @@ Mainboard.init(
   }
 );
 
-PartInformation.hasOne(Mainboard, {
+PartInformation.hasOne(MainboardModel, {
   foreignKey: "id",
 });
-Mainboard.belongsTo(PartInformation, {
+MainboardModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { Mainboard };
+export { MainboardModel as Mainboard };

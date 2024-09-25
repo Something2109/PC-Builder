@@ -5,25 +5,37 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
+import {
+  BaseModelOptions,
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+} from "../interface";
 import { PartInformation } from "./Part";
+import Cooler from "@/utils/interface/part/Cooler";
+import {
+  CoolerCPUPlates,
+  CoolerCPUPlateType,
+} from "@/utils/interface/part/utils";
 
-type FanSize = 120 | 140;
+class CoolerModel
+  extends Model<
+    InferAttributes<CoolerModel>,
+    InferCreationAttributes<CoolerModel>
+  >
+  implements PartDetailTable<Cooler.Info>
+{
+  declare id: ForeignKey<PartInformation["id"]>;
 
-type AIOSize = 120 | 140 | 240 | 280 | 360 | 420;
+  declare width: number | null;
+  declare length: number | null;
+  declare height: number | null;
 
-class Cooler extends Model<
-  InferAttributes<Cooler>,
-  InferCreationAttributes<Cooler>
-> {
-  declare id: ForeignKey<string>;
-
-  declare width: number;
-  declare length: number;
-  declare height: number;
+  declare socket: string | null;
+  declare cpu_plate: CoolerCPUPlateType | null;
 }
 
-Cooler.init(
+CoolerModel.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -31,14 +43,14 @@ Cooler.init(
       primaryKey: true,
     },
 
-    width: {
-      type: DataTypes.FLOAT,
-    },
-    length: {
-      type: DataTypes.FLOAT,
-    },
-    height: {
-      type: DataTypes.FLOAT,
+    width: { type: DataTypes.FLOAT },
+    length: { type: DataTypes.FLOAT },
+    height: { type: DataTypes.FLOAT },
+
+    socket: { type: DataTypes.STRING },
+    cpu_plate: {
+      type: DataTypes.STRING,
+      validate: { isIn: [CoolerCPUPlates] },
     },
   },
   {
@@ -48,11 +60,11 @@ Cooler.init(
   }
 );
 
-PartInformation.hasOne(Cooler, {
+PartInformation.hasOne(CoolerModel, {
   foreignKey: "id",
 });
-Cooler.belongsTo(PartInformation, {
+CoolerModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { Cooler };
+export { CoolerModel as Cooler };

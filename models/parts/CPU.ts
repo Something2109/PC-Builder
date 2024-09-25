@@ -6,75 +6,66 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
+import {
+  BaseModelOptions,
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+} from "../interface";
 import { PartInformation } from "./Part";
-import { PartType } from "@/utils/interface/Parts";
+import CPU from "@/utils/interface/part/CPU";
 
-class CPU
-  extends Model<InferAttributes<CPU>, InferCreationAttributes<CPU>>
-  implements PartType.CPU.Info
+class CPUModel
+  extends Model<InferAttributes<CPUModel>, InferCreationAttributes<CPUModel>>
+  implements PartDetailTable<CPU.Info>
 {
-  declare id: ForeignKey<string>;
-  declare family: string;
+  declare id: ForeignKey<PartInformation["id"]>;
+  declare family: string | null;
 
-  declare socket: string;
-  declare total_cores: number;
-  declare total_threads: number;
-  declare base_frequency?: number;
-  declare turbo_frequency?: number;
-  declare cores?: PartType.CPU.Core;
+  declare socket: string | null;
+  declare total_cores: number | null;
+  declare total_threads: number | null;
+  declare base_frequency: number | null;
+  declare turbo_frequency: number | null;
+  declare cores: CPU.Core | null;
 
-  declare L2_cache?: number;
-  declare L3_cache?: number;
+  declare L2_cache: number | null;
+  declare L3_cache: number | null;
 
-  declare max_memory?: number;
-  declare max_memory_channel?: number;
-  declare max_memory_bandwidth?: number;
+  declare max_memory: number | null;
+  declare max_memory_channel: number | null;
+  declare max_memory_bandwidth: number | null;
 
-  declare tdp: number;
-  declare lithography: string;
+  declare tdp: number | null;
+  declare lithography: string | null;
 
   declare core_json: CreationOptional<string | null>;
 }
 
-CPU.init(
+CPUModel.init(
   {
     id: {
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
     },
-    family: {
-      type: DataTypes.STRING,
-    },
+    family: { type: DataTypes.STRING },
 
-    socket: {
-      type: DataTypes.STRING,
-    },
-    total_cores: {
-      type: DataTypes.INTEGER,
-    },
-    total_threads: {
-      type: DataTypes.INTEGER,
-    },
-    base_frequency: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-    },
-    turbo_frequency: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-    },
+    socket: { type: DataTypes.STRING },
+    total_cores: { type: DataTypes.TINYINT },
+    total_threads: { type: DataTypes.TINYINT },
+    base_frequency: { type: DataTypes.FLOAT },
+    turbo_frequency: { type: DataTypes.FLOAT },
     cores: {
       type: DataTypes.VIRTUAL,
-      get(): PartType.CPU.Core | undefined {
+      get(): CPU.Core | undefined {
         const json = this.getDataValue("core_json");
         if (json) {
-          return JSON.parse(json) as PartType.CPU.Core;
+          return JSON.parse(json) as CPU.Core;
         }
         return undefined;
       },
-      set(value: PartType.CPU.Core | undefined) {
+      set(value: CPU.Core | undefined) {
         if (value) {
           const json = JSON.stringify(value);
           this.setDataValue("core_json", json);
@@ -83,59 +74,42 @@ CPU.init(
         }
       },
     },
-    L2_cache: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-    },
-    L3_cache: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-    },
 
-    max_memory: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-    },
-    max_memory_channel: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    max_memory_bandwidth: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-    },
+    L2_cache: { type: DataTypes.FLOAT },
+    L3_cache: { type: DataTypes.FLOAT },
 
-    tdp: {
-      type: DataTypes.INTEGER,
-    },
+    max_memory: { type: DataTypes.FLOAT },
+    max_memory_channel: { type: DataTypes.INTEGER },
+    max_memory_bandwidth: { type: DataTypes.FLOAT },
 
-    lithography: {
-      type: DataTypes.STRING,
-    },
+    tdp: { type: DataTypes.INTEGER },
+    lithography: { type: DataTypes.STRING },
 
-    core_json: {
-      type: DataTypes.STRING,
-    },
+    core_json: { type: DataTypes.STRING },
   },
   {
     ...BaseModelOptions,
     defaultScope: PartDefaultScope,
     modelName: Tables.CPU,
     validate: {
-      coreValidate() {
-        if ((this.base_frequency === null) !== (this.cores === null)) {
-          throw new Error("Not enough core information provided");
+      coresValidate() {
+        if (
+          this.base_frequency &&
+          this.turbo_frequency &&
+          this.base_frequency > this.turbo_frequency
+        ) {
+          throw new Error("Base frequency cannot be larger than the turbo");
         }
       },
     },
   }
 );
 
-PartInformation.hasOne(CPU, {
+PartInformation.hasOne(CPUModel, {
   foreignKey: "id",
 });
-CPU.belongsTo(PartInformation, {
+CPUModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { CPU };
+export { CPUModel as CPU };

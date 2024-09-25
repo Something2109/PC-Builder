@@ -5,22 +5,41 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
+import {
+  BaseModelOptions,
+  PartDefaultScope,
+  PartDetailTable,
+  Tables,
+} from "../interface";
 import { PartInformation } from "./Part";
+import Fan from "@/utils/interface/part/Fan";
+import {
+  FanBearings,
+  FanBearingType,
+  FanFormFactors,
+  FanFormFactorType,
+} from "@/utils/interface/part/utils";
 
-type FanSize = 120 | 140;
+class FanModel
+  extends Model<InferAttributes<FanModel>, InferCreationAttributes<FanModel>>
+  implements PartDetailTable<Fan.Info>
+{
+  declare id: ForeignKey<PartInformation["id"]>;
 
-type AIOSize = 120 | 140 | 240 | 280 | 360 | 420;
+  declare form_factor: FanFormFactorType | null;
+  declare width: number | null;
+  declare length: number | null;
+  declare height: number | null;
 
-class Fan extends Model<InferAttributes<Fan>, InferCreationAttributes<Fan>> {
-  declare id: ForeignKey<string>;
-
-  declare width: number;
-  declare length: number;
-  declare height: number;
+  declare voltage: number | null;
+  declare speed: number | null;
+  declare airflow: number | null;
+  declare noise: number | null;
+  declare static_pressure: number | null;
+  declare bearing: FanBearingType | null;
 }
 
-Fan.init(
+FanModel.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -28,15 +47,21 @@ Fan.init(
       primaryKey: true,
     },
 
-    width: {
-      type: DataTypes.FLOAT,
+    form_factor: {
+      type: DataTypes.STRING,
+      validate: { isIn: [FanFormFactors] },
     },
-    length: {
-      type: DataTypes.FLOAT,
-    },
-    height: {
-      type: DataTypes.FLOAT,
-    },
+
+    width: { type: DataTypes.FLOAT },
+    length: { type: DataTypes.FLOAT },
+    height: { type: DataTypes.FLOAT },
+
+    voltage: { type: DataTypes.FLOAT },
+    speed: { type: DataTypes.INTEGER },
+    airflow: { type: DataTypes.FLOAT },
+    noise: { type: DataTypes.FLOAT },
+    static_pressure: { type: DataTypes.FLOAT },
+    bearing: { type: DataTypes.STRING, validate: { isIn: [FanBearings] } },
   },
   {
     ...BaseModelOptions,
@@ -45,11 +70,11 @@ Fan.init(
   }
 );
 
-PartInformation.hasOne(Fan, {
+PartInformation.hasOne(FanModel, {
   foreignKey: "id",
 });
-Fan.belongsTo(PartInformation, {
+FanModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { Fan };
+export { FanModel as Fan };

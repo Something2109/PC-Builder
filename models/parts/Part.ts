@@ -40,36 +40,17 @@ PartInformation.init(
       primaryKey: true,
     },
 
-    part: {
-      type: DataTypes.STRING,
-    },
-    name: {
-      type: DataTypes.STRING,
-    },
-    code_name: {
-      type: DataTypes.STRING,
-      unique: true,
-    },
-    brand: {
-      type: DataTypes.STRING,
-    },
-    series: {
-      type: DataTypes.STRING,
-    },
+    part: { type: DataTypes.STRING },
+    name: { type: DataTypes.STRING },
+    code_name: { type: DataTypes.STRING, unique: true },
+    brand: { type: DataTypes.STRING },
+    series: { type: DataTypes.STRING },
 
-    launch_date: {
-      type: DataTypes.DATE,
-    },
-    url: {
-      type: DataTypes.STRING,
-    },
-    image_url: {
-      type: DataTypes.STRING,
-    },
+    launch_date: { type: DataTypes.DATE },
+    url: { type: DataTypes.STRING, validate: { isUrl: true } },
+    image_url: { type: DataTypes.STRING, validate: { isUrl: true } },
 
-    raw: {
-      type: DataTypes.TEXT,
-    },
+    raw: { type: DataTypes.TEXT },
   },
   {
     ...BaseModelOptions,

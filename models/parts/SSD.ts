@@ -5,25 +5,42 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
+import {
+  BaseModelOptions,
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+} from "../interface";
 import { PartInformation } from "./Part";
+import SSD from "@/utils/interface/part/SSD";
+import {
+  SSDFormFactors,
+  SSDFormFactorType,
+  SSDInterfaces,
+  SSDInterfaceType,
+  SSDProtocols,
+  SSDProtocolType,
+} from "@/utils/interface/part/utils";
 
-class SSD extends Model<InferAttributes<SSD>, InferCreationAttributes<SSD>> {
-  declare id: ForeignKey<string>;
+class SSDModel
+  extends Model<InferAttributes<SSDModel>, InferCreationAttributes<SSDModel>>
+  implements PartDetailTable<SSD.Info>
+{
+  declare id: ForeignKey<PartInformation["id"]>;
 
-  declare memory_type: string;
-  declare read_speed: number;
-  declare write_speed: number;
-  declare capacity: number;
-  declare cache: number;
-  declare tbw: number;
+  declare memory_type: string | null;
+  declare read_speed: number | null;
+  declare write_speed: number | null;
+  declare capacity: number | null;
+  declare cache: number | null;
+  declare tbw: number | null;
 
-  declare form_factor: string;
-  declare protocol: string;
-  declare protocol_version: number;
+  declare form_factor: SSDFormFactorType | null;
+  declare protocol: SSDProtocolType | null;
+  declare interface: SSDInterfaceType | null;
 }
 
-SSD.init(
+SSDModel.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -38,9 +55,12 @@ SSD.init(
     cache: { type: DataTypes.INTEGER },
     tbw: { type: DataTypes.INTEGER },
 
-    form_factor: { type: DataTypes.STRING },
-    protocol: { type: DataTypes.STRING },
-    protocol_version: { type: DataTypes.TINYINT },
+    form_factor: {
+      type: DataTypes.STRING,
+      validate: { isIn: [SSDFormFactors] },
+    },
+    protocol: { type: DataTypes.STRING, validate: { isIn: [SSDProtocols] } },
+    interface: { type: DataTypes.STRING, validate: { isIn: [SSDInterfaces] } },
   },
   {
     ...BaseModelOptions,
@@ -49,11 +69,11 @@ SSD.init(
   }
 );
 
-PartInformation.hasOne(SSD, {
+PartInformation.hasOne(SSDModel, {
   foreignKey: "id",
 });
-SSD.belongsTo(PartInformation, {
+SSDModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { SSD };
+export { SSDModel as SSD };

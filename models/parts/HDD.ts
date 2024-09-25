@@ -5,24 +5,39 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
+import {
+  BaseModelOptions,
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+} from "../interface";
 import { PartInformation } from "./Part";
+import HDD from "@/utils/interface/part/HDD";
+import {
+  HDDFormFactors,
+  HDDFormFactorType,
+  HDDProtocols,
+  HDDProtocolType,
+} from "@/utils/interface/part/utils";
 
-class HDD extends Model<InferAttributes<HDD>, InferCreationAttributes<HDD>> {
-  declare id: ForeignKey<string>;
+class HDDModel
+  extends Model<InferAttributes<HDDModel>, InferCreationAttributes<HDDModel>>
+  implements PartDetailTable<HDD.Info>
+{
+  declare id: ForeignKey<PartInformation["id"]>;
 
-  declare rotational_speed: number;
-  declare read_speed: number;
-  declare write_speed: number;
-  declare capacity: number;
-  declare cache: number;
+  declare rotational_speed: number | null;
+  declare read_speed: number | null;
+  declare write_speed: number | null;
+  declare capacity: number | null;
+  declare cache: number | null;
 
-  declare form_factor: string;
-  declare protocol: string;
-  declare protocol_version: number;
+  declare form_factor: HDDFormFactorType | null;
+  declare protocol: HDDProtocolType | null;
+  declare protocol_version: number | null;
 }
 
-HDD.init(
+HDDModel.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -36,8 +51,11 @@ HDD.init(
     capacity: { type: DataTypes.TINYINT },
     cache: { type: DataTypes.INTEGER },
 
-    form_factor: { type: DataTypes.STRING },
-    protocol: { type: DataTypes.STRING },
+    form_factor: {
+      type: DataTypes.STRING,
+      validate: { isIn: [HDDFormFactors] },
+    },
+    protocol: { type: DataTypes.STRING, validate: { isIn: [HDDProtocols] } },
     protocol_version: { type: DataTypes.TINYINT },
   },
   {
@@ -47,11 +65,11 @@ HDD.init(
   }
 );
 
-PartInformation.hasOne(HDD, {
+PartInformation.hasOne(HDDModel, {
   foreignKey: "id",
 });
-HDD.belongsTo(PartInformation, {
+HDDModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { HDD };
+export { HDDModel as HDD };

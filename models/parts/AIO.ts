@@ -5,24 +5,67 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
+import AIO from "@/utils/interface/part/AIO";
+import {
+  BaseModelOptions,
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+} from "../interface";
 import { PartInformation } from "./Part";
+import {
+  AIOFormFactors,
+  AIOFormFactorType,
+  CoolerCPUPlates,
+  CoolerCPUPlateType,
+} from "@/utils/interface/part/utils";
 
-type FanSize = 120 | 140;
+class AIOModel
+  extends Model<InferAttributes<AIOModel>, InferCreationAttributes<AIOModel>>
+  implements PartDetailTable<AIO.Info>
+{
+  declare id: ForeignKey<PartInformation["id"]>;
 
-type AIOSize = 120 | 140 | 240 | 280 | 360 | 420;
+  declare form_factor: AIOFormFactorType | null;
+  declare radiator_width: number | null;
+  declare radiator_length: number | null;
+  declare radiator_height: number | null;
 
-class AIO extends Model<InferAttributes<AIO>, InferCreationAttributes<AIO>> {
-  declare id: ForeignKey<string>;
+  declare socket: string | null;
+  declare cpu_plate: CoolerCPUPlateType | null;
+
+  declare pump_width: number | null;
+  declare pump_length: number | null;
+  declare pump_height: number | null;
+  declare pump_speed: number | null;
 }
 
-AIO.init(
+AIOModel.init(
   {
     id: {
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
     },
+
+    form_factor: {
+      type: DataTypes.STRING,
+      validate: { isIn: [AIOFormFactors] },
+    },
+    radiator_width: { type: DataTypes.FLOAT },
+    radiator_length: { type: DataTypes.FLOAT },
+    radiator_height: { type: DataTypes.FLOAT },
+
+    socket: { type: DataTypes.STRING },
+    cpu_plate: {
+      type: DataTypes.STRING,
+      validate: { isIn: [CoolerCPUPlates] },
+    },
+
+    pump_width: { type: DataTypes.FLOAT },
+    pump_length: { type: DataTypes.FLOAT },
+    pump_height: { type: DataTypes.FLOAT },
+    pump_speed: { type: DataTypes.FLOAT },
   },
   {
     ...BaseModelOptions,
@@ -31,11 +74,11 @@ AIO.init(
   }
 );
 
-PartInformation.hasOne(AIO, {
+PartInformation.hasOne(AIOModel, {
   foreignKey: "id",
 });
-AIO.belongsTo(PartInformation, {
+AIOModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { AIO };
+export { AIOModel as AIO };

@@ -5,25 +5,40 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
+import {
+  BaseModelOptions,
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+} from "../interface";
 import { PartInformation } from "./Part";
+import RAM from "@/utils/interface/part/RAM";
+import {
+  RAMFormFactors,
+  RAMFormFactorType,
+  RAMProtocols,
+  RAMProtocolType,
+} from "@/utils/interface/part/utils";
 
-class RAM extends Model<InferAttributes<RAM>, InferCreationAttributes<RAM>> {
-  declare id: ForeignKey<string>;
+class RAMModel
+  extends Model<InferAttributes<RAMModel>, InferCreationAttributes<RAMModel>>
+  implements PartDetailTable<RAM.Info>
+{
+  declare id: ForeignKey<PartInformation["id"]>;
 
-  declare speed: number;
-  declare capacity: number;
-  declare voltage: number;
-  declare latency: number[];
-  declare kit: number;
+  declare speed: number | null;
+  declare capacity: number | null;
+  declare voltage: number | null;
+  declare latency: number[] | null;
+  declare kit: number | null;
 
-  declare type: string;
-  declare form_factor: string;
+  declare form_factor: RAMFormFactorType | null;
+  declare protocol: RAMProtocolType | null;
 
-  declare latency_json: string;
+  declare latency_json: string | null;
 }
 
-RAM.init(
+RAMModel.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -36,19 +51,25 @@ RAM.init(
     voltage: { type: DataTypes.FLOAT },
     latency: {
       type: DataTypes.VIRTUAL,
-      async get(): Promise<number[]> {
+      async get(): Promise<number[] | null> {
         const data = this.getDataValue("latency_json");
-
-        return JSON.parse(data) as number[];
+        if (data) {
+          return JSON.parse(data) as number[];
+        }
+        return null;
       },
-      async set(value: number[]) {
-        this.setDataValue("latency_json", JSON.stringify(value));
+      async set(value: number[] | null) {
+        this.setDataValue("latency_json", value ? JSON.stringify(value) : null);
       },
     },
     kit: { type: DataTypes.TINYINT, defaultValue: 1 },
 
-    type: { type: DataTypes.STRING },
-    form_factor: { type: DataTypes.STRING },
+    form_factor: {
+      type: DataTypes.STRING,
+      validate: { isIn: [RAMFormFactors] },
+    },
+    protocol: { type: DataTypes.STRING, validate: { isIn: [RAMProtocols] } },
+
     latency_json: { type: DataTypes.STRING },
   },
   {
@@ -58,11 +79,11 @@ RAM.init(
   }
 );
 
-PartInformation.hasOne(RAM, {
+PartInformation.hasOne(RAMModel, {
   foreignKey: "id",
 });
-RAM.belongsTo(PartInformation, {
+RAMModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { RAM };
+export { RAMModel as RAM };

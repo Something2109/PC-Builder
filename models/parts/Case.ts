@@ -5,56 +5,49 @@ import {
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { BaseModelOptions, PartDefaultScope, Tables } from "../interface";
+import {
+  BaseModelOptions,
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+} from "../interface";
 import { PartInformation } from "./Part";
+import {
+  CaseFormFactors,
+  CaseFormFactorType,
+  MainboardFormFactorType,
+  PSUFormFactorType,
+} from "@/utils/interface/part/utils";
+import Case from "@/utils/interface/part/Case";
 
-type FanSize = 120 | 140;
+class CaseModel
+  extends Model<InferAttributes<CaseModel>, InferCreationAttributes<CaseModel>>
+  implements PartDetailTable<Case.Info>
+{
+  declare id: ForeignKey<PartInformation["id"]>;
 
-type AIOSize = 120 | 140 | 240 | 280 | 360 | 420;
+  declare form_factor: CaseFormFactorType | null;
+  declare width: number | null;
+  declare length: number | null;
+  declare height: number | null;
 
-type CaseSide = "top" | "bottom" | "front" | "rear" | "side";
+  declare io_ports: {} | null;
 
-type FanSupport = {
-  [side in CaseSide]: {
-    [size in FanSize]: number;
-  };
-};
+  declare mb_support: MainboardFormFactorType[] | null;
+  declare expansion_slot: number | null;
 
-type AIOSupport = {
-  [side in CaseSide]: AIOSize[];
-};
+  declare max_cooler_height: number | null;
 
-type HardDriveSupport = {
-  2.5?: number;
-  3.5?: number;
-  combo: number;
-};
+  declare aio_support: Case.AIOSupport | null;
+  declare fan_support: Case.FanSupport | null;
 
-class Case extends Model<InferAttributes<Case>, InferCreationAttributes<Case>> {
-  declare id: ForeignKey<string>;
+  declare hard_drive_support: Case.HardDriveSupport | null;
 
-  declare form_factor: string;
-  declare width: number;
-  declare length: number;
-  declare height: number;
-
-  declare io_ports: {};
-
-  declare mb_support: string[];
-  declare expansion_slot: number;
-
-  declare max_cooler_height: number;
-
-  declare aio_support: AIOSupport;
-  declare fan_support: FanSupport;
-
-  declare hard_drive_support: HardDriveSupport;
-
-  declare psu_support: string;
-  declare max_psu_length?: number;
+  declare psu_support: PSUFormFactorType | null;
+  declare max_psu_length: number | null;
 }
 
-Case.init(
+CaseModel.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -64,16 +57,12 @@ Case.init(
 
     form_factor: {
       type: DataTypes.STRING,
+      validate: { isIn: [CaseFormFactors] },
     },
-    width: {
-      type: DataTypes.FLOAT,
-    },
-    length: {
-      type: DataTypes.FLOAT,
-    },
-    height: {
-      type: DataTypes.FLOAT,
-    },
+    width: { type: DataTypes.FLOAT },
+    length: { type: DataTypes.FLOAT },
+    height: { type: DataTypes.FLOAT },
+
     io_ports: {
       type: DataTypes.VIRTUAL,
     },
@@ -81,12 +70,9 @@ Case.init(
       type: DataTypes.VIRTUAL,
     },
 
-    expansion_slot: {
-      type: DataTypes.INTEGER,
-    },
-    max_cooler_height: {
-      type: DataTypes.FLOAT,
-    },
+    expansion_slot: { type: DataTypes.INTEGER },
+    max_cooler_height: { type: DataTypes.FLOAT },
+
     aio_support: {
       type: DataTypes.VIRTUAL,
     },
@@ -97,12 +83,8 @@ Case.init(
       type: DataTypes.VIRTUAL,
     },
 
-    psu_support: {
-      type: DataTypes.VIRTUAL,
-    },
-    max_psu_length: {
-      type: DataTypes.FLOAT,
-    },
+    psu_support: { type: DataTypes.VIRTUAL },
+    max_psu_length: { type: DataTypes.FLOAT },
   },
   {
     ...BaseModelOptions,
@@ -111,11 +93,11 @@ Case.init(
   }
 );
 
-PartInformation.hasOne(Case, {
+PartInformation.hasOne(CaseModel, {
   foreignKey: "id",
 });
-Case.belongsTo(PartInformation, {
+CaseModel.belongsTo(PartInformation, {
   foreignKey: "id",
 });
 
-export { Case };
+export { CaseModel as Case };
