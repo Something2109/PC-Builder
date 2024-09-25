@@ -4,8 +4,6 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Model,
-  Op,
-  WhereOptions,
 } from "sequelize";
 import { BaseModelOptions, Tables } from "@/models/interface";
 import { PartType } from "@/utils/interface/Parts";
@@ -61,20 +59,9 @@ PartInformation.init(
       },
     },
     scopes: {
-      filter(options: PartType.FilterOptions) {
-        let where: WhereOptions<InferAttributes<PartInformation>> = {};
-
-        Object.entries(options).forEach(([key, arr]) => {
-          if (filter[key as PartType.Filterables]) {
-            where = {
-              ...where,
-              ...filter[key as PartType.Filterables](arr as any),
-            };
-          }
-        });
-
-        return { where };
-      },
+      filter: (options: PartType.FilterOptions) => ({
+        where: options,
+      }),
       detail: {
         attributes: {
           exclude: ["id", "createdAt", "updatedAt"],
@@ -83,27 +70,5 @@ PartInformation.init(
     },
   }
 );
-
-const filter: {
-  [key in PartType.Filterables]: (
-    filter: Required<PartType.FilterOptions>[key]
-  ) => WhereOptions<InferAttributes<PartInformation>>;
-} = {
-  part: (filter: string[]) => ({
-    part: {
-      [Op.in]: filter,
-    },
-  }),
-  brand: (filter) => ({
-    brand: {
-      [Op.in]: filter,
-    },
-  }),
-  series: (filter: string[]) => ({
-    series: {
-      [Op.in]: filter,
-    },
-  }),
-};
 
 export { PartInformation };
