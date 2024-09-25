@@ -1,3 +1,17 @@
+import { Products } from "../Enum";
+import AIOType from "./part/AIO";
+import CaseType from "./part/Case";
+import CoolerType from "./part/Cooler";
+import CPUType from "./part/CPU";
+import FanType from "./part/Fan";
+import GPUType from "./part/GPU";
+import GraphicCardType from "./part/GraphicCard";
+import HDDType from "./part/HDD";
+import MainboardType from "./part/Mainboard";
+import PSUType from "./part/PSU";
+import RAMType from "./part/RAM";
+import SSDType from "./part/SSD";
+
 export namespace PartType {
   export type BasicInfo = {
     id: string;
@@ -13,132 +27,42 @@ export namespace PartType {
     image_url?: string;
   };
 
-  type ParticularAttributes =
-    | "id"
-    | "name"
-    | "code_name"
-    | "url"
-    | "image_url"
-    | "launch_date";
+  const ParticularAttrList = [
+    "id",
+    "name",
+    "code_name",
+    "url",
+    "image_url",
+    "launch_date",
+  ] as const;
+
+  export type ParticularAttributes = (typeof ParticularAttrList)[number];
 
   export type Filterables = Exclude<keyof BasicInfo, ParticularAttributes>;
 
   export type FilterOptions = FilterOptionsType<BasicInfo, Filterables>;
 
-  export namespace CPU {
-    export type Core = {
-      [key in string]: {
-        count?: number;
+  export type DetailInfo<T extends Products> = Omit<
+    PartType.BasicInfo & { raw: string },
+    "id"
+  > & {
+    [key in T]: DetailInfoList[T];
+  };
 
-        base_frequency: number;
-        turbo_frequency?: number;
-      };
-    };
-
-    export type Info = {
-      family?: string;
-
-      socket: string;
-      total_cores: number;
-      total_threads: number;
-      base_frequency?: number;
-      turbo_frequency?: number;
-      cores?: Core;
-
-      L2_cache?: number;
-      L3_cache?: number;
-      max_memory?: number;
-      max_memory_channel?: number;
-      max_memory_bandwidth?: number;
-
-      tdp: number;
-      lithography: string;
-    };
-
-    type BasicAttributes =
-      | "socket"
-      | "total_cores"
-      | "total_threads"
-      | "base_frequency"
-      | "turbo_frequency"
-      | "L3_cache"
-      | "tdp";
-
-    export type Filterables = BasicAttributes;
-  }
-
-  export namespace GPU {
-    export type Core = {
-      [key in string]: {
-        generation?: number;
-        count?: number;
-      };
-    };
-
-    export type Features = {
-      DirectX?: string;
-      OpenGL?: string;
-      OpenCL?: string;
-      Vulkan?: string;
-      CUDA?: string;
-    };
-
-    export type Info = {
-      family?: string;
-
-      core_count?: number;
-      execution_unit?: number;
-      base_frequency?: number;
-      boost_frequency?: number;
-      extra_cores: Core;
-
-      memory_size?: number;
-      memory_type?: string;
-      memory_bus?: number;
-
-      tdp: number;
-      minimum_psu?: number;
-
-      features: Features;
-    };
-
-    type BasicAttributes =
-      | "base_frequency"
-      | "boost_frequency"
-      | "memory_size"
-      | "memory_type"
-      | "tdp"
-      | "minimum_psu";
-
-    export type Filterables = BasicAttributes;
-  }
-
-  export namespace GraphicCard {
-    export type Info = {
-      width: number;
-      length: number;
-      height: number;
-
-      base_frequency: number;
-      boost_frequency: number;
-
-      pcie?: number;
-      minimum_psu?: number;
-      power_connector?: string;
-
-      gpu?: GPU.Info;
-    };
-
-    type BasicAttributes =
-      | "width"
-      | "length"
-      | "height"
-      | "base_frequency"
-      | "boost_frequency"
-      | "minimum_psu";
-
-    export type Filterables = BasicAttributes;
-  }
+  type DetailInfoList = {
+    [Products.CPU]: CPUType.Info;
+    [Products.GPU]: GPUType.Info;
+    [Products.GRAPHIC_CARD]: GraphicCardType.Info;
+    [Products.MAIN]: MainboardType.Info;
+    [Products.RAM]: RAMType.Info;
+    [Products.SSD]: SSDType.Info;
+    [Products.HDD]: HDDType.Info;
+    [Products.PSU]: PSUType.Info;
+    [Products.CASE]: CaseType.Info;
+    [Products.FAN]: FanType.Info;
+    [Products.COOLER]: CoolerType.Info;
+    [Products.AIO]: AIOType.Info;
+  };
 }
 
 type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
