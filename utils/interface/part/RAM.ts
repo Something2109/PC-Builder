@@ -1,4 +1,4 @@
-import { RAMFormFactorType, RAMProtocolType } from "./utils";
+import { FilterOptionsType, RAMFormFactorType, RAMProtocolType } from "./utils";
 
 namespace RAM {
   export type Info = {
@@ -12,16 +12,15 @@ namespace RAM {
     protocol: RAMProtocolType;
   };
 
-  export const BasicAttrList: (keyof Info)[] = [
+  export const FilterAttributes = [
     "capacity",
-
     "form_factor",
     "protocol",
   ] as const;
 
-  type BasicAttributes = (typeof BasicAttrList)[number];
+  export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Filterables = BasicAttributes;
+  export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }
 
 export default RAM;

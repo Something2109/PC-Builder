@@ -5,6 +5,7 @@ import {
   FanFormFactorType,
   MainboardFormFactorType,
   PSUFormFactorType,
+  FilterOptionsType,
 } from "./utils";
 
 export namespace Case {
@@ -47,14 +48,20 @@ export namespace Case {
     max_psu_length?: number;
   };
 
-  export const BasicAttrList: (keyof Info)[] = [
+  export const FilterAttributes = [
     "form_factor",
     "mb_support",
+    "psu_support",
   ] as const;
 
-  type BasicAttributes = (typeof BasicAttrList)[number];
+  export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Filterables = BasicAttributes;
+  export type FilterOptions = Omit<
+    FilterOptionsType<Info, Filterables>,
+    "mb_support"
+  > & {
+    mb_support: MainboardFormFactorType[];
+  };
 }
 
 export default Case;

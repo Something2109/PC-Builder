@@ -1,3 +1,4 @@
+import { FilterOptionsType } from "./utils";
 import GPU from "./GPU";
 
 namespace GraphicCard {
@@ -16,7 +17,7 @@ namespace GraphicCard {
     gpu: GPU.Info;
   };
 
-  export const BasicAttrList: (keyof Info)[] = [
+  export const FilterAttributes = [
     "width",
     "length",
     "height",
@@ -25,9 +26,9 @@ namespace GraphicCard {
     "minimum_psu",
   ] as const;
 
-  type BasicAttributes = (typeof BasicAttrList)[number];
+  export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Filterables = BasicAttributes;
+  export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }
 
 export default GraphicCard;

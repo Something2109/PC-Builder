@@ -1,4 +1,9 @@
-import { PSUEfficiencyType, PSUFormFactorType, PSUModularType } from "./utils";
+import {
+  FilterOptionsType,
+  PSUEfficiencyType,
+  PSUFormFactorType,
+  PSUModularType,
+} from "./utils";
 
 export namespace PSU {
   export type Info = {
@@ -18,16 +23,16 @@ export namespace PSU {
     peripheral_pin: number;
   };
 
-  export const BasicAttrList: (keyof Info)[] = [
+  export const FilterAttributes = [
     "wattage",
     "efficiency",
     "form_factor",
     "modular",
   ] as const;
 
-  type BasicAttributes = (typeof BasicAttrList)[number];
+  export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Filterables = BasicAttributes;
+  export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }
 
 export default PSU;

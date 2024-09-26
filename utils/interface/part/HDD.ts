@@ -1,4 +1,4 @@
-import { HDDFormFactorType, HDDProtocolType } from "./utils";
+import { FilterOptionsType, HDDFormFactorType, HDDProtocolType } from "./utils";
 
 export namespace HDD {
   export type Info = {
@@ -13,7 +13,7 @@ export namespace HDD {
     protocol_version: number;
   };
 
-  export const BasicAttrList: (keyof Info)[] = [
+  export const FilterAttributes = [
     "form_factor",
     "protocol",
     "read_speed",
@@ -22,9 +22,9 @@ export namespace HDD {
     "rotational_speed",
   ] as const;
 
-  type BasicAttributes = (typeof BasicAttrList)[number];
+  export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Filterables = BasicAttributes;
+  export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }
 
 export default HDD;
