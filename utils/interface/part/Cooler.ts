@@ -1,4 +1,4 @@
-import { CoolerCPUPlateType, FanBearingType } from "./utils";
+import { CoolerCPUPlateType, FilterOptionsType } from "./utils";
 
 export namespace Cooler {
   export type Info = {
@@ -10,11 +10,11 @@ export namespace Cooler {
     height: number;
   };
 
-  export const BasicAttrList: (keyof Info)[] = ["socket"] as const;
+  export const FilterAttributes = ["socket", "cpu_plate"] as const;
 
-  type BasicAttributes = (typeof BasicAttrList)[number];
+  export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Filterables = BasicAttributes;
+  export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }
 
 export default Cooler;

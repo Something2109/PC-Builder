@@ -1,4 +1,5 @@
 import {
+  FilterOptionsType,
   MainboardFormFactorType,
   RAMFormFactorType,
   RAMProtocolType,
@@ -18,15 +19,16 @@ namespace Mainboard {
     io_ports: {};
   };
 
-  export const BasicAttrList: (keyof Info)[] = [
+  export const FilterAttributes = [
     "form_factor",
     "socket",
+    "ram_form_factor",
     "ram_protocol",
   ] as const;
 
-  type BasicAttributes = (typeof BasicAttrList)[number];
+  export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Filterables = BasicAttributes;
+  export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }
 
 export default Mainboard;

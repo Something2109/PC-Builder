@@ -1,4 +1,4 @@
-import { FanBearingType, FanFormFactorType } from "./utils";
+import { FanBearingType, FanFormFactorType, FilterOptionsType } from "./utils";
 
 namespace Fan {
   export type Info = {
@@ -17,11 +17,11 @@ namespace Fan {
     bearing: FanBearingType;
   };
 
-  export const BasicAttrList: (keyof Info)[] = [] as const;
+  export const FilterAttributes = ["form_factor", "bearing"] as const;
 
-  type BasicAttributes = (typeof BasicAttrList)[number];
+  export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Filterables = BasicAttributes;
+  export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }
 
 export default Fan;

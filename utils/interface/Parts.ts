@@ -11,6 +11,7 @@ import MainboardType from "./part/Mainboard";
 import PSUType from "./part/PSU";
 import RAMType from "./part/RAM";
 import SSDType from "./part/SSD";
+import { FilterOptionsType } from "./part/utils";
 
 export namespace PartType {
   export type BasicInfo = {
@@ -64,6 +65,17 @@ export namespace PartType {
   };
 }
 
-type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
-  [key in Attributes]?: Required<Info>[key][];
+export type FilterOptions = PartType.FilterOptions & {
+  [Products.CPU]?: CPUType.FilterOptions;
+  [Products.GPU]?: GPUType.FilterOptions;
+  [Products.GRAPHIC_CARD]?: GraphicCardType.FilterOptions;
+  [Products.MAIN]?: MainboardType.FilterOptions;
+  [Products.RAM]?: RAMType.FilterOptions;
+  [Products.SSD]?: SSDType.FilterOptions;
+  [Products.HDD]?: HDDType.FilterOptions;
+  [Products.PSU]?: PSUType.FilterOptions;
+  [Products.CASE]?: CaseType.FilterOptions;
+  [Products.FAN]?: FanType.FilterOptions;
+  [Products.COOLER]?: CoolerType.FilterOptions;
+  [Products.AIO]?: AIOType.FilterOptions;
 };

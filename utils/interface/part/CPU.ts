@@ -1,3 +1,5 @@
+import { FilterOptionsType } from "./utils";
+
 export namespace CPU {
   export type Core = {
     [key in string]: {
@@ -28,7 +30,7 @@ export namespace CPU {
     lithography: string;
   };
 
-  export const BasicAttrList: (keyof Info)[] = [
+  export const FilterAttributes = [
     "socket",
     "total_cores",
     "total_threads",
@@ -38,9 +40,9 @@ export namespace CPU {
     "tdp",
   ] as const;
 
-  type BasicAttributes = (typeof BasicAttrList)[number];
+  export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Filterables = BasicAttributes;
+  export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }
 
 export default CPU;

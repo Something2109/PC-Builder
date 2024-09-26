@@ -1,3 +1,5 @@
+import { FilterOptionsType } from "./utils";
+
 namespace GPU {
   export type Core = {
     [key in string]: {
@@ -32,7 +34,7 @@ namespace GPU {
     features: Features;
   };
 
-  export const BasicAttrList: (keyof Info)[] = [
+  export const FilterAttributes = [
     "base_frequency",
     "boost_frequency",
     "memory_size",
@@ -40,9 +42,9 @@ namespace GPU {
     "tdp",
   ] as const;
 
-  type BasicAttributes = (typeof BasicAttrList)[number];
+  export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Filterables = BasicAttributes;
+  export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }
 
 export default GPU;

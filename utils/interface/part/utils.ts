@@ -109,6 +109,10 @@ const AIOFormFactors = ["120", "140", "240", "280", "360", "420"];
 
 type AIOFormFactorType = (typeof AIOFormFactors)[number];
 
+type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
+  [key in Attributes]?: Required<Info>[key][];
+};
+
 export {
   MainboardFormFactors,
   RAMFormFactors,
@@ -147,4 +151,5 @@ export type {
   FanBearingType,
   CoolerCPUPlateType,
   AIOFormFactorType,
+  FilterOptionsType,
 };

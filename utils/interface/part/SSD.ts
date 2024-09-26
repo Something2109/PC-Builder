@@ -1,4 +1,9 @@
-import { SSDFormFactorType, SSDProtocolType, SSDInterfaceType } from "./utils";
+import {
+  FilterOptionsType,
+  SSDFormFactorType,
+  SSDProtocolType,
+  SSDInterfaceType,
+} from "./utils";
 
 namespace SSD {
   export type Info = {
@@ -14,7 +19,7 @@ namespace SSD {
     interface: SSDInterfaceType;
   };
 
-  export const BasicAttrList: (keyof Info)[] = [
+  export const FilterAttributes = [
     "form_factor",
     "protocol",
     "read_speed",
@@ -22,9 +27,9 @@ namespace SSD {
     "capacity",
   ] as const;
 
-  type BasicAttributes = (typeof BasicAttrList)[number];
+  export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Filterables = BasicAttributes;
+  export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }
 
 export default SSD;
