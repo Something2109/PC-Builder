@@ -93,8 +93,8 @@ GPUModel.init(
       },
     },
 
-    extra_cores_json: { type: DataTypes.STRING },
-    features_json: { type: DataTypes.TEXT },
+    extra_cores_json: { type: DataTypes.STRING, get: () => undefined },
+    features_json: { type: DataTypes.TEXT, get: () => undefined },
   },
   {
     ...BaseModelOptions,

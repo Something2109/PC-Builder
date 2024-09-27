@@ -151,10 +151,11 @@ CaseModel.init(
       validate: {
         is: new RegExp(`((^|,)(${MainboardFormFactors.join("|")}))+$`),
       },
+      get: () => undefined,
     },
-    aio_support_json: { type: DataTypes.TEXT },
-    fan_support_json: { type: DataTypes.TEXT },
-    hard_drive_support_json: { type: DataTypes.TEXT },
+    aio_support_json: { type: DataTypes.TEXT, get: () => undefined },
+    fan_support_json: { type: DataTypes.TEXT, get: () => undefined },
+    hard_drive_support_json: { type: DataTypes.TEXT, get: () => undefined },
   },
   {
     ...BaseModelOptions,

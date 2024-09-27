@@ -70,7 +70,7 @@ RAMModel.init(
     },
     protocol: { type: DataTypes.STRING, validate: { isIn: [RAMProtocols] } },
 
-    latency_json: { type: DataTypes.STRING },
+    latency_json: { type: DataTypes.STRING, get: () => undefined },
   },
   {
     ...BaseModelOptions,

@@ -55,36 +55,18 @@ GraphicCardModel.init(
       primaryKey: true,
     },
 
-    width: {
-      type: DataTypes.FLOAT,
-    },
-    length: {
-      type: DataTypes.FLOAT,
-    },
-    height: {
-      type: DataTypes.FLOAT,
-    },
+    width: { type: DataTypes.FLOAT },
+    length: { type: DataTypes.FLOAT },
+    height: { type: DataTypes.FLOAT },
 
-    base_frequency: {
-      type: DataTypes.INTEGER,
-    },
-    boost_frequency: {
-      type: DataTypes.INTEGER,
-    },
+    base_frequency: { type: DataTypes.INTEGER },
+    boost_frequency: { type: DataTypes.INTEGER },
 
-    pcie: {
-      type: DataTypes.INTEGER,
-    },
-    minimum_psu: {
-      type: DataTypes.INTEGER,
-    },
-    power_connector: {
-      type: DataTypes.STRING,
-    },
+    pcie: { type: DataTypes.INTEGER },
+    minimum_psu: { type: DataTypes.INTEGER },
+    power_connector: { type: DataTypes.STRING },
 
-    gpu_id: {
-      type: DataTypes.UUID,
-    },
+    gpu_id: { type: DataTypes.UUID, get: () => undefined },
   },
   {
     ...BaseModelOptions,

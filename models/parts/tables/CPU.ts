@@ -85,7 +85,7 @@ CPUModel.init(
     tdp: { type: DataTypes.INTEGER },
     lithography: { type: DataTypes.STRING },
 
-    core_json: { type: DataTypes.STRING },
+    core_json: { type: DataTypes.STRING, get: () => undefined },
   },
   {
     ...BaseModelOptions,
