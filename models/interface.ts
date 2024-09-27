@@ -19,6 +19,10 @@ enum Tables {
   RETAIL_PRODUCT = "retail_product",
 }
 
+type PartDetailTable<T extends Object> = {
+  [key in keyof T]: T[key] | null;
+};
+
 if (
   !(
     process.env.DATABASE_NAME &&
@@ -53,5 +57,16 @@ const BaseModelOptions = {
   freezeTableName: true,
   underscored: true,
 };
+const PartDefaultScope = {
+  attributes: {
+    exclude: ["id", "createdAt", "updatedAt"],
+  },
+};
 
-export { Tables, Connection, BaseModelOptions };
+export {
+  Tables,
+  type PartDetailTable,
+  Connection,
+  BaseModelOptions,
+  PartDefaultScope,
+};
