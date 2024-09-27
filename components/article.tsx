@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { ArticleType } from "@/models/articles/article";
 import { Paragraph } from "@/components/articles/Paragraph";
+import { TextArea } from "@/components/utils/Input";
 import {
   AddRow,
   ContentRenderer,
-  InputArea,
   InputRenderer,
   updateContent,
 } from "@/components/articles/utils";
@@ -34,13 +34,13 @@ function EditableArticle({ article }: { article: ArticleType }) {
   let sectionCount = 1;
   return (
     <article className="flex flex-col gap-2 w-full">
-      <InputArea
+      <TextArea
         placeholder="Title"
         defaultValue={article.title}
         className="text-4xl font-bold my-5"
         onChange={(e) => (article.title = e.target.value)}
       />
-      <InputArea
+      <TextArea
         placeholder="Standfirst"
         defaultValue={article.standfirst}
         className="text-xl"
