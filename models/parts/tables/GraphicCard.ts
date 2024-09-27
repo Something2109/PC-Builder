@@ -90,6 +90,10 @@ GraphicCardModel.init(
     ...BaseModelOptions,
     defaultScope: PartDefaultScope,
     modelName: Tables.GRAPHIC_CARD,
+    scopes: {
+      filter: (options: GraphicCard.FilterOptions) => ({ where: options }),
+      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+    },
   }
 );
 

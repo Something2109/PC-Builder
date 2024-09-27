@@ -57,6 +57,10 @@ CoolerModel.init(
     ...BaseModelOptions,
     defaultScope: PartDefaultScope,
     modelName: Tables.COOLER,
+    scopes: {
+      filter: (options: Cooler.FilterOptions) => ({ where: options }),
+      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+    },
   }
 );
 

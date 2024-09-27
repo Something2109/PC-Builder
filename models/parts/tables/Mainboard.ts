@@ -75,6 +75,10 @@ MainboardModel.init(
     ...BaseModelOptions,
     defaultScope: PartDefaultScope,
     modelName: Tables.MAIN,
+    scopes: {
+      filter: (options: Mainboard.FilterOptions) => ({ where: options }),
+      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+    },
   }
 );
 

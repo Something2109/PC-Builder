@@ -71,6 +71,10 @@ AIOModel.init(
     ...BaseModelOptions,
     ...PartDefaultScope,
     modelName: Tables.AIO,
+    scopes: {
+      filter: (options: AIO.FilterOptions) => ({ where: options }),
+      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+    },
   }
 );
 

@@ -7,6 +7,7 @@ import {
 } from "sequelize";
 import { BaseModelOptions, Tables } from "@/models/interface";
 import { PartType } from "@/utils/interface/Parts";
+import { Products } from "@/utils/Enum";
 
 class PartInformation
   extends Model<
@@ -17,7 +18,7 @@ class PartInformation
 {
   declare id: CreationOptional<string>;
 
-  declare part: string;
+  declare part: Products;
   declare name: string;
   declare code_name: string;
   declare brand: string;
@@ -38,7 +39,10 @@ PartInformation.init(
       primaryKey: true,
     },
 
-    part: { type: DataTypes.STRING },
+    part: {
+      type: DataTypes.STRING,
+      validate: { isIn: [Object.values(Products)] },
+    },
     name: { type: DataTypes.STRING },
     code_name: { type: DataTypes.STRING, unique: true },
     brand: { type: DataTypes.STRING },
@@ -59,14 +63,8 @@ PartInformation.init(
       },
     },
     scopes: {
-      filter: (options: PartType.FilterOptions) => ({
-        where: options,
-      }),
-      detail: {
-        attributes: {
-          exclude: ["id", "createdAt", "updatedAt"],
-        },
-      },
+      filter: (options: PartType.FilterOptions) => ({ where: options }),
+      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
     },
   }
 );

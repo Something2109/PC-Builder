@@ -160,6 +160,21 @@ CaseModel.init(
     ...BaseModelOptions,
     defaultScope: PartDefaultScope,
     modelName: Tables.CASE,
+    scopes: {
+      filter: ({ mb_support, ...rest }: Case.FilterOptions) => {
+        const filter: WhereOptions = {
+          ...rest,
+        };
+        if (mb_support) {
+          filter.mb_support = {
+            [Op.regexp]: new RegExp(mb_support?.join("|")),
+          };
+        }
+
+        return { where: filter };
+      },
+      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+    },
   }
 );
 

@@ -110,6 +110,10 @@ GPUModel.init(
         }
       },
     },
+    scopes: {
+      filter: (options: GPU.FilterOptions) => ({ where: options }),
+      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+    },
   }
 );
 

@@ -62,6 +62,10 @@ HDDModel.init(
     ...BaseModelOptions,
     defaultScope: PartDefaultScope,
     modelName: Tables.HDD,
+    scopes: {
+      filter: (options: HDD.FilterOptions) => ({ where: options }),
+      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+    },
   }
 );
 
