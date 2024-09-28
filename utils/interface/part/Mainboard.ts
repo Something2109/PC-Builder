@@ -1,9 +1,12 @@
 import {
   FilterOptionsType,
+  MainboardFormFactors,
   MainboardFormFactorType,
+  RAMFormFactors,
   RAMFormFactorType,
+  RAMProtocols,
   RAMProtocolType,
-} from "./utils";
+} from "../utils";
 
 namespace Mainboard {
   export type Info = {
@@ -25,6 +28,12 @@ namespace Mainboard {
     "ram_form_factor",
     "ram_protocol",
   ] as const;
+
+  export const DefaultFilterOptions: FilterOptions = {
+    form_factor: MainboardFormFactors,
+    ram_form_factor: RAMFormFactors,
+    ram_protocol: RAMProtocols,
+  };
 
   export type Filterables = (typeof FilterAttributes)[number];
 

@@ -1,4 +1,10 @@
-import { FilterOptionsType, HDDFormFactorType, HDDProtocolType } from "./utils";
+import {
+  FilterOptionsType,
+  HDDFormFactors,
+  HDDFormFactorType,
+  HDDProtocols,
+  HDDProtocolType,
+} from "../utils";
 
 export namespace HDD {
   export type Info = {
@@ -21,6 +27,11 @@ export namespace HDD {
     "capacity",
     "rotational_speed",
   ] as const;
+
+  export const DefaultFilterOptions: FilterOptions = {
+    form_factor: HDDFormFactors,
+    protocol: HDDProtocols,
+  };
 
   export type Filterables = (typeof FilterAttributes)[number];
 
