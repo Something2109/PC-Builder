@@ -20,7 +20,7 @@ import {
   SSDInterfaceType,
   SSDProtocols,
   SSDProtocolType,
-} from "@/utils/interface/part/utils";
+} from "@/utils/interface/utils";
 
 class SSDModel
   extends Model<InferAttributes<SSDModel>, InferCreationAttributes<SSDModel>>

@@ -18,7 +18,7 @@ import {
   RAMFormFactorType,
   RAMProtocols,
   RAMProtocolType,
-} from "@/utils/interface/part/utils";
+} from "@/utils/interface/utils";
 
 class RAMModel
   extends Model<InferAttributes<RAMModel>, InferCreationAttributes<RAMModel>>

@@ -20,7 +20,7 @@ import {
   PSUFormFactorType,
   PSUModulars,
   PSUModularType,
-} from "@/utils/interface/part/utils";
+} from "@/utils/interface/utils";
 
 class PSUModel
   extends Model<InferAttributes<PSUModel>, InferCreationAttributes<PSUModel>>

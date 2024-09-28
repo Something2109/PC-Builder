@@ -20,7 +20,7 @@ import {
   RAMFormFactorType,
   RAMProtocols,
   RAMProtocolType,
-} from "@/utils/interface/part/utils";
+} from "@/utils/interface/utils";
 
 class MainboardModel
   extends Model<

@@ -6,7 +6,7 @@ import {
   Model,
 } from "sequelize";
 import { BaseModelOptions, Tables } from "@/models/interface";
-import { PartType } from "@/utils/interface/Parts";
+import Part from "@/utils/interface/part/Parts";
 import { Products } from "@/utils/Enum";
 
 class PartInformation
@@ -14,7 +14,7 @@ class PartInformation
     InferAttributes<PartInformation>,
     InferCreationAttributes<PartInformation>
   >
-  implements PartType.BasicInfo
+  implements Part.BasicInfo
 {
   declare id: CreationOptional<string>;
 
@@ -63,7 +63,7 @@ PartInformation.init(
       },
     },
     scopes: {
-      filter: (options: PartType.FilterOptions) => ({ where: options }),
+      filter: (options: Part.FilterOptions) => ({ where: options }),
       detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
     },
   }
