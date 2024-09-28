@@ -1,4 +1,4 @@
-import { FilterOptionsType } from "./utils";
+import { FilterOptionsType } from "../utils";
 import GPU from "./GPU";
 
 namespace GraphicCard {
