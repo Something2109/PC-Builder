@@ -1,15 +1,26 @@
 import { Database } from "@/models/Database";
-import { SearchParams } from "@/utils/SearchParams";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
-  let search = request.nextUrl.searchParams.get("q") ?? "";
+export async function POST(request: NextRequest) {
+  try {
+    let { q, ...options } = await request.json();
+    q = q ?? "";
 
-  const options = {
-    ...SearchParams.toFilterOptions(request.nextUrl.searchParams),
-  };
+    const responseList = await Database.parts.filter(options);
 
-  const responseList = await Database.parts.filter(search, options);
+    if (!responseList) {
+      return NextResponse.json(
+        { message: "There's an error finding filter for your option" },
+        { status: 500 }
+      );
+    }
 
-  return NextResponse.json(responseList);
+    return NextResponse.json(responseList);
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { message: (err as Error).message },
+      { status: 400 }
+    );
+  }
 }
