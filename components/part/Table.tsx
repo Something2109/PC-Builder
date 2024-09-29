@@ -1,4 +1,4 @@
-import { PartType } from "@/utils/interface/Parts";
+import Part from "@/utils/interface/part/Parts";
 import { RowWrapper } from "../utils/FlexWrapper";
 import PartPicture from "./Picture";
 import { TableHTMLAttributes } from "react";
@@ -9,7 +9,7 @@ const label = "lg:hidden";
 export default function PartTable({
   data,
   ...rest
-}: { data: PartType.BasicInfo[] } & TableHTMLAttributes<HTMLTableElement>) {
+}: { data: Part.BasicInfo[] } & TableHTMLAttributes<HTMLTableElement>) {
   return (
     <table {...rest}>
       <thead className="font-bold sticky top-32 border-b-2 bg-white dark:bg-background transition-all ease-in-out duration-500 delay-0">
@@ -21,7 +21,7 @@ export default function PartTable({
         </tr>
       </thead>
       <tbody>
-        {data.map((item: PartType.BasicInfo) => (
+        {data.map((item: Part.BasicInfo) => (
           <tr
             key={item.id}
             className={`flex flex-col ${tableRow} hover:rounded-lg hover:bg-line hover:dark:text-background`}

@@ -1,6 +1,6 @@
 "use client";
 
-import { PartType } from "@/utils/interface/Parts";
+import Part from "@/utils/interface/part/Parts";
 import { useRouter } from "next/navigation";
 import { ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { ColumnWrapper, RowWrapper } from "./utils/FlexWrapper";
@@ -9,7 +9,7 @@ export function SearchBar({ q, part }: { q?: string; part?: string }) {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
   const [search, setSearch] = useState<string>("");
-  const [result, setResult] = useState<PartType.BasicInfo[]>([]);
+  const [result, setResult] = useState<Part.BasicInfo[]>([]);
   let timeout: NodeJS.Timeout | undefined = undefined;
 
   useEffect(() => {

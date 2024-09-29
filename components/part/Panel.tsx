@@ -1,7 +1,7 @@
-import { PartType } from "@/utils/interface/Parts";
+import Part from "@/utils/interface/part/Parts";
 import PartPicture from "./Picture";
 
-export default function PartPanel({ item }: { item: PartType.BasicInfo }) {
+export default function PartPanel({ item }: { item: Part.BasicInfo }) {
   const frameClass =
     "flex flex-row lg:flex-col p-3 rounded-xl border-line border-2";
 

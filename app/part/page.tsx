@@ -1,15 +1,13 @@
 "use client";
+
 import { Products } from "@/utils/Enum";
 import { useEffect, useState } from "react";
 import PartPanel from "@/components/part/Panel";
-import { PartType } from "@/utils/interface/Parts";
+import Part from "@/utils/interface/part/Parts";
 import { SearchBar } from "@/components/searchbar";
 
 export default function List() {
-  const [data, setList] = useState<Record<
-    Products,
-    PartType.BasicInfo[]
-  > | null>();
+  const [data, setList] = useState<Record<Products, Part.BasicInfo[]> | null>();
   const [error, setError] = useState(null);
 
   useEffect(() => {
