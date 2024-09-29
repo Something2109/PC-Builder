@@ -18,7 +18,7 @@ import {
   HDDFormFactorType,
   HDDProtocols,
   HDDProtocolType,
-} from "@/utils/interface/part/utils";
+} from "@/utils/interface/utils";
 
 class HDDModel
   extends Model<InferAttributes<HDDModel>, InferCreationAttributes<HDDModel>>

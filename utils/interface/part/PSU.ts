@@ -1,9 +1,12 @@
 import {
   FilterOptionsType,
+  PSUEfficiencies,
   PSUEfficiencyType,
+  PSUFormFactors,
   PSUFormFactorType,
+  PSUModulars,
   PSUModularType,
-} from "./utils";
+} from "../utils";
 
 export namespace PSU {
   export type Info = {
@@ -29,6 +32,12 @@ export namespace PSU {
     "form_factor",
     "modular",
   ] as const;
+
+  export const DefaultFilterOptions: FilterOptions = {
+    efficiency: PSUEfficiencies,
+    form_factor: PSUFormFactors,
+    modular: PSUModulars,
+  };
 
   export type Filterables = (typeof FilterAttributes)[number];
 

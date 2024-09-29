@@ -3,7 +3,9 @@ import {
   SSDFormFactorType,
   SSDProtocolType,
   SSDInterfaceType,
-} from "./utils";
+  SSDFormFactors,
+  SSDProtocols,
+} from "../utils";
 
 namespace SSD {
   export type Info = {
@@ -26,6 +28,11 @@ namespace SSD {
     "write_speed",
     "capacity",
   ] as const;
+
+  export const DefaultFilterOptions: FilterOptions = {
+    form_factor: SSDFormFactors,
+    protocol: SSDProtocols,
+  };
 
   export type Filterables = (typeof FilterAttributes)[number];
 

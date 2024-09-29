@@ -1,8 +1,10 @@
 import {
+  AIOFormFactors,
   AIOFormFactorType,
+  CoolerCPUPlates,
   CoolerCPUPlateType,
   FilterOptionsType,
-} from "./utils";
+} from "../utils";
 
 export namespace AIO {
   export type Info = {
@@ -21,7 +23,16 @@ export namespace AIO {
     pump_speed: number;
   };
 
-  export const FilterAttributes = ["form_factor"] as const;
+  export const FilterAttributes = [
+    "form_factor",
+    "socket",
+    "cpu_plate",
+  ] as const;
+
+  export const DefaultFilterOptions: FilterOptions = {
+    form_factor: AIOFormFactors,
+    cpu_plate: CoolerCPUPlates,
+  };
 
   export type Filterables = (typeof FilterAttributes)[number];
 

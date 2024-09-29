@@ -13,10 +13,7 @@ import {
 } from "../../interface";
 import { PartInformation } from "./Part";
 import Cooler from "@/utils/interface/part/Cooler";
-import {
-  CoolerCPUPlates,
-  CoolerCPUPlateType,
-} from "@/utils/interface/part/utils";
+import { CoolerCPUPlates, CoolerCPUPlateType } from "@/utils/interface/utils";
 
 class CoolerModel
   extends Model<

@@ -1,4 +1,10 @@
-import { FilterOptionsType, RAMFormFactorType, RAMProtocolType } from "./utils";
+import {
+  FilterOptionsType,
+  RAMFormFactors,
+  RAMFormFactorType,
+  RAMProtocols,
+  RAMProtocolType,
+} from "../utils";
 
 namespace RAM {
   export type Info = {
@@ -17,6 +23,11 @@ namespace RAM {
     "form_factor",
     "protocol",
   ] as const;
+
+  export const DefaultFilterOptions: FilterOptions = {
+    form_factor: RAMFormFactors,
+    protocol: RAMProtocols,
+  };
 
   export type Filterables = (typeof FilterAttributes)[number];
 

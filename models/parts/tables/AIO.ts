@@ -18,7 +18,7 @@ import {
   AIOFormFactorType,
   CoolerCPUPlates,
   CoolerCPUPlateType,
-} from "@/utils/interface/part/utils";
+} from "@/utils/interface/utils";
 
 class AIOModel
   extends Model<InferAttributes<AIOModel>, InferCreationAttributes<AIOModel>>

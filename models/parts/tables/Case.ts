@@ -21,7 +21,7 @@ import {
   MainboardFormFactorType,
   PSUFormFactors,
   PSUFormFactorType,
-} from "@/utils/interface/part/utils";
+} from "@/utils/interface/utils";
 import Case from "@/utils/interface/part/Case";
 
 class CaseModel
@@ -37,7 +37,7 @@ class CaseModel
 
   declare io_ports: {} | null;
 
-  declare mb_support: MainboardFormFactorType[] | null;
+  declare mb_support: MainboardFormFactorType | null;
   declare expansion_slot: number | null;
 
   declare max_cooler_height: number | null;
@@ -49,7 +49,6 @@ class CaseModel
   declare psu_support: PSUFormFactorType | null;
   declare max_psu_length: number | null;
 
-  declare mb_support_str: string | null;
   declare aio_support_json: string | null;
   declare fan_support_json: string | null;
   declare hard_drive_support_json: string | null;
@@ -76,17 +75,8 @@ CaseModel.init(
     },
 
     mb_support: {
-      type: DataTypes.VIRTUAL,
-      get(): MainboardFormFactorType[] | null {
-        const data = this.getDataValue("mb_support_str");
-        if (data) {
-          return data.split(",");
-        }
-        return null;
-      },
-      set(data: MainboardFormFactorType[] | null) {
-        this.setDataValue("mb_support_str", data ? data.join(",") : null);
-      },
+      type: DataTypes.STRING,
+      validate: { isIn: [MainboardFormFactors] },
     },
     expansion_slot: { type: DataTypes.INTEGER },
 
@@ -146,13 +136,6 @@ CaseModel.init(
     },
     max_psu_length: { type: DataTypes.FLOAT },
 
-    mb_support_str: {
-      type: DataTypes.STRING,
-      validate: {
-        is: new RegExp(`((^|,)(${MainboardFormFactors.join("|")}))+$`),
-      },
-      get: () => undefined,
-    },
     aio_support_json: { type: DataTypes.TEXT, get: () => undefined },
     fan_support_json: { type: DataTypes.TEXT, get: () => undefined },
     hard_drive_support_json: { type: DataTypes.TEXT, get: () => undefined },

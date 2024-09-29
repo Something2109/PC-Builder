@@ -18,7 +18,7 @@ import {
   FanBearingType,
   FanFormFactors,
   FanFormFactorType,
-} from "@/utils/interface/part/utils";
+} from "@/utils/interface/utils";
 
 class FanModel
   extends Model<InferAttributes<FanModel>, InferCreationAttributes<FanModel>>

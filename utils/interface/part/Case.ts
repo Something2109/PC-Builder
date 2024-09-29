@@ -1,12 +1,15 @@
 import {
   AIOFormFactorType,
+  CaseFormFactors,
   CaseFormFactorType,
   CaseSideType,
   FanFormFactorType,
+  MainboardFormFactors,
   MainboardFormFactorType,
+  PSUFormFactors,
   PSUFormFactorType,
   FilterOptionsType,
-} from "./utils";
+} from "../utils";
 
 export namespace Case {
   export type FanSupport = {
@@ -34,7 +37,7 @@ export namespace Case {
 
     io_ports: {};
 
-    mb_support: MainboardFormFactorType[];
+    mb_support: MainboardFormFactorType;
     expansion_slot: number;
 
     max_cooler_height: number;
@@ -53,6 +56,12 @@ export namespace Case {
     "mb_support",
     "psu_support",
   ] as const;
+
+  export const DefaultFilterOptions = {
+    form_factor: CaseFormFactors,
+    mb_support: MainboardFormFactors,
+    psu_support: PSUFormFactors,
+  };
 
   export type Filterables = (typeof FilterAttributes)[number];
 

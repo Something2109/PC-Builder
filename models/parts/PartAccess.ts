@@ -1,51 +1,31 @@
-import { Model, ModelStatic, Op } from "sequelize";
+import { InferAttributes, Op, Sequelize, WhereOptions } from "sequelize";
 import { PartInformation } from "@/models/parts/tables/Part";
-import { CPUModel } from "@/models/parts/tables/CPU";
-import { GPUModel } from "@/models/parts/tables/GPU";
-import { GraphicCardModel } from "@/models/parts/tables/GraphicCard";
-import { MainboardModel } from "@/models/parts/tables/Mainboard";
-import { RAMModel } from "@/models/parts/tables/RAM";
-import { SSDModel } from "@/models/parts/tables/SSD";
-import { HDDModel } from "@/models/parts/tables/HDD";
-import { PSUModel } from "@/models/parts/tables/PSU";
-import { CaseModel } from "@/models/parts/tables/Case";
-import { CoolerModel } from "@/models/parts/tables/Cooler";
-import { AIOModel } from "@/models/parts/tables/AIO";
-import { FanModel } from "@/models/parts/tables/Fan";
-import { PartType } from "@/utils/interface/Parts";
 import { Products } from "@/utils/Enum";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
+import { Connection } from "../interface";
+import { Models, ModelFilters } from ".";
 
 class PartAccess {
-  models: { [key in Products]: ModelStatic<Model> };
-
-  constructor() {
-    this.models = {
-      [Products.CPU]: CPUModel,
-      [Products.GPU]: GPUModel,
-      [Products.GRAPHIC_CARD]: GraphicCardModel,
-      [Products.MAIN]: MainboardModel,
-      [Products.RAM]: RAMModel,
-      [Products.SSD]: SSDModel,
-      [Products.HDD]: HDDModel,
-      [Products.PSU]: PSUModel,
-      [Products.CASE]: CaseModel,
-      [Products.COOLER]: CoolerModel,
-      [Products.AIO]: AIOModel,
-      [Products.FAN]: FanModel,
-    };
-  }
-
-  async list(options?: PartType.FilterOptions & PageOptions) {
+  async list(options?: FilterOptions & PageOptions) {
     try {
-      let { page, limit, ...rest } = options ?? {};
+      let { page, limit, part, ...detail } = options ?? {};
       page = (page ?? 1) - 1;
       limit = limit ?? Number(process.env.PageSize ?? 50);
 
+      let include;
+      if (part && part.part && part.part[0]) {
+        include = {
+          model: Models[part.part[0] as Products],
+          where: detail[part.part[0] as Products] ?? {},
+        };
+      }
+
       const { rows, count } = await PartInformation.scope({
-        method: ["filter", rest],
+        method: ["filter", part],
       }).findAndCountAll({
         limit,
         offset: page * limit,
+        include,
       });
 
       return { total: count, list: rows.map((value) => value.toJSON()) };
@@ -53,21 +33,30 @@ class PartAccess {
       console.error(err);
     }
 
-    return { total: 0, list: [] };
+    return null;
   }
 
-  async search(str: string, options?: PartType.FilterOptions & PageOptions) {
+  async search(str: string, options?: FilterOptions & PageOptions) {
     try {
-      let { page, limit, ...rest } = options ?? {};
+      let { page, limit, part, ...detail } = options ?? {};
       page = (page ?? 1) - 1;
       limit = limit ?? Number(process.env.PageSize ?? 50);
 
+      let include;
+      if (part && part.part && part.part[0]) {
+        include = {
+          model: Models[part.part[0] as Products],
+          where: detail[part.part[0] as Products] ?? {},
+        };
+      }
+
       const { rows, count } = await PartInformation.scope({
-        method: ["filter", rest],
+        method: ["filter", part],
       }).findAndCountAll({
         where: { name: { [Op.like]: `%${str}%` } },
         limit,
         offset: page * limit,
+        include,
       });
 
       if (count) {
@@ -77,55 +66,57 @@ class PartAccess {
       console.error(err);
     }
 
-    return { total: 0, list: [] };
+    return null;
   }
 
-  async filter(
-    str: string,
-    options?: PartType.FilterOptions
-  ): Promise<PartType.FilterOptions> {
-    const result: PartType.FilterOptions = {};
-
+  async filter(options?: FilterOptions): Promise<FilterOptions | null> {
     try {
-      const PartFilter = PartInformation.scope({
-        method: ["filter", options],
-      });
+      const { part, ...detail } = options ?? {};
+      const result: FilterOptions = {};
 
-      for (const filter of ["part", "brand", "series"]) {
-        if (options) {
-          const filtered = options[filter as PartType.Filterables];
-          if (filtered && filtered.length > 0) {
-            result[filter as PartType.Filterables] = filtered;
-            continue;
-          }
-        }
-        result[filter as PartType.Filterables] = (
-          await PartFilter.findAll({
-            where: { name: { [Op.like]: `%${str}%` } },
-            attributes: [filter],
-            group: filter,
+      const where: WhereOptions<InferAttributes<PartInformation>> = {
+        part: part ?? Object.values(Products),
+        ...part,
+      };
+
+      if (part && part.part && part.part[0]) {
+        const subquery = (Connection.getQueryInterface().queryGenerator as any)
+          .selectQuery(Models[part.part[0] as Products].name, {
+            attributes: ["id"],
+            where: detail[part.part[0] as Products] ?? {},
           })
-        ).map((value) => value[filter as PartType.Filterables]);
+          .slice(0, -1);
+        where.id = {
+          [Op.in]: Sequelize.literal(`(${subquery})`),
+        };
+
+        result[part.part[0] as Products] = (await ModelFilters[
+          part.part[0] as Products
+        ](detail[part.part[0] as Products])) as any;
       }
+
+      result.part = await ModelFilters.part(where as any);
+
+      return result;
     } catch (err) {
       console.error(err);
     }
-    return result;
+    return null;
   }
 
   async get(
     part: Products,
     id: string
-  ): Promise<PartType.DetailInfo<typeof part> | null> {
+  ): Promise<DetailInfo<typeof part> | null> {
     try {
       const save = await PartInformation.scope("detail").findByPk(id, {
         include: {
-          model: this.models[part],
+          model: Models[part],
         },
       });
 
       if (save) {
-        return save.toJSON() as unknown as PartType.DetailInfo<typeof part>;
+        return save.toJSON() as unknown as DetailInfo<typeof part>;
       }
     } catch (err) {
       console.error(err);
