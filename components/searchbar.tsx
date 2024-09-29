@@ -16,13 +16,15 @@ export function SearchBar({ q, part }: { q?: string; part?: string }) {
     if (search.length > 0) {
       const params = new URLSearchParams();
       params.set("q", search);
-      params.set("page", "1");
       params.set("limit", "5");
       if (part) {
         params.set("part", part);
       }
 
-      fetch(`/api/search?${params.toString()}`).then((response) => {
+      fetch(`/api/search?${params.toString()}`, {
+        method: "POST",
+        body: "{}",
+      }).then((response) => {
         if (response.ok) {
           response.json().then((data) => setResult(data.list));
         }

@@ -14,12 +14,12 @@ export default async function Page({
 
   const params = new URLSearchParams(searchParams);
   const options = {
-    ...SearchParams.toFilterOptions(params),
+    part: {},
     ...SearchParams.toPageOptions(params),
   };
 
   const { str, part } = SearchString.toProducts(search);
-  if (!options.part && part.length > 0) options.part = part;
+  if (!options.part && part.length > 0) options.part = { part };
 
   const data = await Database.parts.search(str, options);
 

@@ -8,26 +8,23 @@ import {
 } from "@/components/utils/FlexWrapper";
 import PartTable from "@/components/part/Table";
 import { FilterBar } from "@/components/filterbar";
-import { toSearchParams } from "@/utils/SearchParams";
-import { PartType } from "@/utils/interface/Parts";
-import PartPicture from "@/components/part/Picture";
+import { FilterOptions } from "@/utils/interface";
 
-const OptionContext = createContext<PartType.FilterOptions & { q?: string }>(
-  {}
-);
+const OptionContext = createContext<FilterOptions & { q?: string }>({});
 
 export default function PartListPage({ params }: { params: { part: string } }) {
   const [page, setPage] = useState(1);
-  const [options, setOptions] = useState<PartType.FilterOptions>({
-    part: [params.part],
+  const [options, setOptions] = useState<FilterOptions>({
+    part: { part: [params.part] },
   });
   const [data, setList] = useState({ total: 0, list: [] });
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(
-      `/api/part/${params.part}?page=${page}&${toSearchParams(options)}`
-    ).then((response) => {
+    fetch(`/api/part/${params.part}?page=${page}`, {
+      method: "POST",
+      body: JSON.stringify(options),
+    }).then((response) => {
       if (response.ok) {
         response.json().then((data) => setList(data));
         window.scroll({ top: 0, left: 0, behavior: "smooth" });
@@ -43,7 +40,7 @@ export default function PartListPage({ params }: { params: { part: string } }) {
     () => (
       <FilterBar
         context={OptionContext}
-        defaultOptions={{ part: [params.part] }}
+        defaultOptions={{ part: { part: [params.part] } }}
         set={setOptions}
       />
     ),
