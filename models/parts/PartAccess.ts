@@ -2,8 +2,8 @@ import { InferAttributes, Op, Sequelize, WhereOptions } from "sequelize";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { Products } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
-import { Connection } from "../interface";
-import { Models, ModelFilters } from ".";
+import { Models, ModelFilters, IdSubQuery } from ".";
+import { Tables } from "../interface";
 
 class PartAccess {
   async list(options?: FilterOptions & PageOptions) {
@@ -80,19 +80,20 @@ class PartAccess {
       };
 
       if (part && part.part && part.part[0]) {
-        const subquery = (Connection.getQueryInterface().queryGenerator as any)
-          .selectQuery(Models[part.part[0] as Products].name, {
-            attributes: ["id"],
-            where: detail[part.part[0] as Products] ?? {},
-          })
-          .slice(0, -1);
-        where.id = {
-          [Op.in]: Sequelize.literal(`(${subquery})`),
-        };
+        const subquery = IdSubQuery(
+          Models[part.part[0] as Products].name,
+          detail[part.part[0] as Products] ?? {}
+        );
+        where.id = [Sequelize.literal(subquery)];
+
+        const partSubquery = IdSubQuery(Tables.PART, where);
 
         result[part.part[0] as Products] = (await ModelFilters[
           part.part[0] as Products
-        ](detail[part.part[0] as Products])) as any;
+        ]({
+          id: [Sequelize.literal(`(${partSubquery})`) as unknown as string],
+          ...detail[part.part[0] as Products],
+        })) as any;
       }
 
       result.part = await ModelFilters.part(where as any);
