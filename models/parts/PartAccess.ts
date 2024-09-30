@@ -15,14 +15,17 @@ class PartAccess {
       let include;
       if (part && part.part && part.part[0]) {
         include = {
-          model: Models[part.part[0] as Products],
+          model: Models[part.part[0] as Products].scope("summary"),
           where: detail[part.part[0] as Products] ?? {},
         };
       }
 
-      const { rows, count } = await PartInformation.scope({
-        method: ["filter", part],
-      }).findAndCountAll({
+      const { rows, count } = await PartInformation.scope([
+        "summary",
+        {
+          method: ["filter", part],
+        },
+      ]).findAndCountAll({
         limit,
         offset: page * limit,
         include,
@@ -45,14 +48,17 @@ class PartAccess {
       let include;
       if (part && part.part && part.part[0]) {
         include = {
-          model: Models[part.part[0] as Products],
+          model: Models[part.part[0] as Products].scope("summary"),
           where: detail[part.part[0] as Products] ?? {},
         };
       }
 
-      const { rows, count } = await PartInformation.scope({
-        method: ["filter", part],
-      }).findAndCountAll({
+      const { rows, count } = await PartInformation.scope([
+        "summary",
+        {
+          method: ["filter", part],
+        },
+      ]).findAndCountAll({
         where: { name: { [Op.like]: `%${str}%` } },
         limit,
         offset: page * limit,
