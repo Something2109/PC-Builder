@@ -15,7 +15,14 @@ namespace Part {
     image_url?: string;
   };
 
-  export const SummaryAttributes = ["part", "brand", "series"] as const;
+  export const SummaryAttributes = [
+    "part",
+    "name",
+    "code_name",
+    "brand",
+    "series",
+    "image_url",
+  ] as const;
 
   export const FilterAttributes = ["part", "brand", "series"] as const;
 
