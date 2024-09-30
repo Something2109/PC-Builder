@@ -103,6 +103,7 @@ CPUModel.init(
       },
     },
     scopes: {
+      summary: { attributes: [...CPU.SummaryAttributes] },
       filter: (options: CPU.FilterOptions) => ({ where: options }),
       detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
     },

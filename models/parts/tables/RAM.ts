@@ -77,6 +77,7 @@ RAMModel.init(
     defaultScope: PartDefaultScope,
     modelName: Tables.RAM,
     scopes: {
+      summary: { attributes: [...RAM.SummaryAttributes] },
       filter: (options: RAM.FilterOptions) => ({ where: options }),
       detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
     },

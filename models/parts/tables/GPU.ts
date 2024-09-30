@@ -111,6 +111,7 @@ GPUModel.init(
       },
     },
     scopes: {
+      summary: { attributes: [...GPU.SummaryAttributes] },
       filter: (options: GPU.FilterOptions) => ({ where: options }),
       detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
     },

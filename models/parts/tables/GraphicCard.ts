@@ -73,6 +73,7 @@ GraphicCardModel.init(
     defaultScope: PartDefaultScope,
     modelName: Tables.GRAPHIC_CARD,
     scopes: {
+      summary: { attributes: [...GraphicCard.SummaryAttributes] },
       filter: (options: GraphicCard.FilterOptions) => ({ where: options }),
       detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
     },

@@ -145,6 +145,7 @@ CaseModel.init(
     defaultScope: PartDefaultScope,
     modelName: Tables.CASE,
     scopes: {
+      summary: { attributes: [...Case.SummaryAttributes] },
       filter: ({ mb_support, ...rest }: Case.FilterOptions) => {
         const filter: WhereOptions = {
           ...rest,
