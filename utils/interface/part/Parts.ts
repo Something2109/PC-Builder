@@ -16,9 +16,9 @@ namespace Part {
   };
 
   export const SummaryAttributes = [
+    "id",
     "part",
     "name",
-    "code_name",
     "brand",
     "series",
     "image_url",
