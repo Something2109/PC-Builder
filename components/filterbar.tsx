@@ -1,7 +1,5 @@
 "use client";
 
-import { PartType } from "@/utils/interface/Parts";
-import { toSearchParams } from "@/utils/SearchParams";
 import {
   Context,
   FormHTMLAttributes,
@@ -10,8 +8,10 @@ import {
   useRef,
   useState,
 } from "react";
-import { RowWrapper } from "./utils/FlexWrapper";
+import { ColumnWrapper, RowWrapper } from "./utils/FlexWrapper";
 import { InputButton } from "./utils/Button";
+import { FilterOptions } from "@/utils/interface";
+import { VerticalCollapsible } from "./utils/Collapsible";
 
 export function FilterBar({
   defaultOptions,
@@ -20,41 +20,44 @@ export function FilterBar({
   className,
   ...rest
 }: {
-  defaultOptions?: PartType.FilterOptions;
-  context: Context<PartType.FilterOptions & { q?: string }>;
-  set: (options: PartType.FilterOptions) => void;
+  defaultOptions?: FilterOptions;
+  context: Context<FilterOptions & { q?: string }>;
+  set: (options: FilterOptions) => void;
 } & FormHTMLAttributes<HTMLFormElement>) {
-  const [filter, setFilter] = useState<PartType.FilterOptions>({});
+  const [filter, setFilter] = useState<FilterOptions>({});
   const options = useContext(context);
   const form = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    fetch(`/api/filter?${toSearchParams(options).toString()}`).then(
-      (response) => {
-        if (response.ok) {
-          response.json().then((data) => setFilter(data));
-        }
+    fetch(`/api/filter`, {
+      method: "POST",
+      body: JSON.stringify(options),
+    }).then((response) => {
+      if (response.ok) {
+        response.json().then((data) => setFilter(data));
       }
-    );
+    });
   }, [options]);
 
   rest.onSubmit = (e) => {
     e.preventDefault();
 
-    const filterOptions: PartType.FilterOptions = {};
-    Object.entries(defaultOptions ?? {}).forEach(
-      ([key, value]) => (filterOptions[key as PartType.Filterables] = value)
-    );
+    const filterOptions: { [key in string]: { [key in string]: any[] } } = {
+      ...(defaultOptions ?? {}),
+    };
 
     const formData = new FormData(form.current!);
     formData.entries().forEach(([key, value]) => {
-      if (!filterOptions[key as PartType.Filterables]) {
-        filterOptions[key as PartType.Filterables] = [];
+      const [part, name] = key.split("-");
+      if (part && name) {
+        filterOptions[part] = filterOptions[part] ?? {};
+        filterOptions[part][name] = filterOptions[part][name] ?? [];
+
+        filterOptions[part][name]!.push(value.toString());
       }
-      filterOptions[key as PartType.Filterables]!.push(value.toString());
     });
 
-    set(filterOptions);
+    set(filterOptions as FilterOptions);
   };
 
   rest.onReset = () => {
@@ -64,7 +67,7 @@ export function FilterBar({
   return (
     <form className={`flex flex-col gap-1 ${className}`} ref={form} {...rest}>
       <RowWrapper className="sticky top-32 bg-white dark:bg-background transition-all ease-in-out duration-500 delay-0">
-        <InputButton type="submit" />
+        <InputButton type="submit" value="Filter" />
         <InputButton type="reset" />
       </RowWrapper>
       <input
@@ -74,32 +77,54 @@ export function FilterBar({
         placeholder="Search"
         className="rounded-2xl border-2 border-line px-4 py-1 focus:outline-none w-full bg-transparent"
       />
-      {Object.entries(filter).map(([key, value]) => {
-        if (defaultOptions && defaultOptions[key as PartType.Filterables]) {
-          return undefined;
-        }
-        return (
-          <fieldset key={`filter-${key}`} className="mx-4">
-            <legend className="font-bold">{key.toUpperCase()}</legend>
-            {value.map((options) => {
-              const id = `filter-${key}-${options}`;
-
-              return (
-                <RowWrapper key={id}>
-                  <input
-                    type="checkbox"
-                    id={id}
-                    name={key}
-                    value={options}
-                    defaultChecked={value.length === 1}
-                  />
-                  <label htmlFor={id}>{options}</label>
-                </RowWrapper>
-              );
-            })}
-          </fieldset>
-        );
-      })}
+      <ColumnWrapper className="h-full overflow-auto ">
+        {Object.entries(filter).map(([part, filterValue]) => (
+          <PartFieldset name={part} filter={filterValue} />
+        ))}
+      </ColumnWrapper>
     </form>
+  );
+}
+
+function PartFieldset({
+  name,
+  filter,
+}: {
+  name: string;
+  filter: Record<string, any[]>;
+}) {
+  function InputRow({ input, value }: { input: string; value: string }) {
+    const id = `filter-${name}-${value}`;
+
+    return (
+      <RowWrapper>
+        <input
+          type="checkbox"
+          id={id}
+          name={`${name}-${input}`}
+          value={value}
+          defaultChecked={value.length === 1}
+        />
+        <label htmlFor={id}>{value}</label>
+      </RowWrapper>
+    );
+  }
+
+  return (
+    <fieldset name={name} key={`filter-${name}`}>
+      <VerticalCollapsible>
+        <legend className="font-bold text-2xl">{name.toUpperCase()}</legend>
+        {Object.entries(filter).map(([key, value]) => (
+          <fieldset key={`filter-${key}`}>
+            <VerticalCollapsible>
+              <legend className="font-bold">{key.toUpperCase()}</legend>
+              {value.map((options) => (
+                <InputRow input={key} value={options} />
+              ))}
+            </VerticalCollapsible>
+          </fieldset>
+        ))}
+      </VerticalCollapsible>
+    </fieldset>
   );
 }
