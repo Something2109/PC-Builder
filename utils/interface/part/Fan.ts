@@ -23,6 +23,8 @@ namespace Fan {
     bearing: FanBearingType;
   };
 
+  export const SummaryAttributes = ["form_factor", "bearing", "speed"] as const;
+
   export const FilterAttributes = ["form_factor", "bearing"] as const;
 
   export const DefaultFilterOptions: FilterOptions = {
@@ -30,7 +32,13 @@ namespace Fan {
     bearing: FanBearings,
   };
 
+  export type Summarizable = (typeof SummaryAttributes)[number];
+
   export type Filterables = (typeof FilterAttributes)[number];
+
+  export type Summary = {
+    [key in Summarizable]: Info[key];
+  };
 
   export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }

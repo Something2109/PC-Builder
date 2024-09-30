@@ -23,6 +23,12 @@ export namespace AIO {
     pump_speed: number;
   };
 
+  export const SummaryAttributes = [
+    "form_factor",
+    "socket",
+    "cpu_plate",
+  ] as const;
+
   export const FilterAttributes = [
     "form_factor",
     "socket",
@@ -34,7 +40,13 @@ export namespace AIO {
     cpu_plate: CoolerCPUPlates,
   };
 
+  export type Summarizable = (typeof SummaryAttributes)[number];
+
   export type Filterables = (typeof FilterAttributes)[number];
+
+  export type Summary = {
+    [key in Summarizable]: Info[key];
+  };
 
   export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }

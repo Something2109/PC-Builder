@@ -17,6 +17,13 @@ namespace GraphicCard {
     gpu: GPU.Info;
   };
 
+  export const SummaryAttributes = [
+    "width",
+    "base_frequency",
+    "boost_frequency",
+    "minimum_psu",
+  ] as const;
+
   export const FilterAttributes = [
     "width",
     "length",
@@ -26,7 +33,13 @@ namespace GraphicCard {
     "minimum_psu",
   ] as const;
 
+  export type Summarizable = (typeof SummaryAttributes)[number];
+
   export type Filterables = (typeof FilterAttributes)[number];
+
+  export type Summary = {
+    [key in Summarizable]: Info[key];
+  };
 
   export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }
