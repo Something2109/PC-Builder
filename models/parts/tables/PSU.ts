@@ -81,6 +81,7 @@ PSUModel.init(
     defaultScope: PartDefaultScope,
     modelName: Tables.PSU,
     scopes: {
+      summary: { attributes: [...PSU.SummaryAttributes] },
       filter: (options: PSU.FilterOptions) => ({ where: options }),
       detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
     },

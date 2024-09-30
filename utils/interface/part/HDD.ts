@@ -19,6 +19,12 @@ export namespace HDD {
     protocol_version: number;
   };
 
+  export const SummaryAttributes = [
+    "form_factor",
+    "protocol",
+    "capacity",
+  ] as const;
+
   export const FilterAttributes = [
     "form_factor",
     "protocol",
@@ -33,7 +39,13 @@ export namespace HDD {
     protocol: HDDProtocols,
   };
 
+  export type Summarizable = (typeof SummaryAttributes)[number];
+
   export type Filterables = (typeof FilterAttributes)[number];
+
+  export type Summary = {
+    [key in Summarizable]: Info[key];
+  };
 
   export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }

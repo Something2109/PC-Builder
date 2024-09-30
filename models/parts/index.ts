@@ -1,4 +1,4 @@
-import { InferAttributes, Model, ModelStatic } from "sequelize";
+import { InferAttributes, Model, ModelStatic, WhereOptions } from "sequelize";
 import { CPUModel } from "@/models/parts/tables/CPU";
 import { GPUModel } from "@/models/parts/tables/GPU";
 import { GraphicCardModel } from "@/models/parts/tables/GraphicCard";
@@ -15,6 +15,7 @@ import { Products } from "@/utils/Enum";
 import { DefaultFilterOptions, FilterAttributes } from "@/utils/interface";
 import { FilterOptionsType } from "@/utils/interface/utils";
 import { PartInformation } from "./tables/Part";
+import { Connection } from "../interface";
 
 function genericFilter<T extends Model<any, any>>(
   model: ModelStatic<T>,
@@ -52,7 +53,16 @@ function genericFilter<T extends Model<any, any>>(
   };
 }
 
-export const Models = {
+export function IdSubQuery<T extends InferAttributes<any>>(
+  name: string,
+  options?: WhereOptions<T>
+): string {
+  return (Connection.getQueryInterface().queryGenerator as any)
+    .selectQuery(name, { attributes: ["id"], where: options ?? {} })
+    .slice(0, -1);
+}
+
+export const Models: { [key in Products]: ModelStatic<any> } = {
   [Products.CPU]: CPUModel,
   [Products.GPU]: GPUModel,
   [Products.GRAPHIC_CARD]: GraphicCardModel,

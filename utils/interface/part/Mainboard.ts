@@ -22,6 +22,13 @@ namespace Mainboard {
     io_ports: {};
   };
 
+  export const SummaryAttributes = [
+    "form_factor",
+    "socket",
+    "ram_form_factor",
+    "ram_protocol",
+  ] as const;
+
   export const FilterAttributes = [
     "form_factor",
     "socket",
@@ -35,7 +42,13 @@ namespace Mainboard {
     ram_protocol: RAMProtocols,
   };
 
+  export type Summarizable = (typeof SummaryAttributes)[number];
+
   export type Filterables = (typeof FilterAttributes)[number];
+
+  export type Summary = {
+    [key in Summarizable]: Info[key];
+  };
 
   export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }

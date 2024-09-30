@@ -68,6 +68,7 @@ FanModel.init(
     defaultScope: PartDefaultScope,
     modelName: Tables.FAN,
     scopes: {
+      summary: { attributes: [...Fan.SummaryAttributes] },
       filter: (options: Fan.FilterOptions) => ({ where: options }),
       detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
     },

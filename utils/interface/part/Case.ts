@@ -51,6 +51,12 @@ export namespace Case {
     max_psu_length?: number;
   };
 
+  export const SummaryAttributes = [
+    "form_factor",
+    "mb_support",
+    "psu_support",
+  ] as const;
+
   export const FilterAttributes = [
     "form_factor",
     "mb_support",
@@ -63,7 +69,13 @@ export namespace Case {
     psu_support: PSUFormFactors,
   };
 
+  export type Summarizable = (typeof SummaryAttributes)[number];
+
   export type Filterables = (typeof FilterAttributes)[number];
+
+  export type Summary = {
+    [key in Summarizable]: Info[key];
+  };
 
   export type FilterOptions = Omit<
     FilterOptionsType<Info, Filterables>,
