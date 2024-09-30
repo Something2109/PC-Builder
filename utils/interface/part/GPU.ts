@@ -34,6 +34,14 @@ namespace GPU {
     features: Features;
   };
 
+  export const SummaryAttributes = [
+    "core_count",
+    "memory_size",
+    "base_frequency",
+    "boost_frequency",
+    "tdp",
+  ] as const;
+
   export const FilterAttributes = [
     "base_frequency",
     "boost_frequency",
@@ -42,7 +50,13 @@ namespace GPU {
     "tdp",
   ] as const;
 
+  export type Summarizable = (typeof SummaryAttributes)[number];
+
   export type Filterables = (typeof FilterAttributes)[number];
+
+  export type Summary = {
+    [key in Summarizable]: Info[key];
+  };
 
   export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }

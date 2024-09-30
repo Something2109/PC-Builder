@@ -30,6 +30,14 @@ export namespace CPU {
     lithography: string;
   };
 
+  export const SummaryAttributes = [
+    "socket",
+    "total_cores",
+    "total_threads",
+    "base_frequency",
+    "turbo_frequency",
+  ] as const;
+
   export const FilterAttributes = [
     "socket",
     "total_cores",
@@ -40,7 +48,13 @@ export namespace CPU {
     "tdp",
   ] as const;
 
+  export type Summarizable = (typeof SummaryAttributes)[number];
+
   export type Filterables = (typeof FilterAttributes)[number];
+
+  export type Summary = {
+    [key in Summarizable]: Info[key];
+  };
 
   export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }

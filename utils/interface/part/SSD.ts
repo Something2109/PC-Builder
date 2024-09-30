@@ -21,9 +21,18 @@ namespace SSD {
     interface: SSDInterfaceType;
   };
 
+  export const SummaryAttributes = [
+    "form_factor",
+    "protocol",
+    "interface",
+    "read_speed",
+    "write_speed",
+  ] as const;
+
   export const FilterAttributes = [
     "form_factor",
     "protocol",
+    "interface",
     "read_speed",
     "write_speed",
     "capacity",
@@ -34,7 +43,13 @@ namespace SSD {
     protocol: SSDProtocols,
   };
 
+  export type Summarizable = (typeof SummaryAttributes)[number];
+
   export type Filterables = (typeof FilterAttributes)[number];
+
+  export type Summary = {
+    [key in Summarizable]: Info[key];
+  };
 
   export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }

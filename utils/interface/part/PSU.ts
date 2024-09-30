@@ -26,6 +26,13 @@ export namespace PSU {
     peripheral_pin: number;
   };
 
+  export const SummaryAttributes = [
+    "wattage",
+    "efficiency",
+    "form_factor",
+    "modular",
+  ] as const;
+
   export const FilterAttributes = [
     "wattage",
     "efficiency",
@@ -39,7 +46,13 @@ export namespace PSU {
     modular: PSUModulars,
   };
 
+  export type Summarizable = (typeof SummaryAttributes)[number];
+
   export type Filterables = (typeof FilterAttributes)[number];
+
+  export type Summary = {
+    [key in Summarizable]: Info[key];
+  };
 
   export type FilterOptions = FilterOptionsType<Info, Filterables>;
 }

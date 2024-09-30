@@ -15,9 +15,17 @@ namespace Part {
     image_url?: string;
   };
 
+  export const SummaryAttributes = ["part", "brand", "series"] as const;
+
   export const FilterAttributes = ["part", "brand", "series"] as const;
 
+  export type Summarizable = (typeof SummaryAttributes)[number];
+
   export type Filterables = (typeof FilterAttributes)[number];
+
+  export type Summary = {
+    [key in Summarizable]: BasicInfo[key];
+  };
 
   export type FilterOptions = FilterOptionsType<BasicInfo, Filterables>;
 }
