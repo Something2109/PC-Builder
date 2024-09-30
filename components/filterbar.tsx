@@ -25,6 +25,7 @@ export function FilterBar({
   set: (options: FilterOptions) => void;
 } & FormHTMLAttributes<HTMLFormElement>) {
   const [filter, setFilter] = useState<FilterOptions>({});
+  const [error, setError] = useState(null);
   const options = useContext(context);
   const form = useRef<HTMLFormElement>(null);
 
@@ -35,9 +36,13 @@ export function FilterBar({
     }).then((response) => {
       if (response.ok) {
         response.json().then((data) => setFilter(data));
+      } else {
+        response.json().then((data) => setError(data.message));
       }
     });
   }, [options]);
+
+  if (error) return <h1>{error}</h1>;
 
   rest.onSubmit = (e) => {
     e.preventDefault();
@@ -79,7 +84,11 @@ export function FilterBar({
       />
       <ColumnWrapper className="h-full overflow-auto ">
         {Object.entries(filter).map(([part, filterValue]) => (
-          <PartFieldset name={part} filter={filterValue} />
+          <PartFieldset
+            key={`filter-${part}`}
+            name={part}
+            filter={filterValue}
+          />
         ))}
       </ColumnWrapper>
     </form>
@@ -119,7 +128,11 @@ function PartFieldset({
             <VerticalCollapsible>
               <legend className="font-bold">{key.toUpperCase()}</legend>
               {value.map((options) => (
-                <InputRow input={key} value={options} />
+                <InputRow
+                  key={`filter-${key}-${options}`}
+                  input={key}
+                  value={options}
+                />
               ))}
             </VerticalCollapsible>
           </fieldset>
