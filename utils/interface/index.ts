@@ -13,6 +13,25 @@ import PSU from "./part/PSU";
 import RAM from "./part/RAM";
 import SSD from "./part/SSD";
 
+export type SummaryInfo<T extends Products> = Part.Summary & {
+  [key in T]: SummaryInfoList[T];
+};
+
+type SummaryInfoList = {
+  [Products.CPU]: CPU.Summary;
+  [Products.GPU]: GPU.Summary;
+  [Products.GRAPHIC_CARD]: GraphicCard.Summary;
+  [Products.MAIN]: Mainboard.Summary;
+  [Products.RAM]: RAM.Summary;
+  [Products.SSD]: SSD.Summary;
+  [Products.HDD]: HDD.Summary;
+  [Products.PSU]: PSU.Summary;
+  [Products.CASE]: Case.Summary;
+  [Products.FAN]: Fan.Summary;
+  [Products.COOLER]: Cooler.Summary;
+  [Products.AIO]: AIO.Summary;
+};
+
 export type DetailInfo<T extends Products> = Omit<
   Part.BasicInfo & { raw?: string },
   "id"
