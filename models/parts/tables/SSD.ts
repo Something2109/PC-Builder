@@ -65,7 +65,7 @@ SSDModel.init(
   {
     ...BaseModelOptions,
     defaultScope: PartDefaultScope,
-    modelName: Tables.RAM,
+    modelName: Tables.SSD,
     scopes: {
       summary: { attributes: [...SSD.SummaryAttributes] },
       filter: (options: SSD.FilterOptions) => ({ where: options }),
