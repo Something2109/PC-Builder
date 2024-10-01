@@ -32,6 +32,8 @@ export function TableLoader({
 
   if (error) return <h1>{error}</h1>;
 
+  if (data.list.length === 0) return <h1>The table is empty</h1>;
+
   return (
     <>
       <h1 className="text-xl font-bold" id="list">{`${
