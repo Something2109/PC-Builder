@@ -1,7 +1,8 @@
-import Part from "@/utils/interface/part/Parts";
 import { RowWrapper } from "../utils/FlexWrapper";
 import PartPicture from "./Picture";
 import { TableHTMLAttributes } from "react";
+import { SummaryInfo } from "@/utils/interface";
+import { Products } from "@/utils/Enum";
 
 const tableRow = "*:p-2 border-b-2 lg:table-row";
 const label = "lg:hidden";
@@ -9,7 +10,13 @@ const label = "lg:hidden";
 export default function PartTable({
   data,
   ...rest
-}: { data: Part.BasicInfo[] } & TableHTMLAttributes<HTMLTableElement>) {
+}: { data: SummaryInfo<Products>[] } & TableHTMLAttributes<HTMLTableElement>) {
+  let keys: { [key in Products]?: string[] } = {};
+  const { id, part, name, brand, series, image_url, ...detail } = data[0];
+  Object.entries(detail).forEach(
+    ([key, value]) => (keys[key as Products] = Object.keys(value))
+  );
+
   return (
     <table {...rest}>
       <thead className="font-bold sticky top-32 border-b-2 bg-white dark:bg-background transition-all ease-in-out duration-500 delay-0">
@@ -17,41 +24,50 @@ export default function PartTable({
           <td>Name</td>
           <td>Brand</td>
           <td>Series</td>
-          <td>Code Name</td>
+          {Object.values(keys).map((attrs: string[]) =>
+            attrs.map((attr) => <td>{attr}</td>)
+          )}
         </tr>
       </thead>
       <tbody>
-        {data.map((item: Part.BasicInfo) => (
+        {data.map(({ id, part, name, brand, series, image_url, ...detail }) => (
           <tr
-            key={item.id}
+            key={id}
             className={`flex flex-col ${tableRow} hover:rounded-lg hover:bg-line hover:dark:text-background`}
           >
             <td>
-              <a href={`/part/${item.part}/${item.id}`}>
+              <a href={`/part/${part}/${id}`}>
                 <RowWrapper className="align-middle items-center font-bold">
-                  <PartPicture part={item} className="h-16 m-2" />
-                  {item.name}
+                  <PartPicture
+                    part={{ image_url, part, name }}
+                    className="h-16 m-2"
+                  />
+                  {name}
                 </RowWrapper>
               </a>
             </td>
             <td>
               <RowWrapper>
                 <p className={label}>Brand:</p>
-                {item.brand}
+                {brand}
               </RowWrapper>
             </td>
             <td>
               <RowWrapper>
                 <p className={label}>Series:</p>
-                {item.series}
+                {series}
               </RowWrapper>
             </td>
-            <td>
-              <RowWrapper>
-                <p className={label}>Code Name:</p>
-                {item.code_name}
-              </RowWrapper>
-            </td>
+            {Object.entries(keys).map(([key, attrs]) =>
+              attrs.map((attr) => (
+                <td>
+                  <RowWrapper>
+                    <p className={label}>{key}</p>
+                    {(detail[key as Products] as Record<string, any>)[attr]}
+                  </RowWrapper>
+                </td>
+              ))
+            )}
           </tr>
         ))}
       </tbody>
