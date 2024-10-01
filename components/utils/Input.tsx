@@ -3,12 +3,13 @@
 import {
   HTMLInputTypeAttribute,
   InputHTMLAttributes,
+  SelectHTMLAttributes,
   TextareaHTMLAttributes,
   useEffect,
   useRef,
 } from "react";
 
-const defaultStyle = "w-full bg-transparent resize-none overflow-y-hidden px-1";
+const defaultStyle = "w-full bg-transparent resize-none overflow-y-hidden";
 const defaultValueList: { [key in HTMLInputTypeAttribute]?: string | number } =
   {
     text: "",
@@ -20,7 +21,7 @@ export function TextArea({
   className,
   ...rest
 }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  let classList = [defaultStyle];
+  let classList = [defaultStyle, "px-1"];
   if (className) {
     classList.push(className);
   }
@@ -49,7 +50,7 @@ export function Input({
   defaultValue,
   ...rest
 }: InputHTMLAttributes<HTMLInputElement>) {
-  const classList = [defaultStyle];
+  const classList = [defaultStyle, "px-1"];
   if (className) {
     classList.push(className);
   }
@@ -65,4 +66,16 @@ export function Input({
       {...rest}
     />
   );
+}
+
+export function Select({
+  className,
+  ...rest
+}: SelectHTMLAttributes<HTMLSelectElement>) {
+  const classList = [defaultStyle];
+  if (className) {
+    classList.push(className);
+  }
+
+  return <select className={classList.join(" ")} {...rest} />;
 }
