@@ -25,7 +25,7 @@ export default function PartTable({
           <td>Brand</td>
           <td>Series</td>
           {Object.values(keys).map((attrs: string[]) =>
-            attrs.map((attr) => <td>{attr}</td>)
+            attrs.map((attr) => <td key={`table-header-${attr}`}>{attr}</td>)
           )}
         </tr>
       </thead>
@@ -60,7 +60,7 @@ export default function PartTable({
             </td>
             {Object.entries(keys).map(([key, attrs]) =>
               attrs.map((attr) => (
-                <td>
+                <td key={`table-body-${id}-${key}-${attr}`}>
                   <RowWrapper>
                     <p className={label}>{key}</p>
                     {(detail[key as Products] as Record<string, any>)[attr]}
