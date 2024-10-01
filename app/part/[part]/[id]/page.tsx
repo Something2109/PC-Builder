@@ -8,6 +8,7 @@ import { ObjectTable } from "@/components/utils/ObjectTable";
 import { Database } from "@/models/Database";
 import { Products } from "@/utils/Enum";
 import { notFound } from "next/navigation";
+import React from "react";
 
 export default async function PartDetailPage({
   params: { part, id },

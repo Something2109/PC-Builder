@@ -1,4 +1,4 @@
-import { Context, useContext, useEffect, useState } from "react";
+import React, { Context, useContext, useEffect, useState } from "react";
 import PaginationBar from "@/components/pagination";
 import PartTable from "@/components/part/Table";
 import { FilterOptions } from "@/utils/interface";

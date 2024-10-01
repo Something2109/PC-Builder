@@ -1,7 +1,7 @@
 "use client";
 
 import { Products } from "@/utils/Enum";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PartPanel from "@/components/part/Panel";
 import Part from "@/utils/interface/part/Parts";
 import { SearchBar } from "@/components/searchbar";

@@ -4,7 +4,7 @@ import { EditableArticle } from "@/components/article";
 import { ArticleType } from "@/models/articles/article";
 import { Button, RedirectButton } from "@/components/utils/Button";
 import { NotificationBar } from "@/components/utils/NotificationBar";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ColumnWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
 
 export default function PartTopicEditPage({

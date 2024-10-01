@@ -4,6 +4,7 @@ import { SearchBar } from "@/components/searchbar";
 import { Database } from "@/models/Database";
 import { SearchString } from "@/utils/SearchString";
 import { SearchParams } from "@/utils/SearchParams";
+import React from "react";
 
 export default async function Page({
   searchParams,
