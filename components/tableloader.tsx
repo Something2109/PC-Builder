@@ -3,6 +3,8 @@ import PaginationBar from "@/components/pagination";
 import PartTable from "@/components/part/Table";
 import { FilterOptions } from "@/utils/interface";
 import { Products } from "@/utils/Enum";
+import { RowWrapper } from "./utils/FlexWrapper";
+import { RedirectButton } from "./utils/Button";
 
 export function TableLoader({
   part,
@@ -36,9 +38,12 @@ export function TableLoader({
 
   return (
     <>
-      <h1 className="text-xl font-bold" id="list">{`${
-        data.total
-      } ${part.toLocaleUpperCase()}`}</h1>
+      <RowWrapper className="justify-between">
+        <h1 className="text-xl font-bold" id="list">{`${
+          data.total
+        } ${part.toLocaleUpperCase()}`}</h1>
+        <RedirectButton href={`/part/${part}/new`}>New</RedirectButton>
+      </RowWrapper>
       <PartTable data={data.list} className="w-full" />
       <PaginationBar
         path={setPage}
