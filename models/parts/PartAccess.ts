@@ -17,6 +17,7 @@ class PartAccess {
         include = {
           model: Models[part.part[0] as Products].scope("summary"),
           where: detail[part.part[0] as Products] ?? {},
+          required: false,
         };
       }
 
