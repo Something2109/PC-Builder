@@ -65,7 +65,7 @@ PartInformation.init(
     scopes: {
       summary: { attributes: [...Part.SummaryAttributes] },
       filter: (options: Part.FilterOptions) => ({ where: options }),
-      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+      detail: { attributes: { exclude: ["createdAt", "updatedAt"] } },
     },
   }
 );

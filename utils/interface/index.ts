@@ -32,11 +32,10 @@ type SummaryInfoList = {
   [Products.AIO]: AIO.Summary;
 };
 
-export type DetailInfo<T extends Products> = Omit<
-  Part.BasicInfo & { raw?: string },
-  "id"
-> & {
-  [key in T]: DetailInfoList[T];
+export type DetailInfo<T extends Products> = Part.BasicInfo & {
+  raw?: string;
+} & {
+  [key in T]?: DetailInfoList[T];
 };
 
 type DetailInfoList = {

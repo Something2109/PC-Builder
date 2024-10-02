@@ -17,6 +17,7 @@ class PartAccess {
         include = {
           model: Models[part.part[0] as Products].scope("summary"),
           where: detail[part.part[0] as Products] ?? {},
+          required: false,
         };
       }
 
@@ -130,6 +131,41 @@ class PartAccess {
     }
 
     return null;
+  }
+
+  async set(
+    data: DetailInfo<Products>,
+    id?: string
+  ): Promise<DetailInfo<Products>> {
+    const { [data.part as Products]: detail, part, ...info } = data;
+
+    let infoRow: PartInformation;
+    if (id) {
+      const row = await PartInformation.findByPk(id);
+      if (!row) {
+        throw new Error(`Cannot find the part with the id ${id}`);
+      }
+      infoRow = row.set(info);
+    } else {
+      infoRow = PartInformation.build({ part: part as Products, ...info });
+    }
+
+    await infoRow.save();
+    id = infoRow.id;
+
+    const [detailRow] = await Models[part as Products].findOrBuild({
+      where: { id },
+    });
+
+    detailRow.set({ id, ...detail });
+
+    await detailRow.save();
+
+    const result: DetailInfo<Products> = infoRow.toJSON();
+
+    result[part as Products] = detailRow.toJSON();
+
+    return result;
   }
 }
 

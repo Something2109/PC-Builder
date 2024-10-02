@@ -51,14 +51,14 @@ RAMModel.init(
     voltage: { type: DataTypes.FLOAT },
     latency: {
       type: DataTypes.VIRTUAL,
-      async get(): Promise<number[] | null> {
+      get(): number[] | null {
         const data = this.getDataValue("latency_json");
         if (data) {
           return JSON.parse(data) as number[];
         }
         return null;
       },
-      async set(value: number[] | null) {
+      set(value: number[] | null) {
         this.setDataValue("latency_json", value ? JSON.stringify(value) : null);
       },
     },
