@@ -1,6 +1,18 @@
 import { RowWrapper } from "../utils/FlexWrapper";
 import PartPicture from "./Picture";
-import { TableHTMLAttributes, TdHTMLAttributes } from "react";
+import { CPUTable } from "./detail/CPU";
+import { GPUTable } from "./detail/GPU";
+import { GraphicCardTable } from "./detail/GraphicCard";
+import { MainboardTable } from "./detail/Mainboard";
+import { RAMTable } from "./detail/RAM";
+import { HDDTable } from "./detail/HDD";
+import { PSUTable } from "./detail/PSU";
+import { CaseTable } from "./detail/Case";
+import { CoolerTable } from "./detail/Cooler";
+import { AIOTable } from "./detail/AIO";
+import { FanTable } from "./detail/Fan";
+import { SSDTable } from "./detail/SSD";
+import { TableHTMLAttributes } from "react";
 import { SummaryInfo } from "@/utils/interface";
 import { Products } from "@/utils/Enum";
 
@@ -78,3 +90,18 @@ export default function PartTable({
     </table>
   );
 }
+
+export const DetailTableComponent = {
+  [Products.CPU]: CPUTable,
+  [Products.GPU]: GPUTable,
+  [Products.GRAPHIC_CARD]: GraphicCardTable,
+  [Products.MAIN]: MainboardTable,
+  [Products.RAM]: RAMTable,
+  [Products.HDD]: HDDTable,
+  [Products.PSU]: PSUTable,
+  [Products.CASE]: CaseTable,
+  [Products.COOLER]: CoolerTable,
+  [Products.AIO]: AIOTable,
+  [Products.FAN]: FanTable,
+  [Products.SSD]: SSDTable,
+};

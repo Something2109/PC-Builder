@@ -1,3 +1,5 @@
+import { DetailTableComponent } from "@/components/part/Table";
+import { PartTable } from "@/components/part/detail/Part";
 import PartPicture from "@/components/part/Picture";
 import { RedirectButton } from "@/components/utils/Button";
 import {
@@ -29,6 +31,7 @@ export default async function PartDetailPage({
     ...rest
   } = partInfo;
 
+  const Component = DetailTableComponent[part as Products];
   return (
     <>
       <ResponsiveWrapper className="w-full">
@@ -36,7 +39,7 @@ export default async function PartDetailPage({
 
         <ColumnWrapper className="w-full lg:w-2/3 p-5">
           <h1 className="text-4xl font-bold">{name}</h1>
-          <ObjectTable className="border-2" object={rest} />
+          <PartTable className="border-2" defaultValue={rest} />
           {url ? (
             <RedirectButton href={url} target="_blank">
               To brand page
@@ -54,7 +57,7 @@ export default async function PartDetailPage({
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
           <h1 className="text-4xl font-bold">Details</h1>
-          <ObjectTable className="border-2" object={details} />
+          <Component className="border-2" defaultValue={details} />
         </ColumnWrapper>
       </ResponsiveWrapper>
     </>
