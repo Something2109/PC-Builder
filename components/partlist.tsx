@@ -49,14 +49,7 @@ function LinkButton({ image, dark_image, title, link }: LinkButtonProps) {
         <Image
           src={image}
           alt={`${title} logo`}
-          className="dark:hidden"
-          width="128"
-          height="128"
-        />
-        <Image
-          src={dark_image}
-          alt={`${title} logo`}
-          className="hidden dark:block"
+          className="dark:invert transition ease-in-out duration-500 delay-0"
           width="128"
           height="128"
         />
