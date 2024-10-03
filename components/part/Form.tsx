@@ -13,7 +13,7 @@ import { PSUFieldset } from "@/components/part/input/PSU";
 import { RAMFieldset } from "@/components/part/input/RAM";
 import { SSDFieldset } from "@/components/part/input/SSD";
 import { PartFieldset } from "@/components/part/input/Part";
-import { InputButton } from "@/components/utils/Button";
+import { Button, InputButton } from "@/components/utils/Button";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
@@ -112,6 +112,21 @@ export default function PartForm({
     });
   };
 
+  const onDelete = () => {
+    if (confirm(`Are you sure you want to delete ${defaultValue?.name}`)) {
+      fetch("/api/part", {
+        method: "DELETE",
+        body: JSON.stringify(defaultValue),
+      }).then((response) => {
+        if (response.ok) {
+          response.json().then((value) => router.push(`/part/${value.part}`));
+        } else {
+          response.json().then((value) => setError(value.message));
+        }
+      });
+    }
+  };
+
   const DetailInput = InputComponent[part as Products];
 
   return (
@@ -143,6 +158,7 @@ export default function PartForm({
             />
           ) : undefined}
           <InputButton type="submit" />
+          <Button onClick={onDelete}>Delete</Button>
         </ColumnWrapper>
       </ResponsiveWrapper>
       <ResponsiveWrapper className="w-full align-top">
