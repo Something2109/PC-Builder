@@ -71,7 +71,7 @@ export function FilterBar({
 
   return (
     <form className={`flex flex-col gap-1 ${className}`} ref={form} {...rest}>
-      <RowWrapper className="sticky top-32 bg-white dark:bg-background transition-all ease-in-out duration-500 delay-0">
+      <RowWrapper className="sticky top-32 bg-white dark:bg-background transition-colors ease-in-out duration-500 delay-0">
         <InputButton type="submit" value="Filter" />
         <InputButton type="reset" />
       </RowWrapper>
