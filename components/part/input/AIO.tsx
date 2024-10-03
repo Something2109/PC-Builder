@@ -14,18 +14,18 @@ export function AIOFieldset({
     <table className="w-full" {...rest}>
       <tbody>
         <SelectInputRow
-          name={`${Products.AIO}.form_factor`}
+          name="form_factor"
           label="Form Factor"
           options={AIOFormFactors}
           defaultValue={defaultValue?.form_factor}
         />
         <InputRow
-          name={`${Products.AIO}.socket`}
+          name="socket"
           label="Socket"
           defaultValue={defaultValue?.socket}
         />
         <SelectInputRow
-          name={`${Products.AIO}.cpu_plate`}
+          name="cpu_plate"
           label="CPU Plate"
           options={CoolerCPUPlates}
           defaultValue={defaultValue?.cpu_plate}
