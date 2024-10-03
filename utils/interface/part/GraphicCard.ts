@@ -18,7 +18,7 @@ namespace GraphicCard {
   };
 
   export const SummaryAttributes = [
-    "width",
+    "length",
     "base_frequency",
     "boost_frequency",
     "minimum_psu",
