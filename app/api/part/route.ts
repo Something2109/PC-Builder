@@ -52,3 +52,35 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message }, { status: 400 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    let { id } = await request.json();
+
+    const responseList = await Database.parts.delete(id);
+    if (!responseList) {
+      return NextResponse.json(
+        { message: "No product found with the given information" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(responseList);
+  } catch (err: any) {
+    console.error(err);
+    let message = (err as Error).message;
+    if (err.errors) {
+      switch (err.errors[0].validatorKey) {
+        case "not_unique":
+          message = "The code name has existed in the database";
+          break;
+        case "isUrl":
+          message = "The url field provided is not an url";
+          break;
+        default:
+          message = "Problem saving into the database";
+      }
+    }
+    return NextResponse.json({ message }, { status: 400 });
+  }
+}
