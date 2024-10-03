@@ -30,6 +30,7 @@ import React, {
 } from "react";
 import { DetailInfo } from "@/utils/interface";
 import { PictureInput } from "./input/utils";
+import { ObjectTable } from "../utils/ObjectTable";
 
 const InputComponent: {
   [key in Products]: (
@@ -147,10 +148,17 @@ export default function PartForm({
       <ResponsiveWrapper className="w-full align-top">
         <ColumnWrapper className="basis-1/2">
           <h1 className="text-4xl font-bold">Raw</h1>
+          <ObjectTable
+            className="border-2"
+            object={
+              defaultValue?.raw ? JSON.parse(defaultValue.raw) : undefined
+            }
+          />
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
           <h1 className="text-4xl font-bold">Details</h1>
           <DetailInput
+            className="sticky top-32"
             defaultValue={
               defaultValue ? defaultValue[part as Products] : undefined
             }
