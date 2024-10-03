@@ -167,6 +167,18 @@ class PartAccess {
 
     return result;
   }
+
+  async delete(id: string) {
+    const save = await PartInformation.findByPk(id);
+
+    if (save) {
+      await save.destroy();
+
+      return save.toJSON();
+    }
+
+    return null;
+  }
 }
 
 type PageOptions = {
