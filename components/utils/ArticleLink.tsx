@@ -24,12 +24,7 @@ function ArticleLink({
         <img
           src="/images/icons/pc.png"
           alt="thumbnail"
-          className="dark:hidden"
-        />
-        <img
-          src="/images/icons/pc-dark.png"
-          alt="thumbnail"
-          className="hidden dark:block"
+          className="dark:invert transition ease-in-out duration-500 delay-0"
         />
       </picture>
       <ColumnWrapper className="h-fit">
