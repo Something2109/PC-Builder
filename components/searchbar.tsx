@@ -43,7 +43,7 @@ export function SearchBar({ q, part }: { q?: string; part?: string }) {
 
   const onBlur = () => {
     clearTimeout(timeout);
-    setTimeout(() => setSearch(""), 100);
+    setTimeout(() => setSearch(""), 200);
   };
 
   const onEnter = () => {
