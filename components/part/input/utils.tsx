@@ -144,6 +144,7 @@ export function PictureInput({
         name="image_url"
         id="image_url"
         placeholder="Image URL"
+        defaultValue={image_url}
         onChange={(e) => setImage(e.target.value)}
       />
     </ColumnWrapper>
