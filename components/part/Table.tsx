@@ -1,14 +1,19 @@
 import { RowWrapper } from "../utils/FlexWrapper";
 import PartPicture from "./Picture";
-import { TableHTMLAttributes } from "react";
+import { TableHTMLAttributes, TdHTMLAttributes } from "react";
 import { SummaryInfo } from "@/utils/interface";
 import { Products } from "@/utils/Enum";
 
-const tableRow = "*:p-2 border-b-2 lg:table-row";
+const table = "border-separate border-spacing-0";
+const tableHeader =
+  "font-bold sticky top-32 bg-white dark:bg-background transition-colors ease-in-out duration-500 delay-0";
+const tableRow = "*:p-2 lg:table-row";
+const tableCell = "lg:border-b-2";
 const label = "lg:hidden";
 
 export default function PartTable({
   data,
+  className,
   ...rest
 }: { data: SummaryInfo<Products>[] } & TableHTMLAttributes<HTMLTableElement>) {
   let keys: { [key in Products]?: string[] } = {};
@@ -18,14 +23,16 @@ export default function PartTable({
   );
 
   return (
-    <table {...rest}>
-      <thead className="font-bold sticky top-32 border-b-2 bg-white dark:bg-background transition-all ease-in-out duration-500 delay-0">
+    <table className={className?.concat(" ", table) ?? table} {...rest}>
+      <thead className={tableHeader}>
         <tr className={`hidden ${tableRow}`}>
-          <td>Name</td>
-          <td>Brand</td>
-          <td>Series</td>
+          <TableCell>Name</TableCell>
+          <TableCell>Brand</TableCell>
+          <TableCell>Series</TableCell>
           {Object.values(keys).map((attrs: string[]) =>
-            attrs.map((attr) => <td key={`table-header-${attr}`}>{attr}</td>)
+            attrs.map((attr) => (
+              <TableCell key={`table-header-${attr}`}>{attr}</TableCell>
+            ))
           )}
         </tr>
       </thead>
@@ -33,9 +40,9 @@ export default function PartTable({
         {data.map(({ id, part, name, brand, series, image_url, ...detail }) => (
           <tr
             key={id}
-            className={`flex flex-col ${tableRow} hover:rounded-lg hover:bg-line hover:dark:text-background`}
+            className={`grid grid-cols-2 border-b-2 ${tableRow} hover:rounded-lg hover:bg-line hover:dark:text-background`}
           >
-            <td>
+            <TableCell className="col-span-2">
               <a href={`/part/${part}/${id}`}>
                 <RowWrapper className="align-middle items-center font-bold">
                   <PartPicture
@@ -45,32 +52,41 @@ export default function PartTable({
                   {name}
                 </RowWrapper>
               </a>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               <RowWrapper>
                 <p className={label}>Brand:</p>
                 {brand}
               </RowWrapper>
-            </td>
-            <td>
+            </TableCell>
+            <TableCell>
               <RowWrapper>
                 <p className={label}>Series:</p>
                 {series}
               </RowWrapper>
-            </td>
+            </TableCell>
             {Object.entries(keys).map(([key, attrs]) =>
               attrs.map((attr) => (
-                <td key={`table-body-${id}-${key}-${attr}`}>
+                <TableCell key={`table-body-${id}-${key}-${attr}`}>
                   <RowWrapper>
-                    <p className={label}>{key}</p>
+                    <p className={label}>{`${attr}:`}</p>
                     {(detail[key as Products] as Record<string, any>)[attr]}
                   </RowWrapper>
-                </td>
+                </TableCell>
               ))
             )}
           </tr>
         ))}
       </tbody>
     </table>
+  );
+}
+
+function TableCell({
+  className,
+  ...rest
+}: TdHTMLAttributes<HTMLTableCellElement>) {
+  return (
+    <td className={className?.concat(" ", tableCell) ?? tableCell} {...rest} />
   );
 }
