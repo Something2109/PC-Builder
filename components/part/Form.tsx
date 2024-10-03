@@ -91,8 +91,8 @@ export default function PartForm({
       code_name,
       brand,
       series,
-      url,
-      image_url,
+      url: url.length > 0 ? url : null,
+      image_url: image_url.length > 0 ? image_url : null,
       launch_date,
       [part]: detail,
     };
