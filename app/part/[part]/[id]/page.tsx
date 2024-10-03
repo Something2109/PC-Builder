@@ -45,6 +45,9 @@ export default async function PartDetailPage({
               To brand page
             </RedirectButton>
           ) : undefined}
+          <RedirectButton href={`/part/${part}/${id}/edit`} className="w-full">
+            Edit
+          </RedirectButton>
         </ColumnWrapper>
       </ResponsiveWrapper>
       <ResponsiveWrapper className="w-full align-top">
