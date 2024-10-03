@@ -33,7 +33,7 @@ export function GraphicCardFieldset({
         <InputRow
           type="number"
           name="minimum_psu"
-          label="Minimun PSU Required"
+          label="Minimum PSU Required"
           defaultValue={defaultValue?.minimum_psu}
         />
         <InputRow
