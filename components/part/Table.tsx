@@ -7,8 +7,7 @@ import { Products } from "@/utils/Enum";
 const table = "border-separate border-spacing-0";
 const tableHeader =
   "font-bold sticky top-32 bg-white dark:bg-background transition-colors ease-in-out duration-500 delay-0";
-const tableRow = "*:p-2 lg:table-row";
-const tableCell = "lg:border-b-2";
+const tableRow = "*:p-2 lg:table-row *:lg:border-b-2 ";
 const label = "lg:hidden";
 
 export default function PartTable({
@@ -26,13 +25,11 @@ export default function PartTable({
     <table className={className?.concat(" ", table) ?? table} {...rest}>
       <thead className={tableHeader}>
         <tr className={`hidden ${tableRow}`}>
-          <TableCell>Name</TableCell>
-          <TableCell>Brand</TableCell>
-          <TableCell>Series</TableCell>
+          <td>Name</td>
+          <td>Brand</td>
+          <td>Series</td>
           {Object.values(keys).map((attrs: string[]) =>
-            attrs.map((attr) => (
-              <TableCell key={`table-header-${attr}`}>{attr}</TableCell>
-            ))
+            attrs.map((attr) => <td key={`table-header-${attr}`}>{attr}</td>)
           )}
         </tr>
       </thead>
@@ -42,7 +39,7 @@ export default function PartTable({
             key={id}
             className={`grid grid-cols-2 border-b-2 ${tableRow} hover:rounded-lg hover:bg-line hover:dark:text-background`}
           >
-            <TableCell className="col-span-2">
+            <td className="col-span-2">
               <a href={`/part/${part}/${id}`}>
                 <RowWrapper className="align-middle items-center font-bold">
                   <PartPicture
@@ -52,41 +49,32 @@ export default function PartTable({
                   {name}
                 </RowWrapper>
               </a>
-            </TableCell>
-            <TableCell>
+            </td>
+            <td>
               <RowWrapper>
                 <p className={label}>Brand:</p>
                 {brand}
               </RowWrapper>
-            </TableCell>
-            <TableCell>
+            </td>
+            <td>
               <RowWrapper>
                 <p className={label}>Series:</p>
                 {series}
               </RowWrapper>
-            </TableCell>
+            </td>
             {Object.entries(keys).map(([key, attrs]) =>
               attrs.map((attr) => (
-                <TableCell key={`table-body-${id}-${key}-${attr}`}>
+                <td key={`table-body-${id}-${key}-${attr}`}>
                   <RowWrapper>
                     <p className={label}>{`${attr}:`}</p>
                     {(detail[key as Products] as Record<string, any>)[attr]}
                   </RowWrapper>
-                </TableCell>
+                </td>
               ))
             )}
           </tr>
         ))}
       </tbody>
     </table>
-  );
-}
-
-function TableCell({
-  className,
-  ...rest
-}: TdHTMLAttributes<HTMLTableCellElement>) {
-  return (
-    <td className={className?.concat(" ", tableCell) ?? tableCell} {...rest} />
   );
 }
