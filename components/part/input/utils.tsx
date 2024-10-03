@@ -41,6 +41,7 @@ export function InputRow({
       <td className="first:font-bold border-2">
         <Input
           name={name}
+          step={0.01}
           id={name}
           placeholder={label}
           list={options ? `${name}s` : undefined}
