@@ -2,12 +2,7 @@
 
 import { ColumnWrapper } from "@/components/utils/FlexWrapper";
 import { Input, Select } from "@/components/utils/Input";
-import {
-  useState,
-  InputHTMLAttributes,
-  SelectHTMLAttributes,
-  useRef,
-} from "react";
+import { useState, InputHTMLAttributes, SelectHTMLAttributes } from "react";
 
 export function TableRowWrapper({ children }: { children: React.ReactNode[] }) {
   return (
@@ -41,7 +36,6 @@ export function InputRow({
       <td className="first:font-bold border-2">
         <Input
           name={name}
-          step={0.01}
           id={name}
           placeholder={label}
           list={options ? `${name}s` : undefined}
