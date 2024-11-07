@@ -69,11 +69,6 @@ export default function PartForm({
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    let result: any = {};
-    formData.entries().forEach(([key, value]) => {
-      result[key] = value;
-    });
-
     const {
       name,
       code_name,
@@ -83,17 +78,17 @@ export default function PartForm({
       url,
       image_url,
       ...detail
-    } = result;
+    } = Object.fromEntries(formData.entries());
 
-    result = {
+    const result = {
       id: defaultValue?.id ?? undefined,
       part,
       name,
       code_name,
       brand,
       series,
-      url: url.length > 0 ? url : null,
-      image_url: image_url.length > 0 ? image_url : null,
+      url: (url as string).length > 0 ? url : null,
+      image_url: (image_url as string).length > 0 ? image_url : null,
       launch_date,
       [part]: detail,
     };
