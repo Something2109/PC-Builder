@@ -1,5 +1,6 @@
 import {
   FilterOptionsType,
+  SSDMemoryCellType,
   SSDFormFactorType,
   SSDProtocolType,
   SSDInterfaceType,
@@ -9,7 +10,7 @@ import {
 
 namespace SSD {
   export type Info = {
-    memory_type: string;
+    memory_type: SSDMemoryCellType;
     read_speed: number;
     write_speed: number;
     capacity: number;

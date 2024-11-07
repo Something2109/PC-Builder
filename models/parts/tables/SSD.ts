@@ -18,6 +18,7 @@ import {
   SSDFormFactorType,
   SSDInterfaces,
   SSDInterfaceType,
+  SSDMemoryCells,
   SSDProtocols,
   SSDProtocolType,
 } from "@/utils/interface/utils";
@@ -48,10 +49,13 @@ SSDModel.init(
       primaryKey: true,
     },
 
-    memory_type: { type: DataTypes.STRING },
+    memory_type: {
+      type: DataTypes.STRING,
+      validate: { isIn: [SSDMemoryCells] },
+    },
     read_speed: { type: DataTypes.INTEGER },
     write_speed: { type: DataTypes.INTEGER },
-    capacity: { type: DataTypes.TINYINT },
+    capacity: { type: DataTypes.INTEGER },
     cache: { type: DataTypes.INTEGER },
     tbw: { type: DataTypes.INTEGER },
 
