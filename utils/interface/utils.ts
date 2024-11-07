@@ -25,6 +25,10 @@ const RAMProtocols = [
 
 type RAMProtocolType = (typeof RAMProtocols)[number];
 
+const SSDMemoryCells = ["SLC", "MLC", "TLC", "QLC", "3D"];
+
+type SSDMemoryCellType = (typeof SSDMemoryCells)[number];
+
 const SSDFormFactors = [
   "2.5",
   "U.2",
@@ -117,6 +121,7 @@ export {
   MainboardFormFactors,
   RAMFormFactors,
   RAMProtocols,
+  SSDMemoryCells,
   SSDFormFactors,
   SSDProtocols,
   SSDInterfaces,
@@ -137,6 +142,7 @@ export type {
   MainboardFormFactorType,
   RAMFormFactorType,
   RAMProtocolType,
+  SSDMemoryCellType,
   SSDFormFactorType,
   SSDProtocolType,
   SSDInterfaceType,
