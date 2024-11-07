@@ -10,9 +10,7 @@ export function SSDTable({
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
   return (
     <TableWrapper {...rest}>
-      <TableRowWrapper>
-        Rotational Speed {defaultValue?.memory_type}
-      </TableRowWrapper>
+      <TableRowWrapper>Memory Type {defaultValue?.memory_type}</TableRowWrapper>
       <TableRowWrapper>Read Speed {defaultValue?.read_speed}</TableRowWrapper>
       <TableRowWrapper>Write Speed {defaultValue?.write_speed}</TableRowWrapper>
       <TableRowWrapper>Capacity {defaultValue?.capacity}</TableRowWrapper>

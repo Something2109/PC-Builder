@@ -3,6 +3,7 @@ import SSD from "@/utils/interface/part/SSD";
 import {
   SSDFormFactors,
   SSDInterfaces,
+  SSDMemoryCells,
   SSDProtocols,
 } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
@@ -16,10 +17,11 @@ export function SSDFieldset({
   return (
     <table className="w-full" {...rest}>
       <tbody>
-        <InputRow
+        <SelectInputRow
           name="memory_type"
-          label="Rotational Speed"
+          label="Memory Type"
           defaultValue={defaultValue?.memory_type}
+          options={SSDMemoryCells}
         />
         <InputRow
           type="number"
