@@ -38,7 +38,7 @@ export function TableLoader({
 
   return (
     <>
-      <RowWrapper className="justify-between">
+      <RowWrapper className="justify-between place-items-center">
         <h1 className="text-xl font-bold" id="list">{`${
           data.total
         } ${part.toLocaleUpperCase()}`}</h1>
