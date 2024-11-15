@@ -1,18 +1,5 @@
 "use client";
 
-import { AIOFieldset } from "@/components/part/input/AIO";
-import { CaseFieldset } from "@/components/part/input/Case";
-import { CoolerFieldset } from "@/components/part/input/Cooler";
-import { CPUFieldset } from "@/components/part/input/CPU";
-import { FanFieldset } from "@/components/part/input/Fan";
-import { GPUFieldset } from "@/components/part/input/GPU";
-import { GraphicCardFieldset } from "@/components/part/input/GraphicCard";
-import { HDDFieldset } from "@/components/part/input/HDD";
-import { MainboardFieldset } from "@/components/part/input/Mainboard";
-import { PSUFieldset } from "@/components/part/input/PSU";
-import { RAMFieldset } from "@/components/part/input/RAM";
-import { SSDFieldset } from "@/components/part/input/SSD";
-import { PartFieldset } from "@/components/part/input/Part";
 import { Button, InputButton } from "@/components/utils/Button";
 import {
   ColumnWrapper,
@@ -22,35 +9,28 @@ import { Input } from "@/components/utils/Input";
 import { NotificationBar } from "@/components/utils/NotificationBar";
 import { Products } from "@/utils/Enum";
 import { useRouter } from "next/navigation";
-import React, {
-  FormEvent,
-  useState,
-  TableHTMLAttributes,
-  FormHTMLAttributes,
-} from "react";
+import React, { lazy, FormEvent, useState, FormHTMLAttributes } from "react";
 import { DetailInfo } from "@/utils/interface";
 import { PictureInput } from "./input/utils";
 import { ObjectTable } from "../utils/ObjectTable";
 
-const InputComponent: {
-  [key in Products]: (
-    props: {
-      defaultValue?: Partial<any>;
-    } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">
-  ) => JSX.Element;
-} = {
-  [Products.CPU]: CPUFieldset,
-  [Products.GPU]: GPUFieldset,
-  [Products.GRAPHIC_CARD]: GraphicCardFieldset,
-  [Products.MAIN]: MainboardFieldset,
-  [Products.RAM]: RAMFieldset,
-  [Products.HDD]: HDDFieldset,
-  [Products.PSU]: PSUFieldset,
-  [Products.CASE]: CaseFieldset,
-  [Products.COOLER]: CoolerFieldset,
-  [Products.AIO]: AIOFieldset,
-  [Products.FAN]: FanFieldset,
-  [Products.SSD]: SSDFieldset,
+const PartFieldset = lazy(() => import("@/components/part/input/Part"));
+
+const InputComponent = {
+  [Products.CPU]: lazy(() => import("@/components/part/input/CPU")),
+  [Products.GPU]: lazy(() => import("@/components/part/input/GPU")),
+  [Products.GRAPHIC_CARD]: lazy(
+    () => import("@/components/part/input/GraphicCard")
+  ),
+  [Products.MAIN]: lazy(() => import("@/components/part/input/Mainboard")),
+  [Products.RAM]: lazy(() => import("@/components/part/input/RAM")),
+  [Products.HDD]: lazy(() => import("@/components/part/input/HDD")),
+  [Products.PSU]: lazy(() => import("@/components/part/input/PSU")),
+  [Products.CASE]: lazy(() => import("@/components/part/input/Case")),
+  [Products.COOLER]: lazy(() => import("@/components/part/input/Cooler")),
+  [Products.AIO]: lazy(() => import("@/components/part/input/AIO")),
+  [Products.FAN]: lazy(() => import("@/components/part/input/Fan")),
+  [Products.SSD]: lazy(() => import("@/components/part/input/SSD")),
 };
 
 export default function PartForm({
