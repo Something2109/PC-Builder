@@ -8,7 +8,7 @@ import {
 } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
-export function SSDFieldset({
+export default function SSDFieldset({
   defaultValue,
   ...rest
 }: {

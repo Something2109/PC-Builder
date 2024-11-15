@@ -3,7 +3,7 @@ import Cooler from "@/utils/interface/part/Cooler";
 import { CoolerCPUPlates } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
-export function CoolerFieldset({
+export default function CoolerFieldset({
   defaultValue,
   ...rest
 }: {

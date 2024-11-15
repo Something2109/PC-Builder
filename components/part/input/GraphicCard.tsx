@@ -2,7 +2,7 @@ import { DimensionInputRow, InputRow } from "./utils";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
 import { TableHTMLAttributes } from "react";
 
-export function GraphicCardFieldset({
+export default function GraphicCardFieldset({
   defaultValue,
   ...rest
 }: {

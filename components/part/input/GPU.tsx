@@ -2,7 +2,7 @@ import { InputRow } from "./utils";
 import GPU from "@/utils/interface/part/GPU";
 import { TableHTMLAttributes } from "react";
 
-export function GPUFieldset({
+export default function GPUFieldset({
   defaultValue,
   ...rest
 }: {

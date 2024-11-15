@@ -5,14 +5,14 @@ import {
   MainboardFormFactors,
   PSUFormFactors,
 } from "@/utils/interface/utils";
-import { TableHTMLAttributes } from "react";
+import { ReactNode, TableHTMLAttributes } from "react";
 
-export function CaseFieldset({
+export default function CaseFieldset({
   defaultValue,
   ...rest
 }: {
   defaultValue?: Partial<Case.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
+} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">): ReactNode {
   return (
     <table className="w-full" {...rest}>
       <tbody>

@@ -3,7 +3,7 @@ import { RAMFormFactors, RAMProtocols } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 import { SelectInputRow, InputRow } from "./utils";
 
-export function RAMFieldset({
+export default function RAMFieldset({
   defaultValue,
   ...rest
 }: {

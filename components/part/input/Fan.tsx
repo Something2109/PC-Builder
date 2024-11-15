@@ -3,7 +3,7 @@ import Fan from "@/utils/interface/part/Fan";
 import { FanBearings, FanFormFactors } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
-export function FanFieldset({
+export default function FanFieldset({
   defaultValue,
   ...rest
 }: {

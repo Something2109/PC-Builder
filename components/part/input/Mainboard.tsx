@@ -7,7 +7,7 @@ import {
 } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
-export function MainboardFieldset({
+export default function MainboardFieldset({
   defaultValue,
   ...rest
 }: {

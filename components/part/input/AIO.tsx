@@ -1,10 +1,9 @@
-import { Products } from "@/utils/Enum";
 import { SelectInputRow, InputRow, TableRowWrapper } from "./utils";
 import AIO from "@/utils/interface/part/AIO";
 import { AIOFormFactors, CoolerCPUPlates } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
-export function AIOFieldset({
+export default function AIOFieldset({
   defaultValue,
   ...rest
 }: {

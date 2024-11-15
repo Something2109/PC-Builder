@@ -2,7 +2,7 @@ import Part from "@/utils/interface/part/Parts";
 import { TableHTMLAttributes } from "react";
 import { InputRow } from "./utils";
 
-export function PartFieldset({
+export default function PartFieldset({
   defaultValue,
   ...rest
 }: {

@@ -3,7 +3,7 @@ import HDD from "@/utils/interface/part/HDD";
 import { HDDFormFactors, HDDProtocols } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
-export function HDDFieldset({
+export default function HDDFieldset({
   defaultValue,
   ...rest
 }: {

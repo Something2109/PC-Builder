@@ -2,14 +2,14 @@ import { Input } from "@/components/utils/Input";
 import CPU from "@/utils/interface/part/CPU";
 import { InputRow, TableRowWrapper } from "./utils";
 
-import { TableHTMLAttributes } from "react";
+import { ReactNode, TableHTMLAttributes } from "react";
 
-export function CPUFieldset({
+export default function CPUFieldset({
   defaultValue,
   ...rest
 }: {
   defaultValue?: Partial<CPU.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
+} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">): ReactNode {
   return (
     <table className="w-full" {...rest}>
       <tbody>

@@ -7,7 +7,7 @@ import {
 import { TableHTMLAttributes } from "react";
 import { DimensionInputRow, InputRow, SelectInputRow } from "./utils";
 
-export function PSUFieldset({
+export default function PSUFieldset({
   defaultValue,
   ...rest
 }: {
