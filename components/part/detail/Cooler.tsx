@@ -1,8 +1,8 @@
 import {
-  DimensionTableRowWrapper,
+  DimensionTableRow,
   TableRowWrapper,
   TableWrapper,
-} from "./utils";
+} from "../TableWrapper";
 import Cooler from "@/utils/interface/part/Cooler";
 import { TableHTMLAttributes } from "react";
 
@@ -16,7 +16,7 @@ export function CoolerTable({
     <TableWrapper {...rest}>
       <TableRowWrapper>Socket {defaultValue?.socket}</TableRowWrapper>
       <TableRowWrapper>CPU Plate {defaultValue?.cpu_plate}</TableRowWrapper>
-      <DimensionTableRowWrapper defaultValue={defaultValue} />
+      <DimensionTableRow defaultValue={defaultValue} />
     </TableWrapper>
   );
 }

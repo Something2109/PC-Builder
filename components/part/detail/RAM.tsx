@@ -1,6 +1,6 @@
 import RAM from "@/utils/interface/part/RAM";
 import { TableHTMLAttributes } from "react";
-import { TableRowWrapper, TableWrapper } from "./utils";
+import { TableRowWrapper, TableWrapper } from "../TableWrapper";
 
 export function RAMTable({
   defaultValue,

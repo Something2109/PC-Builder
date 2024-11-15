@@ -1,8 +1,8 @@
 import {
-  DimensionTableRowWrapper,
+  DimensionTableRow,
   TableRowWrapper,
   TableWrapper,
-} from "./utils";
+} from "../TableWrapper";
 import Fan from "@/utils/interface/part/Fan";
 import { TableHTMLAttributes } from "react";
 
@@ -15,7 +15,7 @@ export function FanTable({
   return (
     <TableWrapper {...rest}>
       <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
-      <DimensionTableRowWrapper defaultValue={defaultValue} />
+      <DimensionTableRow defaultValue={defaultValue} />
       <TableRowWrapper>Voltage {defaultValue?.voltage}</TableRowWrapper>
       <TableRowWrapper>Speed {defaultValue?.speed}</TableRowWrapper>
       <TableRowWrapper>Airflow {defaultValue?.airflow}</TableRowWrapper>

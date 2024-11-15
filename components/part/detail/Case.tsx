@@ -1,8 +1,8 @@
 import {
-  DimensionTableRowWrapper,
+  DimensionTableRow,
   TableRowWrapper,
   TableWrapper,
-} from "./utils";
+} from "../TableWrapper";
 import Case from "@/utils/interface/part/Case";
 import { TableHTMLAttributes } from "react";
 
@@ -18,7 +18,7 @@ export function CaseTable({
         Form Factor
         {defaultValue?.form_factor}
       </TableRowWrapper>
-      <DimensionTableRowWrapper defaultValue={defaultValue} />
+      <DimensionTableRow defaultValue={defaultValue} />
       <TableRowWrapper>
         I/O Ports {defaultValue?.io_ports?.toString()}
       </TableRowWrapper>

@@ -1,8 +1,8 @@
 import {
-  DimensionTableRowWrapper,
+  DimensionTableRow,
   TableRowWrapper,
   TableWrapper,
-} from "./utils";
+} from "../TableWrapper";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
 import { TableHTMLAttributes } from "react";
 
@@ -14,7 +14,7 @@ export function GraphicCardTable({
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
   return (
     <TableWrapper {...rest}>
-      <DimensionTableRowWrapper defaultValue={defaultValue} />
+      <DimensionTableRow defaultValue={defaultValue} />
       <TableRowWrapper>
         Base Frequency {defaultValue?.base_frequency}
       </TableRowWrapper>

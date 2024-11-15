@@ -1,10 +1,10 @@
 import PSU from "@/utils/interface/part/PSU";
 import { TableHTMLAttributes } from "react";
 import {
-  DimensionTableRowWrapper,
+  DimensionTableRow,
   TableRowWrapper,
   TableWrapper,
-} from "./utils";
+} from "../TableWrapper";
 
 export function PSUTable({
   defaultValue,
@@ -17,7 +17,7 @@ export function PSUTable({
       <TableRowWrapper>Wattage {defaultValue?.wattage}</TableRowWrapper>
       <TableRowWrapper>Efficiency {defaultValue?.efficiency}</TableRowWrapper>
       <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
-      <DimensionTableRowWrapper defaultValue={defaultValue} />
+      <DimensionTableRow defaultValue={defaultValue} />
       <TableRowWrapper>Modular {defaultValue?.modular}</TableRowWrapper>
       <TableRowWrapper>ATX Pin {defaultValue?.atx_pin}</TableRowWrapper>
       <TableRowWrapper>CPU Pin {defaultValue?.cpu_pin}</TableRowWrapper>

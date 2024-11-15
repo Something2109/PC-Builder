@@ -1,6 +1,6 @@
 import Part from "@/utils/interface/part/Parts";
 import { TableHTMLAttributes } from "react";
-import { TableRowWrapper, TableWrapper } from "./utils";
+import { TableRowWrapper, TableWrapper } from "../TableWrapper";
 
 export function PartTable({
   defaultValue,

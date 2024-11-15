@@ -1,4 +1,4 @@
-import { TableRowWrapper, TableWrapper } from "./utils";
+import { TableRowWrapper, TableWrapper } from "../TableWrapper";
 import GPU from "@/utils/interface/part/GPU";
 import { TableHTMLAttributes } from "react";
 

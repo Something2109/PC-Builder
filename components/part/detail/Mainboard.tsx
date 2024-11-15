@@ -1,4 +1,4 @@
-import { TableRowWrapper, TableWrapper } from "./utils";
+import { TableRowWrapper, TableWrapper } from "../TableWrapper";
 import Mainboard from "@/utils/interface/part/Mainboard";
 import { TableHTMLAttributes } from "react";
 

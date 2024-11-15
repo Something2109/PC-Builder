@@ -1,6 +1,5 @@
 import CPU from "@/utils/interface/part/CPU";
-import { TableRowWrapper, TableWrapper } from "./utils";
-
+import { TableRowWrapper, TableWrapper } from "../TableWrapper";
 import { TableHTMLAttributes } from "react";
 
 export function CPUTable({

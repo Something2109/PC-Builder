@@ -1,4 +1,4 @@
-import { TableRowWrapper, TableWrapper } from "./utils";
+import { TableRowWrapper, TableWrapper } from "../TableWrapper";
 import HDD from "@/utils/interface/part/HDD";
 import { TableHTMLAttributes } from "react";
 

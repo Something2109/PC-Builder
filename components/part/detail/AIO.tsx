@@ -1,4 +1,4 @@
-import { TableRowWrapper, TableWrapper } from "./utils";
+import { TableRowWrapper, TableWrapper } from "../TableWrapper";
 import AIO from "@/utils/interface/part/AIO";
 import { TableHTMLAttributes } from "react";
 
