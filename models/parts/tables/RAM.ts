@@ -1,11 +1,4 @@
 import {
-  DataTypes,
-  ForeignKey,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from "sequelize";
-import {
   BaseModelOptions,
   PartDetailTable,
   PartDefaultScope,
@@ -19,76 +12,64 @@ import {
   RAMProtocols,
   RAMProtocolType,
 } from "@/utils/interface/utils";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Scopes,
+  Table,
+} from "sequelize-typescript";
 
-class RAMModel
-  extends Model<InferAttributes<RAMModel>, InferCreationAttributes<RAMModel>>
-  implements PartDetailTable<RAM.Info>
-{
-  declare id: ForeignKey<PartInformation["id"]>;
+@DefaultScope(() => PartDefaultScope)
+@Scopes(() => ({
+  summary: { attributes: [...RAM.SummaryAttributes] },
+  filter: (options: RAM.FilterOptions) => ({ where: options }),
+  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+}))
+@Table({ ...BaseModelOptions, modelName: Tables.RAM })
+class RAMModel extends Model implements PartDetailTable<RAM.Info> {
+  @PrimaryKey
+  @ForeignKey(() => PartInformation)
+  @Column(DataType.UUID)
+  declare id: string;
 
+  @BelongsTo(() => PartInformation)
+  declare part: PartInformation;
+
+  @Column(DataType.INTEGER)
   declare speed: number | null;
+
+  @Column(DataType.INTEGER)
   declare capacity: number | null;
+
+  @Column(DataType.FLOAT)
   declare voltage: number | null;
-  declare latency: number[] | null;
+
+  @Column(DataType.STRING)
+  get latency(): number[] | null {
+    const data = this.getDataValue("latency_json");
+    if (data) {
+      return JSON.parse(data) as number[];
+    }
+    return null;
+  }
+
+  set latency(value: number[] | null) {
+    this.setDataValue("latency_json", value ? JSON.stringify(value) : null);
+  }
+
+  @Column(DataType.TINYINT)
   declare kit: number | null;
 
+  @Column({ type: DataType.STRING, validate: { isIn: [RAMFormFactors] } })
   declare form_factor: RAMFormFactorType | null;
+
+  @Column({ type: DataType.STRING, validate: { isIn: [RAMProtocols] } })
   declare protocol: RAMProtocolType | null;
-
-  declare latency_json: string | null;
 }
-
-RAMModel.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      primaryKey: true,
-    },
-
-    speed: { type: DataTypes.INTEGER },
-    capacity: { type: DataTypes.INTEGER },
-    voltage: { type: DataTypes.FLOAT },
-    latency: {
-      type: DataTypes.VIRTUAL,
-      get(): number[] | null {
-        const data = this.getDataValue("latency_json");
-        if (data) {
-          return JSON.parse(data) as number[];
-        }
-        return null;
-      },
-      set(value: number[] | null) {
-        this.setDataValue("latency_json", value ? JSON.stringify(value) : null);
-      },
-    },
-    kit: { type: DataTypes.TINYINT, defaultValue: 1 },
-
-    form_factor: {
-      type: DataTypes.STRING,
-      validate: { isIn: [RAMFormFactors] },
-    },
-    protocol: { type: DataTypes.STRING, validate: { isIn: [RAMProtocols] } },
-
-    latency_json: { type: DataTypes.STRING, get: () => undefined },
-  },
-  {
-    ...BaseModelOptions,
-    defaultScope: PartDefaultScope,
-    modelName: Tables.RAM,
-    scopes: {
-      summary: { attributes: [...RAM.SummaryAttributes] },
-      filter: (options: RAM.FilterOptions) => ({ where: options }),
-      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
-    },
-  }
-);
-
-PartInformation.hasOne(RAMModel, {
-  foreignKey: "id",
-});
-RAMModel.belongsTo(PartInformation, {
-  foreignKey: "id",
-});
 
 export { RAMModel };

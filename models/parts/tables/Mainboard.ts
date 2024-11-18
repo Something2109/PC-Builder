@@ -1,11 +1,4 @@
 import {
-  DataTypes,
-  ForeignKey,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from "sequelize";
-import {
   BaseModelOptions,
   PartDetailTable,
   PartDefaultScope,
@@ -21,73 +14,54 @@ import {
   RAMProtocols,
   RAMProtocolType,
 } from "@/utils/interface/utils";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Scopes,
+  Table,
+} from "sequelize-typescript";
 
-class MainboardModel
-  extends Model<
-    InferAttributes<MainboardModel>,
-    InferCreationAttributes<MainboardModel>
-  >
-  implements PartDetailTable<Mainboard.Info>
-{
-  declare id: ForeignKey<PartInformation["id"]>;
+@DefaultScope(() => PartDefaultScope)
+@Scopes(() => ({
+  summary: { attributes: [...Mainboard.SummaryAttributes] },
+  filter: (options: Mainboard.FilterOptions) => ({ where: options }),
+  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+}))
+@Table({ ...BaseModelOptions, modelName: Tables.MAIN })
+class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
+  @PrimaryKey
+  @ForeignKey(() => PartInformation)
+  @Column(DataType.UUID)
+  declare id: string;
 
+  @BelongsTo(() => PartInformation)
+  declare part: PartInformation;
+
+  @Column({ type: DataType.STRING, validate: { isIn: [MainboardFormFactors] } })
   declare form_factor: MainboardFormFactorType | null;
+
+  @Column(DataType.STRING)
   declare socket: string | null;
 
+  @Column({ type: DataType.STRING, validate: { isIn: [RAMFormFactors] } })
   declare ram_form_factor: RAMFormFactorType | null;
+
+  @Column({ type: DataType.STRING, validate: { isIn: [RAMProtocols] } })
   declare ram_protocol: RAMProtocolType | null;
+
+  @Column(DataType.TINYINT)
   declare ram_slot: number | null;
 
+  @Column(DataType.TINYINT)
   declare expansion_slots: number | null;
+
+  @Column(DataType.STRING)
   declare io_ports: {} | null;
 }
-
-MainboardModel.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      primaryKey: true,
-    },
-
-    socket: {
-      type: DataTypes.STRING,
-    },
-    form_factor: {
-      type: DataTypes.STRING,
-      validate: { isIn: [MainboardFormFactors] },
-    },
-
-    ram_form_factor: {
-      type: DataTypes.STRING,
-      validate: { isIn: [RAMFormFactors] },
-    },
-    ram_protocol: {
-      type: DataTypes.STRING,
-      validate: { isIn: [RAMProtocols] },
-    },
-    ram_slot: { type: DataTypes.TINYINT },
-
-    expansion_slots: { type: DataTypes.TINYINT },
-    io_ports: { type: DataTypes.STRING },
-  },
-  {
-    ...BaseModelOptions,
-    defaultScope: PartDefaultScope,
-    modelName: Tables.MAIN,
-    scopes: {
-      summary: { attributes: [...Mainboard.SummaryAttributes] },
-      filter: (options: Mainboard.FilterOptions) => ({ where: options }),
-      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
-    },
-  }
-);
-
-PartInformation.hasOne(MainboardModel, {
-  foreignKey: "id",
-});
-MainboardModel.belongsTo(PartInformation, {
-  foreignKey: "id",
-});
 
 export { MainboardModel };

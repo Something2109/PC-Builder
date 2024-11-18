@@ -1,11 +1,4 @@
 import {
-  DataTypes,
-  ForeignKey,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from "sequelize";
-import {
   BaseModelOptions,
   PartDetailTable,
   PartDefaultScope,
@@ -22,67 +15,60 @@ import {
   SSDProtocols,
   SSDProtocolType,
 } from "@/utils/interface/utils";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Scopes,
+  Table,
+} from "sequelize-typescript";
 
-class SSDModel
-  extends Model<InferAttributes<SSDModel>, InferCreationAttributes<SSDModel>>
-  implements PartDetailTable<SSD.Info>
-{
-  declare id: ForeignKey<PartInformation["id"]>;
+@DefaultScope(() => PartDefaultScope)
+@Scopes(() => ({
+  summary: { attributes: [...SSD.SummaryAttributes] },
+  filter: (options: SSD.FilterOptions) => ({ where: options }),
+  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+}))
+@Table({ ...BaseModelOptions, modelName: Tables.SSD })
+class SSDModel extends Model implements PartDetailTable<SSD.Info> {
+  @PrimaryKey
+  @ForeignKey(() => PartInformation)
+  @Column(DataType.UUID)
+  declare id: string;
 
+  @BelongsTo(() => PartInformation)
+  declare part: PartInformation;
+
+  @Column({ type: DataType.STRING, validate: { isIn: [SSDMemoryCells] } })
   declare memory_type: string | null;
+
+  @Column(DataType.INTEGER)
   declare read_speed: number | null;
+
+  @Column(DataType.INTEGER)
   declare write_speed: number | null;
+
+  @Column(DataType.INTEGER)
   declare capacity: number | null;
+
+  @Column(DataType.INTEGER)
   declare cache: number | null;
+
+  @Column(DataType.INTEGER)
   declare tbw: number | null;
 
+  @Column({ type: DataType.STRING, validate: { isIn: [SSDFormFactors] } })
   declare form_factor: SSDFormFactorType | null;
+
+  @Column({ type: DataType.STRING, validate: { isIn: [SSDProtocols] } })
   declare protocol: SSDProtocolType | null;
+
+  @Column({ type: DataType.STRING, validate: { isIn: [SSDInterfaces] } })
   declare interface: SSDInterfaceType | null;
 }
-
-SSDModel.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      primaryKey: true,
-    },
-
-    memory_type: {
-      type: DataTypes.STRING,
-      validate: { isIn: [SSDMemoryCells] },
-    },
-    read_speed: { type: DataTypes.INTEGER },
-    write_speed: { type: DataTypes.INTEGER },
-    capacity: { type: DataTypes.INTEGER },
-    cache: { type: DataTypes.INTEGER },
-    tbw: { type: DataTypes.INTEGER },
-
-    form_factor: {
-      type: DataTypes.STRING,
-      validate: { isIn: [SSDFormFactors] },
-    },
-    protocol: { type: DataTypes.STRING, validate: { isIn: [SSDProtocols] } },
-    interface: { type: DataTypes.STRING, validate: { isIn: [SSDInterfaces] } },
-  },
-  {
-    ...BaseModelOptions,
-    defaultScope: PartDefaultScope,
-    modelName: Tables.SSD,
-    scopes: {
-      summary: { attributes: [...SSD.SummaryAttributes] },
-      filter: (options: SSD.FilterOptions) => ({ where: options }),
-      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
-    },
-  }
-);
-
-PartInformation.hasOne(SSDModel, {
-  foreignKey: "id",
-});
-SSDModel.belongsTo(PartInformation, {
-  foreignKey: "id",
-});
 
 export { SSDModel };

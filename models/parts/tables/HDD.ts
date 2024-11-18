@@ -1,11 +1,4 @@
 import {
-  DataTypes,
-  ForeignKey,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from "sequelize";
-import {
   BaseModelOptions,
   PartDetailTable,
   PartDefaultScope,
@@ -19,62 +12,57 @@ import {
   HDDProtocols,
   HDDProtocolType,
 } from "@/utils/interface/utils";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Scopes,
+  Table,
+} from "sequelize-typescript";
 
-class HDDModel
-  extends Model<InferAttributes<HDDModel>, InferCreationAttributes<HDDModel>>
-  implements PartDetailTable<HDD.Info>
-{
-  declare id: ForeignKey<PartInformation["id"]>;
+@DefaultScope(() => PartDefaultScope)
+@Scopes(() => ({
+  summary: { attributes: [...HDD.SummaryAttributes] },
+  filter: (options: HDD.FilterOptions) => ({ where: options }),
+  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+}))
+@Table({ ...BaseModelOptions, modelName: Tables.HDD })
+class HDDModel extends Model implements PartDetailTable<HDD.Info> {
+  @PrimaryKey
+  @ForeignKey(() => PartInformation)
+  @Column(DataType.UUID)
+  declare id: string;
 
+  @BelongsTo(() => PartInformation)
+  declare part: PartInformation;
+
+  @Column(DataType.INTEGER)
   declare rotational_speed: number | null;
+
+  @Column(DataType.INTEGER)
   declare read_speed: number | null;
+
+  @Column(DataType.INTEGER)
   declare write_speed: number | null;
+
+  @Column(DataType.TINYINT)
   declare capacity: number | null;
+
+  @Column(DataType.INTEGER)
   declare cache: number | null;
 
+  @Column({ type: DataType.STRING, validate: { isIn: [HDDFormFactors] } })
   declare form_factor: HDDFormFactorType | null;
+
+  @Column({ type: DataType.STRING, validate: { isIn: [HDDProtocols] } })
   declare protocol: HDDProtocolType | null;
+
+  @Column({ type: DataType.TINYINT })
   declare protocol_version: number | null;
 }
-
-HDDModel.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      primaryKey: true,
-    },
-
-    rotational_speed: { type: DataTypes.INTEGER },
-    read_speed: { type: DataTypes.INTEGER },
-    write_speed: { type: DataTypes.INTEGER },
-    capacity: { type: DataTypes.TINYINT },
-    cache: { type: DataTypes.INTEGER },
-
-    form_factor: {
-      type: DataTypes.STRING,
-      validate: { isIn: [HDDFormFactors] },
-    },
-    protocol: { type: DataTypes.STRING, validate: { isIn: [HDDProtocols] } },
-    protocol_version: { type: DataTypes.TINYINT },
-  },
-  {
-    ...BaseModelOptions,
-    defaultScope: PartDefaultScope,
-    modelName: Tables.HDD,
-    scopes: {
-      summary: { attributes: [...HDD.SummaryAttributes] },
-      filter: (options: HDD.FilterOptions) => ({ where: options }),
-      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
-    },
-  }
-);
-
-PartInformation.hasOne(HDDModel, {
-  foreignKey: "id",
-});
-HDDModel.belongsTo(PartInformation, {
-  foreignKey: "id",
-});
 
 export { HDDModel };

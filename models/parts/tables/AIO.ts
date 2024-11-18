@@ -1,10 +1,14 @@
 import {
-  DataTypes,
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
   ForeignKey,
-  InferAttributes,
-  InferCreationAttributes,
   Model,
-} from "sequelize";
+  PrimaryKey,
+  Scopes,
+  Table,
+} from "sequelize-typescript";
 import AIO from "@/utils/interface/part/AIO";
 import {
   BaseModelOptions,
@@ -20,70 +24,51 @@ import {
   CoolerCPUPlateType,
 } from "@/utils/interface/utils";
 
-class AIOModel
-  extends Model<InferAttributes<AIOModel>, InferCreationAttributes<AIOModel>>
-  implements PartDetailTable<AIO.Info>
-{
-  declare id: ForeignKey<PartInformation["id"]>;
+@DefaultScope(() => PartDefaultScope)
+@Scopes(() => ({
+  summary: { attributes: [...AIO.SummaryAttributes] },
+  filter: (options: AIO.FilterOptions) => ({ where: options }),
+  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+}))
+@Table({ ...BaseModelOptions, modelName: Tables.AIO })
+class AIOModel extends Model implements PartDetailTable<AIO.Info> {
+  @PrimaryKey
+  @ForeignKey(() => PartInformation)
+  @Column(DataType.UUID)
+  declare id: string;
 
+  @BelongsTo(() => PartInformation)
+  declare part: PartInformation;
+
+  @Column({ type: DataType.STRING, validate: { isIn: [AIOFormFactors] } })
   declare form_factor: AIOFormFactorType | null;
+
+  @Column(DataType.FLOAT)
   declare radiator_width: number | null;
+
+  @Column(DataType.FLOAT)
   declare radiator_length: number | null;
+
+  @Column(DataType.FLOAT)
   declare radiator_height: number | null;
 
+  @Column(DataType.STRING)
   declare socket: string | null;
+
+  @Column({ type: DataType.STRING, validate: { isIn: [CoolerCPUPlates] } })
   declare cpu_plate: CoolerCPUPlateType | null;
 
+  @Column(DataType.FLOAT)
   declare pump_width: number | null;
+
+  @Column(DataType.FLOAT)
   declare pump_length: number | null;
+
+  @Column(DataType.FLOAT)
   declare pump_height: number | null;
+
+  @Column(DataType.FLOAT)
   declare pump_speed: number | null;
 }
-
-AIOModel.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      primaryKey: true,
-    },
-
-    form_factor: {
-      type: DataTypes.STRING,
-      validate: { isIn: [AIOFormFactors] },
-    },
-    radiator_width: { type: DataTypes.FLOAT },
-    radiator_length: { type: DataTypes.FLOAT },
-    radiator_height: { type: DataTypes.FLOAT },
-
-    socket: { type: DataTypes.STRING },
-    cpu_plate: {
-      type: DataTypes.STRING,
-      validate: { isIn: [CoolerCPUPlates] },
-    },
-
-    pump_width: { type: DataTypes.FLOAT },
-    pump_length: { type: DataTypes.FLOAT },
-    pump_height: { type: DataTypes.FLOAT },
-    pump_speed: { type: DataTypes.FLOAT },
-  },
-  {
-    ...BaseModelOptions,
-    ...PartDefaultScope,
-    modelName: Tables.AIO,
-    scopes: {
-      summary: { attributes: [...AIO.SummaryAttributes] },
-      filter: (options: AIO.FilterOptions) => ({ where: options }),
-      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
-    },
-  }
-);
-
-PartInformation.hasOne(AIOModel, {
-  foreignKey: "id",
-});
-AIOModel.belongsTo(PartInformation, {
-  foreignKey: "id",
-});
 
 export { AIOModel };
