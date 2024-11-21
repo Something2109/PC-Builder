@@ -1,4 +1,5 @@
-import { InferAttributes, Model, ModelStatic, WhereOptions } from "sequelize";
+import { InferAttributes, ModelStatic, WhereOptions } from "sequelize";
+import { Model, ModelCtor } from "sequelize-typescript";
 import { CPUModel } from "@/models/parts/tables/CPU";
 import { GPUModel } from "@/models/parts/tables/GPU";
 import { GraphicCardModel } from "@/models/parts/tables/GraphicCard";
@@ -62,7 +63,7 @@ export function IdSubQuery<T extends InferAttributes<any>>(
     .slice(0, -1);
 }
 
-export const Models: { [key in Products]: ModelStatic<any> } = {
+export const Models: { [key in Products]: ModelCtor<Model> } = {
   [Products.CPU]: CPUModel,
   [Products.GPU]: GPUModel,
   [Products.GRAPHIC_CARD]: GraphicCardModel,
@@ -76,6 +77,8 @@ export const Models: { [key in Products]: ModelStatic<any> } = {
   [Products.AIO]: AIOModel,
   [Products.FAN]: FanModel,
 };
+
+Connection.addModels([...Object.values(Models), PartInformation]);
 
 export const ModelFilters = {
   part: genericFilter(PartInformation, FilterAttributes["part"]),

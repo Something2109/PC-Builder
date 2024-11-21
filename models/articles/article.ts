@@ -1,11 +1,13 @@
+import { BaseModelOptions, Connection, Tables } from "../interface";
 import {
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  CreationOptional,
+  Column,
+  DataType,
+  Default,
   Model,
-} from "sequelize";
-import { BaseModelOptions, Tables } from "../interface";
+  NotNull,
+  PrimaryKey,
+  Table,
+} from "sequelize-typescript";
 
 type ContentType = ParagraphType | ImageType | ListType | SectionType;
 
@@ -50,66 +52,43 @@ type ParagraphType = {
   content: string;
 };
 
-export class Article
-  extends Model<InferAttributes<Article>, InferCreationAttributes<Article>>
-  implements Omit<ArticleType, "type">
-{
+@Table({ ...BaseModelOptions, modelName: Tables.ARTICLE })
+export class Article extends Model implements Omit<ArticleType, "type"> {
+  @PrimaryKey
+  @Column(DataType.STRING)
   declare topic: string;
-  declare part: string;
-  declare title: string;
-  declare author: string;
-  declare standfirst: string;
-  declare createdAt: CreationOptional<Date>;
-  declare content: ContentType[];
 
-  declare content_json: CreationOptional<string>;
+  @PrimaryKey
+  @Column(DataType.STRING)
+  declare part: string;
+
+  @NotNull
+  @Column({ type: DataType.STRING, allowNull: false })
+  declare title: string;
+
+  @Default("admin")
+  @Column(DataType.STRING)
+  declare author: string;
+
+  @NotNull
+  @Column({ type: DataType.STRING, allowNull: false })
+  declare standfirst: string;
+
+  @Column(DataType.DATE)
+  declare createdAt: Date;
+
+  @Column(DataType.TEXT)
+  set content(val: ContentType[]) {
+    this.setDataValue("content", JSON.stringify(val));
+  }
+
+  get content(): ContentType[] {
+    const data = this.getDataValue("content");
+    return JSON.parse(data);
+  }
 }
 
-Article.init(
-  {
-    topic: {
-      type: DataTypes.STRING,
-      primaryKey: true,
-    },
-    part: {
-      type: DataTypes.STRING,
-      primaryKey: true,
-    },
-
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    author: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: "admin",
-    },
-    standfirst: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-    },
-    content: {
-      type: DataTypes.VIRTUAL,
-      set(val: ContentType[]) {
-        this.setDataValue("content_json", JSON.stringify(val));
-      },
-      get(): ContentType[] {
-        const data = this.getDataValue("content_json");
-        return JSON.parse(data);
-      },
-    },
-
-    content_json: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-  },
-  { ...BaseModelOptions, modelName: Tables.ARTICLE }
-);
+Connection.addModels([Article]);
 
 export class ValidateArticle {
   private static isContentContainer(content: any): content is ContentContainer {

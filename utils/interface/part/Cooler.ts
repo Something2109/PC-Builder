@@ -1,36 +1,46 @@
-import {
-  CoolerCPUPlates,
-  CoolerCPUPlateType,
-  FilterOptionsType,
-} from "../utils";
+import { CoolerCPUPlates, FilterOptions } from "../utils";
+import { z } from "zod";
 
 export namespace Cooler {
-  export type Info = {
-    socket: string;
-    cpu_plate: CoolerCPUPlateType;
-
-    width: number;
-    length: number;
-    height: number;
-  };
-
-  export const SummaryAttributes = ["socket", "cpu_plate", "height"] as const;
-
-  export const FilterAttributes = ["socket", "cpu_plate"] as const;
-
-  export const DefaultFilterOptions: FilterOptions = {
+  export const Schema = z.object({
+    socket: z.string(),
     cpu_plate: CoolerCPUPlates,
-  };
+
+    width: z.number(),
+    length: z.number(),
+    height: z.number(),
+  });
+
+  export type Info = z.infer<typeof Schema>;
+
+  export const SummarySchema = Schema.pick({
+    socket: true,
+    cpu_plate: true,
+    height: true,
+  });
+
+  export const SummaryAttributes = SummarySchema.keyof().options;
 
   export type Summarizable = (typeof SummaryAttributes)[number];
 
-  export type Filterables = (typeof FilterAttributes)[number];
+  export type Summary = z.infer<typeof SummarySchema>;
 
-  export type Summary = {
-    [key in Summarizable]: Info[key];
+  export const FilterOptionSchema = z
+    .object({
+      socket: FilterOptions(z.string()),
+      cpu_plate: FilterOptions(CoolerCPUPlates),
+    })
+    .partial();
+
+  export const DefaultFilterOptions: FilterOptions = {
+    cpu_plate: CoolerCPUPlates.options,
   };
 
-  export type FilterOptions = FilterOptionsType<Info, Filterables>;
+  export const FilterAttributes = FilterOptionSchema.keyof().options;
+
+  export type Filterables = (typeof FilterAttributes)[number];
+
+  export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
 export default Cooler;

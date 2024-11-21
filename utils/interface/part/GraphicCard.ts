@@ -1,47 +1,54 @@
-import { FilterOptionsType } from "../utils";
 import GPU from "./GPU";
+import { NumberFilterOptions } from "../utils";
+import { z } from "zod";
 
 namespace GraphicCard {
-  export type Info = {
-    width: number;
-    length: number;
-    height: number;
+  export const Schema = z.object({
+    width: z.number(),
+    length: z.number(),
+    height: z.number(),
 
-    base_frequency: number;
-    boost_frequency: number;
+    base_frequency: z.number(),
+    boost_frequency: z.number(),
 
-    pcie: number;
-    minimum_psu: number;
-    power_connector: string;
+    pcie: z.number(),
+    minimum_psu: z.number(),
+    power_connector: z.string(),
 
-    gpu: GPU.Info;
-  };
+    gpu: GPU.Schema,
+  });
 
-  export const SummaryAttributes = [
-    "length",
-    "base_frequency",
-    "boost_frequency",
-    "minimum_psu",
-  ] as const;
+  export type Info = z.infer<typeof Schema>;
 
-  export const FilterAttributes = [
-    "width",
-    "length",
-    "height",
-    "base_frequency",
-    "boost_frequency",
-    "minimum_psu",
-  ] as const;
+  export const SummarySchema = Schema.pick({
+    length: true,
+    base_frequency: true,
+    boost_frequency: true,
+    minimum_psu: true,
+  });
+
+  export const SummaryAttributes = SummarySchema.keyof().options;
 
   export type Summarizable = (typeof SummaryAttributes)[number];
 
+  export type Summary = z.infer<typeof SummarySchema>;
+
+  export const FilterOptionSchema = z
+    .object({
+      width: NumberFilterOptions,
+      length: NumberFilterOptions,
+      height: NumberFilterOptions,
+      base_frequency: NumberFilterOptions,
+      boost_frequency: NumberFilterOptions,
+      minimum_psu: NumberFilterOptions,
+    })
+    .partial();
+
+  export const FilterAttributes = FilterOptionSchema.keyof().options;
+
   export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Summary = {
-    [key in Summarizable]: Info[key];
-  };
-
-  export type FilterOptions = FilterOptionsType<Info, Filterables>;
+  export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
 export default GraphicCard;

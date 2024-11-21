@@ -1,12 +1,4 @@
 import {
-  DataTypes,
-  ForeignKey,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-  NonAttribute,
-} from "sequelize";
-import {
   BaseModelOptions,
   PartDetailTable,
   PartDefaultScope,
@@ -16,6 +8,17 @@ import { GPUModel } from "./GPU";
 import { PartInformation } from "./Part";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
 import GPU from "@/utils/interface/part/GPU";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Scopes,
+  Table,
+} from "sequelize-typescript";
 
 type APIDisplayInterface = {
   HDMI?: number;
@@ -23,75 +26,55 @@ type APIDisplayInterface = {
   DVI_D?: number;
 };
 
+@DefaultScope(() => PartDefaultScope)
+@Scopes(() => ({
+  summary: { attributes: [...GraphicCard.SummaryAttributes] },
+  filter: (options: GraphicCard.FilterOptions) => ({ where: options }),
+  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+}))
+@Table({ ...BaseModelOptions, modelName: Tables.GRAPHIC_CARD })
 class GraphicCardModel
-  extends Model<
-    InferAttributes<GraphicCardModel>,
-    InferCreationAttributes<GraphicCardModel>
-  >
+  extends Model
   implements PartDetailTable<GraphicCard.Info>
 {
-  declare id: ForeignKey<PartInformation["id"]>;
+  @PrimaryKey
+  @ForeignKey(() => PartInformation)
+  @Column(DataType.UUID)
+  declare id: string;
 
+  @BelongsTo(() => PartInformation)
+  declare part: PartInformation;
+
+  @Column(DataType.FLOAT)
   declare width: number | null;
+
+  @Column(DataType.FLOAT)
   declare length: number | null;
+
+  @Column(DataType.FLOAT)
   declare height: number | null;
 
+  @Column(DataType.FLOAT)
   declare base_frequency: number | null;
+
+  @Column(DataType.FLOAT)
   declare boost_frequency: number | null;
 
+  @Column(DataType.INTEGER)
   declare pcie: number | null;
+
+  @Column(DataType.INTEGER)
   declare minimum_psu: number | null;
+
+  @Column(DataType.STRING)
   declare power_connector: string | null;
 
-  declare gpu: NonAttribute<GPU.Info>;
-  declare gpu_id: ForeignKey<GPUModel["id"]>;
+  @ForeignKey(() => GPUModel)
+  @Column(DataType.UUID)
+  declare gpu_id: string | null;
+
+  @BelongsTo(() => GPUModel)
+  declare gpu: GPU.Info | null;
 }
-
-GraphicCardModel.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      primaryKey: true,
-    },
-
-    width: { type: DataTypes.FLOAT },
-    length: { type: DataTypes.FLOAT },
-    height: { type: DataTypes.FLOAT },
-
-    base_frequency: { type: DataTypes.INTEGER },
-    boost_frequency: { type: DataTypes.INTEGER },
-
-    pcie: { type: DataTypes.INTEGER },
-    minimum_psu: { type: DataTypes.INTEGER },
-    power_connector: { type: DataTypes.STRING },
-
-    gpu_id: { type: DataTypes.UUID, get: () => undefined },
-  },
-  {
-    ...BaseModelOptions,
-    defaultScope: PartDefaultScope,
-    modelName: Tables.GRAPHIC_CARD,
-    scopes: {
-      summary: { attributes: [...GraphicCard.SummaryAttributes] },
-      filter: (options: GraphicCard.FilterOptions) => ({ where: options }),
-      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
-    },
-  }
-);
-
-PartInformation.hasOne(GraphicCardModel, {
-  foreignKey: "id",
-});
-GraphicCardModel.belongsTo(PartInformation, {
-  foreignKey: "id",
-});
-
-GPUModel.hasMany(GraphicCardModel, {
-  foreignKey: "gpu_id",
-});
-GraphicCardModel.belongsTo(GPUModel, {
-  foreignKey: "gpu_id",
-});
 
 export { GraphicCardModel, type APIDisplayInterface };

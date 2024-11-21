@@ -1,11 +1,4 @@
 import {
-  DataTypes,
-  ForeignKey,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from "sequelize";
-import {
   BaseModelOptions,
   PartDetailTable,
   PartDefaultScope,
@@ -21,78 +14,75 @@ import {
   PSUModulars,
   PSUModularType,
 } from "@/utils/interface/utils";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Scopes,
+  Table,
+} from "sequelize-typescript";
 
-class PSUModel
-  extends Model<InferAttributes<PSUModel>, InferCreationAttributes<PSUModel>>
-  implements PartDetailTable<PSU.Info>
-{
-  declare id: ForeignKey<PartInformation["id"]>;
+@DefaultScope(() => PartDefaultScope)
+@Scopes(() => ({
+  summary: { attributes: [...PSU.SummaryAttributes] },
+  filter: (options: PSU.FilterOptions) => ({ where: options }),
+  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+}))
+@Table({ ...BaseModelOptions, modelName: Tables.PSU })
+class PSUModel extends Model implements PartDetailTable<PSU.Info> {
+  @PrimaryKey
+  @ForeignKey(() => PartInformation)
+  @Column(DataType.UUID)
+  declare id: string;
 
+  @BelongsTo(() => PartInformation)
+  declare part: PartInformation;
+
+  @Column(DataType.INTEGER)
   declare wattage: number | null;
+
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [PSUEfficiencies.options] },
+  })
   declare efficiency: PSUEfficiencyType | null;
 
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [PSUFormFactors.options] },
+  })
   declare form_factor: PSUFormFactorType | null;
+
+  @Column(DataType.INTEGER)
   declare width: number | null;
+
+  @Column(DataType.INTEGER)
   declare length: number | null;
+
+  @Column(DataType.INTEGER)
   declare height: number | null;
+
+  @Column({ type: DataType.STRING, validate: { isIn: [PSUModulars.options] } })
   declare modular: PSUModularType | null;
 
+  @Column(DataType.TINYINT)
   declare atx_pin: number | null;
+
+  @Column(DataType.TINYINT)
   declare cpu_pin: number | null;
+
+  @Column(DataType.TINYINT)
   declare pcie_pin: number | null;
+
+  @Column(DataType.TINYINT)
   declare sata_pin: number | null;
+
+  @Column(DataType.TINYINT)
   declare peripheral_pin: number | null;
 }
-
-PSUModel.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      primaryKey: true,
-    },
-
-    wattage: { type: DataTypes.INTEGER },
-    efficiency: {
-      type: DataTypes.STRING,
-      validate: { isIn: [PSUEfficiencies] },
-    },
-
-    form_factor: {
-      type: DataTypes.STRING,
-      validate: { isIn: [PSUFormFactors] },
-    },
-    width: { type: DataTypes.INTEGER },
-    length: { type: DataTypes.INTEGER },
-    height: { type: DataTypes.INTEGER },
-    modular: {
-      type: DataTypes.STRING,
-      validate: { isIn: [PSUModulars] },
-    },
-
-    atx_pin: { type: DataTypes.TINYINT },
-    cpu_pin: { type: DataTypes.TINYINT },
-    pcie_pin: { type: DataTypes.TINYINT },
-    sata_pin: { type: DataTypes.TINYINT },
-    peripheral_pin: { type: DataTypes.TINYINT },
-  },
-  {
-    ...BaseModelOptions,
-    defaultScope: PartDefaultScope,
-    modelName: Tables.PSU,
-    scopes: {
-      summary: { attributes: [...PSU.SummaryAttributes] },
-      filter: (options: PSU.FilterOptions) => ({ where: options }),
-      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
-    },
-  }
-);
-
-PartInformation.hasOne(PSUModel, {
-  foreignKey: "id",
-});
-PSUModel.belongsTo(PartInformation, {
-  foreignKey: "id",
-});
 
 export { PSUModel };
