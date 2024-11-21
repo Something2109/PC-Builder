@@ -1,40 +1,51 @@
-import { FilterOptionsType } from "../utils";
+import { FilterOptions } from "../utils";
+import { z } from "zod";
 
 namespace Part {
-  export type BasicInfo = {
-    id: string;
+  export const Schema = z.object({
+    id: z.string(),
 
-    part: string;
-    name: string;
-    code_name: string;
-    brand: string;
-    series: string;
+    part: z.string(),
+    name: z.string(),
+    code_name: z.string(),
+    brand: z.string(),
+    series: z.string(),
 
-    launch_date?: Date;
-    url?: string;
-    image_url?: string;
-  };
+    launch_date: z.date().nullable().optional(),
+    url: z.string().nullable().optional(),
+    image_url: z.string().nullable().optional(),
+  });
 
-  export const SummaryAttributes = [
-    "id",
-    "part",
-    "name",
-    "brand",
-    "series",
-    "image_url",
-  ] as const;
+  export type BasicInfo = z.infer<typeof Schema>;
 
-  export const FilterAttributes = ["part", "brand", "series"] as const;
+  export const SummarySchema = Schema.pick({
+    id: true,
+    part: true,
+    name: true,
+    brand: true,
+    series: true,
+    image_url: true,
+  });
+
+  export const SummaryAttributes = SummarySchema.keyof().options;
 
   export type Summarizable = (typeof SummaryAttributes)[number];
 
+  export type Summary = z.infer<typeof SummarySchema>;
+
+  export const FilterOptionSchema = z
+    .object({
+      part: FilterOptions(z.string()),
+      brand: FilterOptions(z.string()),
+      series: FilterOptions(z.string()),
+    })
+    .partial();
+
+  export const FilterAttributes = FilterOptionSchema.keyof().options;
+
   export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Summary = {
-    [key in Summarizable]: BasicInfo[key];
-  };
-
-  export type FilterOptions = FilterOptionsType<BasicInfo, Filterables>;
+  export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
 export default Part;

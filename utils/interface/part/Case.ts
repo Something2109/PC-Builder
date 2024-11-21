@@ -1,88 +1,94 @@
 import {
   AIOFormFactorType,
   CaseFormFactors,
-  CaseFormFactorType,
+  CaseSide,
   CaseSideType,
   FanFormFactorType,
   MainboardFormFactors,
-  MainboardFormFactorType,
   PSUFormFactors,
-  PSUFormFactorType,
-  FilterOptionsType,
+  FanFormFactors,
+  FilterOptions,
 } from "../utils";
+import { z } from "zod";
 
 export namespace Case {
-  export type FanSupport = {
-    [side in CaseSideType]: {
-      [size in FanFormFactorType]: number;
-    };
-  };
+  const AIOSupportSchema = z.record(CaseSide, z.number());
 
-  export type AIOSupport = {
-    [side in CaseSideType]: AIOFormFactorType[];
-  };
+  const FanSupportSchema = z.record(
+    CaseSide,
+    z.record(FanFormFactors, z.number())
+  );
 
-  export type HardDriveSupport = {
-    2.5?: number;
-    3.5?: number;
-    combo: number;
-  };
+  const HardDriveSupportSchema = z
+    .object({
+      2.5: z.number(),
+      3.5: z.number(),
+      combo: z.number(),
+    })
+    .partial();
 
-  export type Info = {
-    form_factor: CaseFormFactorType;
-
-    width: number;
-    length: number;
-    height: number;
-
-    io_ports: {};
-
-    mb_support: MainboardFormFactorType;
-    expansion_slot: number;
-
-    max_cooler_height: number;
-
-    aio_support: AIOSupport;
-    fan_support: FanSupport;
-
-    hard_drive_support: HardDriveSupport;
-
-    psu_support: PSUFormFactorType;
-    max_psu_length?: number;
-  };
-
-  export const SummaryAttributes = [
-    "form_factor",
-    "mb_support",
-    "psu_support",
-  ] as const;
-
-  export const FilterAttributes = [
-    "form_factor",
-    "mb_support",
-    "psu_support",
-  ] as const;
-
-  export const DefaultFilterOptions = {
+  export const Schema = z.object({
     form_factor: CaseFormFactors,
+
+    width: z.number(),
+    length: z.number(),
+    height: z.number(),
+
+    io_ports: z.object({}),
+
     mb_support: MainboardFormFactors,
+    expansion_slot: z.number(),
+
+    max_cooler_height: z.number(),
+
+    aio_support: AIOSupportSchema,
+    fan_support: FanSupportSchema,
+
+    hard_drive_support: HardDriveSupportSchema,
+
     psu_support: PSUFormFactors,
-  };
+    max_psu_length: z.number(),
+  });
+
+  export type FanSupport = z.infer<typeof FanSupportSchema>;
+
+  export type AIOSupport = z.infer<typeof AIOSupportSchema>;
+
+  export type HardDriveSupport = z.infer<typeof HardDriveSupportSchema>;
+
+  export type Info = z.infer<typeof Schema>;
+
+  export const SummarySchema = Schema.pick({
+    form_factor: true,
+    mb_support: true,
+    psu_support: true,
+  });
+
+  export const SummaryAttributes = SummarySchema.keyof().options;
 
   export type Summarizable = (typeof SummaryAttributes)[number];
 
+  export type Summary = z.infer<typeof SummarySchema>;
+
+  export const FilterOptionSchema = z
+    .object({
+      form_factor: FilterOptions(CaseFormFactors),
+      mb_support: FilterOptions(MainboardFormFactors),
+      psu_support: FilterOptions(PSUFormFactors),
+    })
+    .partial();
+
+  export const DefaultFilterOptions = {
+    form_factor: CaseFormFactors.options,
+    mb_support: MainboardFormFactors.options,
+    psu_support: PSUFormFactors.options,
+  };
+
+  export const FilterAttributes = FilterOptionSchema.keyof().options;
+
   export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Summary = {
-    [key in Summarizable]: Info[key];
-  };
-
-  export type FilterOptions = Omit<
-    FilterOptionsType<Info, Filterables>,
-    "mb_support"
-  > & {
-    mb_support: MainboardFormFactorType[];
-  };
+  export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
 export default Case;

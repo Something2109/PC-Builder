@@ -1,60 +1,65 @@
 import {
-  FilterOptionsType,
   PSUEfficiencies,
-  PSUEfficiencyType,
   PSUFormFactors,
-  PSUFormFactorType,
   PSUModulars,
-  PSUModularType,
+  FilterOptions,
+  NumberFilterOptions,
 } from "../utils";
+import { z } from "zod";
 
 export namespace PSU {
-  export type Info = {
-    wattage: number;
-    efficiency: PSUEfficiencyType;
-
-    form_factor: PSUFormFactorType;
-    width: number;
-    length: number;
-    height: number;
-    modular: PSUModularType;
-
-    atx_pin: number;
-    cpu_pin: number;
-    pcie_pin: number;
-    sata_pin: number;
-    peripheral_pin: number;
-  };
-
-  export const SummaryAttributes = [
-    "wattage",
-    "efficiency",
-    "form_factor",
-    "modular",
-  ] as const;
-
-  export const FilterAttributes = [
-    "wattage",
-    "efficiency",
-    "form_factor",
-    "modular",
-  ] as const;
-
-  export const DefaultFilterOptions: FilterOptions = {
+  export const Schema = z.object({
+    wattage: z.number(),
     efficiency: PSUEfficiencies,
+
     form_factor: PSUFormFactors,
+    width: z.number(),
+    length: z.number(),
+    height: z.number(),
     modular: PSUModulars,
-  };
+
+    atx_pin: z.number(),
+    cpu_pin: z.number(),
+    pcie_pin: z.number(),
+    sata_pin: z.number(),
+    peripheral_pin: z.number(),
+  });
+
+  export type Info = z.infer<typeof Schema>;
+
+  export const SummarySchema = Schema.pick({
+    wattage: true,
+    efficiency: true,
+    form_factor: true,
+    modular: true,
+  });
+
+  export const SummaryAttributes = SummarySchema.keyof().options;
 
   export type Summarizable = (typeof SummaryAttributes)[number];
 
-  export type Filterables = (typeof FilterAttributes)[number];
+  export type Summary = z.infer<typeof SummarySchema>;
 
-  export type Summary = {
-    [key in Summarizable]: Info[key];
+  export const FilterOptionSchema = z
+    .object({
+      wattage: NumberFilterOptions,
+      efficiency: FilterOptions(PSUEfficiencies),
+      form_factor: FilterOptions(PSUFormFactors),
+      modular: FilterOptions(PSUModulars),
+    })
+    .partial();
+
+  export const DefaultFilterOptions: FilterOptions = {
+    efficiency: PSUEfficiencies.options,
+    form_factor: PSUFormFactors.options,
+    modular: PSUModulars.options,
   };
 
-  export type FilterOptions = FilterOptionsType<Info, Filterables>;
+  export const FilterAttributes = FilterOptionSchema.keyof().options;
+
+  export type Filterables = (typeof FilterAttributes)[number];
+
+  export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
 export default PSU;
