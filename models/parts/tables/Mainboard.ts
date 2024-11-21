@@ -42,16 +42,22 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   @BelongsTo(() => PartInformation)
   declare part: PartInformation;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [MainboardFormFactors] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [MainboardFormFactors.options] },
+  })
   declare form_factor: MainboardFormFactorType | null;
 
   @Column(DataType.STRING)
   declare socket: string | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [RAMFormFactors] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [RAMFormFactors.options] },
+  })
   declare ram_form_factor: RAMFormFactorType | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [RAMProtocols] } })
+  @Column({ type: DataType.STRING, validate: { isIn: [RAMProtocols.options] } })
   declare ram_protocol: RAMProtocolType | null;
 
   @Column(DataType.TINYINT)

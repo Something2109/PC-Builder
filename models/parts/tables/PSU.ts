@@ -45,10 +45,16 @@ class PSUModel extends Model implements PartDetailTable<PSU.Info> {
   @Column(DataType.INTEGER)
   declare wattage: number | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [PSUEfficiencies] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [PSUEfficiencies.options] },
+  })
   declare efficiency: PSUEfficiencyType | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [PSUFormFactors] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [PSUFormFactors.options] },
+  })
   declare form_factor: PSUFormFactorType | null;
 
   @Column(DataType.INTEGER)
@@ -60,7 +66,7 @@ class PSUModel extends Model implements PartDetailTable<PSU.Info> {
   @Column(DataType.INTEGER)
   declare height: number | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [PSUModulars] } })
+  @Column({ type: DataType.STRING, validate: { isIn: [PSUModulars.options] } })
   declare modular: PSUModularType | null;
 
   @Column(DataType.TINYINT)

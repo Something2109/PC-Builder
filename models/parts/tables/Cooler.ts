@@ -47,7 +47,10 @@ class CoolerModel extends Model implements PartDetailTable<Cooler.Info> {
   @Column(DataType.STRING)
   declare socket: string | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [CoolerCPUPlates] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [CoolerCPUPlates.options] },
+  })
   declare cpu_plate: CoolerCPUPlateType | null;
 }
 

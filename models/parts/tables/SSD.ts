@@ -12,6 +12,7 @@ import {
   SSDInterfaces,
   SSDInterfaceType,
   SSDMemoryCells,
+  SSDMemoryCellType,
   SSDProtocols,
   SSDProtocolType,
 } from "@/utils/interface/utils";
@@ -43,8 +44,11 @@ class SSDModel extends Model implements PartDetailTable<SSD.Info> {
   @BelongsTo(() => PartInformation)
   declare part: PartInformation;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [SSDMemoryCells] } })
-  declare memory_type: string | null;
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [SSDMemoryCells.options] },
+  })
+  declare memory_type: SSDMemoryCellType | null;
 
   @Column(DataType.INTEGER)
   declare read_speed: number | null;
@@ -61,13 +65,19 @@ class SSDModel extends Model implements PartDetailTable<SSD.Info> {
   @Column(DataType.INTEGER)
   declare tbw: number | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [SSDFormFactors] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [SSDFormFactors.options] },
+  })
   declare form_factor: SSDFormFactorType | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [SSDProtocols] } })
+  @Column({ type: DataType.STRING, validate: { isIn: [SSDProtocols.options] } })
   declare protocol: SSDProtocolType | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [SSDInterfaces] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [SSDInterfaces.options] },
+  })
   declare interface: SSDInterfaceType | null;
 }
 

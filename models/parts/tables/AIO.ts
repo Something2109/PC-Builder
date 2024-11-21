@@ -40,7 +40,10 @@ class AIOModel extends Model implements PartDetailTable<AIO.Info> {
   @BelongsTo(() => PartInformation)
   declare part: PartInformation;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [AIOFormFactors] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [AIOFormFactors.options] },
+  })
   declare form_factor: AIOFormFactorType | null;
 
   @Column(DataType.FLOAT)
@@ -55,7 +58,10 @@ class AIOModel extends Model implements PartDetailTable<AIO.Info> {
   @Column(DataType.STRING)
   declare socket: string | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [CoolerCPUPlates] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [CoolerCPUPlates.options] },
+  })
   declare cpu_plate: CoolerCPUPlateType | null;
 
   @Column(DataType.FLOAT)

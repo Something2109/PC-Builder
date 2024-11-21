@@ -65,10 +65,13 @@ class RAMModel extends Model implements PartDetailTable<RAM.Info> {
   @Column(DataType.TINYINT)
   declare kit: number | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [RAMFormFactors] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [RAMFormFactors.options] },
+  })
   declare form_factor: RAMFormFactorType | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [RAMProtocols] } })
+  @Column({ type: DataType.STRING, validate: { isIn: [RAMProtocols.options] } })
   declare protocol: RAMProtocolType | null;
 }
 

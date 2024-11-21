@@ -54,7 +54,10 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   @BelongsTo(() => PartInformation)
   declare part: PartInformation;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [CaseFormFactors] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [CaseFormFactors.options] },
+  })
   declare form_factor: CaseFormFactorType | null;
 
   @Column(DataType.FLOAT)
@@ -68,7 +71,10 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
   declare io_ports: {} | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [MainboardFormFactors] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [MainboardFormFactors.options] },
+  })
   declare mb_support: MainboardFormFactorType | null;
 
   @Column(DataType.INTEGER)

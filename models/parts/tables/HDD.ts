@@ -55,10 +55,13 @@ class HDDModel extends Model implements PartDetailTable<HDD.Info> {
   @Column(DataType.INTEGER)
   declare cache: number | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [HDDFormFactors] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [HDDFormFactors.options] },
+  })
   declare form_factor: HDDFormFactorType | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [HDDProtocols] } })
+  @Column({ type: DataType.STRING, validate: { isIn: [HDDProtocols.options] } })
   declare protocol: HDDProtocolType | null;
 
   @Column({ type: DataType.TINYINT })
