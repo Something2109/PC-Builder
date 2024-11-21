@@ -1,56 +1,60 @@
 import {
-  FilterOptionsType,
   MainboardFormFactors,
-  MainboardFormFactorType,
   RAMFormFactors,
-  RAMFormFactorType,
   RAMProtocols,
-  RAMProtocolType,
+  FilterOptions,
 } from "../utils";
+import { z } from "zod";
 
 namespace Mainboard {
-  export type Info = {
-    form_factor: MainboardFormFactorType;
-
-    socket: string;
-
-    ram_form_factor: RAMFormFactorType;
-    ram_protocol: RAMProtocolType;
-    ram_slot: number;
-    expansion_slots: number;
-
-    io_ports: {};
-  };
-
-  export const SummaryAttributes = [
-    "form_factor",
-    "socket",
-    "ram_form_factor",
-    "ram_protocol",
-  ] as const;
-
-  export const FilterAttributes = [
-    "form_factor",
-    "socket",
-    "ram_form_factor",
-    "ram_protocol",
-  ] as const;
-
-  export const DefaultFilterOptions: FilterOptions = {
+  export const Schema = z.object({
     form_factor: MainboardFormFactors,
+
+    socket: z.string(),
+
     ram_form_factor: RAMFormFactors,
     ram_protocol: RAMProtocols,
-  };
+    ram_slot: z.number(),
+    expansion_slots: z.number(),
+
+    io_ports: z.object({}),
+  });
+
+  export type Info = z.infer<typeof Schema>;
+
+  export const SummarySchema = Schema.pick({
+    form_factor: true,
+    socket: true,
+    ram_form_factor: true,
+    ram_protocol: true,
+  });
+
+  export const SummaryAttributes = SummarySchema.keyof().options;
 
   export type Summarizable = (typeof SummaryAttributes)[number];
 
-  export type Filterables = (typeof FilterAttributes)[number];
+  export type Summary = z.infer<typeof SummarySchema>;
 
-  export type Summary = {
-    [key in Summarizable]: Info[key];
+  export const FilterOptionSchema = z
+    .object({
+      form_factor: FilterOptions(MainboardFormFactors),
+      socket: FilterOptions(z.string()),
+      ram_form_factor: FilterOptions(RAMFormFactors),
+      ram_protocol: FilterOptions(RAMProtocols),
+    })
+    .partial();
+
+  export const DefaultFilterOptions: FilterOptions = {
+    form_factor: MainboardFormFactors.options,
+    ram_form_factor: RAMFormFactors.options,
+    ram_protocol: RAMProtocols.options,
   };
 
-  export type FilterOptions = FilterOptionsType<Info, Filterables>;
+  export const FilterAttributes = FilterOptionSchema.keyof().options;
+
+  export type Filterables = (typeof FilterAttributes)[number];
+
+  export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
 export default Mainboard;
