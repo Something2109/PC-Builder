@@ -1,10 +1,12 @@
 import { Database } from "@/models/Database";
+import { FilterOptionSchema } from "@/utils/interface";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    let { q, ...options } = await request.json();
-    q = q ?? "";
+    let body = await request.json();
+    const options = FilterOptionSchema.parse(body);
+    const q = body.q ?? "";
 
     const responseList = await Database.parts.filter(options);
 

@@ -1,6 +1,6 @@
 import { Database } from "@/models/Database";
 import { Products } from "@/utils/Enum";
-import { FilterOptions } from "@/utils/interface";
+import { FilterOptions, FilterOptionSchema } from "@/utils/interface";
 import { SearchParams } from "@/utils/SearchParams";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -15,8 +15,10 @@ export async function POST(
       );
     }
 
+    const body = await request.json();
+
     const options: FilterOptions = {
-      ...((await request.json()) ?? {}),
+      ...FilterOptionSchema.parse(body),
       ...SearchParams.toPageOptions(request.nextUrl.searchParams),
     };
     options.part = { part: [part], ...options.part };

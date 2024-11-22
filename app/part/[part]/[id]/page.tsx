@@ -11,11 +11,12 @@ import { Database } from "@/models/Database";
 import { Products } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 import React from "react";
+import { DetailInfo } from "@/utils/interface";
 
 export default async function PartDetailPage({
   params: { part, id },
 }: {
-  params: { part: string; id: string };
+  params: { part: Products; id: string };
 }) {
   const partInfo = await Database.parts.get(part as Products, id);
 
@@ -60,7 +61,7 @@ export default async function PartDetailPage({
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
           <h1 className="text-4xl font-bold">Details</h1>
-          <Component className="border-2" defaultValue={details} />
+          <Component className="border-2" defaultValue={details as any} />
         </ColumnWrapper>
       </ResponsiveWrapper>
     </>
