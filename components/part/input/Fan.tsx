@@ -19,7 +19,7 @@ export default function FanFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={FanFormFactors}
+        options={FanFormFactors.options}
         defaultValue={defaultValue?.form_factor}
       />
       <DimensionInputRow defaultValue={defaultValue} />
@@ -56,7 +56,7 @@ export default function FanFieldset({
       <SelectInputRow
         name="bearing"
         label="Form Factor"
-        options={FanBearings}
+        options={FanBearings.options}
         defaultValue={defaultValue?.bearing}
       />
     </TableWrapper>

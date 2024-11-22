@@ -20,7 +20,7 @@ export default function SSDFieldset({
         name="memory_type"
         label="Memory Type"
         defaultValue={defaultValue?.memory_type}
-        options={SSDMemoryCells}
+        options={SSDMemoryCells.options}
       />
       <InputRow
         type="number"
@@ -55,19 +55,19 @@ export default function SSDFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={SSDFormFactors}
+        options={SSDFormFactors.options}
         defaultValue={defaultValue?.form_factor}
       />
       <SelectInputRow
         name="protocol"
         label="Protocol"
-        options={SSDProtocols}
+        options={SSDProtocols.options}
         defaultValue={defaultValue?.protocol}
       />
       <SelectInputRow
         name="interface"
         label="Interface"
-        options={SSDInterfaces}
+        options={SSDInterfaces.options}
         defaultValue={defaultValue?.interface}
       />
     </TableWrapper>

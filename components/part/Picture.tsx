@@ -4,7 +4,7 @@ export default function PartPicture({
   part: { image_url, part, name },
   className,
 }: {
-  part: { image_url?: string; part: string; name: string };
+  part: { image_url?: string | null; part: string; name: string };
   className?: string;
 }) {
   const classlist = ["rounded-lg bg-white aspect-square *:m-auto p-1"];

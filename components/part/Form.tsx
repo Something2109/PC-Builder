@@ -151,7 +151,7 @@ export default function PartForm({
           <DetailInput
             className="sticky top-32"
             defaultValue={
-              defaultValue ? defaultValue[part as Products] : undefined
+              defaultValue ? (defaultValue[part as Products] as any) : undefined
             }
           />
         </ColumnWrapper>

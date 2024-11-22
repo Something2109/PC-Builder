@@ -18,7 +18,7 @@ export default function MainboardFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={MainboardFormFactors}
+        options={MainboardFormFactors.options}
         defaultValue={defaultValue?.form_factor}
       />
       <InputRow
@@ -29,13 +29,13 @@ export default function MainboardFieldset({
       <SelectInputRow
         name="ram_form_factor"
         label="RAM Form Factor"
-        options={RAMFormFactors}
+        options={RAMFormFactors.options}
         defaultValue={defaultValue?.ram_form_factor}
       />
       <SelectInputRow
         name="ram_protocol"
         label="RAM Protocol"
-        options={RAMProtocols}
+        options={RAMProtocols.options}
         defaultValue={defaultValue?.ram_protocol}
       />
       <InputRow

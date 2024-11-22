@@ -35,7 +35,12 @@ export default function PartFieldset({
         defaultValue={launch_date.toISOString().slice(0, 10)}
         required
       />
-      <InputRow name="url" label="Brand URL" defaultValue={url} required />
+      <InputRow
+        name="url"
+        label="Brand URL"
+        defaultValue={url ?? undefined}
+        required
+      />
     </TableWrapper>
   );
 }

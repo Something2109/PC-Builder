@@ -8,7 +8,7 @@ export function PictureInput({
   part: { image_url, part, name },
   className,
 }: {
-  part: { image_url?: string; part: string; name: string };
+  part: { image_url?: string | null; part: string; name: string };
   className?: string;
 }) {
   const [image, setImage] = useState<string | null>(image_url ?? null);
@@ -32,7 +32,7 @@ export function PictureInput({
         name="image_url"
         id="image_url"
         placeholder="Image URL"
-        defaultValue={image_url}
+        defaultValue={image_url ?? undefined}
         onChange={(e) => setImage(e.target.value)}
       />
     </ColumnWrapper>

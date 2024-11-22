@@ -29,20 +29,20 @@ export default function PSUFieldset({
       <SelectInputRow
         name="efficiency"
         label="Efficiency"
-        options={PSUEfficiencies}
+        options={PSUEfficiencies.options}
         defaultValue={defaultValue?.efficiency}
       />
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={PSUFormFactors}
+        options={PSUFormFactors.options}
         defaultValue={defaultValue?.form_factor}
       />
       <DimensionInputRow defaultValue={defaultValue} />
       <SelectInputRow
         name="modular"
         label="Modular"
-        options={PSUModulars}
+        options={PSUModulars.options}
         defaultValue={defaultValue?.modular}
       />
       <InputRow

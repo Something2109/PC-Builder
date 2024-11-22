@@ -44,13 +44,13 @@ export default function HDDFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={HDDFormFactors}
+        options={HDDFormFactors.options}
         defaultValue={defaultValue?.form_factor}
       />
       <SelectInputRow
         name="protocol"
         label="Protocol"
-        options={HDDProtocols}
+        options={HDDProtocols.options}
         defaultValue={defaultValue?.protocol}
       />
       <InputRow

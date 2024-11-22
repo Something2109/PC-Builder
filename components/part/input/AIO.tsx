@@ -19,7 +19,7 @@ export default function AIOFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={AIOFormFactors}
+        options={AIOFormFactors.options}
         defaultValue={defaultValue?.form_factor}
       />
       <InputRow
@@ -30,7 +30,7 @@ export default function AIOFieldset({
       <SelectInputRow
         name="cpu_plate"
         label="CPU Plate"
-        options={CoolerCPUPlates}
+        options={CoolerCPUPlates.options}
         defaultValue={defaultValue?.cpu_plate}
       />
       <TableRowWrapper>

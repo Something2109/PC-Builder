@@ -24,7 +24,7 @@ export default function CoolerFieldset({
       <SelectInputRow
         name="cpu_plate"
         label="CPU Plate"
-        options={CoolerCPUPlates}
+        options={CoolerCPUPlates.options}
         defaultValue={defaultValue?.cpu_plate}
       />
       <DimensionInputRow defaultValue={defaultValue} />

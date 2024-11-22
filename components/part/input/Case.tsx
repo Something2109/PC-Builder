@@ -23,7 +23,7 @@ export default function CaseFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={CaseFormFactors}
+        options={CaseFormFactors.options}
         defaultValue={defaultValue?.form_factor}
       />
       <DimensionInputRow defaultValue={defaultValue} />
@@ -31,7 +31,7 @@ export default function CaseFieldset({
       <SelectInputRow
         name="mb_support"
         label="Mainboard Support"
-        options={MainboardFormFactors}
+        options={MainboardFormFactors.options}
         defaultValue={defaultValue?.mb_support}
       />
       <InputRow
@@ -51,7 +51,7 @@ export default function CaseFieldset({
       <SelectInputRow
         name="psu_support"
         label="PSU Support"
-        options={PSUFormFactors}
+        options={PSUFormFactors.options}
         defaultValue={defaultValue?.psu_support}
       />
       <InputRow

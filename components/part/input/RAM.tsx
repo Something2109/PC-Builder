@@ -39,13 +39,13 @@ export default function RAMFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={RAMFormFactors}
+        options={RAMFormFactors.options}
         defaultValue={defaultValue?.form_factor}
       />
       <SelectInputRow
         name="protocol"
         label="Protocol"
-        options={RAMProtocols}
+        options={RAMProtocols.options}
         defaultValue={defaultValue?.protocol}
       />
     </TableWrapper>
