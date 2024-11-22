@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { Products } from "../Enum";
 import AIO from "./part/AIO";
 import Case from "./part/Case";
@@ -13,61 +14,71 @@ import PSU from "./part/PSU";
 import RAM from "./part/RAM";
 import SSD from "./part/SSD";
 
-export type SummaryInfo<T extends Products> = Part.Summary & {
-  [key in T]: SummaryInfoList[T];
+export const PartSummaryInfoSchema = z
+  .object({
+    [Products.CPU]: CPU.SummarySchema,
+    [Products.GPU]: GPU.SummarySchema,
+    [Products.GRAPHIC_CARD]: GraphicCard.SummarySchema,
+    [Products.MAIN]: Mainboard.SummarySchema,
+    [Products.RAM]: RAM.SummarySchema,
+    [Products.SSD]: SSD.SummarySchema,
+    [Products.HDD]: HDD.SummarySchema,
+    [Products.PSU]: PSU.SummarySchema,
+    [Products.CASE]: Case.SummarySchema,
+    [Products.FAN]: Fan.SummarySchema,
+    [Products.COOLER]: Cooler.SummarySchema,
+    [Products.AIO]: AIO.SummarySchema,
+  })
+  .partial();
+
+export type SummaryInfo<T extends Products> = z.infer<
+  typeof Part.SummarySchema
+> & {
+  [key in T]: z.infer<typeof PartSummaryInfoSchema>[T];
 };
 
-type SummaryInfoList = {
-  [Products.CPU]: CPU.Summary;
-  [Products.GPU]: GPU.Summary;
-  [Products.GRAPHIC_CARD]: GraphicCard.Summary;
-  [Products.MAIN]: Mainboard.Summary;
-  [Products.RAM]: RAM.Summary;
-  [Products.SSD]: SSD.Summary;
-  [Products.HDD]: HDD.Summary;
-  [Products.PSU]: PSU.Summary;
-  [Products.CASE]: Case.Summary;
-  [Products.FAN]: Fan.Summary;
-  [Products.COOLER]: Cooler.Summary;
-  [Products.AIO]: AIO.Summary;
-};
+export const DetailInfoListSchema = z
+  .object({
+    [Products.CPU]: CPU.Schema,
+    [Products.GPU]: GPU.Schema,
+    [Products.GRAPHIC_CARD]: GraphicCard.Schema,
+    [Products.MAIN]: Mainboard.Schema,
+    [Products.RAM]: RAM.Schema,
+    [Products.SSD]: SSD.Schema,
+    [Products.HDD]: HDD.Schema,
+    [Products.PSU]: PSU.Schema,
+    [Products.CASE]: Case.Schema,
+    [Products.FAN]: Fan.Schema,
+    [Products.COOLER]: Cooler.Schema,
+    [Products.AIO]: AIO.Schema,
+  })
+  .partial();
 
-export type DetailInfo<T extends Products> = Part.BasicInfo & {
+export type DetailInfo<T extends Products> = z.infer<typeof Part.Schema> & {
   raw?: string;
 } & {
-  [key in T]?: DetailInfoList[T];
+  [key in T]: z.infer<typeof DetailInfoListSchema>[T];
 };
 
-type DetailInfoList = {
-  [Products.CPU]: CPU.Info;
-  [Products.GPU]: GPU.Info;
-  [Products.GRAPHIC_CARD]: GraphicCard.Info;
-  [Products.MAIN]: Mainboard.Info;
-  [Products.RAM]: RAM.Info;
-  [Products.SSD]: SSD.Info;
-  [Products.HDD]: HDD.Info;
-  [Products.PSU]: PSU.Info;
-  [Products.CASE]: Case.Info;
-  [Products.FAN]: Fan.Info;
-  [Products.COOLER]: Cooler.Info;
-  [Products.AIO]: AIO.Info;
-};
+export const FilterOptionSchema = z
+  .object({
+    part: Part.FilterOptionSchema,
+    [Products.CPU]: CPU.FilterOptionSchema,
+    [Products.GPU]: GPU.FilterOptionSchema,
+    [Products.GRAPHIC_CARD]: GraphicCard.FilterOptionSchema,
+    [Products.MAIN]: Mainboard.FilterOptionSchema,
+    [Products.RAM]: RAM.FilterOptionSchema,
+    [Products.SSD]: SSD.FilterOptionSchema,
+    [Products.HDD]: HDD.FilterOptionSchema,
+    [Products.PSU]: PSU.FilterOptionSchema,
+    [Products.CASE]: Case.FilterOptionSchema,
+    [Products.FAN]: Fan.FilterOptionSchema,
+    [Products.COOLER]: Cooler.FilterOptionSchema,
+    [Products.AIO]: AIO.FilterOptionSchema,
+  })
+  .partial();
 
-export type FilterOptions = {
-  part?: Part.FilterOptions;
-  [Products.CPU]?: CPU.FilterOptions;
-  [Products.GPU]?: GPU.FilterOptions;
-  [Products.GRAPHIC_CARD]?: GraphicCard.FilterOptions;
-  [Products.MAIN]?: Mainboard.FilterOptions;
-  [Products.RAM]?: RAM.FilterOptions;
-  [Products.SSD]?: SSD.FilterOptions;
-  [Products.HDD]?: HDD.FilterOptions;
-  [Products.PSU]?: PSU.FilterOptions;
-  [Products.CASE]?: Case.FilterOptions;
-  [Products.FAN]?: Fan.FilterOptions;
-  [Products.COOLER]?: Cooler.FilterOptions;
-  [Products.AIO]?: AIO.FilterOptions;
-};
+export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 
 export const FilterAttributes = {
   part: Part.FilterAttributes,

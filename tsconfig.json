@@ -9,6 +9,7 @@
     "target": "ES2021",
     "allowJs": true,
     "skipLibCheck": true,
+    "experimentalDecorators": true,
     "strict": true,
     "incremental": true,
     "module": "CommonJS",
@@ -16,7 +17,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true
   },

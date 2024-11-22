@@ -1,62 +1,72 @@
-import { FilterOptionsType } from "../utils";
+import { FilterOptions, NumberFilterOptions } from "../utils";
+import { z } from "zod";
 
 export namespace CPU {
-  export type Core = {
-    [key in string]: {
-      count?: number;
+  const CoreSchema = z.record(
+    z.string(),
+    z.object({
+      count: z.number().optional(),
 
-      base_frequency: number;
-      turbo_frequency?: number;
-    };
-  };
+      base_frequency: z.number(),
+      turbo_frequency: z.number().optional(),
+    })
+  );
 
-  export type Info = {
-    family: string;
+  export const Schema = z.object({
+    family: z.string(),
 
-    socket: string;
-    total_cores: number;
-    total_threads: number;
-    base_frequency: number;
-    turbo_frequency: number;
-    cores: Core;
+    socket: z.string(),
+    total_cores: z.number(),
+    total_threads: z.number(),
+    base_frequency: z.number(),
+    turbo_frequency: z.number(),
+    cores: CoreSchema,
 
-    L2_cache: number;
-    L3_cache: number;
-    max_memory: number;
-    max_memory_channel: number;
-    max_memory_bandwidth: number;
+    L2_cache: z.number(),
+    L3_cache: z.number(),
+    max_memory: z.number(),
+    max_memory_channel: z.number(),
+    max_memory_bandwidth: z.number(),
 
-    tdp: number;
-    lithography: string;
-  };
+    tdp: z.number(),
+    lithography: z.string(),
+  });
 
-  export const SummaryAttributes = [
-    "socket",
-    "total_cores",
-    "total_threads",
-    "base_frequency",
-    "turbo_frequency",
-  ] as const;
+  export type Core = z.infer<typeof CoreSchema>;
 
-  export const FilterAttributes = [
-    "socket",
-    "total_cores",
-    "total_threads",
-    "base_frequency",
-    "turbo_frequency",
-    "L3_cache",
-    "tdp",
-  ] as const;
+  export type Info = z.infer<typeof Schema>;
+
+  export const SummarySchema = Schema.pick({
+    socket: true,
+    total_cores: true,
+    total_threads: true,
+    base_frequency: true,
+    turbo_frequency: true,
+  });
+
+  export const SummaryAttributes = SummarySchema.keyof().options;
 
   export type Summarizable = (typeof SummaryAttributes)[number];
 
+  export type Summary = z.infer<typeof SummarySchema>;
+
+  export const FilterOptionSchema = z
+    .object({
+      socket: FilterOptions(z.string()),
+      total_cores: NumberFilterOptions,
+      total_threads: NumberFilterOptions,
+      base_frequency: NumberFilterOptions,
+      turbo_frequency: NumberFilterOptions,
+      L3_cache: NumberFilterOptions,
+      tdp: NumberFilterOptions,
+    })
+    .partial();
+
+  export const FilterAttributes = FilterOptionSchema.keyof().options;
+
   export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Summary = {
-    [key in Summarizable]: Info[key];
-  };
-
-  export type FilterOptions = FilterOptionsType<Info, Filterables>;
+  export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
 export default CPU;

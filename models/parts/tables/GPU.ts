@@ -1,12 +1,4 @@
 import {
-  CreationOptional,
-  DataTypes,
-  ForeignKey,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from "sequelize";
-import {
   BaseModelOptions,
   PartDetailTable,
   PartDefaultScope,
@@ -14,122 +6,99 @@ import {
 } from "../../interface";
 import { PartInformation } from "./Part";
 import GPU from "@/utils/interface/part/GPU";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Scopes,
+  Table,
+} from "sequelize-typescript";
 
-class GPUModel
-  extends Model<InferAttributes<GPUModel>, InferCreationAttributes<GPUModel>>
-  implements PartDetailTable<GPU.Info>
-{
-  declare id: ForeignKey<PartInformation["id"]>;
+@DefaultScope(() => PartDefaultScope)
+@Scopes(() => ({
+  summary: { attributes: [...GPU.SummaryAttributes] },
+  filter: (options: GPU.FilterOptions) => ({ where: options }),
+  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+}))
+@Table({
+  ...BaseModelOptions,
+  modelName: Tables.GPU,
+  validate: {
+    coreValidate() {
+      if (!this.core_count && !this.execution_unit) {
+        throw new Error("Not enough core information provided");
+      }
+      if (!this.base_frequency && !this.boost_frequency) {
+        throw new Error("Not enough frequency information provided");
+      }
+    },
+  },
+})
+class GPUModel extends Model implements PartDetailTable<GPU.Info> {
+  @PrimaryKey
+  @ForeignKey(() => PartInformation)
+  @Column(DataType.UUID)
+  declare id: string;
+
+  @BelongsTo(() => PartInformation)
+  declare part: PartInformation;
+
+  @Column(DataType.STRING)
   declare family: string | null;
 
+  @Column(DataType.INTEGER)
   declare core_count: number | null;
-  declare execution_unit: number | null;
-  declare base_frequency: number | null;
-  declare boost_frequency: number | null;
-  declare extra_cores: GPU.Core | null;
 
+  @Column(DataType.INTEGER)
+  declare execution_unit: number | null;
+
+  @Column(DataType.FLOAT)
+  declare base_frequency: number | null;
+
+  @Column(DataType.FLOAT)
+  declare boost_frequency: number | null;
+
+  @Column(DataType.STRING)
+  get extra_cores(): GPU.Core | null {
+    const data = this.getDataValue("extra_cores");
+    if (data) {
+      return JSON.parse(data) as GPU.Core;
+    }
+    return null;
+  }
+
+  set extra_cores(value: GPU.Core | null) {
+    this.setDataValue("extra_cores", value ? JSON.stringify(value) : null);
+  }
+
+  @Column(DataType.FLOAT)
   declare memory_size: number | null;
+
+  @Column(DataType.STRING)
   declare memory_type: string | null;
+
+  @Column(DataType.INTEGER)
   declare memory_bus: number | null;
 
+  @Column(DataType.INTEGER)
   declare tdp: number | null;
 
-  declare features: GPU.Features | null;
-
-  declare extra_cores_json: CreationOptional<string | null>;
-  declare features_json: CreationOptional<string | null>;
-}
-
-GPUModel.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      primaryKey: true,
-    },
-    family: { type: DataTypes.STRING },
-
-    core_count: { type: DataTypes.INTEGER },
-    execution_unit: { type: DataTypes.INTEGER },
-    extra_cores: {
-      type: DataTypes.VIRTUAL,
-      get(): GPU.Core | null {
-        const data = this.getDataValue("extra_cores_json");
-        if (data) {
-          return JSON.parse(data) as GPU.Core;
-        }
-        return null;
-      },
-      set(value?: GPU.Core | null) {
-        if (value) {
-          this.setDataValue("extra_cores_json", JSON.stringify(value));
-        }
-        this.setDataValue("extra_cores_json", null);
-      },
-    },
-    base_frequency: { type: DataTypes.FLOAT },
-    boost_frequency: { type: DataTypes.FLOAT },
-
-    memory_size: { type: DataTypes.FLOAT },
-    memory_type: { type: DataTypes.STRING },
-    memory_bus: { type: DataTypes.INTEGER },
-
-    tdp: { type: DataTypes.INTEGER },
-
-    features: {
-      type: DataTypes.VIRTUAL,
-      get(): GPU.Features | null {
-        const json = this.getDataValue("features_json");
-        if (json) {
-          return JSON.parse(json) as GPU.Features;
-        }
-        return null;
-      },
-      set(value: GPU.Features | null) {
-        if (value) {
-          this.setDataValue("features_json", JSON.stringify(value));
-        }
-        this.setDataValue("features_json", null);
-      },
-    },
-
-    extra_cores_json: { type: DataTypes.STRING, get: () => undefined },
-    features_json: { type: DataTypes.TEXT, get: () => undefined },
-  },
-  {
-    ...BaseModelOptions,
-    defaultScope: PartDefaultScope,
-    modelName: Tables.GPU,
-    validate: {
-      coreValidate() {
-        if (!this.core_count && !this.execution_unit) {
-          throw new Error("Not enough core information provided");
-        }
-        if (!this.base_frequency && !this.boost_frequency) {
-          throw new Error("Not enough frequency information provided");
-        }
-      },
-    },
-    scopes: {
-      summary: { attributes: [...GPU.SummaryAttributes] },
-      filter: (options: GPU.FilterOptions) => ({ where: options }),
-      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
-    },
+  @Column(DataType.TEXT)
+  get features(): GPU.Features | null {
+    const json = this.getDataValue("features");
+    if (json) {
+      return JSON.parse(json) as GPU.Features;
+    }
+    return null;
   }
-);
 
-PartInformation.hasOne(GPUModel, {
-  foreignKey: "id",
-});
-GPUModel.belongsTo(PartInformation, {
-  foreignKey: "id",
-});
-
-PartInformation.hasOne(GPUModel, {
-  foreignKey: "id",
-});
-GPUModel.belongsTo(PartInformation, {
-  foreignKey: "id",
-});
+  set features(value: GPU.Features | null) {
+    this.setDataValue("features", value ? JSON.stringify(value) : null);
+  }
+}
 
 export { GPUModel };

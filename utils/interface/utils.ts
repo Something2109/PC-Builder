@@ -1,19 +1,21 @@
-const MainboardFormFactors = [
+import { z } from "zod";
+
+const MainboardFormFactors = z.enum([
   "Pico-ITX",
   "Mini-ITX",
   "Mini-ATX",
   "microATX",
   "ATX",
   "EATX",
-];
+]);
 
-type MainboardFormFactorType = (typeof MainboardFormFactors)[number];
+type MainboardFormFactorType = z.infer<typeof MainboardFormFactors>;
 
-const RAMFormFactors = ["DIMM", "SO-DIMM", "CAMM2"];
+const RAMFormFactors = z.enum(["DIMM", "SO-DIMM", "CAMM2"]);
 
-type RAMFormFactorType = (typeof RAMFormFactors)[number];
+type RAMFormFactorType = z.infer<typeof RAMFormFactors>;
 
-const RAMProtocols = [
+const RAMProtocols = z.enum([
   "DDR1",
   "DDR2",
   "DDR3",
@@ -21,15 +23,15 @@ const RAMProtocols = [
   "DDR4",
   "LPDDR4",
   "DDR5",
-];
+]);
 
-type RAMProtocolType = (typeof RAMProtocols)[number];
+type RAMProtocolType = z.infer<typeof RAMProtocols>;
 
-const SSDMemoryCells = ["SLC", "MLC", "TLC", "QLC", "3D"];
+const SSDMemoryCells = z.enum(["SLC", "MLC", "TLC", "QLC", "3D"]);
 
-type SSDMemoryCellType = (typeof SSDMemoryCells)[number];
+type SSDMemoryCellType = z.infer<typeof SSDMemoryCells>;
 
-const SSDFormFactors = [
+const SSDFormFactors = z.enum([
   "2.5",
   "U.2",
   "mSATA",
@@ -37,42 +39,42 @@ const SSDFormFactors = [
   "M.2 2242",
   "M.2 2280",
   "M.2 22110",
-];
+]);
 
-type SSDFormFactorType = (typeof SSDFormFactors)[number];
+type SSDFormFactorType = z.infer<typeof SSDFormFactors>;
 
-const SSDProtocols = ["AHCI", "NVMe"];
+const SSDProtocols = z.enum(["AHCI", "NVMe"]);
 
-type SSDProtocolType = (typeof SSDProtocols)[number];
+type SSDProtocolType = z.infer<typeof SSDProtocols>;
 
-const SSDInterfaces = ["SATA", "PCIe"];
+const SSDInterfaces = z.enum(["SATA", "PCIe"]);
 
-type SSDInterfaceType = (typeof SSDInterfaces)[number];
+type SSDInterfaceType = z.infer<typeof SSDInterfaces>;
 
-const HDDFormFactors = ["2.5", "3.5"];
+const HDDFormFactors = z.enum(["2.5", "3.5"]);
 
-type HDDFormFactorType = (typeof HDDFormFactors)[number];
+type HDDFormFactorType = z.infer<typeof HDDFormFactors>;
 
-const HDDProtocols = ["SATA", "SAS", "PATA"];
+const HDDProtocols = z.enum(["SATA", "SAS", "PATA"]);
 
-type HDDProtocolType = (typeof HDDProtocols)[number];
+type HDDProtocolType = z.infer<typeof HDDProtocols>;
 
-const PSUFormFactors = [
+const PSUFormFactors = z.enum([
   "ATX PS/2",
   "ATX PS/3",
   "SFX",
   "SFX-L",
   "TFX",
   "Flex ATX",
-];
+]);
 
-type PSUFormFactorType = (typeof PSUFormFactors)[number];
+type PSUFormFactorType = z.infer<typeof PSUFormFactors>;
 
-const PSUModulars = ["Non-Modular", "Semi-Modular", "Full-Modular"];
+const PSUModulars = z.enum(["Non-Modular", "Semi-Modular", "Full-Modular"]);
 
-type PSUModularType = (typeof PSUModulars)[number];
+type PSUModularType = z.infer<typeof PSUModulars>;
 
-const PSUEfficiencies = [
+const PSUEfficiencies = z.enum([
   "None",
   "80 Plus",
   "80 PLUS Bronze",
@@ -80,42 +82,46 @@ const PSUEfficiencies = [
   "80 PLUS Gold",
   "80 PLUS Platinum",
   "80 PLUS Titanium",
-];
+]);
 
-type PSUEfficiencyType = (typeof PSUModulars)[number];
+type PSUEfficiencyType = z.infer<typeof PSUEfficiencies>;
 
-const CaseFormFactors = [
+const CaseFormFactors = z.enum([
   "Mini-Tower",
   "Micro-Tower",
   "Mid-Tower",
   "Full-Tower",
-];
+]);
 
-type CaseFormFactorType = (typeof CaseFormFactors)[number];
+type CaseFormFactorType = z.infer<typeof CaseFormFactors>;
 
-const CaseSide = ["top", "bottom", "front", "rear", "side"];
+const CaseSide = z.enum(["top", "bottom", "front", "rear", "side"]);
 
-type CaseSideType = (typeof CaseSide)[number];
+type CaseSideType = z.infer<typeof CaseSide>;
 
-const FanFormFactors = ["40", "80", "92", "120", "140", "180", "200"];
+const FanFormFactors = z.enum(["40", "80", "92", "120", "140", "180", "200"]);
 
-type FanFormFactorType = (typeof FanFormFactors)[number];
+type FanFormFactorType = z.infer<typeof FanFormFactors>;
 
-const FanBearings = ["Fluid dynamic", "Ball", "Sleeve", "Rifle"];
+const FanBearings = z.enum(["Fluid dynamic", "Ball", "Sleeve", "Rifle"]);
 
-type FanBearingType = (typeof FanBearings)[number];
+type FanBearingType = z.infer<typeof FanBearings>;
 
-const CoolerCPUPlates = ["copper", "alluminium"];
+const CoolerCPUPlates = z.enum(["copper", "alluminium"]);
 
-type CoolerCPUPlateType = (typeof CoolerCPUPlates)[number];
+type CoolerCPUPlateType = z.infer<typeof CoolerCPUPlates>;
 
-const AIOFormFactors = ["120", "140", "240", "280", "360", "420"];
+const AIOFormFactors = z.enum(["120", "140", "240", "280", "360", "420"]);
 
-type AIOFormFactorType = (typeof AIOFormFactors)[number];
+type AIOFormFactorType = z.infer<typeof AIOFormFactors>;
 
 type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
   [key in Attributes]?: Required<Info>[key][];
 };
+
+const NumberFilterOptions = z.array(z.number());
+
+const FilterOptions = <T extends z.ZodTypeAny>(zodType: T) => z.array(zodType);
 
 export {
   MainboardFormFactors,
@@ -136,6 +142,8 @@ export {
   FanBearings,
   CoolerCPUPlates,
   AIOFormFactors,
+  NumberFilterOptions,
+  FilterOptions,
 };
 
 export type {

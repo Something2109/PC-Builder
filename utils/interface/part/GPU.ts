@@ -1,64 +1,80 @@
-import { FilterOptionsType } from "../utils";
+import { FilterOptions, NumberFilterOptions } from "../utils";
+import { z } from "zod";
 
 namespace GPU {
-  export type Core = {
-    [key in string]: {
-      generation?: number;
-      count?: number;
-    };
-  };
+  const CoreSchema = z.record(
+    z.string(),
+    z
+      .object({
+        generation: z.number(),
+        count: z.number(),
+      })
+      .partial()
+  );
 
-  export type Features = {
-    DirectX?: string;
-    OpenGL?: string;
-    OpenCL?: string;
-    Vulkan?: string;
-    CUDA?: string;
-  };
+  const FeatureSchema = z
+    .object({
+      DirectX: z.string(),
+      OpenGL: z.string(),
+      OpenCL: z.string(),
+      Vulkan: z.string(),
+      CUDA: z.string(),
+    })
+    .partial();
 
-  export type Info = {
-    family: string;
+  export const Schema = z.object({
+    family: z.string(),
 
-    core_count: number;
-    execution_unit: number;
-    base_frequency: number;
-    boost_frequency: number;
-    extra_cores: Core;
+    core_count: z.number(),
+    execution_unit: z.number(),
+    base_frequency: z.number(),
+    boost_frequency: z.number(),
+    extra_cores: CoreSchema,
 
-    memory_size: number;
-    memory_type: string;
-    memory_bus: number;
+    memory_size: z.number(),
+    memory_type: z.string(),
+    memory_bus: z.number(),
 
-    tdp: number;
+    tdp: z.number(),
 
-    features: Features;
-  };
+    features: FeatureSchema,
+  });
 
-  export const SummaryAttributes = [
-    "core_count",
-    "memory_size",
-    "base_frequency",
-    "boost_frequency",
-    "tdp",
-  ] as const;
+  export type Core = z.infer<typeof CoreSchema>;
 
-  export const FilterAttributes = [
-    "base_frequency",
-    "boost_frequency",
-    "memory_size",
-    "memory_type",
-    "tdp",
-  ] as const;
+  export type Features = z.infer<typeof FeatureSchema>;
+
+  export type Info = z.infer<typeof Schema>;
+
+  export const SummarySchema = Schema.pick({
+    core_count: true,
+    memory_size: true,
+    base_frequency: true,
+    boost_frequency: true,
+    tdp: true,
+  });
+
+  export const SummaryAttributes = SummarySchema.keyof().options;
 
   export type Summarizable = (typeof SummaryAttributes)[number];
 
+  export type Summary = z.infer<typeof SummarySchema>;
+
+  export const FilterOptionSchema = z
+    .object({
+      base_frequency: NumberFilterOptions,
+      boost_frequency: NumberFilterOptions,
+      memory_size: NumberFilterOptions,
+      memory_type: FilterOptions(z.string()),
+      tdp: NumberFilterOptions,
+    })
+    .partial();
+
+  export const FilterAttributes = FilterOptionSchema.keyof().options;
+
   export type Filterables = (typeof FilterAttributes)[number];
 
-  export type Summary = {
-    [key in Summarizable]: Info[key];
-  };
-
-  export type FilterOptions = FilterOptionsType<Info, Filterables>;
+  export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
 export default GPU;

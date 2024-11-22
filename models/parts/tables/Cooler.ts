@@ -1,11 +1,4 @@
 import {
-  DataTypes,
-  ForeignKey,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-} from "sequelize";
-import {
   BaseModelOptions,
   PartDetailTable,
   PartDefaultScope,
@@ -14,59 +7,51 @@ import {
 import { PartInformation } from "./Part";
 import Cooler from "@/utils/interface/part/Cooler";
 import { CoolerCPUPlates, CoolerCPUPlateType } from "@/utils/interface/utils";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Scopes,
+  Table,
+} from "sequelize-typescript";
 
-class CoolerModel
-  extends Model<
-    InferAttributes<CoolerModel>,
-    InferCreationAttributes<CoolerModel>
-  >
-  implements PartDetailTable<Cooler.Info>
-{
-  declare id: ForeignKey<PartInformation["id"]>;
+@DefaultScope(() => PartDefaultScope)
+@Scopes(() => ({
+  summary: { attributes: [...Cooler.SummaryAttributes] },
+  filter: (options: Cooler.FilterOptions) => ({ where: options }),
+  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+}))
+@Table({ ...BaseModelOptions, modelName: Tables.COOLER })
+class CoolerModel extends Model implements PartDetailTable<Cooler.Info> {
+  @PrimaryKey
+  @ForeignKey(() => PartInformation)
+  @Column(DataType.UUID)
+  declare id: string;
 
+  @BelongsTo(() => PartInformation)
+  declare part: PartInformation;
+
+  @Column(DataType.FLOAT)
   declare width: number | null;
+
+  @Column(DataType.FLOAT)
   declare length: number | null;
+
+  @Column(DataType.FLOAT)
   declare height: number | null;
 
+  @Column(DataType.STRING)
   declare socket: string | null;
+
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [CoolerCPUPlates.options] },
+  })
   declare cpu_plate: CoolerCPUPlateType | null;
 }
-
-CoolerModel.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      primaryKey: true,
-    },
-
-    width: { type: DataTypes.FLOAT },
-    length: { type: DataTypes.FLOAT },
-    height: { type: DataTypes.FLOAT },
-
-    socket: { type: DataTypes.STRING },
-    cpu_plate: {
-      type: DataTypes.STRING,
-      validate: { isIn: [CoolerCPUPlates] },
-    },
-  },
-  {
-    ...BaseModelOptions,
-    defaultScope: PartDefaultScope,
-    modelName: Tables.COOLER,
-    scopes: {
-      summary: { attributes: [...Cooler.SummaryAttributes] },
-      filter: (options: Cooler.FilterOptions) => ({ where: options }),
-      detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
-    },
-  }
-);
-
-PartInformation.hasOne(CoolerModel, {
-  foreignKey: "id",
-});
-CoolerModel.belongsTo(PartInformation, {
-  foreignKey: "id",
-});
 
 export { CoolerModel };

@@ -1,53 +1,59 @@
 import {
-  FilterOptionsType,
   HDDFormFactors,
-  HDDFormFactorType,
   HDDProtocols,
-  HDDProtocolType,
+  FilterOptions,
+  NumberFilterOptions,
 } from "../utils";
+import { z } from "zod";
 
 export namespace HDD {
-  export type Info = {
-    rotational_speed: number;
-    read_speed: number;
-    write_speed: number;
-    capacity: number;
-    cache: number;
+  export const Schema = z.object({
+    rotational_speed: z.number(),
+    read_speed: z.number(),
+    write_speed: z.number(),
+    capacity: z.number(),
+    cache: z.number(),
 
-    form_factor: HDDFormFactorType;
-    protocol: HDDProtocolType;
-    protocol_version: number;
-  };
-
-  export const SummaryAttributes = [
-    "form_factor",
-    "protocol",
-    "capacity",
-  ] as const;
-
-  export const FilterAttributes = [
-    "form_factor",
-    "protocol",
-    "read_speed",
-    "write_speed",
-    "capacity",
-    "rotational_speed",
-  ] as const;
-
-  export const DefaultFilterOptions: FilterOptions = {
     form_factor: HDDFormFactors,
     protocol: HDDProtocols,
-  };
+    protocol_version: z.number(),
+  });
+
+  export type Info = z.infer<typeof Schema>;
+
+  export const SummarySchema = Schema.pick({
+    form_factor: true,
+    protocol: true,
+    capacity: true,
+  });
+
+  export const SummaryAttributes = SummarySchema.keyof().options;
 
   export type Summarizable = (typeof SummaryAttributes)[number];
 
-  export type Filterables = (typeof FilterAttributes)[number];
+  export type Summary = z.infer<typeof SummarySchema>;
 
-  export type Summary = {
-    [key in Summarizable]: Info[key];
+  export const FilterOptionSchema = z
+    .object({
+      form_factor: FilterOptions(HDDFormFactors),
+      protocol: FilterOptions(HDDProtocols),
+      read_speed: NumberFilterOptions,
+      write_speed: NumberFilterOptions,
+      capacity: NumberFilterOptions,
+      rotational_speed: NumberFilterOptions,
+    })
+    .partial();
+
+  export const DefaultFilterOptions: FilterOptions = {
+    form_factor: HDDFormFactors.options,
+    protocol: HDDProtocols.options,
   };
 
-  export type FilterOptions = FilterOptionsType<Info, Filterables>;
+  export const FilterAttributes = FilterOptionSchema.keyof().options;
+
+  export type Filterables = (typeof FilterAttributes)[number];
+
+  export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
 export default HDD;

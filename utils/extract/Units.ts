@@ -14,13 +14,26 @@ class UnitExtract<Units extends string> {
     );
   }
 
-  unit(str: string): Units | null {
+  list(): Units[] {
+    return Object.keys(this.ratio) as Units[];
+  }
+
+  unit(str?: string | null): Units | null {
+    if (!str) {
+      return null;
+    }
+
     const result = str.match(this.UnitRegexp);
     if (result) return result[0] as Units;
+
     return null;
   }
 
-  find(str: string): [number, Units] | null {
+  find(str?: string | null): [number, Units] | null {
+    if (!str) {
+      return null;
+    }
+
     const unitStr = str.match(this.NumberRegexp);
     if (!unitStr) {
       return null;
@@ -28,9 +41,7 @@ class UnitExtract<Units extends string> {
 
     let number = Extract.number(str);
     let src = this.unit(unitStr[0]);
-    if (number && src) {
-      return [number, src];
-    }
+    if (number && src) return [number, src];
 
     return null;
   }
@@ -44,9 +55,7 @@ class UnitExtract<Units extends string> {
 
     if (!src) {
       const extract = this.find(str);
-      if (!extract) {
-        return null;
-      }
+      if (!extract) return null;
 
       number = extract[0];
       src = extract[1];
@@ -88,4 +97,4 @@ const LengthUnits = new UnitExtract({
   km: 1000,
 });
 
-export { MemoryUnits, FrequencyUnits, LengthUnits };
+export { UnitExtract, MemoryUnits, FrequencyUnits, LengthUnits };

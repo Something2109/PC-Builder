@@ -1,5 +1,4 @@
-import { Options, Sequelize } from "sequelize";
-import mysql2 from "mysql2";
+import { Sequelize } from "sequelize-typescript";
 
 enum Tables {
   ARTICLE = "article",
@@ -35,22 +34,15 @@ if (
   throw new Error("Not enough env variables specified");
 }
 
-const options: Options = {
+const Connection = new Sequelize({
+  database: process.env.DATABASE_NAME,
+  dialect: "mysql",
   host: process.env.DATABASE_HOST,
   port: Number(process.env.DATABASE_PORT),
-  dialect: "mysql",
-};
-
-if (options.dialect === "mysql") {
-  options.dialectModule = mysql2;
-}
-
-const Connection = new Sequelize(
-  process.env.DATABASE_NAME,
-  process.env.DATABASE_USERNAME,
-  process.env.DATABASE_PASSWORD,
-  options
-);
+  username: process.env.DATABASE_USERNAME,
+  password: process.env.DATABASE_PASSWORD,
+  models: [__dirname + "/**/*.ts"],
+});
 
 const BaseModelOptions = {
   sequelize: Connection,

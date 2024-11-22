@@ -1,11 +1,13 @@
 import {
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
+  Column,
+  DataType,
+  Default,
   Model,
-} from "sequelize";
+  NotNull,
+  Table,
+} from "sequelize-typescript";
 import Validate from "../validate";
-import { BaseModelOptions, Tables } from "../interface";
+import { BaseModelOptions, Connection, Tables } from "../interface";
 
 type APISellerProduct = {
   name?: string | null;
@@ -31,47 +33,31 @@ class SellerProduct {
   }
 }
 
-class RetailProduct extends Model<
-  InferAttributes<RetailProduct>,
-  InferCreationAttributes<RetailProduct>
-> {
+@Table({ ...BaseModelOptions, modelName: Tables.RETAIL_PRODUCT })
+class RetailProduct extends Model {
+  @Column(DataType.STRING)
   declare link: string;
+
+  @Column(DataType.STRING)
   declare retailer: string;
+
+  @Column(DataType.STRING)
+  @NotNull
   declare name: string;
+
+  @Column(DataType.INTEGER)
+  @NotNull
+  @Default(0)
   declare price: number;
+
+  @Column({ type: DataType.STRING, validate: { isUrl: true } })
   declare img?: string;
+
+  @Column(DataType.BOOLEAN)
+  @Default(false)
   declare availability: boolean;
 }
 
-RetailProduct.init(
-  {
-    link: {
-      type: DataTypes.STRING,
-      primaryKey: true,
-    },
-    retailer: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    img: {
-      type: DataTypes.STRING,
-    },
-    price: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-    },
-    availability: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
-    },
-  },
-  { ...BaseModelOptions, modelName: Tables.RETAIL_PRODUCT }
-);
+Connection.addModels([RetailProduct]);
 
 export { SellerProduct, RetailProduct, type APISellerProduct };

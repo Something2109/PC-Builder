@@ -1,58 +1,67 @@
 import {
-  FilterOptionsType,
-  SSDMemoryCellType,
-  SSDFormFactorType,
-  SSDProtocolType,
-  SSDInterfaceType,
   SSDFormFactors,
   SSDProtocols,
+  SSDInterfaces,
+  SSDMemoryCells,
+  FilterOptions,
+  NumberFilterOptions,
 } from "../utils";
+import { z } from "zod";
 
 namespace SSD {
-  export type Info = {
-    memory_type: SSDMemoryCellType;
-    read_speed: number;
-    write_speed: number;
-    capacity: number;
-    cache: number;
-    tbw: number;
+  export const Schema = z.object({
+    memory_type: SSDMemoryCells,
+    read_speed: z.number(),
+    write_speed: z.number(),
+    capacity: z.number(),
+    cache: z.number(),
+    tbw: z.number(),
 
-    form_factor: SSDFormFactorType;
-    protocol: SSDProtocolType;
-    interface: SSDInterfaceType;
-  };
-
-  export const SummaryAttributes = [
-    "form_factor",
-    "protocol",
-    "interface",
-    "read_speed",
-    "write_speed",
-  ] as const;
-
-  export const FilterAttributes = [
-    "form_factor",
-    "protocol",
-    "interface",
-    "read_speed",
-    "write_speed",
-    "capacity",
-  ] as const;
-
-  export const DefaultFilterOptions: FilterOptions = {
     form_factor: SSDFormFactors,
     protocol: SSDProtocols,
-  };
+    interface: SSDInterfaces,
+  });
+
+  export type Info = z.infer<typeof Schema>;
+
+  export const SummarySchema = Schema.pick({
+    form_factor: true,
+    protocol: true,
+    interface: true,
+    read_speed: true,
+    write_speed: true,
+  });
+
+  export const SummaryAttributes = SummarySchema.keyof().options;
 
   export type Summarizable = (typeof SummaryAttributes)[number];
 
-  export type Filterables = (typeof FilterAttributes)[number];
+  export type Summary = z.infer<typeof SummarySchema>;
 
-  export type Summary = {
-    [key in Summarizable]: Info[key];
+  export const FilterOptionSchema = z
+    .object({
+      memory_type: FilterOptions(SSDMemoryCells),
+      form_factor: FilterOptions(SSDFormFactors),
+      protocol: FilterOptions(SSDProtocols),
+      interface: FilterOptions(SSDInterfaces),
+      read_speed: NumberFilterOptions,
+      write_speed: NumberFilterOptions,
+      capacity: NumberFilterOptions,
+    })
+    .partial();
+
+  export const DefaultFilterOptions: FilterOptions = {
+    memory_type: SSDMemoryCells.options,
+    form_factor: SSDFormFactors.options,
+    protocol: SSDProtocols.options,
+    interface: SSDInterfaces.options,
   };
 
-  export type FilterOptions = FilterOptionsType<Info, Filterables>;
+  export const FilterAttributes = FilterOptionSchema.keyof().options;
+
+  export type Filterables = (typeof FilterAttributes)[number];
+
+  export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
 export default SSD;

@@ -86,20 +86,20 @@ class PartAccess {
         ...part,
       };
 
-      if (part && part.part && part.part[0]) {
+      const ProductName =
+        part && part.part ? (part.part[0] as Products) : undefined;
+      if (ProductName) {
         const subquery = IdSubQuery(
-          Models[part.part[0] as Products].name,
-          detail[part.part[0] as Products] ?? {}
+          Models[ProductName].name,
+          detail[ProductName] ?? {}
         );
         where.id = [Sequelize.literal(subquery)];
 
         const partSubquery = IdSubQuery(Tables.PART, where);
 
-        result[part.part[0] as Products] = (await ModelFilters[
-          part.part[0] as Products
-        ]({
-          id: [Sequelize.literal(`(${partSubquery})`) as unknown as string],
-          ...detail[part.part[0] as Products],
+        result[ProductName] = (await ModelFilters[ProductName]({
+          id: [Sequelize.literal(`(${partSubquery})`)],
+          ...(detail[ProductName] as any),
         })) as any;
       }
 
