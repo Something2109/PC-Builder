@@ -1,4 +1,4 @@
-import { BaseModelOptions, Connection, Tables } from "../interface";
+import { BaseModelOptions, Tables } from "../interface";
 import {
   Column,
   DataType,
@@ -87,8 +87,6 @@ export class Article extends Model implements Omit<ArticleType, "type"> {
     return JSON.parse(data);
   }
 }
-
-Connection.addModels([Article]);
 
 export class ValidateArticle {
   private static isContentContainer(content: any): content is ContentContainer {
