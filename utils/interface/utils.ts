@@ -43,11 +43,7 @@ const SSDFormFactors = z.enum([
 
 type SSDFormFactorType = z.infer<typeof SSDFormFactors>;
 
-const SSDProtocols = z.enum(["AHCI", "NVMe"]);
-
-type SSDProtocolType = z.infer<typeof SSDProtocols>;
-
-const SSDInterfaces = z.enum(["SATA", "PCIe"]);
+const SSDInterfaces = z.enum(["SATA", "U.2", "mSATA", "M.2 PCIe"]);
 
 type SSDInterfaceType = z.infer<typeof SSDInterfaces>;
 
@@ -129,7 +125,6 @@ export {
   RAMProtocols,
   SSDMemoryCells,
   SSDFormFactors,
-  SSDProtocols,
   SSDInterfaces,
   HDDFormFactors,
   HDDInterfaces,
@@ -152,7 +147,6 @@ export type {
   RAMProtocolType,
   SSDMemoryCellType,
   SSDFormFactorType,
-  SSDProtocolType,
   SSDInterfaceType,
   HDDFormFactorType,
   HDDInterfaceType,
