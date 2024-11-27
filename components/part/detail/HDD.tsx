@@ -18,10 +18,7 @@ export function HDDTable({
       <TableRowWrapper>Capacity {defaultValue?.capacity}</TableRowWrapper>
       <TableRowWrapper>Cache {defaultValue?.cache}</TableRowWrapper>
       <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
-      <TableRowWrapper>Protocol {defaultValue?.protocol}</TableRowWrapper>
-      <TableRowWrapper>
-        Protocol Version {defaultValue?.protocol_version}
-      </TableRowWrapper>
+      <TableRowWrapper>Interface {defaultValue?.interface}</TableRowWrapper>
     </TableWrapper>
   );
 }

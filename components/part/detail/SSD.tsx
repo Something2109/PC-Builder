@@ -17,7 +17,6 @@ export function SSDTable({
       <TableRowWrapper>Cache {defaultValue?.cache}</TableRowWrapper>
       <TableRowWrapper>TBW {defaultValue?.tbw}</TableRowWrapper>
       <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
-      <TableRowWrapper>Protocol {defaultValue?.protocol}</TableRowWrapper>
       <TableRowWrapper>Interface {defaultValue?.interface}</TableRowWrapper>
     </TableWrapper>
   );

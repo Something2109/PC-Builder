@@ -4,7 +4,6 @@ import {
   SSDFormFactors,
   SSDInterfaces,
   SSDMemoryCells,
-  SSDProtocols,
 } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
@@ -57,12 +56,6 @@ export default function SSDFieldset({
         label="Form Factor"
         options={SSDFormFactors.options}
         defaultValue={defaultValue?.form_factor}
-      />
-      <SelectInputRow
-        name="protocol"
-        label="Protocol"
-        options={SSDProtocols.options}
-        defaultValue={defaultValue?.protocol}
       />
       <SelectInputRow
         name="interface"
