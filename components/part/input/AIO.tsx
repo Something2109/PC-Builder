@@ -39,18 +39,21 @@ export default function AIOFieldset({
           <tbody>
             <InputRow
               type="number"
+              step="0.01"
               name="radiator_width"
               label="Width"
               defaultValue={defaultValue?.radiator_width}
             />
             <InputRow
               type="number"
+              step="0.01"
               name="radiator_length"
               label="Length"
               defaultValue={defaultValue?.radiator_length}
             />
             <InputRow
               type="number"
+              step="0.01"
               name="radiator_height"
               label="Height"
               defaultValue={defaultValue?.radiator_height}
@@ -64,18 +67,21 @@ export default function AIOFieldset({
           <tbody>
             <InputRow
               type="number"
+              step="0.01"
               name="pump_width"
               label="Width"
               defaultValue={defaultValue?.pump_width}
             />
             <InputRow
               type="number"
+              step="0.01"
               name="pump_length"
               label="Length"
               defaultValue={defaultValue?.pump_length}
             />
             <InputRow
               type="number"
+              step="0.01"
               name="pump_height"
               label="Height"
               defaultValue={defaultValue?.pump_height}

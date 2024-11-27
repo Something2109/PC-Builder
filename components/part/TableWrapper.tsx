@@ -134,6 +134,7 @@ export function DimensionInputRow({
         <td className={tableCell}>
           <Input
             type="number"
+            step="0.01"
             name="width"
             id="width"
             placeholder="Width"
@@ -148,6 +149,7 @@ export function DimensionInputRow({
         <td className={tableCell}>
           <Input
             type="number"
+            step="0.01"
             name="length"
             id="length"
             placeholder="Length"
@@ -162,6 +164,7 @@ export function DimensionInputRow({
         <td className={tableCell}>
           <Input
             type="number"
+            step="0.01"
             name="height"
             id="height"
             placeholder="Height"
