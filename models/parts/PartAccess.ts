@@ -2,7 +2,8 @@ import { InferAttributes, Op, Sequelize, WhereOptions } from "sequelize";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { Products } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
-import { Models, ModelFilters, IdSubQuery } from ".";
+import { Models, ModelFilters } from ".";
+import { IdSubQuery } from "../Connection";
 import { Tables } from "../interface";
 
 class PartAccess {

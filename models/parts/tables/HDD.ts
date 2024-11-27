@@ -9,8 +9,8 @@ import HDD from "@/utils/interface/part/HDD";
 import {
   HDDFormFactors,
   HDDFormFactorType,
-  HDDProtocols,
-  HDDProtocolType,
+  HDDInterfaces,
+  HDDInterfaceType,
 } from "@/utils/interface/utils";
 import {
   BelongsTo,
@@ -61,8 +61,11 @@ class HDDModel extends Model implements PartDetailTable<HDD.Info> {
   })
   declare form_factor: HDDFormFactorType | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [HDDProtocols.options] } })
-  declare protocol: HDDProtocolType | null;
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [HDDInterfaces.options] },
+  })
+  declare interface: HDDInterfaceType | null;
 
   @Column({ type: DataType.TINYINT })
   declare protocol_version: number | null;
