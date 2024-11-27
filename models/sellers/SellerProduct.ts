@@ -4,10 +4,11 @@ import {
   Default,
   Model,
   NotNull,
+  PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import Validate from "../validate";
-import { BaseModelOptions, Connection, Tables } from "../interface";
+import { BaseModelOptions, Tables } from "../interface";
+import { z } from "zod";
 
 type APISellerProduct = {
   name?: string | null;
@@ -25,39 +26,37 @@ class SellerProduct {
   availability: boolean;
 
   constructor({ name, price, link, img, availability }: APISellerProduct) {
-    this.name = Validate.string(name);
-    this.price = Validate.number(price);
-    this.link = Validate.string(link);
-    this.img = Validate.string(img);
-    this.availability = Validate.boolean(availability);
+    this.name = z.string().parse(name);
+    this.price = z.number().parse(price);
+    this.link = z.string().parse(link);
+    this.img = z.string().parse(img);
+    this.availability = z.boolean().parse(availability);
   }
 }
 
 @Table({ ...BaseModelOptions, modelName: Tables.RETAIL_PRODUCT })
 class RetailProduct extends Model {
+  @PrimaryKey
   @Column(DataType.STRING)
   declare link: string;
 
   @Column(DataType.STRING)
   declare retailer: string;
 
-  @Column(DataType.STRING)
   @NotNull
+  @Column({ type: DataType.STRING, allowNull: false })
   declare name: string;
 
-  @Column(DataType.INTEGER)
-  @NotNull
   @Default(0)
+  @Column(DataType.INTEGER)
   declare price: number;
 
   @Column({ type: DataType.STRING, validate: { isUrl: true } })
   declare img?: string;
 
-  @Column(DataType.BOOLEAN)
   @Default(false)
+  @Column(DataType.BOOLEAN)
   declare availability: boolean;
 }
-
-Connection.addModels([RetailProduct]);
 
 export { SellerProduct, RetailProduct, type APISellerProduct };

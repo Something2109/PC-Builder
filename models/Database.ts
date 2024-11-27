@@ -1,5 +1,5 @@
 import { Article, ArticleSummary, ArticleType } from "./articles/article";
-import { Connection } from "./interface";
+import { Connection } from "./Connection";
 import { SellerProduct } from "./sellers/SellerProduct";
 import { Products, Topics } from "@/utils/Enum";
 import { v4 as uuidv4 } from "uuid";
@@ -105,7 +105,7 @@ class Articles implements DatabaseObject {
       if (save) {
         return {
           type: "article",
-          ...save.toJSON(),
+          ...save.toJSON<Omit<ArticleType, "type">>(),
         };
       }
     } catch (error) {

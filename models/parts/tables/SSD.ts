@@ -13,8 +13,6 @@ import {
   SSDInterfaceType,
   SSDMemoryCells,
   SSDMemoryCellType,
-  SSDProtocols,
-  SSDProtocolType,
 } from "@/utils/interface/utils";
 import {
   BelongsTo,
@@ -70,9 +68,6 @@ class SSDModel extends Model implements PartDetailTable<SSD.Info> {
     validate: { isIn: [SSDFormFactors.options] },
   })
   declare form_factor: SSDFormFactorType | null;
-
-  @Column({ type: DataType.STRING, validate: { isIn: [SSDProtocols.options] } })
-  declare protocol: SSDProtocolType | null;
 
   @Column({
     type: DataType.STRING,

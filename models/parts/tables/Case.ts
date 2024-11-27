@@ -125,7 +125,10 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
     );
   }
 
-  @Column({ type: DataType.STRING, validate: { isIn: [PSUFormFactors] } })
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [PSUFormFactors.options] },
+  })
   declare psu_support: PSUFormFactorType | null;
 
   @Column(DataType.FLOAT)
