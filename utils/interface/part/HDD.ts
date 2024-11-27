@@ -1,6 +1,6 @@
 import {
   HDDFormFactors,
-  HDDProtocols,
+  HDDInterfaces,
   FilterOptions,
   NumberFilterOptions,
 } from "../utils";
@@ -15,7 +15,7 @@ export namespace HDD {
     cache: z.number(),
 
     form_factor: HDDFormFactors,
-    protocol: HDDProtocols,
+    interface: HDDInterfaces,
     protocol_version: z.number(),
   });
 
@@ -23,7 +23,7 @@ export namespace HDD {
 
   export const SummarySchema = Schema.pick({
     form_factor: true,
-    protocol: true,
+    interface: true,
     capacity: true,
   });
 
@@ -36,7 +36,7 @@ export namespace HDD {
   export const FilterOptionSchema = z
     .object({
       form_factor: FilterOptions(HDDFormFactors),
-      protocol: FilterOptions(HDDProtocols),
+      interface: FilterOptions(HDDInterfaces),
       read_speed: NumberFilterOptions,
       write_speed: NumberFilterOptions,
       capacity: NumberFilterOptions,
@@ -46,7 +46,7 @@ export namespace HDD {
 
   export const DefaultFilterOptions: FilterOptions = {
     form_factor: HDDFormFactors.options,
-    protocol: HDDProtocols.options,
+    interface: HDDInterfaces.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;
