@@ -3,11 +3,8 @@
     "baseUrl": ".",
     "outDir": "./dist",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/css/*": ["public/stylesheets/*"],
       "@/models/*": ["models/*"],
-      "@/utils/*": ["utils/*"],
-      "@/images/*": ["public/images/*"]
+      "@/utils/*": ["utils/*"]
     },
     "target": "ES2021",
     "allowJs": true,
