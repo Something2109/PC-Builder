@@ -1,9 +1,9 @@
-import { PartType } from "./interface/Parts";
+import Part from "./interface/part/Parts";
 
 const FilterOptions: {
-  [key in keyof PartType.FilterOptions]: (
+  [key in keyof Part.FilterOptions]: (
     param: string | null
-  ) => PartType.FilterOptions[key] | null;
+  ) => Part.FilterOptions[key] | null;
 } = {
   part: (param: string | null) => split(param),
   brand: (param: string | null) => split(param),
@@ -17,7 +17,7 @@ function split(param: string | null): string[] | null {
   return null;
 }
 
-function toSearchParams(options: PartType.FilterOptions): URLSearchParams {
+function toSearchParams(options: Part.FilterOptions): URLSearchParams {
   const searchParams = new URLSearchParams();
 
   Object.entries(options).forEach(([key, value]) => {
@@ -29,14 +29,14 @@ function toSearchParams(options: PartType.FilterOptions): URLSearchParams {
 
 const SearchParams = {
   toFilterOptions: (searchParams: URLSearchParams) => {
-    const options: PartType.FilterOptions = {};
+    const options: Part.FilterOptions = {};
 
     [...searchParams.entries()].forEach(([key, value]) => {
-      const toOption = FilterOptions[key as keyof PartType.FilterOptions];
+      const toOption = FilterOptions[key as keyof Part.FilterOptions];
       if (toOption) {
         const param = toOption(value);
         if (param) {
-          options[key as keyof PartType.FilterOptions] = param as any;
+          options[key as keyof Part.FilterOptions] = param as any;
         }
       }
     });
