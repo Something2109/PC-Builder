@@ -1,11 +1,12 @@
-import { Article, ArticleSummary, ArticleType } from "./articles/article";
+import { Article } from "./articles/article";
 import { Connection } from "./Connection";
-import { SellerProduct } from "./sellers/SellerProduct";
 import { Products, Topics } from "@/utils/Enum";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import path from "path";
 import { PartAccess } from "./parts/PartAccess";
+import { ArticleSummary, ArticleType } from "@/utils/interface/article/article";
+import { RetailProductType } from "@/utils/interface/retailer/Product";
 
 class MockDatabase {
   private static path = "./data";
@@ -91,7 +92,7 @@ class Articles implements DatabaseObject {
 
       const save = await Article.findAll({ where: criteria });
 
-      return save.map((article) => toType(article));
+      return save.map((article: Article) => toType(article));
     } catch (error) {
       console.error(error);
     }
@@ -187,7 +188,7 @@ class Seller implements DatabaseObject {
     page?: number,
     pageSize?: number
   ): {
-    list: SellerProduct[];
+    list: RetailProductType[];
     pages: number;
   } {
     page = page ?? 1;
