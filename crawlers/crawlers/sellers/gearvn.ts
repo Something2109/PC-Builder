@@ -1,5 +1,8 @@
 import { APIWebsiteInfo } from "../../crawler";
-import { RetailProduct, SellerProduct } from "@/models/sellers/SellerProduct";
+import {
+  RetailProductSchema,
+  RetailProductType,
+} from "@/utils/interface/retailer/Product";
 import { Products } from "@/utils/Enum";
 
 const domain = "https://gearvn.com";
@@ -35,7 +38,7 @@ type GearvnPartDataAPI = {
   ];
 };
 
-const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, SellerProduct> = {
+const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, RetailProductType> = {
   domain,
 
   save: "sellers",
@@ -80,11 +83,7 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, SellerProduct> = {
     const img = raw.image.src;
     const availability = raw.available;
 
-    const [save] = await RetailProduct.findOrBuild({ where: { link } });
-    save.set({ name, price, img, availability });
-    await save.save();
-
-    return new SellerProduct({ name, price, link, img, availability });
+    return RetailProductSchema.parse({ name, price, link, img, availability });
   },
 };
 

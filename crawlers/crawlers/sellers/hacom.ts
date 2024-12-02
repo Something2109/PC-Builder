@@ -1,5 +1,8 @@
 import { APIWebsiteInfo } from "../../crawler";
-import { RetailProduct, SellerProduct } from "@/models/sellers/SellerProduct";
+import {
+  RetailProductSchema,
+  RetailProductType,
+} from "@/utils/interface/retailer/Product";
 import { Products } from "@/utils/Enum";
 
 const domain = "https://hacom.vn";
@@ -34,7 +37,7 @@ type HacomPartDataAPI = {
   quantity: string;
 };
 
-const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
+const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, RetailProductType> = {
   domain,
 
   save: "sellers",
@@ -85,11 +88,7 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
     const img = raw.productImage.large;
     const availability = Number(raw.quantity) !== 0;
 
-    const [save] = await RetailProduct.findOrBuild({ where: { link } });
-    save.set({ name, price, img, availability });
-    await save.save();
-
-    return new SellerProduct({ name, price, link, img, availability });
+    return RetailProductSchema.parse({ name, price, link, img, availability });
   },
 };
 

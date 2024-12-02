@@ -1,5 +1,8 @@
 import { APIWebsiteInfo } from "../../crawler";
-import { RetailProduct, SellerProduct } from "@/models/sellers/SellerProduct";
+import {
+  RetailProductSchema,
+  RetailProductType,
+} from "@/utils/interface/retailer/Product";
 import { Products } from "@/utils/Enum";
 import { JSDOM } from "jsdom";
 
@@ -18,7 +21,7 @@ const mapping: { [key in Products]?: string } = {
   [Products.FAN]: "quat-tan-nhiet_dm1519.html",
 };
 
-const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
+const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
   domain,
 
   save: "sellers",
@@ -75,11 +78,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
       raw.querySelector(".fit-img")?.getAttribute("data-src") ?? undefined;
     const availability = Boolean(raw.querySelector(".btn-in-stock"));
 
-    const [save] = await RetailProduct.findOrBuild({ where: { link } });
-    save.set({ name, price, img, availability });
-    await save.save();
-
-    return new SellerProduct({ name, price, link, img, availability });
+    return RetailProductSchema.parse({ name, price, link, img, availability });
   },
 };
 
