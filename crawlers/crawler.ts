@@ -1,67 +1,73 @@
-import path from "path";
-import fs from "fs";
-import { Products } from "@/utils/Enum";
+import { Products } from "../utils/Enum";
+import { pipeline, Readable, Transform, Writable } from "stream";
 
-type BaseLink = {
+/** Describe types for the crawl info object */
+
+type RequestObject = {
   url: URL;
-  type: "page" | "product";
-  product: Products;
 } & RequestInit;
 
-type PageLink = {
+type BaseInfo = {
+  request: RequestObject;
+  type: "page" | "product";
+  product: Products;
+};
+
+type PageCrawlInfo = {
   type: "page";
   page: number;
-} & BaseLink;
+} & BaseInfo;
 
-type ProductLink = {
+type PageCrawlInfoOptions = RequestObject;
+
+type ProductCrawlInfo<ReturnType> = {
   type: "product";
-  result?: unknown;
-} & BaseLink;
+  result?: ReturnType;
+} & BaseInfo;
 
-type CrawlLink = PageLink | ProductLink;
+type ProductCrawlInfoOptions<ReturnType> = Pick<
+  ProductCrawlInfo<ReturnType>,
+  "request" | "result"
+>;
+
+type CrawlInfo = PageCrawlInfo | ProductCrawlInfo<any>;
+
+/** Describe required types for the crawl API inferface */
 
 type ExtractFunction<RawType, ReturnType> =
-  | DefaultExtractFunction<RawType, ReturnType>
+  | GenericExtractFunction<CrawlInfo, DefaultExtractResult<RawType, ReturnType>>
   | {
-      page: ExtractPageFunction;
+      page: GenericExtractFunction<
+        PageCrawlInfo,
+        ExtractPageResult<ReturnType>
+      >;
 
-      product: ExtractProductFunction<RawType, ReturnType>;
+      product: GenericExtractFunction<
+        ProductCrawlInfo<ReturnType>,
+        ExtractProductResult<RawType>
+      >;
     };
 
-type DefaultExtractFunction<RawType, ReturnType> = (
-  link: CrawlLink,
+type GenericExtractFunction<Link extends CrawlInfo, Result> = (
+  link: Link,
   response: Response
-) => Promise<{
-  list: ParseInput<RawType, ReturnType>[];
-  links: CrawlLink[];
+) => Promise<Result>;
+
+type DefaultExtractResult<RawType, ReturnType> = {
+  list: ExtractProductResult<RawType>;
+} & ExtractPageResult<ReturnType>;
+
+type ExtractPageResult<ReturnType> = {
+  links: ProductCrawlInfoOptions<ReturnType>[];
   pages?: number;
-}>;
-
-type ExtractPageFunction = (
-  link: PageLink,
-  response: Response
-) => Promise<{
-  links: CrawlLink[];
-  pages?: number;
-}>;
-
-type ExtractProductFunction<RawType, ReturnType> = (
-  link: ProductLink,
-  response: Response
-) => Promise<ParseInput<RawType, ReturnType>[]>;
-
-type ParseInput<RawType, ReturnType> = {
-  raw: RawType;
-  result?: ReturnType;
 };
 
-type Result<T> = {
-  product: Products;
-  list: T[];
-};
+type ExtractProductResult<RawType> = RawType[];
 
-type ProductMapping = { [key in Products]?: any[] };
-
+/**
+ * The API that all the website crawling object must implement to be
+ * used in the crawler.
+ */
 interface APIWebsiteInfo<RawType, ReturnType> {
   /**
    * The website domain.
@@ -77,29 +83,43 @@ interface APIWebsiteInfo<RawType, ReturnType> {
    * Create the URL to crawl data from the product enum.
    * @param product The product enum to crawl from.
    */
-  path(product: Products, page: number): CrawlLink | null;
+  path(product: Products, page: number): PageCrawlInfoOptions | null;
 
   /**
    * Extract the data list from the response object.
-   * @param response The response object to extract data.
    */
   extract: ExtractFunction<RawType, ReturnType>;
 
   /**
    * Parse each item from the result of the extract function to the useful data.
    * @param raw The raw data object to parse from.
+   * @param info The crawl info linked to the raw info.
    */
-  parse(input: ParseInput<RawType, ReturnType>): Promise<ReturnType>;
+  parse(raw: RawType, info: ProductCrawlInfo<ReturnType>): Promise<ReturnType>;
 }
 
-const FetchEachLoop = 10;
-const DelayTime = 5000;
+/** Provide the types used in the crawler */
 
-class Crawler<RawType, ReturnType> {
-  private readonly info: APIWebsiteInfo<RawType, ReturnType>;
-  private dataPath = path.join(".", "data");
-  private requests: CrawlLink[] = [];
-  private errors: { link: CrawlLink; error: unknown }[] = [];
+type FetchResult = {
+  info: CrawlInfo;
+  response: Response;
+};
+
+type ExtractResult<RawType, ReturnType> = {
+  info: ProductCrawlInfo<ReturnType>;
+  raw: RawType;
+};
+
+type ParseResult<ReturnType> = Required<ProductCrawlInfo<ReturnType>>;
+
+type TransformCallback<Content> = (err?: Error | null, value?: Content) => void;
+
+const DelayTime = 500;
+
+class Crawler<RawType, FinalType> {
+  private readonly info: APIWebsiteInfo<RawType, FinalType>;
+  private input: Readable;
+  private output: Writable;
 
   /**
    * Specify if the parameter object is a crawler object.
@@ -122,8 +142,17 @@ class Crawler<RawType, ReturnType> {
     );
   }
 
-  constructor(info: APIWebsiteInfo<RawType, ReturnType>) {
+  constructor(
+    info: APIWebsiteInfo<RawType, FinalType>,
+    options?: { output?: Writable; error?: Writable }
+  ) {
+    if (!Crawler.isCrawlInfo(info)) {
+      throw new Error("The provided info is not implemented the API");
+    }
+
     this.info = info;
+    this.input = new Readable({ objectMode: true, read() {} });
+    this.output = options?.output ?? this.createDefaultOutput();
   }
 
   /**
@@ -131,204 +160,241 @@ class Crawler<RawType, ReturnType> {
    * Call this to start the crawling process.
    */
   async crawl(products?: Products[]) {
-    if (!this.info) {
-      throw new Error("No website info specified");
-    }
+    const FetchStream = this.createFetchStream().on("error", this.onError);
+
+    const ExtractStream = this.createExtractStream().on("error", this.onError);
+
+    const ParseStream = this.createParseStream().on("error", this.onError);
+
+    pipeline(
+      this.input,
+      FetchStream,
+      ExtractStream,
+      ParseStream,
+      this.output,
+      () => {}
+    );
+
+    this.input.on("end", () => console.log("End"));
 
     this.start(products);
+  }
 
-    const result: Result<ReturnType>[] = [];
+  /**
+   * Create a transform stream handling the fetch procedure.
+   * The stream takes the input {@link CrawlInfo}
+   * and return back the {@link FetchResult}.
+   * @returns The fetch stream.
+   */
+  private createFetchStream() {
+    return new Transform({
+      objectMode: true,
+      autoDestroy: false,
+      transform(info: CrawlInfo, _, next: TransformCallback<FetchResult>) {
+        console.log(`Fetching: ${info.request.url.toString()}`);
 
-    while (this.requests.length > 0) {
-      const promises = this.requests
-        .splice(0, FetchEachLoop)
-        .map((link) => this.fetchRequest(link));
+        fetch(info.request.url, info.request).then((response) => {
+          setTimeout(() => {
+            response.ok
+              ? next(null, { info, response })
+              : next(new Error(response.statusText));
+          }, DelayTime);
+        });
+      },
+    });
+  }
 
-      const responses = (await Promise.all(promises)).filter(
-        (result) => result != null
-      );
+  /**
+   * Create a stream handling the response extract procedure.
+   * The stream takes the input {@link FetchResult}
+   * and return back the {@link ExtractResult}
+   * of {@link RawType} and {@link FinalType}.
+   * @returns The extract stream created.
+   */
+  private createExtractStream() {
+    const extract = this.extract.bind(this);
 
-      const returnResult = responses.map(({ list, product }) =>
-        Promise.all(list.map((raw) => this.parseRaw(raw))).then((result) => ({
-          list: result.filter((value) => value !== null),
-          product,
-        }))
-      );
+    return new Transform({
+      objectMode: true,
+      autoDestroy: false,
+      transform(
+        { info, response }: FetchResult,
+        _,
+        callback: TransformCallback<ExtractResult<RawType, FinalType>>
+      ) {
+        extract(info, response).then((list) => {
+          list.forEach((raw) => this.push({ info, raw }));
+          callback();
+        });
+      },
+    });
+  }
 
-      result.push(...(await Promise.all(returnResult)));
+  /**
+   * Create a stream handling the response extract procedure.
+   * The stream takes the input {@link ExtractResult}
+   * and return the {@link ParseResult}.
+   * @returns The parse stream created.
+   */
+  private createParseStream() {
+    const parse = this.parse.bind(this);
 
-      await new Promise((resolve) => setTimeout(resolve, DelayTime));
-    }
+    return new Transform({
+      objectMode: true,
+      transform(
+        chunk: ExtractResult<RawType, FinalType>,
+        _,
+        callback: TransformCallback<ParseResult<FinalType>>
+      ) {
+        parse(chunk).then((value) => {
+          callback(null, value);
+        });
+      },
+    });
+  }
 
-    const data = this.map(result);
-    this.save(data);
-
-    if (this.errors.length > 0) {
-      const date = new Date();
-      fs.writeFileSync(
-        path.join(this.dataPath, `errors-${date.getTime()}.json`),
-        JSON.stringify(this.errors)
-      );
-    }
-    this.errors.length = 0;
+  /**
+   * Create a writable stream that write the {@link ParseResult}
+   * to the {@link process.stdout} stream.
+   * @returns The created output stream.
+   */
+  private createDefaultOutput() {
+    return new Writable({
+      objectMode: true,
+      write(chunk: ParseResult<FinalType>, _, callback) {
+        process.stdout.write(`${JSON.stringify(chunk)}\n`);
+        callback();
+      },
+    });
   }
 
   /**
    * Start the crawling process of websites
    * by adding the new fetch request to the request queue
    * from the website list.
+   * @param products The product list to crawl.
    */
   private start(products?: Products[]) {
     if (!products) {
       products = Object.values(Products);
     }
 
-    Object.values(Products).map((product) => {
-      const link = this.info.path(product, 1);
-      if (link) {
-        this.requests.push(link);
+    products.map((product) => {
+      const request = this.info.path(product, 1);
+      if (request) {
+        this.input.push(this.createPageLink(product, request, 1));
       }
     });
   }
 
   /**
-   * The fetching process of a request.
-   * @param param The request object of the process.
-   * @returns The result of the process.
+   * Run the extract function in the info
+   * based on the provided info and link.
+   * Used in the {@link createExtractStream} function
+   * to create the Extract steam.
+   * @param info The crawl link used to fetch the response.
+   * @param response The response received from the link.
+   * @returns The extract result object.
    */
-  private async fetchRequest(
-    link: CrawlLink
-  ): Promise<Result<ParseInput<RawType, ReturnType>> | null> {
-    const { url, method, body } = link;
+  private async extract(
+    info: CrawlInfo,
+    response: Response
+  ): Promise<RawType[]> {
+    console.log(`Extracting: ${info.request.url.toString()}`);
 
-    console.log(`fetching ${url}`);
-    try {
-      const response = await fetch(url, { method, body });
-      if (!response.ok) {
-        throw new Error(`Response code: ${response.status}`);
-      }
+    let links: ProductCrawlInfoOptions<FinalType>[] = [],
+      list: RawType[] = [],
+      pages;
 
-      let list: ParseInput<RawType, ReturnType>[] = [],
-        links: CrawlLink[] = [],
-        pages;
-
-      if (typeof this.info.extract === "function") {
-        ({ list, links, pages } = await this.info.extract(link, response));
-      } else if (link.type === "page") {
-        ({ links, pages } = await this.info.extract.page(link, response));
-      } else {
-        list = await this.info.extract.product(link, response);
-      }
-
-      if (
-        link.type == "page" &&
-        pages &&
-        (list.length > 0 || links.length > 0)
-      ) {
-        this.next(link, pages);
-      }
-
-      this.requests.push(...links);
-
-      return {
-        product: link.product,
-        list,
-      };
-    } catch (err: unknown) {
-      const error = err as Error;
-      console.error(`Error crawling ${link.url.toString()}.`);
-      console.error(error);
-      this.errors.push({ link, error: error.message });
+    if (typeof this.info.extract === "function") {
+      ({ links, list, pages } = await this.info.extract(info, response));
+    } else if (info.type === "page") {
+      ({ links, pages } = await this.info.extract.page(info, response));
+    } else {
+      list = await this.info.extract.product(info, response);
     }
 
-    return null;
+    if (info.type == "page" && pages && (list.length > 0 || links.length > 0)) {
+      this.next(info, pages);
+    }
+
+    links.forEach((element) => {
+      this.input.push(this.createProductLink(info.product, element));
+    });
+
+    return list;
   }
 
-  private async parseRaw(
-    raw: ParseInput<RawType, ReturnType>
-  ): Promise<ReturnType | null> {
-    try {
-      return await this.info.parse(raw);
-    } catch (err: unknown) {
-      const error = err as Error;
-      console.error(`Error parsing ${raw}.`);
-      console.error(error);
-    }
-    return null;
+  /**
+   * Parse the raw object to create the result object in the info object
+   * Used in the {@link createParseStream} function
+   * to create the Parse steam.
+   * @param info The current info object.
+   * @param raw The raw object extracted
+   * @returns
+   */
+  private async parse({
+    info,
+    raw,
+  }: ExtractResult<RawType, FinalType>): Promise<ParseResult<FinalType>> {
+    console.log(`Parsing ${info.request.url.toString()}`);
+
+    info.result = await this.info.parse(raw, info);
+
+    return info as ParseResult<FinalType>;
   }
 
   /**
    * Get the next requests of the request data and
    * push it to the request queue.
-   * @param param0 The current request object.
+   * @param info The current request object.
    * @param pages The number of next requests from the current one.
    */
-  private next(link: PageLink, pages: number) {
-    let nextPage = link.page;
+  private next(info: PageCrawlInfo, pages: number) {
+    let nextPage = info.page;
     while (nextPage < pages) {
       nextPage++;
-      this.requests.push(this.info.path(link.product, nextPage)!);
+      this.input.push(
+        this.createPageLink(
+          info.product,
+          this.info.path(info.product, nextPage)!,
+          nextPage
+        )
+      );
     }
   }
 
   /**
-   * Map the crawled data based on the origin website and the product type.
-   * @param result The result of the requests.
-   * @returns The mapped data object.
+   * Create a page link object from the parameters.
+   * @param product The product of the page link.
+   * @param request The request object of the link.
+   * @param page The page number the request represented.
+   * @returns The page link object created.
    */
-  private map(result: Result<ReturnType>[]): Record<string, ProductMapping> {
-    const data: Record<string, ProductMapping> = {};
-
-    result.forEach(({ product, list }) => {
-      const key = path.join(
-        this.info.save,
-        this.info.domain.replaceAll(/(https:\/\/|www.|\.com|\.vn|\.)+/g, "")
-      );
-
-      if (!data[key]) {
-        data[key] = {};
-      }
-
-      if (!data[key][product]) {
-        data[key][product] = [];
-      }
-
-      data[key][product].push(...list);
-    }, {});
-
-    return data;
+  private createPageLink(
+    product: Products,
+    request: RequestObject,
+    page: number
+  ): PageCrawlInfo {
+    return { type: "page", product, request, page };
   }
 
   /**
-   * Save the mapped data object to the file system.
-   * @param result The mapped data object.
+   * Create a product link object from the parameters.
+   * @param product The product of the product link.
+   * @param options The options to create product link.
+   * @returns The product link object created.
    */
-  private save(result: Record<string, ProductMapping>) {
-    if (!fs.existsSync(this.dataPath)) {
-      fs.mkdirSync(this.dataPath);
-    }
+  private createProductLink(
+    product: Products,
+    options: ProductCrawlInfoOptions<FinalType>
+  ): ProductCrawlInfo<FinalType> {
+    return { type: "product", product, ...options };
+  }
 
-    Object.entries(result).forEach(([key, value]) => {
-      const savePath = path.join(
-        this.dataPath,
-        key.replaceAll(/(https:\/\/|www.|\.com|\.vn|\.)+/g, "")
-      );
-
-      if (!fs.existsSync(savePath)) {
-        fs.mkdirSync(savePath);
-      }
-
-      Object.entries(value).forEach(([product, list]) => {
-        console.log(
-          `Fetched ${list.length} products of ${product} from ${key}`
-        );
-        fs.writeFileSync(
-          path.join(savePath, `${product}.json`),
-          JSON.stringify(list)
-        );
-      });
-    });
+  private onError(error: Error) {
+    console.error(error);
   }
 }
 
-export { Crawler, type CrawlLink, type APIWebsiteInfo };
+export { Crawler, type CrawlInfo as CrawlLink, type APIWebsiteInfo };
