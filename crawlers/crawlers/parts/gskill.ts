@@ -1,5 +1,5 @@
-import { APIWebsiteInfo, CrawlLink } from "../../crawler";
-import { Products } from "@/utils/Enum";
+import { APIWebsiteInfo } from "../../crawler";
+import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.gskill.com";
@@ -26,9 +26,6 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
 
       return {
         url,
-        type: "page",
-        page,
-        product,
         method: "POST",
         body: formBody,
       };
@@ -39,23 +36,20 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
 
   extract: {
     page: async (link, response) => {
-      let links: CrawlLink[] = [];
-      let pages;
-
       const data = await response.json();
 
       const html = new JSDOM(data["html"]).window.document;
-      links = [...html.querySelectorAll(".list")].map((raw) => {
+      let links = [...html.querySelectorAll(".list")].map((raw) => {
         const url = `${domain}${raw
           .querySelector(".item")!
           .getAttribute("href")}`;
 
         return {
-          url: new URL(
-            `${url.replace("product", "specification")}-Specification`
-          ),
-          type: "product",
-          product: link.product,
+          request: {
+            url: new URL(
+              `${url.replace("product", "specification")}-Specification`
+            ),
+          },
           result: {
             url,
             img: `${domain}${raw
@@ -65,6 +59,7 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
         };
       });
 
+      let pages;
       if (link.page == 1) {
         pages = Math.ceil(data["num"] / links.length);
       }
@@ -73,13 +68,11 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
     },
 
     product: async (link, response) => {
-      const list = [];
-
       const dom = new JSDOM(await response.text()).window.document;
 
       const table = dom.querySelector(".list-inner");
       if (!table) {
-        throw new Error(`Cannot find content table in ${link.url}`);
+        throw new Error(`Cannot find content table in ${link.request.url}`);
       }
 
       const result = link.result as Record<string, string>;
@@ -97,17 +90,12 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
         );
       }
 
-      list.push({
-        raw: table,
-        result: link.result as Record<string, string>,
-      });
-
-      return list;
+      return [table];
     },
   },
 
-  async parse({ raw, result }) {
-    result = result ?? {};
+  async parse(raw, info) {
+    const result = info.result ?? {};
     raw.querySelectorAll(".list-descr").forEach((row) => {
       const [title, content] = row.querySelectorAll(".list-block");
       if (title && content && title.textContent && content.textContent) {

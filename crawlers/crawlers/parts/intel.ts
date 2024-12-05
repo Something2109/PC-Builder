@@ -1,5 +1,5 @@
-import { APIWebsiteInfo, CrawlLink } from "../../crawler";
-import { Products } from "@/utils/Enum";
+import { APIWebsiteInfo } from "../../crawler";
+import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://ark.intel.com";
@@ -24,7 +24,7 @@ const CrawlInfo: APIWebsiteInfo<Document, any> = {
       );
       url.searchParams.set("pageNo", page.toString());
 
-      return { url, type: "page", page, product };
+      return { url };
     }
 
     return null;
@@ -32,22 +32,19 @@ const CrawlInfo: APIWebsiteInfo<Document, any> = {
 
   extract: {
     page: async (link, response) => {
-      let links: CrawlLink[] = [];
-      let pages;
-
       const dom = new JSDOM(await response.text()).window.document;
 
-      links = [
+      const links = [
         ...dom.querySelectorAll(
           ".ark-product-name.ark-accessible-color.component a"
         ),
       ].map((element) => {
         return {
-          url: new URL(`${domain}${element.getAttribute("href")}`),
-          type: "product",
-          product: link.product,
+          request: { url: new URL(`${domain}${element.getAttribute("href")}`) },
         };
       });
+
+      let pages;
       if (links.length > 0) {
         pages = link.page + 1;
       }
@@ -60,16 +57,17 @@ const CrawlInfo: APIWebsiteInfo<Document, any> = {
       const element = dom.querySelector(".specs-blade.specifications");
 
       if (!element) {
-        throw new Error(`Cannot find content table in ${link.url}`);
+        throw new Error(`Cannot find content table in ${link.request.url}`);
       }
 
-      list.push({ raw: dom });
+      list.push(dom);
 
       return list;
     },
   },
 
-  parse: async ({ raw, result }) => {
+  async parse(raw, info) {
+    const result = info.result ?? {};
     const title = raw.querySelector(".product-family-title-text .h1");
 
     if (title && title.textContent) {

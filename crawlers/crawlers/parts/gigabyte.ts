@@ -1,5 +1,5 @@
-import { APIWebsiteInfo, CrawlLink } from "../../crawler";
-import { Products } from "@/utils/Enum";
+import { APIWebsiteInfo } from "../../crawler";
+import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.gigabyte.com";
@@ -29,9 +29,6 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
 
       return {
         url,
-        type: "page",
-        page,
-        product,
         method: "POST",
         body: formBody,
       };
@@ -42,21 +39,18 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
 
   extract: {
     page: async (link, response) => {
-      let links: CrawlLink[] = [];
-      let pages;
-
       const data = await response.text();
       const dom = new JSDOM(data).window.document;
 
-      links = [...dom.querySelectorAll(".product_list_box")].map((raw) => {
+      let links = [...dom.querySelectorAll(".product_list_box")].map((raw) => {
         return {
-          url: new URL(
-            `${domain}/api/ProductSpec/${raw
-              .querySelector(".WTB_button")!
-              .getAttribute("data-ProductId")}`
-          ),
-          type: "product",
-          product: link.product,
+          request: {
+            url: new URL(
+              `${domain}/api/ProductSpec/${raw
+                .querySelector(".WTB_button")!
+                .getAttribute("data-ProductId")}`
+            ),
+          },
           result: {
             url: `${domain}${raw
               .querySelector(".product_list_box_info_ImageLink")!
@@ -70,6 +64,7 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
         };
       });
 
+      let pages;
       if (link.page == 1) {
         pages = Number(dom.querySelector(".pageMaximumPage")?.textContent);
       }
@@ -98,18 +93,11 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
     },
   },
 
-  async parse({
-    raw,
-    result,
-  }: {
-    raw: {
-      Name: string;
-      ProductSpecData: { Name: string; Description: string }[];
-    };
-    result: { [key in string]: string };
-  }) {
+  async parse(raw, info) {
+    const result = info.result ?? {};
+
     result["Model"] = raw["Name"];
-    raw.ProductSpecData.forEach((row) => {
+    raw.ProductSpecData.forEach((row: any) => {
       result[row["Name"]] = row["Description"];
     });
 

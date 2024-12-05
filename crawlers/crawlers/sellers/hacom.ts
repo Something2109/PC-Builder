@@ -2,8 +2,8 @@ import { APIWebsiteInfo } from "../../crawler";
 import {
   RetailProductSchema,
   RetailProductType,
-} from "@/utils/interface/retailer/Product";
-import { Products } from "@/utils/Enum";
+} from "../../../utils/interface/retailer/Product";
+import { Products } from "../../../utils/Enum";
 
 const domain = "https://hacom.vn";
 const mapping: { [key in Products]?: string } = {
@@ -70,9 +70,7 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, RetailProductType> = {
 
     if (Array.isArray(data.list)) {
       return {
-        list: data.list.map((raw) => ({
-          raw,
-        })),
+        list: data.list,
         links: [],
         pages,
       };
@@ -81,7 +79,7 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, RetailProductType> = {
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  async parse({ raw }) {
+  async parse(raw) {
     const name = raw.productName;
     const price = Number(raw.price);
     const link = `https://hacom.vn${raw.productUrl}`;

@@ -2,8 +2,8 @@ import { APIWebsiteInfo } from "../../crawler";
 import {
   RetailProductSchema,
   RetailProductType,
-} from "@/utils/interface/retailer/Product";
-import { Products } from "@/utils/Enum";
+} from "../../../utils/interface/retailer/Product";
+import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://memoryzone.com.vn";
@@ -41,13 +41,11 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
     const dom = new JSDOM(await response.text()).window.document;
     const itemContainer = dom.querySelector(".product-list");
 
-    let list: { raw: Element }[] = [];
+    let list: Element[] = [];
     let pages;
 
     if (link.type == "page" && itemContainer) {
-      list = [...itemContainer.querySelectorAll(".product-col")].map((raw) => ({
-        raw,
-      }));
+      list = [...itemContainer.querySelectorAll(".product-col")];
 
       if (link.page == 1) {
         const pageList = dom.querySelectorAll(".page-item");
@@ -63,7 +61,7 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
     return { list, links: [], pages };
   },
 
-  async parse({ raw }) {
+  async parse(raw) {
     const name = raw.querySelector(".product-name")?.textContent!;
     const link = `${domain}${raw
       .querySelector(".image_thumb")

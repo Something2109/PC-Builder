@@ -1,5 +1,5 @@
-import { APIWebsiteInfo, CrawlLink } from "../../crawler";
-import { Products } from "@/utils/Enum";
+import { APIWebsiteInfo } from "../../crawler";
+import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.kingston.com";
@@ -17,7 +17,7 @@ const CrawlInfo: APIWebsiteInfo<Document, Record<string, string>> = {
     if (mapping[product]) {
       const url = new URL(`${domain}/en/${mapping[product]}`);
 
-      return { url, type: "page", page, product };
+      return { url };
     }
 
     return null;
@@ -25,21 +25,19 @@ const CrawlInfo: APIWebsiteInfo<Document, Record<string, string>> = {
 
   extract: {
     page: async (link, response) => {
-      let links: CrawlLink[] = [];
-
       const dom = new JSDOM(await response.text()).window.document;
 
-      links = [...dom.querySelectorAll(".c-productCard4__image")].map((raw) => {
-        return {
-          url: new URL(`${domain}${raw.getAttribute("href")}`),
-          type: "product",
-          product: link.product,
+      const links = [...dom.querySelectorAll(".c-productCard4__image")].map(
+        (raw) => ({
+          request: {
+            url: new URL(`${domain}${raw.getAttribute("href")}`),
+          },
           result: {
             url: `${domain}${raw.getAttribute("href")}`,
             img: `${raw.querySelector("img")?.getAttribute("src")}`,
           },
-        };
-      });
+        })
+      );
 
       return { links };
     },
@@ -49,15 +47,15 @@ const CrawlInfo: APIWebsiteInfo<Document, Record<string, string>> = {
 
       const dom = new JSDOM(await response.text()).window.document;
 
-      list.push({ raw: dom, result: link.result as Record<string, string> });
+      list.push(dom);
 
       return list;
     },
   },
 
-  async parse({ raw, result }) {
+  async parse(raw, info) {
+    const result = info.result ?? {};
     let table = raw.querySelector(".c-table__main");
-    result = result ?? {};
 
     if (!table) {
       throw new Error(`Cannot find content table`);

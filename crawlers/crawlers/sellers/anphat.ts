@@ -2,8 +2,8 @@ import { APIWebsiteInfo } from "../../crawler";
 import {
   RetailProductSchema,
   RetailProductType,
-} from "@/utils/interface/retailer/Product";
-import { Products } from "@/utils/Enum";
+} from "../../../utils/interface/retailer/Product";
+import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.anphatpc.com.vn";
@@ -31,7 +31,7 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
       const url = new URL(`${domain}/${mapping[product]}`);
       url.searchParams.set("page", page.toString());
 
-      return { url, type: "page", page, product };
+      return { url };
     }
 
     return null;
@@ -46,11 +46,7 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
         .getElementsByTagName("b")
         .item(0)
         ?.textContent?.match(/\d+/);
-      const list = [...itemContainer.querySelectorAll(".p-item")].map(
-        (raw) => ({
-          raw,
-        })
-      );
+      const list = [...itemContainer.querySelectorAll(".p-item")];
       let pages;
 
       if (link.page == 1) {
@@ -63,7 +59,7 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  async parse({ raw }) {
+  async parse(raw) {
     const name = raw.querySelector(".p-name")?.textContent?.trim();
     const price = Number(
       raw

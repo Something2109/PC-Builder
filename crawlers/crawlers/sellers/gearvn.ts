@@ -2,8 +2,8 @@ import { APIWebsiteInfo } from "../../crawler";
 import {
   RetailProductSchema,
   RetailProductType,
-} from "@/utils/interface/retailer/Product";
-import { Products } from "@/utils/Enum";
+} from "../../../utils/interface/retailer/Product";
+import { Products } from "../../../utils/Enum";
 
 const domain = "https://gearvn.com";
 const mapping: { [key in Products]?: string } = {
@@ -52,7 +52,7 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, RetailProductType> = {
       url.searchParams.set("page", page.toString());
       url.searchParams.set("limit", "500");
 
-      return { url, type: "page", page, product };
+      return { url };
     }
     return null;
   },
@@ -65,9 +65,7 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, RetailProductType> = {
 
     if (Array.isArray(data.products)) {
       return {
-        list: data.products.map((raw) => ({
-          raw,
-        })),
+        list: data.products,
         links: [],
         pages: link.page + 1,
       };
@@ -76,7 +74,7 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, RetailProductType> = {
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  async parse({ raw }) {
+  async parse(raw) {
     const name = raw.title;
     const price = Number(raw.variants[0].price);
     const link = `${domain}/products/${raw.handle}`;

@@ -1,5 +1,5 @@
-import { APIWebsiteInfo, CrawlLink } from "../../crawler";
-import { Products } from "@/utils/Enum";
+import { APIWebsiteInfo } from "../../crawler";
+import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.lexar.com";
@@ -19,7 +19,7 @@ const CrawlInfo: APIWebsiteInfo<Element[], Record<string, string>[]> = {
         `${domain}/product-category/${mapping[product]}/page/${page}`
       );
 
-      return { url, type: "page", page, product };
+      return { url };
     }
 
     return null;
@@ -27,21 +27,18 @@ const CrawlInfo: APIWebsiteInfo<Element[], Record<string, string>[]> = {
 
   extract: {
     page: async (link, response) => {
-      let links: CrawlLink[] = [];
-
       const dom = new JSDOM(await response.text()).window.document;
-      links = [...dom.querySelectorAll(".product.type-product")].map(
+      const links = [...dom.querySelectorAll(".product.type-product")].map(
         (element) => {
-          const url = element.querySelector("a")!.getAttribute("href")!;
-          console.log(url);
+          const url = new URL(
+            element.querySelector("a")!.getAttribute("href")!
+          );
           return {
-            url: new URL(url),
-            type: "product",
-            product: link.product,
+            request: { url },
             result: [
               {
-                url,
-                img: element.querySelector("img")?.getAttribute("src"),
+                url: url.toString(),
+                img: element.querySelector("img")?.getAttribute("src")!,
               },
             ],
           };
@@ -59,20 +56,17 @@ const CrawlInfo: APIWebsiteInfo<Element[], Record<string, string>[]> = {
       const raw = [...dom.querySelectorAll(".product-table")];
 
       if (raw.length == 0 || !model) {
-        throw new Error(`Cannot find content table in ${link.url}`);
+        throw new Error(`Cannot find content table in ${link.request.url}`);
       }
 
-      const result = link.result as Record<string, string>;
-      result["Model"] = model;
-
-      list.push({ raw, result: [result] });
+      list.push(raw);
 
       return list;
     },
   },
 
-  parse: async ({ raw, result }) => {
-    result = result ?? [];
+  async parse(raw, info) {
+    const result = info.result ?? [];
     result.push(
       ...raw.map((table) => {
         const data: Record<string, string> = {};

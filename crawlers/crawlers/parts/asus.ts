@@ -1,5 +1,5 @@
-import { APIWebsiteInfo, CrawlLink } from "../../crawler";
-import { Products } from "@/utils/Enum";
+import { APIWebsiteInfo } from "../../crawler";
+import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://odinapi.asus.com";
@@ -25,7 +25,7 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
       url.searchParams.set("ProductLevel1Code", "motherboards-components");
       url.searchParams.set("ProductLevel2Code", mapping[product]);
 
-      return { url, type: "page", page: 1, product };
+      return { url };
     }
 
     return null;
@@ -33,22 +33,22 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
 
   extract: {
     page: async (link, response) => {
-      let links: CrawlLink[] = [];
-
       const data = await response.json();
       if (!data || !data.Result || !Array.isArray(data.Result.ProductList)) {
         throw new Error(`There's possibly a change in the API of ${domain}`);
       }
 
-      links = data.Result.ProductList.map((raw: { ProductURL: string }) => {
-        const url: string = raw.ProductURL;
-        return {
-          url: new URL(`${url}${url.includes("rog") ? "" : "tech"}spec`),
-          type: "product",
-          product: link.product,
-          result: { url },
-        };
-      });
+      const links = data.Result.ProductList.map(
+        (raw: { ProductURL: string }) => {
+          const url: string = raw.ProductURL;
+          return {
+            request: {
+              url: new URL(`${url}${url.includes("rog") ? "" : "tech"}spec`),
+            },
+            result: { url },
+          };
+        }
+      );
 
       return { links };
     },
@@ -58,25 +58,22 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
 
       const dom = new JSDOM(await response.text()).window.document;
       let table = dom.getElementById("productTableBody");
-      if (link.url.hostname.includes("rog")) {
+      if (link.request.url.hostname.includes("rog")) {
         table = dom.querySelector(".specContent");
       }
 
       if (!table) {
-        throw new Error(`Cannot find content table in ${link.url}`);
+        throw new Error(`Cannot find content table in ${link.request.url}`);
       }
 
-      list.push({
-        raw: table,
-        result: link.result as Record<string, string>,
-      });
+      list.push(table);
 
       return list;
     },
   },
 
-  async parse({ raw, result }) {
-    result = result ?? {};
+  async parse(raw, info) {
+    const result = info.result ?? {};
 
     let rowClass = ".TechSpec__rowTable__1LR9D",
       titleClass = ".rowTableTitle",

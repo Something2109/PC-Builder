@@ -1,5 +1,5 @@
 import { APIWebsiteInfo } from "../../crawler";
-import { Products } from "@/utils/Enum";
+import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.nvidia.com";
@@ -16,7 +16,7 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
     if (mapping[product]) {
       const url = new URL(`${domain}/${mapping[product]}`);
 
-      return { url, type: "product", page: 1, product };
+      return { url };
     }
 
     return null;
@@ -26,9 +26,7 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
     const htmlText = await new Response(response.body).text();
 
     const document = new JSDOM(htmlText).window.document;
-    const list = [...document.getElementsByTagName("table")].map(
-      (raw: HTMLTableElement) => ({ raw })
-    );
+    const list = [...document.getElementsByTagName("table")];
 
     return {
       list,
@@ -36,7 +34,8 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
     };
   },
 
-  async parse({ raw, result }) {
+  async parse(raw, info) {
+    const result = info.result ?? {};
     const col_num: number = raw.rows[0].cells.length;
     let property_idx = 0;
 
