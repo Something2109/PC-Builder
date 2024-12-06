@@ -112,6 +112,8 @@ type ExtractResult<RawType, ReturnType> = {
 
 type ParseResult<ReturnType> = Required<ProductCrawlInfo<ReturnType>>;
 
+type OutputObject = CrawlInfo & { error?: Error | null };
+
 type TransformCallback<Content> = (err?: Error | null, value?: Content) => void;
 
 const DelayTime = 500;
@@ -144,9 +146,17 @@ class Crawler<RawType, FinalType> {
     );
   }
 
+  /**
+   * The crawler constructor.
+   * @param info The website api to be used by the crawler.
+   * @param options The options for the crawler. Take output as a {@link Writable}
+   * to customize the output of the crawler.
+   * The output's write function's chunk parameter must implement the {@link OutputObject}
+   * to work properly.
+   */
   constructor(
     info: APIWebsiteInfo<RawType, FinalType>,
-    options?: { output?: Writable; error?: Writable }
+    options?: { output?: Writable }
   ) {
     if (!Crawler.isCrawlInfo(info)) {
       throw new Error("The provided info is not implemented the API");
@@ -173,11 +183,13 @@ class Crawler<RawType, FinalType> {
    * Call this to start the crawling process.
    */
   async crawl(products?: Products[]) {
-    const FetchStream = this.createFetchStream().on("error", this.onError);
+    const FetchStream = this.createFetchStream();
 
-    const ExtractStream = this.createExtractStream().on("error", this.onError);
+    const ExtractStream = this.createExtractStream();
 
-    const ParseStream = this.createParseStream().on("error", this.onError);
+    const ParseStream = this.createParseStream();
+
+    const onError = this.onError.bind(this);
 
     pipeline(
       this.input,
@@ -185,7 +197,7 @@ class Crawler<RawType, FinalType> {
       ExtractStream,
       ParseStream,
       this.output,
-      () => {}
+      (error) => onError(error)
     );
 
     this.input.on("end", () => console.log("End"));
@@ -200,19 +212,28 @@ class Crawler<RawType, FinalType> {
    * @returns The fetch stream.
    */
   private createFetchStream() {
+    const onError = this.onError.bind(this);
+
     return new Transform({
       objectMode: true,
       autoDestroy: false,
       transform(info: CrawlInfo, _, next: TransformCallback<FetchResult>) {
         console.log(`Fetching: ${info.request.url.toString()}`);
 
-        fetch(info.request.url, info.request).then((response) => {
-          setTimeout(() => {
-            response.ok
-              ? next(null, { info, response })
-              : next(new Error(response.statusText));
-          }, DelayTime);
-        });
+        fetch(info.request.url, info.request)
+          .then((response) => {
+            setTimeout(() => {
+              response.ok
+                ? next(null, { info, response })
+                : onError(
+                    new Error(
+                      `Fetch error: ${response.status} ${response.statusText}`
+                    ),
+                    info
+                  );
+            }, DelayTime);
+          })
+          .catch((reason) => onError(reason));
       },
     });
   }
@@ -236,12 +257,14 @@ class Crawler<RawType, FinalType> {
         _,
         callback: TransformCallback<ExtractResult<RawType, FinalType>>
       ) {
-        extract(info, response).then((list) => {
-          list.forEach((raw) =>
-            this.push(result(info as ProductCrawlInfo<FinalType>, raw))
-          );
-          callback();
-        });
+        extract(info, response)
+          .then((list) => {
+            list.forEach((raw) =>
+              this.push(result(info as ProductCrawlInfo<FinalType>, raw))
+            );
+            callback();
+          })
+          .catch((reason) => callback(reason));
       },
     });
   }
@@ -263,9 +286,11 @@ class Crawler<RawType, FinalType> {
         _,
         callback: TransformCallback<ParseResult<FinalType>>
       ) {
-        parse(chunk).then((value) => {
-          callback(null, value);
-        });
+        parse(chunk)
+          .then((value) => {
+            callback(null, value);
+          })
+          .catch((reason) => callback(reason));
       },
     });
   }
@@ -278,8 +303,15 @@ class Crawler<RawType, FinalType> {
   private createDefaultOutput() {
     return new Writable({
       objectMode: true,
-      write(chunk: ParseResult<FinalType>, _, callback) {
-        process.stdout.write(`${JSON.stringify(chunk)}\n`);
+      autoDestroy: false,
+      write({ error, ...chunk }: OutputObject, _, callback) {
+        if (error) {
+          process.stdout.write(
+            `${error.stack}\nIn: ${JSON.stringify(chunk)}\n`
+          );
+        } else {
+          process.stdout.write(`${JSON.stringify(chunk)}\n`);
+        }
         callback();
       },
     });
@@ -297,9 +329,13 @@ class Crawler<RawType, FinalType> {
     }
 
     products.map((product) => {
-      const request = this.info.path(product, 1);
-      if (request) {
-        this.input.push(this.createPageLink(product, request, 1));
+      try {
+        const request = this.info.path(product, 1);
+        if (request) {
+          this.input.push(this.createPageLink(product, request, 1));
+        }
+      } catch (err) {
+        this.onError(err as Error);
       }
     });
   }
@@ -324,16 +360,24 @@ class Crawler<RawType, FinalType> {
       list: RawType[] = [],
       pages;
 
-    if (typeof this.info.extract === "function") {
-      ({ links, list, pages } = await this.info.extract(info, response));
-    } else if (info.type === "page") {
-      ({ links, pages } = await this.info.extract.page(info, response));
-    } else {
-      list = await this.info.extract.product(info, response);
-    }
+    try {
+      if (typeof this.info.extract === "function") {
+        ({ links, list, pages } = await this.info.extract(info, response));
+      } else if (info.type === "page") {
+        ({ links, pages } = await this.info.extract.page(info, response));
+      } else {
+        list = await this.info.extract.product(info, response);
+      }
 
-    if (info.type == "page" && pages && (list.length > 0 || links.length > 0)) {
-      this.next(info, pages);
+      if (
+        info.type == "page" &&
+        pages &&
+        (list.length > 0 || links.length > 0)
+      ) {
+        this.next(info, pages);
+      }
+    } catch (err) {
+      this.onError(err as Error, info);
     }
 
     links.forEach((element) => {
@@ -358,7 +402,11 @@ class Crawler<RawType, FinalType> {
     console.log(`Parsing ${info.request.url.toString()}`);
     this.processed["parse"]++;
 
-    info.result = await this.info.parse(raw, info);
+    try {
+      info.result = await this.info.parse(raw, info);
+    } catch (err) {
+      this.onError(err as Error, info);
+    }
 
     return info as ParseResult<FinalType>;
   }
@@ -421,9 +469,14 @@ class Crawler<RawType, FinalType> {
     return { info, raw };
   }
 
-  private onError(error: Error) {
-    console.error(error);
+  private onError(error: Error | null, info?: CrawlInfo) {
+    this.output.write({ ...info, error });
   }
 }
 
-export { Crawler, type CrawlInfo as CrawlLink, type APIWebsiteInfo };
+export {
+  Crawler,
+  type CrawlInfo as CrawlLink,
+  type APIWebsiteInfo,
+  type OutputObject,
+};
