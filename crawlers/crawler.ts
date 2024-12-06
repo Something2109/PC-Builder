@@ -120,6 +120,8 @@ class Crawler<RawType, FinalType> {
   private readonly info: APIWebsiteInfo<RawType, FinalType>;
   private input: Readable;
   private output: Writable;
+  private counter: Record<"page" | "product" | "parse", number>;
+  private processed: Record<"page" | "product" | "parse", number>;
 
   /**
    * Specify if the parameter object is a crawler object.
@@ -153,6 +155,17 @@ class Crawler<RawType, FinalType> {
     this.info = info;
     this.input = new Readable({ objectMode: true, read() {} });
     this.output = options?.output ?? this.createDefaultOutput();
+    this.counter = {
+      page: 0,
+      product: 0,
+      parse: 0,
+    };
+
+    this.processed = {
+      page: 0,
+      product: 0,
+      parse: 0,
+    };
   }
 
   /**
@@ -213,6 +226,7 @@ class Crawler<RawType, FinalType> {
    */
   private createExtractStream() {
     const extract = this.extract.bind(this);
+    const result = this.createExtractResult.bind(this);
 
     return new Transform({
       objectMode: true,
@@ -223,7 +237,9 @@ class Crawler<RawType, FinalType> {
         callback: TransformCallback<ExtractResult<RawType, FinalType>>
       ) {
         extract(info, response).then((list) => {
-          list.forEach((raw) => this.push({ info, raw }));
+          list.forEach((raw) =>
+            this.push(result(info as ProductCrawlInfo<FinalType>, raw))
+          );
           callback();
         });
       },
@@ -241,6 +257,7 @@ class Crawler<RawType, FinalType> {
 
     return new Transform({
       objectMode: true,
+      autoDestroy: false,
       transform(
         chunk: ExtractResult<RawType, FinalType>,
         _,
@@ -301,6 +318,7 @@ class Crawler<RawType, FinalType> {
     response: Response
   ): Promise<RawType[]> {
     console.log(`Extracting: ${info.request.url.toString()}`);
+    this.processed[info.type]++;
 
     let links: ProductCrawlInfoOptions<FinalType>[] = [],
       list: RawType[] = [],
@@ -338,6 +356,7 @@ class Crawler<RawType, FinalType> {
     raw,
   }: ExtractResult<RawType, FinalType>): Promise<ParseResult<FinalType>> {
     console.log(`Parsing ${info.request.url.toString()}`);
+    this.processed["parse"]++;
 
     info.result = await this.info.parse(raw, info);
 
@@ -376,6 +395,7 @@ class Crawler<RawType, FinalType> {
     request: RequestObject,
     page: number
   ): PageCrawlInfo {
+    this.counter.page++;
     return { type: "page", product, request, page };
   }
 
@@ -389,7 +409,16 @@ class Crawler<RawType, FinalType> {
     product: Products,
     options: ProductCrawlInfoOptions<FinalType>
   ): ProductCrawlInfo<FinalType> {
+    this.counter.product++;
     return { type: "product", product, ...options };
+  }
+
+  private createExtractResult(
+    info: ProductCrawlInfo<FinalType>,
+    raw: RawType
+  ): ExtractResult<RawType, FinalType> {
+    this.counter.parse++;
+    return { info, raw };
   }
 
   private onError(error: Error) {
