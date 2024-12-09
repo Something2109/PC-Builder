@@ -188,6 +188,8 @@ class Crawler<RawType, FinalType> {
 
     const ParseStream = this.createParseStream();
 
+    const OutputStream = this.createOutputStream();
+
     const onError = this.onError.bind(this);
 
     pipeline(
@@ -195,7 +197,7 @@ class Crawler<RawType, FinalType> {
       FetchStream,
       ExtractStream,
       ParseStream,
-      this.output,
+      OutputStream,
       (error) => onError(error)
     );
 
@@ -290,6 +292,28 @@ class Crawler<RawType, FinalType> {
             callback(null, value);
           })
           .catch((reason) => callback(reason));
+      },
+    });
+  }
+
+  /**
+   * Create the writable stream that check
+   * when the crawling process is finished or not
+   * to close the output variable stream.
+   * @returns The created stream.
+   */
+  private createOutputStream() {
+    const finish = (chunk: any, callback: (err?: Error | null) => void) => {
+      this.output.write(chunk, callback);
+
+      if (this.isFinished()) this.output.end();
+    };
+
+    return new Writable({
+      objectMode: true,
+      autoDestroy: false,
+      write(chunk, _, callback) {
+        finish(chunk, callback);
       },
     });
   }
@@ -428,6 +452,25 @@ class Crawler<RawType, FinalType> {
         )
       );
     }
+  }
+
+  /**
+   * Check if the crawler has finished crawling by
+   * comparing the created and the processed counter
+   * if they are equal or not.
+   * @returns A boolean representing the result.
+   */
+  private isFinished() {
+    if (this.counter.page !== this.processed.page) {
+      return false;
+    }
+    if (this.counter.product !== this.processed.product) {
+      return false;
+    }
+    if (this.counter.parse !== this.processed.parse) {
+      return false;
+    }
+    return true;
   }
 
   /**
