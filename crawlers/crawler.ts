@@ -7,49 +7,48 @@ type RequestObject = {
   url: URL;
 } & RequestInit;
 
+type RequestOptions = string | URL | RequestObject;
+
+type ProductRequestOptions<ResultType> =
+  | RequestOptions
+  | {
+      request: RequestOptions;
+      result?: ResultType;
+    };
+
 type BaseInfo = {
   request: RequestObject;
   type: "page" | "product";
   product: Products;
+  page: number;
 };
 
 type PageCrawlInfo = {
   type: "page";
-  page: number;
 } & BaseInfo;
-
-type PageCrawlInfoOptions = RequestObject;
 
 type ProductCrawlInfo<ReturnType> = {
   type: "product";
   result?: ReturnType;
 } & BaseInfo;
 
-type ProductCrawlInfoOptions<ReturnType> = Pick<
-  ProductCrawlInfo<ReturnType>,
-  "request" | "result"
->;
-
 type CrawlInfo = PageCrawlInfo | ProductCrawlInfo<any>;
 
 /** Describe required types for the crawl API inferface */
 
-type ExtractFunction<RawType, ReturnType> =
-  | GenericExtractFunction<CrawlInfo, DefaultExtractResult<RawType, ReturnType>>
+type ExtractFunctionType<RawType, ReturnType> =
+  | ExtractFunction<CrawlInfo, DefaultExtractResult<RawType, ReturnType>>
   | {
-      page: GenericExtractFunction<
-        PageCrawlInfo,
-        ExtractPageResult<ReturnType>
-      >;
+      page: ExtractFunction<PageCrawlInfo, ExtractPageResult<ReturnType>>;
 
-      product: GenericExtractFunction<
+      product: ExtractFunction<
         ProductCrawlInfo<ReturnType>,
         ExtractProductResult<RawType>
       >;
     };
 
-type GenericExtractFunction<Link extends CrawlInfo, Result> = (
-  link: Link,
+type ExtractFunction<Link extends CrawlInfo, Result> = (
+  info: Link,
   response: Response
 ) => Promise<Result>;
 
@@ -58,7 +57,7 @@ type DefaultExtractResult<RawType, ReturnType> = {
 } & ExtractPageResult<ReturnType>;
 
 type ExtractPageResult<ReturnType> = {
-  links: ProductCrawlInfoOptions<ReturnType>[];
+  links: ProductRequestOptions<ReturnType>[];
   pages?: number;
 };
 
@@ -83,12 +82,12 @@ interface APIWebsiteInfo<RawType, ReturnType> {
    * Create the URL to crawl data from the product enum.
    * @param product The product enum to crawl from.
    */
-  path(product: Products, page: number): PageCrawlInfoOptions | null;
+  path(product: Products, page: number): RequestOptions | null;
 
   /**
    * Extract the data list from the response object.
    */
-  extract: ExtractFunction<RawType, ReturnType>;
+  extract: ExtractFunctionType<RawType, ReturnType>;
 
   /**
    * Parse each item from the result of the extract function to the useful data.
@@ -332,7 +331,7 @@ class Crawler<RawType, FinalType> {
       try {
         const request = this.info.path(product, 1);
         if (request) {
-          this.input.push(this.createPageLink(product, request, 1));
+          this.input.push(this.createPageInfo(product, request, 1));
         }
       } catch (err) {
         this.onError(err as Error);
@@ -356,7 +355,7 @@ class Crawler<RawType, FinalType> {
     console.log(`Extracting: ${info.request.url.toString()}`);
     this.processed[info.type]++;
 
-    let links: ProductCrawlInfoOptions<FinalType>[] = [],
+    let links: ProductRequestOptions<FinalType>[] = [],
       list: RawType[] = [],
       pages;
 
@@ -381,7 +380,7 @@ class Crawler<RawType, FinalType> {
     }
 
     links.forEach((element) => {
-      this.input.push(this.createProductLink(info.product, element));
+      this.input.push(this.createProductInfo(info, element));
     });
 
     return list;
@@ -422,7 +421,7 @@ class Crawler<RawType, FinalType> {
     while (nextPage < pages) {
       nextPage++;
       this.input.push(
-        this.createPageLink(
+        this.createPageInfo(
           info.product,
           this.info.path(info.product, nextPage)!,
           nextPage
@@ -432,35 +431,69 @@ class Crawler<RawType, FinalType> {
   }
 
   /**
+   * Create the request object for the crawl info.
+   * @param options The request options.
+   * @returns The request object created.
+   */
+  private createRequest(options: RequestOptions): RequestObject {
+    if (typeof options === "string" || options instanceof URL) {
+      options = {
+        url: new URL(options),
+      };
+    }
+
+    return options;
+  }
+
+  /**
    * Create a page link object from the parameters.
+   * Increase the page counter each successful call.
    * @param product The product of the page link.
-   * @param request The request object of the link.
+   * @param options The request object of the link.
    * @param page The page number the request represented.
    * @returns The page link object created.
    */
-  private createPageLink(
+  private createPageInfo(
     product: Products,
-    request: RequestObject,
+    options: RequestOptions,
     page: number
   ): PageCrawlInfo {
+    options = this.createRequest(options);
+
     this.counter.page++;
-    return { type: "page", product, request, page };
+    return { type: "page", product, request: options, page };
   }
 
   /**
    * Create a product link object from the parameters.
-   * @param product The product of the product link.
+   * Increase the product counter each successful call.
+   * @param info The product of the product link.
    * @param options The options to create product link.
    * @returns The product link object created.
    */
-  private createProductLink(
-    product: Products,
-    options: ProductCrawlInfoOptions<FinalType>
+  private createProductInfo(
+    info: CrawlInfo,
+    options: ProductRequestOptions<FinalType>
   ): ProductCrawlInfo<FinalType> {
+    let request: RequestOptions, result: FinalType | undefined;
+    if (typeof options !== "string" && "request" in options) {
+      ({ request, result } = options);
+    } else {
+      request = options;
+    }
+    request = this.createRequest(request);
+
     this.counter.product++;
-    return { type: "product", product, ...options };
+    return { ...info, type: "product", request, result };
   }
 
+  /**
+   * A function purely used to increase the parse counter.
+   * Return the {@link ExtractResult} type as result.
+   * @param info The info creating the raw result.
+   * @param raw The raw result of the info.
+   * @returns The extract result.
+   */
   private createExtractResult(
     info: ProductCrawlInfo<FinalType>,
     raw: RawType
