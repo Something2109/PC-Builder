@@ -1,0 +1,136 @@
+import { Op } from "sequelize";
+import { Injectable } from "@nestjs/common";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
+import { PartInformation } from "@/models/parts/tables/Part";
+import { Products } from "@/utils/Enum";
+import { Models } from "@/models/parts";
+
+@Injectable()
+class PartService {
+  async list(options?: FilterOptions & PageOptions) {
+    let { page, limit, part, ...detail } = options ?? {};
+    page = (page ?? 1) - 1;
+    limit = limit ?? Number(process.env.PageSize ?? 50);
+
+    let include;
+    if (part && part.part && part.part[0]) {
+      include = {
+        model: Models[part.part[0] as Products].scope("summary"),
+        where: detail[part.part[0] as Products] ?? {},
+        required: false,
+      };
+    }
+
+    const { rows, count } = await PartInformation.scope([
+      "summary",
+      {
+        method: ["filter", part],
+      },
+    ]).findAndCountAll({
+      limit,
+      offset: page * limit,
+      include,
+    });
+
+    return { total: count, list: rows.map((value) => value.toJSON()) };
+  }
+
+  async search(str: string, options?: FilterOptions & PageOptions) {
+    let { page, limit, part, ...detail } = options ?? {};
+    page = (page ?? 1) - 1;
+    limit = limit ?? Number(process.env.PageSize ?? 50);
+
+    let include;
+    if (part && part.part && part.part[0]) {
+      include = {
+        model: Models[part.part[0] as Products].scope("summary"),
+        where: detail[part.part[0] as Products] ?? {},
+      };
+    }
+
+    const { rows, count } = await PartInformation.scope([
+      "summary",
+      {
+        method: ["filter", part],
+      },
+    ]).findAndCountAll({
+      where: { name: { [Op.like]: `%${str}%` } },
+      limit,
+      offset: page * limit,
+      include,
+    });
+
+    return { total: count, list: rows.map((value) => value.toJSON()) };
+  }
+
+  async get(
+    part: Products,
+    id: string
+  ): Promise<DetailInfo<typeof part> | null> {
+    const save = await PartInformation.scope("detail").findByPk(id, {
+      include: {
+        model: Models[part],
+      },
+    });
+
+    if (save) {
+      return save.toJSON() as unknown as DetailInfo<typeof part>;
+    }
+
+    return null;
+  }
+
+  async set(
+    data: DetailInfo<Products>,
+    id?: string
+  ): Promise<DetailInfo<Products>> {
+    const { [data.part as Products]: detail, part, ...info } = data;
+
+    let infoRow: PartInformation;
+    if (id) {
+      const row = await PartInformation.findByPk(id);
+      if (!row) {
+        throw new Error(`Cannot find the part with the id ${id}`);
+      }
+      infoRow = row.set(info);
+    } else {
+      infoRow = PartInformation.build({ part: part as Products, ...info });
+    }
+
+    await infoRow.save();
+    id = infoRow.id;
+
+    const [detailRow] = await Models[part as Products].findOrBuild({
+      where: { id },
+    });
+
+    detailRow.set({ id, ...detail });
+
+    await detailRow.save();
+
+    const result: DetailInfo<Products> = infoRow.toJSON();
+
+    result[part as Products] = detailRow.toJSON();
+
+    return result;
+  }
+
+  async delete(id: string) {
+    const save = await PartInformation.findByPk(id);
+
+    if (save) {
+      await save.destroy();
+
+      return save.toJSON();
+    }
+
+    return null;
+  }
+}
+
+type PageOptions = {
+  page?: number;
+  limit?: number;
+};
+
+export { PartService };
