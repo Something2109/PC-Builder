@@ -1,9 +1,6 @@
-import {
-  Article,
-  ArticleSummary,
-  ArticleType,
-} from "@/models/articles/article";
+import { Article } from "@/models/articles/article";
 import { Products, Topics } from "@/utils/Enum";
+import { ArticleSummary, ArticleType } from "@/utils/interface/article/article";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()

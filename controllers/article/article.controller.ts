@@ -11,7 +11,10 @@ import {
 import { ArticleService } from "./services/article.service";
 import { ImageService } from "./services/image.service";
 import { ProductPipe, TopicPipe } from "./article.pipe";
-import { ContentType, ValidateArticle } from "@/models/articles/article";
+import {
+  ContentType,
+  ValidateArticle,
+} from "@/utils/interface/article/article";
 
 @Controller("api")
 export class ArticleController {
