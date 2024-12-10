@@ -16,7 +16,6 @@ export namespace HDD {
 
     form_factor: HDDFormFactors,
     interface: HDDInterfaces,
-    protocol_version: z.number(),
   });
 
   export type Info = z.infer<typeof Schema>;

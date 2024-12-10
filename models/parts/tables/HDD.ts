@@ -66,9 +66,6 @@ class HDDModel extends Model implements PartDetailTable<HDD.Info> {
     validate: { isIn: [HDDInterfaces.options] },
   })
   declare interface: HDDInterfaceType | null;
-
-  @Column({ type: DataType.TINYINT })
-  declare protocol_version: number | null;
 }
 
 export { HDDModel };

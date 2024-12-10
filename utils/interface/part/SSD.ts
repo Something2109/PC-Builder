@@ -1,6 +1,5 @@
 import {
   SSDFormFactors,
-  SSDProtocols,
   SSDInterfaces,
   SSDMemoryCells,
   FilterOptions,
@@ -18,7 +17,6 @@ namespace SSD {
     tbw: z.number(),
 
     form_factor: SSDFormFactors,
-    protocol: SSDProtocols,
     interface: SSDInterfaces,
   });
 
@@ -26,7 +24,6 @@ namespace SSD {
 
   export const SummarySchema = Schema.pick({
     form_factor: true,
-    protocol: true,
     interface: true,
     read_speed: true,
     write_speed: true,
@@ -42,7 +39,6 @@ namespace SSD {
     .object({
       memory_type: FilterOptions(SSDMemoryCells),
       form_factor: FilterOptions(SSDFormFactors),
-      protocol: FilterOptions(SSDProtocols),
       interface: FilterOptions(SSDInterfaces),
       read_speed: NumberFilterOptions,
       write_speed: NumberFilterOptions,
@@ -53,7 +49,6 @@ namespace SSD {
   export const DefaultFilterOptions: FilterOptions = {
     memory_type: SSDMemoryCells.options,
     form_factor: SSDFormFactors.options,
-    protocol: SSDProtocols.options,
     interface: SSDInterfaces.options,
   };
 
