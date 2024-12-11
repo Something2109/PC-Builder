@@ -1,12 +1,16 @@
-import { Op } from "sequelize";
+import { InferAttributes, Op, WhereOptions } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 import { Injectable } from "@nestjs/common";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { Products } from "@/utils/Enum";
-import { Models } from "@/models/parts";
+import { ModelFilters, Models } from "@/models/parts";
+import { Tables } from "@/models/interface";
 
 @Injectable()
 class PartService {
+  constructor(private Connection: Sequelize) {}
+
   async list(options?: FilterOptions & PageOptions) {
     let { page, limit, part, ...detail } = options ?? {};
     page = (page ?? 1) - 1;
@@ -61,6 +65,42 @@ class PartService {
     });
 
     return { total: count, list: rows.map((value) => value.toJSON()) };
+  }
+
+  async filter(options?: FilterOptions): Promise<FilterOptions | null> {
+    try {
+      const { part, ...detail } = options ?? {};
+      const result: FilterOptions = {};
+
+      const where: WhereOptions<InferAttributes<PartInformation>> = {
+        part: part?.part ?? Object.values(Products),
+        ...part,
+      };
+
+      const ProductName =
+        part && part.part ? (part.part[0] as Products) : undefined;
+      if (ProductName) {
+        const subquery = this.IdSubQuery(
+          Models[ProductName].name,
+          detail[ProductName] ?? {}
+        );
+        where.id = [Sequelize.literal(subquery)];
+
+        const partSubquery = this.IdSubQuery(Tables.PART, where);
+
+        result[ProductName] = (await ModelFilters[ProductName]({
+          id: [Sequelize.literal(`(${partSubquery})`)],
+          ...(detail[ProductName] as any),
+        })) as any;
+      }
+
+      result.part = await ModelFilters.part(where as any);
+
+      return result;
+    } catch (err) {
+      console.error(err);
+    }
+    return null;
   }
 
   async get(
@@ -125,6 +165,15 @@ class PartService {
     }
 
     return null;
+  }
+
+  private IdSubQuery<T extends InferAttributes<any>>(
+    name: string,
+    options?: WhereOptions<T>
+  ): string {
+    return (this.Connection.getQueryInterface().queryGenerator as any)
+      .selectQuery(name, { attributes: ["id"], where: options ?? {} })
+      .slice(0, -1);
   }
 }
 
