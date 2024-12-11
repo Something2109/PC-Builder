@@ -4,12 +4,15 @@ import { PartModule } from "./part/part.module";
 import { DBModule } from "./db.module";
 import { ConfigModule } from "@nestjs/config";
 import { FilterModule } from "./filter/filter.module";
+import { SearchModule } from "./search/search.module";
+import { CrawlerModule } from "./crawler/crawler.module";
 
 @Module({
   imports: [
     PartModule,
-    ArticleModule,
     FilterModule,
+    SearchModule,
+    ArticleModule,
     ConfigModule.forRoot(),
     DBModule,
   ],
