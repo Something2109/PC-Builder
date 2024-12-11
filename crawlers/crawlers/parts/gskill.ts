@@ -1,0 +1,110 @@
+import { APIWebsiteInfo } from "../../crawler";
+import { Products } from "../../../utils/Enum";
+import { JSDOM } from "jsdom";
+
+const domain = "https://www.gskill.com";
+const mapping: { [key in Products]?: string } = {
+  [Products.RAM]: "165",
+  [Products.SSD]: "9",
+  [Products.PSU]: "90",
+  [Products.CASE]: "365",
+  [Products.AIO]: "353",
+};
+
+const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
+  domain,
+
+  save: "parts",
+
+  path(product: Products, page = 1) {
+    if (mapping[product]) {
+      const url = new URL(`${domain}/ajax.php`);
+
+      const formBody = new FormData();
+      formBody.set("Func", "firstGetProduct");
+      formBody.set("Val", `${mapping[product]}|||${page}`);
+
+      return {
+        url,
+        method: "POST",
+        body: formBody,
+      };
+    }
+
+    return null;
+  },
+
+  extract: {
+    page: async (link, response) => {
+      const data = await response.json();
+
+      const html = new JSDOM(data["html"]).window.document;
+      let links = [...html.querySelectorAll(".list")].map((raw) => {
+        const url = `${domain}${raw
+          .querySelector(".item")!
+          .getAttribute("href")}`;
+
+        return {
+          request: {
+            url: new URL(
+              `${url.replace("product", "specification")}-Specification`
+            ),
+          },
+          result: {
+            url,
+            img: `${domain}${raw
+              .querySelector(".block-img img")
+              ?.getAttribute("src")}`,
+          },
+        };
+      });
+
+      let pages;
+      if (link.page == 1) {
+        pages = Math.ceil(data["num"] / links.length);
+      }
+
+      return { links, pages };
+    },
+
+    product: async (link, response) => {
+      const dom = new JSDOM(await response.text()).window.document;
+
+      const table = dom.querySelector(".list-inner");
+      if (!table) {
+        throw new Error(`Cannot find content table in ${link.request.url}`);
+      }
+
+      const result = link.result as Record<string, string>;
+
+      const code_name = dom.querySelector(".title");
+      if (code_name) {
+        result["Code Name"] = code_name.innerHTML;
+      }
+
+      const model = dom.querySelector(".sub-title");
+      if (model && model.innerHTML) {
+        result["Model"] = model.innerHTML.slice(
+          0,
+          model.innerHTML.indexOf("<br>")
+        );
+      }
+
+      return [table];
+    },
+  },
+
+  async parse(raw, info) {
+    const result = info.result ?? {};
+    raw.querySelectorAll(".list-descr").forEach((row) => {
+      const [title, content] = row.querySelectorAll(".list-block");
+      if (title && content && title.textContent && content.textContent) {
+        result[title.textContent] = content.textContent;
+      }
+    });
+
+    return result;
+  },
+};
+
+export default CrawlInfo;
