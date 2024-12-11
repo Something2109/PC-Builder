@@ -1,9 +1,11 @@
 import { Module } from "@nestjs/common";
-import { PartController } from "./filter.controller";
-import { FilterService } from "./filter.service";
+import { FilterController } from "./filter.controller";
+import { PartModule } from "controllers/part/part.module";
+import { PartService } from "controllers/part/part.service";
 
 @Module({
-  controllers: [PartController],
-  providers: [FilterService],
+  imports: [PartModule],
+  controllers: [FilterController],
+  providers: [PartService],
 })
 export class FilterModule {}

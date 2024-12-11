@@ -6,13 +6,12 @@ import {
   Param,
   Post,
 } from "@nestjs/common";
-import { FilterService } from "./filter.service";
-import { Products } from "@/utils/Enum";
 import { FilterOptions, FilterOptionSchema } from "@/utils/interface";
+import { PartService } from "controllers/part/part.service";
 
 @Controller("api/filter")
-export class PartController {
-  constructor(private service: FilterService) {}
+export class FilterController {
+  constructor(private service: PartService) {}
 
   @Post()
   async partFilter(@Body() body: FilterOptions) {
