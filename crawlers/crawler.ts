@@ -303,10 +303,11 @@ class Crawler<RawType, FinalType> {
    * @returns The created stream.
    */
   private createOutputStream() {
+    let writeCount = 0;
     const finish = (chunk: any, callback: (err?: Error | null) => void) => {
-      this.output.write(chunk, callback);
-
-      if (this.isFinished()) this.output.end();
+      this.isFinished() && writeCount === this.counter.parse
+        ? this.output.end(chunk, callback)
+        : this.output.write(chunk, callback);
     };
 
     return new Writable({
@@ -328,13 +329,11 @@ class Crawler<RawType, FinalType> {
       objectMode: true,
       autoDestroy: false,
       write({ error, ...chunk }: OutputObject, _, callback) {
-        if (error) {
-          process.stdout.write(
-            `${error.stack}\nIn: ${JSON.stringify(chunk)}\n`
-          );
-        } else {
-          process.stdout.write(`${JSON.stringify(chunk)}\n`);
-        }
+        error
+          ? process.stdout.write(
+              `${error.stack}\nIn: ${JSON.stringify(chunk)}\n`
+            )
+          : process.stdout.write(`${JSON.stringify(chunk)}\n`);
         callback();
       },
     });
@@ -550,9 +549,4 @@ class Crawler<RawType, FinalType> {
   }
 }
 
-export {
-  Crawler,
-  type CrawlInfo as CrawlLink,
-  type APIWebsiteInfo,
-  type OutputObject,
-};
+export { Crawler, type APIWebsiteInfo, type OutputObject };
