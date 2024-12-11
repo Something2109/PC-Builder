@@ -12,6 +12,7 @@ import { CrawlerModule } from "./crawler/crawler.module";
     PartModule,
     FilterModule,
     SearchModule,
+    CrawlerModule,
     ArticleModule,
     ConfigModule.forRoot(),
     DBModule,
