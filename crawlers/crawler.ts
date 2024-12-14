@@ -234,7 +234,7 @@ class Crawler<RawType, FinalType> {
                   );
             }, DelayTime);
           })
-          .catch((reason) => onError(reason));
+          .catch((reason) => onError(reason, info));
       },
     });
   }
@@ -305,6 +305,8 @@ class Crawler<RawType, FinalType> {
   private createOutputStream() {
     let writeCount = 0;
     const finish = (chunk: any, callback: (err?: Error | null) => void) => {
+      writeCount++;
+
       this.isFinished() && writeCount === this.counter.parse
         ? this.output.end(chunk, callback)
         : this.output.write(chunk, callback);

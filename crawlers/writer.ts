@@ -66,8 +66,7 @@ class FileWriter extends Writable {
    */
   _final(callback: (error?: Error | null) => void): void {
     Object.values(this.writeStream).forEach((stream) => {
-      stream.write("]");
-      stream.end();
+      stream.end("]");
     });
     callback();
   }
