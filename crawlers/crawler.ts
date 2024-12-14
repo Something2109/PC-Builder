@@ -117,12 +117,11 @@ type OutputObject = CrawlInfo & { error?: Error | null };
 
 type TransformCallback<Content> = (err?: Error | null, value?: Content) => void;
 
-const DelayTime = 500;
-
 class Crawler<RawType, FinalType> {
   private readonly info: APIWebsiteInfo<RawType, FinalType>;
   private input: Readable;
   private output: Writable;
+  private delay: number;
   private counter: Record<CrawlRecordKey, number>;
   private processed: Record<CrawlRecordKey | "error", number>;
 
@@ -157,7 +156,7 @@ class Crawler<RawType, FinalType> {
    */
   constructor(
     info: APIWebsiteInfo<RawType, FinalType>,
-    options?: { output?: Writable }
+    options?: { output?: Writable; delay?: number }
   ) {
     if (!Crawler.isCrawlInfo(info)) {
       throw new Error("The provided info is not implemented the API");
@@ -166,6 +165,7 @@ class Crawler<RawType, FinalType> {
     this.info = info;
     this.input = new Readable({ objectMode: true, read() {} });
     this.output = options?.output ?? this.createDefaultOutput();
+    this.delay = options?.delay ?? 0;
     this.counter = {
       page: 0,
       product: 0,
@@ -217,6 +217,7 @@ class Crawler<RawType, FinalType> {
    */
   private createFetchStream() {
     const onError = this.onError.bind(this);
+    const DelayTime = this.delay;
 
     return new Transform({
       objectMode: true,
