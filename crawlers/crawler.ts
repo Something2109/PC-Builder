@@ -99,6 +99,8 @@ interface APIWebsiteInfo<RawType, ReturnType> {
 
 /** Provide the types used in the crawler */
 
+type CrawlRecordKey = "page" | "product" | "parse";
+
 type FetchResult = {
   info: CrawlInfo;
   response: Response;
@@ -121,8 +123,8 @@ class Crawler<RawType, FinalType> {
   private readonly info: APIWebsiteInfo<RawType, FinalType>;
   private input: Readable;
   private output: Writable;
-  private counter: Record<"page" | "product" | "parse", number>;
-  private processed: Record<"page" | "product" | "parse", number>;
+  private counter: Record<CrawlRecordKey, number>;
+  private processed: Record<CrawlRecordKey | "error", number>;
 
   /**
    * Specify if the parameter object is a crawler object.
@@ -174,6 +176,7 @@ class Crawler<RawType, FinalType> {
       page: 0,
       product: 0,
       parse: 0,
+      error: 0,
     };
   }
 
@@ -378,7 +381,6 @@ class Crawler<RawType, FinalType> {
     response: Response
   ): Promise<RawType[]> {
     console.log(`Extracting: ${info.request.url.toString()}`);
-    this.processed[info.type]++;
 
     let links: ProductRequestOptions<FinalType>[] = [],
       list: RawType[] = [],
@@ -400,6 +402,8 @@ class Crawler<RawType, FinalType> {
       ) {
         this.next(info, pages);
       }
+
+      this.processed[info.type]++;
     } catch (err) {
       this.onError(err as Error, info);
     }
@@ -424,10 +428,10 @@ class Crawler<RawType, FinalType> {
     raw,
   }: ExtractResult<RawType, FinalType>): Promise<ParseResult<FinalType>> {
     console.log(`Parsing ${info.request.url.toString()}`);
-    this.processed["parse"]++;
 
     try {
       info.result = await this.info.parse(raw, info);
+      this.processed["parse"]++;
     } catch (err) {
       this.onError(err as Error, info);
     }
@@ -462,16 +466,17 @@ class Crawler<RawType, FinalType> {
    * @returns A boolean representing the result.
    */
   private isFinished() {
-    if (this.counter.page !== this.processed.page) {
-      return false;
-    }
-    if (this.counter.product !== this.processed.product) {
-      return false;
-    }
-    if (this.counter.parse !== this.processed.parse) {
-      return false;
-    }
-    return true;
+    const totalProcessed = Object.values(this.processed).reduce(
+      (prev, cur) => prev + cur,
+      0
+    );
+
+    const totalCreated = Object.values(this.counter).reduce(
+      (prev, cur) => prev + cur,
+      0
+    );
+
+    return totalProcessed === totalCreated;
   }
 
   /**
@@ -547,6 +552,7 @@ class Crawler<RawType, FinalType> {
   }
 
   private onError(error: Error | null, info?: CrawlInfo) {
+    this.processed.error++;
     this.output.write({ ...info, error });
   }
 }
