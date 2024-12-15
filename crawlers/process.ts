@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
-import { Crawler, OutputObject } from "./crawler";
 import { ChildProcess, fork } from "child_process";
 import { Products } from "../utils/Enum";
+import { CrawlHandler, OutputObject } from "./interface";
 
 class CrawlerChildProcess {
   private path: string;
@@ -100,7 +100,7 @@ class CrawlerChildProcess {
     }
 
     const info = require(filepath).default;
-    if (!Crawler.isCrawlInfo(info)) {
+    if (!CrawlHandler.isCrawlInfo(info)) {
       throw new Error(
         `The object in the file is not implemented the crawler Website API.`
       );

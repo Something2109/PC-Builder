@@ -1,4 +1,4 @@
-import { APIWebsiteInfo } from "../../crawler";
+import { APIWebsiteInfo } from "../../interface";
 import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 

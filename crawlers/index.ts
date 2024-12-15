@@ -4,6 +4,7 @@ import { Crawler } from "./crawler";
 import { z } from "zod";
 import { Products } from "../utils/Enum";
 import { FileWriter, ProcessWriter } from "./writer";
+import { CrawlHandler } from "./interface";
 
 /** Create an argument object based on the {@link process.argv} list */
 
@@ -43,7 +44,7 @@ if (!fs.existsSync(filepath)) {
 
 const websiteInfo = require(filepath).default;
 
-if (!Crawler.isCrawlInfo(websiteInfo)) {
+if (!CrawlHandler.isCrawlInfo(websiteInfo)) {
   throw new Error(
     `The default object in the path: ${filepath} is not implemented the API the crawler required.`
   );
