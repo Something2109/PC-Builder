@@ -16,52 +16,50 @@ type ProductRequestOptions<ResultType> =
       result?: ResultType;
     };
 
-type BaseInfo = {
+type InfoType = "page" | "product";
+
+type CrawlInfo<Result, Type = InfoType> = {
   request: RequestObject;
-  type: "page" | "product";
+  type: Type;
   product: Products;
   page: number;
+  result?: Result;
 };
-
-type PageCrawlInfo = {
-  type: "page";
-} & BaseInfo;
-
-type ProductCrawlInfo<ReturnType> = {
-  type: "product";
-  result?: ReturnType;
-} & BaseInfo;
-
-type CrawlInfo = PageCrawlInfo | ProductCrawlInfo<any>;
 
 /** Describe required types for the crawl API inferface */
 
 type ExtractFunctionType<RawType, ReturnType> =
-  | ExtractFunction<CrawlInfo, DefaultExtractResult<RawType, ReturnType>>
+  | ExtractFunction<
+      CrawlInfo<ReturnType>,
+      DefaultExtractResult<RawType, ReturnType>
+    >
   | {
-      page: ExtractFunction<PageCrawlInfo, ExtractPageResult<ReturnType>>;
+      page: ExtractFunction<
+        CrawlInfo<ReturnType, "page">,
+        ExtractPageResult<ReturnType>
+      >;
 
       product: ExtractFunction<
-        ProductCrawlInfo<ReturnType>,
+        CrawlInfo<ReturnType, "product">,
         ExtractProductResult<RawType>
       >;
     };
 
-type ExtractFunction<Link extends CrawlInfo, Result> = (
+type ExtractFunction<Link extends CrawlInfo<unknown>, Result> = (
   info: Link,
   response: Response
 ) => Promise<Result>;
 
-type DefaultExtractResult<RawType, ReturnType> = {
-  list: ExtractProductResult<RawType>;
-} & ExtractPageResult<ReturnType>;
+type DefaultExtractResult<Raw, Result> = {
+  list: ExtractProductResult<Raw>;
+} & ExtractPageResult<Result>;
 
-type ExtractPageResult<ReturnType> = {
-  links: ProductRequestOptions<ReturnType>[];
+type ExtractPageResult<Result> = {
+  links: ProductRequestOptions<Result>[];
   pages?: number;
 };
 
-type ExtractProductResult<RawType> = RawType[];
+type ExtractProductResult<Raw> = Raw[];
 
 /**
  * The API that all the website crawling object must implement to be
@@ -94,26 +92,28 @@ interface APIWebsiteInfo<RawType, ReturnType> {
    * @param raw The raw data object to parse from.
    * @param info The crawl info linked to the raw info.
    */
-  parse(raw: RawType, info: ProductCrawlInfo<ReturnType>): Promise<ReturnType>;
+  parse(raw: RawType, info: CrawlInfo<ReturnType>): Promise<ReturnType>;
 }
 
 /** Provide the types used in the crawler */
 
-type CrawlRecordKey = "page" | "product" | "parse";
+type CrawlRecordKey = InfoType | "parse";
 
-type FetchResult = {
-  info: CrawlInfo;
+type FetchResult<Result> = {
+  info: CrawlInfo<Result>;
   response: Response;
 };
 
-type ExtractResult<RawType, ReturnType> = {
-  info: ProductCrawlInfo<ReturnType>;
-  raw: RawType;
+type ExtractResult<Raw, Result> = {
+  info: CrawlInfo<Result>;
+  raw: Raw;
 };
 
-type ParseResult<ReturnType> = Required<ProductCrawlInfo<ReturnType>>;
+type ParseResult<Result> = Required<CrawlInfo<Result>>;
 
-type OutputObject = CrawlInfo & { error?: Error | null };
+type OutputObject<Result = unknown> = CrawlInfo<InfoType, Result> & {
+  error?: Error | null;
+};
 
 type TransformCallback<Content> = (err?: Error | null, value?: Content) => void;
 
@@ -130,7 +130,7 @@ class Crawler<RawType, FinalType> {
    * @param object The object to specify.
    * @returns True if object is a crawler.
    */
-  static isCrawlInfo(object?: any): object is APIWebsiteInfo<any, any> {
+  static isCrawlInfo(object?: any): object is APIWebsiteInfo<unknown, unknown> {
     return (
       object &&
       "domain" in object &&
@@ -166,18 +166,9 @@ class Crawler<RawType, FinalType> {
     this.input = new Readable({ objectMode: true, read() {} });
     this.output = options?.output ?? this.createDefaultOutput();
     this.delay = options?.delay ?? 0;
-    this.counter = {
-      page: 0,
-      product: 0,
-      parse: 0,
-    };
+    this.counter = { page: 0, product: 0, parse: 0 };
 
-    this.processed = {
-      page: 0,
-      product: 0,
-      parse: 0,
-      error: 0,
-    };
+    this.processed = { page: 0, product: 0, parse: 0, error: 0 };
   }
 
   /**
@@ -222,7 +213,11 @@ class Crawler<RawType, FinalType> {
     return new Transform({
       objectMode: true,
       autoDestroy: false,
-      transform(info: CrawlInfo, _, next: TransformCallback<FetchResult>) {
+      transform(
+        info: CrawlInfo<FinalType>,
+        _,
+        next: TransformCallback<FetchResult<FinalType>>
+      ) {
         console.log(`Fetching: ${info.request.url.toString()}`);
 
         fetch(info.request.url, info.request)
@@ -258,15 +253,13 @@ class Crawler<RawType, FinalType> {
       objectMode: true,
       autoDestroy: false,
       transform(
-        { info, response }: FetchResult,
+        { info, response }: FetchResult<FinalType>,
         _,
         callback: TransformCallback<ExtractResult<RawType, FinalType>>
       ) {
         extract(info, response)
           .then((list) => {
-            list.forEach((raw) =>
-              this.push(result(info as ProductCrawlInfo<FinalType>, raw))
-            );
+            list.forEach((raw) => this.push(result(info, raw)));
             callback();
           })
           .catch((reason) => callback(reason));
@@ -308,7 +301,10 @@ class Crawler<RawType, FinalType> {
    */
   private createOutputStream() {
     let writeCount = 0;
-    const finish = (chunk: any, callback: (err?: Error | null) => void) => {
+    const finish = (
+      chunk: OutputObject<FinalType>,
+      callback: (err?: Error | null) => void
+    ) => {
       writeCount++;
 
       this.isFinished() && writeCount === this.counter.parse
@@ -334,7 +330,7 @@ class Crawler<RawType, FinalType> {
     return new Writable({
       objectMode: true,
       autoDestroy: false,
-      write({ error, ...chunk }: OutputObject, _, callback) {
+      write({ error, ...chunk }: OutputObject<FinalType>, _, callback) {
         error
           ? process.stdout.write(
               `${error.stack}\nIn: ${JSON.stringify(chunk)}\n`
@@ -378,7 +374,7 @@ class Crawler<RawType, FinalType> {
    * @returns The extract result object.
    */
   private async extract(
-    info: CrawlInfo,
+    info: CrawlInfo<FinalType>,
     response: Response
   ): Promise<RawType[]> {
     console.log(`Extracting: ${info.request.url.toString()}`);
@@ -391,9 +387,15 @@ class Crawler<RawType, FinalType> {
       if (typeof this.info.extract === "function") {
         ({ links, list, pages } = await this.info.extract(info, response));
       } else if (info.type === "page") {
-        ({ links, pages } = await this.info.extract.page(info, response));
+        ({ links, pages } = await this.info.extract.page(
+          info as CrawlInfo<FinalType, "page">,
+          response
+        ));
       } else {
-        list = await this.info.extract.product(info, response);
+        list = await this.info.extract.product(
+          info as CrawlInfo<FinalType, "product">,
+          response
+        );
       }
 
       if (
@@ -446,7 +448,7 @@ class Crawler<RawType, FinalType> {
    * @param info The current request object.
    * @param pages The number of next requests from the current one.
    */
-  private next(info: PageCrawlInfo, pages: number) {
+  private next(info: CrawlInfo<FinalType>, pages: number) {
     let nextPage = info.page;
     while (nextPage < pages) {
       nextPage++;
@@ -507,7 +509,7 @@ class Crawler<RawType, FinalType> {
     product: Products,
     options: RequestOptions,
     page: number
-  ): PageCrawlInfo {
+  ): CrawlInfo<FinalType, "page"> {
     options = this.createRequest(options);
 
     this.counter.page++;
@@ -522,9 +524,9 @@ class Crawler<RawType, FinalType> {
    * @returns The product link object created.
    */
   private createProductInfo(
-    info: CrawlInfo,
+    info: CrawlInfo<FinalType>,
     options: ProductRequestOptions<FinalType>
-  ): ProductCrawlInfo<FinalType> {
+  ): CrawlInfo<FinalType, "product"> {
     let request: RequestOptions, result: FinalType | undefined;
     if (typeof options !== "string" && "request" in options) {
       ({ request, result } = options);
@@ -545,14 +547,14 @@ class Crawler<RawType, FinalType> {
    * @returns The extract result.
    */
   private createExtractResult(
-    info: ProductCrawlInfo<FinalType>,
+    info: CrawlInfo<FinalType>,
     raw: RawType
   ): ExtractResult<RawType, FinalType> {
     this.counter.parse++;
     return { info, raw };
   }
 
-  private onError(error: Error | null, info?: CrawlInfo) {
+  private onError(error: Error | null, info?: CrawlInfo<FinalType>) {
     this.processed.error++;
     this.output.write({ ...info, error });
   }
