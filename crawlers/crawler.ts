@@ -277,6 +277,7 @@ class Crawler<Raw, Final> {
    */
   private createParseStream() {
     const parse = this.parse.bind(this);
+    const onError = this.onError.bind(this);
     const finish = this.finish.bind(this);
 
     return new Transform({
@@ -289,7 +290,10 @@ class Crawler<Raw, Final> {
       ) {
         parse(info, raw)
           .then((value) => callback(null, value))
-          .catch((reason) => callback(reason))
+          .catch((reason) => {
+            onError(reason, info);
+            callback();
+          })
           .finally(finish);
       },
     });
@@ -453,12 +457,8 @@ class Crawler<Raw, Final> {
   ): Promise<ParseResult<Final>> {
     console.log(`Parsing ${info.request.url.toString()}`);
 
-    try {
-      info.result = await this.info.parse(raw, info);
-      this.processed["parse"]++;
-    } catch (err) {
-      this.onError(err as Error, info);
-    }
+    info.result = await this.info.parse(raw, info);
+    this.processed["parse"]++;
 
     return info as ParseResult<Final>;
   }
