@@ -338,7 +338,10 @@ class CrawlHandler<Raw, Final> {
       while (nextPage < pages) {
         nextPage++;
         newInfo.push(
-          this.createPageInfo(info, this.info.path(info.product, nextPage)!)
+          this.createPageInfo(
+            { product: info.product, page: nextPage },
+            this.info.path(info.product, nextPage)!
+          )
         );
       }
     }
