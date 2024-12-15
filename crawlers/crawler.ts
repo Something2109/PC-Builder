@@ -108,9 +108,13 @@ type ExtractResult<Raw, Result> = {
 
 type ParseResult<Result> = Required<CrawlInfo<Result>>;
 
-type OutputObject<Result = unknown> = CrawlInfo<InfoType, Result> & {
-  error?: Error | null;
-};
+type ErrorOutputObject<Result> = CrawlInfo<InfoType, Result> & { error: Error };
+
+type ResultOutputObject<Result> = Required<CrawlInfo<Result>>;
+
+type OutputObject<Result = unknown> =
+  | ErrorOutputObject<Result>
+  | ResultOutputObject<Result>;
 
 type TransformCallback<Content> = (err?: Error | null, value?: Content) => void;
 
@@ -327,10 +331,10 @@ class Crawler<Raw, Final> {
     return new Writable({
       objectMode: true,
       autoDestroy: false,
-      write({ error, ...chunk }: OutputObject<Final>, _, callback) {
-        error
+      write(chunk: OutputObject<Final>, _, callback) {
+        "error" in chunk
           ? process.stdout.write(
-              `${error.stack}\nIn: ${JSON.stringify(chunk)}\n`
+              `${chunk.error.stack}\nIn: ${JSON.stringify(chunk)}\n`
             )
           : process.stdout.write(`${JSON.stringify(chunk)}\n`);
         callback();

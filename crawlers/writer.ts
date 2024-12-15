@@ -37,21 +37,23 @@ class FileWriter extends Writable {
     encoding: BufferEncoding,
     callback: (error?: Error | null) => void
   ): void {
-    const filename: keyof typeof this.writeStream = chunk.error
-      ? "error"
-      : chunk.product;
+    const filename: keyof typeof this.writeStream =
+      "error" in chunk ? "error" : chunk.product;
 
-    if (chunk.error) {
+    // Format the error object to be easier stringify to json.
+    if ("error" in chunk) {
       chunk.error = chunk.error.stack as any;
     }
 
-    let prefix = ","; // used to format the output according to the json format
+    let prefix = ","; // used to format the output according to the json format.
     if (!this.writeStream[filename]) {
+      // if the stream's currently not created.
       this.writeStream[filename] = createWriteStream(
         path.join(this.path, `${filename}.json`),
         encoding
       );
-      prefix = "["; // start of the wri
+
+      prefix = "["; // create the first character of the writing json file.
     }
     this.writeStream[filename].write(
       `${prefix}${JSON.stringify(chunk)}`,
