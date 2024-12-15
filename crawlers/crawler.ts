@@ -248,7 +248,6 @@ class Crawler<Raw, Final> {
    */
   private createExtractStream() {
     const extract = this.extract.bind(this);
-    const result = this.createExtractResult.bind(this);
     const finish = this.finish.bind(this);
 
     return new Transform({
@@ -261,7 +260,7 @@ class Crawler<Raw, Final> {
       ) {
         extract(info, response)
           .then((list) => {
-            list.forEach((raw) => this.push(result(info, raw)));
+            list.forEach((raw) => this.push({ info, raw }));
             callback();
           })
           .catch((reason) => callback(reason))
@@ -284,11 +283,11 @@ class Crawler<Raw, Final> {
       objectMode: true,
       autoDestroy: false,
       transform(
-        chunk: ExtractResult<Raw, Final>,
+        { info, raw }: ExtractResult<Raw, Final>,
         _,
         callback: TransformCallback<ParseResult<Final>>
       ) {
-        parse(chunk)
+        parse(info, raw)
           .then((value) => callback(null, value))
           .catch((reason) => callback(reason))
           .finally(finish);
@@ -427,6 +426,7 @@ class Crawler<Raw, Final> {
         this.next(info, pages);
       }
 
+      this.counter.parse += list.length;
       this.processed[info.type]++;
     } catch (err) {
       this.onError(err as Error, info);
@@ -447,10 +447,10 @@ class Crawler<Raw, Final> {
    * @param raw The raw object extracted
    * @returns
    */
-  private async parse({
-    info,
-    raw,
-  }: ExtractResult<Raw, Final>): Promise<ParseResult<Final>> {
+  private async parse(
+    info: CrawlInfo<Final>,
+    raw: Raw
+  ): Promise<ParseResult<Final>> {
     console.log(`Parsing ${info.request.url.toString()}`);
 
     try {
@@ -560,21 +560,6 @@ class Crawler<Raw, Final> {
 
     this.counter.product++;
     return { ...info, type: "product", request, result };
-  }
-
-  /**
-   * A function purely used to increase the parse counter.
-   * Return the {@link ExtractResult} type as result.
-   * @param info The info creating the raw result.
-   * @param raw The raw result of the info.
-   * @returns The extract result.
-   */
-  private createExtractResult(
-    info: CrawlInfo<Final>,
-    raw: Raw
-  ): ExtractResult<Raw, Final> {
-    this.counter.parse++;
-    return { info, raw };
   }
 
   private onError(error: Error | null, info?: CrawlInfo<Final>) {
