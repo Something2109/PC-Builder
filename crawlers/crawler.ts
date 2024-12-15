@@ -28,20 +28,17 @@ type CrawlInfo<Result, Type = InfoType> = {
 
 /** Describe required types for the crawl API inferface */
 
-type ExtractFunctionType<RawType, ReturnType> =
-  | ExtractFunction<
-      CrawlInfo<ReturnType>,
-      DefaultExtractResult<RawType, ReturnType>
-    >
+type ExtractFunctionType<Raw, Result> =
+  | ExtractFunction<CrawlInfo<Result>, DefaultExtractResult<Raw, Result>>
   | {
       page: ExtractFunction<
-        CrawlInfo<ReturnType, "page">,
-        ExtractPageResult<ReturnType>
+        CrawlInfo<Result, "page">,
+        ExtractPageResult<Result>
       >;
 
       product: ExtractFunction<
-        CrawlInfo<ReturnType, "product">,
-        ExtractProductResult<RawType>
+        CrawlInfo<Result, "product">,
+        ExtractProductResult<Raw>
       >;
     };
 
@@ -65,7 +62,7 @@ type ExtractProductResult<Raw> = Raw[];
  * The API that all the website crawling object must implement to be
  * used in the crawler.
  */
-interface APIWebsiteInfo<RawType, ReturnType> {
+interface APIWebsiteInfo<Raw, Final> {
   /**
    * The website domain.
    */
@@ -85,14 +82,14 @@ interface APIWebsiteInfo<RawType, ReturnType> {
   /**
    * Extract the data list from the response object.
    */
-  extract: ExtractFunctionType<RawType, ReturnType>;
+  extract: ExtractFunctionType<Raw, Final>;
 
   /**
    * Parse each item from the result of the extract function to the useful data.
    * @param raw The raw data object to parse from.
    * @param info The crawl info linked to the raw info.
    */
-  parse(raw: RawType, info: CrawlInfo<ReturnType>): Promise<ReturnType>;
+  parse(raw: Raw, info: CrawlInfo<Final>): Promise<Final>;
 }
 
 /** Provide the types used in the crawler */
@@ -117,8 +114,8 @@ type OutputObject<Result = unknown> = CrawlInfo<InfoType, Result> & {
 
 type TransformCallback<Content> = (err?: Error | null, value?: Content) => void;
 
-class Crawler<RawType, FinalType> {
-  private readonly info: APIWebsiteInfo<RawType, FinalType>;
+class Crawler<Raw, Final> {
+  private readonly info: APIWebsiteInfo<Raw, Final>;
   private input: Readable;
   private output: Writable;
   private delay: number;
@@ -155,7 +152,7 @@ class Crawler<RawType, FinalType> {
    * to work properly.
    */
   constructor(
-    info: APIWebsiteInfo<RawType, FinalType>,
+    info: APIWebsiteInfo<Raw, Final>,
     options?: { output?: Writable; delay?: number }
   ) {
     if (!Crawler.isCrawlInfo(info)) {
@@ -214,9 +211,9 @@ class Crawler<RawType, FinalType> {
       objectMode: true,
       autoDestroy: false,
       transform(
-        info: CrawlInfo<FinalType>,
+        info: CrawlInfo<Final>,
         _,
-        next: TransformCallback<FetchResult<FinalType>>
+        next: TransformCallback<FetchResult<Final>>
       ) {
         console.log(`Fetching: ${info.request.url.toString()}`);
 
@@ -242,7 +239,7 @@ class Crawler<RawType, FinalType> {
    * Create a stream handling the response extract procedure.
    * The stream takes the input {@link FetchResult}
    * and return back the {@link ExtractResult}
-   * of {@link RawType} and {@link FinalType}.
+   * of {@link Raw} and {@link Final}.
    * @returns The extract stream created.
    */
   private createExtractStream() {
@@ -253,9 +250,9 @@ class Crawler<RawType, FinalType> {
       objectMode: true,
       autoDestroy: false,
       transform(
-        { info, response }: FetchResult<FinalType>,
+        { info, response }: FetchResult<Final>,
         _,
-        callback: TransformCallback<ExtractResult<RawType, FinalType>>
+        callback: TransformCallback<ExtractResult<Raw, Final>>
       ) {
         extract(info, response)
           .then((list) => {
@@ -280,9 +277,9 @@ class Crawler<RawType, FinalType> {
       objectMode: true,
       autoDestroy: false,
       transform(
-        chunk: ExtractResult<RawType, FinalType>,
+        chunk: ExtractResult<Raw, Final>,
         _,
-        callback: TransformCallback<ParseResult<FinalType>>
+        callback: TransformCallback<ParseResult<Final>>
       ) {
         parse(chunk)
           .then((value) => {
@@ -302,7 +299,7 @@ class Crawler<RawType, FinalType> {
   private createOutputStream() {
     let writeCount = 0;
     const finish = (
-      chunk: OutputObject<FinalType>,
+      chunk: OutputObject<Final>,
       callback: (err?: Error | null) => void
     ) => {
       writeCount++;
@@ -330,7 +327,7 @@ class Crawler<RawType, FinalType> {
     return new Writable({
       objectMode: true,
       autoDestroy: false,
-      write({ error, ...chunk }: OutputObject<FinalType>, _, callback) {
+      write({ error, ...chunk }: OutputObject<Final>, _, callback) {
         error
           ? process.stdout.write(
               `${error.stack}\nIn: ${JSON.stringify(chunk)}\n`
@@ -374,13 +371,13 @@ class Crawler<RawType, FinalType> {
    * @returns The extract result object.
    */
   private async extract(
-    info: CrawlInfo<FinalType>,
+    info: CrawlInfo<Final>,
     response: Response
-  ): Promise<RawType[]> {
+  ): Promise<Raw[]> {
     console.log(`Extracting: ${info.request.url.toString()}`);
 
-    let links: ProductRequestOptions<FinalType>[] = [],
-      list: RawType[] = [],
+    let links: ProductRequestOptions<Final>[] = [],
+      list: Raw[] = [],
       pages;
 
     try {
@@ -388,12 +385,12 @@ class Crawler<RawType, FinalType> {
         ({ links, list, pages } = await this.info.extract(info, response));
       } else if (info.type === "page") {
         ({ links, pages } = await this.info.extract.page(
-          info as CrawlInfo<FinalType, "page">,
+          info as CrawlInfo<Final, "page">,
           response
         ));
       } else {
         list = await this.info.extract.product(
-          info as CrawlInfo<FinalType, "product">,
+          info as CrawlInfo<Final, "product">,
           response
         );
       }
@@ -429,7 +426,7 @@ class Crawler<RawType, FinalType> {
   private async parse({
     info,
     raw,
-  }: ExtractResult<RawType, FinalType>): Promise<ParseResult<FinalType>> {
+  }: ExtractResult<Raw, Final>): Promise<ParseResult<Final>> {
     console.log(`Parsing ${info.request.url.toString()}`);
 
     try {
@@ -439,7 +436,7 @@ class Crawler<RawType, FinalType> {
       this.onError(err as Error, info);
     }
 
-    return info as ParseResult<FinalType>;
+    return info as ParseResult<Final>;
   }
 
   /**
@@ -448,7 +445,7 @@ class Crawler<RawType, FinalType> {
    * @param info The current request object.
    * @param pages The number of next requests from the current one.
    */
-  private next(info: CrawlInfo<FinalType>, pages: number) {
+  private next(info: CrawlInfo<Final>, pages: number) {
     let nextPage = info.page;
     while (nextPage < pages) {
       nextPage++;
@@ -509,7 +506,7 @@ class Crawler<RawType, FinalType> {
     product: Products,
     options: RequestOptions,
     page: number
-  ): CrawlInfo<FinalType, "page"> {
+  ): CrawlInfo<Final, "page"> {
     options = this.createRequest(options);
 
     this.counter.page++;
@@ -524,10 +521,10 @@ class Crawler<RawType, FinalType> {
    * @returns The product link object created.
    */
   private createProductInfo(
-    info: CrawlInfo<FinalType>,
-    options: ProductRequestOptions<FinalType>
-  ): CrawlInfo<FinalType, "product"> {
-    let request: RequestOptions, result: FinalType | undefined;
+    info: CrawlInfo<Final>,
+    options: ProductRequestOptions<Final>
+  ): CrawlInfo<Final, "product"> {
+    let request: RequestOptions, result: Final | undefined;
     if (typeof options !== "string" && "request" in options) {
       ({ request, result } = options);
     } else {
@@ -547,14 +544,14 @@ class Crawler<RawType, FinalType> {
    * @returns The extract result.
    */
   private createExtractResult(
-    info: CrawlInfo<FinalType>,
-    raw: RawType
-  ): ExtractResult<RawType, FinalType> {
+    info: CrawlInfo<Final>,
+    raw: Raw
+  ): ExtractResult<Raw, Final> {
     this.counter.parse++;
     return { info, raw };
   }
 
-  private onError(error: Error | null, info?: CrawlInfo<FinalType>) {
+  private onError(error: Error | null, info?: CrawlInfo<Final>) {
     this.processed.error++;
     this.output.write({ ...info, error });
   }
