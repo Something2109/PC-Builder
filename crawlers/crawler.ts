@@ -119,11 +119,20 @@ type OutputObject<Result = unknown> =
 
 type TransformCallback<Content> = (err?: Error | null, value?: Content) => void;
 
+/** Constants */
+
+const DEFAULT_DELAY_TIME = 0;
+const DEFAULT_TIMEOUT_TIME = 10000;
+
+const DELAY_FLAG = "delay";
+const TIMEOUT_FLAG = "fetch_fail";
+
 class Crawler<Raw, Final> {
   private readonly info: APIWebsiteInfo<Raw, Final>;
   private input: Readable;
   private output: Writable;
   private delay: number;
+  private timeout: number;
   private counter: Record<CrawlRecordKey, number>;
   private processed: Record<CrawlRecordKey | "error", number>;
 
@@ -158,7 +167,7 @@ class Crawler<Raw, Final> {
    */
   constructor(
     info: APIWebsiteInfo<Raw, Final>,
-    options?: { output?: Writable; delay?: number }
+    options?: { output?: Writable; delay?: number; timeout?: number }
   ) {
     if (!Crawler.isCrawlInfo(info)) {
       throw new Error("The provided info is not implemented the API");
@@ -167,7 +176,8 @@ class Crawler<Raw, Final> {
     this.info = info;
     this.input = new Readable({ objectMode: true, read() {} });
     this.output = options?.output ?? this.createDefaultOutput();
-    this.delay = options?.delay ?? 0;
+    this.delay = options?.delay ?? DEFAULT_DELAY_TIME;
+    this.timeout = options?.timeout ?? DEFAULT_TIMEOUT_TIME;
     this.counter = { page: 0, product: 0, parse: 0 };
 
     this.processed = { page: 0, product: 0, parse: 0, error: 0 };
@@ -222,7 +232,10 @@ class Crawler<Raw, Final> {
       ) {
         fetch(info)
           .then((response) => next(null, { info, response }))
-          .catch((reason) => onError(reason, info));
+          .catch((reason) => {
+            onError(reason, info);
+            next();
+          });
       },
     });
   }
@@ -274,9 +287,7 @@ class Crawler<Raw, Final> {
         callback: TransformCallback<ParseResult<Final>>
       ) {
         parse(chunk)
-          .then((value) => {
-            callback(null, value);
-          })
+          .then((value) => callback(null, value))
           .catch((reason) => callback(reason));
       },
     });
@@ -355,17 +366,42 @@ class Crawler<Raw, Final> {
 
   /**
    * Fetch the info given in the parameter.
-   * Delay the return of the function as
-   * the declared {@link delay} after fetching.
+   * If the fetch process exceeds {@link timeout}, the function will throw error.
+   * If the fetch response is not ok, the function will throw error.
    * @param info The given crawl info in the parameter.
    * @returns The response fetched from the info.
    */
   private async fetch(info: CrawlInfo<Final>) {
     console.log(`Fetching: ${info.request.url.toString()}`);
 
-    const response = await fetch(info.request.url, info.request);
+    const fetchProcess = fetch(info.request.url, info.request);
+    const delayTimeout = setTimeout<typeof DELAY_FLAG>(this.delay, DELAY_FLAG);
+    const fetchTimeout = setTimeout<typeof TIMEOUT_FLAG>(
+      this.timeout,
+      TIMEOUT_FLAG
+    );
 
-    await setTimeout(this.delay);
+    /** Race between the 3 promise. */
+    let response = await Promise.race([
+      fetchProcess,
+      delayTimeout,
+      fetchTimeout,
+    ]);
+
+    /** If the delay promise finishes 1st, await for completion of the other 2. */
+    if (response === DELAY_FLAG) {
+      response = await Promise.race([fetchProcess, fetchTimeout]);
+    }
+
+    /** If the timeout promise finishes 1st, throw an error. */
+    if (response === TIMEOUT_FLAG) {
+      throw new Error(
+        `Fetch error: fetching process exceeds the timeout time.`
+      );
+    }
+
+    /** await delay promise if not finished. */
+    await delayTimeout;
 
     if (!response.ok) {
       throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
