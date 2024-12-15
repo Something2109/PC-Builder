@@ -1,4 +1,5 @@
 import { Products } from "../utils/Enum";
+import { setTimeout } from "timers/promises";
 import { pipeline, Readable, Transform, Writable } from "stream";
 
 /** Describe types for the crawl info object */
@@ -208,8 +209,8 @@ class Crawler<Raw, Final> {
    * @returns The fetch stream.
    */
   private createFetchStream() {
+    const fetch = this.fetch.bind(this);
     const onError = this.onError.bind(this);
-    const DelayTime = this.delay;
 
     return new Transform({
       objectMode: true,
@@ -219,21 +220,8 @@ class Crawler<Raw, Final> {
         _,
         next: TransformCallback<FetchResult<Final>>
       ) {
-        console.log(`Fetching: ${info.request.url.toString()}`);
-
-        fetch(info.request.url, info.request)
-          .then((response) => {
-            setTimeout(() => {
-              response.ok
-                ? next(null, { info, response })
-                : onError(
-                    new Error(
-                      `Fetch error: ${response.status} ${response.statusText}`
-                    ),
-                    info
-                  );
-            }, DelayTime);
-          })
+        fetch(info)
+          .then((response) => next(null, { info, response }))
           .catch((reason) => onError(reason, info));
       },
     });
@@ -363,6 +351,27 @@ class Crawler<Raw, Final> {
         this.onError(err as Error);
       }
     });
+  }
+
+  /**
+   * Fetch the info given in the parameter.
+   * Delay the return of the function as
+   * the declared {@link delay} after fetching.
+   * @param info The given crawl info in the parameter.
+   * @returns The response fetched from the info.
+   */
+  private async fetch(info: CrawlInfo<Final>) {
+    console.log(`Fetching: ${info.request.url.toString()}`);
+
+    const response = await fetch(info.request.url, info.request);
+
+    await setTimeout(this.delay);
+
+    if (!response.ok) {
+      throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
+    }
+
+    return response;
   }
 
   /**
