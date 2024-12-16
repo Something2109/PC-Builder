@@ -1,5 +1,4 @@
 import { Products } from "../utils/Enum";
-import { setTimeout } from "timers/promises";
 
 /** Describe types for the crawl info object */
 
@@ -104,14 +103,6 @@ interface APIWebsiteInfo<Raw, Final> {
 
 type CrawlRecordKey = InfoType | "parse";
 
-/** Constants */
-
-const DEFAULT_DELAY_TIME = 0;
-const DEFAULT_TIMEOUT_TIME = 10000;
-
-const DELAY_FLAG = "delay";
-const TIMEOUT_FLAG = "fetch_fail";
-
 /**
  * The crawl handler interface.
  * Contains the basic crawl handler functions to crawl data.
@@ -171,258 +162,34 @@ interface CrawlHandlerInterface<Raw, Final> {
 }
 
 /**
- * The crawl handler class -
- * an implementation of the {@link CrawlHandlerInterface}.
- * Contains the basic crawl handler functions to crawl data
- * using the {@link APIWebsiteInfo}.
+ * Specify if the parameter object is a crawler object.
+ * @param object The object to specify.
+ * @returns True if object is a crawler.
  */
-class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
-  private readonly info: APIWebsiteInfo<Raw, Final>;
-  private delay: number;
-  private timeout: number;
-  readonly counter: Record<CrawlRecordKey, number>;
-  readonly processed: Record<CrawlRecordKey | "error", number>;
-
-  /**
-   * Specify if the parameter object is a crawler object.
-   * @param object The object to specify.
-   * @returns True if object is a crawler.
-   */
-  static isCrawlInfo(object?: any): object is APIWebsiteInfo<unknown, unknown> {
-    return (
-      object &&
-      "domain" in object &&
-      "path" in object &&
-      typeof object["path"] == "function" &&
-      "extract" in object &&
-      (typeof object.extract == "function" ||
-        (typeof object.extract == "object" &&
-          object.extract.page &&
-          object.extract.product)) &&
-      "parse" in object &&
-      typeof object.parse == "function"
-    );
-  }
-
-  /**
-   * The crawler constructor.
-   * @param info The website api to be used by the crawler.
-   * @param options The options for the crawler. Take output as a {@link Writable}
-   * to customize the output of the crawler.
-   * The output's write function's chunk parameter must implement the {@link OutputObject}
-   * to work properly.
-   */
-  constructor(
-    info: APIWebsiteInfo<Raw, Final>,
-    options?: { delay?: number; timeout?: number }
-  ) {
-    if (!CrawlHandler.isCrawlInfo(info)) {
-      throw new Error("The provided info is not implemented the API");
-    }
-
-    this.info = info;
-    this.delay = options?.delay ?? DEFAULT_DELAY_TIME;
-    this.timeout = options?.timeout ?? DEFAULT_TIMEOUT_TIME;
-    this.counter = { page: 0, product: 0, parse: 0 };
-    this.processed = { page: 0, product: 0, parse: 0, error: 0 };
-  }
-
-  public start(products?: Products[]) {
-    if (!products) {
-      products = Object.values(Products);
-    }
-
-    const infos: CrawlInfo<Final>[] = [];
-    products.forEach((product) => {
-      const request = this.info.path(product, 1);
-      if (request) {
-        infos.push(this.createPageInfo({ product, page: 1 }, request));
-      }
-    });
-
-    return infos;
-  }
-
-  public async fetch(info: CrawlInfo<Final>) {
-    console.log(`Fetching: ${info.request.url.toString()}`);
-
-    const fetchProcess = fetch(info.request.url, info.request);
-    const delayTimeout = setTimeout<typeof DELAY_FLAG>(this.delay, DELAY_FLAG);
-    const fetchTimeout = setTimeout<typeof TIMEOUT_FLAG>(
-      this.timeout,
-      TIMEOUT_FLAG
-    );
-
-    /** Race between the 3 promise. */
-    let response = await Promise.race([
-      fetchProcess,
-      delayTimeout,
-      fetchTimeout,
-    ]);
-
-    /** If the delay promise finishes 1st, await for completion of the other 2. */
-    if (response === DELAY_FLAG) {
-      response = await Promise.race([fetchProcess, fetchTimeout]);
-    }
-
-    /** If the timeout promise finishes 1st, throw an error. */
-    if (response === TIMEOUT_FLAG) {
-      throw new Error(
-        `Fetch error: fetching process exceeds the timeout time.`
-      );
-    }
-
-    /** await delay promise if not finished. */
-    await delayTimeout;
-
-    if (!response.ok) {
-      throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
-    }
-
-    return response;
-  }
-
-  public async extract(info: CrawlInfo<Final>, response: Response) {
-    console.log(`Extracting: ${info.request.url.toString()}`);
-
-    let links: ProductRequestOptions<Final>[] = [],
-      list: Raw[] = [],
-      pages;
-
-    if (typeof this.info.extract === "function") {
-      ({ links, list, pages } = await this.info.extract(info, response));
-    } else if (info.type === "page") {
-      ({ links, pages } = await this.info.extract.page(
-        info as CrawlInfo<Final, "page">,
-        response
-      ));
-    } else {
-      list = await this.info.extract.product(
-        info as CrawlInfo<Final, "product">,
-        response
-      );
-    }
-
-    const newInfo = this.extractLinkHandler(info, list, links, pages);
-
-    this.counter.parse += list.length;
-    this.processed[info.type]++;
-
-    return { raw: list, info: newInfo };
-  }
-
-  public async parse(info: CrawlInfo<Final>, raw: Raw) {
-    console.log(`Parsing ${info.request.url.toString()}`);
-
-    info.result = await this.info.parse(raw, info);
-    this.processed["parse"]++;
-
-    return info as Required<CrawlInfo<Final>>;
-  }
-
-  public finish() {
-    const totalProcessed = Object.values(this.processed).reduce(
-      (prev, cur) => prev + cur,
-      0
-    );
-
-    const totalCreated = Object.values(this.counter).reduce(
-      (prev, cur) => prev + cur,
-      0
-    );
-
-    return totalProcessed === totalCreated;
-  }
-
-  /**
-   * Get the next requests of the request data and
-   * push it to the request queue.
-   * @param info The current request object.
-   * @param pages The number of next requests from the current one.
-   */
-  private extractLinkHandler(
-    info: CrawlInfo<Final>,
-    list: Raw[],
-    links: ProductRequestOptions<Final>[],
-    pages?: number
-  ) {
-    const newInfo: CrawlInfo<Final>[] = links.map((link) =>
-      this.createProductInfo(info, link)
-    );
-
-    if (info.type == "page" && pages && (list.length > 0 || links.length > 0)) {
-      let nextPage = info.page;
-      while (nextPage < pages) {
-        nextPage++;
-        newInfo.push(
-          this.createPageInfo(
-            { product: info.product, page: nextPage },
-            this.info.path(info.product, nextPage)!
-          )
-        );
-      }
-    }
-
-    return newInfo;
-  }
-
-  /**
-   * Create the request object for the crawl info.
-   * @param options The request options.
-   * @returns The request object created.
-   */
-  private createRequest(options: RequestOptions): RequestObject {
-    if (typeof options === "string" || options instanceof URL) {
-      options = {
-        url: new URL(options),
-      };
-    }
-
-    return options;
-  }
-
-  /**
-   * Create a page link object from the parameters.
-   * Increase the page counter each successful call.
-   * @param product The product of the page link.
-   * @param options The request object of the link.
-   * @param page The page number the request represented.
-   * @returns The page link object created.
-   */
-  private createPageInfo(
-    info: { product: Products; page: number },
-    options: RequestOptions
-  ): CrawlInfo<Final, "page"> {
-    options = this.createRequest(options);
-
-    this.counter.page++;
-    return { type: "page", ...info, request: options };
-  }
-
-  /**
-   * Create a product link object from the parameters.
-   * Increase the product counter each successful call.
-   * @param info The product of the product link.
-   * @param options The options to create product link.
-   * @returns The product link object created.
-   */
-  private createProductInfo(
-    info: CrawlInfo<Final>,
-    options: ProductRequestOptions<Final>
-  ): CrawlInfo<Final, "product"> {
-    let request: RequestOptions, result: Final | undefined;
-    if (typeof options !== "string" && "request" in options) {
-      ({ request, result } = options);
-    } else {
-      request = options;
-    }
-    request = this.createRequest(request);
-
-    this.counter.product++;
-    return { ...info, type: "product", request, result };
-  }
+function isCrawlInfo(object?: any): object is APIWebsiteInfo<unknown, unknown> {
+  return (
+    object &&
+    "domain" in object &&
+    "path" in object &&
+    typeof object["path"] == "function" &&
+    "extract" in object &&
+    (typeof object.extract == "function" ||
+      (typeof object.extract == "object" &&
+        object.extract.page &&
+        object.extract.product)) &&
+    "parse" in object &&
+    typeof object.parse == "function"
+  );
 }
 
-export type { APIWebsiteInfo, CrawlInfo, OutputObject, CrawlHandlerInterface };
+export type {
+  APIWebsiteInfo,
+  CrawlInfo,
+  RequestObject,
+  RequestOptions,
+  ProductRequestOptions,
+  OutputObject,
+  CrawlHandlerInterface,
+};
 
-export { CrawlHandler };
+export { isCrawlInfo };
