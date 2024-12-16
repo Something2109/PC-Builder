@@ -33,7 +33,7 @@ class FileWriter extends Writable {
    * @param callback The callback variable of the write function.
    */
   _write(
-    chunk: OutputObject,
+    { progress: { created, processed }, ...chunk }: OutputObject,
     encoding: BufferEncoding,
     callback: (error?: Error | null) => void
   ): void {
@@ -58,6 +58,17 @@ class FileWriter extends Writable {
     this.writeStream[filename].write(
       `${prefix}${JSON.stringify(chunk)}`,
       callback
+    );
+
+    console.log(
+      `Progress: ${Object.entries(processed)
+        .map(([key, value]) => {
+          if (key !== "error") {
+            return `${value}/${created[key as keyof typeof created]} ${key}`;
+          }
+          return `Error: ${value}`;
+        })
+        .join(", ")}`
     );
   }
 

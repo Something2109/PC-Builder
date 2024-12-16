@@ -25,9 +25,16 @@ type CrawlInfo<Result, Type = InfoType> = {
   result?: Result;
 };
 
-type ErrorOutputObject<Result> = CrawlInfo<Result> & { error: Error };
+type BaseOutput<Result> = CrawlInfo<Result> & {
+  progress: {
+    created: Record<CrawlRecordKey, number>;
+    processed: Record<CrawlRecordKey | "error", number>;
+  };
+};
 
-type ResultOutputObject<Result> = Required<CrawlInfo<Result>>;
+type ErrorOutputObject<Result> = BaseOutput<Result> & { error: Error };
+
+type ResultOutputObject<Result> = Required<BaseOutput<Result>>;
 
 type OutputObject<Result = unknown> =
   | ErrorOutputObject<Result>
