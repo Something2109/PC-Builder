@@ -33,8 +33,8 @@ class CrawlStream<Raw, Final> extends Transform {
         );
       })
       .then((finalType) => finalType.forEach((value) => this.push(value)))
-      .then(() => callback())
-      .catch((error: Error) => this.push({ ...chunk, error: error.stack }));
+      .catch((error: Error) => this.push(this.handler.error(chunk, error)))
+      .finally(() => callback());
   }
 }
 

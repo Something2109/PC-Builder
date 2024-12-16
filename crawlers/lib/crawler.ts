@@ -56,15 +56,13 @@ class Crawler<Raw, Final> {
 
     const ParseStream = this.createParseStream();
 
-    const onError = this.onError.bind(this);
-
     pipeline(
       this.input,
       FetchStream,
       ExtractStream,
       ParseStream,
       this.output,
-      (error) => onError(error)
+      (error) => this.output.write({ error })
     );
 
     this.input.on("end", () => console.log("End"));
@@ -157,7 +155,7 @@ class Crawler<Raw, Final> {
       transform(
         { info, raw }: ExtractResult<Raw, Final>,
         _,
-        callback: TransformCallback<ParseResult<Final>>
+        callback: TransformCallback<OutputObject<Final>>
       ) {
         parse(info, raw)
           .then((value) => callback(null, value))
@@ -202,9 +200,10 @@ class Crawler<Raw, Final> {
     }
   }
 
-  private onError(error: Error | null, info?: CrawlInfo<Final>) {
-    this.handler.processed.error++;
-    this.output.write({ ...info, error });
+  private onError(error: Error, info: CrawlInfo<Final>) {
+    const message = this.handler.error(info, error);
+
+    this.output.write(message);
   }
 }
 

@@ -138,10 +138,21 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
   public async parse(info: CrawlInfo<Final>, raw: Raw) {
     console.log(`Parsing ${info.request.url.toString()}`);
 
-    info.result = await this.info.parse(raw, info);
+    const result = { ...info, result: await this.info.parse(raw, info) };
+
     this.processed["parse"]++;
 
-    return info as Required<CrawlInfo<Final>>;
+    return result;
+  }
+
+  public async error(info: CrawlInfo<Final>, error: Error) {
+    console.log(`Parsing ${info.request.url.toString()}`);
+
+    const result = { ...info, error };
+
+    this.processed["error"]++;
+
+    return result;
   }
 
   public finish() {

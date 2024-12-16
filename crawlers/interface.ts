@@ -150,9 +150,21 @@ interface CrawlHandlerInterface<Raw, Final> {
    * Parse the raw object to create the result object in the info object.
    * @param info The current info object.
    * @param raw The raw object extracted.
-   * @returns The result of the website info's parse funtion.
+   * @returns The {@link ResultOutputObject} of the website info's parse funtion.
    */
-  parse(info: CrawlInfo<Final>, raw: Raw): Promise<Required<CrawlInfo<Final>>>;
+  parse(info: CrawlInfo<Final>, raw: Raw): Promise<ResultOutputObject<Final>>;
+
+  /**
+   * The error handle function.
+   * Should be called when encounter error.
+   * @param info The crawl info being processed that encounters the error.
+   * @param error The error caused the interuption.
+   * @returns The {@link ErrorOutputObject} of the function.
+   */
+  error(
+    info: CrawlInfo<Final>,
+    error: Error
+  ): Promise<ErrorOutputObject<Final>>;
 
   /**
    * Check if the crawler has finished crawling by
