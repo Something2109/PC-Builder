@@ -62,7 +62,7 @@ class Crawler<Raw, Final> {
       ExtractStream,
       ParseStream,
       this.output,
-      (error) => this.output.write({ error })
+      (error) => console.error(error)
     );
 
     this.input.on("end", () => console.log("End"));
@@ -93,10 +93,7 @@ class Crawler<Raw, Final> {
       ) {
         fetch(info)
           .then((response) => next(null, { info, response }))
-          .catch((reason) => {
-            onError(reason, info);
-            next();
-          })
+          .catch((reason) => onError(reason, info).then(() => next()))
           .finally(finish);
       },
     });
@@ -129,10 +126,7 @@ class Crawler<Raw, Final> {
             list.forEach((raw) => this.push({ info, raw }));
             callback();
           })
-          .catch((reason) => {
-            onError(reason, info);
-            callback();
-          })
+          .catch((reason) => onError(reason, info).then(() => callback()))
           .finally(finish);
       },
     });
@@ -159,10 +153,7 @@ class Crawler<Raw, Final> {
       ) {
         parse(info, raw)
           .then((value) => callback(null, value))
-          .catch((reason) => {
-            onError(reason, info);
-            callback();
-          })
+          .catch((reason) => onError(reason, info).then(() => callback()))
           .finally(finish);
       },
     });
@@ -200,8 +191,8 @@ class Crawler<Raw, Final> {
     }
   }
 
-  private onError(error: Error, info: CrawlInfo<Final>) {
-    const message = this.handler.error(info, error);
+  private async onError(error: Error, info: CrawlInfo<Final>) {
+    const message = await this.handler.error(info, error);
 
     this.output.write(message);
   }
