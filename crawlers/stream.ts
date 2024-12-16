@@ -1,5 +1,5 @@
 import { Transform, TransformOptions, TransformCallback } from "stream";
-import { CrawlHandler, APIWebsiteInfo } from "./interface";
+import { CrawlHandlerInterface } from "./interface";
 
 /**
  * The crawl stream extending the Node's {@link Transform} class.
@@ -11,10 +11,10 @@ import { CrawlHandler, APIWebsiteInfo } from "./interface";
  * Should be used when dealing with seperate crawl info.
  */
 class CrawlStream<Raw, Final> extends Transform {
-  private readonly handler: CrawlHandler<Raw, Final>;
+  private readonly handler: CrawlHandlerInterface<Raw, Final>;
 
   constructor(
-    handler: CrawlHandler<Raw, Final>,
+    handler: CrawlHandlerInterface<Raw, Final>,
     options?: Omit<TransformOptions, "objectMode">
   ) {
     super({ objectMode: true, ...options });

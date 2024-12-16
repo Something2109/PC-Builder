@@ -113,11 +113,70 @@ const DELAY_FLAG = "delay";
 const TIMEOUT_FLAG = "fetch_fail";
 
 /**
- * The crawl handler class.
+ * The crawl handler interface.
+ * Contains the basic crawl handler functions to crawl data.
+ */
+interface CrawlHandlerInterface<Raw, Final> {
+  readonly counter: Record<CrawlRecordKey, number>;
+  readonly processed: Record<CrawlRecordKey | "error", number>;
+
+  /**
+   * Get the list of the first crawl infos
+   * to start the crawl process.
+   * @param products The product list to crawl.
+   * @returns A list of crawl info.
+   */
+  start(products?: Products[]): CrawlInfo<Final>[];
+
+  /**
+   * Fetch the info given in the parameter.
+   * If the fetch process exceeds {@link timeout}, the function will throw error.
+   * If the fetch response is not ok, the function will throw error.
+   * @param info The given crawl info in the parameter.
+   * @returns The response fetched from the info.
+   */
+  fetch(info: CrawlInfo<Final>): Promise<Response>;
+
+  /**
+   * Run the extract function in the website info
+   * based on the provided info and link.
+   * Auto push the extra link crawled from the website
+   * to {@link input}.
+   * @param info The crawl link used to fetch the response.
+   * @param response The response received from the link.
+   * @returns The extract result object.
+   */
+  extract(
+    info: CrawlInfo<Final>,
+    response: Response
+  ): Promise<{ raw: Raw[]; info: CrawlInfo<Final>[] }>;
+
+  /**
+   * Run the parse function in the website info
+   * based on the provided info and link.
+   * Parse the raw object to create the result object in the info object.
+   * @param info The current info object.
+   * @param raw The raw object extracted
+   * @returns The result of the website info's parse funtion.
+   */
+  parse(info: CrawlInfo<Final>, raw: Raw): Promise<Required<CrawlInfo<Final>>>;
+
+  /**
+   * Check if the crawler has finished crawling by
+   * comparing the created and the processed counter
+   * if they are equal or not.
+   * @returns The boolean specifying the completion.
+   */
+  finish(): boolean;
+}
+
+/**
+ * The crawl handler class -
+ * an implementation of the {@link CrawlHandlerInterface}.
  * Contains the basic crawl handler functions to crawl data
  * using the {@link APIWebsiteInfo}.
  */
-class CrawlHandler<Raw, Final> {
+class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
   private readonly info: APIWebsiteInfo<Raw, Final>;
   private delay: number;
   private timeout: number;
@@ -168,13 +227,7 @@ class CrawlHandler<Raw, Final> {
     this.processed = { page: 0, product: 0, parse: 0, error: 0 };
   }
 
-  /**
-   * Get the list of the first crawl infos
-   * to start the crawl process.
-   * @param products The product list to crawl.
-   * @returns A list of crawl info.
-   */
-  public start(products?: Products[]): CrawlInfo<Final>[] {
+  public start(products?: Products[]) {
     if (!products) {
       products = Object.values(Products);
     }
@@ -190,13 +243,6 @@ class CrawlHandler<Raw, Final> {
     return infos;
   }
 
-  /**
-   * Fetch the info given in the parameter.
-   * If the fetch process exceeds {@link timeout}, the function will throw error.
-   * If the fetch response is not ok, the function will throw error.
-   * @param info The given crawl info in the parameter.
-   * @returns The response fetched from the info.
-   */
   public async fetch(info: CrawlInfo<Final>) {
     console.log(`Fetching: ${info.request.url.toString()}`);
 
@@ -236,19 +282,7 @@ class CrawlHandler<Raw, Final> {
     return response;
   }
 
-  /**
-   * Run the extract function in the website info
-   * based on the provided info and link.
-   * Auto push the extra link crawled from the website
-   * to {@link input}.
-   * @param info The crawl link used to fetch the response.
-   * @param response The response received from the link.
-   * @returns The extract result object.
-   */
-  public async extract(
-    info: CrawlInfo<Final>,
-    response: Response
-  ): Promise<{ raw: Raw[]; info: CrawlInfo<Final>[] }> {
+  public async extract(info: CrawlInfo<Final>, response: Response) {
     console.log(`Extracting: ${info.request.url.toString()}`);
 
     let links: ProductRequestOptions<Final>[] = [],
@@ -277,18 +311,7 @@ class CrawlHandler<Raw, Final> {
     return { raw: list, info: newInfo };
   }
 
-  /**
-   * Run the parse function in the website info
-   * based on the provided info and link.
-   * Parse the raw object to create the result object in the info object.
-   * @param info The current info object.
-   * @param raw The raw object extracted
-   * @returns The result of the website info's parse funtion.
-   */
-  public async parse(
-    info: CrawlInfo<Final>,
-    raw: Raw
-  ): Promise<Required<CrawlInfo<Final>>> {
+  public async parse(info: CrawlInfo<Final>, raw: Raw) {
     console.log(`Parsing ${info.request.url.toString()}`);
 
     info.result = await this.info.parse(raw, info);
@@ -297,12 +320,6 @@ class CrawlHandler<Raw, Final> {
     return info as Required<CrawlInfo<Final>>;
   }
 
-  /**
-   * Check if the crawler has finished crawling by
-   * comparing the created and the processed counter
-   * if they are equal or not.
-   * @returns The boolean specifying the completion.
-   */
   public finish() {
     const totalProcessed = Object.values(this.processed).reduce(
       (prev, cur) => prev + cur,
@@ -406,4 +423,6 @@ class CrawlHandler<Raw, Final> {
   }
 }
 
-export { CrawlHandler, type APIWebsiteInfo, type CrawlInfo, type OutputObject };
+export type { APIWebsiteInfo, CrawlInfo, OutputObject, CrawlHandlerInterface };
+
+export { CrawlHandler };

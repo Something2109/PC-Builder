@@ -1,11 +1,6 @@
 import { Products } from "../utils/Enum";
 import { pipeline, Readable, Transform, Writable } from "stream";
-import {
-  APIWebsiteInfo,
-  CrawlHandler,
-  CrawlInfo,
-  OutputObject,
-} from "./interface";
+import { CrawlHandlerInterface, CrawlInfo, OutputObject } from "./interface";
 
 type FetchResult<Result> = {
   info: CrawlInfo<Result>;
@@ -28,7 +23,7 @@ type TransformCallback<Content> = (err?: Error | null, value?: Content) => void;
  * Should be used when dealing with large data of crawl info.
  */
 class Crawler<Raw, Final> {
-  private readonly handler: CrawlHandler<Raw, Final>;
+  private readonly handler: CrawlHandlerInterface<Raw, Final>;
   private input: Readable;
   private output: Writable;
 
@@ -41,7 +36,7 @@ class Crawler<Raw, Final> {
    * to work properly.
    */
   constructor(
-    handler: CrawlHandler<Raw, Final>,
+    handler: CrawlHandlerInterface<Raw, Final>,
     options?: { output?: Writable }
   ) {
     this.handler = handler;
