@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { ChildProcess, fork } from "child_process";
-import { Products } from "../utils/Enum";
-import { CrawlHandler, OutputObject } from "./interface";
+import { Products } from "../../utils/Enum";
+import { CrawlHandler, OutputObject } from "../interface";
 
 class CrawlerChildProcess {
   private path: string;

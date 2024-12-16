@@ -1,9 +1,9 @@
 import path from "path";
 import fs from "fs";
-import { Crawler } from "./crawler";
+import { Crawler } from "./cores/crawler";
 import { z } from "zod";
 import { Products } from "../utils/Enum";
-import { FileWriter, ProcessWriter } from "./writer";
+import { FileWriter, ProcessWriter } from "./utils/writer";
 import { CrawlHandler } from "./interface";
 
 /** Create an argument object based on the {@link process.argv} list */

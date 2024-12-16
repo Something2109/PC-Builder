@@ -1,5 +1,5 @@
 import { Transform, TransformOptions, TransformCallback } from "stream";
-import { CrawlHandlerInterface } from "./interface";
+import { CrawlHandlerInterface } from "../interface";
 
 /**
  * The crawl stream extending the Node's {@link Transform} class.

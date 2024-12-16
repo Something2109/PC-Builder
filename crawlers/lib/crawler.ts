@@ -1,6 +1,6 @@
-import { Products } from "../utils/Enum";
+import { Products } from "../../utils/Enum";
 import { pipeline, Readable, Transform, Writable } from "stream";
-import { CrawlHandlerInterface, CrawlInfo, OutputObject } from "./interface";
+import { CrawlHandlerInterface, CrawlInfo, OutputObject } from "../interface";
 
 type FetchResult<Result> = {
   info: CrawlInfo<Result>;

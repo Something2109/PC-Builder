@@ -2,7 +2,7 @@ import { Products } from "@/utils/Enum";
 import { createWriteStream, existsSync, mkdirSync, WriteStream } from "fs";
 import { Writable, WritableOptions } from "stream";
 import path from "path";
-import { OutputObject } from "./interface";
+import { OutputObject } from "../interface";
 
 /**
  * The write stream that write the crawl result
