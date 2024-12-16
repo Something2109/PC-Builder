@@ -187,7 +187,7 @@ class Crawler<Raw, Final> {
    */
   private finish() {
     if (this.handler.finish()) {
-      this.output.end();
+      this.input.push(null);
     }
   }
 
