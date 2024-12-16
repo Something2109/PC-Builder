@@ -114,6 +114,7 @@ interface CrawlHandlerInterface<Raw, Final> {
   /**
    * Get the list of the first crawl infos
    * to start the crawl process.
+   * Using the {@link APIWebsiteInfo.path} function.
    * @param products The product list to crawl.
    * @returns A list of crawl info.
    */
@@ -121,7 +122,7 @@ interface CrawlHandlerInterface<Raw, Final> {
 
   /**
    * Fetch the info given in the parameter.
-   * If the fetch process exceeds {@link timeout}, the function will throw error.
+   * If the fetch process exceeds a certain timeout, the function will throw error.
    * If the fetch response is not ok, the function will throw error.
    * @param info The given crawl info in the parameter.
    * @returns The response fetched from the info.
@@ -131,11 +132,12 @@ interface CrawlHandlerInterface<Raw, Final> {
   /**
    * Run the extract function in the website info
    * based on the provided info and link.
-   * Auto push the extra link crawled from the website
-   * to {@link input}.
+   * Handle the response received from the
+   * using the functions declared in {@link APIWebsiteInfo.extract}.
    * @param info The crawl link used to fetch the response.
    * @param response The response received from the link.
-   * @returns The extract result object.
+   * @returns The extract result object containing the {@link Raw} data list extracted
+   * and the newly created {@link CrawlInfo} list for further extraction.
    */
   extract(
     info: CrawlInfo<Final>,
@@ -143,11 +145,11 @@ interface CrawlHandlerInterface<Raw, Final> {
   ): Promise<{ raw: Raw[]; info: CrawlInfo<Final>[] }>;
 
   /**
-   * Run the parse function in the website info
+   * Run the {@link APIWebsiteInfo.parse} function in the website info
    * based on the provided info and link.
    * Parse the raw object to create the result object in the info object.
    * @param info The current info object.
-   * @param raw The raw object extracted
+   * @param raw The raw object extracted.
    * @returns The result of the website info's parse funtion.
    */
   parse(info: CrawlInfo<Final>, raw: Raw): Promise<Required<CrawlInfo<Final>>>;
