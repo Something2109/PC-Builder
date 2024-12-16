@@ -15,8 +15,8 @@ import { Products } from "../../utils/Enum";
 const DEFAULT_DELAY_TIME = 0;
 const DEFAULT_TIMEOUT_TIME = 10000;
 
-const DELAY_FLAG = "delay";
-const TIMEOUT_FLAG = "fetch_fail";
+const DELAY_FLAG = "delay" as const;
+const TIMEOUT_FLAG = "fetch_fail" as const;
 
 /**
  * The crawl handler class -
@@ -74,11 +74,8 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
     console.log(`Fetching: ${info.request.url.toString()}`);
 
     const fetchProcess = fetch(info.request.url, info.request);
-    const delayTimeout = setTimeout<typeof DELAY_FLAG>(this.delay, DELAY_FLAG);
-    const fetchTimeout = setTimeout<typeof TIMEOUT_FLAG>(
-      this.timeout,
-      TIMEOUT_FLAG
-    );
+    const delayTimeout = setTimeout(this.delay, DELAY_FLAG);
+    const fetchTimeout = setTimeout(this.timeout, TIMEOUT_FLAG);
 
     /** Race between the 3 promise. */
     let response = await Promise.race([
