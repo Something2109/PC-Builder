@@ -50,6 +50,8 @@ if (!CrawlHandler.isCrawlInfo(websiteInfo)) {
   );
 }
 
+const handler = new CrawlHandler(websiteInfo);
+
 /** File path check and output creation */
 
 let output;
@@ -83,6 +85,6 @@ console.log(
 
 /** Crawl session */
 
-const crawler = new Crawler(websiteInfo, { output });
+const crawler = new Crawler(handler, { output });
 
 crawler.crawl(productList);
