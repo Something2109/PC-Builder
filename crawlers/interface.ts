@@ -108,7 +108,7 @@ type CrawlRecordKey = InfoType | "parse";
  * Contains the basic crawl handler functions to crawl data.
  */
 interface CrawlHandlerInterface<Raw, Final> {
-  readonly counter: Record<CrawlRecordKey, number>;
+  readonly created: Record<CrawlRecordKey, number>;
   readonly processed: Record<CrawlRecordKey | "error", number>;
 
   /**

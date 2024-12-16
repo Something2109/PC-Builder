@@ -28,7 +28,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
   private readonly info: APIWebsiteInfo<Raw, Final>;
   private delay: number;
   private timeout: number;
-  readonly counter;
+  readonly created;
   readonly processed;
 
   /**
@@ -50,7 +50,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
     this.info = info;
     this.delay = options?.delay ?? DEFAULT_DELAY_TIME;
     this.timeout = options?.timeout ?? DEFAULT_TIMEOUT_TIME;
-    this.counter = { page: 0, product: 0, parse: 0 };
+    this.created = { page: 0, product: 0, parse: 0 };
     this.processed = { page: 0, product: 0, parse: 0, error: 0 };
   }
 
@@ -132,7 +132,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
 
     const newInfo = this.extractLinkHandler(info, list, links, pages);
 
-    this.counter.parse += list.length;
+    this.created.parse += list.length;
     this.processed[info.type]++;
 
     return { raw: list, info: newInfo };
@@ -153,7 +153,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
       0
     );
 
-    const totalCreated = Object.values(this.counter).reduce(
+    const totalCreated = Object.values(this.created).reduce(
       (prev, cur) => prev + cur,
       0
     );
@@ -222,7 +222,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
   ): CrawlInfo<Final, "page"> {
     options = this.createRequest(options);
 
-    this.counter.page++;
+    this.created.page++;
     return { type: "page", ...info, request: options };
   }
 
@@ -245,7 +245,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
     }
     request = this.createRequest(request);
 
-    this.counter.product++;
+    this.created.product++;
     return { ...info, type: "product", request, result };
   }
 }
