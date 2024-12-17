@@ -228,7 +228,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
       result: Final | undefined,
       type: CrawlInfo<Final>["type"] | undefined;
     if (typeof options !== "string" && "request" in options) {
-      ({ request, result } = options);
+      ({ request, type, result } = options);
     } else {
       request = options;
     }

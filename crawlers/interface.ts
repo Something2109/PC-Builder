@@ -12,6 +12,7 @@ type RequestOptions<ResultType = unknown> =
   | BaseRequestOptions
   | {
       request: BaseRequestOptions;
+      type?: InfoType;
       result?: ResultType;
     };
 
