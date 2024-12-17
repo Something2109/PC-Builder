@@ -51,7 +51,37 @@ if (!isCrawlInfo(websiteInfo)) {
   );
 }
 
-const handler = new CrawlHandler(websiteInfo);
+/** Handler option check */
+
+const options: { delay?: number; timeout?: number } = {};
+
+if (argumentList["delay"] && argumentList["delay"][0]) {
+  options.delay = z.coerce
+    .number({
+      invalid_type_error: `Cannot parse the delay value ${argumentList["delay"][0]} to number.`,
+    })
+    .parse(argumentList["delay"][0]);
+}
+
+if (argumentList["timeout"] && argumentList["timeout"][0]) {
+  options.timeout = z.coerce
+    .number({
+      invalid_type_error: `Cannot parse the timeout value ${argumentList["timeout"][0]} to number.`,
+    })
+    .parse(argumentList["timeout"][0]);
+}
+
+/** Product argument check */
+
+const productList = argumentList["product"]
+  ? z.array(z.nativeEnum(Products)).parse(argumentList["product"])
+  : Object.values(Products);
+
+console.log(
+  `Start crawling with info in ${filepath} and product in ${productList.join(
+    ", "
+  )}`
+);
 
 /** File path check and output creation */
 
@@ -72,19 +102,9 @@ if (process.connected) {
   output = new FileWriter({ path: savepath });
 }
 
-/** Product argument check */
-
-const productList = argumentList["product"]
-  ? z.array(z.nativeEnum(Products)).parse(argumentList["product"])
-  : Object.values(Products);
-
-console.log(
-  `Start crawling with info in ${filepath} and product in ${productList.join(
-    ", "
-  )}`
-);
-
 /** Crawl session */
+
+const handler = new CrawlHandler(websiteInfo, options);
 
 const crawler = new Crawler(handler, { output });
 
