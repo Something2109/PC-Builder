@@ -62,7 +62,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
     products.forEach((product) => {
       const request = this.info.path(product, 1);
       if (request) {
-        infos.push(this.createPageInfo({ product, page: 1 }, request));
+        infos.push(this.createInfo({ product, page: 1 }, request, "page"));
       }
     });
 
@@ -189,7 +189,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
     pages?: number
   ) {
     const newInfo: CrawlInfo<Final>[] = links.map((link) =>
-      this.createProductInfo(info, link)
+      this.createInfo(info, link, "product")
     );
 
     if (info.type == "page" && pages && (list.length > 0 || links.length > 0)) {
@@ -197,9 +197,10 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
       while (nextPage < pages) {
         nextPage++;
         newInfo.push(
-          this.createPageInfo(
+          this.createInfo(
             { product: info.product, page: nextPage },
-            this.info.path(info.product, nextPage)!
+            this.info.path(info.product, nextPage)!,
+            "page"
           )
         );
       }
@@ -209,62 +210,39 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
   }
 
   /**
-   * Create the request object for the crawl info.
-   * @param options The request options.
-   * @returns The request object created.
+   * The generic crawl info create function.
+   * Increase the counter each successful call.
+   * @param base The base object contains the basic info that
+   * the new crawl info object inherited. Can take {@link CrawlInfo} as parameter.
+   * @param options The options to create the link and type of the info.
+   * @param defaultType The default type of the crawl info if not specified.
+   * Used to make the system preference info type creation.
+   * @returns The new crawl info created.
    */
-  private createRequest(options: RequestOptions): RequestObject {
-    if (typeof options !== "string" && "request" in options) {
-      options = options.request;
-    }
-    if (typeof options === "string" || options instanceof URL) {
-      options = {
-        url: new URL(options),
-      };
-    }
-
-    return options;
-  }
-
-  /**
-   * Create a page link object from the parameters.
-   * Increase the page counter each successful call.
-   * @param product The product of the page link.
-   * @param options The request object of the link.
-   * @param page The page number the request represented.
-   * @returns The page link object created.
-   */
-  private createPageInfo(
-    info: { product: Products; page: number },
-    options: RequestOptions
-  ): CrawlInfo<Final, "page"> {
-    options = this.createRequest(options);
-
-    this.created.page++;
-    return { type: "page", ...info, request: options };
-  }
-
-  /**
-   * Create a product link object from the parameters.
-   * Increase the product counter each successful call.
-   * @param info The product of the product link.
-   * @param options The options to create product link.
-   * @returns The product link object created.
-   */
-  private createProductInfo(
-    info: CrawlInfo<Final>,
-    options: RequestOptions<Final>
-  ): CrawlInfo<Final, "product"> {
-    let request: RequestOptions, result: Final | undefined;
+  private createInfo(
+    { product, page }: { product: Products; page: number },
+    options: RequestOptions<Final>,
+    defaultType: CrawlInfo<Final>["type"]
+  ) {
+    let request: RequestOptions,
+      result: Final | undefined,
+      type: CrawlInfo<Final>["type"] | undefined;
     if (typeof options !== "string" && "request" in options) {
       ({ request, result } = options);
     } else {
       request = options;
     }
-    request = this.createRequest(request);
 
-    this.created.product++;
-    return { ...info, type: "product", request, result };
+    if (typeof request === "string" || request instanceof URL) {
+      request = {
+        url: new URL(request),
+      };
+    }
+
+    if (!type) type = defaultType;
+
+    this.created[type]++;
+    return { request, type, product, page, result };
   }
 }
 
