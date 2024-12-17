@@ -26,6 +26,7 @@ class Crawler<Raw, Final> {
   private readonly handler: CrawlHandlerInterface<Raw, Final>;
   private input: Readable;
   private output: Writable;
+  private autoEnd: boolean;
 
   /**
    * The crawler constructor.
@@ -34,15 +35,17 @@ class Crawler<Raw, Final> {
    * to customize the output of the crawler.
    * The output's write function's chunk parameter must implement the {@link OutputObject}
    * to work properly.
+   * Take auto as a boolean to determine if it automatically close the crawler when finish crawling.
    */
   constructor(
     handler: CrawlHandlerInterface<Raw, Final>,
-    options?: { output?: Writable }
+    options?: { output?: Writable; autoEnd?: boolean }
   ) {
     this.handler = handler;
 
     this.input = new Readable({ objectMode: true, read() {} });
     this.output = options?.output ?? this.createDefaultOutput();
+    this.autoEnd = options?.autoEnd ?? false;
   }
 
   /**
@@ -175,10 +178,10 @@ class Crawler<Raw, Final> {
       write(chunk: OutputObject<Final>, _, callback) {
         "error" in chunk
           ? process.stdout.write(
-              `${chunk.error.stack}\nIn: ${JSON.stringify(chunk)}\n`
+              `${chunk.error.stack}\nIn: ${JSON.stringify(chunk)}\n`,
+              callback
             )
-          : process.stdout.write(`${JSON.stringify(chunk)}\n`);
-        callback();
+          : process.stdout.write(`${JSON.stringify(chunk)}\n`, callback);
       },
     });
   }
@@ -190,7 +193,7 @@ class Crawler<Raw, Final> {
    * If finished, close the {@link output}.
    */
   private finish() {
-    if (this.handler.finish()) {
+    if (this.handler.finish() && this.autoEnd) {
       this.input.push(null);
     }
   }

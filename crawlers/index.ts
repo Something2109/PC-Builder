@@ -106,6 +106,6 @@ if (process.connected) {
 
 const handler = new CrawlHandler(websiteInfo, options);
 
-const crawler = new Crawler(handler, { output });
+const crawler = new Crawler(handler, { output, autoEnd: true });
 
 crawler.crawl(productList);
