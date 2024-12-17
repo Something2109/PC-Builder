@@ -4,7 +4,6 @@ import {
   CrawlHandlerInterface,
   CrawlInfo,
   isCrawlInfo,
-  ProductRequestOptions,
   RequestObject,
   RequestOptions,
 } from "../interface";
@@ -109,7 +108,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
   public async extract(info: CrawlInfo<Final>, response: Response) {
     console.log(`Extracting: ${info.request.url.toString()}`);
 
-    let links: ProductRequestOptions<Final>[] = [],
+    let links: RequestOptions<Final>[] = [],
       list: Raw[] = [],
       pages;
 
@@ -186,7 +185,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
   private extractLinkHandler(
     info: CrawlInfo<Final>,
     list: Raw[],
-    links: ProductRequestOptions<Final>[],
+    links: RequestOptions<Final>[],
     pages?: number
   ) {
     const newInfo: CrawlInfo<Final>[] = links.map((link) =>
@@ -215,6 +214,9 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
    * @returns The request object created.
    */
   private createRequest(options: RequestOptions): RequestObject {
+    if (typeof options !== "string" && "request" in options) {
+      options = options.request;
+    }
     if (typeof options === "string" || options instanceof URL) {
       options = {
         url: new URL(options),
@@ -251,7 +253,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
    */
   private createProductInfo(
     info: CrawlInfo<Final>,
-    options: ProductRequestOptions<Final>
+    options: RequestOptions<Final>
   ): CrawlInfo<Final, "product"> {
     let request: RequestOptions, result: Final | undefined;
     if (typeof options !== "string" && "request" in options) {

@@ -6,12 +6,12 @@ type RequestObject = {
   url: URL;
 } & RequestInit;
 
-type RequestOptions = string | URL | RequestObject;
+type BaseRequestOptions = string | URL | RequestObject;
 
-type ProductRequestOptions<ResultType> =
-  | RequestOptions
+type RequestOptions<ResultType = unknown> =
+  | BaseRequestOptions
   | {
-      request: RequestOptions;
+      request: BaseRequestOptions;
       result?: ResultType;
     };
 
@@ -66,7 +66,7 @@ type DefaultExtractResult<Raw, Result> = {
 } & ExtractPageResult<Result>;
 
 type ExtractPageResult<Result> = {
-  links: ProductRequestOptions<Result>[];
+  links: RequestOptions<Result>[];
   pages?: number;
 };
 
@@ -91,7 +91,7 @@ interface APIWebsiteInfo<Raw, Final> {
    * Create the URL to crawl data from the product enum.
    * @param product The product enum to crawl from.
    */
-  path(product: Products, page: number): RequestOptions | null;
+  path(product: Products, page: number): RequestOptions<Final> | null;
 
   /**
    * Extract the data list from the response object.
@@ -208,7 +208,6 @@ export type {
   CrawlInfo,
   RequestObject,
   RequestOptions,
-  ProductRequestOptions,
   OutputObject,
   CrawlHandlerInterface,
 };
