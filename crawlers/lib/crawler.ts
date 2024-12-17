@@ -62,7 +62,11 @@ class Crawler<Raw, Final> {
       ExtractStream,
       ParseStream,
       this.output,
-      (error) => console.error(error)
+      (error) => {
+        if (error) {
+          console.error(error);
+        }
+      }
     );
 
     this.input.on("end", () => console.log("End"));
