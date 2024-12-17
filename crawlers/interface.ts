@@ -91,11 +91,21 @@ interface APIWebsiteInfo<Raw, Final> {
   /**
    * Create the URL to crawl data from the product enum.
    * @param product The product enum to crawl from.
+   * @param page The page number to be created.
+   * @returns The request options of the link to be crawled.
    */
   path(product: Products, page: number): RequestOptions<Final> | null;
 
   /**
    * Extract the data list from the response object.
+   * Can be a function or an object contains 2 functions
+   * with the key {@link InfoType}.
+   * @returns Default function should return an object contains
+   * the list array of {@link Raw},
+   * the links array of {@link RequestObject} to be fetched,
+   * the optional pages number for the automatic add page function.
+   * The page function should return an object of the links array and pages number.
+   * The product function should return the list array.
    */
   extract: ExtractFunctionType<Raw, Final>;
 
@@ -103,6 +113,7 @@ interface APIWebsiteInfo<Raw, Final> {
    * Parse each item from the result of the extract function to the useful data.
    * @param raw The raw data object to parse from.
    * @param info The crawl info linked to the raw info.
+   * @returns The {@link Final} object parsed from the {@link raw} parameter.
    */
   parse(raw: Raw, info: CrawlInfo<Final>): Promise<Final>;
 }
