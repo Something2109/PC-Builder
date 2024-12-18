@@ -138,7 +138,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
     console.log(`Parsing ${info.request.url.toString()}`);
 
     const result = {
-      ...info,
+      info,
       result: await this.info.parse(raw, info),
       progress: { created: this.created, processed: this.processed },
     };
@@ -152,7 +152,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
     console.log(`Parsing ${info.request.url.toString()}`);
 
     const result = {
-      ...info,
+      info,
       error,
       progress: { created: this.created, processed: this.processed },
     };

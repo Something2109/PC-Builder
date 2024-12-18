@@ -194,6 +194,12 @@ class Crawler<Raw, Final> {
    */
   private finish() {
     if (this.handler.finish() && this.autoEnd) {
+      this.output.write({
+        progress: {
+          created: this.handler.created,
+          processed: this.handler.processed,
+        },
+      });
       this.input.push(null);
     }
   }

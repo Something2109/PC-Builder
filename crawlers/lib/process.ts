@@ -113,18 +113,20 @@ class CrawlerChildProcess {
    * Count the product output received from the crawler.
    * @param chunk The output received from the crawler.
    */
-  private productCount({ product, ...chunk }: OutputObject) {
+  private productCount(chunk: OutputObject) {
     if (!this.summary) {
       this.summary = {};
     }
 
-    const productType = "error" in chunk ? "error" : product;
+    if ("result" in chunk || "error" in chunk) {
+      const productType = "error" in chunk ? "error" : chunk.info.product;
 
-    if (!this.summary[productType]) {
-      this.summary[productType] = 0;
+      if (!this.summary[productType]) {
+        this.summary[productType] = 0;
+      }
+
+      this.summary[productType]++;
     }
-
-    this.summary[productType]++;
   }
 }
 

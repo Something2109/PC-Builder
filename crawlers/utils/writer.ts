@@ -37,28 +37,27 @@ class FileWriter extends Writable {
     encoding: BufferEncoding,
     callback: (error?: Error | null) => void
   ): void {
-    const filename: keyof typeof this.writeStream =
-      "error" in chunk ? "error" : chunk.product;
+    if ("result" in chunk || "error" in chunk) {
+      const filename: keyof typeof this.writeStream =
+        "error" in chunk ? "error" : chunk.info.product;
 
-    // Format the error object to be easier stringify to json.
-    if ("error" in chunk) {
-      chunk.error = chunk.error.stack as any;
+      // Format the error object to be easier stringify to json.
+      if ("error" in chunk) {
+        chunk.error = chunk.error.stack as any;
+      }
+
+      let prefix = ","; // used to format the output according to the json format.
+      if (!this.writeStream[filename]) {
+        // if the stream's currently not created.
+        this.writeStream[filename] = createWriteStream(
+          path.join(this.path, `${filename}.json`),
+          encoding
+        );
+
+        prefix = "["; // create the first character of the writing json file.
+      }
+      this.writeStream[filename].write(`${prefix}${JSON.stringify(chunk)}`);
     }
-
-    let prefix = ","; // used to format the output according to the json format.
-    if (!this.writeStream[filename]) {
-      // if the stream's currently not created.
-      this.writeStream[filename] = createWriteStream(
-        path.join(this.path, `${filename}.json`),
-        encoding
-      );
-
-      prefix = "["; // create the first character of the writing json file.
-    }
-    this.writeStream[filename].write(
-      `${prefix}${JSON.stringify(chunk)}`,
-      callback
-    );
 
     console.log(
       `Progress: ${Object.entries(processed)
@@ -70,6 +69,8 @@ class FileWriter extends Writable {
         })
         .join(", ")}`
     );
+
+    callback();
   }
 
   /**
