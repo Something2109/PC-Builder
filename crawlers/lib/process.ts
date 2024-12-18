@@ -2,7 +2,14 @@ import fs from "fs";
 import path from "path";
 import { ChildProcess, fork } from "child_process";
 import { Products } from "../../utils/Enum";
-import { isCrawlInfo, OutputObject } from "../interface";
+import { isCrawlInfo, OutputObject, ProgressInfo } from "../interface";
+import { CrawlHandlerOptions } from "crawlers/utils/handler";
+
+type ChillProcessStartOptions = CrawlHandlerOptions & {
+  products: Products[];
+};
+
+const EXEC_DIRECTORY = path.dirname(__dirname);
 
 class CrawlerChildProcess {
   private path: string;
@@ -24,20 +31,14 @@ class CrawlerChildProcess {
    * @param products The product list to crawl data from.
    * @returns The boolean stating the success state of creating process.
    */
-  start(products?: Products[]): boolean {
+  start(options?: ChillProcessStartOptions) {
     if (this.process) {
       return false;
     }
-    if (!products) {
-      products = Object.values(Products);
-    }
 
-    this.process = fork(__dirname, [
-      "--path",
-      this.path,
-      "--product",
-      ...products,
-    ])
+    const args = this.argumentResolver(options);
+
+    this.process = fork(EXEC_DIRECTORY, args)
       .on("message", (chunk: OutputObject) => this.productCount(chunk))
       .on("exit", () => {
         this.process = null;
@@ -107,6 +108,31 @@ class CrawlerChildProcess {
     }
 
     return filepath;
+  }
+
+  /**
+   * Create the arguments to create the crawler child process object.
+   * @param products The product crawl list.
+   * @param options The options to create the crawler.
+   * @returns The string list of argument to be passed.
+   */
+  private argumentResolver(options?: ChillProcessStartOptions): string[] {
+    let products = options?.products;
+    if (!products) {
+      products = Object.values(Products);
+    }
+
+    const args = ["--path", this.path, "--product", ...products];
+
+    if (options?.delay) {
+      args.push("--delay", options.delay.toString());
+    }
+
+    if (options?.delay) {
+      args.push("--delay", options.delay.toString());
+    }
+
+    return args;
   }
 
   /**
