@@ -14,6 +14,7 @@ const EXEC_DIRECTORY = path.dirname(__dirname);
 class CrawlerChildProcess {
   private path: string;
   private process: ChildProcess | null;
+  private progress: ProgressInfo | null;
   private summary?: {
     [key in Products]?: number;
   } & { error?: number };
@@ -21,6 +22,7 @@ class CrawlerChildProcess {
   constructor(filepath: string) {
     this.path = this.pathResolver(filepath);
     this.process = null;
+    this.progress = null;
   }
 
   /**
@@ -39,7 +41,7 @@ class CrawlerChildProcess {
     const args = this.argumentResolver(options);
 
     this.process = fork(EXEC_DIRECTORY, args)
-      .on("message", (chunk: OutputObject) => this.productCount(chunk))
+      .on("message", (chunk: OutputObject) => this.outputResolver(chunk))
       .on("exit", () => {
         this.process = null;
 
@@ -139,7 +141,9 @@ class CrawlerChildProcess {
    * Count the product output received from the crawler.
    * @param chunk The output received from the crawler.
    */
-  private productCount(chunk: OutputObject) {
+  private outputResolver({ progress, ...chunk }: OutputObject) {
+    this.progress = progress;
+
     if (!this.summary) {
       this.summary = {};
     }
