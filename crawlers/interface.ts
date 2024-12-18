@@ -26,11 +26,15 @@ type CrawlInfo<Result, Type = InfoType> = {
   result?: Result;
 };
 
+type ProgressInfo = {
+  created: Record<CrawlRecordKey, number>;
+  processed: Record<CrawlRecordKey | "error", number>;
+};
+
+/** Describe the type for the output object. */
+
 type BaseOutput = {
-  progress: {
-    created: Record<CrawlRecordKey, number>;
-    processed: Record<CrawlRecordKey | "error", number>;
-  };
+  progress: ProgressInfo;
 };
 
 type ErrorOutputObject<Result> = BaseOutput & {
@@ -225,6 +229,7 @@ function isCrawlInfo(object?: any): object is APIWebsiteInfo<unknown, unknown> {
 export type {
   APIWebsiteInfo,
   CrawlInfo,
+  ProgressInfo,
   RequestObject,
   RequestOptions,
   OutputObject,

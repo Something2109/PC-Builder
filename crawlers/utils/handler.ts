@@ -4,10 +4,11 @@ import {
   CrawlHandlerInterface,
   CrawlInfo,
   isCrawlInfo,
-  RequestObject,
   RequestOptions,
 } from "../interface";
 import { Products } from "../../utils/Enum";
+
+type CrawlHandlerOptions = { delay?: number; timeout?: number };
 
 /** Constants */
 
@@ -38,10 +39,7 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
    * The output's write function's chunk parameter must implement the {@link OutputObject}
    * to work properly.
    */
-  constructor(
-    info: APIWebsiteInfo<Raw, Final>,
-    options?: { delay?: number; timeout?: number }
-  ) {
+  constructor(info: APIWebsiteInfo<Raw, Final>, options?: CrawlHandlerOptions) {
     if (!isCrawlInfo(info)) {
       throw new Error("The provided info is not implemented the API");
     }
@@ -246,4 +244,4 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
   }
 }
 
-export { CrawlHandler };
+export { CrawlHandler, type CrawlHandlerOptions };
