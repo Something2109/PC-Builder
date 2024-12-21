@@ -5,6 +5,7 @@
     "@nestjs/platform-express": "^10.4.8",
     "@nestjs/sequelize": "^10.0.1",
     "dotenv": "^16.4.5",
+    "jsdom": "^25.0.1",
     "mysql2": "^3.11.4",
     "sequelize": "^6.37.5",
     "sequelize-typescript": "^2.1.6",
@@ -21,6 +22,7 @@
     "crawl": "tsc ./crawlers/src/*.ts --outDir ./crawlers/dist"
   },
   "devDependencies": {
+    "@types/jsdom": "^21.1.7",
     "@types/uuid": "^10.0.0",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.5",
