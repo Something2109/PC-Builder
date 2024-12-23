@@ -1,4 +1,4 @@
-import { APIWebsiteInfo } from "../../crawler";
+import { APIWebsiteInfo } from "../../interface";
 import {
   RetailProductSchema,
   RetailProductType,
@@ -52,7 +52,7 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, RetailProductType> = {
       url.searchParams.set("show", "500");
       url.searchParams.set("category", mapping[product]);
 
-      return { url, type: "page", page, product };
+      return { url };
     }
 
     return null;

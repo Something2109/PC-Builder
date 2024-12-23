@@ -1,0 +1,177 @@
+import fs from "fs";
+import path from "path";
+import { ChildProcess, fork } from "child_process";
+import { Products } from "../../utils/Enum";
+import { isCrawlInfo, OutputObject, ProgressInfo } from "../interface";
+import { CrawlHandlerOptions } from "crawlers/utils/handler";
+
+enum CrawlState {
+  IDLE = "idle",
+  CRAWLING = "crawling",
+}
+
+type ChildProcessState = {
+  state: CrawlState;
+  progress: ProgressInfo | null;
+};
+
+type ChillProcessStartOptions = CrawlHandlerOptions & {
+  products: Products[];
+};
+
+const EXEC_DIRECTORY = path.dirname(__dirname);
+
+class CrawlerChildProcess {
+  private path: string;
+  private process: ChildProcess | null;
+  private progress: ProgressInfo | null;
+  private summary?: {
+    [key in Products]?: number;
+  } & { error?: number };
+
+  constructor(filepath: string) {
+    this.path = this.pathResolver(filepath);
+    this.process = null;
+    this.progress = null;
+  }
+
+  /**
+   * Start the crawling process
+   * by create the child process responsible
+   * for crawling data and send it to the main process
+   * by the IPC channel.
+   * @param products The product list to crawl data from.
+   * @returns The boolean stating the success state of creating process.
+   */
+  start(options?: ChillProcessStartOptions): ChildProcessState {
+    if (this.state !== CrawlState.CRAWLING) {
+      const args = this.argumentResolver(options);
+
+      this.process = fork(EXEC_DIRECTORY, args)
+        .on("message", (chunk: OutputObject) => this.outputResolver(chunk))
+        .on("exit", () => {
+          this.process = null;
+
+          console.log(
+            `Crawled ${Object.entries(this.summary!)
+              .map(([product, count]) => `${count} ${product}`)
+              .join(", ")}`
+          );
+
+          this.summary = undefined;
+        });
+    }
+
+    return this.status();
+  }
+
+  /**
+   * Get the current status of the crawl process.
+   */
+  status(): ChildProcessState {
+    return {
+      state: this.state,
+      progress: this.progress,
+    };
+  }
+
+  /**
+   * Stop the current crawl process.
+   * @returns The boolean determine if the process stops successfully.
+   */
+  stop(): ChildProcessState {
+    this.process?.kill("SIGINT");
+
+    return this.status();
+  }
+
+  /**
+   * Determine the current state of the crawl process.
+   * @returns The boolean stating the process.
+   */
+  get state(): CrawlState {
+    return this.process ? CrawlState.CRAWLING : CrawlState.IDLE;
+  }
+
+  /**
+   * Check the existence of the given file path
+   * and the validity of the file content that
+   * implements the website api or not.
+   * @param filepath The file path to the file.
+   * Can be absolute or relative path
+   * (relative path is processed according
+   * to the working directory of the process).
+   * @returns The path processed by the function.
+   */
+  private pathResolver(filepath: string) {
+    if (!filepath.endsWith(".js")) {
+      throw new Error(`The info path is not the compatible file: ${filepath}`);
+    }
+
+    if (!path.isAbsolute(filepath)) {
+      filepath = path.join(process.cwd(), filepath);
+    }
+
+    if (!fs.existsSync(filepath)) {
+      throw new Error(`Cannot find crawl info file: ${filepath}`);
+    }
+
+    const info = require(filepath).default;
+    if (!isCrawlInfo(info)) {
+      throw new Error(
+        `The object in the file is not implemented the crawler Website API.`
+      );
+    }
+
+    return filepath;
+  }
+
+  /**
+   * Create the arguments to create the crawler child process object.
+   * @param products The product crawl list.
+   * @param options The options to create the crawler.
+   * @returns The string list of argument to be passed.
+   */
+  private argumentResolver(options?: ChillProcessStartOptions): string[] {
+    let products = options?.products;
+    if (!products) {
+      products = Object.values(Products);
+    }
+
+    const args = ["--path", this.path, "--product", ...products];
+
+    if (options?.delay) {
+      args.push("--delay", options.delay.toString());
+    }
+
+    if (options?.delay) {
+      args.push("--delay", options.delay.toString());
+    }
+
+    return args;
+  }
+
+  /**
+   * Count the product output received from the crawler.
+   * @param chunk The output received from the crawler.
+   */
+  private outputResolver({ progress, ...chunk }: OutputObject) {
+    this.progress = progress;
+
+    if (!this.summary) {
+      this.summary = {};
+    }
+
+    if ("result" in chunk || "error" in chunk) {
+      const productType = "error" in chunk ? "error" : chunk.info.product;
+
+      if (!this.summary[productType]) {
+        this.summary[productType] = 0;
+      }
+
+      this.summary[productType]++;
+    }
+  }
+}
+
+export { CrawlerChildProcess, type ChildProcessState };

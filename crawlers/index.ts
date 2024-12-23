@@ -1,9 +1,11 @@
 import path from "path";
 import fs from "fs";
-import { Crawler } from "./crawler";
+import { Crawler } from "./lib/crawler";
 import { z } from "zod";
 import { Products } from "../utils/Enum";
-import { FileWriter, ProcessWriter } from "./writer";
+import { FileWriter, ProcessWriter } from "./utils/writer";
+import { isCrawlInfo } from "./interface";
+import { CrawlHandler } from "./utils/handler";
 
 /** Create an argument object based on the {@link process.argv} list */
 
@@ -43,11 +45,43 @@ if (!fs.existsSync(filepath)) {
 
 const websiteInfo = require(filepath).default;
 
-if (!Crawler.isCrawlInfo(websiteInfo)) {
+if (!isCrawlInfo(websiteInfo)) {
   throw new Error(
     `The default object in the path: ${filepath} is not implemented the API the crawler required.`
   );
 }
+
+/** Handler option check */
+
+const options: { delay?: number; timeout?: number } = {};
+
+if (argumentList["delay"] && argumentList["delay"][0]) {
+  options.delay = z.coerce
+    .number({
+      invalid_type_error: `Cannot parse the delay value ${argumentList["delay"][0]} to number.`,
+    })
+    .parse(argumentList["delay"][0]);
+}
+
+if (argumentList["timeout"] && argumentList["timeout"][0]) {
+  options.timeout = z.coerce
+    .number({
+      invalid_type_error: `Cannot parse the timeout value ${argumentList["timeout"][0]} to number.`,
+    })
+    .parse(argumentList["timeout"][0]);
+}
+
+/** Product argument check */
+
+const productList = argumentList["product"]
+  ? z.array(z.nativeEnum(Products)).parse(argumentList["product"])
+  : Object.values(Products);
+
+console.log(
+  `Start crawling with info in ${filepath} and product in ${productList.join(
+    ", "
+  )}`
+);
 
 /** File path check and output creation */
 
@@ -68,20 +102,10 @@ if (process.connected) {
   output = new FileWriter({ path: savepath });
 }
 
-/** Product argument check */
-
-const productList = argumentList["product"]
-  ? z.array(z.nativeEnum(Products)).parse(argumentList["product"])
-  : Object.values(Products);
-
-console.log(
-  `Start crawling with info in ${filepath} and product in ${productList.join(
-    ", "
-  )}`
-);
-
 /** Crawl session */
 
-const crawler = new Crawler(websiteInfo, { output });
+const handler = new CrawlHandler(websiteInfo, options);
+
+const crawler = new Crawler(handler, { output, autoEnd: true });
 
 crawler.crawl(productList);

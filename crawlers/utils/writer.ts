@@ -2,7 +2,7 @@ import { Products } from "@/utils/Enum";
 import { createWriteStream, existsSync, mkdirSync, WriteStream } from "fs";
 import { Writable, WritableOptions } from "stream";
 import path from "path";
-import { OutputObject } from "./crawler";
+import { OutputObject } from "../interface";
 
 /**
  * The write stream that write the crawl result
@@ -33,30 +33,44 @@ class FileWriter extends Writable {
    * @param callback The callback variable of the write function.
    */
   _write(
-    chunk: OutputObject,
+    { progress: { created, processed }, ...chunk }: OutputObject,
     encoding: BufferEncoding,
     callback: (error?: Error | null) => void
   ): void {
-    const filename: keyof typeof this.writeStream = chunk.error
-      ? "error"
-      : chunk.product;
+    if ("result" in chunk || "error" in chunk) {
+      const filename: keyof typeof this.writeStream =
+        "error" in chunk ? "error" : chunk.info.product;
 
-    if (chunk.error) {
-      chunk.error = chunk.error.stack as any;
+      // Format the error object to be easier stringify to json.
+      if ("error" in chunk) {
+        chunk.error = chunk.error.stack as any;
+      }
+
+      let prefix = ","; // used to format the output according to the json format.
+      if (!this.writeStream[filename]) {
+        // if the stream's currently not created.
+        this.writeStream[filename] = createWriteStream(
+          path.join(this.path, `${filename}.json`),
+          encoding
+        );
+
+        prefix = "["; // create the first character of the writing json file.
+      }
+      this.writeStream[filename].write(`${prefix}${JSON.stringify(chunk)}`);
     }
 
-    let prefix = ","; // used to format the output according to the json format
-    if (!this.writeStream[filename]) {
-      this.writeStream[filename] = createWriteStream(
-        path.join(this.path, `${filename}.json`),
-        encoding
-      );
-      prefix = "["; // start of the wri
-    }
-    this.writeStream[filename].write(
-      `${prefix}${JSON.stringify(chunk)}`,
-      callback
+    console.log(
+      `Progress: ${Object.entries(processed)
+        .map(([key, value]) => {
+          if (key !== "error") {
+            return `${value}/${created[key as keyof typeof created]} ${key}`;
+          }
+          return `Error: ${value}`;
+        })
+        .join(", ")}`
     );
+
+    callback();
   }
 
   /**
@@ -66,8 +80,7 @@ class FileWriter extends Writable {
    */
   _final(callback: (error?: Error | null) => void): void {
     Object.values(this.writeStream).forEach((stream) => {
-      stream.write("]");
-      stream.end();
+      stream.end("]");
     });
     callback();
   }

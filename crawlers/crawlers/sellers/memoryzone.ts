@@ -1,4 +1,4 @@
-import { APIWebsiteInfo } from "../../crawler";
+import { APIWebsiteInfo } from "../../interface";
 import {
   RetailProductSchema,
   RetailProductType,
@@ -31,7 +31,7 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
       const url = new URL(`${domain}/${mapping[product]}`);
       url.searchParams.set("page", page.toString());
 
-      return { url, type: "page", page, product };
+      return { url };
     }
 
     return null;

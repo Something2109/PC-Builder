@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { Injectable } from "@nestjs/common";
 import { Products } from "@/utils/Enum";
-import { CrawlerChildProcess } from "crawlers/process";
+import { CrawlerChildProcess } from "crawlers/lib/process";
 
 @Injectable()
 class CrawlerService {
@@ -24,16 +24,16 @@ class CrawlerService {
     this.readFolder(directoryPath);
   }
 
-  start(name: string, product?: Products[]) {
+  start(name: string, products?: Products[]) {
     if (!this.crawlers[name]) {
       throw new Error(`No crawler found with the name ${name}.`);
     }
 
-    if (!product) {
-      product = Object.values(Products);
+    if (!products) {
+      products = Object.values(Products);
     }
 
-    return this.crawlers[name].start(product);
+    return this.crawlers[name].start({ products });
   }
 
   status(name: string) {
@@ -41,13 +41,13 @@ class CrawlerService {
       throw new Error(`No crawler found with the name ${name}.`);
     }
 
-    return this.crawlers[name].isCrawling();
+    return this.crawlers[name].status();
   }
 
   statusAll() {
     return Object.entries(this.crawlers).map(([name, crawler]) => ({
       name,
-      status: crawler.isCrawling(),
+      status: crawler.status(),
     }));
   }
 
