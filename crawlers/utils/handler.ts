@@ -70,9 +70,12 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
   public async fetch(info: CrawlInfo<Final>) {
     console.log(`Fetching: ${info.request.url.toString()}`);
 
+    const timeoutController = new AbortController();
     const fetchProcess = fetch(info.request.url, info.request);
     const delayTimeout = setTimeout(this.delay, DELAY_FLAG);
-    const fetchTimeout = setTimeout(this.timeout, TIMEOUT_FLAG);
+    const fetchTimeout = setTimeout(this.timeout, TIMEOUT_FLAG, {
+      signal: timeoutController.signal,
+    });
 
     /** Race between the 3 promise. */
     let response = await Promise.race([
@@ -95,6 +98,8 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
 
     /** await delay promise if not finished. */
     await delayTimeout;
+
+    timeoutController.abort();
 
     if (!response.ok) {
       throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
