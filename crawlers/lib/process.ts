@@ -5,6 +5,16 @@ import { Products } from "../../utils/Enum";
 import { isCrawlInfo, OutputObject, ProgressInfo } from "../interface";
 import { CrawlHandlerOptions } from "crawlers/utils/handler";
 
+enum CrawlState {
+  IDLE = "idle",
+  CRAWLING = "crawling",
+}
+
+type ChildProcessState = {
+  state: CrawlState;
+  progress: ProgressInfo | null;
+};
+
 type ChillProcessStartOptions = CrawlHandlerOptions & {
   products: Products[];
 };
@@ -33,50 +43,54 @@ class CrawlerChildProcess {
    * @param products The product list to crawl data from.
    * @returns The boolean stating the success state of creating process.
    */
-  start(options?: ChillProcessStartOptions) {
-    if (this.process) {
-      return false;
+  start(options?: ChillProcessStartOptions): ChildProcessState {
+    if (this.state !== CrawlState.CRAWLING) {
+      const args = this.argumentResolver(options);
+
+      this.process = fork(EXEC_DIRECTORY, args)
+        .on("message", (chunk: OutputObject) => this.outputResolver(chunk))
+        .on("exit", () => {
+          this.process = null;
+
+          console.log(
+            `Crawled ${Object.entries(this.summary!)
+              .map(([product, count]) => `${count} ${product}`)
+              .join(", ")}`
+          );
+
+          this.summary = undefined;
+        });
     }
 
-    const args = this.argumentResolver(options);
-
-    this.process = fork(EXEC_DIRECTORY, args)
-      .on("message", (chunk: OutputObject) => this.outputResolver(chunk))
-      .on("exit", () => {
-        this.process = null;
-
-        console.log(
-          `Crawled ${Object.entries(this.summary!)
-            .map(([product, count]) => `${count} ${product}`)
-            .join(", ")}`
-        );
-
-        this.summary = undefined;
-      });
-
-    return this.isCrawling();
+    return this.status();
   }
 
   /**
-   * Determine if currently there is a crawl process running.
-   * @returns The boolean stating the process.
+   * Get the current status of the crawl process.
    */
-  isCrawling(): boolean {
-    return this.process !== null;
+  status(): ChildProcessState {
+    return {
+      state: this.state,
+      progress: this.progress,
+    };
   }
 
   /**
    * Stop the current crawl process.
    * @returns The boolean determine if the process stops successfully.
    */
-  stop(): boolean {
-    if (!this.process) {
-      return false;
-    }
+  stop(): ChildProcessState {
+    this.process?.kill("SIGINT");
 
-    this.process.kill("SIGINT");
+    return this.status();
+  }
 
-    return this.process.killed;
+  /**
+   * Determine the current state of the crawl process.
+   * @returns The boolean stating the process.
+   */
+  get state(): CrawlState {
+    return this.process ? CrawlState.CRAWLING : CrawlState.IDLE;
   }
 
   /**
@@ -160,4 +174,4 @@ class CrawlerChildProcess {
   }
 }
 
-export { CrawlerChildProcess };
+export { CrawlerChildProcess, type ChildProcessState };
