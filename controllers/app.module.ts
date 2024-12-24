@@ -1,11 +1,12 @@
 import { Module } from "@nestjs/common";
 import { ArticleModule } from "./article/article.module";
 import { PartModule } from "./part/part.module";
-import { DBModule } from "./db.module";
 import { ConfigModule } from "@nestjs/config";
 import { FilterModule } from "./filter/filter.module";
 import { SearchModule } from "./search/search.module";
 import { CrawlerModule } from "./crawler/crawler.module";
+import { SequelizeModule } from "@nestjs/sequelize";
+import { ConnectionOptions } from "@/models/options";
 
 @Module({
   imports: [
@@ -15,7 +16,16 @@ import { CrawlerModule } from "./crawler/crawler.module";
     CrawlerModule,
     ArticleModule,
     ConfigModule.forRoot(),
-    DBModule,
+    SequelizeModule.forRoot({
+      dialect: "mysql",
+      host: process.env.DATABASE_HOST,
+      port: Number(process.env.DATABASE_PORT),
+      username: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
+      autoLoadModels: true,
+      ...ConnectionOptions,
+    }),
   ],
 })
 export class AppModule {}
