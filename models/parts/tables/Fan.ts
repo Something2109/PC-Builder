@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDefaultScope,
-  PartDetailTable,
-  Tables,
-} from "../../interface";
+import { PartDefaultScope, PartDetailTable, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import Fan from "@/utils/interface/part/Fan";
 import {
@@ -30,7 +25,7 @@ import {
   filter: (options: Fan.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.FAN })
+@Table({ modelName: Tables.FAN })
 class FanModel extends Model implements PartDetailTable<Fan.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

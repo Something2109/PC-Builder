@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import Mainboard from "@/utils/interface/part/Mainboard";
 import {
@@ -32,7 +27,7 @@ import {
   filter: (options: Mainboard.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.MAIN })
+@Table({ modelName: Tables.MAIN })
 class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

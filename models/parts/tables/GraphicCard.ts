@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { GPUModel } from "./GPU";
 import { PartInformation } from "./Part";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
@@ -32,7 +27,7 @@ type APIDisplayInterface = {
   filter: (options: GraphicCard.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.GRAPHIC_CARD })
+@Table({ modelName: Tables.GRAPHIC_CARD })
 class GraphicCardModel
   extends Model
   implements PartDetailTable<GraphicCard.Info>

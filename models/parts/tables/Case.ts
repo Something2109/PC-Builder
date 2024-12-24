@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import {
   CaseFormFactors,
@@ -44,7 +39,7 @@ import { Op, WhereOptions } from "sequelize";
   },
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.CASE })
+@Table({ modelName: Tables.CASE })
 class CaseModel extends Model implements PartDetailTable<Case.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import CPU from "@/utils/interface/part/CPU";
 import {
@@ -25,7 +20,6 @@ import {
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
 @Table({
-  ...BaseModelOptions,
   modelName: Tables.CPU,
   validate: {
     coresValidate() {

@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import RAM from "@/utils/interface/part/RAM";
 import {
@@ -30,7 +25,7 @@ import {
   filter: (options: RAM.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.RAM })
+@Table({ modelName: Tables.RAM })
 class RAMModel extends Model implements PartDetailTable<RAM.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

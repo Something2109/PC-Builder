@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import HDD from "@/utils/interface/part/HDD";
 import {
@@ -30,7 +25,7 @@ import {
   filter: (options: HDD.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.HDD })
+@Table({ modelName: Tables.HDD })
 class HDDModel extends Model implements PartDetailTable<HDD.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

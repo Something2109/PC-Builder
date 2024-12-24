@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import SSD from "@/utils/interface/part/SSD";
 import {
@@ -32,7 +27,7 @@ import {
   filter: (options: SSD.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.SSD })
+@Table({ modelName: Tables.SSD })
 class SSDModel extends Model implements PartDetailTable<SSD.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
