@@ -7,10 +7,10 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { BaseModelOptions, Tables } from "../interface";
+import { Tables } from "../interface";
 import { RetailProductType } from "@/utils/interface/retailer/Product";
 
-@Table({ ...BaseModelOptions, modelName: Tables.RETAIL_PRODUCT })
+@Table({ modelName: Tables.RETAIL_PRODUCT })
 class RetailProduct extends Model implements RetailProductType {
   @PrimaryKey
   @Column(DataType.STRING)

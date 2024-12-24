@@ -1,9 +1,6 @@
 import { InferAttributes, WhereOptions } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
-import { Models } from "./parts";
-import { Article } from "./articles/article";
-import { RetailProduct } from "./sellers/SellerProduct";
-import { PartInformation } from "./parts/tables/Part";
+import { ConnectionOptions } from "./options";
 
 if (
   !(
@@ -24,7 +21,7 @@ const Connection = new Sequelize({
   port: Number(process.env.DATABASE_PORT),
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
-  models: [Article, RetailProduct, PartInformation, ...Object.values(Models)],
+  ...ConnectionOptions,
 });
 
 export function IdSubQuery<T extends InferAttributes<any>>(

@@ -10,12 +10,7 @@ import {
   Table,
 } from "sequelize-typescript";
 import AIO from "@/utils/interface/part/AIO";
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import {
   AIOFormFactors,
@@ -30,7 +25,7 @@ import {
   filter: (options: AIO.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.AIO })
+@Table({ modelName: Tables.AIO })
 class AIOModel extends Model implements PartDetailTable<AIO.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

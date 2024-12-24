@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import PSU from "@/utils/interface/part/PSU";
 import {
@@ -32,7 +27,7 @@ import {
   filter: (options: PSU.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.PSU })
+@Table({ modelName: Tables.PSU })
 class PSUModel extends Model implements PartDetailTable<PSU.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

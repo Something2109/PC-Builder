@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import Cooler from "@/utils/interface/part/Cooler";
 import { CoolerCPUPlates, CoolerCPUPlateType } from "@/utils/interface/utils";
@@ -25,7 +20,7 @@ import {
   filter: (options: Cooler.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.COOLER })
+@Table({ modelName: Tables.COOLER })
 class CoolerModel extends Model implements PartDetailTable<Cooler.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
