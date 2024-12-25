@@ -10,11 +10,16 @@ import {
   BadRequestException,
   ParseIntPipe,
   ParseUUIDPipe,
+  Delete,
 } from "@nestjs/common";
 import { PartService } from "./part.service";
 import { Products } from "@/utils/Enum";
 import Part from "@/utils/interface/part/Parts";
-import { FilterOptions, FilterOptionSchema } from "@/utils/interface";
+import {
+  DetailInfo,
+  FilterOptions,
+  FilterOptionSchema,
+} from "@/utils/interface";
 import { ZodValidationPipe } from "./part.pipe";
 
 @Controller("api/part")
@@ -34,6 +39,27 @@ export class PartController {
     );
 
     await Promise.all(promises);
+
+    return JSON.stringify(responseList);
+  }
+
+  @Post()
+  async createPart(@Body() body: DetailInfo<Products>) {
+    try {
+      const responseList = await this.service.set(body, body.id);
+
+      return JSON.stringify(responseList);
+    } catch (err: any) {
+      throw new InternalServerErrorException(err.message);
+    }
+  }
+
+  @Delete()
+  async deletePart(@Body() { id }: { id: string }) {
+    const responseList = await this.service.delete(id);
+    if (!responseList) {
+      return new NotFoundException(`No product found with the given ${id}`);
+    }
 
     return JSON.stringify(responseList);
   }
