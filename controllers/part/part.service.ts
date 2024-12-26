@@ -107,7 +107,7 @@ class PartService {
   ): Promise<DetailInfo<typeof part> | null> {
     const save = await PartInformation.scope("detail").findByPk(id, {
       include: {
-        model: Models[part],
+        model: Models[part].scope("detail"),
       },
     });
 
