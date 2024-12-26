@@ -27,9 +27,7 @@ class PartService {
 
     const { rows, count } = await PartInformation.scope([
       "summary",
-      {
-        method: ["filter", part],
-      },
+      { method: ["filter", part] },
     ]).findAndCountAll({
       limit,
       offset: page * limit,
@@ -148,11 +146,9 @@ class PartService {
 
     await detailRow.save();
 
-    const result: DetailInfo<Products> = infoRow.toJSON();
+    const result = await this.get(part as Products, id);
 
-    result[part as Products] = detailRow.toJSON();
-
-    return result;
+    return result as DetailInfo<Products>;
   }
 
   async delete(id: string) {
