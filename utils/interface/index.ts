@@ -54,6 +54,26 @@ export const DetailInfoListSchema = z
   })
   .partial();
 
+export const DetailInfoOptionsSchema = Part.Schema.partial().merge(
+  z
+    .object({
+      raw: z.string(),
+      [Products.CPU]: CPU.Schema.partial(),
+      [Products.GPU]: GPU.Schema.partial(),
+      [Products.GRAPHIC_CARD]: GraphicCard.Schema.partial(),
+      [Products.MAIN]: Mainboard.Schema.partial(),
+      [Products.RAM]: RAM.Schema.partial(),
+      [Products.SSD]: SSD.Schema.partial(),
+      [Products.HDD]: HDD.Schema.partial(),
+      [Products.PSU]: PSU.Schema.partial(),
+      [Products.CASE]: Case.Schema.partial(),
+      [Products.FAN]: Fan.Schema.partial(),
+      [Products.COOLER]: Cooler.Schema.partial(),
+      [Products.AIO]: AIO.Schema.partial(),
+    })
+    .partial()
+);
+
 export type DetailInfo<T extends Products> = z.infer<typeof Part.Schema> & {
   raw?: string;
 } & {
