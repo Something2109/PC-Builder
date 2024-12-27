@@ -103,42 +103,39 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   @Column(DataType.VIRTUAL)
   get pcies(): Mainboard.PCIeType | null {
     const pcieData = this.getDataValue("pcie_data") as MainboardPCIeModel[];
-    if (pcieData) {
-      return pcieData.reduce(
-        (acc: Mainboard.PCIeType, pcie: MainboardPCIeModel) => {
-          if (!acc[pcie.controller]) {
-            acc[pcie.controller] = {};
-          }
-          acc[pcie.controller]![PCIeExchanger.toString(pcie)] = pcie.count;
 
-          return acc;
-        },
-        {}
-      );
-    }
-    return null;
+    if (!pcieData) return null;
+
+    return pcieData.reduce(
+      (acc: Mainboard.PCIeType, pcie: MainboardPCIeModel) => {
+        const controller = pcie.controller;
+        if (!acc[controller]) acc[controller] = {};
+
+        acc[controller][PCIeExchanger.toString(pcie)] = pcie.count;
+        return acc;
+      },
+      {}
+    );
   }
 
   set pcies(value: Mainboard.PCIeType | null) {
-    if (value) {
-      for (const [controller, pcie] of Object.entries(value)) {
-        for (const [type, count] of Object.entries(pcie)) {
-          const { width, version } = PCIeExchanger.toObject(type);
+    if (!value) return;
 
-          MainboardPCIeModel.findOrCreate({
-            where: {
-              id: this.id,
-              controller,
-              version: Number(version),
-              width: Number(width),
-            },
-            defaults: { count },
-          }).then(([value, created]) => {
-            if (!created) {
-              value.update({ count });
-            }
-          });
-        }
+    for (const [controller, pcie] of Object.entries(value)) {
+      for (const [type, count] of Object.entries(pcie)) {
+        const { width, version } = PCIeExchanger.toObject(type);
+
+        MainboardPCIeModel.findOrCreate({
+          where: {
+            id: this.id,
+            controller,
+            version: Number(version),
+            width: Number(width),
+          },
+          defaults: { count },
+        }).then(([value, created]) => {
+          if (!created) value.update({ count });
+        });
       }
     }
   }
@@ -183,11 +180,9 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
 
   @Column(DataType.TEXT)
   get fan_connectors(): Record<string, number> | null {
-    const fanData = this.getDataValue("fan_connectors");
-    if (fanData) {
-      return JSON.parse(fanData) as Record<string, number>;
-    }
-    return null;
+    const data = this.getDataValue("fan_connectors");
+
+    return data ? JSON.parse(data) : null;
   }
 
   set fan_connectors(value: Record<string, number> | null) {
@@ -209,32 +204,31 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
     const storageData = this.getDataValue(
       "storage_connector_data"
     ) as MainboardStorageConnectorModel[];
-    if (storageData) {
-      return storageData.reduce(
-        (
-          acc: Mainboard.StorageConnectorType,
-          storage: MainboardStorageConnectorModel
-        ) => {
-          acc[storage.type] = storage.count;
-          return acc;
-        },
-        {}
-      );
-    }
-    return null;
+
+    if (!storageData) return null;
+
+    return storageData.reduce(
+      (
+        acc: Mainboard.StorageConnectorType,
+        storage: MainboardStorageConnectorModel
+      ) => {
+        acc[storage.type] = storage.count;
+        return acc;
+      },
+      {}
+    );
   }
 
   set storage_connectors(value: Mainboard.StorageConnectorType | null) {
-    if (value) {
-      for (const [type, count] of Object.entries(value)) {
-        MainboardStorageConnectorModel.findOrCreate({
-          where: { id: this.id, type, count },
-        }).then(([value, created]) => {
-          if (!created) {
-            value.update({ count });
-          }
-        });
-      }
+    if (!value) return;
+
+    for (const [type, count] of Object.entries(value)) {
+      MainboardStorageConnectorModel.findOrCreate({
+        where: { id: this.id, type },
+        defaults: { count },
+      }).then(([value, created]) => {
+        if (!created) value.update({ count });
+      });
     }
   }
 
@@ -253,32 +247,30 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
     const usbData = this.getDataValue(
       "usb_data"
     ) as MainboardUSBConnectorModel[];
-    if (usbData) {
-      return usbData.reduce(
-        (acc: Mainboard.USBConnectorType, usb: MainboardUSBConnectorModel) => {
-          const usbStr = USBExchanger.toString(usb);
-          acc[usbStr] = usb.count;
-          return acc;
-        },
-        {}
-      );
-    }
-    return null;
+    if (!usbData) return null;
+
+    return usbData.reduce(
+      (acc: Mainboard.USBConnectorType, usb: MainboardUSBConnectorModel) => {
+        const usbStr = USBExchanger.toString(usb);
+        acc[usbStr] = usb.count;
+        return acc;
+      },
+      {}
+    );
   }
 
   set usb_connectors(value: Mainboard.USBConnectorType | null) {
-    if (value) {
-      for (const [usb, count] of Object.entries(value)) {
-        const { generation, connector } = USBExchanger.toObject(usb);
+    if (!value) return;
 
-        MainboardUSBConnectorModel.findOrCreate({
-          where: { id: this.id, generation, connector, count },
-        }).then(([value, created]) => {
-          if (!created) {
-            value.update({ count });
-          }
-        });
-      }
+    for (const [usb, count] of Object.entries(value)) {
+      const { generation, connector } = USBExchanger.toObject(usb);
+
+      MainboardUSBConnectorModel.findOrCreate({
+        where: { id: this.id, generation, connector },
+        defaults: { count },
+      }).then(([value, created]) => {
+        if (!created) value.update({ count });
+      });
     }
   }
 
@@ -289,11 +281,9 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
 
   @Column(DataType.TEXT)
   get back_panel_ports(): {} | null {
-    const ioData = this.getDataValue("back_panel_ports");
-    if (ioData) {
-      return JSON.parse(ioData);
-    }
-    return null;
+    const data = this.getDataValue("back_panel_ports");
+
+    return data ? JSON.parse(data) : null;
   }
 
   set back_panel_ports(value: {} | null) {

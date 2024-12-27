@@ -62,11 +62,9 @@ class CPUModel extends Model implements PartDetailTable<CPU.Info> {
 
   @Column(DataType.TEXT)
   get cores(): CPU.Core | null {
-    const json = this.getDataValue("cores");
-    if (json) {
-      return JSON.parse(json) as CPU.Core;
-    }
-    return null;
+    const data = this.getDataValue("cores");
+
+    return data ? JSON.parse(data) : null;
   }
 
   set cores(value: CPU.Core | null) {
