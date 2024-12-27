@@ -3,21 +3,70 @@ import {
   RAMFormFactors,
   RAMProtocols,
   FilterOptions,
+  HDDInterfaces,
+  SSDInterfaces,
+  ExternalPorts,
+  InternalConnectors,
 } from "../utils";
 import { z } from "zod";
 
 namespace Mainboard {
+  export const PCIeSchema = z.record(
+    InternalConnectors.PCIe.Controllers,
+    z.record(InternalConnectors.PCIe.Schema, z.number())
+  );
+
+  export type PCIeType = z.infer<typeof PCIeSchema>;
+
+  export const PowerConnectorSchema = z.record(
+    InternalConnectors.Power.Mainboard,
+    z.number()
+  );
+
+  export type PowerConnectorType = z.infer<typeof PowerConnectorSchema>;
+
+  export const StorageConnectorSchema = z.record(
+    z.union([HDDInterfaces, SSDInterfaces]),
+    z.number()
+  );
+
+  export const FanConnectorSchema = z.record(
+    InternalConnectors.Fan.Schema,
+    z.number()
+  );
+
+  export type StorageConnectorType = z.infer<typeof StorageConnectorSchema>;
+
+  export const USBConnectorSchema = z.record(
+    ExternalPorts.USB.Schema,
+    z.number()
+  );
+
+  export type USBConnectorType = z.infer<typeof USBConnectorSchema>;
+
+  export const BackPanelPortSchema = z.record(ExternalPorts.Schema, z.number());
+
+  export type BackPanelPortType = z.infer<typeof BackPanelPortSchema>;
+
   export const Schema = z.object({
     form_factor: MainboardFormFactors,
 
     socket: z.string(),
+    chipset: z.string(),
 
     ram_form_factor: RAMFormFactors,
     ram_protocol: RAMProtocols,
     ram_slot: z.number(),
     expansion_slots: z.number(),
 
-    io_ports: z.object({}),
+    pcies: PCIeSchema,
+
+    power_connectors: PowerConnectorSchema,
+    fan_connectors: FanConnectorSchema,
+    storage_connectors: StorageConnectorSchema,
+    usb_connectors: USBConnectorSchema,
+
+    back_panel_ports: BackPanelPortSchema,
   });
 
   export type Info = z.infer<typeof Schema>;
