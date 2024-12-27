@@ -17,6 +17,7 @@ import { Products } from "@/utils/Enum";
 import Part from "@/utils/interface/part/Parts";
 import {
   DetailInfo,
+  DetailInfoOptionsSchema,
   FilterOptions,
   FilterOptionSchema,
 } from "@/utils/interface";
@@ -44,7 +45,10 @@ export class PartController {
   }
 
   @Post()
-  async createPart(@Body() body: DetailInfo<Products>) {
+  async createPart(
+    @Body(new ZodValidationPipe(DetailInfoOptionsSchema))
+    body: DetailInfo<Products>
+  ) {
     try {
       const responseList = await this.service.set(body, body.id);
 
