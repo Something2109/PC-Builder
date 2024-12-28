@@ -272,6 +272,25 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   }
 
   /**
+   * Declare the miscelanous connector object saving the data as a JSON string
+   * in the {@link miscelanous_connectors} column.
+   */
+
+  @Column(DataType.TEXT)
+  get miscelanous_connectors(): Record<string, number> | null {
+    const data = this.getDataValue("miscelanous_connectors");
+
+    return data ? JSON.parse(data) : null;
+  }
+
+  set miscelanous_connectors(value: Record<string, number> | null) {
+    this.setDataValue(
+      "miscelanous_connectors",
+      value ? JSON.stringify(value) : null
+    );
+  }
+
+  /**
    * Declare the io port object saving the data as a JSON string
    * in the {@link io_ports} column.
    */
