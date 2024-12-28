@@ -4,7 +4,7 @@ import { z } from "zod";
 export namespace Case {
   export const Side = z.enum(["top", "bottom", "front", "rear", "side"]);
 
-  export type SideType = z.infer<typeof Side>;
+  export type Side = z.infer<typeof Side>;
 
   export const AIOSupportSchema = z.record(Side, z.array(FormFactor.AIO));
 

@@ -2,13 +2,13 @@ import { FilterOptions } from "../utils";
 import { z } from "zod";
 
 export namespace Cooler {
-  export const CPUPlates = z.enum(["copper", "alluminium"]);
+  export const CPUPlate = z.enum(["copper", "alluminium"]);
 
-  export type CPUPlates = z.infer<typeof CPUPlates>;
+  export type CPUPlate = z.infer<typeof CPUPlate>;
 
   export const Schema = z.object({
     socket: z.string(),
-    cpu_plate: CPUPlates,
+    cpu_plate: CPUPlate,
 
     width: z.number(),
     length: z.number(),
@@ -32,12 +32,12 @@ export namespace Cooler {
   export const FilterOptionSchema = z
     .object({
       socket: FilterOptions(z.string()),
-      cpu_plate: FilterOptions(CPUPlates),
+      cpu_plate: FilterOptions(CPUPlate),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
-    cpu_plate: CPUPlates.options,
+    cpu_plate: CPUPlate.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;

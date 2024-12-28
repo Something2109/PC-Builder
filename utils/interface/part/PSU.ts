@@ -2,15 +2,15 @@ import { FormFactor, FilterOptions, NumberFilterOptions } from "../utils";
 import { z } from "zod";
 
 export namespace PSU {
-  export const Modulars = z.enum([
+  export const Modular = z.enum([
     "Non-Modular",
     "Semi-Modular",
     "Full-Modular",
   ]);
 
-  export type Modulars = z.infer<typeof Modulars>;
+  export type Modular = z.infer<typeof Modular>;
 
-  export const Efficiencies = z.enum([
+  export const Efficiency = z.enum([
     "None",
     "80 Plus",
     "80 PLUS Bronze",
@@ -20,17 +20,17 @@ export namespace PSU {
     "80 PLUS Titanium",
   ]);
 
-  export type Efficiencies = z.infer<typeof Efficiencies>;
+  export type Efficiency = z.infer<typeof Efficiency>;
 
   export const Schema = z.object({
     wattage: z.number(),
-    efficiency: Efficiencies,
+    efficiency: Efficiency,
 
     form_factor: FormFactor.PSU,
     width: z.number(),
     length: z.number(),
     height: z.number(),
-    modular: Modulars,
+    modular: Modular,
 
     atx_pin: z.number(),
     cpu_pin: z.number(),
@@ -57,16 +57,16 @@ export namespace PSU {
   export const FilterOptionSchema = z
     .object({
       wattage: NumberFilterOptions,
-      efficiency: FilterOptions(Efficiencies),
+      efficiency: FilterOptions(Efficiency),
       form_factor: FilterOptions(FormFactor.PSU),
-      modular: FilterOptions(Modulars),
+      modular: FilterOptions(Modular),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
-    efficiency: Efficiencies.options,
+    efficiency: Efficiency.options,
     form_factor: FormFactor.PSU.options,
-    modular: Modulars.options,
+    modular: Modular.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;
