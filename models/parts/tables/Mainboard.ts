@@ -5,10 +5,7 @@ import {
   ExternalPorts,
   HDDInterfaces,
   InternalConnectors,
-  MainboardFormFactors,
-  MainboardFormFactorType,
-  RAMFormFactors,
-  RAMFormFactorType,
+  FormFactor,
   RAMProtocols,
   RAMProtocolType,
   SSDInterfaces,
@@ -65,9 +62,9 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [MainboardFormFactors.options] },
+    validate: { isIn: [FormFactor.Mainboard.options] },
   })
-  declare form_factor: MainboardFormFactorType | null;
+  declare form_factor: FormFactor.Mainboard | null;
 
   @Column(DataType.STRING)
   declare socket: string | null;
@@ -77,9 +74,9 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [RAMFormFactors.options] },
+    validate: { isIn: [FormFactor.RAM.options] },
   })
-  declare ram_form_factor: RAMFormFactorType | null;
+  declare ram_form_factor: FormFactor.RAM | null;
 
   @Column({ type: DataType.STRING, validate: { isIn: [RAMProtocols.options] } })
   declare ram_protocol: RAMProtocolType | null;

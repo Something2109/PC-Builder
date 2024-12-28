@@ -4,8 +4,7 @@ import PSU from "@/utils/interface/part/PSU";
 import {
   PSUEfficiencies,
   PSUEfficiencyType,
-  PSUFormFactors,
-  PSUFormFactorType,
+  FormFactor,
   PSUModulars,
   PSUModularType,
 } from "@/utils/interface/utils";
@@ -48,9 +47,9 @@ class PSUModel extends Model implements PartDetailTable<PSU.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [PSUFormFactors.options] },
+    validate: { isIn: [FormFactor.PSU.options] },
   })
-  declare form_factor: PSUFormFactorType | null;
+  declare form_factor: FormFactor.PSU | null;
 
   @Column(DataType.INTEGER)
   declare width: number | null;

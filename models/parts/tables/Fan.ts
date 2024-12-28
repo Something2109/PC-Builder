@@ -2,10 +2,9 @@ import { PartDefaultScope, PartDetailTable, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import Fan from "@/utils/interface/part/Fan";
 import {
+  FormFactor,
   FanBearings,
   FanBearingType,
-  FanFormFactors,
-  FanFormFactorType,
 } from "@/utils/interface/utils";
 import {
   BelongsTo,
@@ -37,9 +36,9 @@ class FanModel extends Model implements PartDetailTable<Fan.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [FanFormFactors.options] },
+    validate: { isIn: [FormFactor.Fan.options] },
   })
-  declare form_factor: FanFormFactorType | null;
+  declare form_factor: FormFactor.Fan | null;
 
   @Column(DataType.FLOAT)
   declare width: number | null;

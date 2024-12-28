@@ -1,13 +1,6 @@
 import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
-import {
-  CaseFormFactors,
-  CaseFormFactorType,
-  MainboardFormFactors,
-  MainboardFormFactorType,
-  PSUFormFactors,
-  PSUFormFactorType,
-} from "@/utils/interface/utils";
+import { FormFactor } from "@/utils/interface/utils";
 import Case from "@/utils/interface/part/Case";
 import {
   BelongsTo,
@@ -51,9 +44,9 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [CaseFormFactors.options] },
+    validate: { isIn: [FormFactor.Case.options] },
   })
-  declare form_factor: CaseFormFactorType | null;
+  declare form_factor: FormFactor.Case | null;
 
   @Column(DataType.FLOAT)
   declare width: number | null;
@@ -68,9 +61,9 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [MainboardFormFactors.options] },
+    validate: { isIn: [FormFactor.Mainboard.options] },
   })
-  declare mb_support: MainboardFormFactorType | null;
+  declare mb_support: FormFactor.Mainboard | null;
 
   @Column(DataType.INTEGER)
   declare expansion_slot: number | null;
@@ -122,9 +115,9 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [PSUFormFactors.options] },
+    validate: { isIn: [FormFactor.PSU.options] },
   })
-  declare psu_support: PSUFormFactorType | null;
+  declare psu_support: FormFactor.PSU | null;
 
   @Column(DataType.FLOAT)
   declare max_psu_length: number | null;
