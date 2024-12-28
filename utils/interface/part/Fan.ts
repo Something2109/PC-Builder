@@ -1,7 +1,11 @@
-import { FilterOptions, FanBearings, FormFactor } from "../utils";
+import { FilterOptions, FormFactor } from "../utils";
 import { z } from "zod";
 
 namespace Fan {
+  export const Bearings = z.enum(["Fluid dynamic", "Ball", "Sleeve", "Rifle"]);
+
+  export type Bearings = z.infer<typeof Bearings>;
+
   export const Schema = z.object({
     form_factor: FormFactor.Fan,
 
@@ -15,7 +19,7 @@ namespace Fan {
     airflow: z.number(),
     noise: z.number(),
     static_pressure: z.number(),
-    bearing: FanBearings,
+    bearing: Bearings,
   });
 
   export type Info = z.infer<typeof Schema>;
@@ -35,13 +39,13 @@ namespace Fan {
   export const FilterOptionSchema = z
     .object({
       form_factor: FilterOptions(FormFactor.Fan),
-      bearing: FilterOptions(FanBearings),
+      bearing: FilterOptions(Bearings),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
     form_factor: FormFactor.Fan.options,
-    bearing: FanBearings.options,
+    bearing: Bearings.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;

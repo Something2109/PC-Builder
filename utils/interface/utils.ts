@@ -1,45 +1,5 @@
 import { z } from "zod";
 
-const RAMProtocols = z.enum([
-  "DDR1",
-  "DDR2",
-  "DDR3",
-  "LPDDR3",
-  "DDR4",
-  "LPDDR4",
-  "DDR5",
-]);
-
-type RAMProtocolType = z.infer<typeof RAMProtocols>;
-
-const SSDMemoryCells = z.enum(["SLC", "MLC", "TLC", "QLC", "3D"]);
-
-type SSDMemoryCellType = z.infer<typeof SSDMemoryCells>;
-
-const PSUModulars = z.enum(["Non-Modular", "Semi-Modular", "Full-Modular"]);
-
-type PSUModularType = z.infer<typeof PSUModulars>;
-
-const PSUEfficiencies = z.enum([
-  "None",
-  "80 Plus",
-  "80 PLUS Bronze",
-  "80 PLUS Silver",
-  "80 PLUS Gold",
-  "80 PLUS Platinum",
-  "80 PLUS Titanium",
-]);
-
-type PSUEfficiencyType = z.infer<typeof PSUEfficiencies>;
-
-const FanBearings = z.enum(["Fluid dynamic", "Ball", "Sleeve", "Rifle"]);
-
-type FanBearingType = z.infer<typeof FanBearings>;
-
-const CoolerCPUPlates = z.enum(["copper", "alluminium"]);
-
-type CoolerCPUPlateType = z.infer<typeof CoolerCPUPlates>;
-
 namespace FormFactor {
   export const Mainboard = z.enum([
     "Pico-ITX",
@@ -150,6 +110,18 @@ namespace InternalConnectors {
 
     export type SchemaType = `PCIe ${number} ${WidthType}`;
   }
+
+  export const RAM = z.enum([
+    "DDR1",
+    "DDR2",
+    "DDR3",
+    "LPDDR3",
+    "DDR4",
+    "LPDDR4",
+    "DDR5",
+  ]);
+
+  export type RAM = z.infer<typeof RAM>;
 
   export namespace Storage {
     export const SSD = z.enum(["SATA", "U.2", "mSATA", "M.2 PCIe"]);
@@ -431,24 +403,10 @@ const FilterOptions = <T extends z.ZodTypeAny>(zodType: T) => z.array(zodType);
 
 export {
   FormFactor,
-  RAMProtocols,
-  SSDMemoryCells,
-  PSUModulars,
-  PSUEfficiencies,
-  FanBearings,
-  CoolerCPUPlates,
   InternalConnectors,
   ExternalPorts,
   NumberFilterOptions,
   FilterOptions,
 };
 
-export type {
-  RAMProtocolType,
-  SSDMemoryCellType,
-  PSUModularType,
-  PSUEfficiencyType,
-  FanBearingType,
-  CoolerCPUPlateType,
-  FilterOptionsType,
-};
+export type { FilterOptionsType };

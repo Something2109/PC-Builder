@@ -1,7 +1,11 @@
-import { FormFactor, CoolerCPUPlates, FilterOptions } from "../utils";
+import { FormFactor, FilterOptions } from "../utils";
 import { z } from "zod";
 
 export namespace AIO {
+  export const CPUPlates = z.enum(["copper", "alluminium"]);
+
+  export type CPUPlates = z.infer<typeof CPUPlates>;
+
   export const Schema = z.object({
     form_factor: FormFactor.AIO,
 
@@ -10,7 +14,7 @@ export namespace AIO {
     radiator_height: z.number(),
 
     socket: z.string(),
-    cpu_plate: CoolerCPUPlates,
+    cpu_plate: CPUPlates,
 
     pump_width: z.number(),
     pump_length: z.number(),
@@ -36,13 +40,13 @@ export namespace AIO {
     .object({
       form_factor: FilterOptions(FormFactor.AIO),
       socket: FilterOptions(z.string()),
-      cpu_plate: FilterOptions(CoolerCPUPlates),
+      cpu_plate: FilterOptions(CPUPlates),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
     form_factor: FormFactor.AIO.options,
-    cpu_plate: CoolerCPUPlates.options,
+    cpu_plate: CPUPlates.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;

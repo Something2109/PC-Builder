@@ -1,6 +1,5 @@
 import {
   FormFactor,
-  RAMProtocols,
   FilterOptions,
   ExternalPorts,
   InternalConnectors,
@@ -52,7 +51,7 @@ namespace Mainboard {
     chipset: z.string(),
 
     ram_form_factor: FormFactor.RAM,
-    ram_protocol: RAMProtocols,
+    ram_protocol: InternalConnectors.RAM,
     ram_slot: z.number(),
     expansion_slots: z.number(),
 
@@ -87,14 +86,14 @@ namespace Mainboard {
       form_factor: FilterOptions(FormFactor.Mainboard),
       socket: FilterOptions(z.string()),
       ram_form_factor: FilterOptions(FormFactor.RAM),
-      ram_protocol: FilterOptions(RAMProtocols),
+      ram_protocol: FilterOptions(InternalConnectors.RAM),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
     form_factor: FormFactor.Mainboard.options,
     ram_form_factor: FormFactor.RAM.options,
-    ram_protocol: RAMProtocols.options,
+    ram_protocol: InternalConnectors.RAM.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;
