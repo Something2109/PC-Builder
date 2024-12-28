@@ -1,17 +1,7 @@
-import {
-  BaseModelOptions,
-  PartDefaultScope,
-  PartDetailTable,
-  Tables,
-} from "../../interface";
+import { PartDefaultScope, PartDetailTable, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import Fan from "@/utils/interface/part/Fan";
-import {
-  FanBearings,
-  FanBearingType,
-  FanFormFactors,
-  FanFormFactorType,
-} from "@/utils/interface/utils";
+import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,
   Column,
@@ -30,7 +20,7 @@ import {
   filter: (options: Fan.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.FAN })
+@Table({ modelName: Tables.FAN })
 class FanModel extends Model implements PartDetailTable<Fan.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
@@ -42,9 +32,9 @@ class FanModel extends Model implements PartDetailTable<Fan.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [FanFormFactors.options] },
+    validate: { isIn: [FormFactor.Fan.options] },
   })
-  declare form_factor: FanFormFactorType | null;
+  declare form_factor: FormFactor.Fan | null;
 
   @Column(DataType.FLOAT)
   declare width: number | null;
@@ -54,6 +44,9 @@ class FanModel extends Model implements PartDetailTable<Fan.Info> {
 
   @Column(DataType.FLOAT)
   declare height: number | null;
+
+  @Column(DataType.TINYINT)
+  declare count: number | null;
 
   @Column(DataType.FLOAT)
   declare voltage: number | null;
@@ -70,8 +63,20 @@ class FanModel extends Model implements PartDetailTable<Fan.Info> {
   @Column(DataType.FLOAT)
   declare static_pressure: number | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [FanBearings.options] } })
-  declare bearing: FanBearingType | null;
+  @Column({ type: DataType.STRING, validate: { isIn: [Fan.Bearing.options] } })
+  declare bearing: Fan.Bearing | null;
+
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [InternalConnectors.Fan.Connector.options] },
+  })
+  declare connector: InternalConnectors.Fan.Connector | null;
+
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [InternalConnectors.RGB.options] },
+  })
+  declare rgb: InternalConnectors.RGB | null;
 }
 
 export { FanModel };

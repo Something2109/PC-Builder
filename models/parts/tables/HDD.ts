@@ -1,17 +1,7 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import HDD from "@/utils/interface/part/HDD";
-import {
-  HDDFormFactors,
-  HDDFormFactorType,
-  HDDInterfaces,
-  HDDInterfaceType,
-} from "@/utils/interface/utils";
+import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,
   Column,
@@ -30,7 +20,7 @@ import {
   filter: (options: HDD.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.HDD })
+@Table({ modelName: Tables.HDD })
 class HDDModel extends Model implements PartDetailTable<HDD.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
@@ -57,15 +47,15 @@ class HDDModel extends Model implements PartDetailTable<HDD.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [HDDFormFactors.options] },
+    validate: { isIn: [FormFactor.HDD.options] },
   })
-  declare form_factor: HDDFormFactorType | null;
+  declare form_factor: FormFactor.HDD | null;
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [HDDInterfaces.options] },
+    validate: { isIn: [InternalConnectors.Storage.HDD.options] },
   })
-  declare interface: HDDInterfaceType | null;
+  declare interface: InternalConnectors.Storage.HDD | null;
 }
 
 export { HDDModel };

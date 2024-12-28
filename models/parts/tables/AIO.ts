@@ -10,19 +10,9 @@ import {
   Table,
 } from "sequelize-typescript";
 import AIO from "@/utils/interface/part/AIO";
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
-import {
-  AIOFormFactors,
-  AIOFormFactorType,
-  CoolerCPUPlates,
-  CoolerCPUPlateType,
-} from "@/utils/interface/utils";
+import { FormFactor } from "@/utils/interface/utils";
 
 @DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
@@ -30,7 +20,7 @@ import {
   filter: (options: AIO.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.AIO })
+@Table({ modelName: Tables.AIO })
 class AIOModel extends Model implements PartDetailTable<AIO.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
@@ -42,9 +32,9 @@ class AIOModel extends Model implements PartDetailTable<AIO.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [AIOFormFactors.options] },
+    validate: { isIn: [FormFactor.AIO.options] },
   })
-  declare form_factor: AIOFormFactorType | null;
+  declare form_factor: FormFactor.AIO | null;
 
   @Column(DataType.FLOAT)
   declare radiator_width: number | null;
@@ -60,9 +50,9 @@ class AIOModel extends Model implements PartDetailTable<AIO.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [CoolerCPUPlates.options] },
+    validate: { isIn: [AIO.CPUPlate.options] },
   })
-  declare cpu_plate: CoolerCPUPlateType | null;
+  declare cpu_plate: AIO.CPUPlate | null;
 
   @Column(DataType.FLOAT)
   declare pump_width: number | null;

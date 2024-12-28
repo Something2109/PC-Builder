@@ -1,5 +1,5 @@
 import { ArticleType, ContentType } from "@/utils/interface/article/article";
-import { BaseModelOptions, Tables } from "../interface";
+import { Tables } from "../interface";
 import {
   Column,
   DataType,
@@ -10,7 +10,7 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@Table({ ...BaseModelOptions, modelName: Tables.ARTICLE })
+@Table({ modelName: Tables.ARTICLE })
 export class Article extends Model implements Omit<ArticleType, "type"> {
   @PrimaryKey
   @Column(DataType.STRING)

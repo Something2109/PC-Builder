@@ -1,8 +1,8 @@
 import {
-  RAMFormFactors,
-  RAMProtocols,
+  FormFactor,
   FilterOptions,
   NumberFilterOptions,
+  InternalConnectors,
 } from "../utils";
 import { z } from "zod";
 
@@ -14,8 +14,8 @@ namespace RAM {
     latency: z.array(z.number()),
     kit: z.number(),
 
-    form_factor: RAMFormFactors,
-    protocol: RAMProtocols,
+    form_factor: FormFactor.RAM,
+    protocol: InternalConnectors.RAM,
   });
 
   export type Info = z.infer<typeof Schema>;
@@ -36,14 +36,14 @@ namespace RAM {
   export const FilterOptionSchema = z
     .object({
       capacity: NumberFilterOptions,
-      form_factor: FilterOptions(RAMFormFactors),
-      protocol: FilterOptions(RAMProtocols),
+      form_factor: FilterOptions(FormFactor.RAM),
+      protocol: FilterOptions(InternalConnectors.RAM),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
-    form_factor: RAMFormFactors.options,
-    protocol: RAMProtocols.options,
+    form_factor: FormFactor.RAM.options,
+    protocol: InternalConnectors.RAM.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;

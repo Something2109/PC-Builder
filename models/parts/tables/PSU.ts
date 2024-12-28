@@ -1,19 +1,7 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import PSU from "@/utils/interface/part/PSU";
-import {
-  PSUEfficiencies,
-  PSUEfficiencyType,
-  PSUFormFactors,
-  PSUFormFactorType,
-  PSUModulars,
-  PSUModularType,
-} from "@/utils/interface/utils";
+import { FormFactor } from "@/utils/interface/utils";
 import {
   BelongsTo,
   Column,
@@ -32,7 +20,7 @@ import {
   filter: (options: PSU.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.PSU })
+@Table({ modelName: Tables.PSU })
 class PSUModel extends Model implements PartDetailTable<PSU.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
@@ -47,15 +35,15 @@ class PSUModel extends Model implements PartDetailTable<PSU.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [PSUEfficiencies.options] },
+    validate: { isIn: [PSU.Efficiency.options] },
   })
-  declare efficiency: PSUEfficiencyType | null;
+  declare efficiency: PSU.Efficiency | null;
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [PSUFormFactors.options] },
+    validate: { isIn: [FormFactor.PSU.options] },
   })
-  declare form_factor: PSUFormFactorType | null;
+  declare form_factor: FormFactor.PSU | null;
 
   @Column(DataType.INTEGER)
   declare width: number | null;
@@ -66,8 +54,8 @@ class PSUModel extends Model implements PartDetailTable<PSU.Info> {
   @Column(DataType.INTEGER)
   declare height: number | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [PSUModulars.options] } })
-  declare modular: PSUModularType | null;
+  @Column({ type: DataType.STRING, validate: { isIn: [PSU.Modular.options] } })
+  declare modular: PSU.Modular | null;
 
   @Column(DataType.TINYINT)
   declare atx_pin: number | null;

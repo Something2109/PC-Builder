@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import CPU from "@/utils/interface/part/CPU";
 import {
@@ -25,7 +20,6 @@ import {
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
 @Table({
-  ...BaseModelOptions,
   modelName: Tables.CPU,
   validate: {
     coresValidate() {
@@ -68,11 +62,9 @@ class CPUModel extends Model implements PartDetailTable<CPU.Info> {
 
   @Column(DataType.TEXT)
   get cores(): CPU.Core | null {
-    const json = this.getDataValue("cores");
-    if (json) {
-      return JSON.parse(json) as CPU.Core;
-    }
-    return null;
+    const data = this.getDataValue("cores");
+
+    return data ? JSON.parse(data) : null;
   }
 
   set cores(value: CPU.Core | null) {

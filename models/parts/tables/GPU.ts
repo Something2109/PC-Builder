@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import GPU from "@/utils/interface/part/GPU";
 import {
@@ -25,7 +20,6 @@ import {
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
 @Table({
-  ...BaseModelOptions,
   modelName: Tables.GPU,
   validate: {
     coreValidate() {
@@ -65,10 +59,8 @@ class GPUModel extends Model implements PartDetailTable<GPU.Info> {
   @Column(DataType.STRING)
   get extra_cores(): GPU.Core | null {
     const data = this.getDataValue("extra_cores");
-    if (data) {
-      return JSON.parse(data) as GPU.Core;
-    }
-    return null;
+
+    return data ? JSON.parse(data) : null;
   }
 
   set extra_cores(value: GPU.Core | null) {
@@ -89,11 +81,9 @@ class GPUModel extends Model implements PartDetailTable<GPU.Info> {
 
   @Column(DataType.TEXT)
   get features(): GPU.Features | null {
-    const json = this.getDataValue("features");
-    if (json) {
-      return JSON.parse(json) as GPU.Features;
-    }
-    return null;
+    const data = this.getDataValue("features");
+
+    return data ? JSON.parse(data) : null;
   }
 
   set features(value: GPU.Features | null) {

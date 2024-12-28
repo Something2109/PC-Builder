@@ -1,23 +1,26 @@
 import {
-  SSDFormFactors,
-  SSDInterfaces,
-  SSDMemoryCells,
+  FormFactor,
   FilterOptions,
   NumberFilterOptions,
+  InternalConnectors,
 } from "../utils";
 import { z } from "zod";
 
 namespace SSD {
+  export const MemoryCell = z.enum(["SLC", "MLC", "TLC", "QLC", "3D"]);
+
+  export type MemoryCell = z.infer<typeof MemoryCell>;
+
   export const Schema = z.object({
-    memory_type: SSDMemoryCells,
+    memory_type: MemoryCell,
     read_speed: z.number(),
     write_speed: z.number(),
     capacity: z.number(),
     cache: z.number(),
     tbw: z.number(),
 
-    form_factor: SSDFormFactors,
-    interface: SSDInterfaces,
+    form_factor: FormFactor.SSD,
+    interface: InternalConnectors.Storage.SSD,
   });
 
   export type Info = z.infer<typeof Schema>;
@@ -37,9 +40,9 @@ namespace SSD {
 
   export const FilterOptionSchema = z
     .object({
-      memory_type: FilterOptions(SSDMemoryCells),
-      form_factor: FilterOptions(SSDFormFactors),
-      interface: FilterOptions(SSDInterfaces),
+      memory_type: FilterOptions(MemoryCell),
+      form_factor: FilterOptions(FormFactor.SSD),
+      interface: FilterOptions(InternalConnectors.Storage.SSD),
       read_speed: NumberFilterOptions,
       write_speed: NumberFilterOptions,
       capacity: NumberFilterOptions,
@@ -47,9 +50,9 @@ namespace SSD {
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
-    memory_type: SSDMemoryCells.options,
-    form_factor: SSDFormFactors.options,
-    interface: SSDInterfaces.options,
+    memory_type: MemoryCell.options,
+    form_factor: FormFactor.SSD.options,
+    interface: InternalConnectors.Storage.SSD.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;

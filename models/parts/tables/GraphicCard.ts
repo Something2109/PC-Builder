@@ -1,9 +1,4 @@
-import {
-  BaseModelOptions,
-  PartDetailTable,
-  PartDefaultScope,
-  Tables,
-} from "../../interface";
+import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { GPUModel } from "./GPU";
 import { PartInformation } from "./Part";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
@@ -19,6 +14,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
+import { PowerConnectorExchanger } from "@/utils/extract/Connector";
 
 type APIDisplayInterface = {
   HDMI?: number;
@@ -32,7 +28,7 @@ type APIDisplayInterface = {
   filter: (options: GraphicCard.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.GRAPHIC_CARD })
+@Table({ modelName: Tables.GRAPHIC_CARD })
 class GraphicCardModel
   extends Model
   implements PartDetailTable<GraphicCard.Info>
@@ -66,8 +62,29 @@ class GraphicCardModel
   @Column(DataType.INTEGER)
   declare minimum_psu: number | null;
 
-  @Column(DataType.STRING)
-  declare power_connector: string | null;
+  @Column(DataType.TINYINT)
+  get power_connector(): GraphicCard.PowerConnectorType | null {
+    let pcie: number = this.getDataValue("power_connector");
+
+    return PowerConnectorExchanger.toObject({ pcie });
+  }
+
+  set power_connector(value: GraphicCard.PowerConnectorType | null) {
+    const { pcie } = PowerConnectorExchanger.toNumber(value);
+
+    this.setDataValue("power_connector", pcie);
+  }
+
+  @Column(DataType.TEXT)
+  get port(): GraphicCard.PortType | null {
+    let data: string = this.getDataValue("port");
+
+    return data ? JSON.parse(data) : null;
+  }
+
+  set port(value: GraphicCard.PortType | null) {
+    this.setDataValue("port", value ? JSON.stringify(value) : null);
+  }
 
   @ForeignKey(() => GPUModel)
   @Column(DataType.UUID)

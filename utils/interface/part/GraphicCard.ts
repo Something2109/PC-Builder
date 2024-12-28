@@ -1,8 +1,23 @@
 import GPU from "./GPU";
-import { NumberFilterOptions } from "../utils";
+import {
+  ExternalPorts,
+  InternalConnectors,
+  NumberFilterOptions,
+} from "../utils";
 import { z } from "zod";
 
 namespace GraphicCard {
+  export const PowerConnectorSchema = z.record(
+    InternalConnectors.Power.GraphicCard,
+    z.number()
+  );
+
+  export type PowerConnectorType = z.infer<typeof PowerConnectorSchema>;
+
+  export const PortSchema = z.record(ExternalPorts.Display.Schema, z.number());
+
+  export type PortType = z.infer<typeof PortSchema>;
+
   export const Schema = z.object({
     width: z.number(),
     length: z.number(),
@@ -13,7 +28,8 @@ namespace GraphicCard {
 
     pcie: z.number(),
     minimum_psu: z.number(),
-    power_connector: z.string(),
+    power_connector: PowerConnectorSchema,
+    port: PortSchema,
 
     gpu: GPU.Schema,
   });

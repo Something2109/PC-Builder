@@ -1,4 +1,4 @@
-import { BaseModelOptions, Tables } from "@/models/interface";
+import { Tables } from "@/models/interface";
 import Part from "@/utils/interface/part/Parts";
 import { Products } from "@/utils/Enum";
 import {
@@ -36,7 +36,7 @@ import { FanModel } from "./Fan";
   filter: (options: Part.FilterOptions) => ({ where: options }),
   detail: { attributes: { exclude: ["createdAt", "updatedAt"] } },
 }))
-@Table({ ...BaseModelOptions, modelName: Tables.PART })
+@Table({ modelName: Tables.PART })
 class PartInformation extends Model implements Part.BasicInfo {
   @PrimaryKey
   @Default(DataType.UUIDV4)
