@@ -1,20 +1,5 @@
 import { z } from "zod";
 
-const MainboardFormFactors = z.enum([
-  "Pico-ITX",
-  "Mini-ITX",
-  "Mini-ATX",
-  "microATX",
-  "ATX",
-  "EATX",
-]);
-
-type MainboardFormFactorType = z.infer<typeof MainboardFormFactors>;
-
-const RAMFormFactors = z.enum(["DIMM", "SO-DIMM", "CAMM2"]);
-
-type RAMFormFactorType = z.infer<typeof RAMFormFactors>;
-
 const RAMProtocols = z.enum([
   "DDR1",
   "DDR2",
@@ -31,40 +16,13 @@ const SSDMemoryCells = z.enum(["SLC", "MLC", "TLC", "QLC", "3D"]);
 
 type SSDMemoryCellType = z.infer<typeof SSDMemoryCells>;
 
-const SSDFormFactors = z.enum([
-  "2.5",
-  "U.2",
-  "mSATA",
-  "M.2 2230",
-  "M.2 2242",
-  "M.2 2280",
-  "M.2 22110",
-]);
-
-type SSDFormFactorType = z.infer<typeof SSDFormFactors>;
-
 const SSDInterfaces = z.enum(["SATA", "U.2", "mSATA", "M.2 PCIe"]);
 
 type SSDInterfaceType = z.infer<typeof SSDInterfaces>;
 
-const HDDFormFactors = z.enum(["2.5", "3.5"]);
-
-type HDDFormFactorType = z.infer<typeof HDDFormFactors>;
-
 const HDDInterfaces = z.enum(["SATA", "SAS", "PATA"]);
 
 type HDDInterfaceType = z.infer<typeof HDDInterfaces>;
-
-const PSUFormFactors = z.enum([
-  "ATX PS/2",
-  "ATX PS/3",
-  "SFX",
-  "SFX-L",
-  "TFX",
-  "Flex ATX",
-]);
-
-type PSUFormFactorType = z.infer<typeof PSUFormFactors>;
 
 const PSUModulars = z.enum(["Non-Modular", "Semi-Modular", "Full-Modular"]);
 
@@ -82,23 +40,6 @@ const PSUEfficiencies = z.enum([
 
 type PSUEfficiencyType = z.infer<typeof PSUEfficiencies>;
 
-const CaseFormFactors = z.enum([
-  "Mini-Tower",
-  "Micro-Tower",
-  "Mid-Tower",
-  "Full-Tower",
-]);
-
-type CaseFormFactorType = z.infer<typeof CaseFormFactors>;
-
-const CaseSide = z.enum(["top", "bottom", "front", "rear", "side"]);
-
-type CaseSideType = z.infer<typeof CaseSide>;
-
-const FanFormFactors = z.enum(["40", "80", "92", "120", "140", "180", "200"]);
-
-type FanFormFactorType = z.infer<typeof FanFormFactors>;
-
 const FanBearings = z.enum(["Fluid dynamic", "Ball", "Sleeve", "Rifle"]);
 
 type FanBearingType = z.infer<typeof FanBearings>;
@@ -107,9 +48,66 @@ const CoolerCPUPlates = z.enum(["copper", "alluminium"]);
 
 type CoolerCPUPlateType = z.infer<typeof CoolerCPUPlates>;
 
-const AIOFormFactors = z.enum(["120", "140", "240", "280", "360", "420"]);
+namespace FormFactor {
+  export const Mainboard = z.enum([
+    "Pico-ITX",
+    "Mini-ITX",
+    "Mini-ATX",
+    "microATX",
+    "ATX",
+    "EATX",
+  ]);
 
-type AIOFormFactorType = z.infer<typeof AIOFormFactors>;
+  export type Mainboard = z.infer<typeof Mainboard>;
+
+  export const RAM = z.enum(["DIMM", "SO-DIMM", "CAMM2"]);
+
+  export type RAM = z.infer<typeof RAM>;
+
+  export const SSD = z.enum([
+    "2.5",
+    "U.2",
+    "mSATA",
+    "M.2 2230",
+    "M.2 2242",
+    "M.2 2280",
+    "M.2 22110",
+  ]);
+
+  export type SSD = z.infer<typeof SSD>;
+
+  export const HDD = z.enum(["2.5", "3.5"]);
+
+  export type HDD = z.infer<typeof HDD>;
+
+  export const PSU = z.enum([
+    "ATX PS/2",
+    "ATX PS/3",
+    "SFX",
+    "SFX-L",
+    "TFX",
+    "Flex ATX",
+  ]);
+
+  export type PSU = z.infer<typeof PSU>;
+
+  export const Case = z.enum([
+    "Mini-Tower",
+    "Micro-Tower",
+    "Mid-Tower",
+    "Full-Tower",
+  ]);
+
+  export type Case = z.infer<typeof Case>;
+
+  export const Fan = z.enum(["40", "80", "92", "120", "140", "180", "200"]);
+
+  export type Fan = z.infer<typeof Fan>;
+
+  export const AIO = z.enum(["120", "140", "240", "280", "360", "420"]);
+
+  export type AIO = z.infer<typeof AIO>;
+}
 
 namespace InternalConnectors {
   export namespace Power {
@@ -166,6 +164,7 @@ namespace InternalConnectors {
       "CPU",
       "CPU OPT",
       "AIO Pump",
+      "Radiator",
       "Q Fan",
       "H AMP",
       "Chassis",
@@ -185,6 +184,20 @@ namespace InternalConnectors {
 
     export type SchemaType = `${InterfaceType} ${ConnectorType}`;
   }
+
+  export const Sound = z.enum(["Front Panel Audio Header", "SPDIF Out Header"]);
+
+  export const RGB = z.enum(["4 pin 12V RGB", "3 pin 5V Addressable RGB"]);
+
+  export const Miscellanous = z.enum([
+    "Front Panel Header",
+    "Serial COM Port Header",
+    "Parallel LPT Port Header",
+    "Chassis Intrusion Header",
+    "Thunderbolt Header",
+    "Temperature Sensor Header",
+    "TPM Header",
+  ]);
 }
 
 namespace ExternalPorts {
@@ -347,19 +360,24 @@ namespace ExternalPorts {
   export namespace Audio {
     export namespace HDAudio {
       export const Ports = z.enum([
-        "2-channel",
-        "4-channel",
-        "6-channel",
-        "8-channel",
+        "Line-Out/Mic-In",
+        "Rear",
+        "Center/Subwoofer",
+        "Side",
+        "Line-In",
+        "Line-Out",
+        "Mic-In",
       ]);
 
       export type PortType = z.infer<typeof Ports>;
 
-      export const Regex = new RegExp(`(${Ports.options.join("|")}) HD Audio`);
+      export const Regex = new RegExp(
+        `(${Ports.options.join("|")}) HD Audio Port`
+      );
 
       export const Schema = z.string().regex(Regex);
 
-      export type SchemaType = `${PortType} HD Audio`;
+      export type SchemaType = `${PortType} HD Audio Port`;
     }
 
     export namespace SPDIF {
@@ -377,7 +395,15 @@ namespace ExternalPorts {
     }
   }
 
+  export const Button = z.enum([
+    "Power Button",
+    "Reset Button",
+    "Clear CMOS Button",
+    "Flash BIOS Button",
+  ]);
+
   export const Schema = z.union([
+    Button,
     USB.Schema,
     PS2.Schema,
     Ethernet.Schema,
@@ -398,23 +424,15 @@ const NumberFilterOptions = z.array(z.number());
 const FilterOptions = <T extends z.ZodTypeAny>(zodType: T) => z.array(zodType);
 
 export {
-  MainboardFormFactors,
-  RAMFormFactors,
+  FormFactor,
   RAMProtocols,
   SSDMemoryCells,
-  SSDFormFactors,
   SSDInterfaces,
-  HDDFormFactors,
   HDDInterfaces,
-  PSUFormFactors,
   PSUModulars,
   PSUEfficiencies,
-  CaseFormFactors,
-  CaseSide,
-  FanFormFactors,
   FanBearings,
   CoolerCPUPlates,
-  AIOFormFactors,
   InternalConnectors,
   ExternalPorts,
   NumberFilterOptions,
@@ -422,22 +440,13 @@ export {
 };
 
 export type {
-  MainboardFormFactorType,
-  RAMFormFactorType,
   RAMProtocolType,
   SSDMemoryCellType,
-  SSDFormFactorType,
   SSDInterfaceType,
-  HDDFormFactorType,
   HDDInterfaceType,
-  PSUFormFactorType,
   PSUModularType,
   PSUEfficiencyType,
-  CaseFormFactorType,
-  CaseSideType,
-  FanFormFactorType,
   FanBearingType,
   CoolerCPUPlateType,
-  AIOFormFactorType,
   FilterOptionsType,
 };

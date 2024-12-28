@@ -1,6 +1,6 @@
 import {
   PSUEfficiencies,
-  PSUFormFactors,
+  FormFactor,
   PSUModulars,
   FilterOptions,
   NumberFilterOptions,
@@ -12,7 +12,7 @@ export namespace PSU {
     wattage: z.number(),
     efficiency: PSUEfficiencies,
 
-    form_factor: PSUFormFactors,
+    form_factor: FormFactor.PSU,
     width: z.number(),
     length: z.number(),
     height: z.number(),
@@ -44,14 +44,14 @@ export namespace PSU {
     .object({
       wattage: NumberFilterOptions,
       efficiency: FilterOptions(PSUEfficiencies),
-      form_factor: FilterOptions(PSUFormFactors),
+      form_factor: FilterOptions(FormFactor.PSU),
       modular: FilterOptions(PSUModulars),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
     efficiency: PSUEfficiencies.options,
-    form_factor: PSUFormFactors.options,
+    form_factor: FormFactor.PSU.options,
     modular: PSUModulars.options,
   };
 

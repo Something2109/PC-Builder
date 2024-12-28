@@ -1,6 +1,5 @@
 import {
-  MainboardFormFactors,
-  RAMFormFactors,
+  FormFactor,
   RAMProtocols,
   FilterOptions,
   HDDInterfaces,
@@ -49,12 +48,12 @@ namespace Mainboard {
   export type BackPanelPortType = z.infer<typeof BackPanelPortSchema>;
 
   export const Schema = z.object({
-    form_factor: MainboardFormFactors,
+    form_factor: FormFactor.Mainboard,
 
     socket: z.string(),
     chipset: z.string(),
 
-    ram_form_factor: RAMFormFactors,
+    ram_form_factor: FormFactor.RAM,
     ram_protocol: RAMProtocols,
     ram_slot: z.number(),
     expansion_slots: z.number(),
@@ -65,6 +64,7 @@ namespace Mainboard {
     fan_connectors: FanConnectorSchema,
     storage_connectors: StorageConnectorSchema,
     usb_connectors: USBConnectorSchema,
+    miscelanous_connectors: z.record(z.string(), z.number()),
 
     back_panel_ports: BackPanelPortSchema,
   });
@@ -86,16 +86,16 @@ namespace Mainboard {
 
   export const FilterOptionSchema = z
     .object({
-      form_factor: FilterOptions(MainboardFormFactors),
+      form_factor: FilterOptions(FormFactor.Mainboard),
       socket: FilterOptions(z.string()),
-      ram_form_factor: FilterOptions(RAMFormFactors),
+      ram_form_factor: FilterOptions(FormFactor.RAM),
       ram_protocol: FilterOptions(RAMProtocols),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
-    form_factor: MainboardFormFactors.options,
-    ram_form_factor: RAMFormFactors.options,
+    form_factor: FormFactor.Mainboard.options,
+    ram_form_factor: FormFactor.RAM.options,
     ram_protocol: RAMProtocols.options,
   };
 
