@@ -166,6 +166,7 @@ namespace InternalConnectors {
       "CPU",
       "CPU OPT",
       "AIO Pump",
+      "Radiator",
       "Q Fan",
       "H AMP",
       "Chassis",
@@ -185,6 +186,20 @@ namespace InternalConnectors {
 
     export type SchemaType = `${InterfaceType} ${ConnectorType}`;
   }
+
+  export const Sound = z.enum(["Front Panel Audio Header", "SPDIF Out Header"]);
+
+  export const RGB = z.enum(["4 pin 12V RGB", "3 pin 5V Addressable RGB"]);
+
+  export const Miscellanous = z.enum([
+    "Front Panel Header",
+    "Serial COM Port Header",
+    "Parallel LPT Port Header",
+    "Chassis Intrusion Header",
+    "Thunderbolt Header",
+    "Temperature Sensor Header",
+    "TPM Header",
+  ]);
 }
 
 namespace ExternalPorts {
@@ -377,7 +392,15 @@ namespace ExternalPorts {
     }
   }
 
+  export const Button = z.enum([
+    "Power Button",
+    "Reset Button",
+    "Clear CMOS Button",
+    "Flash BIOS Button",
+  ]);
+
   export const Schema = z.union([
+    Button,
     USB.Schema,
     PS2.Schema,
     Ethernet.Schema,
