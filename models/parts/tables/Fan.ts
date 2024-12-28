@@ -1,7 +1,7 @@
 import { PartDefaultScope, PartDetailTable, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import Fan from "@/utils/interface/part/Fan";
-import { FormFactor } from "@/utils/interface/utils";
+import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,
   Column,
@@ -45,6 +45,9 @@ class FanModel extends Model implements PartDetailTable<Fan.Info> {
   @Column(DataType.FLOAT)
   declare height: number | null;
 
+  @Column(DataType.TINYINT)
+  declare count: number | null;
+
   @Column(DataType.FLOAT)
   declare voltage: number | null;
 
@@ -62,6 +65,18 @@ class FanModel extends Model implements PartDetailTable<Fan.Info> {
 
   @Column({ type: DataType.STRING, validate: { isIn: [Fan.Bearing.options] } })
   declare bearing: Fan.Bearing | null;
+
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [InternalConnectors.Fan.Connector.options] },
+  })
+  declare connector: InternalConnectors.Fan.Connector | null;
+
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [InternalConnectors.RGB.options] },
+  })
+  declare rgb: InternalConnectors.RGB | null;
 }
 
 export { FanModel };
