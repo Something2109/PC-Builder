@@ -362,19 +362,24 @@ namespace ExternalPorts {
   export namespace Audio {
     export namespace HDAudio {
       export const Ports = z.enum([
-        "2-channel",
-        "4-channel",
-        "6-channel",
-        "8-channel",
+        "Line-Out/Mic-In",
+        "Rear",
+        "Center/Subwoofer",
+        "Side",
+        "Line-In",
+        "Line-Out",
+        "Mic-In",
       ]);
 
       export type PortType = z.infer<typeof Ports>;
 
-      export const Regex = new RegExp(`(${Ports.options.join("|")}) HD Audio`);
+      export const Regex = new RegExp(
+        `(${Ports.options.join("|")}) HD Audio Port`
+      );
 
       export const Schema = z.string().regex(Regex);
 
-      export type SchemaType = `${PortType} HD Audio`;
+      export type SchemaType = `${PortType} HD Audio Port`;
     }
 
     export namespace SPDIF {
