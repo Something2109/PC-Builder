@@ -65,6 +65,7 @@ namespace Mainboard {
     fan_connectors: FanConnectorSchema,
     storage_connectors: StorageConnectorSchema,
     usb_connectors: USBConnectorSchema,
+    miscelanous_connectors: z.record(z.string(), z.number()),
 
     back_panel_ports: BackPanelPortSchema,
   });
