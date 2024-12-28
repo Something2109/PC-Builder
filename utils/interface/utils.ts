@@ -16,14 +16,6 @@ const SSDMemoryCells = z.enum(["SLC", "MLC", "TLC", "QLC", "3D"]);
 
 type SSDMemoryCellType = z.infer<typeof SSDMemoryCells>;
 
-const SSDInterfaces = z.enum(["SATA", "U.2", "mSATA", "M.2 PCIe"]);
-
-type SSDInterfaceType = z.infer<typeof SSDInterfaces>;
-
-const HDDInterfaces = z.enum(["SATA", "SAS", "PATA"]);
-
-type HDDInterfaceType = z.infer<typeof HDDInterfaces>;
-
 const PSUModulars = z.enum(["Non-Modular", "Semi-Modular", "Full-Modular"]);
 
 type PSUModularType = z.infer<typeof PSUModulars>;
@@ -158,6 +150,20 @@ namespace InternalConnectors {
 
     export type SchemaType = `PCIe ${number} ${WidthType}`;
   }
+
+  export namespace Storage {
+    export const SSD = z.enum(["SATA", "U.2", "mSATA", "M.2 PCIe"]);
+
+    export type SSD = z.infer<typeof SSD>;
+
+    export const HDD = z.enum(["SATA", "SAS", "PATA"]);
+
+    export type HDD = z.infer<typeof HDD>;
+
+    export const Schema = z.union([SSD, HDD]);
+  }
+
+  export type Storage = z.infer<typeof Storage.Schema>;
 
   export namespace Fan {
     export const Connectors = z.enum([
@@ -427,8 +433,6 @@ export {
   FormFactor,
   RAMProtocols,
   SSDMemoryCells,
-  SSDInterfaces,
-  HDDInterfaces,
   PSUModulars,
   PSUEfficiencies,
   FanBearings,
@@ -442,8 +446,6 @@ export {
 export type {
   RAMProtocolType,
   SSDMemoryCellType,
-  SSDInterfaceType,
-  HDDInterfaceType,
   PSUModularType,
   PSUEfficiencyType,
   FanBearingType,

@@ -2,8 +2,6 @@ import {
   FormFactor,
   RAMProtocols,
   FilterOptions,
-  HDDInterfaces,
-  SSDInterfaces,
   ExternalPorts,
   InternalConnectors,
 } from "../utils";
@@ -25,7 +23,7 @@ namespace Mainboard {
   export type PowerConnectorType = z.infer<typeof PowerConnectorSchema>;
 
   export const StorageConnectorSchema = z.record(
-    z.union([HDDInterfaces, SSDInterfaces]),
+    InternalConnectors.Storage.Schema,
     z.number()
   );
 

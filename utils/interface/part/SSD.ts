@@ -1,9 +1,9 @@
 import {
   FormFactor,
-  SSDInterfaces,
   SSDMemoryCells,
   FilterOptions,
   NumberFilterOptions,
+  InternalConnectors,
 } from "../utils";
 import { z } from "zod";
 
@@ -17,7 +17,7 @@ namespace SSD {
     tbw: z.number(),
 
     form_factor: FormFactor.SSD,
-    interface: SSDInterfaces,
+    interface: InternalConnectors.Storage.SSD,
   });
 
   export type Info = z.infer<typeof Schema>;
@@ -39,7 +39,7 @@ namespace SSD {
     .object({
       memory_type: FilterOptions(SSDMemoryCells),
       form_factor: FilterOptions(FormFactor.SSD),
-      interface: FilterOptions(SSDInterfaces),
+      interface: FilterOptions(InternalConnectors.Storage.SSD),
       read_speed: NumberFilterOptions,
       write_speed: NumberFilterOptions,
       capacity: NumberFilterOptions,
@@ -49,7 +49,7 @@ namespace SSD {
   export const DefaultFilterOptions: FilterOptions = {
     memory_type: SSDMemoryCells.options,
     form_factor: FormFactor.SSD.options,
-    interface: SSDInterfaces.options,
+    interface: InternalConnectors.Storage.SSD.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;
