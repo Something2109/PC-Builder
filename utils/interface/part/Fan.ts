@@ -1,9 +1,9 @@
-import { FilterOptions, FanBearings, FanFormFactors } from "../utils";
+import { FilterOptions, FanBearings, FormFactor } from "../utils";
 import { z } from "zod";
 
 namespace Fan {
   export const Schema = z.object({
-    form_factor: FanFormFactors,
+    form_factor: FormFactor.Fan,
 
     width: z.number(),
     length: z.number(),
@@ -34,13 +34,13 @@ namespace Fan {
 
   export const FilterOptionSchema = z
     .object({
-      form_factor: FilterOptions(FanFormFactors),
+      form_factor: FilterOptions(FormFactor.Fan),
       bearing: FilterOptions(FanBearings),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
-    form_factor: FanFormFactors.options,
+    form_factor: FormFactor.Fan.options,
     bearing: FanBearings.options,
   };
 
