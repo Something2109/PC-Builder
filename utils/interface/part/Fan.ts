@@ -1,4 +1,4 @@
-import { FilterOptions, FormFactor } from "../utils";
+import { FilterOptions, FormFactor, InternalConnectors } from "../utils";
 import { z } from "zod";
 
 namespace Fan {
@@ -12,6 +12,7 @@ namespace Fan {
     width: z.number(),
     length: z.number(),
     height: z.number(),
+    count: z.number(),
 
     voltage: z.number(),
 
@@ -20,6 +21,9 @@ namespace Fan {
     noise: z.number(),
     static_pressure: z.number(),
     bearing: Bearing,
+
+    connector: InternalConnectors.Fan.Connector,
+    rgb: InternalConnectors.RGB,
   });
 
   export type Info = z.infer<typeof Schema>;
