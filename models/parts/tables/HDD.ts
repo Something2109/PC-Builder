@@ -2,8 +2,7 @@ import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import HDD from "@/utils/interface/part/HDD";
 import {
-  HDDFormFactors,
-  HDDFormFactorType,
+  FormFactor,
   HDDInterfaces,
   HDDInterfaceType,
 } from "@/utils/interface/utils";
@@ -52,9 +51,9 @@ class HDDModel extends Model implements PartDetailTable<HDD.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [HDDFormFactors.options] },
+    validate: { isIn: [FormFactor.HDD.options] },
   })
-  declare form_factor: HDDFormFactorType | null;
+  declare form_factor: FormFactor.HDD | null;
 
   @Column({
     type: DataType.STRING,

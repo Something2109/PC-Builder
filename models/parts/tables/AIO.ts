@@ -13,8 +13,7 @@ import AIO from "@/utils/interface/part/AIO";
 import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import {
-  AIOFormFactors,
-  AIOFormFactorType,
+  FormFactor,
   CoolerCPUPlates,
   CoolerCPUPlateType,
 } from "@/utils/interface/utils";
@@ -37,9 +36,9 @@ class AIOModel extends Model implements PartDetailTable<AIO.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [AIOFormFactors.options] },
+    validate: { isIn: [FormFactor.AIO.options] },
   })
-  declare form_factor: AIOFormFactorType | null;
+  declare form_factor: FormFactor.AIO | null;
 
   @Column(DataType.FLOAT)
   declare radiator_width: number | null;

@@ -2,8 +2,7 @@ import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import SSD from "@/utils/interface/part/SSD";
 import {
-  SSDFormFactors,
-  SSDFormFactorType,
+  FormFactor,
   SSDInterfaces,
   SSDInterfaceType,
   SSDMemoryCells,
@@ -60,9 +59,9 @@ class SSDModel extends Model implements PartDetailTable<SSD.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [SSDFormFactors.options] },
+    validate: { isIn: [FormFactor.SSD.options] },
   })
-  declare form_factor: SSDFormFactorType | null;
+  declare form_factor: FormFactor.SSD | null;
 
   @Column({
     type: DataType.STRING,

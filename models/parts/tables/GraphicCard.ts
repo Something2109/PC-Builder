@@ -77,12 +77,9 @@ class GraphicCardModel
 
   @Column(DataType.TEXT)
   get port(): GraphicCard.PortType | null {
-    let port: string = this.getDataValue("port");
+    let data: string = this.getDataValue("port");
 
-    if (port) {
-      return JSON.parse(port);
-    }
-    return null;
+    return data ? JSON.parse(data) : null;
   }
 
   set port(value: GraphicCard.PortType | null) {

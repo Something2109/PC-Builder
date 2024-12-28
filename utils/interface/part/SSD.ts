@@ -1,5 +1,5 @@
 import {
-  SSDFormFactors,
+  FormFactor,
   SSDInterfaces,
   SSDMemoryCells,
   FilterOptions,
@@ -16,7 +16,7 @@ namespace SSD {
     cache: z.number(),
     tbw: z.number(),
 
-    form_factor: SSDFormFactors,
+    form_factor: FormFactor.SSD,
     interface: SSDInterfaces,
   });
 
@@ -38,7 +38,7 @@ namespace SSD {
   export const FilterOptionSchema = z
     .object({
       memory_type: FilterOptions(SSDMemoryCells),
-      form_factor: FilterOptions(SSDFormFactors),
+      form_factor: FilterOptions(FormFactor.SSD),
       interface: FilterOptions(SSDInterfaces),
       read_speed: NumberFilterOptions,
       write_speed: NumberFilterOptions,
@@ -48,7 +48,7 @@ namespace SSD {
 
   export const DefaultFilterOptions: FilterOptions = {
     memory_type: SSDMemoryCells.options,
-    form_factor: SSDFormFactors.options,
+    form_factor: FormFactor.SSD.options,
     interface: SSDInterfaces.options,
   };
 

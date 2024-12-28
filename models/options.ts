@@ -8,6 +8,13 @@ import {
   MainboardStorageConnectorModel,
   MainboardUSBConnectorModel,
 } from "./parts/tables/Mainboard";
+import {
+  CaseMainboardSupportModel,
+  CaseAIOSupportModel,
+  CaseFanSupportModel,
+  CaseHardDriveSupportModel,
+  CasePSUSupportModel,
+} from "./parts/tables/Case";
 
 export const ConnectionOptions: SequelizeOptions = {
   models: [
@@ -17,6 +24,11 @@ export const ConnectionOptions: SequelizeOptions = {
     MainboardPCIeModel,
     MainboardStorageConnectorModel,
     MainboardUSBConnectorModel,
+    CaseMainboardSupportModel,
+    CaseAIOSupportModel,
+    CaseFanSupportModel,
+    CaseHardDriveSupportModel,
+    CasePSUSupportModel,
     ...Object.values(Models),
   ],
   define: {
