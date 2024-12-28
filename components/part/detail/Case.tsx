@@ -20,11 +20,8 @@ export function CaseTable({
       </TableRowWrapper>
       <DimensionTableRow defaultValue={defaultValue} />
       <TableRowWrapper>
-        I/O Ports {defaultValue?.io_ports?.toString()}
-      </TableRowWrapper>
-      <TableRowWrapper>
         Mainboard Support
-        {defaultValue?.mb_support}
+        {defaultValue?.mainboard_support}
       </TableRowWrapper>
       <TableRowWrapper>
         Expansion Slot

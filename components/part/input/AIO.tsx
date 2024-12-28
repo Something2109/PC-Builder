@@ -5,7 +5,7 @@ import {
   SelectInputRow,
 } from "../TableWrapper";
 import AIO from "@/utils/interface/part/AIO";
-import { AIOFormFactors, CoolerCPUPlates } from "@/utils/interface/utils";
+import { FormFactor } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
 export default function AIOFieldset({
@@ -19,7 +19,7 @@ export default function AIOFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={AIOFormFactors.options}
+        options={FormFactor.AIO.options}
         defaultValue={defaultValue?.form_factor}
       />
       <InputRow
@@ -30,7 +30,7 @@ export default function AIOFieldset({
       <SelectInputRow
         name="cpu_plate"
         label="CPU Plate"
-        options={CoolerCPUPlates.options}
+        options={AIO.CPUPlate.options}
         defaultValue={defaultValue?.cpu_plate}
       />
       <TableRowWrapper>

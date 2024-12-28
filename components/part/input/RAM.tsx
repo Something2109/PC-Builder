@@ -1,6 +1,6 @@
 import { TableWrapper, InputRow, SelectInputRow } from "../TableWrapper";
 import RAM from "@/utils/interface/part/RAM";
-import { RAMFormFactors, RAMProtocols } from "@/utils/interface/utils";
+import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
 export default function RAMFieldset({
@@ -39,13 +39,13 @@ export default function RAMFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={RAMFormFactors.options}
+        options={FormFactor.RAM.options}
         defaultValue={defaultValue?.form_factor}
       />
       <SelectInputRow
         name="protocol"
         label="Protocol"
-        options={RAMProtocols.options}
+        options={InternalConnectors.RAM.options}
         defaultValue={defaultValue?.protocol}
       />
     </TableWrapper>

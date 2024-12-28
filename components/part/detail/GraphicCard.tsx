@@ -25,9 +25,6 @@ export function GraphicCardTable({
       <TableRowWrapper>
         Minimum PSU Required {defaultValue?.minimum_psu}
       </TableRowWrapper>
-      <TableRowWrapper>
-        Power Connector {defaultValue?.power_connector}
-      </TableRowWrapper>
     </TableWrapper>
   );
 }

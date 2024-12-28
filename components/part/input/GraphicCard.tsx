@@ -35,11 +35,6 @@ export default function GraphicCardFieldset({
         label="Minimum PSU Required"
         defaultValue={defaultValue?.minimum_psu}
       />
-      <InputRow
-        name="power_connector"
-        label="Power Connector"
-        defaultValue={defaultValue?.power_connector}
-      />
     </TableWrapper>
   );
 }

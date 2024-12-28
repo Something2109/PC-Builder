@@ -1,6 +1,6 @@
 import { TableWrapper, InputRow, SelectInputRow } from "../TableWrapper";
 import HDD from "@/utils/interface/part/HDD";
-import { HDDFormFactors, HDDInterfaces } from "@/utils/interface/utils";
+import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
 export default function HDDFieldset({
@@ -44,13 +44,13 @@ export default function HDDFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={HDDFormFactors.options}
+        options={FormFactor.HDD.options}
         defaultValue={defaultValue?.form_factor}
       />
       <SelectInputRow
         name="interface"
         label="Interface"
-        options={HDDInterfaces.options}
+        options={InternalConnectors.Storage.HDD.options}
         defaultValue={defaultValue?.interface}
       />
       <InputRow name="features" label="Features" />

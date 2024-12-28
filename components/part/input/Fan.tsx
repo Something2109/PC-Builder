@@ -5,7 +5,7 @@ import {
   DimensionInputRow,
 } from "../TableWrapper";
 import Fan from "@/utils/interface/part/Fan";
-import { FanBearings, FanFormFactors } from "@/utils/interface/utils";
+import { FormFactor } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
 export default function FanFieldset({
@@ -19,7 +19,7 @@ export default function FanFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={FanFormFactors.options}
+        options={FormFactor.Fan.options}
         defaultValue={defaultValue?.form_factor}
       />
       <DimensionInputRow defaultValue={defaultValue} />
@@ -56,7 +56,7 @@ export default function FanFieldset({
       <SelectInputRow
         name="bearing"
         label="Form Factor"
-        options={FanBearings.options}
+        options={Fan.Bearing.options}
         defaultValue={defaultValue?.bearing}
       />
     </TableWrapper>

@@ -1,10 +1,6 @@
 import { TableWrapper, InputRow, SelectInputRow } from "../TableWrapper";
 import SSD from "@/utils/interface/part/SSD";
-import {
-  SSDFormFactors,
-  SSDInterfaces,
-  SSDMemoryCells,
-} from "@/utils/interface/utils";
+import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
 export default function SSDFieldset({
@@ -19,7 +15,7 @@ export default function SSDFieldset({
         name="memory_type"
         label="Memory Type"
         defaultValue={defaultValue?.memory_type}
-        options={SSDMemoryCells.options}
+        options={SSD.MemoryCell.options}
       />
       <InputRow
         type="number"
@@ -54,13 +50,13 @@ export default function SSDFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={SSDFormFactors.options}
+        options={FormFactor.SSD.options}
         defaultValue={defaultValue?.form_factor}
       />
       <SelectInputRow
         name="interface"
         label="Interface"
-        options={SSDInterfaces.options}
+        options={InternalConnectors.Storage.SSD.options}
         defaultValue={defaultValue?.interface}
       />
     </TableWrapper>

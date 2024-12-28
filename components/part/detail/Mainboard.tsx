@@ -22,9 +22,6 @@ export function MainboardTable({
       <TableRowWrapper>
         Expansion Slots {defaultValue?.expansion_slots}
       </TableRowWrapper>
-      <TableRowWrapper>
-        I/O Ports {defaultValue?.io_ports?.toString()}
-      </TableRowWrapper>
     </TableWrapper>
   );
 }

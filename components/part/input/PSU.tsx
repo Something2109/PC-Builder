@@ -5,11 +5,7 @@ import {
   DimensionInputRow,
 } from "../TableWrapper";
 import PSU from "@/utils/interface/part/PSU";
-import {
-  PSUEfficiencies,
-  PSUFormFactors,
-  PSUModulars,
-} from "@/utils/interface/utils";
+import { FormFactor } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
 export default function PSUFieldset({
@@ -29,20 +25,20 @@ export default function PSUFieldset({
       <SelectInputRow
         name="efficiency"
         label="Efficiency"
-        options={PSUEfficiencies.options}
+        options={PSU.Efficiency.options}
         defaultValue={defaultValue?.efficiency}
       />
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={PSUFormFactors.options}
+        options={FormFactor.PSU.options}
         defaultValue={defaultValue?.form_factor}
       />
       <DimensionInputRow defaultValue={defaultValue} />
       <SelectInputRow
         name="modular"
         label="Modular"
-        options={PSUModulars.options}
+        options={PSU.Modular.options}
         defaultValue={defaultValue?.modular}
       />
       <InputRow

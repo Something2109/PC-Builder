@@ -5,11 +5,7 @@ import {
   DimensionInputRow,
 } from "../TableWrapper";
 import Case from "@/utils/interface/part/Case";
-import {
-  CaseFormFactors,
-  MainboardFormFactors,
-  PSUFormFactors,
-} from "@/utils/interface/utils";
+import { FormFactor } from "@/utils/interface/utils";
 import { ReactNode, TableHTMLAttributes } from "react";
 
 export default function CaseFieldset({
@@ -23,7 +19,7 @@ export default function CaseFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={CaseFormFactors.options}
+        options={FormFactor.Case.options}
         defaultValue={defaultValue?.form_factor}
       />
       <DimensionInputRow defaultValue={defaultValue} />
@@ -31,8 +27,8 @@ export default function CaseFieldset({
       <SelectInputRow
         name="mb_support"
         label="Mainboard Support"
-        options={MainboardFormFactors.options}
-        defaultValue={defaultValue?.mb_support}
+        options={FormFactor.Mainboard.options}
+        defaultValue={defaultValue?.mainboard_support}
       />
       <InputRow
         type="number"
@@ -51,7 +47,7 @@ export default function CaseFieldset({
       <SelectInputRow
         name="psu_support"
         label="PSU Support"
-        options={PSUFormFactors.options}
+        options={FormFactor.PSU.options}
         defaultValue={defaultValue?.psu_support}
       />
       <InputRow

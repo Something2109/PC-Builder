@@ -1,10 +1,6 @@
 import { TableWrapper, InputRow, SelectInputRow } from "../TableWrapper";
 import Mainboard from "@/utils/interface/part/Mainboard";
-import {
-  MainboardFormFactors,
-  RAMFormFactors,
-  RAMProtocols,
-} from "@/utils/interface/utils";
+import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
 export default function MainboardFieldset({
@@ -18,7 +14,7 @@ export default function MainboardFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={MainboardFormFactors.options}
+        options={FormFactor.Fan.options}
         defaultValue={defaultValue?.form_factor}
       />
       <InputRow
@@ -29,13 +25,13 @@ export default function MainboardFieldset({
       <SelectInputRow
         name="ram_form_factor"
         label="RAM Form Factor"
-        options={RAMFormFactors.options}
+        options={FormFactor.RAM.options}
         defaultValue={defaultValue?.ram_form_factor}
       />
       <SelectInputRow
         name="ram_protocol"
         label="RAM Protocol"
-        options={RAMProtocols.options}
+        options={InternalConnectors.RAM.options}
         defaultValue={defaultValue?.ram_protocol}
       />
       <InputRow
