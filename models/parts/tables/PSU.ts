@@ -1,13 +1,7 @@
 import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import PSU from "@/utils/interface/part/PSU";
-import {
-  PSUEfficiencies,
-  PSUEfficiencyType,
-  FormFactor,
-  PSUModulars,
-  PSUModularType,
-} from "@/utils/interface/utils";
+import { FormFactor } from "@/utils/interface/utils";
 import {
   BelongsTo,
   Column,
@@ -41,9 +35,9 @@ class PSUModel extends Model implements PartDetailTable<PSU.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [PSUEfficiencies.options] },
+    validate: { isIn: [PSU.Efficiency.options] },
   })
-  declare efficiency: PSUEfficiencyType | null;
+  declare efficiency: PSU.Efficiency | null;
 
   @Column({
     type: DataType.STRING,
@@ -60,8 +54,8 @@ class PSUModel extends Model implements PartDetailTable<PSU.Info> {
   @Column(DataType.INTEGER)
   declare height: number | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [PSUModulars.options] } })
-  declare modular: PSUModularType | null;
+  @Column({ type: DataType.STRING, validate: { isIn: [PSU.Modular.options] } })
+  declare modular: PSU.Modular | null;
 
   @Column(DataType.TINYINT)
   declare atx_pin: number | null;

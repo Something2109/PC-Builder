@@ -1,7 +1,6 @@
 import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import Cooler from "@/utils/interface/part/Cooler";
-import { CoolerCPUPlates, CoolerCPUPlateType } from "@/utils/interface/utils";
 import {
   BelongsTo,
   Column,
@@ -44,9 +43,9 @@ class CoolerModel extends Model implements PartDetailTable<Cooler.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [CoolerCPUPlates.options] },
+    validate: { isIn: [Cooler.CPUPlate.options] },
   })
-  declare cpu_plate: CoolerCPUPlateType | null;
+  declare cpu_plate: Cooler.CPUPlate | null;
 }
 
 export { CoolerModel };

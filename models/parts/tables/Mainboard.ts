@@ -3,12 +3,8 @@ import { PartInformation } from "./Part";
 import Mainboard from "@/utils/interface/part/Mainboard";
 import {
   ExternalPorts,
-  HDDInterfaces,
   InternalConnectors,
   FormFactor,
-  RAMProtocols,
-  RAMProtocolType,
-  SSDInterfaces,
 } from "@/utils/interface/utils";
 import {
   BelongsTo,
@@ -78,8 +74,11 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   })
   declare ram_form_factor: FormFactor.RAM | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [RAMProtocols.options] } })
-  declare ram_protocol: RAMProtocolType | null;
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [InternalConnectors.RAM.options] },
+  })
+  declare ram_protocol: InternalConnectors.RAM | null;
 
   @Column(DataType.TINYINT)
   declare ram_slot: number | null;
@@ -321,9 +320,9 @@ class MainboardPCIeModel extends Model {
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [InternalConnectors.PCIe.Controllers.options] },
+    validate: { isIn: [InternalConnectors.PCIe.Controller.options] },
   })
-  declare controller: InternalConnectors.PCIe.ControllerType;
+  declare controller: InternalConnectors.PCIe.Controller;
 
   @PrimaryKey
   @Column(DataType.TINYINT)
@@ -351,7 +350,14 @@ class MainboardStorageConnectorModel extends Model {
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [[...HDDInterfaces.options, ...SSDInterfaces.options]] },
+    validate: {
+      isIn: [
+        [
+          ...InternalConnectors.Storage.HDD.options,
+          ...InternalConnectors.Storage.SSD.options,
+        ],
+      ],
+    },
   })
   declare type: keyof Mainboard.StorageConnectorType;
 
@@ -373,16 +379,16 @@ class MainboardUSBConnectorModel extends Model {
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [ExternalPorts.USB.Generations.options] },
+    validate: { isIn: [ExternalPorts.USB.Generation.options] },
   })
-  declare generation: ExternalPorts.USB.GenerationType;
+  declare generation: ExternalPorts.USB.Generation;
 
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [ExternalPorts.USB.Connectors.options] },
+    validate: { isIn: [ExternalPorts.USB.Connector.options] },
   })
-  declare connector: ExternalPorts.USB.ConnectorType;
+  declare connector: ExternalPorts.USB.Connector;
 
   @Column(DataType.TINYINT)
   declare count: number;

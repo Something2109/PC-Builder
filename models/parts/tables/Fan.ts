@@ -1,11 +1,7 @@
 import { PartDefaultScope, PartDetailTable, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import Fan from "@/utils/interface/part/Fan";
-import {
-  FormFactor,
-  FanBearings,
-  FanBearingType,
-} from "@/utils/interface/utils";
+import { FormFactor } from "@/utils/interface/utils";
 import {
   BelongsTo,
   Column,
@@ -64,8 +60,8 @@ class FanModel extends Model implements PartDetailTable<Fan.Info> {
   @Column(DataType.FLOAT)
   declare static_pressure: number | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [FanBearings.options] } })
-  declare bearing: FanBearingType | null;
+  @Column({ type: DataType.STRING, validate: { isIn: [Fan.Bearing.options] } })
+  declare bearing: Fan.Bearing | null;
 }
 
 export { FanModel };

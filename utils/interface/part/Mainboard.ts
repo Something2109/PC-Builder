@@ -8,7 +8,7 @@ import { z } from "zod";
 
 namespace Mainboard {
   export const PCIeSchema = z.record(
-    InternalConnectors.PCIe.Controllers,
+    InternalConnectors.PCIe.Controller,
     z.record(InternalConnectors.PCIe.Schema, z.number())
   );
 
