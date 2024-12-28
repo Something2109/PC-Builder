@@ -91,10 +91,6 @@ const CaseFormFactors = z.enum([
 
 type CaseFormFactorType = z.infer<typeof CaseFormFactors>;
 
-const CaseSide = z.enum(["top", "bottom", "front", "rear", "side"]);
-
-type CaseSideType = z.infer<typeof CaseSide>;
-
 const FanFormFactors = z.enum(["40", "80", "92", "120", "140", "180", "200"]);
 
 type FanFormFactorType = z.infer<typeof FanFormFactors>;
@@ -438,7 +434,6 @@ export {
   PSUModulars,
   PSUEfficiencies,
   CaseFormFactors,
-  CaseSide,
   FanFormFactors,
   FanBearings,
   CoolerCPUPlates,
@@ -462,7 +457,6 @@ export type {
   PSUModularType,
   PSUEfficiencyType,
   CaseFormFactorType,
-  CaseSideType,
   FanFormFactorType,
   FanBearingType,
   CoolerCPUPlateType,
