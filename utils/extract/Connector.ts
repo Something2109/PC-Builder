@@ -2,10 +2,10 @@ import { InternalConnectors, ExternalPorts } from "../interface/utils";
 
 type PinNumber = { main?: number; cpu?: number; pcie?: number };
 type PowerConnectorObject = {
-  [key in InternalConnectors.Power.ConnectorType]?: number;
+  [key in InternalConnectors.Power]?: number;
 };
 type GraphicCardPowerConnectorObject = {
-  [key in InternalConnectors.Power.GraphicCardType]?: number;
+  [key in InternalConnectors.Power.GraphicCard]?: number;
 };
 
 export class PowerConnectorExchanger {
@@ -112,15 +112,12 @@ export class PowerConnectorExchanger {
 type PCIeInfo = { version: number; width: number };
 
 export class PCIeExchanger {
-  static toString({
-    version,
-    width,
-  }: PCIeInfo): InternalConnectors.PCIe.SchemaType {
+  static toString({ version, width }: PCIeInfo): InternalConnectors.PCIe {
     const versionStr = version.toLocaleString(undefined, {
       minimumFractionDigits: 1,
     });
 
-    return `PCIe ${versionStr} x${width}` as InternalConnectors.PCIe.SchemaType;
+    return `PCIe ${versionStr} x${width}` as InternalConnectors.PCIe;
   }
 
   static toObject(value: string): PCIeInfo {
@@ -135,15 +132,12 @@ export class PCIeExchanger {
 }
 
 type USBInfo = {
-  generation: ExternalPorts.USB.GenerationType;
-  connector: ExternalPorts.USB.ConnectorType;
+  generation: ExternalPorts.USB.Generation;
+  connector: ExternalPorts.USB.Connector;
 };
 
 export class USBExchanger {
-  static toString({
-    generation,
-    connector,
-  }: USBInfo): ExternalPorts.USB.SchemaType {
+  static toString({ generation, connector }: USBInfo): ExternalPorts.USB {
     return `USB ${generation} ${connector}`;
   }
 
@@ -155,8 +149,8 @@ export class USBExchanger {
     }
 
     return {
-      generation: generation as ExternalPorts.USB.GenerationType,
-      connector: connector as ExternalPorts.USB.ConnectorType,
+      generation: generation as ExternalPorts.USB.Generation,
+      connector: connector as ExternalPorts.USB.Connector,
     };
   }
 }

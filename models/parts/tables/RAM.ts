@@ -1,11 +1,7 @@
 import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import RAM from "@/utils/interface/part/RAM";
-import {
-  FormFactor,
-  RAMProtocols,
-  RAMProtocolType,
-} from "@/utils/interface/utils";
+import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,
   Column,
@@ -63,8 +59,11 @@ class RAMModel extends Model implements PartDetailTable<RAM.Info> {
   })
   declare form_factor: FormFactor.RAM | null;
 
-  @Column({ type: DataType.STRING, validate: { isIn: [RAMProtocols.options] } })
-  declare protocol: RAMProtocolType | null;
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [InternalConnectors.RAM.options] },
+  })
+  declare protocol: InternalConnectors.RAM | null;
 }
 
 export { RAMModel };

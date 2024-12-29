@@ -1,53 +1,5 @@
 import { z } from "zod";
 
-const RAMProtocols = z.enum([
-  "DDR1",
-  "DDR2",
-  "DDR3",
-  "LPDDR3",
-  "DDR4",
-  "LPDDR4",
-  "DDR5",
-]);
-
-type RAMProtocolType = z.infer<typeof RAMProtocols>;
-
-const SSDMemoryCells = z.enum(["SLC", "MLC", "TLC", "QLC", "3D"]);
-
-type SSDMemoryCellType = z.infer<typeof SSDMemoryCells>;
-
-const SSDInterfaces = z.enum(["SATA", "U.2", "mSATA", "M.2 PCIe"]);
-
-type SSDInterfaceType = z.infer<typeof SSDInterfaces>;
-
-const HDDInterfaces = z.enum(["SATA", "SAS", "PATA"]);
-
-type HDDInterfaceType = z.infer<typeof HDDInterfaces>;
-
-const PSUModulars = z.enum(["Non-Modular", "Semi-Modular", "Full-Modular"]);
-
-type PSUModularType = z.infer<typeof PSUModulars>;
-
-const PSUEfficiencies = z.enum([
-  "None",
-  "80 Plus",
-  "80 PLUS Bronze",
-  "80 PLUS Silver",
-  "80 PLUS Gold",
-  "80 PLUS Platinum",
-  "80 PLUS Titanium",
-]);
-
-type PSUEfficiencyType = z.infer<typeof PSUEfficiencies>;
-
-const FanBearings = z.enum(["Fluid dynamic", "Ball", "Sleeve", "Rifle"]);
-
-type FanBearingType = z.infer<typeof FanBearings>;
-
-const CoolerCPUPlates = z.enum(["copper", "alluminium"]);
-
-type CoolerCPUPlateType = z.infer<typeof CoolerCPUPlates>;
-
 namespace FormFactor {
   export const Mainboard = z.enum([
     "Pico-ITX",
@@ -120,7 +72,7 @@ namespace InternalConnectors {
       "PCIe 6 + 2 pin",
     ]);
 
-    export type MainboardType = z.infer<typeof Mainboard>;
+    export type Mainboard = z.infer<typeof Mainboard>;
 
     export const GraphicCard = z.enum([
       "PCIe 6 pin",
@@ -128,7 +80,7 @@ namespace InternalConnectors {
       "12VHPWR",
     ]);
 
-    export type GraphicCardType = z.infer<typeof GraphicCard>;
+    export type GraphicCard = z.infer<typeof GraphicCard>;
 
     export const Miscellanous = z.enum([
       "SATA",
@@ -136,31 +88,57 @@ namespace InternalConnectors {
       "Floppy Disk 4 pin",
     ]);
 
-    export type MiscellanousType = z.infer<typeof Miscellanous>;
+    export type Miscellanous = z.infer<typeof Miscellanous>;
 
     export const Schema = z.union([Mainboard, GraphicCard, Miscellanous]);
-
-    export type ConnectorType = z.infer<typeof Schema>;
   }
 
+  export type Power = Power.Mainboard | Power.GraphicCard | Power.Miscellanous;
+
   export namespace PCIe {
-    export const Controllers = z.enum(["cpu", "chipset"]);
+    export const Controller = z.enum(["cpu", "chipset"]);
 
-    export type ControllerType = z.infer<typeof Controllers>;
+    export type Controller = z.infer<typeof Controller>;
 
-    export const Widths = z.enum(["x16", "x8", "x4", "x2", "x1"]);
+    export const Width = z.enum(["x16", "x8", "x4", "x2", "x1"]);
 
-    export type WidthType = z.infer<typeof Widths>;
+    export type Width = z.infer<typeof Width>;
 
     export const Regex = new RegExp(`PCIe (\\d\\.?\\d?) x(\\d{1,2})`);
 
     export const Schema = z.string().regex(Regex);
-
-    export type SchemaType = `PCIe ${number} ${WidthType}`;
   }
 
+  export type PCIe = `PCIe ${number} ${PCIe.Width}`;
+
+  export const RAM = z.enum([
+    "DDR1",
+    "DDR2",
+    "DDR3",
+    "LPDDR3",
+    "DDR4",
+    "LPDDR4",
+    "DDR5",
+  ]);
+
+  export type RAM = z.infer<typeof RAM>;
+
+  export namespace Storage {
+    export const SSD = z.enum(["SATA", "U.2", "mSATA", "M.2 PCIe"]);
+
+    export type SSD = z.infer<typeof SSD>;
+
+    export const HDD = z.enum(["SATA", "SAS", "PATA"]);
+
+    export type HDD = z.infer<typeof HDD>;
+
+    export const Schema = z.union([SSD, HDD]);
+  }
+
+  export type Storage = Storage.SSD | Storage.HDD;
+
   export namespace Fan {
-    export const Connectors = z.enum([
+    export const Type = z.enum([
       "CPU",
       "CPU OPT",
       "AIO Pump",
@@ -170,24 +148,28 @@ namespace InternalConnectors {
       "Chassis",
     ]);
 
-    export type ConnectorType = z.infer<typeof Connectors>;
+    export type Type = z.infer<typeof Type>;
 
-    export const Interfaces = z.enum(["3 pin", "4 pin"]);
+    export const Connector = z.enum(["3 pin", "4 pin"]);
 
-    export type InterfaceType = z.infer<typeof Interfaces>;
+    export type Connector = z.infer<typeof Connector>;
 
     export const Regex = new RegExp(
-      `(${Interfaces.options.join("|")}) ${Connectors.options.join("|")}`
+      `(${Connector.options.join("|")}) ${Type.options.join("|")}`
     );
 
     export const Schema = z.string().regex(Regex);
-
-    export type SchemaType = `${InterfaceType} ${ConnectorType}`;
   }
+
+  export type Fan = `${Fan.Type} ${Fan.Connector}`;
 
   export const Sound = z.enum(["Front Panel Audio Header", "SPDIF Out Header"]);
 
+  export type Sound = z.infer<typeof Sound>;
+
   export const RGB = z.enum(["4 pin 12V RGB", "3 pin 5V Addressable RGB"]);
+
+  export type RGB = z.infer<typeof RGB>;
 
   export const Miscellanous = z.enum([
     "Front Panel Header",
@@ -198,15 +180,27 @@ namespace InternalConnectors {
     "Temperature Sensor Header",
     "TPM Header",
   ]);
+
+  export type Miscellanous = z.infer<typeof Miscellanous>;
 }
+
+type InternalConnectors =
+  | InternalConnectors.Power
+  | InternalConnectors.PCIe
+  | InternalConnectors.RAM
+  | InternalConnectors.Storage
+  | InternalConnectors.Fan
+  | InternalConnectors.Sound
+  | InternalConnectors.RGB
+  | InternalConnectors.Miscellanous;
 
 namespace ExternalPorts {
   export namespace USB {
-    export const Generations = z.enum(["1.0", "2.0", "3.0", "3.1", "3.2", "4"]);
+    export const Generation = z.enum(["1.0", "2.0", "3.0", "3.1", "3.2", "4"]);
 
-    export type GenerationType = z.infer<typeof Generations>;
+    export type Generation = z.infer<typeof Generation>;
 
-    export const Connectors = z.enum([
+    export const Connector = z.enum([
       "Type-A",
       "Type-B",
       "Micro-A",
@@ -215,52 +209,52 @@ namespace ExternalPorts {
       "Type-C",
     ]);
 
-    export type ConnectorType = z.infer<typeof Connectors>;
+    export type Connector = z.infer<typeof Connector>;
 
     export const Regex = new RegExp(
-      `USB (${Generations.options.join("|")}) (${Connectors.options.join("|")})`
+      `USB (${Generation.options.join("|")}) (${Connector.options.join("|")})`
     );
 
     export const Schema = z.string().regex(Regex);
-
-    export type SchemaType = `USB ${GenerationType} ${ConnectorType}`;
   }
 
+  export type USB = `USB ${USB.Generation} ${USB.Connector}`;
+
   export namespace Ethernet {
-    export const Speeds = z.enum(["10/100", "1G", "2.5G", "5G", "10G"]);
+    export const Speed = z.enum(["10/100", "1G", "2.5G", "5G", "10G"]);
 
-    export type SpeedType = z.infer<typeof Speeds>;
+    export type Speed = z.infer<typeof Speed>;
 
-    export const Interfaces = z.enum(["RJ45", "SFP", "SFP+", "QSFP", "QSFP+"]);
+    export const Interface = z.enum(["RJ45", "SFP", "SFP+", "QSFP", "QSFP+"]);
 
-    export type InterfaceType = z.infer<typeof Interfaces>;
+    export type Interface = z.infer<typeof Interface>;
 
     export const Regex = new RegExp(
-      `(${Speeds.options.join("|")}) (${Interfaces.options.join(
+      `(${Speed.options.join("|")}) (${Interface.options.join(
         "|"
       )}) LAN Ethernet`
     );
 
     export const Schema = z.string().regex(Regex);
-
-    export type SchemaType = `${SpeedType} ${InterfaceType} LAN Ethernet`;
   }
+
+  export type Ethernet = `${Ethernet.Speed} ${Ethernet.Interface} LAN Ethernet`;
 
   export namespace PS2 {
-    export const Ports = z.enum(["Keyboard", "Mouse", "Dual"]);
+    export const Port = z.enum(["Keyboard", "Mouse", "Dual"]);
 
-    export type PortType = z.infer<typeof Ports>;
+    export type Port = z.infer<typeof Port>;
 
-    export const Regex = new RegExp(`${Ports} PS/2`);
+    export const Regex = new RegExp(`${Port} PS/2`);
 
     export const Schema = z.string().regex(Regex);
-
-    export type SchemaType = `${PortType} PS/2`;
   }
+
+  export type PS2 = `${PS2.Port} PS/2`;
 
   export namespace Display {
     export namespace HDMI {
-      export const Versions = z.enum([
+      export const Version = z.enum([
         "1.0",
         "1.1",
         "1.2",
@@ -278,9 +272,9 @@ namespace ExternalPorts {
         "2.1b",
       ]);
 
-      export type VersionType = z.infer<typeof Versions>;
+      export type Version = z.infer<typeof Version>;
 
-      export const Connectors = z.enum([
+      export const Connector = z.enum([
         "Type A, Standard",
         "Type B, Dual-link",
         "Type C, Mini",
@@ -288,19 +282,19 @@ namespace ExternalPorts {
         "Type E, Automotive",
       ]);
 
-      export type ConnectorType = z.infer<typeof Connectors>;
+      export type Connector = z.infer<typeof Connector>;
 
       export const Regex = new RegExp(
-        `HDMI (${Versions.options.join("|")}) (${Connectors.options.join("|")})`
+        `HDMI (${Version.options.join("|")}) (${Connector.options.join("|")})`
       );
 
       export const Schema = z.string().regex(Regex);
-
-      export type SchemaType = `${ConnectorType} HDMI ${VersionType}`;
     }
 
+    export type HDMI = `${HDMI.Connector} HDMI ${HDMI.Version}`;
+
     export namespace DisplayPort {
-      export const Versions = z.enum([
+      export const Version = z.enum([
         "1.0",
         "1.1",
         "1.1a",
@@ -314,52 +308,43 @@ namespace ExternalPorts {
         "2.1a",
       ]);
 
-      export type VersionType = z.infer<typeof Versions>;
+      export type Version = z.infer<typeof Version>;
 
       export const Regex = new RegExp(
-        `DisplayPort (${Versions.options.join("|")})`
+        `DisplayPort (${Version.options.join("|")})`
       );
 
       export const Schema = z.string().regex(Regex);
-
-      export type SchemaType = `DisplayPort ${VersionType}`;
     }
 
-    export namespace DVI {
-      export const Schema = z.enum([
-        "DVI-D",
-        "DVI-I",
-        "DVI-A",
-        "Mini-DVI",
-        "Micro-DVI",
-      ]);
+    export type DisplayPort = `DisplayPort ${DisplayPort.Version}`;
 
-      export type SchemaType = z.infer<typeof Schema>;
-    }
-
-    export namespace VGA {
-      export const Schema = z.enum(["VGA", "Mini-VGA"]);
-
-      export type SchemaType = z.infer<typeof Schema>;
-    }
-
-    export const Schema = z.union([
-      HDMI.Schema,
-      DisplayPort.Schema,
-      DVI.Schema,
-      VGA.Schema,
+    export const DVI = z.enum([
+      "DVI-D",
+      "DVI-I",
+      "DVI-A",
+      "Mini-DVI",
+      "Micro-DVI",
     ]);
 
-    export type DisplayType =
-      | HDMI.SchemaType
-      | DisplayPort.SchemaType
-      | DVI.SchemaType
-      | VGA.SchemaType;
+    export type DVI = z.infer<typeof DVI>;
+
+    export const VGA = z.enum(["VGA", "Mini-VGA"]);
+
+    export type VGA = z.infer<typeof VGA>;
+
+    export const Schema = z.union([HDMI.Schema, DisplayPort.Schema, DVI, VGA]);
   }
+
+  export type Display =
+    | Display.HDMI
+    | Display.DisplayPort
+    | Display.DVI
+    | Display.VGA;
 
   export namespace Audio {
     export namespace HDAudio {
-      export const Ports = z.enum([
+      export const Port = z.enum([
         "Line-Out/Mic-In",
         "Rear",
         "Center/Subwoofer",
@@ -369,31 +354,35 @@ namespace ExternalPorts {
         "Mic-In",
       ]);
 
-      export type PortType = z.infer<typeof Ports>;
+      export type Port = z.infer<typeof Port>;
 
       export const Regex = new RegExp(
-        `(${Ports.options.join("|")}) HD Audio Port`
+        `(${Port.options.join("|")}) HD Audio Port`
       );
 
       export const Schema = z.string().regex(Regex);
-
-      export type SchemaType = `${PortType} HD Audio Port`;
     }
+
+    export type HDAudio = `${HDAudio.Port} HD Audio Port`;
 
     export namespace SPDIF {
-      export const Interfaces = z.enum(["Optical", "Coaxial"]);
+      export const Interface = z.enum(["Optical", "Coaxial"]);
 
-      export type InterfaceType = z.infer<typeof Interfaces>;
+      export type Interface = z.infer<typeof Interface>;
 
       export const Regex = new RegExp(
-        `(${Interfaces.options.join("|")}) S/PDIF`
+        `(${Interface.options.join("|")}) S/PDIF`
       );
 
       export const Schema = z.string().regex(Regex);
-
-      export type SchemaType = `${InterfaceType} S/PDIF`;
     }
+
+    export type SPDIF = `${SPDIF.Interface} S/PDIF`;
+
+    export const Schema = z.union([HDAudio.Schema, SPDIF.Schema]);
   }
+
+  export type Audio = Audio.HDAudio | Audio.SPDIF;
 
   export const Button = z.enum([
     "Power Button",
@@ -402,18 +391,25 @@ namespace ExternalPorts {
     "Flash BIOS Button",
   ]);
 
+  export type Button = z.infer<typeof Button>;
+
   export const Schema = z.union([
     Button,
     USB.Schema,
     PS2.Schema,
     Ethernet.Schema,
     Display.Schema,
-    Audio.HDAudio.Schema,
-    Audio.SPDIF.Schema,
+    Audio.Schema,
   ]);
-
-  export type SchemaType = z.infer<typeof Schema>;
 }
+
+type ExternalPorts =
+  | ExternalPorts.Button
+  | ExternalPorts.USB
+  | ExternalPorts.PS2
+  | ExternalPorts.Ethernet
+  | ExternalPorts.Display
+  | ExternalPorts.Audio;
 
 type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
   [key in Attributes]?: Required<Info>[key][];
@@ -425,28 +421,10 @@ const FilterOptions = <T extends z.ZodTypeAny>(zodType: T) => z.array(zodType);
 
 export {
   FormFactor,
-  RAMProtocols,
-  SSDMemoryCells,
-  SSDInterfaces,
-  HDDInterfaces,
-  PSUModulars,
-  PSUEfficiencies,
-  FanBearings,
-  CoolerCPUPlates,
   InternalConnectors,
   ExternalPorts,
   NumberFilterOptions,
   FilterOptions,
 };
 
-export type {
-  RAMProtocolType,
-  SSDMemoryCellType,
-  SSDInterfaceType,
-  HDDInterfaceType,
-  PSUModularType,
-  PSUEfficiencyType,
-  FanBearingType,
-  CoolerCPUPlateType,
-  FilterOptionsType,
-};
+export type { FilterOptionsType };

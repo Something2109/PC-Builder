@@ -1,11 +1,7 @@
 import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import HDD from "@/utils/interface/part/HDD";
-import {
-  FormFactor,
-  HDDInterfaces,
-  HDDInterfaceType,
-} from "@/utils/interface/utils";
+import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,
   Column,
@@ -57,9 +53,9 @@ class HDDModel extends Model implements PartDetailTable<HDD.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [HDDInterfaces.options] },
+    validate: { isIn: [InternalConnectors.Storage.HDD.options] },
   })
-  declare interface: HDDInterfaceType | null;
+  declare interface: InternalConnectors.Storage.HDD | null;
 }
 
 export { HDDModel };

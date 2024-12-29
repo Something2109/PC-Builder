@@ -12,11 +12,7 @@ import {
 import AIO from "@/utils/interface/part/AIO";
 import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
-import {
-  FormFactor,
-  CoolerCPUPlates,
-  CoolerCPUPlateType,
-} from "@/utils/interface/utils";
+import { FormFactor } from "@/utils/interface/utils";
 
 @DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
@@ -54,9 +50,9 @@ class AIOModel extends Model implements PartDetailTable<AIO.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [CoolerCPUPlates.options] },
+    validate: { isIn: [AIO.CPUPlate.options] },
   })
-  declare cpu_plate: CoolerCPUPlateType | null;
+  declare cpu_plate: AIO.CPUPlate | null;
 
   @Column(DataType.FLOAT)
   declare pump_width: number | null;

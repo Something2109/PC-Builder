@@ -1,13 +1,7 @@
 import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import SSD from "@/utils/interface/part/SSD";
-import {
-  FormFactor,
-  SSDInterfaces,
-  SSDInterfaceType,
-  SSDMemoryCells,
-  SSDMemoryCellType,
-} from "@/utils/interface/utils";
+import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,
   Column,
@@ -38,9 +32,9 @@ class SSDModel extends Model implements PartDetailTable<SSD.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [SSDMemoryCells.options] },
+    validate: { isIn: [SSD.MemoryCell.options] },
   })
-  declare memory_type: SSDMemoryCellType | null;
+  declare memory_type: SSD.MemoryCell | null;
 
   @Column(DataType.INTEGER)
   declare read_speed: number | null;
@@ -65,9 +59,9 @@ class SSDModel extends Model implements PartDetailTable<SSD.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [SSDInterfaces.options] },
+    validate: { isIn: [InternalConnectors.Storage.SSD.options] },
   })
-  declare interface: SSDInterfaceType | null;
+  declare interface: InternalConnectors.Storage.SSD | null;
 }
 
 export { SSDModel };

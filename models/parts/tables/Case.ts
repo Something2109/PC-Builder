@@ -313,7 +313,7 @@ class CaseFanSupportModel extends Model {
 
   @PrimaryKey
   @Column({ type: DataType.STRING, validate: { isIn: [Case.Side.options] } })
-  declare case_side: Case.SideType;
+  declare case_side: Case.Side;
 
   @PrimaryKey
   @Column({
@@ -339,7 +339,7 @@ class CaseAIOSupportModel extends Model {
 
   @PrimaryKey
   @Column({ type: DataType.STRING, validate: { isIn: [Case.Side.options] } })
-  declare case_side: Case.SideType;
+  declare case_side: Case.Side;
 
   @PrimaryKey
   @Column(DataType.STRING)
