@@ -80,6 +80,8 @@ export type DetailInfo<T extends Products> = z.infer<typeof Part.Schema> & {
   [key in T]: z.infer<typeof DetailInfoListSchema>[T];
 };
 
+export type DetailInfoOptions = z.infer<typeof DetailInfoOptionsSchema>;
+
 export const FilterOptionSchema = z
   .object({
     part: Part.FilterOptionSchema,
