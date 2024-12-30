@@ -8,7 +8,6 @@ import {
   Query,
   NotFoundException,
   BadRequestException,
-  ParseIntPipe,
   ParseUUIDPipe,
   Delete,
 } from "@nestjs/common";
@@ -66,6 +65,35 @@ export class PartController {
     }
 
     return JSON.stringify(responseList);
+  }
+
+  @Post("filter")
+  async getPartFilter(
+    @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions
+  ) {
+    const data = await this.service.filter(body);
+
+    if (!data) {
+      throw new InternalServerErrorException(
+        "There's an error finding filter for your option"
+      );
+    }
+
+    return JSON.stringify(data);
+  }
+
+  @Post("search")
+  async partSearch(
+    @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions,
+    @Query() { q }: { q: string },
+    @Query("page") page?: number,
+    @Query("limit") limit?: number
+  ) {
+    const options = { ...body, page, limit };
+
+    let data = await this.service.search(q, options);
+
+    return JSON.stringify(data);
   }
 
   @Post(":part")
