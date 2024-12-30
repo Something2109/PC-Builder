@@ -1,17 +1,6 @@
-import { Products } from "@/utils/Enum";
 import { FilterOptions, FilterOptionSchema } from "@/utils/interface";
-import {
-  Controller,
-  Get,
-  Param,
-  Post,
-  Body,
-  Query,
-  NotFoundException,
-  BadRequestException,
-  ParseUUIDPipe,
-} from "@nestjs/common";
-import { ZodValidationPipe } from "controllers/part/part.pipe";
+import { Controller, Post, Body, Query } from "@nestjs/common";
+import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { PartService } from "controllers/part/part.service";
 
 @Controller("api/search")

@@ -21,7 +21,7 @@ import {
   FilterOptions,
   FilterOptionSchema,
 } from "@/utils/interface";
-import { ZodValidationPipe } from "./part.pipe";
+import { ZodValidationPipe } from "controllers/utils/utils.modules";
 
 @Controller("api/part")
 export class PartController {
