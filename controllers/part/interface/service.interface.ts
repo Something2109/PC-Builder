@@ -38,7 +38,7 @@ abstract class BasePartService<
   abstract list(options?: Filter & PageOptions): Promise<ListResult<Detail>>;
 
   /**
-   * List all parts that match the given search string \
+   * List all parts that match the given search string
    * and the given {@link Filter} options.
    * @param str The search string to match.
    * @param options The filter options to apply.
@@ -67,11 +67,12 @@ abstract class BasePartService<
   /**
    * Create a new part with the given {@link Options} data.
    * If the part already exists, update it with the new data
-   * (Must provide a valid {@link Part.BasicInfo.id} to update the part).
+   * (Must provide a valid {@link id} to update the part).
    * @param data The data to create the part with.
+   * @param id The ID of the part to update.
    * @returns The created or updated part.
    */
-  abstract set(data: Options): Promise<Detail>;
+  abstract set(data: Options, id?: string): Promise<Detail>;
 
   /**
    * Delete the part with the given ID.
