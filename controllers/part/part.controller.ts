@@ -8,6 +8,7 @@ import {
   NotFoundException,
   ParseUUIDPipe,
   Delete,
+  ParseEnumPipe,
 } from "@nestjs/common";
 import { PartService } from "./part.service";
 import { Products } from "@/utils/Enum";
@@ -18,10 +19,10 @@ import {
   FilterOptions,
   FilterOptionSchema,
 } from "@/utils/interface";
-import {
-  ProductValidator,
-  ZodValidationPipe,
-} from "controllers/utils/utils.modules";
+import { ZodValidationPipe } from "controllers/utils/utils.modules";
+
+const ProductValidator = new ParseEnumPipe(Products);
+const FilterValidator = new ZodValidationPipe(FilterOptionSchema);
 
 @Controller("api/part")
 export class PartController {
@@ -45,9 +46,7 @@ export class PartController {
   }
 
   @Get("filter")
-  async getDefaultFilter(
-    @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions
-  ) {
+  async getDefaultFilter(@Body(FilterValidator) body: FilterOptions) {
     const filter = await this.service.filter(body);
 
     return JSON.stringify(filter);
@@ -55,8 +54,8 @@ export class PartController {
 
   @Get("filter/:part")
   async getPartFilter(
-    @Param("part", new ProductValidator()) part: Products,
-    @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions
+    @Param("part", ProductValidator) part: Products,
+    @Body(FilterValidator) body: FilterOptions
   ) {
     const service = this.findService(part);
 
@@ -67,7 +66,7 @@ export class PartController {
 
   @Get("search")
   async searchDefault(
-    @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions,
+    @Body(FilterValidator) body: FilterOptions,
     @Query() { q }: { q: string },
     @Query("page") page?: number,
     @Query("limit") limit?: number
@@ -81,8 +80,8 @@ export class PartController {
 
   @Get("search/:part")
   async searchPart(
-    @Param("part", new ProductValidator()) part: Products,
-    @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions,
+    @Param("part", ProductValidator) part: Products,
+    @Body(FilterValidator) body: FilterOptions,
     @Query() { q }: { q: string },
     @Query("page") page?: number,
     @Query("limit") limit?: number
@@ -98,8 +97,8 @@ export class PartController {
 
   @Get(":part")
   async partList(
-    @Param("part", new ProductValidator()) part: Products,
-    @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions,
+    @Param("part", ProductValidator) part: Products,
+    @Body(FilterValidator) body: FilterOptions,
     @Query("page") page?: number,
     @Query("limit") limit?: number
   ) {
@@ -114,7 +113,7 @@ export class PartController {
 
   @Post(":part")
   async createPart(
-    @Param("part", new ProductValidator()) part: Products,
+    @Param("part", ProductValidator) part: Products,
     @Body(new ZodValidationPipe(DetailInfoOptionsSchema))
     body: DetailInfo<Products>
   ) {
@@ -127,7 +126,7 @@ export class PartController {
 
   @Get(":part/:id")
   async getPart(
-    @Param("part", new ProductValidator()) part: Products,
+    @Param("part", ProductValidator) part: Products,
     @Param("id", new ParseUUIDPipe()) id: string
   ) {
     const service = this.findService(part);
@@ -143,7 +142,7 @@ export class PartController {
 
   @Post(":part/:id")
   async setPart(
-    @Param("part", new ProductValidator()) part: Products,
+    @Param("part", ProductValidator) part: Products,
     @Param("id", new ParseUUIDPipe()) id: string,
     @Body(new ZodValidationPipe(DetailInfoOptionsSchema))
     body: DetailInfo<Products>
@@ -157,7 +156,7 @@ export class PartController {
 
   @Delete(":part/:id")
   async deletePart(
-    @Param("part", new ProductValidator()) part: Products,
+    @Param("part", ProductValidator) part: Products,
     @Param("id", new ParseUUIDPipe()) id: string
   ) {
     const service = this.service.PartService[part] ?? this.service;

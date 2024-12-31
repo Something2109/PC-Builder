@@ -6,6 +6,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseEnumPipe,
   Post,
 } from "@nestjs/common";
 import {
@@ -14,10 +15,6 @@ import {
 } from "@/utils/interface/article/article";
 import { ArticleService } from "./services/article.service";
 import { ImageService } from "./services/image.service";
-import {
-  ProductValidator,
-  TopicValidator,
-} from "controllers/utils/utils.modules";
 
 @Controller("api")
 export class ArticleController {
@@ -27,7 +24,7 @@ export class ArticleController {
   ) {}
 
   @Get(":topic")
-  async getTopic(@Param("topic", new TopicValidator()) topic: Topics) {
+  async getTopic(@Param("topic", new ParseEnumPipe(Topics)) topic: Topics) {
     const article = await this.articleService.getSummary({ topic });
 
     return JSON.stringify(article);
@@ -35,8 +32,8 @@ export class ArticleController {
 
   @Get(":topic/:part")
   async getArticle(
-    @Param("topic", new TopicValidator()) topic: Topics,
-    @Param("part", new ProductValidator()) part: Products
+    @Param("topic", new ParseEnumPipe(Topics)) topic: Topics,
+    @Param("part", new ParseEnumPipe(Products)) part: Products
   ) {
     const article = await this.articleService.get(topic, part);
 
@@ -51,8 +48,8 @@ export class ArticleController {
 
   @Post(":topic/:part")
   async setArticle(
-    @Param("topic", new TopicValidator()) topic: Topics,
-    @Param("part", new ProductValidator()) part: Products,
+    @Param("topic", new ParseEnumPipe(Topics)) topic: Topics,
+    @Param("part", new ParseEnumPipe(Products)) part: Products,
     @Body() article: any
   ) {
     if (!ValidateArticle.isArticle(article)) {
