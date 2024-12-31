@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { Products } from "@/utils/Enum";
 import Part from "@/utils/interface/part/Parts";
@@ -69,34 +69,39 @@ class PartService extends BasePartService {
 
   async get(id: string): Promise<Detail | null> {
     const save = await PartInformation.scope("detail").findByPk(id);
-    if (save) {
-      return save.toJSON();
-    }
 
-    return null;
-  }
-
-  async set(data: Options, id?: string): Promise<Detail> {
-    const [save] = await PartInformation.findOrCreate({
-      where: { id },
-      defaults: data,
-    });
-
-    await save.update(data);
+    if (!save) return null;
 
     return save.toJSON();
   }
 
-  async delete(id: string) {
-    const save = await PartInformation.findByPk(id);
+  async set(data: Options, id?: string): Promise<Detail> {
+    const [instance, created] = await PartInformation.findOrBuild({
+      where: { id },
+      defaults: data,
+    });
 
-    if (save) {
-      await save.destroy();
+    if (!created) {
+      if (data.part && data.part !== instance.part) {
+        throw new BadRequestException(
+          `Attempting to change part type from ${instance.part} to ${data.part}`
+        );
+      }
 
-      return save.toJSON();
+      await instance.update(data);
     }
 
-    return null;
+    return instance.toJSON();
+  }
+
+  async delete(id: string) {
+    const instance = await PartInformation.findByPk(id);
+
+    if (!instance) return null;
+
+    await instance.destroy();
+
+    return instance.toJSON();
   }
 }
 
