@@ -54,6 +54,18 @@ export class PartController {
     return JSON.stringify(filter);
   }
 
+  @Get("filter/:part")
+  async getPartFilter(
+    @Param("part", new ProductValidator()) part: Products,
+    @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions
+  ) {
+    const service = this.findService(part);
+
+    const filter = await service.filter(body);
+
+    return JSON.stringify(filter);
+  }
+
   @Get("search")
   async searchDefault(
     @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions,
@@ -68,6 +80,23 @@ export class PartController {
     return JSON.stringify(data);
   }
 
+  @Get("search/:part")
+  async searchPart(
+    @Param("part", new ProductValidator()) part: Products,
+    @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions,
+    @Query() { q }: { q: string },
+    @Query("page") page?: number,
+    @Query("limit") limit?: number
+  ) {
+    const service = this.findService(part);
+
+    const options = { ...body, page, limit };
+
+    let data = await service.search(q, options);
+
+    return JSON.stringify(data);
+  }
+
   @Get(":part")
   async partList(
     @Param("part", new ProductValidator()) part: Products,
@@ -75,12 +104,26 @@ export class PartController {
     @Query("page") page?: number,
     @Query("limit") limit?: number
   ) {
-    const options = { ...body, page, limit };
-    options.part = { ...options.part, part: [part as Products] };
+    const service = this.findService(part);
 
-    let data = await this.service.list(options);
+    const options = { ...body, page, limit };
+
+    let data = await service.list(options);
 
     return JSON.stringify(data);
+  }
+
+  @Post(":part")
+  async createPart(
+    @Param("part", new ProductValidator()) part: Products,
+    @Body(new ZodValidationPipe(DetailInfoOptionsSchema))
+    body: DetailInfo<Products>
+  ) {
+    const service = this.findService(part);
+
+    const partInfo = await service.set(body);
+
+    return JSON.stringify(partInfo);
   }
 
   @Get(":part/:id")
@@ -132,6 +175,7 @@ export class PartController {
   }
 
   private findService(part: Products) {
+    console.log(this.service.PartService[part]);
     return this.service.PartService[part] ?? this.service;
   }
 }
