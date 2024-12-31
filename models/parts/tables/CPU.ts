@@ -5,7 +5,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -13,11 +12,10 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...CPU.SummaryAttributes] },
+  summary: { attributes: ["id", ...CPU.SummaryAttributes] },
   filter: (options: CPU.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  detail: PartDefaultScope,
 }))
 @Table({
   modelName: Tables.CPU,

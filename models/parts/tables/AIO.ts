@@ -2,7 +2,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -14,11 +13,10 @@ import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
 import { PartInformation } from "./Part";
 import { FormFactor } from "@/utils/interface/utils";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...AIO.SummaryAttributes] },
+  summary: { attributes: ["id", ...AIO.SummaryAttributes] },
   filter: (options: AIO.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  detail: PartDefaultScope,
 }))
 @Table({ modelName: Tables.AIO })
 class AIOModel extends Model implements PartDetailTable<AIO.Info> {

@@ -6,7 +6,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -14,11 +13,10 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...SSD.SummaryAttributes] },
+  summary: { attributes: ["id", ...SSD.SummaryAttributes] },
   filter: (options: SSD.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  detail: PartDefaultScope,
 }))
 @Table({ modelName: Tables.SSD })
 class SSDModel extends Model implements PartDetailTable<SSD.Info> {

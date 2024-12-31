@@ -5,7 +5,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -13,11 +12,10 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...Cooler.SummaryAttributes] },
+  summary: { attributes: ["id", ...Cooler.SummaryAttributes] },
   filter: (options: Cooler.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  detail: PartDefaultScope,
 }))
 @Table({ modelName: Tables.COOLER })
 class CoolerModel extends Model implements PartDetailTable<Cooler.Info> {

@@ -30,7 +30,7 @@ type PartDetailTable<T extends Object> = {
 
 const PartDefaultScope = {
   attributes: {
-    exclude: ["id", "createdAt", "updatedAt"],
+    exclude: ["raw", "createdAt", "updatedAt"],
   },
 };
 
