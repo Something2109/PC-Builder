@@ -45,47 +45,17 @@ export class PartController {
     return JSON.stringify(responseList);
   }
 
-  @Post()
-  async createPart(
-    @Body(new ZodValidationPipe(DetailInfoOptionsSchema))
-    { id, ...body }: DetailInfo<Products>
-  ) {
-    try {
-      const responseList = await this.service.set(body, id);
-
-      return JSON.stringify(responseList);
-    } catch (err: any) {
-      throw new InternalServerErrorException(err.message);
-    }
-  }
-
-  @Delete()
-  async deletePart(@Body() { id }: { id: string }) {
-    const responseList = await this.service.delete(id);
-    if (!responseList) {
-      return new NotFoundException(`No product found with the given ${id}`);
-    }
-
-    return JSON.stringify(responseList);
-  }
-
-  @Post("filter")
-  async getPartFilter(
+  @Get("filter")
+  async getDefaultFilter(
     @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions
   ) {
-    const data = await this.service.filter(body);
+    const filter = await this.service.filter(body);
 
-    if (!data) {
-      throw new InternalServerErrorException(
-        "There's an error finding filter for your option"
-      );
-    }
-
-    return JSON.stringify(data);
+    return JSON.stringify(filter);
   }
 
-  @Post("search")
-  async partSearch(
+  @Get("search")
+  async searchDefault(
     @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions,
     @Query() { q }: { q: string },
     @Query("page") page?: number,
@@ -98,7 +68,7 @@ export class PartController {
     return JSON.stringify(data);
   }
 
-  @Post(":part")
+  @Get(":part")
   async partList(
     @Param("part", new ProductValidator()) part: Products,
     @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions,
@@ -118,7 +88,7 @@ export class PartController {
     @Param("part", new ProductValidator()) part: Products,
     @Param("id", new ParseUUIDPipe()) id: string
   ) {
-    const service = this.service.PartService[part] ?? this.service;
+    const service = this.findService(part);
 
     const partInfo = await service.get(id);
 
@@ -127,5 +97,41 @@ export class PartController {
     }
 
     throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
+  }
+
+  @Post(":part/:id")
+  async setPart(
+    @Param("part", new ProductValidator()) part: Products,
+    @Param("id", new ParseUUIDPipe()) id: string,
+    @Body(new ZodValidationPipe(DetailInfoOptionsSchema))
+    body: DetailInfo<Products>
+  ) {
+    const service = this.findService(part);
+
+    const partInfo = await service.set(body, id);
+
+    return JSON.stringify(partInfo);
+  }
+
+  @Delete(":part/:id")
+  async deletePart(
+    @Param("part", new ProductValidator()) part: Products,
+    @Param("id", new ParseUUIDPipe()) id: string
+  ) {
+    const service = this.service.PartService[part] ?? this.service;
+
+    const partInfo = await service.delete(id);
+
+    if (!partInfo) {
+      throw new NotFoundException(
+        `Cannot find ${part} part with the id: ${id}`
+      );
+    }
+
+    return JSON.stringify(partInfo);
+  }
+
+  private findService(part: Products) {
+    return this.service.PartService[part] ?? this.service;
   }
 }
