@@ -7,7 +7,6 @@ import {
   Body,
   Query,
   NotFoundException,
-  BadRequestException,
   ParseUUIDPipe,
   Delete,
 } from "@nestjs/common";
@@ -20,7 +19,10 @@ import {
   FilterOptions,
   FilterOptionSchema,
 } from "@/utils/interface";
-import { ZodValidationPipe } from "controllers/utils/utils.modules";
+import {
+  ProductValidator,
+  ZodValidationPipe,
+} from "controllers/utils/utils.modules";
 
 @Controller("api/part")
 export class PartController {
@@ -98,17 +100,11 @@ export class PartController {
 
   @Post(":part")
   async partList(
-    @Param() { part }: { part: string | null },
+    @Param("part", new ProductValidator()) part: Products,
     @Body(new ZodValidationPipe(FilterOptionSchema)) body: FilterOptions,
     @Query("page") page?: number,
     @Query("limit") limit?: number
   ) {
-    if (!Object.values(Products).includes(part as Products)) {
-      throw new BadRequestException(
-        "Cannot find the part you need. Check if the path is correct"
-      );
-    }
-
     const options = { ...body, page, limit };
     options.part = { ...options.part, part: [part as Products] };
 
@@ -119,15 +115,9 @@ export class PartController {
 
   @Get(":part/:id")
   async getPart(
-    @Param("part") part: Products,
+    @Param("part", new ProductValidator()) part: Products,
     @Param("id", new ParseUUIDPipe()) id: string
   ) {
-    if (!Object.values(Products).includes(part as Products)) {
-      throw new BadRequestException(
-        "Cannot find the part you need. Check if the path is correct"
-      );
-    }
-
     const service = this.service.PartService[part] ?? this.service;
 
     const partInfo = await service.get(id);
