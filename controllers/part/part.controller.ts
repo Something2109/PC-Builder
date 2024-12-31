@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Param,
-  InternalServerErrorException,
   Post,
   Body,
   Query,
@@ -73,9 +72,9 @@ export class PartController {
     @Query("page") page?: number,
     @Query("limit") limit?: number
   ) {
-    const options = { ...body, page, limit };
+    const options = { ...body, page, limit, q };
 
-    let data = await this.service.search(q, options);
+    let data = await this.service.list(options);
 
     return JSON.stringify(data);
   }
@@ -90,9 +89,9 @@ export class PartController {
   ) {
     const service = this.findService(part);
 
-    const options = { ...body, page, limit };
+    const options = { ...body, page, limit, q };
 
-    let data = await service.search(q, options);
+    let data = await service.list(options);
 
     return JSON.stringify(data);
   }

@@ -1,7 +1,8 @@
+import { Includeable, ModelStatic, Op } from "sequelize";
 import { Injectable } from "@nestjs/common";
+import { PartInformation } from "@/models/parts/tables/Part";
 import { Products } from "@/utils/Enum";
 import Part from "@/utils/interface/part/Parts";
-import { ModelStatic } from "sequelize";
 import { FilterOptionsType } from "@/utils/interface/utils";
 
 type DefaultService = "default";
@@ -9,6 +10,10 @@ type DefaultService = "default";
 type ListResult<Part> = {
   total: number;
   list: Part[];
+};
+
+type SearchOptions = {
+  q?: string;
 };
 
 type PageOptions = {
@@ -35,18 +40,8 @@ abstract class BasePartService<
    * @param options The filter options to apply.
    * @returns The list of parts that satisfy the filter options.
    */
-  abstract list(options?: Filter & PageOptions): Promise<ListResult<Detail>>;
-
-  /**
-   * List all parts that match the given search string
-   * and the given {@link Filter} options.
-   * @param str The search string to match.
-   * @param options The filter options to apply.
-   * @returns The list of parts that match the search string.
-   */
-  abstract search(
-    str: string,
-    options?: Filter & PageOptions
+  abstract list(
+    options?: Filter & PageOptions & SearchOptions
   ): Promise<ListResult<Detail>>;
 
   /**
@@ -55,7 +50,7 @@ abstract class BasePartService<
    * @param options The filter options to apply.
    * @returns The created filter object.
    */
-  abstract filter(options?: Filter): Promise<Filter>;
+  abstract filter(options?: Filter & SearchOptions): Promise<Filter>;
 
   /**
    * Retrieve the part with the given ID.
@@ -82,6 +77,32 @@ abstract class BasePartService<
   abstract delete(id: string): Promise<Detail | null>;
 
   /**
+   * List the parts from the given static {@link Model} instance of {@link PartInformation}
+   * with the given page and search {@link options}.
+   * @param Model The model to list the parts from.
+   * @param options The page and search options to apply. Insert an empty object if none given.
+   * @param include The include options to include in the query.
+   * @returns The list of parts from the model and the total number.
+   */
+  protected async listFromPart(
+    Model: ModelStatic<PartInformation>,
+    options: PageOptions & SearchOptions,
+    ...include: Includeable[]
+  ): Promise<{ rows: PartInformation[]; count: number }> {
+    const { page = 0, limit = 50 } = options ?? {};
+    const where = options?.q
+      ? { name: { [Op.like]: `%${options.q}%` } }
+      : undefined;
+
+    return await Model.findAndCountAll({
+      where,
+      limit,
+      offset: page * limit,
+      include,
+    });
+  }
+
+  /**
    * Create a new {@link FilterOptionsType} object of the model
    * from the given {@link FilterOptionsType} object
    * by getting each {@link attribute} values from the model
@@ -94,7 +115,7 @@ abstract class BasePartService<
    * @param include The models to include in the query.
    * @returns The created {@link FilterOptionsType} object.
    */
-  protected async getFilterOptions<
+  protected async filterFromModel<
     Info extends { [key in string]: any },
     Attributes extends keyof Info
   >(
@@ -123,15 +144,14 @@ abstract class BasePartService<
     return result;
   }
 
-  /**
-   * Get the page options from the given {@link PageOptions} object.
-   * @param options The options to get the values from.
-   * @returns The page and limit options in an object.
-   */
-  protected getPageOptions(options?: PageOptions) {
-    const { page = 0, limit = 50 } = options ?? {};
-    return { page, limit };
+  /** */
+  protected async getFromPart(
+    Model: ModelStatic<PartInformation>,
+    id: string,
+    ...include: Includeable[]
+  ): Promise<PartInformation | null> {
+    return await Model.findByPk(id, { include });
   }
 }
 
-export { BasePartService, type PageOptions };
+export { BasePartService, type PageOptions, type SearchOptions };

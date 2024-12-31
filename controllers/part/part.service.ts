@@ -1,9 +1,12 @@
-import { Op } from "sequelize";
 import { Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { Products } from "@/utils/Enum";
 import Part from "@/utils/interface/part/Parts";
-import { BasePartService, PageOptions } from "./interface/service.interface";
+import {
+  BasePartService,
+  PageOptions,
+  SearchOptions,
+} from "./interface/service.interface";
 
 type ServiceObject = {
   [key in BasePartService["part"]]?: BasePartService;
@@ -30,37 +33,18 @@ class PartService extends BasePartService {
     }, {} as ServiceObject);
   }
 
-  async list(options?: Filter & PageOptions) {
-    let { page, limit, part, ...detail } = options ?? {};
-    page = (page ?? 1) - 1;
-    limit = limit ?? Number(process.env.PageSize ?? 50);
+  async list(options?: Filter & PageOptions & SearchOptions) {
+    let { part } = options ?? {};
 
-    const { rows, count } = await PartInformation.scope([
+    const FilteredPart = PartInformation.scope([
       "summary",
       { method: ["filter", part] },
-    ]).findAndCountAll({
-      limit,
-      offset: page * limit,
-    });
+    ]);
 
-    return { total: count, list: rows.map((value) => value.toJSON()) };
-  }
-
-  async search(str: string, options?: Filter & PageOptions) {
-    let { page, limit, part } = options ?? {};
-    page = (page ?? 1) - 1;
-    limit = limit ?? Number(process.env.PageSize ?? 50);
-
-    const { rows, count } = await PartInformation.scope([
-      "summary",
-      {
-        method: ["filter", part],
-      },
-    ]).findAndCountAll({
-      where: { name: { [Op.like]: `%${str}%` } },
-      limit,
-      offset: page * limit,
-    });
+    const { rows, count } = await this.listFromPart(
+      FilteredPart,
+      options ?? {}
+    );
 
     return { total: count, list: rows.map((value) => value.toJSON()) };
   }
@@ -73,7 +57,7 @@ class PartService extends BasePartService {
     });
 
     const result: Filter = {
-      part: await this.getFilterOptions(
+      part: await this.filterFromModel(
         FilteredPart,
         part ?? {},
         Part.FilterAttributes
