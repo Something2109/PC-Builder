@@ -10,7 +10,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   HasMany,
   Model,
@@ -24,12 +23,11 @@ import {
   USBExchanger,
 } from "@/utils/extract/Connector";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...Mainboard.SummaryAttributes] },
+  summary: { attributes: ["id", ...Mainboard.SummaryAttributes] },
   filter: (options: Mainboard.FilterOptions) => ({ where: options }),
   detail: {
-    attributes: { exclude: ["id", "createdAt", "updatedAt"] },
+    ...PartDefaultScope,
     include: [
       {
         model: MainboardPCIeModel,

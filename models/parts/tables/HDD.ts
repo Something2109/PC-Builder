@@ -6,7 +6,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -14,11 +13,10 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...HDD.SummaryAttributes] },
+  summary: { attributes: ["id", ...HDD.SummaryAttributes] },
   filter: (options: HDD.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  detail: PartDefaultScope,
 }))
 @Table({ modelName: Tables.HDD })
 class HDDModel extends Model implements PartDetailTable<HDD.Info> {

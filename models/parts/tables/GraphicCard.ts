@@ -7,7 +7,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -22,11 +21,10 @@ type APIDisplayInterface = {
   DVI_D?: number;
 };
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...GraphicCard.SummaryAttributes] },
+  summary: { attributes: ["id", ...GraphicCard.SummaryAttributes] },
   filter: (options: GraphicCard.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  detail: PartDefaultScope,
 }))
 @Table({ modelName: Tables.GRAPHIC_CARD })
 class GraphicCardModel

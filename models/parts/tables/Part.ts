@@ -1,4 +1,4 @@
-import { Tables } from "@/models/interface";
+import { PartDefaultScope, Tables } from "@/models/interface";
 import Part from "@/utils/interface/part/Parts";
 import { Products } from "@/utils/Enum";
 import {
@@ -26,11 +26,7 @@ import { CoolerModel } from "./Cooler";
 import { AIOModel } from "./AIO";
 import { FanModel } from "./Fan";
 
-@DefaultScope(() => ({
-  attributes: {
-    exclude: ["raw", "createdAt", "updatedAt"],
-  },
-}))
+@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
   summary: { attributes: [...Part.SummaryAttributes] },
   filter: (options: Part.FilterOptions) => ({ where: options }),

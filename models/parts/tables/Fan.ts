@@ -6,7 +6,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -14,11 +13,10 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...Fan.SummaryAttributes] },
+  summary: { attributes: ["id", ...Fan.SummaryAttributes] },
   filter: (options: Fan.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  detail: PartDefaultScope,
 }))
 @Table({ modelName: Tables.FAN })
 class FanModel extends Model implements PartDetailTable<Fan.Info> {

@@ -6,7 +6,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -14,11 +13,10 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...PSU.SummaryAttributes] },
+  summary: { attributes: ["id", ...PSU.SummaryAttributes] },
   filter: (options: PSU.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  detail: PartDefaultScope,
 }))
 @Table({ modelName: Tables.PSU })
 class PSUModel extends Model implements PartDetailTable<PSU.Info> {

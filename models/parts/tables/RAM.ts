@@ -6,7 +6,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -14,11 +13,10 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...RAM.SummaryAttributes] },
+  summary: { attributes: ["id", ...RAM.SummaryAttributes] },
   filter: (options: RAM.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  detail: PartDefaultScope,
 }))
 @Table({ modelName: Tables.RAM })
 class RAMModel extends Model implements PartDetailTable<RAM.Info> {

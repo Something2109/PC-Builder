@@ -6,7 +6,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   HasMany,
   Model,
@@ -14,11 +13,10 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import { Op, WhereOptions } from "sequelize";
+import { WhereOptions } from "sequelize";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...Case.SummaryAttributes] },
+  summary: { attributes: ["id", ...Case.SummaryAttributes] },
   filter: ({ mainboard_support, ...rest }: Case.FilterOptions) => {
     const filter: WhereOptions = {
       ...rest,
@@ -27,7 +25,7 @@ import { Op, WhereOptions } from "sequelize";
     return { where: filter };
   },
   detail: {
-    attributes: { exclude: ["id", "createdAt", "updatedAt"] },
+    ...PartDefaultScope,
     include: [
       {
         model: CaseMainboardSupportModel,
