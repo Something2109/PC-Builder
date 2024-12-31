@@ -46,10 +46,10 @@ export class PartController {
   @Post()
   async createPart(
     @Body(new ZodValidationPipe(DetailInfoOptionsSchema))
-    body: DetailInfo<Products>
+    { id, ...body }: DetailInfo<Products>
   ) {
     try {
-      const responseList = await this.service.set(body, body.id);
+      const responseList = await this.service.set(body, id);
 
       return JSON.stringify(responseList);
     } catch (err: any) {
@@ -128,7 +128,9 @@ export class PartController {
       );
     }
 
-    const partInfo = await this.service.get(part as Products, id);
+    const service = this.service.PartService[part] ?? this.service;
+
+    const partInfo = await service.get(id);
 
     if (partInfo) {
       return JSON.stringify(partInfo);

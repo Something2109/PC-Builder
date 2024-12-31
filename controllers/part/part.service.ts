@@ -1,29 +1,39 @@
-import { InferAttributes, Op, WhereOptions } from "sequelize";
-import { Sequelize } from "sequelize-typescript";
+import { Op } from "sequelize";
 import { Injectable } from "@nestjs/common";
-import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { Products } from "@/utils/Enum";
-import { ModelFilters, Models } from "@/models/parts";
-import { Tables } from "@/models/interface";
+import Part from "@/utils/interface/part/Parts";
+import { BasePartService, PageOptions } from "./interface/service.interface";
+
+type ServiceObject = {
+  [key in BasePartService["part"]]?: BasePartService;
+};
+
+type Detail = Part.BasicInfo;
+
+type Filter = { part?: Part.FilterOptions };
+
+type Options = Partial<Detail>;
 
 @Injectable()
-class PartService {
-  constructor(private Connection: Sequelize) {}
+class PartService extends BasePartService {
+  part: "default" = "default";
 
-  async list(options?: FilterOptions & PageOptions) {
+  readonly PartService: ServiceObject;
+
+  constructor(...services: BasePartService[]) {
+    super();
+    this.PartService = services.reduce((acc, service) => {
+      acc[service.part] = service;
+      console.log(service);
+      return acc;
+    }, {} as ServiceObject);
+  }
+
+  async list(options?: Filter & PageOptions) {
     let { page, limit, part, ...detail } = options ?? {};
     page = (page ?? 1) - 1;
     limit = limit ?? Number(process.env.PageSize ?? 50);
-
-    let include;
-    if (part && part.part && part.part[0]) {
-      include = {
-        model: Models[part.part[0] as Products].scope("summary"),
-        where: detail[part.part[0] as Products] ?? {},
-        required: false,
-      };
-    }
 
     const { rows, count } = await PartInformation.scope([
       "summary",
@@ -31,24 +41,15 @@ class PartService {
     ]).findAndCountAll({
       limit,
       offset: page * limit,
-      include,
     });
 
     return { total: count, list: rows.map((value) => value.toJSON()) };
   }
 
-  async search(str: string, options?: FilterOptions & PageOptions) {
-    let { page, limit, part, ...detail } = options ?? {};
+  async search(str: string, options?: Filter & PageOptions) {
+    let { page, limit, part } = options ?? {};
     page = (page ?? 1) - 1;
     limit = limit ?? Number(process.env.PageSize ?? 50);
-
-    let include;
-    if (part && part.part && part.part[0]) {
-      include = {
-        model: Models[part.part[0] as Products].scope("summary"),
-        where: detail[part.part[0] as Products] ?? {},
-      };
-    }
 
     const { rows, count } = await PartInformation.scope([
       "summary",
@@ -59,96 +60,47 @@ class PartService {
       where: { name: { [Op.like]: `%${str}%` } },
       limit,
       offset: page * limit,
-      include,
     });
 
     return { total: count, list: rows.map((value) => value.toJSON()) };
   }
 
-  async filter(options?: FilterOptions): Promise<FilterOptions | null> {
-    try {
-      const { part, ...detail } = options ?? {};
-      const result: FilterOptions = {};
+  async filter(options?: Filter): Promise<Filter> {
+    const { part } = options ?? {};
 
-      const where: WhereOptions<InferAttributes<PartInformation>> = {
-        part: part?.part ?? Object.values(Products),
-        ...part,
-      };
-
-      const ProductName =
-        part && part.part ? (part.part[0] as Products) : undefined;
-      if (ProductName) {
-        const subquery = this.IdSubQuery(
-          Models[ProductName].name,
-          detail[ProductName] ?? {}
-        );
-        where.id = [Sequelize.literal(subquery)];
-
-        const partSubquery = this.IdSubQuery(Tables.PART, where);
-
-        result[ProductName] = (await ModelFilters[ProductName]({
-          id: [Sequelize.literal(`(${partSubquery})`)],
-          ...(detail[ProductName] as any),
-        })) as any;
-      }
-
-      result.part = await ModelFilters.part(where as any);
-
-      return result;
-    } catch (err) {
-      console.error(err);
-    }
-    return null;
-  }
-
-  async get(
-    part: Products,
-    id: string
-  ): Promise<DetailInfo<typeof part> | null> {
-    const save = await PartInformation.scope("detail").findByPk(id, {
-      include: {
-        model: Models[part].scope("detail"),
-      },
+    const FilteredPart = PartInformation.scope({
+      method: ["filter", { ...part, part: [Products.MAIN] }],
     });
 
+    const result: Filter = {
+      part: await this.getFilterOptions(
+        FilteredPart,
+        part ?? {},
+        Part.FilterAttributes
+      ),
+    };
+
+    return result;
+  }
+
+  async get(id: string): Promise<Detail | null> {
+    const save = await PartInformation.scope("detail").findByPk(id);
     if (save) {
-      return save.toJSON() as unknown as DetailInfo<typeof part>;
+      return save.toJSON();
     }
 
     return null;
   }
 
-  async set(
-    data: DetailInfo<Products>,
-    id?: string
-  ): Promise<DetailInfo<Products>> {
-    const { [data.part as Products]: detail, part, ...info } = data;
-
-    let infoRow: PartInformation;
-    if (id) {
-      const row = await PartInformation.findByPk(id);
-      if (!row) {
-        throw new Error(`Cannot find the part with the id ${id}`);
-      }
-      infoRow = row.set(info);
-    } else {
-      infoRow = PartInformation.build({ part: part as Products, ...info });
-    }
-
-    await infoRow.save();
-    id = infoRow.id;
-
-    const [detailRow] = await Models[part as Products].findOrBuild({
+  async set(data: Options, id?: string): Promise<Detail> {
+    const [save] = await PartInformation.findOrCreate({
       where: { id },
+      defaults: data,
     });
 
-    detailRow.set({ id, ...detail });
+    await save.update(data);
 
-    await detailRow.save();
-
-    const result = await this.get(part as Products, id);
-
-    return result as DetailInfo<Products>;
+    return save.toJSON();
   }
 
   async delete(id: string) {
@@ -162,20 +114,6 @@ class PartService {
 
     return null;
   }
-
-  private IdSubQuery<T extends InferAttributes<any>>(
-    name: string,
-    options?: WhereOptions<T>
-  ): string {
-    return (this.Connection.getQueryInterface().queryGenerator as any)
-      .selectQuery(name, { attributes: ["id"], where: options ?? {} })
-      .slice(0, -1);
-  }
 }
-
-type PageOptions = {
-  page?: number;
-  limit?: number;
-};
 
 export { PartService };
