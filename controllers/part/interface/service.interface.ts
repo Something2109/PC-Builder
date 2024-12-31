@@ -1,5 +1,11 @@
-import { Includeable, ModelStatic, Op } from "sequelize";
-import { Injectable } from "@nestjs/common";
+import {
+  CreationAttributes,
+  Includeable,
+  Model,
+  ModelStatic,
+  Op,
+} from "sequelize";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { Products } from "@/utils/Enum";
 import Part from "@/utils/interface/part/Parts";
@@ -144,13 +150,116 @@ abstract class BasePartService<
     return result;
   }
 
-  /** */
+  /**
+   * Create the model instance of {@link model} with the given {@link data}.
+   * If the {@link id} is provided, update the id instance with the new data
+   * or create a new one if cant find.
+   * The {@link model} must have the id field as attribute to update.
+   * @param model The model to create the instance with.
+   * @param data The data to create the instance with.
+   * @param id The ID of the instance to update.
+   * @returns The created or updated instance.
+   */
+  protected async setToModel<T extends Model<any, any>>(
+    model: ModelStatic<T>,
+    data: CreationAttributes<T>,
+    id?: string
+  ): Promise<T> {
+    const [instance, created] = await model.findOrBuild({
+      where: { id } as any, // add any type because the generic type does not contain the id field.
+      defaults: data,
+    });
+    if (!created) instance.set(data);
+    await instance.save();
+
+    return instance;
+  }
+
+  /**
+   * Retrieve the part with the given ID from the part model.
+   * Validate the part with the class {@link part} whether it matches the part type.
+   * If not return null.
+   * @param model The part model to retrieve the part from.
+   * @param id The ID of the part to retrieve.
+   * @param include The include options to include in the query.
+   * @returns The part with the given ID, or `null` if the part does not exist.
+   */
   protected async getFromPart(
-    Model: ModelStatic<PartInformation>,
+    model: ModelStatic<PartInformation>,
     id: string,
     ...include: Includeable[]
   ): Promise<PartInformation | null> {
-    return await Model.findByPk(id, { include });
+    const instance = await model.findByPk(id, { include });
+
+    if (!instance || instance.part !== this.part) {
+      return null;
+    }
+
+    return instance;
+  }
+
+  /**
+   * A specific implementation of the {@link setToModel} function
+   * for creating and updating the part with the given ID from the part model.
+   * Validate the part with the class {@link part} whether it matches the part type.
+   * If not throw a bad request exception.
+   * @param model The part model to set the part to.
+   * @param data The data to set the part with.
+   * @param id The ID of the part to set.
+   * @returns The created or updated part.
+   */
+  protected async setToPart(
+    { part, ...data }: CreationAttributes<PartInformation>,
+    id?: string
+  ): Promise<PartInformation> {
+    if (part && part !== this.part) {
+      throw new BadRequestException(
+        `Attempting to change part type to ${part} in ${this.part} controller.`
+      );
+    }
+
+    const [instance, created] = await PartInformation.findOrBuild({
+      where: { id } as any, // add any type because the generic type does not contain the id field.
+      defaults: data,
+    });
+
+    if (instance.part !== this.part) {
+      throw new BadRequestException(
+        `Attempting to create or update ${instance.part} in ${this.part} page.`
+      );
+    }
+
+    if (!created) instance.set(data);
+    await instance.save();
+
+    return instance;
+  }
+
+  /**
+   * Delete the part with the given ID from the part model.
+   * Validate the part with the class {@link part} whether it matches the part type.
+   * If not return null.
+   * Disclaimer: The include models are not actually deleted directly in the function,
+   * but the instance is deleted by the database on delete cascade option.
+   * If it's not set, the include models are not deleted and must be deleted manually.
+   * @param model The part model to delete the part from.
+   * @param id The ID of the part to delete.
+   * @param include The include options to include in the query.
+   * @returns The deleted part, or `null` if the part does not exist.
+   */
+  protected async deleteFromPart(
+    model: ModelStatic<PartInformation>,
+    id: string,
+    ...include: Includeable[]
+  ): Promise<PartInformation | null> {
+    const instance = await model.findByPk(id, { include });
+
+    if (!instance || instance.part !== this.part) {
+      return null;
+    }
+
+    await instance.destroy();
+    return instance;
   }
 }
 
