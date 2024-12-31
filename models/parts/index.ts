@@ -46,7 +46,9 @@ function genericFilter<T extends Model<any, any>>(
         })
       )
         .map((value: T) => value[attr])
-        .filter((value: T[typeof attr] | null) => value !== null);
+        .filter((value: T[typeof attr] | null) => {
+          return value && !(value instanceof Object);
+        }) as any[];
     }
 
     return result;
