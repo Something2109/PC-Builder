@@ -86,7 +86,7 @@ export const FilterOptionSchema = z
   .object({
     part: Part.FilterOptionSchema,
     [Products.CPU]: CPU.FilterOptionSchema,
-    [Products.GPU]: GPU.FilterOptionSchema,
+    [Products.GPU]: GPU.FilterOptionSchema.nullish(),
     [Products.GRAPHIC_CARD]: GraphicCard.FilterOptionSchema,
     [Products.MAIN]: Mainboard.FilterOptionSchema,
     [Products.RAM]: RAM.FilterOptionSchema,

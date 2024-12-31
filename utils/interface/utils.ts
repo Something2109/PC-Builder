@@ -412,7 +412,11 @@ type ExternalPorts =
   | ExternalPorts.Audio;
 
 type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
-  [key in Attributes]?: Required<Info>[key][];
+  [key in Attributes]?: NonNullable<Required<Info>[key]> extends number
+    ? number[]
+    : Required<Info>[key] extends string
+    ? Required<Info>[key][]
+    : string[];
 };
 
 const NumberFilterOptions = z.array(z.number());
