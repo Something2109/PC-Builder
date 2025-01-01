@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import Cooler from "@/utils/interface/part/Cooler";
 import {
@@ -13,9 +18,9 @@ import {
 } from "sequelize-typescript";
 
 @Scopes(() => ({
-  summary: { attributes: ["id", ...Cooler.SummaryAttributes] },
-  filter: (options: Cooler.FilterOptions) => ({ where: options }),
-  detail: PartDefaultScope,
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...Cooler.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: Cooler.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.COOLER })
 class CoolerModel extends Model implements PartDetailTable<Cooler.Info> {

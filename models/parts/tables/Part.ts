@@ -1,4 +1,4 @@
-import { PartDefaultScope, Tables } from "@/models/interface";
+import { ModelScopes, PartDefaultScope, Tables } from "@/models/interface";
 import Part from "@/utils/interface/part/Parts";
 import { Products } from "@/utils/Enum";
 import {
@@ -28,9 +28,9 @@ import { FanModel } from "./Fan";
 
 @DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...Part.SummaryAttributes] },
-  filter: (options: Part.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["createdAt", "updatedAt"] } },
+  [ModelScopes.SUMMARY]: { attributes: [...Part.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: Part.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: { attributes: { exclude: ["createdAt", "updatedAt"] } },
 }))
 @Table({ modelName: Tables.PART })
 class PartInformation extends Model implements Part.BasicInfo {

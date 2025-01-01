@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import RAM from "@/utils/interface/part/RAM";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
@@ -14,9 +19,9 @@ import {
 } from "sequelize-typescript";
 
 @Scopes(() => ({
-  summary: { attributes: ["id", ...RAM.SummaryAttributes] },
-  filter: (options: RAM.FilterOptions) => ({ where: options }),
-  detail: PartDefaultScope,
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...RAM.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: RAM.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.RAM })
 class RAMModel extends Model implements PartDetailTable<RAM.Info> {

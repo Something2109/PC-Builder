@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import HDD from "@/utils/interface/part/HDD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
@@ -14,9 +19,9 @@ import {
 } from "sequelize-typescript";
 
 @Scopes(() => ({
-  summary: { attributes: ["id", ...HDD.SummaryAttributes] },
-  filter: (options: HDD.FilterOptions) => ({ where: options }),
-  detail: PartDefaultScope,
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...HDD.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: HDD.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.HDD })
 class HDDModel extends Model implements PartDetailTable<HDD.Info> {

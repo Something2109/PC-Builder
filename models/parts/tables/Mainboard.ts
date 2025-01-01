@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import Mainboard from "@/utils/interface/part/Mainboard";
 import {
@@ -24,9 +29,11 @@ import {
 } from "@/utils/extract/Connector";
 
 @Scopes(() => ({
-  summary: { attributes: ["id", ...Mainboard.SummaryAttributes] },
-  filter: (options: Mainboard.FilterOptions) => ({ where: options }),
-  detail: {
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...Mainboard.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: Mainboard.FilterOptions) => ({
+    where: options,
+  }),
+  [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
     include: [
       {

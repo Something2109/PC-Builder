@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { GPUModel } from "./GPU";
 import { PartInformation } from "./Part";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
@@ -22,9 +27,13 @@ type APIDisplayInterface = {
 };
 
 @Scopes(() => ({
-  summary: { attributes: ["id", ...GraphicCard.SummaryAttributes] },
-  filter: (options: GraphicCard.FilterOptions) => ({ where: options }),
-  detail: PartDefaultScope,
+  [ModelScopes.SUMMARY]: {
+    attributes: ["id", ...GraphicCard.SummaryAttributes],
+  },
+  [ModelScopes.FILTER]: (options: GraphicCard.FilterOptions) => ({
+    where: options,
+  }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.GRAPHIC_CARD })
 class GraphicCardModel

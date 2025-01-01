@@ -1,4 +1,9 @@
-import { PartDefaultScope, PartDetailTable, Tables } from "../../interface";
+import {
+  ModelScopes,
+  PartDefaultScope,
+  PartDetailTable,
+  Tables,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import Fan from "@/utils/interface/part/Fan";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
@@ -14,9 +19,9 @@ import {
 } from "sequelize-typescript";
 
 @Scopes(() => ({
-  summary: { attributes: ["id", ...Fan.SummaryAttributes] },
-  filter: (options: Fan.FilterOptions) => ({ where: options }),
-  detail: PartDefaultScope,
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...Fan.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: Fan.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.FAN })
 class FanModel extends Model implements PartDetailTable<Fan.Info> {
