@@ -12,7 +12,6 @@ import {
 } from "@nestjs/common";
 import { PartService } from "./part.service";
 import { Products } from "@/utils/Enum";
-import Part from "@/utils/interface/part/Parts";
 import {
   DetailInfo,
   DetailInfoOptionsSchema,
@@ -27,23 +26,6 @@ const FilterValidator = new ZodValidationPipe(FilterOptionSchema);
 @Controller("api/part")
 export class PartController {
   constructor(private service: PartService) {}
-
-  @Get()
-  async index() {
-    const responseList: {
-      [key in Products]?: Part.BasicInfo[];
-    } = {};
-
-    const promises = Object.values(Products).map((product) =>
-      this.service
-        .list({ part: { part: [product] }, limit: 10 })
-        .then((data) => (responseList[product] = data.list))
-    );
-
-    await Promise.all(promises);
-
-    return JSON.stringify(responseList);
-  }
 
   @Get("filter")
   async getDefaultFilter(@Body(FilterValidator) body: FilterOptions) {
@@ -64,29 +46,14 @@ export class PartController {
     return JSON.stringify(filter);
   }
 
-  @Get("search")
-  async searchDefault(
+  @Get()
+  async index(
     @Body(FilterValidator) body: FilterOptions,
-    @Query() { q }: { q: string },
+    @Query("q") q?: string,
     @Query("page") page?: number,
     @Query("limit") limit?: number
   ) {
-    const options = { ...body, page, limit, q };
-
-    let data = await this.service.list(options);
-
-    return JSON.stringify(data);
-  }
-
-  @Get("search/:part")
-  async searchPart(
-    @Param("part", ProductValidator) part: Products,
-    @Body(FilterValidator) body: FilterOptions,
-    @Query() { q }: { q: string },
-    @Query("page") page?: number,
-    @Query("limit") limit?: number
-  ) {
-    const service = this.findService(part);
+    const service = this.service;
 
     const options = { ...body, page, limit, q };
 
@@ -99,12 +66,13 @@ export class PartController {
   async partList(
     @Param("part", ProductValidator) part: Products,
     @Body(FilterValidator) body: FilterOptions,
+    @Query("q") q?: string,
     @Query("page") page?: number,
     @Query("limit") limit?: number
   ) {
     const service = this.findService(part);
 
-    const options = { ...body, page, limit };
+    const options = { ...body, page, limit, q };
 
     let data = await service.list(options);
 
@@ -127,7 +95,7 @@ export class PartController {
   @Get(":part/:id")
   async getPart(
     @Param("part", ProductValidator) part: Products,
-    @Param("id", new ParseUUIDPipe()) id: string
+    @Param("id", ParseUUIDPipe) id: string
   ) {
     const service = this.findService(part);
 
@@ -143,7 +111,7 @@ export class PartController {
   @Post(":part/:id")
   async setPart(
     @Param("part", ProductValidator) part: Products,
-    @Param("id", new ParseUUIDPipe()) id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body(new ZodValidationPipe(DetailInfoOptionsSchema))
     body: DetailInfo<Products>
   ) {
@@ -157,9 +125,9 @@ export class PartController {
   @Delete(":part/:id")
   async deletePart(
     @Param("part", ProductValidator) part: Products,
-    @Param("id", new ParseUUIDPipe()) id: string
+    @Param("id", ParseUUIDPipe) id: string
   ) {
-    const service = this.service.PartService[part] ?? this.service;
+    const service = this.findService(part);
 
     const partInfo = await service.delete(id);
 
@@ -173,7 +141,6 @@ export class PartController {
   }
 
   private findService(part: Products) {
-    console.log(this.service.PartService[part]);
     return this.service.PartService[part] ?? this.service;
   }
 }
