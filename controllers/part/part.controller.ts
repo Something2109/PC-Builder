@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   Delete,
   ParseEnumPipe,
+  ParseIntPipe,
 } from "@nestjs/common";
 import { PartService } from "./part.service";
 import { Products } from "@/utils/Enum";
@@ -20,8 +21,10 @@ import {
 } from "@/utils/interface";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 
+const PageOptionValidator = new ParseIntPipe({ optional: true });
 const ProductValidator = new ParseEnumPipe(Products);
 const FilterValidator = new ZodValidationPipe(FilterOptionSchema);
+const DetailValidator = new ZodValidationPipe(DetailInfoOptionsSchema);
 
 @Controller("api/part")
 export class PartController {
@@ -50,8 +53,8 @@ export class PartController {
   async index(
     @Body(FilterValidator) body: FilterOptions,
     @Query("q") q?: string,
-    @Query("page") page?: number,
-    @Query("limit") limit?: number
+    @Query("page", PageOptionValidator) page?: number,
+    @Query("limit", PageOptionValidator) limit?: number
   ) {
     const service = this.service;
 
@@ -67,8 +70,8 @@ export class PartController {
     @Param("part", ProductValidator) part: Products,
     @Body(FilterValidator) body: FilterOptions,
     @Query("q") q?: string,
-    @Query("page") page?: number,
-    @Query("limit") limit?: number
+    @Query("page", PageOptionValidator) page?: number,
+    @Query("limit", PageOptionValidator) limit?: number
   ) {
     const service = this.findService(part);
 
@@ -82,8 +85,7 @@ export class PartController {
   @Post(":part")
   async createPart(
     @Param("part", ProductValidator) part: Products,
-    @Body(new ZodValidationPipe(DetailInfoOptionsSchema))
-    body: DetailInfo<Products>
+    @Body(DetailValidator) body: DetailInfo<Products>
   ) {
     const service = this.findService(part);
 
@@ -112,8 +114,7 @@ export class PartController {
   async setPart(
     @Param("part", ProductValidator) part: Products,
     @Param("id", ParseUUIDPipe) id: string,
-    @Body(new ZodValidationPipe(DetailInfoOptionsSchema))
-    body: DetailInfo<Products>
+    @Body(DetailValidator) body: DetailInfo<Products>
   ) {
     const service = this.findService(part);
 
