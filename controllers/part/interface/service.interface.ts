@@ -203,33 +203,51 @@ abstract class BasePartService<
    * for creating and updating the part with the given ID from the part model.
    * Validate the part with the class {@link part} whether it matches the part type.
    * If not throw a bad request exception.
-   * @param model The part model to set the part to.
    * @param data The data to set the part with.
    * @param id The ID of the part to set.
    * @returns The created or updated part.
    */
   protected async setToPart(
-    { part, ...data }: CreationAttributes<PartInformation>,
+    data: CreationAttributes<PartInformation>,
     id?: string
   ): Promise<PartInformation> {
-    if (part && part !== this.part) {
+    /** Check if the user is attempting to change the part property. */
+    data.part = data.part ?? this.part;
+    if (data.part !== this.part) {
       throw new BadRequestException(
-        `Attempting to change part type to ${part} in ${this.part} controller.`
+        `Attempting to change part type to ${data.part} in ${this.part} controller.`
       );
     }
 
-    const [instance, created] = await PartInformation.findOrBuild({
-      where: { id } as any, // add any type because the generic type does not contain the id field.
-      defaults: data,
-    });
+    /**
+     * Check if the data contains the code name of id property.
+     * Search for the corresponding data in the database if found.
+     */
+    let instance = PartInformation.build(data);
+    if (id || data.code_name) {
+      const where = id ? { id } : { code_name: data.code_name };
+      let created: boolean;
 
-    if (instance.part !== this.part) {
+      [instance, created] = await PartInformation.findOrBuild({
+        where,
+        defaults: data,
+      });
+
+      if (!created) instance.set(data);
+    }
+
+    /**
+     * Check if the instance is not the same part type as the controller.
+     */
+    if (instance.part && instance.part !== this.part) {
       throw new BadRequestException(
         `Attempting to create or update ${instance.part} in ${this.part} page.`
       );
     }
 
-    if (!created) instance.set(data);
+    /**
+     * Save the instance to the database.
+     */
     await instance.save();
 
     return instance;
