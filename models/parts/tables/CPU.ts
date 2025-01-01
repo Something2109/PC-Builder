@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import CPU from "@/utils/interface/part/CPU";
 import {
@@ -13,9 +18,9 @@ import {
 } from "sequelize-typescript";
 
 @Scopes(() => ({
-  summary: { attributes: ["id", ...CPU.SummaryAttributes] },
-  filter: (options: CPU.FilterOptions) => ({ where: options }),
-  detail: PartDefaultScope,
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...CPU.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: CPU.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({
   modelName: Tables.CPU,

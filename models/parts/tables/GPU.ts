@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import GPU from "@/utils/interface/part/GPU";
 import {
@@ -13,9 +18,9 @@ import {
 } from "sequelize-typescript";
 
 @Scopes(() => ({
-  summary: { attributes: ["id", ...GPU.SummaryAttributes] },
-  filter: (options: GPU.FilterOptions) => ({ where: options }),
-  detail: PartDefaultScope,
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...GPU.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: GPU.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({
   modelName: Tables.GPU,

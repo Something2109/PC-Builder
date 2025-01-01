@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import { FormFactor } from "@/utils/interface/utils";
 import Case from "@/utils/interface/part/Case";
@@ -16,15 +21,18 @@ import {
 import { WhereOptions } from "sequelize";
 
 @Scopes(() => ({
-  summary: { attributes: ["id", ...Case.SummaryAttributes] },
-  filter: ({ mainboard_support, ...rest }: Case.FilterOptions) => {
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...Case.SummaryAttributes] },
+  [ModelScopes.FILTER]: ({
+    mainboard_support,
+    ...rest
+  }: Case.FilterOptions) => {
     const filter: WhereOptions = {
       ...rest,
     };
 
     return { where: filter };
   },
-  detail: {
+  [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
     include: [
       {

@@ -24,6 +24,12 @@ enum Tables {
   RETAIL_PRODUCT = "retail_product",
 }
 
+enum ModelScopes {
+  SUMMARY = "summary",
+  FILTER = "filter",
+  DETAIL = "detail",
+}
+
 type PartDetailTable<T extends Object> = {
   [key in keyof T]: T[key] | null;
 };
@@ -34,4 +40,4 @@ const PartDefaultScope = {
   },
 };
 
-export { Tables, type PartDetailTable, PartDefaultScope };
+export { Tables, ModelScopes, type PartDetailTable, PartDefaultScope };

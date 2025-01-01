@@ -9,14 +9,19 @@ import {
   Table,
 } from "sequelize-typescript";
 import AIO from "@/utils/interface/part/AIO";
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import { FormFactor } from "@/utils/interface/utils";
 
 @Scopes(() => ({
-  summary: { attributes: ["id", ...AIO.SummaryAttributes] },
-  filter: (options: AIO.FilterOptions) => ({ where: options }),
-  detail: PartDefaultScope,
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...AIO.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: AIO.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.AIO })
 class AIOModel extends Model implements PartDetailTable<AIO.Info> {
