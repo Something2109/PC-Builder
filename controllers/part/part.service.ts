@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
+import { ModelScopes } from "@/models/interface";
 import { Products } from "@/utils/Enum";
 import Part from "@/utils/interface/part/Parts";
 import {
@@ -37,8 +38,8 @@ class PartService extends BasePartService {
     let { part } = options ?? {};
 
     const FilteredPart = PartInformation.scope([
-      "summary",
-      { method: ["filter", part] },
+      ModelScopes.SUMMARY,
+      { method: [ModelScopes.FILTER, part] },
     ]);
 
     const { rows, count } = await this.listFromPart(
@@ -53,7 +54,7 @@ class PartService extends BasePartService {
     const { part } = options ?? {};
 
     const FilteredPart = PartInformation.scope({
-      method: ["filter", { ...part, part: [Products.MAIN] }],
+      method: [ModelScopes.FILTER, { ...part, part: [Products.MAIN] }],
     });
 
     const result: Filter = {
@@ -68,7 +69,7 @@ class PartService extends BasePartService {
   }
 
   async get(id: string): Promise<Detail | null> {
-    const save = await PartInformation.scope("detail").findByPk(id);
+    const save = await PartInformation.scope(ModelScopes.DETAIL).findByPk(id);
 
     if (!save) return null;
 
