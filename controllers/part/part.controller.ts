@@ -14,7 +14,7 @@ import {
 import { PartService } from "./part.service";
 import { Products } from "@/utils/Enum";
 import {
-  DetailInfo,
+  DetailInfoOptions,
   DetailInfoOptionsSchema,
   FilterOptions,
   FilterOptionSchema,
@@ -85,7 +85,7 @@ export class PartController {
   @Post(":part")
   async createPart(
     @Param("part", ProductValidator) part: Products,
-    @Body(DetailValidator) body: DetailInfo<Products>
+    @Body(DetailValidator) body: DetailInfoOptions
   ) {
     const service = this.findService(part);
 
@@ -114,7 +114,7 @@ export class PartController {
   async setPart(
     @Param("part", ProductValidator) part: Products,
     @Param("id", ParseUUIDPipe) id: string,
-    @Body(DetailValidator) body: DetailInfo<Products>
+    @Body(DetailValidator) body: DetailInfoOptions
   ) {
     const service = this.findService(part);
 
