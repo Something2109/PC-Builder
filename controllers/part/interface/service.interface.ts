@@ -5,7 +5,7 @@ import {
   ModelStatic,
   Op,
 } from "sequelize";
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { Products } from "@/utils/Enum";
 import { Models } from "@/models/parts";
@@ -55,6 +55,14 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
   abstract filter(options?: Filter & SearchOptions): Promise<Filter>;
 
   /**
+   * Create a new part with the given {@link Options} data.
+   * If the part's code name is already exists, return the part's ID.
+   * @param data The data to create the part with.
+   * @returns The created part or the part's id.
+   */
+  abstract create(data: Options): Promise<Detail | string>;
+
+  /**
    * Retrieve the part with the given ID.
    * @param id The ID of the part to retrieve.
    * @returns The part with the given ID, or `null` if the part does not exist.
@@ -63,13 +71,14 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
 
   /**
    * Create a new part with the given {@link Options} data.
-   * If the part already exists, update it with the new data
+   * If the part's new code name's already exists, return the part's ID.
+   * If the part with the given ID does not exist, return `null`.
    * (Must provide a valid {@link id} to update the part).
    * @param data The data to create the part with.
    * @param id The ID of the part to update.
-   * @returns The created or updated part.
+   * @returns The updated part or the part's id or null.
    */
-  abstract set(data: Options, id?: string): Promise<Detail>;
+  abstract set(data: Options, id?: string): Promise<Detail | string | null>;
 
   /**
    * Delete the part with the given ID.
@@ -147,13 +156,35 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
   }
 
   /**
+   * Create a new part with the given {@link data}.
+   * If the part with the given code name already exists,
+   * return null.
+   * This function does not save the part to the database.
+   * @param data The data to create the part with.
+   * @returns The created part or `null` if the part's already exist.
+   */
+  protected async buildPart(
+    data: CreationAttributes<PartInformation>
+  ): Promise<PartInformation | string> {
+    const where = data.code_name ? { code_name: data.code_name } : undefined;
+
+    const [instance, created] = await PartInformation.findOrBuild({
+      where,
+      defaults: data,
+    });
+    if (!created) return instance.id;
+
+    return instance;
+  }
+
+  /**
    * Retrieve the part with the given ID from the part model.
    * @param model The part model to retrieve the part from.
    * @param id The ID of the part to retrieve.
    * @param include The include options to include in the query.
    * @returns The part with the given ID, or `null` if the part does not exist.
    */
-  protected async getFromPart(
+  protected async getPart(
     model: ModelStatic<PartInformation>,
     id: string,
     ...include: Includeable[]
@@ -164,32 +195,31 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
   }
 
   /**
-   * Build a new part with the given {@link data}.
-   * If {@link id} is given, retrieve the part
-   * and change it with the new data from {@link data}.
+   * Update the part with the {@link id} with the given {@link data}.
+   * If the part with the given code name already exists or the part not found,
+   * return null.
    * This function does not save the part to the database.
    * @param data The data to set the part with.
    * @param id The ID of the part to set.
    * @returns The created or updated part.
    */
-  protected async setToPart(
+  protected async setPart(
     { part, ...data }: CreationAttributes<PartInformation>,
-    id?: string
-  ): Promise<PartInformation> {
-    let instance = PartInformation.build({ part, ...data });
-    if (id || data.code_name) {
-      const where = id ? { id } : { code_name: data.code_name };
-      let created: boolean;
-
-      [instance, created] = await PartInformation.findOrBuild({
-        where,
-        defaults: data,
+    id: string
+  ): Promise<PartInformation | string | null> {
+    let instance: PartInformation | null = null;
+    if (data.code_name) {
+      instance = await PartInformation.findOne({
+        where: { code_name: data.code_name },
       });
-
-      if (!created) instance.set(part);
-
-      if (!instance.part && part) instance.part = part;
+      if (instance && instance.id !== id) return instance.id;
     }
+
+    instance = instance || (await this.getPart(PartInformation, id));
+    if (!instance) return null;
+
+    instance.set(data);
+    if (!instance.part) instance.part = part;
 
     return instance;
   }
@@ -265,36 +295,39 @@ abstract class BaseDetailPartService<
     return result;
   }
 
+  async create({
+    [this.part]: data,
+    ...part
+  }: Options): Promise<Detail | string> {
+    const instance = await this.buildPart({ ...part, part: this.part });
+    if (!instance || typeof instance === "string") return instance;
+
+    await instance.save();
+
+    const id = instance.id;
+
+    if (data) await this.setToModel(Models[this.part], data as any, id);
+
+    return (await this.get(instance.id)) as Detail;
+  }
+
   async get(id: string): Promise<Detail | null> {
-    const instance = await this.getFromPart(
+    const instance = await this.getPart(
       PartInformation.scope(ModelScopes.DETAIL),
       id,
       Models[this.part].scope(ModelScopes.DETAIL)
     );
-
-    if (!instance || instance.part !== this.part) {
-      return null;
-    }
+    if (!instance || instance.part !== this.part) return null;
 
     return instance?.toJSON() ?? null;
   }
 
   async set(
     { [this.part]: data, ...part }: Options,
-    id?: string
-  ): Promise<Detail> {
-    const instance = await this.setToPart({ ...part, part: this.part }, id);
-
-    /**
-     * Check if the instance is not the same part type as the controller.
-     */
-    if (instance.part !== this.part) {
-      throw new BadRequestException(
-        `Attempting to create or update ${
-          instance.part ?? "an unidentified product"
-        } in ${this.part} page.`
-      );
-    }
+    id: string
+  ): Promise<Detail | string | null> {
+    const instance = await this.setPart({ ...part, part: this.part }, id);
+    if (!instance || typeof instance === "string") return instance;
 
     await instance.save();
 
@@ -306,15 +339,12 @@ abstract class BaseDetailPartService<
   }
 
   async delete(id: string): Promise<Detail | null> {
-    const instance = await this.getFromPart(
+    const instance = await this.getPart(
       PartInformation.scope(ModelScopes.DETAIL),
       id,
       Models[this.part].scope(ModelScopes.DETAIL)
     );
-
-    if (!instance || instance.part !== this.part) {
-      return null;
-    }
+    if (!instance || instance.part !== this.part) return null;
 
     await instance.destroy();
 
@@ -341,6 +371,7 @@ abstract class BaseDetailPartService<
       defaults: data,
     });
     if (!created) instance.set(data);
+
     await instance.save();
 
     return instance;

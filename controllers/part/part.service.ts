@@ -67,8 +67,18 @@ class PartService extends BasePartService {
     return result;
   }
 
+  async create(data: Options): Promise<Detail | string> {
+    const instance = await this.buildPart(data);
+
+    if (typeof instance === "string") return instance;
+
+    await instance.save();
+
+    return (await this.get(instance.id)) as Detail;
+  }
+
   async get(id: string): Promise<Detail | null> {
-    const save = await this.getFromPart(
+    const save = await this.getPart(
       PartInformation.scope(ModelScopes.DETAIL),
       id
     );
@@ -78,16 +88,18 @@ class PartService extends BasePartService {
     return save.toJSON();
   }
 
-  async set(data: Options, id?: string): Promise<Detail> {
-    const instance = await this.setToPart(data, id);
+  async set(data: Options, id: string): Promise<Detail | string | null> {
+    const instance = await this.setPart(data, id);
+
+    if (!instance || typeof instance === "string") return instance;
 
     await instance.save();
 
-    return instance.toJSON();
+    return await this.get(instance.id);
   }
 
   async delete(id: string) {
-    const instance = await this.getFromPart(
+    const instance = await this.getPart(
       PartInformation.scope(ModelScopes.DETAIL),
       id
     );

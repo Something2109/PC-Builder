@@ -10,6 +10,7 @@ import {
   Delete,
   ParseEnumPipe,
   ParseIntPipe,
+  BadRequestException,
 } from "@nestjs/common";
 import { PartService } from "./part.service";
 import { Products } from "@/utils/Enum";
@@ -89,9 +90,15 @@ export class PartController {
   ) {
     const service = this.findService(part);
 
-    const partInfo = await service.set(body);
+    const partInfo = await service.create(body);
 
-    return JSON.stringify(partInfo);
+    if (typeof partInfo !== "string") {
+      return JSON.stringify(partInfo);
+    }
+
+    throw new BadRequestException(
+      `The part's code name ${body.code_name} is already exists in part with the id: ${partInfo}`
+    );
   }
 
   @Get(":part/:id")
@@ -120,7 +127,15 @@ export class PartController {
 
     const partInfo = await service.set(body, id);
 
-    return JSON.stringify(partInfo);
+    if (typeof partInfo === "string") {
+      throw new BadRequestException(
+        `The part's code name ${body.code_name} is already exists in part with the id: ${partInfo}`
+      );
+    }
+
+    if (partInfo) return JSON.stringify(partInfo);
+
+    throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
   }
 
   @Delete(":part/:id")
@@ -132,13 +147,9 @@ export class PartController {
 
     const partInfo = await service.delete(id);
 
-    if (!partInfo) {
-      throw new NotFoundException(
-        `Cannot find ${part} part with the id: ${id}`
-      );
-    }
+    if (partInfo) return JSON.stringify(partInfo);
 
-    return JSON.stringify(partInfo);
+    throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
   }
 
   private findService(part: Products) {
