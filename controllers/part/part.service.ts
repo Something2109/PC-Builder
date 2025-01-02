@@ -1,31 +1,30 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { ModelScopes } from "@/models/interface";
 import { Products } from "@/utils/Enum";
 import Part from "@/utils/interface/part/Parts";
 import {
+  BaseDetailPartService,
   BasePartService,
   PageOptions,
   SearchOptions,
 } from "./interface/service.interface";
+import {
+  DetailInfoOptions as Options,
+  FilterOptions as Filter,
+} from "@/utils/interface";
 
 type ServiceObject = {
-  [key in BasePartService["part"]]?: BasePartService;
+  [key in Products]?: BaseDetailPartService<any>;
 };
 
 type Detail = Part.BasicInfo;
 
-type Filter = { part?: Part.FilterOptions };
-
-type Options = Partial<Detail>;
-
 @Injectable()
 class PartService extends BasePartService {
-  part: "default" = "default";
-
   readonly PartService: ServiceObject;
 
-  constructor(...services: BasePartService[]) {
+  constructor(...services: BaseDetailPartService<any>[]) {
     super();
     this.PartService = services.reduce((acc, service) => {
       acc[service.part] = service;
@@ -69,7 +68,10 @@ class PartService extends BasePartService {
   }
 
   async get(id: string): Promise<Detail | null> {
-    const save = await PartInformation.scope(ModelScopes.DETAIL).findByPk(id);
+    const save = await this.getFromPart(
+      PartInformation.scope(ModelScopes.DETAIL),
+      id
+    );
 
     if (!save) return null;
 
@@ -77,26 +79,18 @@ class PartService extends BasePartService {
   }
 
   async set(data: Options, id?: string): Promise<Detail> {
-    const [instance, created] = await PartInformation.findOrBuild({
-      where: { id },
-      defaults: data,
-    });
+    const instance = await this.setToPart(data, id);
 
-    if (!created) {
-      if (data.part && data.part !== instance.part) {
-        throw new BadRequestException(
-          `Attempting to change part type from ${instance.part} to ${data.part}`
-        );
-      }
-
-      await instance.update(data);
-    }
+    await instance.save();
 
     return instance.toJSON();
   }
 
   async delete(id: string) {
-    const instance = await PartInformation.findByPk(id);
+    const instance = await this.getFromPart(
+      PartInformation.scope(ModelScopes.DETAIL),
+      id
+    );
 
     if (!instance) return null;
 

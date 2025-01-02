@@ -8,10 +8,15 @@ import {
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { Products } from "@/utils/Enum";
+import { Models } from "@/models/parts";
+import { ModelScopes } from "@/models/interface";
 import Part from "@/utils/interface/part/Parts";
 import { FilterOptionsType } from "@/utils/interface/utils";
-
-type DefaultService = "default";
+import {
+  FilterOptions as Filter,
+  DetailInfoOptions as Options,
+  FilterAttributes,
+} from "@/utils/interface";
 
 type ListResult<Part> = {
   total: number;
@@ -31,16 +36,7 @@ type PageOptions = {
  * A base service class for handling parts data.
  */
 @Injectable()
-abstract class BasePartService<
-  Detail = Part.BasicInfo,
-  Filter = { part?: Part.FilterOptions },
-  Options = Partial<Part.BasicInfo>
-> {
-  /**
-   * Describe the part type that the service is handling.
-   */
-  abstract part: Products | DefaultService;
-
+abstract class BasePartService<Detail = Part.BasicInfo> {
   /**
    * List all parts satisfying the given {@link Filter} options.
    * @param options The filter options to apply.
@@ -151,6 +147,181 @@ abstract class BasePartService<
   }
 
   /**
+   * Retrieve the part with the given ID from the part model.
+   * @param model The part model to retrieve the part from.
+   * @param id The ID of the part to retrieve.
+   * @param include The include options to include in the query.
+   * @returns The part with the given ID, or `null` if the part does not exist.
+   */
+  protected async getFromPart(
+    model: ModelStatic<PartInformation>,
+    id: string,
+    ...include: Includeable[]
+  ): Promise<PartInformation | null> {
+    const instance = await model.findByPk(id, { include });
+
+    return instance;
+  }
+
+  /**
+   * Build a new part with the given {@link data}.
+   * If {@link id} is given, retrieve the part
+   * and change it with the new data from {@link data}.
+   * This function does not save the part to the database.
+   * @param data The data to set the part with.
+   * @param id The ID of the part to set.
+   * @returns The created or updated part.
+   */
+  protected async setToPart(
+    { part, ...data }: CreationAttributes<PartInformation>,
+    id?: string
+  ): Promise<PartInformation> {
+    let instance = PartInformation.build({ part, ...data });
+    if (id || data.code_name) {
+      const where = id ? { id } : { code_name: data.code_name };
+      let created: boolean;
+
+      [instance, created] = await PartInformation.findOrBuild({
+        where,
+        defaults: data,
+      });
+
+      if (!created) instance.set(part);
+
+      if (!instance.part && part) instance.part = part;
+    }
+
+    return instance;
+  }
+}
+
+/**
+ * A base service class for handling parts data with detail information.
+ * The service automatically handles the part type and the detail type
+ * given the part model exists in the {@link Models} object.
+ * To define clearer logic, extends this class and override the methods.
+ * @extends BasePartService
+ */
+abstract class BaseDetailPartService<
+  Detail extends Part.BasicInfo
+> extends BasePartService<Detail> {
+  /**
+   * Describe the part type that the service is handling.
+   */
+  abstract part: Products;
+
+  async list(
+    options?: Filter & PageOptions & SearchOptions
+  ): Promise<ListResult<Detail>> {
+    const { part, [this.part]: filter } = options ?? {};
+
+    const FilteredPart = PartInformation.scope([
+      ModelScopes.SUMMARY,
+      { method: [ModelScopes.FILTER, { ...part, part: [this.part] }] },
+    ]);
+
+    const include: Includeable = {
+      model: Models[this.part].scope([
+        ModelScopes.SUMMARY,
+        { method: [ModelScopes.FILTER, filter] },
+      ]),
+      required: false,
+    };
+
+    const { rows, count } = await this.listFromPart(
+      FilteredPart,
+      options ?? {},
+      include
+    );
+
+    return { total: count, list: rows.map((value) => value.toJSON()) };
+  }
+
+  async filter(options?: Filter & SearchOptions): Promise<Filter> {
+    const { part, [this.part]: filter } = options ?? {};
+
+    const FilteredPart = PartInformation.scope({
+      method: [ModelScopes.FILTER, { ...part, part: [this.part] }],
+    });
+    const FilteredModel = Models[this.part].scope({
+      method: [ModelScopes.FILTER, filter],
+    });
+
+    const result: Filter = {
+      part: await this.filterFromModel(
+        FilteredPart,
+        part ?? {},
+        Part.FilterAttributes,
+        FilteredModel
+      ),
+      [this.part]: await this.filterFromModel(
+        FilteredModel,
+        (filter as any) ?? {},
+        FilterAttributes[this.part],
+        FilteredPart
+      ),
+    };
+
+    return result;
+  }
+
+  async get(id: string): Promise<Detail | null> {
+    const instance = await this.getFromPart(
+      PartInformation.scope(ModelScopes.DETAIL),
+      id,
+      Models[this.part].scope(ModelScopes.DETAIL)
+    );
+
+    if (!instance || instance.part !== this.part) {
+      return null;
+    }
+
+    return instance?.toJSON() ?? null;
+  }
+
+  async set(
+    { [this.part]: data, ...part }: Options,
+    id?: string
+  ): Promise<Detail> {
+    const instance = await this.setToPart({ ...part, part: this.part }, id);
+
+    /**
+     * Check if the instance is not the same part type as the controller.
+     */
+    if (instance.part !== this.part) {
+      throw new BadRequestException(
+        `Attempting to create or update ${
+          instance.part ?? "an unidentified product"
+        } in ${this.part} page.`
+      );
+    }
+
+    await instance.save();
+
+    id = instance.id;
+
+    if (data) await this.setToModel(Models[this.part], data as any, id);
+
+    return (await this.get(instance.id)) as Detail;
+  }
+
+  async delete(id: string): Promise<Detail | null> {
+    const instance = await this.getFromPart(
+      PartInformation.scope(ModelScopes.DETAIL),
+      id,
+      Models[this.part].scope(ModelScopes.DETAIL)
+    );
+
+    if (!instance || instance.part !== this.part) {
+      return null;
+    }
+
+    await instance.destroy();
+
+    return instance.toJSON();
+  }
+
+  /**
    * Create the model instance of {@link model} with the given {@link data}.
    * If the {@link id} is provided, update the id instance with the new data
    * or create a new one if cant find.
@@ -174,111 +345,11 @@ abstract class BasePartService<
 
     return instance;
   }
-
-  /**
-   * Retrieve the part with the given ID from the part model.
-   * Validate the part with the class {@link part} whether it matches the part type.
-   * If not return null.
-   * @param model The part model to retrieve the part from.
-   * @param id The ID of the part to retrieve.
-   * @param include The include options to include in the query.
-   * @returns The part with the given ID, or `null` if the part does not exist.
-   */
-  protected async getFromPart(
-    model: ModelStatic<PartInformation>,
-    id: string,
-    ...include: Includeable[]
-  ): Promise<PartInformation | null> {
-    const instance = await model.findByPk(id, { include });
-
-    if (!instance || instance.part !== this.part) {
-      return null;
-    }
-
-    return instance;
-  }
-
-  /**
-   * A specific implementation of the {@link setToModel} function
-   * for creating and updating the part with the given ID from the part model.
-   * Validate the part with the class {@link part} whether it matches the part type.
-   * If not throw a bad request exception.
-   * @param data The data to set the part with.
-   * @param id The ID of the part to set.
-   * @returns The created or updated part.
-   */
-  protected async setToPart(
-    data: CreationAttributes<PartInformation>,
-    id?: string
-  ): Promise<PartInformation> {
-    /** Check if the user is attempting to change the part property. */
-    data.part = data.part ?? this.part;
-    if (data.part !== this.part) {
-      throw new BadRequestException(
-        `Attempting to change part type to ${data.part} in ${this.part} controller.`
-      );
-    }
-
-    /**
-     * Check if the data contains the code name of id property.
-     * Search for the corresponding data in the database if found.
-     */
-    let instance = PartInformation.build(data);
-    if (id || data.code_name) {
-      const where = id ? { id } : { code_name: data.code_name };
-      let created: boolean;
-
-      [instance, created] = await PartInformation.findOrBuild({
-        where,
-        defaults: data,
-      });
-
-      if (!created) instance.set(data);
-    }
-
-    /**
-     * Check if the instance is not the same part type as the controller.
-     */
-    if (instance.part && instance.part !== this.part) {
-      throw new BadRequestException(
-        `Attempting to create or update ${instance.part} in ${this.part} page.`
-      );
-    }
-
-    /**
-     * Save the instance to the database.
-     */
-    await instance.save();
-
-    return instance;
-  }
-
-  /**
-   * Delete the part with the given ID from the part model.
-   * Validate the part with the class {@link part} whether it matches the part type.
-   * If not return null.
-   * Disclaimer: The include models are not actually deleted directly in the function,
-   * but the instance is deleted by the database on delete cascade option.
-   * If it's not set, the include models are not deleted and must be deleted manually.
-   * @param model The part model to delete the part from.
-   * @param id The ID of the part to delete.
-   * @param include The include options to include in the query.
-   * @returns The deleted part, or `null` if the part does not exist.
-   */
-  protected async deleteFromPart(
-    model: ModelStatic<PartInformation>,
-    id: string,
-    ...include: Includeable[]
-  ): Promise<PartInformation | null> {
-    const instance = await model.findByPk(id, { include });
-
-    if (!instance || instance.part !== this.part) {
-      return null;
-    }
-
-    await instance.destroy();
-    return instance;
-  }
 }
 
-export { BasePartService, type PageOptions, type SearchOptions };
+export {
+  BasePartService,
+  BaseDetailPartService,
+  type PageOptions,
+  type SearchOptions,
+};
