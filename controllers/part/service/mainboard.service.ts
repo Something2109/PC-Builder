@@ -19,6 +19,27 @@ type Detail = Part.BasicInfo & {
 class MainboardService extends BaseDetailPartService<Detail> {
   readonly part = Products.MAIN;
 
+  async create({
+    [this.part]: data,
+    ...part
+  }: Options): Promise<string | Detail> {
+    let pcies: Mainboard.PCIeType | undefined,
+      storage_connectors: Mainboard.StorageConnectorType | undefined,
+      usb_connectors: Mainboard.USBConnectorType | undefined;
+    if (data) ({ pcies, storage_connectors, usb_connectors, ...data } = data);
+
+    const partInstance = await super.create({ ...part, mainboard: data });
+    if (typeof partInstance === "string") return partInstance;
+
+    Promise.all([
+      this.setPCIe(partInstance.id, pcies),
+      this.setStorageConnector(partInstance.id, storage_connectors),
+      this.setUSBConnector(partInstance.id, usb_connectors),
+    ]);
+
+    return (await this.get(partInstance.id)) as Detail;
+  }
+
   async set(
     { [this.part]: data, ...part }: Options,
     id: string
@@ -26,16 +47,21 @@ class MainboardService extends BaseDetailPartService<Detail> {
     let pcies: Mainboard.PCIeType | undefined,
       storage_connectors: Mainboard.StorageConnectorType | undefined,
       usb_connectors: Mainboard.USBConnectorType | undefined;
-    if (data) {
-      const { pcies, storage_connectors, usb_connectors, ...rest } = data;
-      data = rest;
-    }
+    if (data) ({ pcies, storage_connectors, usb_connectors, ...data } = data);
 
     const partInstance = await super.set({ ...part, mainboard: data }, id);
     if (!partInstance || typeof partInstance === "string") return partInstance;
 
-    id = partInstance.id;
+    Promise.all([
+      this.setPCIe(partInstance.id, pcies),
+      this.setStorageConnector(partInstance.id, storage_connectors),
+      this.setUSBConnector(partInstance.id, usb_connectors),
+    ]);
 
+    return (await this.get(partInstance.id)) as Detail;
+  }
+
+  private async setPCIe(id: string, pcies?: Mainboard.PCIeType) {
     if (pcies) {
       await MainboardPCIeModel.destroy({ where: { id } });
 
@@ -49,7 +75,12 @@ class MainboardService extends BaseDetailPartService<Detail> {
         }, [] as any)
       );
     }
+  }
 
+  private async setStorageConnector(
+    id: string,
+    storage_connectors?: Mainboard.StorageConnectorType
+  ) {
     if (storage_connectors) {
       await MainboardStorageConnectorModel.destroy({ where: { id } });
 
@@ -61,7 +92,12 @@ class MainboardService extends BaseDetailPartService<Detail> {
         }))
       );
     }
+  }
 
+  private async setUSBConnector(
+    id: string,
+    usb_connectors?: Mainboard.USBConnectorType
+  ) {
     if (usb_connectors) {
       await MainboardUSBConnectorModel.destroy({ where: { id } });
 
@@ -72,8 +108,6 @@ class MainboardService extends BaseDetailPartService<Detail> {
         })
       );
     }
-
-    return (await this.get(partInstance.id)) as Detail;
   }
 }
 
