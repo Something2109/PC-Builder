@@ -49,14 +49,6 @@ class CPUBlockModel extends Model implements PartDetailTable<CPUBlock.Info> {
     return data.map((value) => value.socket);
   }
 
-  set socket(value: string[] | null) {
-    if (!value) return;
-
-    value.forEach((socket) => {
-      CPUBlockSocketModel.findOrBuild({ where: { id: this.id, socket } });
-    });
-  }
-
   @Column({
     type: DataType.STRING,
     validate: { isIn: [CPUBlock.Plate.options] },

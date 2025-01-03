@@ -35,20 +35,20 @@ import { WhereOptions } from "sequelize";
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
     include: [
-      { model: CaseMainboardSupportModel, attributes: ["mainboard_support"] },
+      { model: CaseMainboardSupportModel, attributes: ["form_factor"] },
       {
         model: CaseFanSupportModel,
-        attributes: ["case_side", "fan_form_factor", "count"],
+        attributes: ["case_side", "form_factor", "count"],
       },
       {
         model: CaseRadiatorSupportModel,
-        attributes: ["case_side", "radiator_form_factor"],
+        attributes: ["case_side", "form_factor"],
       },
       {
         model: CaseHardDriveSupportModel,
-        attributes: ["place", "type", "count"],
+        attributes: ["place", "form_factor", "count"],
       },
-      { model: CasePSUSupportModel, attributes: ["psu_support"] },
+      { model: CasePSUSupportModel, attributes: ["form_factor"] },
     ],
   },
 }))
@@ -103,17 +103,7 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
     if (!data) return null;
 
-    return data.map(({ mainboard_support }) => mainboard_support);
-  }
-
-  set mainboard_support(data: FormFactor.Mainboard[] | null) {
-    if (!data) return;
-
-    for (const mainboard_support of data) {
-      CaseMainboardSupportModel.findOrCreate({
-        where: { id: this.id, mainboard_support },
-      });
-    }
+    return data.map(({ form_factor }) => form_factor);
   }
 
   /**
@@ -134,25 +124,12 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
     if (!data) return null;
 
-    return data.reduce((acc, { case_side, radiator_form_factor }) => {
+    return data.reduce((acc, { case_side, form_factor }) => {
       if (!acc[case_side]) acc[case_side] = [];
 
-      acc[case_side].push(radiator_form_factor);
+      acc[case_side].push(form_factor);
       return acc;
     }, {} as Case.RadiatorSupport);
-  }
-
-  set radiator_support(data: Case.RadiatorSupport | null) {
-    if (!data) return;
-
-    for (const [case_side, radiator_form_factors] of Object.entries(data)) {
-      for (const radiator_form_factor of radiator_form_factors) {
-        CaseRadiatorSupportModel.findOrCreate({
-          where: { id: this.id, case_side, radiator_form_factor },
-          defaults: {},
-        });
-      }
-    }
   }
 
   /**
@@ -171,27 +148,12 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
     if (!data) return null;
 
-    return data.reduce((acc, { case_side, fan_form_factor, count }) => {
+    return data.reduce((acc, { case_side, form_factor, count }) => {
       if (!acc[case_side]) acc[case_side] = {};
 
-      acc[case_side][fan_form_factor] = count;
+      acc[case_side][form_factor] = count;
       return acc;
     }, {} as Case.FanSupport);
-  }
-
-  set fan_support(data: Case.FanSupport | null) {
-    if (!data) return;
-
-    for (const [case_side, fan_form_factors] of Object.entries(data)) {
-      for (const [fan_form_factor, count] of Object.entries(fan_form_factors)) {
-        CaseFanSupportModel.findOrCreate({
-          where: { id: this.id, case_side, fan_form_factor },
-          defaults: { count },
-        }).then(([fanSupport, created]) => {
-          if (!created) fanSupport.update({ count });
-        });
-      }
-    }
   }
 
   /**
@@ -212,27 +174,12 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
     if (!data) return null;
 
-    return data.reduce((acc, { place, type, count }) => {
+    return data.reduce((acc, { place, form_factor, count }) => {
       if (!acc[place]) acc[place] = {};
 
-      acc[place][type] = count;
+      acc[place][form_factor] = count;
       return acc;
     }, {} as Case.HardDriveSupport);
-  }
-
-  set hard_drive_support(data: Case.HardDriveSupport | null) {
-    if (!data) return;
-
-    for (const [place, types] of Object.entries(data)) {
-      for (const [type, count] of Object.entries(types)) {
-        CaseHardDriveSupportModel.findOrCreate({
-          where: { id: this.id, place, type },
-          defaults: { count },
-        }).then(([hardDriveSupport, created]) => {
-          if (!created) hardDriveSupport.update({ count });
-        });
-      }
-    }
   }
 
   /**
@@ -251,18 +198,7 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
     if (!data) return null;
 
-    return data.map(({ psu_support }) => psu_support);
-  }
-
-  set psu_support(data: FormFactor.PSU[] | null) {
-    if (!data) return;
-
-    for (const psu_support of data) {
-      CasePSUSupportModel.findOrCreate({
-        where: { id: this.id, psu_support },
-        defaults: {},
-      });
-    }
+    return data.map(({ form_factor }) => form_factor);
   }
 
   @Column(DataType.FLOAT)
@@ -299,7 +235,7 @@ class CaseMainboardSupportModel extends Model {
     type: DataType.STRING,
     validate: { isIn: [FormFactor.Mainboard.options] },
   })
-  declare mainboard_support: FormFactor.Mainboard;
+  declare form_factor: FormFactor.Mainboard;
 }
 
 /**
@@ -322,7 +258,7 @@ class CaseFanSupportModel extends Model {
     type: DataType.STRING,
     validate: { isIn: [FormFactor.Fan.options] },
   })
-  declare fan_form_factor: FormFactor.Fan;
+  declare form_factor: FormFactor.Fan;
 
   @Column(DataType.TINYINT)
   declare count: number;
@@ -345,7 +281,7 @@ class CaseRadiatorSupportModel extends Model {
 
   @PrimaryKey
   @Column(DataType.STRING)
-  declare radiator_form_factor: FormFactor.Radiator;
+  declare form_factor: FormFactor.Radiator;
 }
 
 /**
@@ -371,7 +307,7 @@ class CaseHardDriveSupportModel extends Model {
     type: DataType.STRING,
     validate: { isIn: [Case.HardDriveSize.options] },
   })
-  declare type: Case.HardDriveSizeType;
+  declare form_factor: Case.HardDriveSizeType;
 
   @Column(DataType.TINYINT)
   declare count: number;
@@ -393,7 +329,7 @@ class CasePSUSupportModel extends Model {
     type: DataType.STRING,
     validate: { isIn: [FormFactor.PSU.options] },
   })
-  declare psu_support: FormFactor.PSU;
+  declare form_factor: FormFactor.PSU;
 }
 
 export {
