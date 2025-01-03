@@ -116,28 +116,6 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
     );
   }
 
-  set pcies(value: Mainboard.PCIeType | null) {
-    if (!value) return;
-
-    for (const [controller, pcie] of Object.entries(value)) {
-      for (const [type, count] of Object.entries(pcie)) {
-        const { width, version } = PCIeExchanger.toObject(type);
-
-        MainboardPCIeModel.findOrCreate({
-          where: {
-            id: this.id,
-            controller,
-            version: Number(version),
-            width: Number(width),
-          },
-          defaults: { count },
-        }).then(([value, created]) => {
-          if (!created) value.update({ count });
-        });
-      }
-    }
-  }
-
   /**
    * Declare the power connector object as a virtual column
    * extracting the data from the {@link main_power_connectors},
@@ -217,19 +195,6 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
     );
   }
 
-  set storage_connectors(value: Mainboard.StorageConnectorType | null) {
-    if (!value) return;
-
-    for (const [type, count] of Object.entries(value)) {
-      MainboardStorageConnectorModel.findOrCreate({
-        where: { id: this.id, type },
-        defaults: { count },
-      }).then(([value, created]) => {
-        if (!created) value.update({ count });
-      });
-    }
-  }
-
   /**
    * Declare the usb connector object as a virtual column
    * extracting the {@link usb_data} assossiated with
@@ -255,21 +220,6 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
       },
       {}
     );
-  }
-
-  set usb_connectors(value: Mainboard.USBConnectorType | null) {
-    if (!value) return;
-
-    for (const [usb, count] of Object.entries(value)) {
-      const { generation, connector } = USBExchanger.toObject(usb);
-
-      MainboardUSBConnectorModel.findOrCreate({
-        where: { id: this.id, generation, connector },
-        defaults: { count },
-      }).then(([value, created]) => {
-        if (!created) value.update({ count });
-      });
-    }
   }
 
   /**

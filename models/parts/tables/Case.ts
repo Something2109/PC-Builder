@@ -106,16 +106,6 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
     return data.map(({ form_factor }) => form_factor);
   }
 
-  set mainboard_support(data: FormFactor.Mainboard[] | null) {
-    if (!data) return;
-
-    data.forEach((form_factor) => {
-      CaseMainboardSupportModel.findOrCreate({
-        where: { id: this.id, form_factor },
-      });
-    });
-  }
-
   /**
    * Declare the radiator support object as a virtual column
    * extracting the {@link radiator_support_data} assossiated with
@@ -142,19 +132,6 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
     }, {} as Case.RadiatorSupport);
   }
 
-  set radiator_support(data: Case.RadiatorSupport | null) {
-    if (!data) return;
-
-    for (const [case_side, form_factors] of Object.entries(data)) {
-      for (const form_factor of form_factors) {
-        CaseRadiatorSupportModel.findOrCreate({
-          where: { id: this.id, case_side, form_factor },
-          defaults: {},
-        });
-      }
-    }
-  }
-
   /**
    * Declare the fan support object as a virtual column
    * extracting the {@link fan_support_data} assossiated with
@@ -177,21 +154,6 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
       acc[case_side][form_factor] = count;
       return acc;
     }, {} as Case.FanSupport);
-  }
-
-  set fan_support(data: Case.FanSupport | null) {
-    if (!data) return;
-
-    for (const [case_side, fan_form_factors] of Object.entries(data)) {
-      for (const [form_factor, count] of Object.entries(fan_form_factors)) {
-        CaseFanSupportModel.findOrCreate({
-          where: { id: this.id, case_side, fan_form_factor: form_factor },
-          defaults: { count },
-        }).then(([fanSupport, created]) => {
-          if (!created) fanSupport.update({ count });
-        });
-      }
-    }
   }
 
   /**
@@ -220,21 +182,6 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
     }, {} as Case.HardDriveSupport);
   }
 
-  set hard_drive_support(data: Case.HardDriveSupport | null) {
-    if (!data) return;
-
-    for (const [place, types] of Object.entries(data)) {
-      for (const [form_factor, count] of Object.entries(types)) {
-        CaseHardDriveSupportModel.findOrCreate({
-          where: { id: this.id, place, form_factor },
-          defaults: { count },
-        }).then(([hardDriveSupport, created]) => {
-          if (!created) hardDriveSupport.update({ count });
-        });
-      }
-    }
-  }
-
   /**
    * Declare the psu support object as a virtual column
    * extracting the {@link psu_support_data} assossiated with
@@ -252,17 +199,6 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
     if (!data) return null;
 
     return data.map(({ form_factor }) => form_factor);
-  }
-
-  set psu_support(data: FormFactor.PSU[] | null) {
-    if (!data) return;
-
-    data.forEach((form_factor) => {
-      CasePSUSupportModel.findOrCreate({
-        where: { id: this.id, form_factor },
-        defaults: {},
-      });
-    });
   }
 
   @Column(DataType.FLOAT)
