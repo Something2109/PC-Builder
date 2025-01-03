@@ -40,10 +40,7 @@ import {
         model: MainboardPCIeModel,
         attributes: ["controller", "version", "width", "count"],
       },
-      {
-        model: MainboardStorageConnectorModel,
-        attributes: ["type", "count"],
-      },
+      { model: MainboardStorageConnectorModel, attributes: ["type", "count"] },
       {
         model: MainboardUSBConnectorModel,
         attributes: ["generation", "connector", "count"],

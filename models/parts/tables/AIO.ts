@@ -35,9 +35,9 @@ class AIOModel extends Model implements PartDetailTable<AIO.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [FormFactor.AIO.options] },
+    validate: { isIn: [FormFactor.Radiator.options] },
   })
-  declare form_factor: FormFactor.AIO | null;
+  declare form_factor: FormFactor.Radiator | null;
 
   @Column(DataType.FLOAT)
   declare radiator_width: number | null;

@@ -13,6 +13,9 @@ import Part from "./part/Parts";
 import PSU from "./part/PSU";
 import RAM from "./part/RAM";
 import SSD from "./part/SSD";
+import CPUBlock from "./part/CPUBlock";
+import Pump from "./part/Pump";
+import Radiator from "./part/Radiator";
 
 export const PartSummaryInfoSchema = z
   .object({
@@ -28,6 +31,9 @@ export const PartSummaryInfoSchema = z
     [Products.FAN]: Fan.SummarySchema,
     [Products.COOLER]: Cooler.SummarySchema,
     [Products.AIO]: AIO.SummarySchema,
+    [Products.CPU_BLOCK]: CPUBlock.SummarySchema,
+    [Products.PUMP]: Pump.SummarySchema,
+    [Products.RADIATOR]: Radiator.SummarySchema,
   })
   .partial();
 
@@ -51,6 +57,9 @@ export const DetailInfoListSchema = z
     [Products.FAN]: Fan.Schema,
     [Products.COOLER]: Cooler.Schema,
     [Products.AIO]: AIO.Schema,
+    [Products.CPU_BLOCK]: CPUBlock.Schema,
+    [Products.PUMP]: Pump.Schema,
+    [Products.RADIATOR]: Radiator.Schema,
   })
   .partial();
 
@@ -70,6 +79,9 @@ export const DetailInfoOptionsSchema = Part.Schema.partial().merge(
       [Products.FAN]: Fan.Schema.partial(),
       [Products.COOLER]: Cooler.Schema.partial(),
       [Products.AIO]: AIO.Schema.partial(),
+      [Products.CPU_BLOCK]: CPUBlock.Schema.partial(),
+      [Products.PUMP]: Pump.Schema.partial(),
+      [Products.RADIATOR]: Radiator.Schema.partial(),
     })
     .partial()
 );
@@ -97,6 +109,9 @@ export const FilterOptionSchema = z
     [Products.FAN]: Fan.FilterOptionSchema,
     [Products.COOLER]: Cooler.FilterOptionSchema,
     [Products.AIO]: AIO.FilterOptionSchema,
+    [Products.CPU_BLOCK]: CPUBlock.FilterOptionSchema,
+    [Products.PUMP]: Pump.FilterOptionSchema,
+    [Products.RADIATOR]: Radiator.FilterOptionSchema,
   })
   .partial();
 
@@ -116,6 +131,9 @@ export const FilterAttributes = {
   [Products.FAN]: Fan.FilterAttributes,
   [Products.COOLER]: Cooler.FilterAttributes,
   [Products.AIO]: AIO.FilterAttributes,
+  [Products.CPU_BLOCK]: CPUBlock.FilterAttributes,
+  [Products.PUMP]: Pump.FilterAttributes,
+  [Products.RADIATOR]: Radiator.FilterAttributes,
 };
 
 export const DefaultFilterOptions = {
@@ -128,4 +146,7 @@ export const DefaultFilterOptions = {
   [Products.COOLER]: Cooler.DefaultFilterOptions,
   [Products.AIO]: AIO.DefaultFilterOptions,
   [Products.FAN]: Fan.DefaultFilterOptions,
+  [Products.CPU_BLOCK]: CPUBlock.DefaultFilterOptions,
+  [Products.PUMP]: Pump.DefaultFilterOptions,
+  [Products.RADIATOR]: Radiator.DefaultFilterOptions,
 };
