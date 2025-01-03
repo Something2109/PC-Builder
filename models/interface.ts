@@ -15,7 +15,7 @@ enum Tables {
   CASE = "case",
   CASE_MAINBOARD_SUPPORT = "case_mainboard_support",
   CASE_FAN_SUPPORT = "case_fan_support",
-  CASE_AIO_SUPPORT = "case_aio_support",
+  CASE_RADIATOR_SUPPORT = "case_radiator_support",
   CASE_HARD_DRIVE_SUPPORT = "case_hard_drive_support",
   CASE_PSU_SUPPORT = "case_psu_support",
   COOLER = "cooler",

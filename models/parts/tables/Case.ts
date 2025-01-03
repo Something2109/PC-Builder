@@ -35,26 +35,20 @@ import { WhereOptions } from "sequelize";
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
     include: [
-      {
-        model: CaseMainboardSupportModel,
-        attributes: ["mainboard_support"],
-      },
+      { model: CaseMainboardSupportModel, attributes: ["mainboard_support"] },
       {
         model: CaseFanSupportModel,
         attributes: ["case_side", "fan_form_factor", "count"],
       },
       {
-        model: CaseAIOSupportModel,
-        attributes: ["case_side", "aio_form_factor"],
+        model: CaseRadiatorSupportModel,
+        attributes: ["case_side", "radiator_form_factor"],
       },
       {
         model: CaseHardDriveSupportModel,
         attributes: ["place", "type", "count"],
       },
-      {
-        model: CasePSUSupportModel,
-        attributes: ["psu_support"],
-      },
+      { model: CasePSUSupportModel, attributes: ["psu_support"] },
     ],
   },
 }))
@@ -123,36 +117,38 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   }
 
   /**
-   * Declare the aio support object as a virtual column
-   * extracting the {@link aio_support_data} assossiated with
-   * {@link CaseAIOSupportModel} from the model
-   * and converting it to a {@link Case.AIOSupport} object.
+   * Declare the radiator support object as a virtual column
+   * extracting the {@link radiator_support_data} assossiated with
+   * {@link CaseRadiatorSupportModel} from the model
+   * and converting it to a {@link Case.RadiatorSupport} object.
    */
 
-  @HasMany(() => CaseAIOSupportModel)
-  declare aio_support_data: CaseAIOSupportModel[] | null;
+  @HasMany(() => CaseRadiatorSupportModel)
+  declare radiator_support_data: CaseRadiatorSupportModel[] | null;
 
   @Column(DataType.VIRTUAL)
-  get aio_support(): Case.AIOSupport | null {
-    const data = this.getDataValue("aio_support_data") as CaseAIOSupportModel[];
+  get radiator_support(): Case.RadiatorSupport | null {
+    const data = this.getDataValue(
+      "radiator_support_data"
+    ) as CaseRadiatorSupportModel[];
 
     if (!data) return null;
 
-    return data.reduce((acc, { case_side, aio_form_factor }) => {
+    return data.reduce((acc, { case_side, radiator_form_factor }) => {
       if (!acc[case_side]) acc[case_side] = [];
 
-      acc[case_side].push(aio_form_factor);
+      acc[case_side].push(radiator_form_factor);
       return acc;
-    }, {} as Case.AIOSupport);
+    }, {} as Case.RadiatorSupport);
   }
 
-  set aio_support(data: Case.AIOSupport | null) {
+  set radiator_support(data: Case.RadiatorSupport | null) {
     if (!data) return;
 
-    for (const [case_side, aio_form_factors] of Object.entries(data)) {
-      for (const aio_form_factor of aio_form_factors) {
-        CaseAIOSupportModel.findOrCreate({
-          where: { id: this.id, case_side, aio_form_factor },
+    for (const [case_side, radiator_form_factors] of Object.entries(data)) {
+      for (const radiator_form_factor of radiator_form_factors) {
+        CaseRadiatorSupportModel.findOrCreate({
+          where: { id: this.id, case_side, radiator_form_factor },
           defaults: {},
         });
       }
@@ -333,11 +329,11 @@ class CaseFanSupportModel extends Model {
 }
 
 /**
- * Define the aio support model for the case model.
+ * Define the radiator support model for the case model.
  * The model is used for future search and filter operations.
  */
-@Table({ modelName: Tables.CASE_AIO_SUPPORT })
-class CaseAIOSupportModel extends Model {
+@Table({ modelName: Tables.CASE_RADIATOR_SUPPORT })
+class CaseRadiatorSupportModel extends Model {
   @PrimaryKey
   @ForeignKey(() => CaseModel)
   @Column(DataType.UUID)
@@ -349,7 +345,7 @@ class CaseAIOSupportModel extends Model {
 
   @PrimaryKey
   @Column(DataType.STRING)
-  declare aio_form_factor: FormFactor.AIO;
+  declare radiator_form_factor: FormFactor.Radiator;
 }
 
 /**
@@ -404,7 +400,7 @@ export {
   CaseModel,
   CaseMainboardSupportModel,
   CaseFanSupportModel,
-  CaseAIOSupportModel,
+  CaseRadiatorSupportModel,
   CaseHardDriveSupportModel,
   CasePSUSupportModel,
 };

@@ -10,7 +10,7 @@ import {
 } from "./parts/tables/Mainboard";
 import {
   CaseMainboardSupportModel,
-  CaseAIOSupportModel,
+  CaseRadiatorSupportModel,
   CaseFanSupportModel,
   CaseHardDriveSupportModel,
   CasePSUSupportModel,
@@ -25,7 +25,7 @@ export const ConnectionOptions: SequelizeOptions = {
     MainboardStorageConnectorModel,
     MainboardUSBConnectorModel,
     CaseMainboardSupportModel,
-    CaseAIOSupportModel,
+    CaseRadiatorSupportModel,
     CaseFanSupportModel,
     CaseHardDriveSupportModel,
     CasePSUSupportModel,
