@@ -6,9 +6,12 @@ export namespace Case {
 
   export type Side = z.infer<typeof Side>;
 
-  export const AIOSupportSchema = z.record(Side, z.array(FormFactor.AIO));
+  export const RadiatorSupportSchema = z.record(
+    Side,
+    z.array(FormFactor.Radiator)
+  );
 
-  export type AIOSupportType = z.infer<typeof AIOSupportSchema>;
+  export type RadiatorSupportType = z.infer<typeof RadiatorSupportSchema>;
 
   export const FanSupportSchema = z.record(
     Side,
@@ -47,7 +50,7 @@ export namespace Case {
 
     max_cooler_height: z.number(),
 
-    aio_support: AIOSupportSchema,
+    radiator_support: RadiatorSupportSchema,
     fan_support: FanSupportSchema,
 
     hard_drive_support: HardDriveSupportSchema,
@@ -60,7 +63,7 @@ export namespace Case {
 
   export type FanSupport = z.infer<typeof FanSupportSchema>;
 
-  export type AIOSupport = z.infer<typeof AIOSupportSchema>;
+  export type RadiatorSupport = z.infer<typeof RadiatorSupportSchema>;
 
   export type HardDriveSupport = z.infer<typeof HardDriveSupportSchema>;
 
