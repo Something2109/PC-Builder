@@ -14,6 +14,9 @@ import { CaseService } from "./service/case.service";
 import { CoolerService } from "./service/cooler.service";
 import { AIOService } from "./service/aio.service";
 import { FanService } from "./service/fan.service";
+import { CPUBlockService } from "./service/cpublock.service";
+import { PumpService } from "./service/pump.service";
+import { RadiatorService } from "./service/radiator.service";
 
 const Service = {
   provide: PartService,
@@ -33,6 +36,9 @@ const Service = {
     CoolerService,
     AIOService,
     FanService,
+    CPUBlockService,
+    PumpService,
+    RadiatorService,
   ],
 };
 
@@ -52,6 +58,9 @@ const Service = {
     CoolerService,
     AIOService,
     FanService,
+    CPUBlockService,
+    PumpService,
+    RadiatorService,
   ],
 })
 export class PartModule {}
