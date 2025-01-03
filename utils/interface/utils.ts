@@ -56,6 +56,10 @@ namespace FormFactor {
 
   export type Fan = z.infer<typeof Fan>;
 
+  export const Pump = z.enum(["D5", "DDC"]);
+
+  export type Pump = z.infer<typeof Pump>;
+
   export const Radiator = z.enum(["120", "140", "240", "280", "360", "420"]);
 
   export type Radiator = z.infer<typeof Radiator>;
@@ -155,7 +159,9 @@ namespace InternalConnectors {
     export type Connector = z.infer<typeof Connector>;
 
     export const Regex = new RegExp(
-      `(${Connector.options.join("|")}) ${Type.options.join("|")}`
+      `(${Connector.options.join("|")}) (${Type.options.join(
+        "|"
+      )})? ?Fan Connector`
     );
 
     export const Schema = z.string().regex(Regex);
