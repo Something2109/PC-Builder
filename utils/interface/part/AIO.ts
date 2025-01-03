@@ -7,7 +7,7 @@ export namespace AIO {
   export type CPUPlate = z.infer<typeof CPUPlate>;
 
   export const Schema = z.object({
-    form_factor: FormFactor.AIO,
+    form_factor: FormFactor.Radiator,
 
     radiator_width: z.number(),
     radiator_length: z.number(),
@@ -38,14 +38,14 @@ export namespace AIO {
 
   export const FilterOptionSchema = z
     .object({
-      form_factor: FilterOptions(FormFactor.AIO),
+      form_factor: FilterOptions(FormFactor.Radiator),
       socket: FilterOptions(z.string()),
       cpu_plate: FilterOptions(CPUPlate),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
-    form_factor: FormFactor.AIO.options,
+    form_factor: FormFactor.Radiator.options,
     cpu_plate: CPUPlate.options,
   };
 

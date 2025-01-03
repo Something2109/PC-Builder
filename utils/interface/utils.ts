@@ -56,9 +56,9 @@ namespace FormFactor {
 
   export type Fan = z.infer<typeof Fan>;
 
-  export const AIO = z.enum(["120", "140", "240", "280", "360", "420"]);
+  export const Radiator = z.enum(["120", "140", "240", "280", "360", "420"]);
 
-  export type AIO = z.infer<typeof AIO>;
+  export type Radiator = z.infer<typeof Radiator>;
 }
 
 namespace InternalConnectors {
