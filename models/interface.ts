@@ -21,6 +21,10 @@ enum Tables {
   COOLER = "cooler",
   AIO = "aio",
   FAN = "fan",
+  CPU_BLOCK = "cpu_block",
+  CPU_BLOCK_SOCKET = "cpu_block_socket",
+  PUMP = "pump",
+  RADIATOR = "radiator",
   RETAIL_PRODUCT = "retail_product",
 }
 

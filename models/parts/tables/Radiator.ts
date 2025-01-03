@@ -1,0 +1,63 @@
+import {
+  ModelScopes,
+  PartDefaultScope,
+  PartDetailTable,
+  Tables,
+} from "../../interface";
+import { PartInformation } from "./Part";
+import Radiator from "@/utils/interface/part/Radiator";
+import { FormFactor } from "@/utils/interface/utils";
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Scopes,
+  Table,
+} from "sequelize-typescript";
+
+@Scopes(() => ({
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...Radiator.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: Radiator.FilterOptions) => ({
+    where: options,
+  }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
+}))
+@Table({ modelName: Tables.RADIATOR })
+class RadiatorModel extends Model implements PartDetailTable<Radiator.Info> {
+  @PrimaryKey
+  @ForeignKey(() => PartInformation)
+  @Column(DataType.UUID)
+  declare id: string;
+
+  @BelongsTo(() => PartInformation)
+  declare part: PartInformation;
+
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [FormFactor.Radiator.options] },
+  })
+  declare form_factor: FormFactor.Radiator | null;
+
+  @Column(DataType.FLOAT)
+  declare width: number | null;
+
+  @Column(DataType.FLOAT)
+  declare length: number | null;
+
+  @Column(DataType.FLOAT)
+  declare height: number | null;
+
+  @Column(DataType.TINYINT)
+  declare fpi: number | null;
+
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [Radiator.Material.options] },
+  })
+  declare material: Radiator.Material | null;
+}
+
+export { RadiatorModel };

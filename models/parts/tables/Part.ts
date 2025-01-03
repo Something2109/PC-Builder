@@ -25,6 +25,9 @@ import { CaseModel } from "./Case";
 import { CoolerModel } from "./Cooler";
 import { AIOModel } from "./AIO";
 import { FanModel } from "./Fan";
+import { CPUBlockModel } from "./CPUBlock";
+import { PumpModel } from "./Pump";
+import { RadiatorModel } from "./Radiator";
 
 @DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
@@ -105,6 +108,15 @@ class PartInformation extends Model implements Part.BasicInfo {
 
   @HasOne(() => FanModel)
   declare [Products.FAN]: FanModel;
+
+  @HasOne(() => CPUBlockModel)
+  declare [Products.CPU_BLOCK]: CPUBlockModel;
+
+  @HasOne(() => PumpModel)
+  declare [Products.PUMP]: PumpModel;
+
+  @HasOne(() => RadiatorModel)
+  declare [Products.RADIATOR]: RadiatorModel;
 }
 
 export { PartInformation };

@@ -12,10 +12,13 @@ import { CaseModel } from "@/models/parts/tables/Case";
 import { CoolerModel } from "@/models/parts/tables/Cooler";
 import { AIOModel } from "@/models/parts/tables/AIO";
 import { FanModel } from "@/models/parts/tables/Fan";
+import { CPUBlockModel } from "./tables/CPUBlock";
+import { PumpModel } from "./tables/Pump";
 import { Products } from "@/utils/Enum";
 import { DefaultFilterOptions, FilterAttributes } from "@/utils/interface";
 import { FilterOptionsType } from "@/utils/interface/utils";
 import { PartInformation } from "./tables/Part";
+import { RadiatorModel } from "./tables/Radiator";
 
 function genericFilter<T extends Model<any, any>>(
   model: ModelStatic<T>,
@@ -68,6 +71,9 @@ export const Models: { [key in Products]: ModelCtor<Model> } = {
   [Products.COOLER]: CoolerModel,
   [Products.AIO]: AIOModel,
   [Products.FAN]: FanModel,
+  [Products.CPU_BLOCK]: CPUBlockModel,
+  [Products.PUMP]: PumpModel,
+  [Products.RADIATOR]: RadiatorModel,
 };
 
 export const ModelFilters = {
@@ -122,5 +128,20 @@ export const ModelFilters = {
     FanModel,
     FilterAttributes[Products.FAN],
     DefaultFilterOptions[Products.FAN]
+  ),
+  [Products.CPU_BLOCK]: genericFilter(
+    CPUBlockModel,
+    FilterAttributes[Products.CPU_BLOCK],
+    DefaultFilterOptions[Products.CPU_BLOCK]
+  ),
+  [Products.PUMP]: genericFilter(
+    PumpModel,
+    FilterAttributes[Products.PUMP],
+    DefaultFilterOptions[Products.PUMP]
+  ),
+  [Products.RADIATOR]: genericFilter(
+    RadiatorModel,
+    FilterAttributes[Products.RADIATOR],
+    DefaultFilterOptions[Products.RADIATOR]
   ),
 };
