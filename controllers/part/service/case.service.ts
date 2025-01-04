@@ -26,9 +26,9 @@ class CaseService extends BaseDetailPartService<Detail> {
     ...part
   }: DetailInfoOptions): Promise<string | Detail> {
     let mainboard_support: FormFactor.Mainboard[] | undefined,
-      radiator_support: Case.RadiatorSupportType | undefined,
-      fan_support: Case.FanSupportType | undefined,
-      hard_drive_support: Case.HardDriveSupportType | undefined,
+      radiator_support: Case.RadiatorSupport | undefined,
+      fan_support: Case.FanSupport | undefined,
+      hard_drive_support: Case.HardDriveSupport | undefined,
       psu_support: FormFactor.PSU[] | undefined;
     if (data)
       ({
@@ -59,9 +59,9 @@ class CaseService extends BaseDetailPartService<Detail> {
     id: string
   ): Promise<string | Detail | null> {
     let mainboard_support: FormFactor.Mainboard[] | undefined,
-      radiator_support: Case.RadiatorSupportType | undefined,
-      fan_support: Case.FanSupportType | undefined,
-      hard_drive_support: Case.HardDriveSupportType | undefined,
+      radiator_support: Case.RadiatorSupport | undefined,
+      fan_support: Case.FanSupport | undefined,
+      hard_drive_support: Case.HardDriveSupport | undefined,
       psu_support: FormFactor.PSU[] | undefined;
     if (data)
       ({
