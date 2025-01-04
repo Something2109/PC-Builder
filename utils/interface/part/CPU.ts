@@ -12,6 +12,8 @@ export namespace CPU {
     })
   );
 
+  export type Core = z.infer<typeof CoreSchema>;
+
   export const Schema = z.object({
     family: z.string(),
 
@@ -31,8 +33,6 @@ export namespace CPU {
     tdp: z.number(),
     lithography: z.string(),
   });
-
-  export type Core = z.infer<typeof CoreSchema>;
 
   export type Info = z.infer<typeof Schema>;
 
