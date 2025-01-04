@@ -185,11 +185,13 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @returns The part with the given ID, or `null` if the part does not exist.
    */
   protected async getPart(
-    model: ModelStatic<PartInformation>,
     id: string,
     ...include: Includeable[]
   ): Promise<PartInformation | null> {
-    const instance = await model.findByPk(id, { include });
+    const instance = await PartInformation.scope(ModelScopes.DETAIL).findByPk(
+      id,
+      { include }
+    );
 
     return instance;
   }
@@ -215,7 +217,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
       if (instance && instance.id !== id) return instance.id;
     }
 
-    instance = instance || (await this.getPart(PartInformation, id));
+    instance = instance || (await this.getPart(id));
     if (!instance) return null;
 
     instance.set(data);
@@ -313,13 +315,12 @@ abstract class BaseDetailPartService<
 
   async get(id: string): Promise<Detail | null> {
     const instance = await this.getPart(
-      PartInformation.scope(ModelScopes.DETAIL),
       id,
       Models[this.part].scope(ModelScopes.DETAIL)
     );
     if (!instance || instance.part !== this.part) return null;
 
-    return instance?.toJSON() ?? null;
+    return instance.toJSON();
   }
 
   async set(
@@ -340,7 +341,6 @@ abstract class BaseDetailPartService<
 
   async delete(id: string): Promise<Detail | null> {
     const instance = await this.getPart(
-      PartInformation.scope(ModelScopes.DETAIL),
       id,
       Models[this.part].scope(ModelScopes.DETAIL)
     );

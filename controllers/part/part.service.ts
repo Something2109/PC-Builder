@@ -78,10 +78,7 @@ class PartService extends BasePartService {
   }
 
   async get(id: string): Promise<Detail | null> {
-    const save = await this.getPart(
-      PartInformation.scope(ModelScopes.DETAIL),
-      id
-    );
+    const save = await this.getPart(id);
 
     if (!save) return null;
 
@@ -99,10 +96,7 @@ class PartService extends BasePartService {
   }
 
   async delete(id: string) {
-    const instance = await this.getPart(
-      PartInformation.scope(ModelScopes.DETAIL),
-      id
-    );
+    const instance = await this.getPart(id);
 
     if (!instance) return null;
 

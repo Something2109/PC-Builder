@@ -100,7 +100,6 @@ class CPUService extends BaseDetailPartService<Detail> {
 
   async get(id: string): Promise<Detail | null> {
     const instance = await this.getPart(
-      PartInformation.scope(ModelScopes.DETAIL),
       id,
       CPUModel.scope(ModelScopes.DETAIL),
       GPUModel.scope(ModelScopes.DETAIL)
@@ -129,7 +128,6 @@ class CPUService extends BaseDetailPartService<Detail> {
 
   async delete(id: string): Promise<Detail | null> {
     const instance = await this.getPart(
-      PartInformation.scope(ModelScopes.DETAIL),
       id,
       CPUModel.scope(ModelScopes.DETAIL),
       GPUModel.scope(ModelScopes.DETAIL)
