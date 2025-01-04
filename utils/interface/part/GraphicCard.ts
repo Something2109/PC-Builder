@@ -16,7 +16,7 @@ namespace GraphicCard {
 
   export const PortSchema = z.record(ExternalPorts.Display.Schema, z.number());
 
-  export type PortType = z.infer<typeof PortSchema>;
+  export type Port = z.infer<typeof PortSchema>;
 
   export const Schema = z.object({
     width: z.number(),

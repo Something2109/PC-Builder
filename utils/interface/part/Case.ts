@@ -11,32 +11,32 @@ export namespace Case {
     z.array(FormFactor.Radiator)
   );
 
-  export type RadiatorSupportType = z.infer<typeof RadiatorSupportSchema>;
+  export type RadiatorSupport = z.infer<typeof RadiatorSupportSchema>;
 
   export const FanSupportSchema = z.record(
     Side,
     z.record(FormFactor.Fan, z.number())
   );
 
-  export type FanSupportType = z.infer<typeof FanSupportSchema>;
+  export type FanSupport = z.infer<typeof FanSupportSchema>;
 
   export const HardDriveSize = z.enum(["2.5", "3.5"]);
 
-  export type HardDriveSizeType = z.infer<typeof HardDriveSize>;
+  export type HardDriveSize = z.infer<typeof HardDriveSize>;
 
   export const HardDriveSupportSchema = z.record(
     z.union([z.literal("Drive Bay"), Side]),
     z.record(HardDriveSize, z.number())
   );
 
-  export type HardDriveSupportType = z.infer<typeof HardDriveSupportSchema>;
+  export type HardDriveSupport = z.infer<typeof HardDriveSupportSchema>;
 
   export const FrontPanelPortSchema = z.record(
     ExternalPorts.Schema,
     z.number()
   );
 
-  export type FrontPanelPortType = z.infer<typeof FrontPanelPortSchema>;
+  export type FrontPanelPort = z.infer<typeof FrontPanelPortSchema>;
 
   export const Schema = z.object({
     form_factor: FormFactor.Case,
@@ -60,12 +60,6 @@ export namespace Case {
 
     front_panel_ports: FrontPanelPortSchema,
   });
-
-  export type FanSupport = z.infer<typeof FanSupportSchema>;
-
-  export type RadiatorSupport = z.infer<typeof RadiatorSupportSchema>;
-
-  export type HardDriveSupport = z.infer<typeof HardDriveSupportSchema>;
 
   export type Info = z.infer<typeof Schema>;
 
