@@ -161,15 +161,18 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * return null.
    * This function does not save the part to the database.
    * @param data The data to create the part with.
+   * @param include The include options to include in the query.
    * @returns The created part or `null` if the part's already exist.
    */
   protected async buildPart(
-    data: CreationAttributes<PartInformation>
+    data: CreationAttributes<PartInformation>,
+    ...include: Includeable[]
   ): Promise<PartInformation | string> {
     const where = data.code_name ? { code_name: data.code_name } : undefined;
 
     const [instance, created] = await PartInformation.findOrBuild({
       where,
+      include,
       defaults: data,
     });
     if (!created) return instance.id;
@@ -203,21 +206,24 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * This function does not save the part to the database.
    * @param data The data to set the part with.
    * @param id The ID of the part to set.
+   * @param include The include options to include in the query.
    * @returns The created or updated part.
    */
   protected async setPart(
     { part, ...data }: CreationAttributes<PartInformation>,
-    id: string
+    id: string,
+    ...include: Includeable[]
   ): Promise<PartInformation | string | null> {
     let instance: PartInformation | null = null;
     if (data.code_name) {
-      instance = await PartInformation.findOne({
+      instance = await PartInformation.scope(ModelScopes.DETAIL).findOne({
         where: { code_name: data.code_name },
+        include,
       });
       if (instance && instance.id !== id) return instance.id;
     }
 
-    instance = instance || (await this.getPart(id));
+    instance = instance || (await this.getPart(id, ...include));
     if (!instance) return null;
 
     instance.set(data);
@@ -301,7 +307,10 @@ abstract class BaseDetailPartService<
     [this.part]: data,
     ...part
   }: Options): Promise<Detail | string> {
-    const instance = await this.buildPart({ ...part, part: this.part });
+    const instance = await this.buildPart(
+      { ...part, part: this.part },
+      Models[this.part].scope(ModelScopes.DETAIL)
+    );
     if (!instance || typeof instance === "string") return instance;
 
     await instance.save();
@@ -310,7 +319,9 @@ abstract class BaseDetailPartService<
 
     if (data) await this.setToModel(Models[this.part], data as any, id);
 
-    return (await this.get(instance.id)) as Detail;
+    await instance.reload();
+
+    return instance.toJSON();
   }
 
   async get(id: string): Promise<Detail | null> {
@@ -327,7 +338,11 @@ abstract class BaseDetailPartService<
     { [this.part]: data, ...part }: Options,
     id: string
   ): Promise<Detail | string | null> {
-    const instance = await this.setPart({ ...part, part: this.part }, id);
+    const instance = await this.setPart(
+      { ...part, part: this.part },
+      id,
+      Models[this.part].scope(ModelScopes.DETAIL)
+    );
     if (!instance || typeof instance === "string") return instance;
 
     await instance.save();
@@ -336,7 +351,11 @@ abstract class BaseDetailPartService<
 
     if (data) await this.setToModel(Models[this.part], data as any, id);
 
-    return (await this.get(instance.id)) as Detail;
+    if (data === null) await Models[this.part].destroy({ where: { id } });
+
+    await instance.reload();
+
+    return instance.toJSON();
   }
 
   async delete(id: string): Promise<Detail | null> {
