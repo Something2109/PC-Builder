@@ -21,7 +21,7 @@ class CPUBlockService extends BaseDetailPartService<Detail> {
     let socket: string[] | undefined;
     if (data) ({ socket, ...data } = data);
 
-    const partInstance = await super.create({ ...part, [this.part]: data });
+    const partInstance = await this.buildPart({ ...part, [this.part]: data });
     if (typeof partInstance === "string") return partInstance;
 
     await this.setSocket(partInstance.id, socket);
@@ -36,7 +36,7 @@ class CPUBlockService extends BaseDetailPartService<Detail> {
     let socket: string[] | undefined;
     if (data) ({ socket, ...data } = data);
 
-    const partInstance = await super.set({ ...part, [this.part]: data }, id);
+    const partInstance = await this.setPart({ ...part, [this.part]: data }, id);
     if (!partInstance || typeof partInstance === "string") return partInstance;
 
     await this.setSocket(partInstance.id, socket);

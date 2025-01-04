@@ -28,8 +28,11 @@ class MainboardService extends BaseDetailPartService<Detail> {
       usb_connectors: Mainboard.USBConnector | undefined;
     if (data) ({ pcies, storage_connectors, usb_connectors, ...data } = data);
 
-    const partInstance = await super.create({ ...part, mainboard: data });
+    const partInstance = await this.buildPart({ ...part, mainboard: data });
     if (typeof partInstance === "string") return partInstance;
+
+    await partInstance.save();
+    await partInstance[this.part]?.save();
 
     Promise.all([
       this.setPCIe(partInstance.id, pcies),
@@ -49,8 +52,11 @@ class MainboardService extends BaseDetailPartService<Detail> {
       usb_connectors: Mainboard.USBConnector | undefined;
     if (data) ({ pcies, storage_connectors, usb_connectors, ...data } = data);
 
-    const partInstance = await super.set({ ...part, mainboard: data }, id);
+    const partInstance = await this.setPart({ ...part, mainboard: data }, id);
     if (!partInstance || typeof partInstance === "string") return partInstance;
+
+    await partInstance.save();
+    await partInstance[this.part]?.save();
 
     Promise.all([
       this.setPCIe(partInstance.id, pcies),

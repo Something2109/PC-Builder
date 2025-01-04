@@ -303,66 +303,34 @@ abstract class BaseDetailPartService<
     return result;
   }
 
-  async create({
-    [this.part]: data,
-    ...part
-  }: Options): Promise<Detail | string> {
-    const instance = await this.buildPart(
-      { ...part, part: this.part },
-      Models[this.part].scope(ModelScopes.DETAIL)
-    );
-    if (!instance || typeof instance === "string") return instance;
+  async create(options: Options): Promise<Detail | string> {
+    const instance = await this.buildPart(options);
+    if (typeof instance === "string") return instance;
 
     await instance.save();
-
-    const id = instance.id;
-
-    if (data) await this.setToModel(Models[this.part], data as any, id);
-
-    await instance.reload();
+    await instance[this.part]?.save();
 
     return instance.toJSON();
   }
 
   async get(id: string): Promise<Detail | null> {
-    const instance = await this.getPart(
-      id,
-      Models[this.part].scope(ModelScopes.DETAIL)
-    );
-    if (!instance || instance.part !== this.part) return null;
+    const instance = await this.getPart(id);
 
-    return instance.toJSON();
+    return instance?.toJSON() ?? null;
   }
 
-  async set(
-    { [this.part]: data, ...part }: Options,
-    id: string
-  ): Promise<Detail | string | null> {
-    const instance = await this.setPart(
-      { ...part, part: this.part },
-      id,
-      Models[this.part].scope(ModelScopes.DETAIL)
-    );
+  async set(options: Options, id: string): Promise<Detail | string | null> {
+    const instance = await this.setPart(options, id);
     if (!instance || typeof instance === "string") return instance;
 
     await instance.save();
-
-    id = instance.id;
-
-    if (data) await this.setToModel(Models[this.part], data as any, id);
-
-    if (data === null) await Models[this.part].destroy({ where: { id } });
-
-    await instance.reload();
+    await instance[this.part]?.save();
 
     return instance.toJSON();
   }
 
   async delete(id: string): Promise<Detail | null> {
-    const instance = await this.getPart(
-      id,
-      Models[this.part].scope(ModelScopes.DETAIL)
-    );
+    const instance = await this.getPart(id);
     if (!instance || instance.part !== this.part) return null;
 
     await instance.destroy();
@@ -394,6 +362,89 @@ abstract class BaseDetailPartService<
     await instance.save();
 
     return instance;
+  }
+
+  protected async buildPart(
+    options: Options,
+    ...include: Includeable[]
+  ): Promise<PartInformation | string> {
+    const part = Part.Schema.partial().parse(options);
+    const instance = await super.buildPart(
+      { ...part, part: this.part },
+      Models[this.part].scope(ModelScopes.DETAIL),
+      ...include
+    );
+
+    if (typeof instance === "string") return instance;
+
+    await this.setDetailModel(instance, options, this.part);
+
+    return instance;
+  }
+
+  protected async getPart(
+    id: string,
+    ...include: Includeable[]
+  ): Promise<PartInformation | null> {
+    const instance = await super.getPart(
+      id,
+      Models[this.part].scope(ModelScopes.DETAIL),
+      ...include
+    );
+
+    if (!instance || instance.part !== this.part) return null;
+
+    return instance;
+  }
+
+  protected async setPart(
+    options: Options,
+    id: string,
+    ...include: Includeable[]
+  ): Promise<PartInformation | string | null> {
+    const part = Part.Schema.partial().parse(options);
+    const instance = await super.setPart(
+      { ...part, part: this.part },
+      id,
+      Models[this.part].scope(ModelScopes.DETAIL),
+      ...include
+    );
+
+    if (!instance || typeof instance === "string") return instance;
+
+    await this.setDetailModel(instance, options, this.part);
+
+    return instance;
+  }
+
+  /**
+   * Extract the options of {@link part} from the {@link data} and set it
+   * to the corresponding {@link part} of the {@link instance}.
+   * If the options is null, destroy the part instance.
+   * The options will only destroy the detail instance in the database
+   * but not save the instance if it gets created or updated.
+   * @param instance The instance to set the detail to.
+   * @param data The data to extract the detail from.
+   * @param part The part to set the detail to.
+   */
+  protected async setDetailModel(
+    instance: PartInformation,
+    data: Options,
+    part: Products
+  ): Promise<void> {
+    const options = data[part];
+
+    if (options === null && instance[part]) {
+      await instance[part].destroy();
+      instance[part] = null as any;
+    }
+
+    if (options) {
+      if (!instance[part]) {
+        instance[part] = Models[part].build({ id: instance.id }) as never;
+      }
+      instance[part].set(options);
+    }
   }
 }
 

@@ -12,6 +12,7 @@ import { FormFactor } from "@/utils/interface/utils";
 import { DetailInfoOptions } from "@/utils/interface";
 import { Products } from "@/utils/Enum";
 import { BaseDetailPartService } from "../interface/service.interface";
+import { PartInformation } from "@/models/parts/tables/Part";
 
 type Detail = Part.BasicInfo & {
   [Products.CASE]: Case.Info;
@@ -40,8 +41,11 @@ class CaseService extends BaseDetailPartService<Detail> {
         ...data
       } = data);
 
-    const partInstance = await super.create({ ...part, [this.part]: data });
+    const partInstance = await this.buildPart({ ...part, [this.part]: data });
     if (typeof partInstance === "string") return partInstance;
+
+    await partInstance.save();
+    await partInstance[this.part]?.save();
 
     await Promise.all([
       this.setMainboardSupport(partInstance.id, mainboard_support),
@@ -73,8 +77,11 @@ class CaseService extends BaseDetailPartService<Detail> {
         ...data
       } = data);
 
-    const partInstance = await super.set({ ...part, [this.part]: data }, id);
+    const partInstance = await this.setPart({ ...part, [this.part]: data }, id);
     if (!partInstance || typeof partInstance === "string") return partInstance;
+
+    await partInstance.save();
+    await partInstance[this.part]?.save();
 
     await Promise.all([
       this.setMainboardSupport(partInstance.id, mainboard_support),

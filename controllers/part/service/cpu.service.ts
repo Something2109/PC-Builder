@@ -85,58 +85,53 @@ class CPUService extends BaseDetailPartService<Detail> {
     return result;
   }
 
-  async create({ gpu, ...part }: Options): Promise<Detail | string> {
-    const instance = await this.create(part);
+  async create(options: Options): Promise<Detail | string> {
+    const instance = await this.buildPart(options);
     if (!instance || typeof instance === "string") return instance;
 
-    const id = instance.id;
+    await this.setDetailModel(instance, options, Products.GPU);
 
-    if (gpu) {
-      await this.setToModel(GPUModel, gpu, id);
-    }
+    await instance.save();
+    await Promise.all([
+      instance[this.part].save(),
+      instance[Products.GPU].save(),
+    ]);
 
-    return (await this.get(instance.id)) as Detail;
+    return instance.toJSON();
   }
 
   async get(id: string): Promise<Detail | null> {
-    const instance = await this.getPart(
-      id,
-      CPUModel.scope(ModelScopes.DETAIL),
-      GPUModel.scope(ModelScopes.DETAIL)
-    );
+    const instance = await this.getPart(id, GPUModel.scope(ModelScopes.DETAIL));
 
     return instance?.toJSON() ?? null;
   }
 
-  async set(
-    { gpu, ...part }: Options,
-    id: string
-  ): Promise<Detail | string | null> {
-    const instance = await super.set({ ...part, part: this.part }, id);
+  async set(options: Options, id: string): Promise<Detail | string | null> {
+    const instance = await this.setPart(
+      options,
+      id,
+      GPUModel.scope(ModelScopes.DETAIL)
+    );
     if (!instance || typeof instance === "string") return instance;
 
-    id = instance.id;
+    await this.setDetailModel(instance, options, Products.GPU);
 
-    if (gpu) {
-      await this.setToModel(GPUModel, gpu, id);
-    } else if (gpu === null) {
-      await GPUModel.destroy({ where: { id } });
-    }
+    await instance.save();
+    await Promise.all([
+      instance[this.part].save(),
+      instance[Products.GPU].save(),
+    ]);
 
-    return (await this.get(instance.id)) as Detail;
+    return instance.toJSON();
   }
 
   async delete(id: string): Promise<Detail | null> {
-    const instance = await this.getPart(
-      id,
-      CPUModel.scope(ModelScopes.DETAIL),
-      GPUModel.scope(ModelScopes.DETAIL)
-    );
+    const instance = await this.getPart(id, GPUModel.scope(ModelScopes.DETAIL));
     if (!instance || typeof instance === "string") return instance;
 
     instance.destroy();
 
-    return instance?.toJSON() ?? null;
+    return instance.toJSON();
   }
 }
 
