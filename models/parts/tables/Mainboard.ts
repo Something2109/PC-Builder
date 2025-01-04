@@ -92,39 +92,36 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    * Declare the pcie object as a virtual column
    * extracting the {@link pcie_data} assossiated with
    * {@link MainboardPCIeModel} from the model
-   * and converting it to a {@link Mainboard.PCIeType} object.
+   * and converting it to a {@link Mainboard.PCIe} object.
    */
 
   @HasMany(() => MainboardPCIeModel)
   declare pcie_data: MainboardPCIeModel[];
 
   @Column(DataType.VIRTUAL)
-  get pcies(): Mainboard.PCIeType | null {
+  get pcies(): Mainboard.PCIe | null {
     const pcieData = this.getDataValue("pcie_data") as MainboardPCIeModel[];
 
     if (!pcieData) return null;
 
-    return pcieData.reduce(
-      (acc: Mainboard.PCIeType, pcie: MainboardPCIeModel) => {
-        const controller = pcie.controller;
-        if (!acc[controller]) acc[controller] = {};
+    return pcieData.reduce((acc: Mainboard.PCIe, pcie: MainboardPCIeModel) => {
+      const controller = pcie.controller;
+      if (!acc[controller]) acc[controller] = {};
 
-        acc[controller][PCIeExchanger.toString(pcie)] = pcie.count;
-        return acc;
-      },
-      {}
-    );
+      acc[controller][PCIeExchanger.toString(pcie)] = pcie.count;
+      return acc;
+    }, {});
   }
 
   /**
    * Declare the power connector object as a virtual column
    * extracting the data from the {@link main_power_connectors},
    * {@link cpu_power_connectors}, {@link pcie_power_connectors} columns
-   * and converting it to a {@link Mainboard.PowerConnectorType} object.
+   * and converting it to a {@link Mainboard.PowerConnector} object.
    */
 
   @Column(DataType.VIRTUAL)
-  get power_connectors(): Mainboard.PowerConnectorType | null {
+  get power_connectors(): Mainboard.PowerConnector | null {
     const main = this.getDataValue("main_power_connectors");
     const cpu = this.getDataValue("cpu_power_connectors");
     const pcie = this.getDataValue("pcie_power_connectors");
@@ -132,7 +129,7 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
     return PowerConnectorExchanger.toObject({ main, cpu, pcie });
   }
 
-  set power_connectors(value: Mainboard.PowerConnectorType | null) {
+  set power_connectors(value: Mainboard.PowerConnector | null) {
     const { main, cpu, pcie } = PowerConnectorExchanger.toNumber(value);
 
     this.setDataValue("main_power_connectors", main);
@@ -169,14 +166,14 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    * Declare the storage connector object as a virtual column
    * extracting the {@link storage_connector_data} assossiated with
    * {@link MainboardStorageConnectorModel} from the model
-   * and converting it to a {@link Mainboard.StorageConnectorType} object.
+   * and converting it to a {@link Mainboard.StorageConnector} object.
    */
 
   @HasMany(() => MainboardStorageConnectorModel)
   declare storage_connector_data: MainboardStorageConnectorModel[] | null;
 
   @Column(DataType.VIRTUAL)
-  get storage_connectors(): Mainboard.StorageConnectorType | null {
+  get storage_connectors(): Mainboard.StorageConnector | null {
     const storageData = this.getDataValue(
       "storage_connector_data"
     ) as MainboardStorageConnectorModel[];
@@ -185,7 +182,7 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
 
     return storageData.reduce(
       (
-        acc: Mainboard.StorageConnectorType,
+        acc: Mainboard.StorageConnector,
         storage: MainboardStorageConnectorModel
       ) => {
         acc[storage.type] = storage.count;
@@ -199,21 +196,21 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    * Declare the usb connector object as a virtual column
    * extracting the {@link usb_data} assossiated with
    * {@link MainboardUSBConnectorModel} from the model
-   * and converting it to a {@link Mainboard.USBConnectorType} object.
+   * and converting it to a {@link Mainboard.USBConnector} object.
    */
 
   @HasMany(() => MainboardUSBConnectorModel)
   declare usb_data: MainboardUSBConnectorModel[] | null;
 
   @Column(DataType.VIRTUAL)
-  get usb_connectors(): Mainboard.USBConnectorType | null {
+  get usb_connectors(): Mainboard.USBConnector | null {
     const usbData = this.getDataValue(
       "usb_data"
     ) as MainboardUSBConnectorModel[];
     if (!usbData) return null;
 
     return usbData.reduce(
-      (acc: Mainboard.USBConnectorType, usb: MainboardUSBConnectorModel) => {
+      (acc: Mainboard.USBConnector, usb: MainboardUSBConnectorModel) => {
         const usbStr = USBExchanger.toString(usb);
         acc[usbStr] = usb.count;
         return acc;
@@ -311,7 +308,7 @@ class MainboardStorageConnectorModel extends Model {
       ],
     },
   })
-  declare type: keyof Mainboard.StorageConnectorType;
+  declare type: keyof Mainboard.StorageConnector;
 
   @Column(DataType.TINYINT)
   declare count: number;

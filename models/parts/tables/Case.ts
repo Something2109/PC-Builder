@@ -205,13 +205,13 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   declare max_psu_length: number | null;
 
   @Column(DataType.TEXT)
-  get front_panel_ports(): Case.FrontPanelPortType | null {
+  get front_panel_ports(): Case.FrontPanelPort | null {
     const data = this.getDataValue("front_panel_ports");
 
     return data ? JSON.parse(data) : null;
   }
 
-  set front_panel_ports(value: Case.FrontPanelPortType | null) {
+  set front_panel_ports(value: Case.FrontPanelPort | null) {
     this.setDataValue(
       "front_panel_ports",
       value ? JSON.stringify(value) : null
@@ -307,7 +307,7 @@ class CaseHardDriveSupportModel extends Model {
     type: DataType.STRING,
     validate: { isIn: [Case.HardDriveSize.options] },
   })
-  declare form_factor: Case.HardDriveSizeType;
+  declare form_factor: Case.HardDriveSize;
 
   @Column(DataType.TINYINT)
   declare count: number;
