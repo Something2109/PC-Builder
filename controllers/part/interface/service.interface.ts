@@ -231,6 +231,14 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
 
     return instance;
   }
+
+  /**
+   * Save the part instance to the database.
+   * @param instance The instance to save.
+   */
+  protected async savePart(instance: PartInformation): Promise<void> {
+    await instance.save();
+  }
 }
 
 /**
@@ -307,8 +315,7 @@ abstract class BaseDetailPartService<
     const instance = await this.buildPart(options);
     if (typeof instance === "string") return instance;
 
-    await instance.save();
-    await instance[this.part]?.save();
+    await this.savePart(instance);
 
     return instance.toJSON();
   }
@@ -323,15 +330,14 @@ abstract class BaseDetailPartService<
     const instance = await this.setPart(options, id);
     if (!instance || typeof instance === "string") return instance;
 
-    await instance.save();
-    await instance[this.part]?.save();
+    await this.savePart(instance);
 
     return instance.toJSON();
   }
 
   async delete(id: string): Promise<Detail | null> {
     const instance = await this.getPart(id);
-    if (!instance || instance.part !== this.part) return null;
+    if (!instance) return null;
 
     await instance.destroy();
 
@@ -417,6 +423,11 @@ abstract class BaseDetailPartService<
     return instance;
   }
 
+  protected async savePart(instance: PartInformation): Promise<void> {
+    await instance.save();
+    await instance[this.part]?.save();
+  }
+
   /**
    * Extract the options of {@link part} from the {@link data} and set it
    * to the corresponding {@link part} of the {@link instance}.
@@ -437,11 +448,15 @@ abstract class BaseDetailPartService<
     if (options === null && instance[part]) {
       await instance[part].destroy();
       instance[part] = null as any;
+      instance.dataValues[part] = null;
     }
 
     if (options) {
       if (!instance[part]) {
-        instance[part] = Models[part].build({ id: instance.id }) as never;
+        instance[part] = Models[part].build({
+          id: instance.id,
+        }) as never;
+        instance.dataValues[part] = instance[part];
       }
       instance[part].set(options);
     }

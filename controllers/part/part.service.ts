@@ -69,10 +69,9 @@ class PartService extends BasePartService {
 
   async create(data: Options): Promise<Detail | string> {
     const instance = await this.buildPart(data);
-
     if (typeof instance === "string") return instance;
 
-    await instance.save();
+    await this.savePart(instance);
 
     return (await this.get(instance.id)) as Detail;
   }
@@ -80,24 +79,20 @@ class PartService extends BasePartService {
   async get(id: string): Promise<Detail | null> {
     const save = await this.getPart(id);
 
-    if (!save) return null;
-
-    return save.toJSON();
+    return save?.toJSON() ?? null;
   }
 
   async set(data: Options, id: string): Promise<Detail | string | null> {
     const instance = await this.setPart(data, id);
-
     if (!instance || typeof instance === "string") return instance;
 
-    await instance.save();
+    await this.savePart(instance);
 
-    return await this.get(instance.id);
+    return instance.toJSON();
   }
 
   async delete(id: string) {
     const instance = await this.getPart(id);
-
     if (!instance) return null;
 
     await instance.destroy();
