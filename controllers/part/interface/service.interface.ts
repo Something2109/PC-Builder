@@ -268,6 +268,26 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
   }
 }
 
+const ModelMapping: {
+  [key in Products]: Products[];
+} = {
+  [Products.CPU]: [Products.CPU, Products.GPU],
+  [Products.GPU]: [Products.GPU],
+  [Products.GRAPHIC_CARD]: [Products.GRAPHIC_CARD],
+  [Products.MAIN]: [Products.MAIN],
+  [Products.RAM]: [Products.RAM],
+  [Products.SSD]: [Products.SSD],
+  [Products.HDD]: [Products.HDD],
+  [Products.PSU]: [Products.PSU],
+  [Products.CASE]: [Products.CASE],
+  [Products.COOLER]: [Products.COOLER],
+  [Products.AIO]: [Products.AIO],
+  [Products.FAN]: [Products.FAN],
+  [Products.CPU_BLOCK]: [Products.CPU_BLOCK],
+  [Products.PUMP]: [Products.PUMP],
+  [Products.RADIATOR]: [Products.RADIATOR],
+};
+
 /**
  * A base service class for handling parts data with detail information.
  * The service automatically handles the part type and the detail type
@@ -286,25 +306,27 @@ abstract class BaseDetailPartService<
   async list(
     options?: Filter & PageOptions & SearchOptions
   ): Promise<ListResult<Detail>> {
-    const { part, [this.part]: filter } = options ?? {};
+    const { part, ...rest } = options ?? {};
 
     const FilteredPart = PartInformation.scope([
       ModelScopes.SUMMARY,
       { method: [ModelScopes.FILTER, { ...part, part: [this.part] }] },
     ]);
 
-    const include: Includeable = {
-      model: Models[this.part].scope([
+    const include: Includeable[] = ModelMapping[this.part].map((product) => ({
+      model: Models[product].scope([
         ModelScopes.SUMMARY,
-        { method: [ModelScopes.FILTER, filter] },
+        {
+          method: [ModelScopes.FILTER, rest[product]],
+        },
       ]),
-      required: false,
-    };
+      required: Boolean(rest[product]),
+    }));
 
     const { rows, count } = await this.listFromPart(
       FilteredPart,
-      options ?? {},
-      include
+      rest,
+      ...include
     );
 
     return { total: count, list: rows.map((value) => value.toJSON()) };
@@ -371,13 +393,19 @@ abstract class BaseDetailPartService<
     const part = Part.Schema.partial().parse(options);
     const instance = await super.buildPart(
       { ...part, part: this.part },
-      Models[this.part].scope(ModelScopes.DETAIL),
+      ...ModelMapping[this.part].map((product) =>
+        Models[product].scope(ModelScopes.DETAIL)
+      ),
       ...include
     );
 
     if (typeof instance === "string") return instance;
 
-    await this.setDetailModel(instance, options, this.part);
+    await Promise.all(
+      ModelMapping[this.part].map((product) =>
+        this.setDetailModel(instance, options, product)
+      )
+    );
 
     return instance;
   }
@@ -388,7 +416,9 @@ abstract class BaseDetailPartService<
   ): Promise<PartInformation | null> {
     const instance = await super.getPart(
       id,
-      Models[this.part].scope(ModelScopes.DETAIL),
+      ...ModelMapping[this.part].map((product) =>
+        Models[product].scope(ModelScopes.DETAIL)
+      ),
       ...include
     );
 
@@ -406,20 +436,29 @@ abstract class BaseDetailPartService<
     const instance = await super.setPart(
       { ...part, part: this.part },
       id,
-      Models[this.part].scope(ModelScopes.DETAIL),
+      ...ModelMapping[this.part].map((product) =>
+        Models[product].scope(ModelScopes.DETAIL)
+      ),
       ...include
     );
 
     if (!instance || typeof instance === "string") return instance;
 
-    await this.setDetailModel(instance, options, this.part);
+    await Promise.all(
+      ModelMapping[this.part].map((product) =>
+        this.setDetailModel(instance, options, product)
+      )
+    );
 
     return instance;
   }
 
   protected async savePart(instance: PartInformation): Promise<void> {
     await instance.save();
-    await instance[this.part]?.save();
+
+    await Promise.all(
+      ModelMapping[this.part].map((product) => instance[product]?.save())
+    );
   }
 
   /**
