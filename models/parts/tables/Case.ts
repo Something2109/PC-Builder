@@ -100,6 +100,7 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
     const data = this.getDataValue(
       "mainboard_support_data"
     ) as CaseMainboardSupportModel[];
+    this.setDataValue("mainboard_support_data", undefined);
 
     if (!data) return null;
 
@@ -114,13 +115,14 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
    */
 
   @HasMany(() => CaseRadiatorSupportModel)
-  declare radiator_support_data: CaseRadiatorSupportModel[] | null;
+  declare radiator_support_data: CaseRadiatorSupportModel[];
 
   @Column(DataType.VIRTUAL)
   get radiator_support(): Case.RadiatorSupport | null {
     const data = this.getDataValue(
       "radiator_support_data"
     ) as CaseRadiatorSupportModel[];
+    this.setDataValue("radiator_support_data", undefined);
 
     if (!data) return null;
 
@@ -140,11 +142,12 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
    */
 
   @HasMany(() => CaseFanSupportModel)
-  declare fan_support_data: CaseFanSupportModel[] | null;
+  declare fan_support_data: CaseFanSupportModel[];
 
   @Column(DataType.VIRTUAL)
   get fan_support(): Case.FanSupport | null {
     const data = this.getDataValue("fan_support_data") as CaseFanSupportModel[];
+    this.setDataValue("fan_support_data", undefined);
 
     if (!data) return null;
 
@@ -164,13 +167,14 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
    */
 
   @HasMany(() => CaseHardDriveSupportModel)
-  declare hard_drive_support_data: CaseHardDriveSupportModel[] | null;
+  declare hard_drive_support_data: CaseHardDriveSupportModel[];
 
   @Column(DataType.VIRTUAL)
   get hard_drive_support(): Case.HardDriveSupport | null {
     const data = this.getDataValue(
       "hard_drive_support_data"
     ) as CaseHardDriveSupportModel[];
+    this.setDataValue("hard_drive_support_data", undefined);
 
     if (!data) return null;
 
@@ -190,11 +194,12 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
    */
 
   @HasMany(() => CasePSUSupportModel)
-  declare psu_support_data: CasePSUSupportModel[] | null;
+  declare psu_support_data: CasePSUSupportModel[];
 
   @Column(DataType.VIRTUAL)
   get psu_support(): FormFactor.PSU[] | null {
     const data = this.getDataValue("psu_support_data") as CasePSUSupportModel[];
+    this.setDataValue("psu_support_data", undefined);
 
     if (!data) return null;
 

@@ -101,6 +101,7 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   @Column(DataType.VIRTUAL)
   get pcies(): Mainboard.PCIe | null {
     const pcieData = this.getDataValue("pcie_data") as MainboardPCIeModel[];
+    this.setDataValue("pcie_data", undefined);
 
     if (!pcieData) return null;
 
@@ -170,13 +171,14 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    */
 
   @HasMany(() => MainboardStorageConnectorModel)
-  declare storage_connector_data: MainboardStorageConnectorModel[] | null;
+  declare storage_connector_data: MainboardStorageConnectorModel[];
 
   @Column(DataType.VIRTUAL)
   get storage_connectors(): Mainboard.StorageConnector | null {
     const storageData = this.getDataValue(
       "storage_connector_data"
     ) as MainboardStorageConnectorModel[];
+    this.setDataValue("storage_connector_data", undefined);
 
     if (!storageData) return null;
 
@@ -200,7 +202,7 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    */
 
   @HasMany(() => MainboardUSBConnectorModel)
-  declare usb_data: MainboardUSBConnectorModel[] | null;
+  declare usb_data: MainboardUSBConnectorModel[];
 
   @Column(DataType.VIRTUAL)
   get usb_connectors(): Mainboard.USBConnector | null {
@@ -208,6 +210,7 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
       "usb_data"
     ) as MainboardUSBConnectorModel[];
     if (!usbData) return null;
+    this.setDataValue("usb_data", undefined);
 
     return usbData.reduce(
       (acc: Mainboard.USBConnector, usb: MainboardUSBConnectorModel) => {
