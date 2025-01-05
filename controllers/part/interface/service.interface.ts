@@ -60,14 +60,27 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @param data The data to create the part with.
    * @returns The created part or the part's id.
    */
-  abstract create(data: Options): Promise<Detail | string>;
+  async create(data: Options): Promise<Detail | string> {
+    {
+      const instance = await this.buildPart(data);
+      if (typeof instance === "string") return instance;
+
+      await this.savePart(instance);
+
+      return instance.toJSON();
+    }
+  }
 
   /**
    * Retrieve the part with the given ID.
    * @param id The ID of the part to retrieve.
    * @returns The part with the given ID, or `null` if the part does not exist.
    */
-  abstract get(id: string): Promise<Detail | null>;
+  async get(id: string): Promise<Detail | null> {
+    const instance = await this.getPart(id);
+
+    return instance?.toJSON() ?? null;
+  }
 
   /**
    * Create a new part with the given {@link Options} data.
@@ -78,14 +91,28 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @param id The ID of the part to update.
    * @returns The updated part or the part's id or null.
    */
-  abstract set(data: Options, id?: string): Promise<Detail | string | null>;
+  async set(data: Options, id: string): Promise<Detail | string | null> {
+    const instance = await this.setPart(data, id);
+    if (!instance || typeof instance === "string") return instance;
+
+    await this.savePart(instance);
+
+    return instance.toJSON();
+  }
 
   /**
    * Delete the part with the given ID.
    * @param id The ID of the part to delete.
    * @returns The deleted part, or `null` if the part does not exist.
    */
-  abstract delete(id: string): Promise<Detail | null>;
+  async delete(id: string): Promise<Detail | null> {
+    const instance = await this.getPart(id);
+    if (!instance) return null;
+
+    await instance.destroy();
+
+    return instance.toJSON();
+  }
 
   /**
    * List the parts from the given static {@link Model} instance of {@link PartInformation}
@@ -309,39 +336,6 @@ abstract class BaseDetailPartService<
     };
 
     return result;
-  }
-
-  async create(options: Options): Promise<Detail | string> {
-    const instance = await this.buildPart(options);
-    if (typeof instance === "string") return instance;
-
-    await this.savePart(instance);
-
-    return instance.toJSON();
-  }
-
-  async get(id: string): Promise<Detail | null> {
-    const instance = await this.getPart(id);
-
-    return instance?.toJSON() ?? null;
-  }
-
-  async set(options: Options, id: string): Promise<Detail | string | null> {
-    const instance = await this.setPart(options, id);
-    if (!instance || typeof instance === "string") return instance;
-
-    await this.savePart(instance);
-
-    return instance.toJSON();
-  }
-
-  async delete(id: string): Promise<Detail | null> {
-    const instance = await this.getPart(id);
-    if (!instance) return null;
-
-    await instance.destroy();
-
-    return instance.toJSON();
   }
 
   /**
