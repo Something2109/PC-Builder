@@ -35,20 +35,11 @@ import { WhereOptions } from "sequelize";
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
     include: [
-      { model: CaseMainboardSupportModel, attributes: ["form_factor"] },
-      {
-        model: CaseFanSupportModel,
-        attributes: ["case_side", "form_factor", "count"],
-      },
-      {
-        model: CaseRadiatorSupportModel,
-        attributes: ["case_side", "form_factor"],
-      },
-      {
-        model: CaseHardDriveSupportModel,
-        attributes: ["place", "form_factor", "count"],
-      },
-      { model: CasePSUSupportModel, attributes: ["form_factor"] },
+      CaseMainboardSupportModel,
+      CaseFanSupportModel,
+      CaseRadiatorSupportModel,
+      CaseHardDriveSupportModel,
+      CasePSUSupportModel,
     ],
   },
 }))

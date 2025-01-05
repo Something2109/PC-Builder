@@ -36,15 +36,9 @@ import {
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
     include: [
-      {
-        model: MainboardPCIeModel,
-        attributes: ["controller", "version", "width", "count"],
-      },
-      { model: MainboardStorageConnectorModel, attributes: ["type", "count"] },
-      {
-        model: MainboardUSBConnectorModel,
-        attributes: ["generation", "connector", "count"],
-      },
+      MainboardPCIeModel,
+      MainboardStorageConnectorModel,
+      MainboardUSBConnectorModel,
     ],
   },
 }))

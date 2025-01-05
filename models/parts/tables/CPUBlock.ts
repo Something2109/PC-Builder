@@ -26,7 +26,7 @@ import { InternalConnectors } from "@/utils/interface/utils";
   }),
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
-    include: { model: CPUBlockSocketModel, attributes: ["socket"] },
+    include: CPUBlockSocketModel,
   },
 }))
 @Table({ modelName: Tables.CPU_BLOCK })
