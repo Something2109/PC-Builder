@@ -137,6 +137,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
       limit,
       offset: (page - 1) * limit,
       include,
+      distinct: true, // prevent multiple id row count if the query returns more than 1 row for an id.
     });
   }
 
