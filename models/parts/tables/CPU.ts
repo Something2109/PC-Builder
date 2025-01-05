@@ -64,10 +64,10 @@ class CPUModel extends Model implements PartDetailTable<CPU.Info> {
   declare turbo_frequency: number | null;
 
   @Column(DataType.TEXT)
-  get cores(): CPU.Core | null {
+  get cores(): CPU.Core | undefined {
     const data = this.getDataValue("cores");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set cores(value: CPU.Core | null) {

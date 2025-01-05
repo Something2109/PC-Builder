@@ -93,11 +93,11 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   declare pcie_data: MainboardPCIeModel[];
 
   @Column(DataType.VIRTUAL)
-  get pcies(): Mainboard.PCIe | null {
+  get pcies(): Mainboard.PCIe | undefined {
     const pcieData = this.getDataValue("pcie_data") as MainboardPCIeModel[];
     this.setDataValue("pcie_data", undefined);
 
-    if (!pcieData) return null;
+    if (!pcieData) return undefined;
 
     return pcieData.reduce((acc: Mainboard.PCIe, pcie: MainboardPCIeModel) => {
       const controller = pcie.controller;
@@ -116,12 +116,12 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    */
 
   @Column(DataType.VIRTUAL)
-  get power_connectors(): Mainboard.PowerConnector | null {
+  get power_connectors(): Mainboard.PowerConnector | undefined {
     const main = this.getDataValue("main_power_connectors");
     const cpu = this.getDataValue("cpu_power_connectors");
     const pcie = this.getDataValue("pcie_power_connectors");
 
-    return PowerConnectorExchanger.toObject({ main, cpu, pcie });
+    return PowerConnectorExchanger.toObject({ main, cpu, pcie }) ?? undefined;
   }
 
   set power_connectors(value: Mainboard.PowerConnector | null) {
@@ -147,10 +147,10 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    */
 
   @Column(DataType.TEXT)
-  get fan_connectors(): Record<string, number> | null {
+  get fan_connectors(): Record<string, number> | undefined {
     const data = this.getDataValue("fan_connectors");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set fan_connectors(value: Record<string, number> | null) {
@@ -168,13 +168,13 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   declare storage_connector_data: MainboardStorageConnectorModel[];
 
   @Column(DataType.VIRTUAL)
-  get storage_connectors(): Mainboard.StorageConnector | null {
+  get storage_connectors(): Mainboard.StorageConnector | undefined {
     const storageData = this.getDataValue(
       "storage_connector_data"
     ) as MainboardStorageConnectorModel[];
     this.setDataValue("storage_connector_data", undefined);
 
-    if (!storageData) return null;
+    if (!storageData) return undefined;
 
     return storageData.reduce(
       (
@@ -199,11 +199,11 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   declare usb_data: MainboardUSBConnectorModel[];
 
   @Column(DataType.VIRTUAL)
-  get usb_connectors(): Mainboard.USBConnector | null {
+  get usb_connectors(): Mainboard.USBConnector | undefined {
     const usbData = this.getDataValue(
       "usb_data"
     ) as MainboardUSBConnectorModel[];
-    if (!usbData) return null;
+    if (!usbData) return undefined;
     this.setDataValue("usb_data", undefined);
 
     return usbData.reduce(
@@ -222,10 +222,10 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    */
 
   @Column(DataType.TEXT)
-  get miscelanous_connectors(): Record<string, number> | null {
+  get miscelanous_connectors(): Record<string, number> | undefined {
     const data = this.getDataValue("miscelanous_connectors");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set miscelanous_connectors(value: Record<string, number> | null) {
@@ -241,10 +241,10 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    */
 
   @Column(DataType.TEXT)
-  get back_panel_ports(): {} | null {
+  get back_panel_ports(): {} | undefined {
     const data = this.getDataValue("back_panel_ports");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set back_panel_ports(value: {} | null) {

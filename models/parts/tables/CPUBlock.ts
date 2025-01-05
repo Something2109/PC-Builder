@@ -43,11 +43,13 @@ class CPUBlockModel extends Model implements PartDetailTable<CPUBlock.Info> {
   declare socket_data: CPUBlockSocketModel[];
 
   @Column(DataType.VIRTUAL)
-  get socket(): string[] {
-    const data = this.getDataValue("socket_data") as CPUBlockSocketModel[];
+  get socket(): string[] | undefined {
+    const data = this.getDataValue("socket_data");
     this.setDataValue("socket_data", undefined);
 
-    return data.map((value) => value.socket);
+    if (!data) return undefined;
+
+    return data.map((value: CPUBlockSocketModel) => value.socket);
   }
 
   @Column({

@@ -70,10 +70,10 @@ class GraphicCardModel
   declare minimum_psu: number | null;
 
   @Column(DataType.TINYINT)
-  get power_connector(): GraphicCard.PowerConnectorType | null {
+  get power_connector(): GraphicCard.PowerConnectorType | undefined {
     let pcie: number = this.getDataValue("power_connector");
 
-    return PowerConnectorExchanger.toObject({ pcie });
+    return PowerConnectorExchanger.toObject({ pcie }) ?? undefined;
   }
 
   set power_connector(value: GraphicCard.PowerConnectorType | null) {
@@ -83,10 +83,10 @@ class GraphicCardModel
   }
 
   @Column(DataType.TEXT)
-  get port(): GraphicCard.Port | null {
+  get port(): GraphicCard.Port | undefined {
     let data: string = this.getDataValue("port");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set port(value: GraphicCard.Port | null) {

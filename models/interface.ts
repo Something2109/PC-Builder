@@ -35,7 +35,7 @@ enum ModelScopes {
 }
 
 type PartDetailTable<T extends Object> = {
-  [key in keyof T]: T[key] | null;
+  [key in keyof T]: T[key] | null | undefined;
 };
 
 const PartDefaultScope = {
