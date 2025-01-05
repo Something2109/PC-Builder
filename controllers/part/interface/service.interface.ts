@@ -127,7 +127,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
     options: PageOptions & SearchOptions,
     ...include: Includeable[]
   ): Promise<{ rows: PartInformation[]; count: number }> {
-    const { page = 0, limit = 50 } = options ?? {};
+    const { page = 1, limit = 50 } = options ?? {};
     const where = options?.q
       ? { name: { [Op.like]: `%${options.q}%` } }
       : undefined;
@@ -135,7 +135,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
     return await Model.findAndCountAll({
       where,
       limit,
-      offset: page * limit,
+      offset: (page - 1) * limit,
       include,
     });
   }
