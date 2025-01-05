@@ -85,53 +85,48 @@ class CPUService extends BaseDetailPartService<Detail> {
     return result;
   }
 
-  async create(options: Options): Promise<Detail | string> {
-    const instance = await this.buildPart(options);
-    if (!instance || typeof instance === "string") return instance;
+  protected async buildPart(
+    options: Options
+  ): Promise<PartInformation | string> {
+    const instance = await super.buildPart(
+      options,
+      GPUModel.scope(ModelScopes.DETAIL)
+    );
+
+    if (typeof instance === "string") return instance;
 
     await this.setDetailModel(instance, options, Products.GPU);
 
-    await instance.save();
-    await Promise.all([
-      instance[this.part].save(),
-      instance[Products.GPU].save(),
-    ]);
-
-    return instance.toJSON();
+    return instance;
   }
 
-  async get(id: string): Promise<Detail | null> {
-    const instance = await this.getPart(id, GPUModel.scope(ModelScopes.DETAIL));
-
-    return instance?.toJSON() ?? null;
+  protected async getPart(id: string): Promise<PartInformation | null> {
+    return super.getPart(id, GPUModel.scope(ModelScopes.DETAIL));
   }
 
-  async set(options: Options, id: string): Promise<Detail | string | null> {
-    const instance = await this.setPart(
+  protected async setPart(
+    options: Options,
+    id: string
+  ): Promise<PartInformation | string | null> {
+    const instance = await super.setPart(
       options,
       id,
       GPUModel.scope(ModelScopes.DETAIL)
     );
+
     if (!instance || typeof instance === "string") return instance;
 
     await this.setDetailModel(instance, options, Products.GPU);
 
-    await instance.save();
-    await Promise.all([
-      instance[this.part].save(),
-      instance[Products.GPU].save(),
-    ]);
-
-    return instance.toJSON();
+    return instance;
   }
 
-  async delete(id: string): Promise<Detail | null> {
-    const instance = await this.getPart(id, GPUModel.scope(ModelScopes.DETAIL));
-    if (!instance || typeof instance === "string") return instance;
-
-    instance.destroy();
-
-    return instance.toJSON();
+  protected async savePart(instance: PartInformation): Promise<void> {
+    await instance.save();
+    await Promise.all([
+      instance[this.part]?.save(),
+      instance[Products.GPU]?.save(),
+    ]);
   }
 }
 

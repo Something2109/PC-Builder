@@ -22,10 +22,10 @@ type Detail = Part.BasicInfo & {
 class CaseService extends BaseDetailPartService<Detail> {
   readonly part = Products.CASE;
 
-  async create({
+  async buildPart({
     [this.part]: data,
     ...part
-  }: DetailInfoOptions): Promise<string | Detail> {
+  }: DetailInfoOptions): Promise<PartInformation | string> {
     let mainboard_support: FormFactor.Mainboard[] | undefined,
       radiator_support: Case.RadiatorSupport | undefined,
       fan_support: Case.FanSupport | undefined,
@@ -41,27 +41,38 @@ class CaseService extends BaseDetailPartService<Detail> {
         ...data
       } = data);
 
-    const partInstance = await this.buildPart({ ...part, [this.part]: data });
-    if (typeof partInstance === "string") return partInstance;
+    const instance = await super.buildPart({ ...part, [this.part]: data });
+    if (typeof instance === "string") return instance;
 
-    await partInstance.save();
-    await partInstance[this.part]?.save();
+    this.setMainboardSupport(instance, mainboard_support);
+    this.setRadiatorSupport(instance, radiator_support);
+    this.setFanSupport(instance, fan_support);
+    this.setHardDriveSupport(instance, hard_drive_support);
+    this.setPSUSupport(instance, psu_support);
 
-    await Promise.all([
-      this.setMainboardSupport(partInstance.id, mainboard_support),
-      this.setRadiatorSupport(partInstance.id, radiator_support),
-      this.setFanSupport(partInstance.id, fan_support),
-      this.setHardDriveSupport(partInstance.id, hard_drive_support),
-      this.setPSUSupport(partInstance.id, psu_support),
-    ]);
-
-    return (await this.get(partInstance.id)) as Detail;
+    return instance;
   }
 
-  async set(
+  protected async savePart(instance: PartInformation): Promise<void> {
+    await super.savePart(instance);
+
+    const mainboard = instance[this.part];
+
+    if (mainboard) {
+      await Promise.all([
+        ...mainboard.mainboard_support_data?.map((support) => support.save()),
+        ...mainboard.radiator_support_data?.map((support) => support.save()),
+        ...mainboard.fan_support_data?.map((support) => support.save()),
+        ...mainboard.hard_drive_support_data?.map((support) => support.save()),
+        ...mainboard.psu_support_data?.map((support) => support.save()),
+      ]);
+    }
+  }
+
+  async setPart(
     { [this.part]: data, ...part }: DetailInfoOptions,
     id: string
-  ): Promise<string | Detail | null> {
+  ): Promise<PartInformation | string | null> {
     let mainboard_support: FormFactor.Mainboard[] | undefined,
       radiator_support: Case.RadiatorSupport | undefined,
       fan_support: Case.FanSupport | undefined,
@@ -77,61 +88,82 @@ class CaseService extends BaseDetailPartService<Detail> {
         ...data
       } = data);
 
-    const partInstance = await this.setPart({ ...part, [this.part]: data }, id);
-    if (!partInstance || typeof partInstance === "string") return partInstance;
+    const instance = await super.setPart({ ...part, [this.part]: data }, id);
+    if (!instance || typeof instance === "string") return instance;
 
-    await partInstance.save();
-    await partInstance[this.part]?.save();
+    this.setMainboardSupport(instance, mainboard_support);
+    this.setRadiatorSupport(instance, radiator_support);
+    this.setFanSupport(instance, fan_support);
+    this.setHardDriveSupport(instance, hard_drive_support);
+    this.setPSUSupport(instance, psu_support);
 
-    await Promise.all([
-      this.setMainboardSupport(partInstance.id, mainboard_support),
-      this.setRadiatorSupport(partInstance.id, radiator_support),
-      this.setFanSupport(partInstance.id, fan_support),
-      this.setHardDriveSupport(partInstance.id, hard_drive_support),
-      this.setPSUSupport(partInstance.id, psu_support),
-    ]);
-
-    return (await this.get(id)) as Detail;
+    return instance;
   }
 
   private async setMainboardSupport(
-    id: string,
+    { [this.part]: instance, id }: PartInformation,
     mainboard_support?: FormFactor.Mainboard[]
   ) {
-    if (mainboard_support) {
-      await CaseMainboardSupportModel.destroy({ where: { id } });
+    if (instance && mainboard_support) {
+      await Promise.all([
+        instance.mainboard_support_data?.map((support) => support.destroy()),
+      ]);
 
-      await CaseMainboardSupportModel.bulkCreate(
+      const mainboard_support_data = CaseMainboardSupportModel.bulkBuild(
         mainboard_support.map((form_factor) => ({ id, form_factor }))
       );
+
+      instance.mainboard_support_data = mainboard_support_data;
+      instance.dataValues.mainboard_support_data = mainboard_support_data;
     }
   }
 
   private async setRadiatorSupport(
-    id: string,
+    { [this.part]: instance, id }: PartInformation,
     radiator_support?: Case.RadiatorSupport
   ) {
-    if (radiator_support) {
-      await CaseRadiatorSupportModel.destroy({ where: { id } });
+    if (instance && radiator_support) {
+      await Promise.all([
+        instance.radiator_support_data?.map((support) => support.destroy()),
+      ]);
 
-      const promises = Object.entries(radiator_support).map(
-        ([case_side, form_factors]) =>
-          CaseRadiatorSupportModel.bulkCreate(
-            form_factors.map((form_factor) => ({ id, case_side, form_factor }))
-          )
+      const radiator_support_data: CaseRadiatorSupportModel[] = [];
+
+      Object.entries(radiator_support).reduce(
+        (acc, [case_side, form_factors]) => {
+          acc.push(
+            ...CaseRadiatorSupportModel.bulkBuild(
+              form_factors.map((form_factor) => ({
+                id,
+                case_side,
+                form_factor,
+              }))
+            )
+          );
+          return acc;
+        },
+        radiator_support_data
       );
 
-      await Promise.all(promises);
+      instance.radiator_support_data = radiator_support_data;
+      instance.dataValues.radiator_support_data = radiator_support_data;
     }
   }
 
-  private async setFanSupport(id: string, fan_support?: Case.FanSupport) {
-    if (fan_support) {
-      await CaseFanSupportModel.destroy({ where: { id } });
+  private async setFanSupport(
+    { [this.part]: instance, id }: PartInformation,
+    fan_support?: Case.FanSupport
+  ) {
+    if (instance && fan_support) {
+      await Promise.all([
+        instance.fan_support_data?.map((support) => support.destroy()),
+      ]);
 
-      const promises = Object.entries(fan_support).map(
-        ([case_side, fan_size]) =>
-          CaseFanSupportModel.bulkCreate(
+      const fan_support_data: CaseFanSupportModel[] = [];
+
+      Object.entries(fan_support).reduce((acc, [case_side, fan_size]) => {
+        acc.push(
+          ...CaseFanSupportModel.bulkBuild(
             Object.entries(fan_size).map(([form_factor, count]) => ({
               id,
               case_side,
@@ -139,22 +171,29 @@ class CaseService extends BaseDetailPartService<Detail> {
               count,
             }))
           )
-      );
+        );
+        return acc;
+      }, fan_support_data);
 
-      await Promise.all(promises);
+      instance.fan_support_data = fan_support_data;
+      instance.dataValues.fan_support_data = fan_support_data;
     }
   }
 
   private async setHardDriveSupport(
-    id: string,
+    { [this.part]: instance, id }: PartInformation,
     hard_drive_support?: Case.HardDriveSupport
   ) {
-    if (hard_drive_support) {
-      await CaseHardDriveSupportModel.destroy({ where: { id } });
+    if (instance && hard_drive_support) {
+      await Promise.all([
+        instance.hard_drive_support_data?.map((support) => support.destroy()),
+      ]);
 
-      const promises = Object.entries(hard_drive_support).map(
-        ([place, drive_side]) =>
-          CaseHardDriveSupportModel.bulkCreate(
+      const hard_drive_support_data: CaseHardDriveSupportModel[] = [];
+
+      Object.entries(hard_drive_support).reduce((acc, [place, drive_side]) => {
+        acc.push(
+          ...CaseHardDriveSupportModel.bulkBuild(
             Object.entries(drive_side).map(([form_factor, count]) => ({
               id,
               place,
@@ -162,19 +201,30 @@ class CaseService extends BaseDetailPartService<Detail> {
               count,
             }))
           )
-      );
+        );
+        return acc;
+      }, hard_drive_support_data);
 
-      await Promise.all(promises);
+      instance.hard_drive_support_data = hard_drive_support_data;
+      instance.dataValues.hard_drive_support_data = hard_drive_support_data;
     }
   }
 
-  private async setPSUSupport(id: string, psu_support?: FormFactor.PSU[]) {
-    if (psu_support) {
-      await CasePSUSupportModel.destroy({ where: { id } });
+  private async setPSUSupport(
+    { [this.part]: instance, id }: PartInformation,
+    psu_support?: FormFactor.PSU[]
+  ) {
+    if (instance && psu_support) {
+      await Promise.all([
+        instance.psu_support_data?.map((support) => support.destroy()),
+      ]);
 
-      await CasePSUSupportModel.bulkCreate(
+      const psu_support_data = CasePSUSupportModel.bulkBuild(
         psu_support.map((form_factor) => ({ id, form_factor }))
       );
+
+      instance.psu_support_data = psu_support_data;
+      instance.dataValues.psu_support_data = psu_support_data;
     }
   }
 }
