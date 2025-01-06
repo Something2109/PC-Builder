@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/utils/Button";
-import { SectionType } from "@/models/articles/article";
+import { SectionType } from "@/utils/interface/article/article";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { TextArea } from "@/components/utils/Input";
 import {

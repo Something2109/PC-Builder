@@ -1,6 +1,6 @@
 "use client";
 
-import { ListType } from "@/models/articles/article";
+import { ListType } from "@/utils/interface/article/article";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { Button } from "@/components/utils/Button";
 import { TextArea } from "@/components/utils/Input";

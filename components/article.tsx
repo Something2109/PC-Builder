@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArticleType } from "@/models/articles/article";
+import { ArticleType } from "@/utils/interface/article/article";
 import { Paragraph } from "@/components/articles/Paragraph";
 import { TextArea } from "@/components/utils/Input";
 import {

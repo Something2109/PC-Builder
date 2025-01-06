@@ -4,7 +4,7 @@ import {
   ListType,
   ParagraphType,
   SectionType,
-} from "@/models/articles/article";
+} from "@/utils/interface/article/article";
 import { Paragraph, ParagraphInput } from "./Paragraph";
 import { Picture, PictureInput } from "./Image";
 import { List, ListInput } from "./List";

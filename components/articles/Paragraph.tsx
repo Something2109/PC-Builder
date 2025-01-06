@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/utils/Button";
-import { ParagraphType } from "@/models/articles/article";
+import { ParagraphType } from "@/utils/interface/article/article";
 import { RowWrapper, ColumnWrapper } from "@/components/utils/FlexWrapper";
 import { TextArea } from "@/components/utils/Input";
 import { ContentProps, InputContentProps } from "./utils";

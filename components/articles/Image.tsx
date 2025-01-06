@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/utils/Button";
-import { ImageType } from "@/models/articles/article";
+import { ImageType } from "@/utils/interface/article/article";
 import { RowWrapper, ColumnWrapper } from "@/components/utils/FlexWrapper";
 import { TextArea } from "@/components/utils/Input";
 import Image from "next/image";
