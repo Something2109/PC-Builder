@@ -108,6 +108,102 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
     }, {});
   }
 
+  set pcies(data: Mainboard.PCIe | null) {
+    const current = this.getDataValue("pcie_data") as MainboardPCIeModel[];
+
+    if (data === null && current) current.map((value) => value.destroy());
+
+    if (!data) return;
+
+    const newData = this.pcieResolver(data, current);
+
+    this.pcie_data = newData;
+    this.setDataValue("pcie_data", newData);
+  }
+
+  private pcieResolver(
+    data: Mainboard.PCIe,
+    current: MainboardPCIeModel[]
+  ): MainboardPCIeModel[] {
+    const currentSideModels = current.reduce((acc, value) => {
+      const controller = value.controller;
+
+      if (!acc[controller]) acc[controller] = [];
+      acc[controller].push(value);
+
+      return acc;
+    }, {} as { [key in InternalConnectors.PCIe.Controller]?: MainboardPCIeModel[] });
+
+    InternalConnectors.PCIe.Controller.options.forEach((controller) => {
+      if (!data[controller]) {
+        currentSideModels[controller]?.map((value) => value.destroy());
+        delete currentSideModels[controller];
+        return;
+      }
+
+      if (!currentSideModels[controller]) {
+        currentSideModels[controller] = Object.entries(data[controller]).map(
+          ([key, count]) => {
+            const { width, version } = PCIeExchanger.toObject(key);
+
+            return MainboardPCIeModel.build({
+              id: this.id,
+              controller,
+              width,
+              version,
+              count,
+            });
+          }
+        );
+        return;
+      }
+
+      currentSideModels[controller] = this.controllerPCIeResolver(
+        controller,
+        data[controller],
+        currentSideModels[controller]
+      );
+    });
+
+    return Object.values(currentSideModels).reduce((acc, value) => {
+      acc.push(...value);
+      return acc;
+    }, []);
+  }
+
+  private controllerPCIeResolver(
+    controller: InternalConnectors.PCIe.Controller,
+    data: Record<string, number>,
+    current: MainboardPCIeModel[]
+  ): MainboardPCIeModel[] {
+    const newData = current.reduce((acc, val) => {
+      acc[PCIeExchanger.toString(val)] = val;
+      return acc;
+    }, {} as { [key in string]: MainboardPCIeModel });
+
+    Object.entries(data).forEach(([key, count]) => {
+      if (!newData[key]) {
+        const { width, version } = PCIeExchanger.toObject(key);
+        newData[key] = MainboardPCIeModel.build({
+          id: this.id,
+          controller,
+          width,
+          version,
+        });
+      }
+      newData[key].count = count;
+    });
+
+    Object.keys(newData)
+      .filter((value) => !Object.keys(data).includes(value))
+      .forEach((value) => {
+        newData[value]?.destroy();
+        delete newData[value];
+      });
+
+    return Object.values(newData);
+  }
+
   /**
    * Declare the power connector object as a virtual column
    * extracting the data from the {@link main_power_connectors},
@@ -188,6 +284,55 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
     );
   }
 
+  set storage_connectors(data: Mainboard.StorageConnector | null) {
+    const current = this.getDataValue(
+      "storage_connector_data"
+    ) as MainboardStorageConnectorModel[];
+
+    if (data === null && current) current.map((value) => value.destroy());
+
+    if (!data) return;
+
+    const newData = this.storageResolver(data, current);
+
+    this.storage_connector_data = newData;
+    this.setDataValue("storage_connector_data", newData);
+  }
+
+  private storageResolver(
+    data: Mainboard.StorageConnector,
+    current: MainboardStorageConnectorModel[]
+  ): MainboardStorageConnectorModel[] {
+    const newData = current.reduce((acc, val) => {
+      acc[val.type] = val;
+      return acc;
+    }, {} as { [key in InternalConnectors.Storage]?: MainboardStorageConnectorModel });
+
+    Object.entries(data).forEach(([key, count]) => {
+      const type = key as InternalConnectors.Storage;
+      if (!newData[type]) {
+        newData[type] = MainboardStorageConnectorModel.build({
+          id: this.id,
+          type,
+        });
+      }
+      newData[type].count = count;
+    });
+
+    Object.keys(newData)
+      .filter(
+        (value) =>
+          !Object.keys(data).includes(value as InternalConnectors.Storage)
+      )
+      .forEach((value) => {
+        const type = value as InternalConnectors.Storage;
+        newData[type]?.destroy();
+        delete newData[type];
+      });
+
+    return Object.values(newData);
+  }
+
   /**
    * Declare the usb connector object as a virtual column
    * extracting the {@link usb_data} assossiated with
@@ -214,6 +359,53 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
       },
       {}
     );
+  }
+
+  set usb_connectors(data: Mainboard.USBConnector | null) {
+    const current = this.getDataValue(
+      "usb_data"
+    ) as MainboardUSBConnectorModel[];
+
+    if (data === null && current) current.map((value) => value.destroy());
+
+    if (!data) return;
+
+    const newData = this.usbResolver(data, current);
+
+    this.usb_data = newData;
+    this.setDataValue("usb_data", newData);
+  }
+
+  private usbResolver(
+    data: Mainboard.USBConnector,
+    current: MainboardUSBConnectorModel[]
+  ): MainboardUSBConnectorModel[] {
+    const newData = current.reduce((acc, val) => {
+      const key = USBExchanger.toString(val);
+      acc[key] = val;
+      return acc;
+    }, {} as { [key in string]: MainboardUSBConnectorModel });
+
+    Object.entries(data).forEach(([key, count]) => {
+      const { generation, connector } = USBExchanger.toObject(key);
+      if (!newData[key]) {
+        newData[key] = MainboardUSBConnectorModel.build({
+          id: this.id,
+          generation,
+          connector,
+        });
+      }
+      newData[key].count = count;
+    });
+
+    Object.keys(newData)
+      .filter((value) => !Object.keys(data).includes(value))
+      .forEach((value) => {
+        newData[value]?.destroy();
+        delete newData[value];
+      });
+
+    return Object.values(newData);
   }
 
   /**

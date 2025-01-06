@@ -61,6 +61,47 @@ class CPUBlockModel extends Model implements PartDetailTable<CPUBlock.Info> {
     return data.map((value: CPUBlockSocketModel) => value.socket);
   }
 
+  set socket(data: string[] | null) {
+    const current = this.getDataValue("socket_data") as CPUBlockSocketModel[];
+
+    if (data === null && current) current.map((value) => value.destroy());
+
+    if (!data) return;
+
+    const newData = this.socketResolver(data, current);
+
+    this.socket_data = newData;
+    this.setDataValue("socket_data", newData);
+  }
+
+  private socketResolver(
+    data: string[],
+    current: CPUBlockSocketModel[]
+  ): CPUBlockSocketModel[] {
+    const newData = current.reduce((acc, val) => {
+      acc[val.socket] = val;
+      return acc;
+    }, {} as { [key in string]: CPUBlockSocketModel });
+
+    data.forEach((socket) => {
+      if (!newData[socket]) {
+        newData[socket] = CPUBlockSocketModel.build({
+          id: this.id,
+          socket,
+        });
+      }
+    });
+
+    Object.keys(newData)
+      .filter((value) => !data.includes(value))
+      .forEach((value) => {
+        newData[value]?.destroy();
+        delete newData[value];
+      });
+
+    return Object.values(newData);
+  }
+
   @Column({
     type: DataType.STRING,
     validate: { isIn: [CPUBlock.Plate.options] },
