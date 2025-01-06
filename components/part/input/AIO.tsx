@@ -19,7 +19,7 @@ export default function AIOFieldset({
       <SelectInputRow
         name="form_factor"
         label="Form Factor"
-        options={FormFactor.AIO.options}
+        options={FormFactor.Radiator.options}
         defaultValue={defaultValue?.form_factor}
       />
       <InputRow
