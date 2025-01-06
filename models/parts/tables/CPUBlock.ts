@@ -21,9 +21,18 @@ import { InternalConnectors } from "@/utils/interface/utils";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: { attributes: ["id", ...CPUBlock.SummaryAttributes] },
-  [ModelScopes.FILTER]: (options: CPUBlock.FilterOptions) => ({
-    where: options,
-  }),
+  [ModelScopes.FILTER]: (options: CPUBlock.FilterOptions) => {
+    const { socket, ...rest } = options ?? {};
+
+    return {
+      where: rest,
+      include: {
+        model: CPUBlockSocketModel,
+        where: socket ? { socket } : {},
+        required: Boolean(socket),
+      },
+    };
+  },
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
     include: CPUBlockSocketModel,

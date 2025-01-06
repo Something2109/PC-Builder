@@ -28,11 +28,15 @@ import { FanModel } from "./Fan";
 import { CPUBlockModel } from "./CPUBlock";
 import { PumpModel } from "./Pump";
 import { RadiatorModel } from "./Radiator";
+import { Includeable } from "sequelize";
 
 @DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: { attributes: [...Part.SummaryAttributes] },
-  [ModelScopes.FILTER]: (options: Part.FilterOptions) => ({ where: options }),
+  [ModelScopes.FILTER]: (
+    options: Part.FilterOptions,
+    ...include: Includeable[]
+  ) => ({ where: options, include }),
   [ModelScopes.DETAIL]: { attributes: { exclude: ["createdAt", "updatedAt"] } },
 }))
 @Table({ modelName: Tables.PART })

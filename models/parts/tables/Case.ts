@@ -18,19 +18,29 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import { WhereOptions } from "sequelize";
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: { attributes: ["id", ...Case.SummaryAttributes] },
-  [ModelScopes.FILTER]: ({
-    mainboard_support,
-    ...rest
-  }: Case.FilterOptions) => {
-    const filter: WhereOptions = {
-      ...rest,
+  [ModelScopes.SUMMARY]: {
+    attributes: ["id", ...Case.SummaryAttributes],
+    include: [CaseMainboardSupportModel, CasePSUSupportModel],
+  },
+  [ModelScopes.FILTER]: (options?: Case.FilterOptions) => {
+    const { mainboard_support, psu_support, ...where } = options ?? {};
+    return {
+      where,
+      include: [
+        {
+          model: CaseMainboardSupportModel,
+          where: mainboard_support ? { form_factor: mainboard_support } : {},
+          required: Boolean(mainboard_support),
+        },
+        {
+          model: CasePSUSupportModel,
+          where: psu_support ? { form_factor: psu_support } : {},
+          required: Boolean(psu_support),
+        },
+      ],
     };
-
-    return { where: filter };
   },
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
