@@ -95,8 +95,8 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
 
   @Column(DataType.VIRTUAL)
   get pcies(): Mainboard.PCIe | undefined {
-    const pcieData: MainboardPCIeModel[] | undefined = ({} =
-      this.getDataValue("pcie_data"));
+    const pcieData: MainboardPCIeModel[] | undefined =
+      this.getDataValue("pcie_data");
 
     if (!pcieData) return undefined;
 
