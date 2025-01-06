@@ -1,11 +1,15 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import GPU from "@/utils/interface/part/GPU";
 import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -13,11 +17,10 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...GPU.SummaryAttributes] },
-  filter: (options: GPU.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...GPU.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: GPU.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({
   modelName: Tables.GPU,
@@ -57,10 +60,10 @@ class GPUModel extends Model implements PartDetailTable<GPU.Info> {
   declare boost_frequency: number | null;
 
   @Column(DataType.STRING)
-  get extra_cores(): GPU.Core | null {
+  get extra_cores(): GPU.Core | undefined {
     const data = this.getDataValue("extra_cores");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set extra_cores(value: GPU.Core | null) {
@@ -80,10 +83,10 @@ class GPUModel extends Model implements PartDetailTable<GPU.Info> {
   declare tdp: number | null;
 
   @Column(DataType.TEXT)
-  get features(): GPU.Features | null {
+  get features(): GPU.Features | undefined {
     const data = this.getDataValue("features");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set features(value: GPU.Features | null) {

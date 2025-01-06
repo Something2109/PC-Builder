@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import SSD from "@/utils/interface/part/SSD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
@@ -6,7 +11,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -14,11 +18,10 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...SSD.SummaryAttributes] },
-  filter: (options: SSD.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...SSD.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: SSD.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.SSD })
 class SSDModel extends Model implements PartDetailTable<SSD.Info> {

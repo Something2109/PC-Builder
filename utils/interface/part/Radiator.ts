@@ -1,33 +1,27 @@
 import { FormFactor, FilterOptions } from "../utils";
 import { z } from "zod";
 
-export namespace AIO {
-  export const CPUPlate = z.enum(["copper", "alluminium"]);
+export namespace Radiator {
+  export const Material = z.enum(["Aluminum", "Copper"]);
 
-  export type CPUPlate = z.infer<typeof CPUPlate>;
+  export type Material = z.infer<typeof Material>;
 
   export const Schema = z.object({
     form_factor: FormFactor.Radiator,
 
-    radiator_width: z.number(),
-    radiator_length: z.number(),
-    radiator_height: z.number(),
+    width: z.number(),
+    length: z.number(),
+    height: z.number(),
 
-    socket: z.string(),
-    cpu_plate: CPUPlate,
-
-    pump_width: z.number(),
-    pump_length: z.number(),
-    pump_height: z.number(),
-    pump_speed: z.number(),
+    fpi: z.number(),
+    material: Material,
   });
 
   export type Info = z.infer<typeof Schema>;
 
   export const SummarySchema = Schema.pick({
     form_factor: true,
-    socket: true,
-    cpu_plate: true,
+    material: true,
   });
 
   export const SummaryAttributes = SummarySchema.keyof().options;
@@ -39,14 +33,13 @@ export namespace AIO {
   export const FilterOptionSchema = z
     .object({
       form_factor: FilterOptions(FormFactor.Radiator),
-      socket: FilterOptions(z.string()),
-      cpu_plate: FilterOptions(CPUPlate),
+      material: FilterOptions(Material),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
     form_factor: FormFactor.Radiator.options,
-    cpu_plate: CPUPlate.options,
+    material: Material.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;
@@ -56,4 +49,4 @@ export namespace AIO {
   export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
-export default AIO;
+export default Radiator;

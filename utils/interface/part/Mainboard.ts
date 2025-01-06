@@ -12,14 +12,14 @@ namespace Mainboard {
     z.record(InternalConnectors.PCIe.Schema, z.number())
   );
 
-  export type PCIeType = z.infer<typeof PCIeSchema>;
+  export type PCIe = z.infer<typeof PCIeSchema>;
 
   export const PowerConnectorSchema = z.record(
     InternalConnectors.Power.Mainboard,
     z.number()
   );
 
-  export type PowerConnectorType = z.infer<typeof PowerConnectorSchema>;
+  export type PowerConnector = z.infer<typeof PowerConnectorSchema>;
 
   export const StorageConnectorSchema = z.record(
     InternalConnectors.Storage.Schema,
@@ -31,18 +31,18 @@ namespace Mainboard {
     z.number()
   );
 
-  export type StorageConnectorType = z.infer<typeof StorageConnectorSchema>;
+  export type StorageConnector = z.infer<typeof StorageConnectorSchema>;
 
   export const USBConnectorSchema = z.record(
     ExternalPorts.USB.Schema,
     z.number()
   );
 
-  export type USBConnectorType = z.infer<typeof USBConnectorSchema>;
+  export type USBConnector = z.infer<typeof USBConnectorSchema>;
 
   export const BackPanelPortSchema = z.record(ExternalPorts.Schema, z.number());
 
-  export type BackPanelPortType = z.infer<typeof BackPanelPortSchema>;
+  export type BackPanelPort = z.infer<typeof BackPanelPortSchema>;
 
   export const Schema = z.object({
     form_factor: FormFactor.Mainboard,

@@ -1,11 +1,15 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import CPU from "@/utils/interface/part/CPU";
 import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -13,11 +17,10 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...CPU.SummaryAttributes] },
-  filter: (options: CPU.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...CPU.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: CPU.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({
   modelName: Tables.CPU,
@@ -61,10 +64,10 @@ class CPUModel extends Model implements PartDetailTable<CPU.Info> {
   declare turbo_frequency: number | null;
 
   @Column(DataType.TEXT)
-  get cores(): CPU.Core | null {
+  get cores(): CPU.Core | undefined {
     const data = this.getDataValue("cores");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set cores(value: CPU.Core | null) {

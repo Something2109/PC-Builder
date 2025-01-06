@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import PSU from "@/utils/interface/part/PSU";
 import { FormFactor } from "@/utils/interface/utils";
@@ -6,7 +11,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -14,11 +18,10 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...PSU.SummaryAttributes] },
-  filter: (options: PSU.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...PSU.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: PSU.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.PSU })
 class PSUModel extends Model implements PartDetailTable<PSU.Info> {

@@ -10,11 +10,12 @@ import {
 } from "./parts/tables/Mainboard";
 import {
   CaseMainboardSupportModel,
-  CaseAIOSupportModel,
+  CaseRadiatorSupportModel,
   CaseFanSupportModel,
   CaseHardDriveSupportModel,
   CasePSUSupportModel,
 } from "./parts/tables/Case";
+import { CPUBlockSocketModel } from "./parts/tables/CPUBlock";
 
 export const ConnectionOptions: SequelizeOptions = {
   models: [
@@ -25,10 +26,11 @@ export const ConnectionOptions: SequelizeOptions = {
     MainboardStorageConnectorModel,
     MainboardUSBConnectorModel,
     CaseMainboardSupportModel,
-    CaseAIOSupportModel,
+    CaseRadiatorSupportModel,
     CaseFanSupportModel,
     CaseHardDriveSupportModel,
     CasePSUSupportModel,
+    CPUBlockSocketModel,
     ...Object.values(Models),
   ],
   define: {

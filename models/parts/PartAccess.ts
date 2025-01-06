@@ -4,7 +4,7 @@ import { Products } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { Models, ModelFilters } from ".";
 import { IdSubQuery } from "../Connection";
-import { Tables } from "../interface";
+import { ModelScopes, Tables } from "../interface";
 
 class PartAccess {
   async list(options?: FilterOptions & PageOptions) {
@@ -16,16 +16,16 @@ class PartAccess {
       let include;
       if (part && part.part && part.part[0]) {
         include = {
-          model: Models[part.part[0] as Products].scope("summary"),
+          model: Models[part.part[0] as Products].scope(ModelScopes.SUMMARY),
           where: detail[part.part[0] as Products] ?? {},
           required: false,
         };
       }
 
       const { rows, count } = await PartInformation.scope([
-        "summary",
+        ModelScopes.SUMMARY,
         {
-          method: ["filter", part],
+          method: [ModelScopes.FILTER, part],
         },
       ]).findAndCountAll({
         limit,
@@ -50,15 +50,15 @@ class PartAccess {
       let include;
       if (part && part.part && part.part[0]) {
         include = {
-          model: Models[part.part[0] as Products].scope("summary"),
+          model: Models[part.part[0] as Products].scope(ModelScopes.SUMMARY),
           where: detail[part.part[0] as Products] ?? {},
         };
       }
 
       const { rows, count } = await PartInformation.scope([
-        "summary",
+        ModelScopes.SUMMARY,
         {
-          method: ["filter", part],
+          method: [ModelScopes.FILTER, part],
         },
       ]).findAndCountAll({
         where: { name: { [Op.like]: `%${str}%` } },
@@ -118,11 +118,14 @@ class PartAccess {
     id: string
   ): Promise<DetailInfo<typeof part> | null> {
     try {
-      const save = await PartInformation.scope("detail").findByPk(id, {
-        include: {
-          model: Models[part],
-        },
-      });
+      const save = await PartInformation.scope(ModelScopes.FILTER).findByPk(
+        id,
+        {
+          include: {
+            model: Models[part],
+          },
+        }
+      );
 
       if (save) {
         return save.toJSON() as unknown as DetailInfo<typeof part>;

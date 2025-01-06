@@ -56,9 +56,13 @@ namespace FormFactor {
 
   export type Fan = z.infer<typeof Fan>;
 
-  export const AIO = z.enum(["120", "140", "240", "280", "360", "420"]);
+  export const Pump = z.enum(["D5", "DDC"]);
 
-  export type AIO = z.infer<typeof AIO>;
+  export type Pump = z.infer<typeof Pump>;
+
+  export const Radiator = z.enum(["120", "140", "240", "280", "360", "420"]);
+
+  export type Radiator = z.infer<typeof Radiator>;
 }
 
 namespace InternalConnectors {
@@ -155,7 +159,9 @@ namespace InternalConnectors {
     export type Connector = z.infer<typeof Connector>;
 
     export const Regex = new RegExp(
-      `(${Connector.options.join("|")}) ${Type.options.join("|")}`
+      `(${Connector.options.join("|")}) (${Type.options.join(
+        "|"
+      )})? ?Fan Connector`
     );
 
     export const Schema = z.string().regex(Regex);
@@ -245,7 +251,7 @@ namespace ExternalPorts {
 
     export type Port = z.infer<typeof Port>;
 
-    export const Regex = new RegExp(`${Port} PS/2`);
+    export const Regex = new RegExp(`${Port.options.join("|")} PS/2`);
 
     export const Schema = z.string().regex(Regex);
   }
@@ -412,7 +418,11 @@ type ExternalPorts =
   | ExternalPorts.Audio;
 
 type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
-  [key in Attributes]?: Required<Info>[key][];
+  [key in Attributes]?: NonNullable<Required<Info>[key]> extends number
+    ? number[]
+    : Required<Info>[key] extends string
+    ? Required<Info>[key][]
+    : string[];
 };
 
 const NumberFilterOptions = z.array(z.number());

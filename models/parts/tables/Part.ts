@@ -1,4 +1,4 @@
-import { Tables } from "@/models/interface";
+import { ModelScopes, PartDefaultScope, Tables } from "@/models/interface";
 import Part from "@/utils/interface/part/Parts";
 import { Products } from "@/utils/Enum";
 import {
@@ -25,16 +25,19 @@ import { CaseModel } from "./Case";
 import { CoolerModel } from "./Cooler";
 import { AIOModel } from "./AIO";
 import { FanModel } from "./Fan";
+import { CPUBlockModel } from "./CPUBlock";
+import { PumpModel } from "./Pump";
+import { RadiatorModel } from "./Radiator";
+import { Includeable } from "sequelize";
 
-@DefaultScope(() => ({
-  attributes: {
-    exclude: ["raw", "createdAt", "updatedAt"],
-  },
-}))
+@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...Part.SummaryAttributes] },
-  filter: (options: Part.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["createdAt", "updatedAt"] } },
+  [ModelScopes.SUMMARY]: { attributes: [...Part.SummaryAttributes] },
+  [ModelScopes.FILTER]: (
+    options: Part.FilterOptions,
+    ...include: Includeable[]
+  ) => ({ where: options, include }),
+  [ModelScopes.DETAIL]: { attributes: { exclude: ["createdAt", "updatedAt"] } },
 }))
 @Table({ modelName: Tables.PART })
 class PartInformation extends Model implements Part.BasicInfo {
@@ -109,6 +112,15 @@ class PartInformation extends Model implements Part.BasicInfo {
 
   @HasOne(() => FanModel)
   declare [Products.FAN]: FanModel;
+
+  @HasOne(() => CPUBlockModel)
+  declare [Products.CPU_BLOCK]: CPUBlockModel;
+
+  @HasOne(() => PumpModel)
+  declare [Products.PUMP]: PumpModel;
+
+  @HasOne(() => RadiatorModel)
+  declare [Products.RADIATOR]: RadiatorModel;
 }
 
 export { PartInformation };

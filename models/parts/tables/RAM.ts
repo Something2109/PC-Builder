@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import RAM from "@/utils/interface/part/RAM";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
@@ -6,7 +11,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -14,11 +18,10 @@ import {
   Table,
 } from "sequelize-typescript";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...RAM.SummaryAttributes] },
-  filter: (options: RAM.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...RAM.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: RAM.FilterOptions) => ({ where: options }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.RAM })
 class RAMModel extends Model implements PartDetailTable<RAM.Info> {
@@ -40,10 +43,10 @@ class RAMModel extends Model implements PartDetailTable<RAM.Info> {
   declare voltage: number | null;
 
   @Column(DataType.STRING)
-  get latency(): number[] | null {
+  get latency(): number[] | undefined {
     const data = this.getDataValue("latency_json");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set latency(value: number[] | null) {

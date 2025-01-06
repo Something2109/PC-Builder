@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { PartInformation } from "./Part";
 import Mainboard from "@/utils/interface/part/Mainboard";
 import {
@@ -7,10 +12,14 @@ import {
   FormFactor,
 } from "@/utils/interface/utils";
 import {
+  PowerConnectorExchanger,
+  PCIeExchanger,
+  USBExchanger,
+} from "@/utils/extract/Connector";
+import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   HasMany,
   Model,
@@ -18,31 +27,19 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import {
-  PowerConnectorExchanger,
-  PCIeExchanger,
-  USBExchanger,
-} from "@/utils/extract/Connector";
+import { SaveOptions } from "sequelize";
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...Mainboard.SummaryAttributes] },
-  filter: (options: Mainboard.FilterOptions) => ({ where: options }),
-  detail: {
-    attributes: { exclude: ["id", "createdAt", "updatedAt"] },
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...Mainboard.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: Mainboard.FilterOptions) => ({
+    where: options,
+  }),
+  [ModelScopes.DETAIL]: {
+    ...PartDefaultScope,
     include: [
-      {
-        model: MainboardPCIeModel,
-        attributes: ["controller", "version", "width", "count"],
-      },
-      {
-        model: MainboardStorageConnectorModel,
-        attributes: ["type", "count"],
-      },
-      {
-        model: MainboardUSBConnectorModel,
-        attributes: ["generation", "connector", "count"],
-      },
+      MainboardPCIeModel,
+      MainboardStorageConnectorModel,
+      MainboardUSBConnectorModel,
     ],
   },
 }))
@@ -90,69 +87,143 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    * Declare the pcie object as a virtual column
    * extracting the {@link pcie_data} assossiated with
    * {@link MainboardPCIeModel} from the model
-   * and converting it to a {@link Mainboard.PCIeType} object.
+   * and converting it to a {@link Mainboard.PCIe} object.
    */
 
   @HasMany(() => MainboardPCIeModel)
   declare pcie_data: MainboardPCIeModel[];
 
   @Column(DataType.VIRTUAL)
-  get pcies(): Mainboard.PCIeType | null {
-    const pcieData = this.getDataValue("pcie_data") as MainboardPCIeModel[];
+  get pcies(): Mainboard.PCIe | undefined {
+    const pcieData: MainboardPCIeModel[] | undefined = ({} =
+      this.getDataValue("pcie_data"));
 
-    if (!pcieData) return null;
+    if (!pcieData) return undefined;
 
-    return pcieData.reduce(
-      (acc: Mainboard.PCIeType, pcie: MainboardPCIeModel) => {
-        const controller = pcie.controller;
-        if (!acc[controller]) acc[controller] = {};
+    this.setDataValue("pcie_data", undefined);
+    return pcieData.reduce((acc: Mainboard.PCIe, pcie: MainboardPCIeModel) => {
+      const controller = pcie.controller;
+      if (!acc[controller]) acc[controller] = {};
 
-        acc[controller][PCIeExchanger.toString(pcie)] = pcie.count;
-        return acc;
-      },
-      {}
-    );
+      acc[controller][PCIeExchanger.toString(pcie)] = pcie.count;
+      return acc;
+    }, {});
   }
 
-  set pcies(value: Mainboard.PCIeType | null) {
-    if (!value) return;
+  set pcies(data: Mainboard.PCIe | null) {
+    const current: MainboardPCIeModel[] | undefined =
+      this.getDataValue("pcie_data");
 
-    for (const [controller, pcie] of Object.entries(value)) {
-      for (const [type, count] of Object.entries(pcie)) {
-        const { width, version } = PCIeExchanger.toObject(type);
+    if (data === null && current) current.map((value) => value.destroy());
 
-        MainboardPCIeModel.findOrCreate({
-          where: {
-            id: this.id,
-            controller,
-            version: Number(version),
-            width: Number(width),
-          },
-          defaults: { count },
-        }).then(([value, created]) => {
-          if (!created) value.update({ count });
+    if (!data) return;
+
+    const newData = this.pcieResolver(data, current ?? []);
+
+    this.pcie_data = newData;
+    this.setDataValue("pcie_data", newData);
+  }
+
+  private pcieResolver(
+    data: Mainboard.PCIe,
+    current: MainboardPCIeModel[]
+  ): MainboardPCIeModel[] {
+    const currentSideModels = current.reduce((acc, value) => {
+      const controller = value.controller;
+
+      if (!acc[controller]) acc[controller] = [];
+      acc[controller].push(value);
+
+      return acc;
+    }, {} as { [key in InternalConnectors.PCIe.Controller]?: MainboardPCIeModel[] });
+
+    InternalConnectors.PCIe.Controller.options.forEach((controller) => {
+      if (!data[controller]) {
+        currentSideModels[controller]?.map((value) => value.destroy());
+        delete currentSideModels[controller];
+        return;
+      }
+
+      if (!currentSideModels[controller]) {
+        currentSideModels[controller] = Object.entries(data[controller]).map(
+          ([key, count]) => {
+            const { width, version } = PCIeExchanger.toObject(key);
+
+            return MainboardPCIeModel.build({
+              id: this.id,
+              controller,
+              width,
+              version,
+              count,
+            });
+          }
+        );
+        return;
+      }
+
+      currentSideModels[controller] = this.controllerPCIeResolver(
+        controller,
+        data[controller],
+        currentSideModels[controller]
+      );
+    });
+
+    return Object.values(currentSideModels).reduce((acc, value) => {
+      acc.push(...value);
+      return acc;
+    }, []);
+  }
+
+  private controllerPCIeResolver(
+    controller: InternalConnectors.PCIe.Controller,
+    data: Record<string, number>,
+    current: MainboardPCIeModel[]
+  ): MainboardPCIeModel[] {
+    const newData = current.reduce((acc, val) => {
+      acc[PCIeExchanger.toString(val)] = val;
+      return acc;
+    }, {} as { [key in string]: MainboardPCIeModel });
+
+    Object.entries(data).forEach(([key, count]) => {
+      if (!newData[key]) {
+        const { width, version } = PCIeExchanger.toObject(key);
+        newData[key] = MainboardPCIeModel.build({
+          id: this.id,
+          controller,
+          width,
+          version,
         });
       }
-    }
+      newData[key].count = count;
+    });
+
+    Object.keys(newData)
+      .filter((value) => !Object.keys(data).includes(value))
+      .forEach((value) => {
+        newData[value]?.destroy();
+        delete newData[value];
+      });
+
+    return Object.values(newData);
   }
 
   /**
    * Declare the power connector object as a virtual column
    * extracting the data from the {@link main_power_connectors},
    * {@link cpu_power_connectors}, {@link pcie_power_connectors} columns
-   * and converting it to a {@link Mainboard.PowerConnectorType} object.
+   * and converting it to a {@link Mainboard.PowerConnector} object.
    */
 
   @Column(DataType.VIRTUAL)
-  get power_connectors(): Mainboard.PowerConnectorType | null {
+  get power_connectors(): Mainboard.PowerConnector | undefined {
     const main = this.getDataValue("main_power_connectors");
     const cpu = this.getDataValue("cpu_power_connectors");
     const pcie = this.getDataValue("pcie_power_connectors");
 
-    return PowerConnectorExchanger.toObject({ main, cpu, pcie });
+    return PowerConnectorExchanger.toObject({ main, cpu, pcie }) ?? undefined;
   }
 
-  set power_connectors(value: Mainboard.PowerConnectorType | null) {
+  set power_connectors(value: Mainboard.PowerConnector | null) {
     const { main, cpu, pcie } = PowerConnectorExchanger.toNumber(value);
 
     this.setDataValue("main_power_connectors", main);
@@ -175,10 +246,10 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    */
 
   @Column(DataType.TEXT)
-  get fan_connectors(): Record<string, number> | null {
+  get fan_connectors(): Record<string, number> | undefined {
     const data = this.getDataValue("fan_connectors");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set fan_connectors(value: Record<string, number> | null) {
@@ -189,23 +260,23 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    * Declare the storage connector object as a virtual column
    * extracting the {@link storage_connector_data} assossiated with
    * {@link MainboardStorageConnectorModel} from the model
-   * and converting it to a {@link Mainboard.StorageConnectorType} object.
+   * and converting it to a {@link Mainboard.StorageConnector} object.
    */
 
   @HasMany(() => MainboardStorageConnectorModel)
-  declare storage_connector_data: MainboardStorageConnectorModel[] | null;
+  declare storage_connector_data: MainboardStorageConnectorModel[];
 
   @Column(DataType.VIRTUAL)
-  get storage_connectors(): Mainboard.StorageConnectorType | null {
-    const storageData = this.getDataValue(
-      "storage_connector_data"
-    ) as MainboardStorageConnectorModel[];
+  get storage_connectors(): Mainboard.StorageConnector | undefined {
+    const storageData: MainboardStorageConnectorModel[] | undefined =
+      this.getDataValue("storage_connector_data");
 
-    if (!storageData) return null;
+    if (!storageData) return undefined;
 
+    this.setDataValue("storage_connector_data", undefined);
     return storageData.reduce(
       (
-        acc: Mainboard.StorageConnectorType,
+        acc: Mainboard.StorageConnector,
         storage: MainboardStorageConnectorModel
       ) => {
         acc[storage.type] = storage.count;
@@ -215,38 +286,74 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
     );
   }
 
-  set storage_connectors(value: Mainboard.StorageConnectorType | null) {
-    if (!value) return;
+  set storage_connectors(data: Mainboard.StorageConnector | null) {
+    const current: MainboardStorageConnectorModel[] | undefined =
+      this.getDataValue("storage_connector_data");
 
-    for (const [type, count] of Object.entries(value)) {
-      MainboardStorageConnectorModel.findOrCreate({
-        where: { id: this.id, type },
-        defaults: { count },
-      }).then(([value, created]) => {
-        if (!created) value.update({ count });
+    if (data === null && current) current.map((value) => value.destroy());
+
+    if (!data) return;
+
+    const newData = this.storageResolver(data, current ?? []);
+
+    this.storage_connector_data = newData;
+    this.setDataValue("storage_connector_data", newData);
+  }
+
+  private storageResolver(
+    data: Mainboard.StorageConnector,
+    current: MainboardStorageConnectorModel[]
+  ): MainboardStorageConnectorModel[] {
+    const newData = current.reduce((acc, val) => {
+      acc[val.type] = val;
+      return acc;
+    }, {} as { [key in InternalConnectors.Storage]?: MainboardStorageConnectorModel });
+
+    Object.entries(data).forEach(([key, count]) => {
+      const type = key as InternalConnectors.Storage;
+      if (!newData[type]) {
+        newData[type] = MainboardStorageConnectorModel.build({
+          id: this.id,
+          type,
+        });
+      }
+      newData[type].count = count;
+    });
+
+    Object.keys(newData)
+      .filter(
+        (value) =>
+          !Object.keys(data).includes(value as InternalConnectors.Storage)
+      )
+      .forEach((value) => {
+        const type = value as InternalConnectors.Storage;
+        newData[type]?.destroy();
+        delete newData[type];
       });
-    }
+
+    return Object.values(newData);
   }
 
   /**
    * Declare the usb connector object as a virtual column
    * extracting the {@link usb_data} assossiated with
    * {@link MainboardUSBConnectorModel} from the model
-   * and converting it to a {@link Mainboard.USBConnectorType} object.
+   * and converting it to a {@link Mainboard.USBConnector} object.
    */
 
   @HasMany(() => MainboardUSBConnectorModel)
-  declare usb_data: MainboardUSBConnectorModel[] | null;
+  declare usb_data: MainboardUSBConnectorModel[];
 
   @Column(DataType.VIRTUAL)
-  get usb_connectors(): Mainboard.USBConnectorType | null {
-    const usbData = this.getDataValue(
-      "usb_data"
-    ) as MainboardUSBConnectorModel[];
-    if (!usbData) return null;
+  get usb_connectors(): Mainboard.USBConnector | undefined {
+    const usbData: MainboardUSBConnectorModel[] | undefined =
+      this.getDataValue("usb_data");
 
+    if (!usbData) return undefined;
+
+    this.setDataValue("usb_data", undefined);
     return usbData.reduce(
-      (acc: Mainboard.USBConnectorType, usb: MainboardUSBConnectorModel) => {
+      (acc: Mainboard.USBConnector, usb: MainboardUSBConnectorModel) => {
         const usbStr = USBExchanger.toString(usb);
         acc[usbStr] = usb.count;
         return acc;
@@ -255,19 +362,50 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
     );
   }
 
-  set usb_connectors(value: Mainboard.USBConnectorType | null) {
-    if (!value) return;
+  set usb_connectors(data: Mainboard.USBConnector | null) {
+    const current: MainboardUSBConnectorModel[] | undefined =
+      this.getDataValue("usb_data");
 
-    for (const [usb, count] of Object.entries(value)) {
-      const { generation, connector } = USBExchanger.toObject(usb);
+    if (data === null && current) current.map((value) => value.destroy());
 
-      MainboardUSBConnectorModel.findOrCreate({
-        where: { id: this.id, generation, connector },
-        defaults: { count },
-      }).then(([value, created]) => {
-        if (!created) value.update({ count });
+    if (!data) return;
+
+    const newData = this.usbResolver(data, current ?? []);
+
+    this.usb_data = newData;
+    this.setDataValue("usb_data", newData);
+  }
+
+  private usbResolver(
+    data: Mainboard.USBConnector,
+    current: MainboardUSBConnectorModel[]
+  ): MainboardUSBConnectorModel[] {
+    const newData = current.reduce((acc, val) => {
+      const key = USBExchanger.toString(val);
+      acc[key] = val;
+      return acc;
+    }, {} as { [key in string]: MainboardUSBConnectorModel });
+
+    Object.entries(data).forEach(([key, count]) => {
+      const { generation, connector } = USBExchanger.toObject(key);
+      if (!newData[key]) {
+        newData[key] = MainboardUSBConnectorModel.build({
+          id: this.id,
+          generation,
+          connector,
+        });
+      }
+      newData[key].count = count;
+    });
+
+    Object.keys(newData)
+      .filter((value) => !Object.keys(data).includes(value))
+      .forEach((value) => {
+        newData[value]?.destroy();
+        delete newData[value];
       });
-    }
+
+    return Object.values(newData);
   }
 
   /**
@@ -276,10 +414,10 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    */
 
   @Column(DataType.TEXT)
-  get miscelanous_connectors(): Record<string, number> | null {
+  get miscelanous_connectors(): Record<string, number> | undefined {
     const data = this.getDataValue("miscelanous_connectors");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set miscelanous_connectors(value: Record<string, number> | null) {
@@ -295,14 +433,26 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
    */
 
   @Column(DataType.TEXT)
-  get back_panel_ports(): {} | null {
+  get back_panel_ports(): {} | undefined {
     const data = this.getDataValue("back_panel_ports");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set back_panel_ports(value: {} | null) {
     this.setDataValue("back_panel_ports", value ? JSON.stringify(value) : null);
+  }
+
+  async save(options?: SaveOptions<any> | undefined): Promise<this> {
+    const result = await super.save(options);
+
+    await Promise.all([
+      ...this.pcie_data?.map((pcie) => pcie.save(options)),
+      ...this.storage_connector_data?.map((storage) => storage.save(options)),
+      ...this.usb_data?.map((usb) => usb.save(options)),
+    ]);
+
+    return result;
   }
 }
 
@@ -359,7 +509,7 @@ class MainboardStorageConnectorModel extends Model {
       ],
     },
   })
-  declare type: keyof Mainboard.StorageConnectorType;
+  declare type: keyof Mainboard.StorageConnector;
 
   @Column(DataType.TINYINT)
   declare count: number;

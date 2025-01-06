@@ -1,4 +1,9 @@
-import { PartDetailTable, PartDefaultScope, Tables } from "../../interface";
+import {
+  PartDetailTable,
+  PartDefaultScope,
+  Tables,
+  ModelScopes,
+} from "../../interface";
 import { GPUModel } from "./GPU";
 import { PartInformation } from "./Part";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
@@ -7,7 +12,6 @@ import {
   BelongsTo,
   Column,
   DataType,
-  DefaultScope,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -22,11 +26,14 @@ type APIDisplayInterface = {
   DVI_D?: number;
 };
 
-@DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  summary: { attributes: [...GraphicCard.SummaryAttributes] },
-  filter: (options: GraphicCard.FilterOptions) => ({ where: options }),
-  detail: { attributes: { exclude: ["id", "createdAt", "updatedAt"] } },
+  [ModelScopes.SUMMARY]: {
+    attributes: ["id", ...GraphicCard.SummaryAttributes],
+  },
+  [ModelScopes.FILTER]: (options: GraphicCard.FilterOptions) => ({
+    where: options,
+  }),
+  [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.GRAPHIC_CARD })
 class GraphicCardModel
@@ -63,10 +70,10 @@ class GraphicCardModel
   declare minimum_psu: number | null;
 
   @Column(DataType.TINYINT)
-  get power_connector(): GraphicCard.PowerConnectorType | null {
+  get power_connector(): GraphicCard.PowerConnectorType | undefined {
     let pcie: number = this.getDataValue("power_connector");
 
-    return PowerConnectorExchanger.toObject({ pcie });
+    return PowerConnectorExchanger.toObject({ pcie }) ?? undefined;
   }
 
   set power_connector(value: GraphicCard.PowerConnectorType | null) {
@@ -76,13 +83,13 @@ class GraphicCardModel
   }
 
   @Column(DataType.TEXT)
-  get port(): GraphicCard.PortType | null {
+  get port(): GraphicCard.Port | undefined {
     let data: string = this.getDataValue("port");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
-  set port(value: GraphicCard.PortType | null) {
+  set port(value: GraphicCard.Port | null) {
     this.setDataValue("port", value ? JSON.stringify(value) : null);
   }
 

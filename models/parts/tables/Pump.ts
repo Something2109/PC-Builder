@@ -1,11 +1,11 @@
 import {
-  ModelScopes,
-  PartDefaultScope,
   PartDetailTable,
+  PartDefaultScope,
   Tables,
+  ModelScopes,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import Fan from "@/utils/interface/part/Fan";
+import Pump from "@/utils/interface/part/Pump";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,
@@ -19,12 +19,12 @@ import {
 } from "sequelize-typescript";
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: { attributes: ["id", ...Fan.SummaryAttributes] },
-  [ModelScopes.FILTER]: (options: Fan.FilterOptions) => ({ where: options }),
+  [ModelScopes.SUMMARY]: { attributes: ["id", ...Pump.SummaryAttributes] },
+  [ModelScopes.FILTER]: (options: Pump.FilterOptions) => ({ where: options }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Tables.FAN })
-class FanModel extends Model implements PartDetailTable<Fan.Info> {
+@Table({ modelName: Tables.PUMP })
+class PumpModel extends Model implements PartDetailTable<Pump.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -35,9 +35,9 @@ class FanModel extends Model implements PartDetailTable<Fan.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [FormFactor.Fan.options] },
+    validate: { isIn: [FormFactor.Pump.options] },
   })
-  declare form_factor: FormFactor.Fan | null;
+  declare form_factor: FormFactor.Pump;
 
   @Column(DataType.FLOAT)
   declare width: number | null;
@@ -48,32 +48,29 @@ class FanModel extends Model implements PartDetailTable<Fan.Info> {
   @Column(DataType.FLOAT)
   declare height: number | null;
 
-  @Column(DataType.TINYINT)
-  declare count: number | null;
-
   @Column(DataType.FLOAT)
   declare voltage: number | null;
 
+  @Column(DataType.TINYINT)
+  declare wattage: number | null;
+
+  @Column(DataType.FLOAT)
+  declare head_pressure: number | null;
+
   @Column(DataType.INTEGER)
-  declare speed: number | null;
+  declare flow_rate: number | null;
 
-  @Column(DataType.FLOAT)
-  declare airflow: number | null;
-
-  @Column(DataType.FLOAT)
-  declare noise: number | null;
-
-  @Column(DataType.FLOAT)
-  declare static_pressure: number | null;
-
-  @Column({ type: DataType.STRING, validate: { isIn: [Fan.Bearing.options] } })
-  declare bearing: Fan.Bearing | null;
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [InternalConnectors.Power.Miscellanous.options] },
+  })
+  declare power_connector: InternalConnectors.Power.Miscellanous | null;
 
   @Column({
     type: DataType.STRING,
     validate: { isIn: [InternalConnectors.Fan.Connector.options] },
   })
-  declare connector: InternalConnectors.Fan.Connector | null;
+  declare control_connector: InternalConnectors.Fan.Connector | null;
 
   @Column({
     type: DataType.STRING,
@@ -82,4 +79,4 @@ class FanModel extends Model implements PartDetailTable<Fan.Info> {
   declare rgb: InternalConnectors.RGB | null;
 }
 
-export { FanModel };
+export { PumpModel };

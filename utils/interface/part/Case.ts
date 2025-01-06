@@ -6,34 +6,41 @@ export namespace Case {
 
   export type Side = z.infer<typeof Side>;
 
-  export const AIOSupportSchema = z.record(Side, z.array(FormFactor.AIO));
+  export const RadiatorSupportSchema = z.record(
+    Side,
+    z.array(FormFactor.Radiator)
+  );
 
-  export type AIOSupportType = z.infer<typeof AIOSupportSchema>;
+  export type RadiatorSupport = z.infer<typeof RadiatorSupportSchema>;
 
   export const FanSupportSchema = z.record(
     Side,
     z.record(FormFactor.Fan, z.number())
   );
 
-  export type FanSupportType = z.infer<typeof FanSupportSchema>;
+  export type FanSupport = z.infer<typeof FanSupportSchema>;
+
+  export const HardDrivePlace = z.enum([...Case.Side.options, "Drive Bay"]);
+
+  export type HardDrivePlace = z.infer<typeof HardDrivePlace>;
 
   export const HardDriveSize = z.enum(["2.5", "3.5"]);
 
-  export type HardDriveSizeType = z.infer<typeof HardDriveSize>;
+  export type HardDriveSize = z.infer<typeof HardDriveSize>;
 
   export const HardDriveSupportSchema = z.record(
-    z.union([z.literal("Drive Bay"), Side]),
+    HardDrivePlace,
     z.record(HardDriveSize, z.number())
   );
 
-  export type HardDriveSupportType = z.infer<typeof HardDriveSupportSchema>;
+  export type HardDriveSupport = z.infer<typeof HardDriveSupportSchema>;
 
   export const FrontPanelPortSchema = z.record(
     ExternalPorts.Schema,
     z.number()
   );
 
-  export type FrontPanelPortType = z.infer<typeof FrontPanelPortSchema>;
+  export type FrontPanelPort = z.infer<typeof FrontPanelPortSchema>;
 
   export const Schema = z.object({
     form_factor: FormFactor.Case,
@@ -47,7 +54,7 @@ export namespace Case {
 
     max_cooler_height: z.number(),
 
-    aio_support: AIOSupportSchema,
+    radiator_support: RadiatorSupportSchema,
     fan_support: FanSupportSchema,
 
     hard_drive_support: HardDriveSupportSchema,
@@ -57,12 +64,6 @@ export namespace Case {
 
     front_panel_ports: FrontPanelPortSchema,
   });
-
-  export type FanSupport = z.infer<typeof FanSupportSchema>;
-
-  export type AIOSupport = z.infer<typeof AIOSupportSchema>;
-
-  export type HardDriveSupport = z.infer<typeof HardDriveSupportSchema>;
 
   export type Info = z.infer<typeof Schema>;
 
