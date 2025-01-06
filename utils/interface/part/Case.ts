@@ -20,12 +20,16 @@ export namespace Case {
 
   export type FanSupport = z.infer<typeof FanSupportSchema>;
 
+  export const HardDrivePlace = z.enum([...Case.Side.options, "Drive Bay"]);
+
+  export type HardDrivePlace = z.infer<typeof HardDrivePlace>;
+
   export const HardDriveSize = z.enum(["2.5", "3.5"]);
 
   export type HardDriveSize = z.infer<typeof HardDriveSize>;
 
   export const HardDriveSupportSchema = z.record(
-    z.union([z.literal("Drive Bay"), Side]),
+    HardDrivePlace,
     z.record(HardDriveSize, z.number())
   );
 
