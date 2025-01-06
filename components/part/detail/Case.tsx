@@ -21,14 +21,14 @@ export function CaseTable({
       <DimensionTableRow defaultValue={defaultValue} />
       <TableRowWrapper>
         Mainboard Support
-        {defaultValue?.mainboard_support}
+        {defaultValue?.mainboard_support?.join(", ")}
       </TableRowWrapper>
       <TableRowWrapper>
         Expansion Slot
         {defaultValue?.expansion_slot}
       </TableRowWrapper>
       <TableRowWrapper>
-        AIO Support {defaultValue?.aio_support?.toString()}{" "}
+        AIO Support {defaultValue?.radiator_support?.toString()}{" "}
       </TableRowWrapper>
       <TableRowWrapper>
         Fan Support {defaultValue?.fan_support?.toString()}{" "}
