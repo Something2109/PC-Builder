@@ -15,6 +15,9 @@ import { SSDTable } from "./detail/SSD";
 import { TableHTMLAttributes } from "react";
 import { SummaryInfo } from "@/utils/interface";
 import { Products } from "@/utils/Enum";
+import { CPUBlockTable } from "./detail/CPUBlock";
+import { PumpTable } from "./detail/Pump";
+import { RadiatorTable } from "./detail/Radiator";
 
 const table = "border-separate border-spacing-0";
 const tableHeader =
@@ -30,7 +33,7 @@ export default function PartTable({
   let keys: { [key in Products]?: string[] } = {};
   const { id, part, name, brand, series, image_url, ...detail } = data[0];
   Object.entries(detail).forEach(
-    ([key, value]) => (keys[key as Products] = Object.keys(value))
+    ([key, value]) => (keys[key as Products] = Object.keys(value ?? {}))
   );
 
   return (
@@ -104,4 +107,7 @@ export const DetailTableComponent = {
   [Products.AIO]: AIOTable,
   [Products.FAN]: FanTable,
   [Products.SSD]: SSDTable,
+  [Products.CPU_BLOCK]: CPUBlockTable,
+  [Products.PUMP]: PumpTable,
+  [Products.RADIATOR]: RadiatorTable,
 };

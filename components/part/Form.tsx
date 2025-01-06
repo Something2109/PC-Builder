@@ -31,6 +31,9 @@ const InputComponent = {
   [Products.AIO]: lazy(() => import("@/components/part/input/AIO")),
   [Products.FAN]: lazy(() => import("@/components/part/input/Fan")),
   [Products.SSD]: lazy(() => import("@/components/part/input/SSD")),
+  [Products.CPU_BLOCK]: lazy(() => import("@/components/part/input/CPUBlock")),
+  [Products.PUMP]: lazy(() => import("@/components/part/input/Pump")),
+  [Products.RADIATOR]: lazy(() => import("@/components/part/input/Radiator")),
 };
 
 export default function PartForm({
