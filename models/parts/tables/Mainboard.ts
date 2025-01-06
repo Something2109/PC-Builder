@@ -12,6 +12,11 @@ import {
   FormFactor,
 } from "@/utils/interface/utils";
 import {
+  PowerConnectorExchanger,
+  PCIeExchanger,
+  USBExchanger,
+} from "@/utils/extract/Connector";
+import {
   BelongsTo,
   Column,
   DataType,
@@ -22,11 +27,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import {
-  PowerConnectorExchanger,
-  PCIeExchanger,
-  USBExchanger,
-} from "@/utils/extract/Connector";
+import { SaveOptions } from "sequelize";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: { attributes: ["id", ...Mainboard.SummaryAttributes] },
@@ -441,6 +442,18 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
 
   set back_panel_ports(value: {} | null) {
     this.setDataValue("back_panel_ports", value ? JSON.stringify(value) : null);
+  }
+
+  async save(options?: SaveOptions<any> | undefined): Promise<this> {
+    const result = await super.save(options);
+
+    await Promise.all([
+      ...this.pcie_data?.map((pcie) => pcie.save(options)),
+      ...this.storage_connector_data?.map((storage) => storage.save(options)),
+      ...this.usb_data?.map((usb) => usb.save(options)),
+    ]);
+
+    return result;
   }
 }
 

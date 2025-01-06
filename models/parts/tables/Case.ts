@@ -18,6 +18,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
+import { SaveOptions } from "sequelize";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: {
@@ -591,6 +592,20 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
       "front_panel_ports",
       value ? JSON.stringify(value) : null
     );
+  }
+
+  async save(options?: SaveOptions<any> | undefined): Promise<this> {
+    const result = await super.save(options);
+
+    await Promise.all([
+      ...this.mainboard_support_data?.map((support) => support.save(options)),
+      ...this.radiator_support_data?.map((support) => support.save(options)),
+      ...this.fan_support_data?.map((support) => support.save(options)),
+      ...this.hard_drive_support_data?.map((support) => support.save(options)),
+      ...this.psu_support_data?.map((support) => support.save(options)),
+    ]);
+
+    return result;
   }
 }
 

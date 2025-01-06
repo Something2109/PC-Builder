@@ -9,6 +9,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
+import { SaveOptions } from "sequelize";
 import CPUBlock from "@/utils/interface/part/CPUBlock";
 import {
   PartDetailTable,
@@ -16,8 +17,8 @@ import {
   Tables,
   ModelScopes,
 } from "../../interface";
-import { PartInformation } from "./Part";
 import { InternalConnectors } from "@/utils/interface/utils";
+import { PartInformation } from "./Part";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: { attributes: ["id", ...CPUBlock.SummaryAttributes] },
@@ -113,6 +114,14 @@ class CPUBlockModel extends Model implements PartDetailTable<CPUBlock.Info> {
     validate: { isIn: [InternalConnectors.RGB.options] },
   })
   declare rgb: InternalConnectors.RGB | null;
+
+  async save(options?: SaveOptions<any> | undefined): Promise<this> {
+    const result = await super.save(options);
+
+    await Promise.all(this.socket_data?.map((socket) => socket.save(options)));
+
+    return result;
+  }
 }
 
 @Table({ modelName: Tables.CPU_BLOCK_SOCKET })
