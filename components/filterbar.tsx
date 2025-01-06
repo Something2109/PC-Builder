@@ -47,7 +47,9 @@ export function FilterBar({
   rest.onSubmit = (e) => {
     e.preventDefault();
 
-    const filterOptions: { [key in string]: { [key in string]: any[] } } = {
+    const filterOptions: {
+      [key in string]: { [key in string]: any[] } | null;
+    } = {
       ...(defaultOptions ?? {}),
     };
 
@@ -100,7 +102,7 @@ function PartFieldset({
   filter,
 }: {
   name: string;
-  filter: Record<string, any[]>;
+  filter: Record<string, any[]> | null;
 }) {
   function InputRow({ input, value }: { input: string; value: string }) {
     const id = `filter-${name}-${value}`;
@@ -123,7 +125,7 @@ function PartFieldset({
     <fieldset name={name} key={`filter-${name}`}>
       <VerticalCollapsible>
         <legend className="font-bold text-2xl">{name.toUpperCase()}</legend>
-        {Object.entries(filter).map(([key, value]) => (
+        {Object.entries(filter ?? {}).map(([key, value]) => (
           <fieldset key={`filter-${key}`}>
             <VerticalCollapsible>
               <legend className="font-bold">{key.toUpperCase()}</legend>
