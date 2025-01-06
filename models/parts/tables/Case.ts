@@ -18,6 +18,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
+import { SaveOptions } from "sequelize";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: {
@@ -98,26 +99,26 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
   @Column(DataType.VIRTUAL)
   get mainboard_support(): FormFactor.Mainboard[] | undefined {
-    const data = this.getDataValue(
+    const data: CaseMainboardSupportModel[] | undefined = this.getDataValue(
       "mainboard_support_data"
-    ) as CaseMainboardSupportModel[];
-    this.setDataValue("mainboard_support_data", undefined);
+    );
 
     if (!data) return undefined;
 
+    this.setDataValue("mainboard_support_data", undefined);
     return data.map(({ form_factor }) => form_factor);
   }
 
   set mainboard_support(data: FormFactor.Mainboard[] | null) {
-    const current = this.getDataValue(
+    const current: CaseMainboardSupportModel[] | undefined = this.getDataValue(
       "mainboard_support_data"
-    ) as CaseMainboardSupportModel[];
+    );
 
     if (data === null && current) current.map((value) => value.destroy());
 
     if (!data) return;
 
-    const newData = this.mainboardResolver(data, current);
+    const newData = this.mainboardResolver(data, current ?? []);
 
     this.mainboard_support_data = newData;
     this.setDataValue("mainboard_support_data", newData);
@@ -164,13 +165,13 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
   @Column(DataType.VIRTUAL)
   get radiator_support(): Case.RadiatorSupport | undefined {
-    const data = this.getDataValue(
+    const data: CaseRadiatorSupportModel[] | undefined = this.getDataValue(
       "radiator_support_data"
-    ) as CaseRadiatorSupportModel[];
-    this.setDataValue("radiator_support_data", undefined);
+    );
 
     if (!data) return undefined;
 
+    this.setDataValue("radiator_support_data", undefined);
     return data.reduce((acc, { case_side, form_factor }) => {
       if (!acc[case_side]) acc[case_side] = [];
 
@@ -180,15 +181,15 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   }
 
   set radiator_support(data: Case.RadiatorSupport | null) {
-    const current = this.getDataValue(
+    const current: CaseRadiatorSupportModel[] | undefined = this.getDataValue(
       "radiator_support_data"
-    ) as CaseRadiatorSupportModel[];
+    );
 
     if (data === null && current) current.map((value) => value.destroy());
 
     if (!data) return;
 
-    const newData = this.radiatorResolver(data, current);
+    const newData = this.radiatorResolver(data, current ?? []);
 
     this.radiator_support_data = newData;
     this.setDataValue("radiator_support_data", newData);
@@ -280,11 +281,12 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
   @Column(DataType.VIRTUAL)
   get fan_support(): Case.FanSupport | undefined {
-    const data = this.getDataValue("fan_support_data") as CaseFanSupportModel[];
-    this.setDataValue("fan_support_data", undefined);
+    const data: CaseFanSupportModel[] | undefined =
+      this.getDataValue("fan_support_data");
 
     if (!data) return undefined;
 
+    this.setDataValue("fan_support_data", undefined);
     return data.reduce((acc, { case_side, form_factor, count }) => {
       if (!acc[case_side]) acc[case_side] = {};
 
@@ -294,15 +296,14 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   }
 
   set fan_support(data: Case.FanSupport | null) {
-    const current = this.getDataValue(
-      "fan_support_data"
-    ) as CaseFanSupportModel[];
+    const current: CaseFanSupportModel[] | undefined =
+      this.getDataValue("fan_support_data");
 
     if (data === null && current) current.map((value) => value.destroy());
 
     if (!data) return;
 
-    const newData = this.fanResolver(data, current);
+    const newData = this.fanResolver(data, current ?? []);
 
     this.fan_support_data = newData;
     this.setDataValue("fan_support_data", newData);
@@ -401,13 +402,13 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
   @Column(DataType.VIRTUAL)
   get hard_drive_support(): Case.HardDriveSupport | undefined {
-    const data = this.getDataValue(
+    const data: CaseHardDriveSupportModel[] | undefined = this.getDataValue(
       "hard_drive_support_data"
-    ) as CaseHardDriveSupportModel[];
-    this.setDataValue("hard_drive_support_data", undefined);
+    );
 
     if (!data) return undefined;
 
+    this.setDataValue("hard_drive_support_data", undefined);
     return data.reduce((acc, { place, form_factor, count }) => {
       if (!acc[place]) acc[place] = {};
 
@@ -417,15 +418,15 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   }
 
   set hard_drive_support(data: Case.HardDriveSupport | null) {
-    const current = this.getDataValue(
+    const current: CaseHardDriveSupportModel[] | undefined = this.getDataValue(
       "hard_drive_support_data"
-    ) as CaseHardDriveSupportModel[];
+    );
 
     if (data === null && current) current.map((value) => value.destroy());
 
     if (!data) return;
 
-    const newData = this.hardDriveResolver(data, current);
+    const newData = this.hardDriveResolver(data, current ?? []);
 
     this.hard_drive_support_data = newData;
     this.setDataValue("hard_drive_support_data", newData);
@@ -524,24 +525,24 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
 
   @Column(DataType.VIRTUAL)
   get psu_support(): FormFactor.PSU[] | undefined {
-    const data = this.getDataValue("psu_support_data") as CasePSUSupportModel[];
-    this.setDataValue("psu_support_data", undefined);
+    const data: CasePSUSupportModel[] | undefined =
+      this.getDataValue("psu_support_data");
 
     if (!data) return undefined;
 
+    this.setDataValue("psu_support_data", undefined);
     return data.map(({ form_factor }) => form_factor);
   }
 
   set psu_support(data: FormFactor.PSU[] | null) {
-    const current = this.getDataValue(
-      "psu_support_data"
-    ) as CasePSUSupportModel[];
+    const current: CasePSUSupportModel[] | undefined =
+      this.getDataValue("psu_support_data");
 
     if (data === null && current) current.map((value) => value.destroy());
 
     if (!data) return;
 
-    const newData = this.psuResolver(data, current);
+    const newData = this.psuResolver(data, current ?? []);
 
     this.psu_support_data = newData;
     this.setDataValue("psu_support_data", newData);
@@ -591,6 +592,20 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
       "front_panel_ports",
       value ? JSON.stringify(value) : null
     );
+  }
+
+  async save(options?: SaveOptions<any> | undefined): Promise<this> {
+    const result = await super.save(options);
+
+    await Promise.all([
+      ...this.mainboard_support_data?.map((support) => support.save(options)),
+      ...this.radiator_support_data?.map((support) => support.save(options)),
+      ...this.fan_support_data?.map((support) => support.save(options)),
+      ...this.hard_drive_support_data?.map((support) => support.save(options)),
+      ...this.psu_support_data?.map((support) => support.save(options)),
+    ]);
+
+    return result;
   }
 }
 

@@ -12,6 +12,11 @@ import {
   FormFactor,
 } from "@/utils/interface/utils";
 import {
+  PowerConnectorExchanger,
+  PCIeExchanger,
+  USBExchanger,
+} from "@/utils/extract/Connector";
+import {
   BelongsTo,
   Column,
   DataType,
@@ -22,11 +27,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import {
-  PowerConnectorExchanger,
-  PCIeExchanger,
-  USBExchanger,
-} from "@/utils/extract/Connector";
+import { SaveOptions } from "sequelize";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: { attributes: ["id", ...Mainboard.SummaryAttributes] },
@@ -94,11 +95,12 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
 
   @Column(DataType.VIRTUAL)
   get pcies(): Mainboard.PCIe | undefined {
-    const pcieData = this.getDataValue("pcie_data") as MainboardPCIeModel[];
-    this.setDataValue("pcie_data", undefined);
+    const pcieData: MainboardPCIeModel[] | undefined = ({} =
+      this.getDataValue("pcie_data"));
 
     if (!pcieData) return undefined;
 
+    this.setDataValue("pcie_data", undefined);
     return pcieData.reduce((acc: Mainboard.PCIe, pcie: MainboardPCIeModel) => {
       const controller = pcie.controller;
       if (!acc[controller]) acc[controller] = {};
@@ -109,13 +111,14 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   }
 
   set pcies(data: Mainboard.PCIe | null) {
-    const current = this.getDataValue("pcie_data") as MainboardPCIeModel[];
+    const current: MainboardPCIeModel[] | undefined =
+      this.getDataValue("pcie_data");
 
     if (data === null && current) current.map((value) => value.destroy());
 
     if (!data) return;
 
-    const newData = this.pcieResolver(data, current);
+    const newData = this.pcieResolver(data, current ?? []);
 
     this.pcie_data = newData;
     this.setDataValue("pcie_data", newData);
@@ -265,13 +268,12 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
 
   @Column(DataType.VIRTUAL)
   get storage_connectors(): Mainboard.StorageConnector | undefined {
-    const storageData = this.getDataValue(
-      "storage_connector_data"
-    ) as MainboardStorageConnectorModel[];
-    this.setDataValue("storage_connector_data", undefined);
+    const storageData: MainboardStorageConnectorModel[] | undefined =
+      this.getDataValue("storage_connector_data");
 
     if (!storageData) return undefined;
 
+    this.setDataValue("storage_connector_data", undefined);
     return storageData.reduce(
       (
         acc: Mainboard.StorageConnector,
@@ -285,15 +287,14 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   }
 
   set storage_connectors(data: Mainboard.StorageConnector | null) {
-    const current = this.getDataValue(
-      "storage_connector_data"
-    ) as MainboardStorageConnectorModel[];
+    const current: MainboardStorageConnectorModel[] | undefined =
+      this.getDataValue("storage_connector_data");
 
     if (data === null && current) current.map((value) => value.destroy());
 
     if (!data) return;
 
-    const newData = this.storageResolver(data, current);
+    const newData = this.storageResolver(data, current ?? []);
 
     this.storage_connector_data = newData;
     this.setDataValue("storage_connector_data", newData);
@@ -345,12 +346,12 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
 
   @Column(DataType.VIRTUAL)
   get usb_connectors(): Mainboard.USBConnector | undefined {
-    const usbData = this.getDataValue(
-      "usb_data"
-    ) as MainboardUSBConnectorModel[];
-    if (!usbData) return undefined;
-    this.setDataValue("usb_data", undefined);
+    const usbData: MainboardUSBConnectorModel[] | undefined =
+      this.getDataValue("usb_data");
 
+    if (!usbData) return undefined;
+
+    this.setDataValue("usb_data", undefined);
     return usbData.reduce(
       (acc: Mainboard.USBConnector, usb: MainboardUSBConnectorModel) => {
         const usbStr = USBExchanger.toString(usb);
@@ -362,15 +363,14 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   }
 
   set usb_connectors(data: Mainboard.USBConnector | null) {
-    const current = this.getDataValue(
-      "usb_data"
-    ) as MainboardUSBConnectorModel[];
+    const current: MainboardUSBConnectorModel[] | undefined =
+      this.getDataValue("usb_data");
 
     if (data === null && current) current.map((value) => value.destroy());
 
     if (!data) return;
 
-    const newData = this.usbResolver(data, current);
+    const newData = this.usbResolver(data, current ?? []);
 
     this.usb_data = newData;
     this.setDataValue("usb_data", newData);
@@ -441,6 +441,18 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
 
   set back_panel_ports(value: {} | null) {
     this.setDataValue("back_panel_ports", value ? JSON.stringify(value) : null);
+  }
+
+  async save(options?: SaveOptions<any> | undefined): Promise<this> {
+    const result = await super.save(options);
+
+    await Promise.all([
+      ...this.pcie_data?.map((pcie) => pcie.save(options)),
+      ...this.storage_connector_data?.map((storage) => storage.save(options)),
+      ...this.usb_data?.map((usb) => usb.save(options)),
+    ]);
+
+    return result;
   }
 }
 

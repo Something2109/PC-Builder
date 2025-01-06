@@ -9,6 +9,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
+import { SaveOptions } from "sequelize";
 import CPUBlock from "@/utils/interface/part/CPUBlock";
 import {
   PartDetailTable,
@@ -16,8 +17,8 @@ import {
   Tables,
   ModelScopes,
 } from "../../interface";
-import { PartInformation } from "./Part";
 import { InternalConnectors } from "@/utils/interface/utils";
+import { PartInformation } from "./Part";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: { attributes: ["id", ...CPUBlock.SummaryAttributes] },
@@ -53,22 +54,24 @@ class CPUBlockModel extends Model implements PartDetailTable<CPUBlock.Info> {
 
   @Column(DataType.VIRTUAL)
   get socket(): string[] | undefined {
-    const data = this.getDataValue("socket_data");
-    this.setDataValue("socket_data", undefined);
+    const data: CPUBlockSocketModel[] | undefined =
+      this.getDataValue("socket_data");
 
     if (!data) return undefined;
 
-    return data.map((value: CPUBlockSocketModel) => value.socket);
+    this.setDataValue("socket_data", undefined);
+    return data.map((value) => value.socket);
   }
 
   set socket(data: string[] | null) {
-    const current = this.getDataValue("socket_data") as CPUBlockSocketModel[];
+    const current: CPUBlockSocketModel[] | undefined =
+      this.getDataValue("socket_data");
 
     if (data === null && current) current.map((value) => value.destroy());
 
     if (!data) return;
 
-    const newData = this.socketResolver(data, current);
+    const newData = this.socketResolver(data, current ?? []);
 
     this.socket_data = newData;
     this.setDataValue("socket_data", newData);
@@ -113,6 +116,14 @@ class CPUBlockModel extends Model implements PartDetailTable<CPUBlock.Info> {
     validate: { isIn: [InternalConnectors.RGB.options] },
   })
   declare rgb: InternalConnectors.RGB | null;
+
+  async save(options?: SaveOptions<any> | undefined): Promise<this> {
+    const result = await super.save(options);
+
+    await Promise.all(this.socket_data?.map((socket) => socket.save(options)));
+
+    return result;
+  }
 }
 
 @Table({ modelName: Tables.CPU_BLOCK_SOCKET })
