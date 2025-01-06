@@ -43,10 +43,10 @@ class RAMModel extends Model implements PartDetailTable<RAM.Info> {
   declare voltage: number | null;
 
   @Column(DataType.STRING)
-  get latency(): number[] | null {
+  get latency(): number[] | undefined {
     const data = this.getDataValue("latency_json");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set latency(value: number[] | null) {

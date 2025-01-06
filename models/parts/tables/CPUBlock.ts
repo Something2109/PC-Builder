@@ -21,9 +21,18 @@ import { InternalConnectors } from "@/utils/interface/utils";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: { attributes: ["id", ...CPUBlock.SummaryAttributes] },
-  [ModelScopes.FILTER]: (options: CPUBlock.FilterOptions) => ({
-    where: options,
-  }),
+  [ModelScopes.FILTER]: (options: CPUBlock.FilterOptions) => {
+    const { socket, ...rest } = options ?? {};
+
+    return {
+      where: rest,
+      include: {
+        model: CPUBlockSocketModel,
+        where: socket ? { socket } : {},
+        required: Boolean(socket),
+      },
+    };
+  },
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
     include: CPUBlockSocketModel,
@@ -43,11 +52,54 @@ class CPUBlockModel extends Model implements PartDetailTable<CPUBlock.Info> {
   declare socket_data: CPUBlockSocketModel[];
 
   @Column(DataType.VIRTUAL)
-  get socket(): string[] {
-    const data = this.getDataValue("socket_data") as CPUBlockSocketModel[];
+  get socket(): string[] | undefined {
+    const data = this.getDataValue("socket_data");
     this.setDataValue("socket_data", undefined);
 
-    return data.map((value) => value.socket);
+    if (!data) return undefined;
+
+    return data.map((value: CPUBlockSocketModel) => value.socket);
+  }
+
+  set socket(data: string[] | null) {
+    const current = this.getDataValue("socket_data") as CPUBlockSocketModel[];
+
+    if (data === null && current) current.map((value) => value.destroy());
+
+    if (!data) return;
+
+    const newData = this.socketResolver(data, current);
+
+    this.socket_data = newData;
+    this.setDataValue("socket_data", newData);
+  }
+
+  private socketResolver(
+    data: string[],
+    current: CPUBlockSocketModel[]
+  ): CPUBlockSocketModel[] {
+    const newData = current.reduce((acc, val) => {
+      acc[val.socket] = val;
+      return acc;
+    }, {} as { [key in string]: CPUBlockSocketModel });
+
+    data.forEach((socket) => {
+      if (!newData[socket]) {
+        newData[socket] = CPUBlockSocketModel.build({
+          id: this.id,
+          socket,
+        });
+      }
+    });
+
+    Object.keys(newData)
+      .filter((value) => !data.includes(value))
+      .forEach((value) => {
+        newData[value]?.destroy();
+        delete newData[value];
+      });
+
+    return Object.values(newData);
   }
 
   @Column({

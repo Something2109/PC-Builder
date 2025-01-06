@@ -18,19 +18,29 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import { WhereOptions } from "sequelize";
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: { attributes: ["id", ...Case.SummaryAttributes] },
-  [ModelScopes.FILTER]: ({
-    mainboard_support,
-    ...rest
-  }: Case.FilterOptions) => {
-    const filter: WhereOptions = {
-      ...rest,
+  [ModelScopes.SUMMARY]: {
+    attributes: ["id", ...Case.SummaryAttributes],
+    include: [CaseMainboardSupportModel, CasePSUSupportModel],
+  },
+  [ModelScopes.FILTER]: (options?: Case.FilterOptions) => {
+    const { mainboard_support, psu_support, ...where } = options ?? {};
+    return {
+      where,
+      include: [
+        {
+          model: CaseMainboardSupportModel,
+          where: mainboard_support ? { form_factor: mainboard_support } : {},
+          required: Boolean(mainboard_support),
+        },
+        {
+          model: CasePSUSupportModel,
+          where: psu_support ? { form_factor: psu_support } : {},
+          required: Boolean(psu_support),
+        },
+      ],
     };
-
-    return { where: filter };
   },
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
@@ -87,15 +97,59 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   declare mainboard_support_data: CaseMainboardSupportModel[];
 
   @Column(DataType.VIRTUAL)
-  get mainboard_support(): FormFactor.Mainboard[] | null {
+  get mainboard_support(): FormFactor.Mainboard[] | undefined {
     const data = this.getDataValue(
       "mainboard_support_data"
     ) as CaseMainboardSupportModel[];
     this.setDataValue("mainboard_support_data", undefined);
 
-    if (!data) return null;
+    if (!data) return undefined;
 
     return data.map(({ form_factor }) => form_factor);
+  }
+
+  set mainboard_support(data: FormFactor.Mainboard[] | null) {
+    const current = this.getDataValue(
+      "mainboard_support_data"
+    ) as CaseMainboardSupportModel[];
+
+    if (data === null && current) current.map((value) => value.destroy());
+
+    if (!data) return;
+
+    const newData = this.mainboardResolver(data, current);
+
+    this.mainboard_support_data = newData;
+    this.setDataValue("mainboard_support_data", newData);
+  }
+
+  private mainboardResolver(
+    data: FormFactor.Mainboard[],
+    current: CaseMainboardSupportModel[]
+  ): CaseMainboardSupportModel[] {
+    const newData = current.reduce((acc, val) => {
+      acc[val.form_factor] = val;
+      return acc;
+    }, {} as { [key in FormFactor.Mainboard]?: CaseMainboardSupportModel });
+
+    data.forEach((form_factor) => {
+      if (!newData[form_factor]) {
+        newData[form_factor] = CaseMainboardSupportModel.build({
+          id: this.id,
+          form_factor,
+        });
+      }
+    });
+
+    Object.keys(newData)
+      .filter((value) => !data.includes(value as FormFactor.Mainboard))
+      .forEach((value) => {
+        const form_factor = value as FormFactor.Mainboard;
+        newData[form_factor]?.destroy();
+        delete newData[form_factor];
+      });
+
+    return Object.values(newData);
   }
 
   /**
@@ -109,13 +163,13 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   declare radiator_support_data: CaseRadiatorSupportModel[];
 
   @Column(DataType.VIRTUAL)
-  get radiator_support(): Case.RadiatorSupport | null {
+  get radiator_support(): Case.RadiatorSupport | undefined {
     const data = this.getDataValue(
       "radiator_support_data"
     ) as CaseRadiatorSupportModel[];
     this.setDataValue("radiator_support_data", undefined);
 
-    if (!data) return null;
+    if (!data) return undefined;
 
     return data.reduce((acc, { case_side, form_factor }) => {
       if (!acc[case_side]) acc[case_side] = [];
@@ -123,6 +177,95 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
       acc[case_side].push(form_factor);
       return acc;
     }, {} as Case.RadiatorSupport);
+  }
+
+  set radiator_support(data: Case.RadiatorSupport | null) {
+    const current = this.getDataValue(
+      "radiator_support_data"
+    ) as CaseRadiatorSupportModel[];
+
+    if (data === null && current) current.map((value) => value.destroy());
+
+    if (!data) return;
+
+    const newData = this.radiatorResolver(data, current);
+
+    this.radiator_support_data = newData;
+    this.setDataValue("radiator_support_data", newData);
+  }
+
+  private radiatorResolver(
+    data: Case.RadiatorSupport,
+    current: CaseRadiatorSupportModel[]
+  ): CaseRadiatorSupportModel[] {
+    const currentSide = current.reduce((acc, value) => {
+      const side = value.case_side;
+
+      if (!acc[side]) acc[side] = [];
+      acc[side].push(value);
+
+      return acc;
+    }, {} as { [key in Case.Side]?: CaseRadiatorSupportModel[] });
+
+    Case.Side.options.forEach((case_side) => {
+      if (!data[case_side]) {
+        currentSide[case_side]?.map((value) => value.destroy());
+        delete currentSide[case_side];
+        return;
+      }
+
+      if (!currentSide[case_side]) {
+        currentSide[case_side] = data[case_side].map((form_factor) =>
+          CaseRadiatorSupportModel.build({
+            id: this.id,
+            case_side,
+            form_factor,
+          })
+        );
+        return;
+      }
+
+      currentSide[case_side] = this.caseSideRadiatorResolver(
+        case_side,
+        data[case_side],
+        currentSide[case_side]
+      );
+    });
+
+    return Object.values(currentSide).reduce((acc, value) => {
+      acc.push(...value);
+      return acc;
+    }, []);
+  }
+
+  private caseSideRadiatorResolver(
+    side: Case.Side,
+    data: FormFactor.Radiator[],
+    current: CaseRadiatorSupportModel[]
+  ): CaseRadiatorSupportModel[] {
+    const newData = current.reduce((acc, val) => {
+      acc[val.form_factor] = val;
+      return acc;
+    }, {} as { [key in FormFactor.Radiator]?: CaseRadiatorSupportModel });
+
+    data.forEach((form_factor) => {
+      if (!newData[form_factor]) {
+        newData[form_factor] = CaseRadiatorSupportModel.build({
+          id: this.id,
+          case_side: side,
+          form_factor,
+        });
+      }
+    });
+
+    Object.keys(newData)
+      .filter((value) => !data.includes(value as FormFactor.Radiator))
+      .forEach((value) => {
+        newData[value as FormFactor.Radiator]?.destroy();
+        delete newData[value as FormFactor.Radiator];
+      });
+
+    return Object.values(newData);
   }
 
   /**
@@ -136,11 +279,11 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   declare fan_support_data: CaseFanSupportModel[];
 
   @Column(DataType.VIRTUAL)
-  get fan_support(): Case.FanSupport | null {
+  get fan_support(): Case.FanSupport | undefined {
     const data = this.getDataValue("fan_support_data") as CaseFanSupportModel[];
     this.setDataValue("fan_support_data", undefined);
 
-    if (!data) return null;
+    if (!data) return undefined;
 
     return data.reduce((acc, { case_side, form_factor, count }) => {
       if (!acc[case_side]) acc[case_side] = {};
@@ -148,6 +291,102 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
       acc[case_side][form_factor] = count;
       return acc;
     }, {} as Case.FanSupport);
+  }
+
+  set fan_support(data: Case.FanSupport | null) {
+    const current = this.getDataValue(
+      "fan_support_data"
+    ) as CaseFanSupportModel[];
+
+    if (data === null && current) current.map((value) => value.destroy());
+
+    if (!data) return;
+
+    const newData = this.fanResolver(data, current);
+
+    this.fan_support_data = newData;
+    this.setDataValue("fan_support_data", newData);
+  }
+
+  private fanResolver(
+    data: Case.FanSupport,
+    current: CaseFanSupportModel[]
+  ): CaseFanSupportModel[] {
+    const currentSide = current.reduce((acc, value) => {
+      const side = value.case_side;
+
+      if (!acc[side]) acc[side] = [];
+      acc[side].push(value);
+
+      return acc;
+    }, {} as { [key in Case.Side]?: CaseFanSupportModel[] });
+
+    Case.Side.options.forEach((case_side) => {
+      if (!data[case_side]) {
+        currentSide[case_side]?.map((value) => value.destroy());
+        delete currentSide[case_side];
+        return;
+      }
+
+      if (!currentSide[case_side]) {
+        currentSide[case_side] = Object.entries(data[case_side]).map(
+          ([form_factor, count]) =>
+            CaseFanSupportModel.build({
+              id: this.id,
+              case_side,
+              form_factor,
+              count,
+            })
+        );
+        return;
+      }
+
+      currentSide[case_side] = this.caseSideFanResolver(
+        case_side,
+        data[case_side],
+        currentSide[case_side]
+      );
+    });
+
+    return Object.values(currentSide).reduce((acc, value) => {
+      acc.push(...value);
+      return acc;
+    }, []);
+  }
+
+  private caseSideFanResolver(
+    case_side: Case.Side,
+    data: { [key in FormFactor.Fan]?: number },
+    current: CaseFanSupportModel[]
+  ): CaseFanSupportModel[] {
+    const newData = current.reduce((acc, val) => {
+      acc[val.form_factor] = val;
+      return acc;
+    }, {} as { [key in FormFactor.Fan]?: CaseFanSupportModel });
+
+    Object.entries(data).forEach(([key, count]) => {
+      const form_factor = key as FormFactor.Fan;
+      if (!newData[form_factor]) {
+        newData[form_factor] = CaseFanSupportModel.build({
+          id: this.id,
+          case_side,
+          form_factor,
+        });
+      }
+      newData[form_factor].count = count;
+    });
+
+    Object.keys(newData)
+      .filter(
+        (value) => !Object.keys(data).includes(value as FormFactor.Radiator)
+      )
+      .forEach((value) => {
+        const form_factor = value as FormFactor.Fan;
+        newData[form_factor]?.destroy();
+        delete newData[form_factor];
+      });
+
+    return Object.values(newData);
   }
 
   /**
@@ -161,13 +400,13 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   declare hard_drive_support_data: CaseHardDriveSupportModel[];
 
   @Column(DataType.VIRTUAL)
-  get hard_drive_support(): Case.HardDriveSupport | null {
+  get hard_drive_support(): Case.HardDriveSupport | undefined {
     const data = this.getDataValue(
       "hard_drive_support_data"
     ) as CaseHardDriveSupportModel[];
     this.setDataValue("hard_drive_support_data", undefined);
 
-    if (!data) return null;
+    if (!data) return undefined;
 
     return data.reduce((acc, { place, form_factor, count }) => {
       if (!acc[place]) acc[place] = {};
@@ -175,6 +414,102 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
       acc[place][form_factor] = count;
       return acc;
     }, {} as Case.HardDriveSupport);
+  }
+
+  set hard_drive_support(data: Case.HardDriveSupport | null) {
+    const current = this.getDataValue(
+      "hard_drive_support_data"
+    ) as CaseHardDriveSupportModel[];
+
+    if (data === null && current) current.map((value) => value.destroy());
+
+    if (!data) return;
+
+    const newData = this.hardDriveResolver(data, current);
+
+    this.hard_drive_support_data = newData;
+    this.setDataValue("hard_drive_support_data", newData);
+  }
+
+  private hardDriveResolver(
+    data: Case.HardDriveSupport,
+    current: CaseHardDriveSupportModel[]
+  ): CaseHardDriveSupportModel[] {
+    const currentSide = current.reduce((acc, value) => {
+      const side = value.place;
+
+      if (!acc[side]) acc[side] = [];
+      acc[side].push(value);
+
+      return acc;
+    }, {} as { [key in Case.HardDrivePlace]?: CaseHardDriveSupportModel[] });
+
+    Case.HardDrivePlace.options.forEach((place) => {
+      if (!data[place]) {
+        currentSide[place]?.map((value) => value.destroy());
+        delete currentSide[place];
+        return;
+      }
+
+      if (!currentSide[place]) {
+        currentSide[place] = Object.entries(data[place]).map(
+          ([form_factor, count]) =>
+            CaseHardDriveSupportModel.build({
+              id: this.id,
+              place,
+              form_factor,
+              count,
+            })
+        );
+        return;
+      }
+
+      currentSide[place] = this.caseSideHardDriveResolver(
+        place,
+        data[place],
+        currentSide[place]
+      );
+    });
+
+    return Object.values(currentSide).reduce((acc, value) => {
+      acc.push(...value);
+      return acc;
+    }, []);
+  }
+
+  private caseSideHardDriveResolver(
+    place: Case.HardDrivePlace,
+    data: { [key in Case.HardDriveSize]?: number },
+    current: CaseHardDriveSupportModel[]
+  ): CaseHardDriveSupportModel[] {
+    const newData = current.reduce((acc, val) => {
+      acc[val.form_factor] = val;
+      return acc;
+    }, {} as { [key in Case.HardDriveSize]?: CaseHardDriveSupportModel });
+
+    Object.entries(data).forEach(([key, count]) => {
+      const form_factor = key as Case.HardDriveSize;
+      if (!newData[form_factor]) {
+        newData[form_factor] = CaseHardDriveSupportModel.build({
+          id: this.id,
+          place,
+          form_factor,
+        });
+      }
+      newData[form_factor].count = count;
+    });
+
+    Object.keys(newData)
+      .filter(
+        (value) => !Object.keys(data).includes(value as FormFactor.Radiator)
+      )
+      .forEach((value) => {
+        const form_factor = value as Case.HardDriveSize;
+        newData[form_factor]?.destroy();
+        delete newData[form_factor];
+      });
+
+    return Object.values(newData);
   }
 
   /**
@@ -188,23 +523,67 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   declare psu_support_data: CasePSUSupportModel[];
 
   @Column(DataType.VIRTUAL)
-  get psu_support(): FormFactor.PSU[] | null {
+  get psu_support(): FormFactor.PSU[] | undefined {
     const data = this.getDataValue("psu_support_data") as CasePSUSupportModel[];
     this.setDataValue("psu_support_data", undefined);
 
-    if (!data) return null;
+    if (!data) return undefined;
 
     return data.map(({ form_factor }) => form_factor);
+  }
+
+  set psu_support(data: FormFactor.PSU[] | null) {
+    const current = this.getDataValue(
+      "psu_support_data"
+    ) as CasePSUSupportModel[];
+
+    if (data === null && current) current.map((value) => value.destroy());
+
+    if (!data) return;
+
+    const newData = this.psuResolver(data, current);
+
+    this.psu_support_data = newData;
+    this.setDataValue("psu_support_data", newData);
+  }
+
+  private psuResolver(
+    data: FormFactor.PSU[],
+    current: CasePSUSupportModel[]
+  ): CasePSUSupportModel[] {
+    const newData = current.reduce((acc, val) => {
+      acc[val.form_factor] = val;
+      return acc;
+    }, {} as { [key in FormFactor.PSU]?: CasePSUSupportModel });
+
+    data.forEach((form_factor) => {
+      if (!newData[form_factor]) {
+        newData[form_factor] = CasePSUSupportModel.build({
+          id: this.id,
+          form_factor,
+        });
+      }
+    });
+
+    Object.keys(newData)
+      .filter((value) => !data.includes(value as FormFactor.PSU))
+      .forEach((value) => {
+        const form_factor = value as FormFactor.PSU;
+        newData[form_factor]?.destroy();
+        delete newData[form_factor];
+      });
+
+    return Object.values(newData);
   }
 
   @Column(DataType.FLOAT)
   declare max_psu_length: number | null;
 
   @Column(DataType.TEXT)
-  get front_panel_ports(): Case.FrontPanelPort | null {
+  get front_panel_ports(): Case.FrontPanelPort | undefined {
     const data = this.getDataValue("front_panel_ports");
 
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) : undefined;
   }
 
   set front_panel_ports(value: Case.FrontPanelPort | null) {

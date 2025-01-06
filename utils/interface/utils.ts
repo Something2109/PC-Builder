@@ -251,7 +251,7 @@ namespace ExternalPorts {
 
     export type Port = z.infer<typeof Port>;
 
-    export const Regex = new RegExp(`${Port} PS/2`);
+    export const Regex = new RegExp(`${Port.options.join("|")} PS/2`);
 
     export const Schema = z.string().regex(Regex);
   }
