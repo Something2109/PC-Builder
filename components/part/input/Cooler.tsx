@@ -5,6 +5,7 @@ import {
   DimensionInputRow,
 } from "../TableWrapper";
 import Cooler from "@/utils/interface/part/Cooler";
+import { Material } from "@/utils/interface/utils";
 import { TableHTMLAttributes } from "react";
 
 export default function CoolerFieldset({
@@ -23,7 +24,7 @@ export default function CoolerFieldset({
       <SelectInputRow
         name="cpu_plate"
         label="CPU Plate"
-        options={Cooler.CPUPlate.options}
+        options={Material.Metal.options}
         defaultValue={defaultValue?.cpu_plate}
       />
       <DimensionInputRow defaultValue={defaultValue} />

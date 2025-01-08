@@ -1,5 +1,5 @@
 import CPUBlock from "@/utils/interface/part/CPUBlock";
-import { InternalConnectors } from "@/utils/interface/utils";
+import { InternalConnectors, Material } from "@/utils/interface/utils";
 import { TableWrapper, InputRow, SelectInputRow } from "../TableWrapper";
 import { TableHTMLAttributes } from "react";
 
@@ -19,7 +19,7 @@ export default function CPUBlockTable({
       <SelectInputRow
         name="plate"
         label="Plate"
-        options={CPUBlock.Plate.options}
+        options={Material.Metal.options}
         defaultValue={defaultValue?.plate}
       />
       <SelectInputRow

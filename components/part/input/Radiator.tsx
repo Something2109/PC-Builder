@@ -1,5 +1,5 @@
 import Radiator from "@/utils/interface/part/Radiator";
-import { FormFactor } from "@/utils/interface/utils";
+import { FormFactor, Material } from "@/utils/interface/utils";
 import {
   TableWrapper,
   InputRow,
@@ -32,7 +32,7 @@ export default function RadiatorTable({
       <SelectInputRow
         name="material"
         label="Material"
-        options={Radiator.Material.options}
+        options={Material.Metal.options}
         defaultValue={defaultValue?.material}
       />
     </TableWrapper>
