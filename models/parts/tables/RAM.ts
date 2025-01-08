@@ -66,7 +66,7 @@ class RAMModel extends Model implements PartDetailTable<RAM.Info> {
     type: DataType.STRING,
     validate: { isIn: [InternalConnectors.RAM.options] },
   })
-  declare protocol: InternalConnectors.RAM | null;
+  declare interface: InternalConnectors.RAM | null;
 }
 
 export { RAMModel };

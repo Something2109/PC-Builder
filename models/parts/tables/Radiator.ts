@@ -6,7 +6,7 @@ import {
 } from "../../interface";
 import { PartInformation } from "./Part";
 import Radiator from "@/utils/interface/part/Radiator";
-import { FormFactor } from "@/utils/interface/utils";
+import { FormFactor, Material } from "@/utils/interface/utils";
 import {
   BelongsTo,
   Column,
@@ -55,9 +55,9 @@ class RadiatorModel extends Model implements PartDetailTable<Radiator.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [Radiator.Material.options] },
+    validate: { isIn: [Material.Metal.options] },
   })
-  declare material: Radiator.Material | null;
+  declare material: Material.Metal | null;
 }
 
 export { RadiatorModel };

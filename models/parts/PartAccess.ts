@@ -31,6 +31,7 @@ class PartAccess {
         limit,
         offset: page * limit,
         include,
+        distinct: true,
       });
 
       return { total: count, list: rows.map((value) => value.toJSON()) };

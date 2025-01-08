@@ -18,6 +18,7 @@ import {
   ModelScopes,
 } from "../../interface";
 import { InternalConnectors } from "@/utils/interface/utils";
+import { Material } from "@/utils/interface/utils";
 import { PartInformation } from "./Part";
 
 @Scopes(() => ({
@@ -107,9 +108,9 @@ class CPUBlockModel extends Model implements PartDetailTable<CPUBlock.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [CPUBlock.Plate.options] },
+    validate: { isIn: [Material.Metal.options] },
   })
-  declare plate: CPUBlock.Plate | null;
+  declare plate: Material.Metal | null;
 
   @Column({
     type: DataType.STRING,
@@ -132,6 +133,9 @@ class CPUBlockSocketModel extends Model {
   @ForeignKey(() => CPUBlockModel)
   @Column(DataType.UUID)
   declare id: string;
+
+  @BelongsTo(() => CPUBlockModel)
+  declare cpu_block: CPUBlockModel;
 
   @PrimaryKey
   @Column(DataType.STRING)

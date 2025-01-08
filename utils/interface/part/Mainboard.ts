@@ -51,7 +51,7 @@ namespace Mainboard {
     chipset: z.string(),
 
     ram_form_factor: FormFactor.RAM,
-    ram_protocol: InternalConnectors.RAM,
+    ram_interface: InternalConnectors.RAM,
     ram_slot: z.number(),
     expansion_slots: z.number(),
 
@@ -72,7 +72,7 @@ namespace Mainboard {
     form_factor: true,
     socket: true,
     ram_form_factor: true,
-    ram_protocol: true,
+    ram_interface: true,
   });
 
   export const SummaryAttributes = SummarySchema.keyof().options;
@@ -86,14 +86,14 @@ namespace Mainboard {
       form_factor: FilterOptions(FormFactor.Mainboard),
       socket: FilterOptions(z.string()),
       ram_form_factor: FilterOptions(FormFactor.RAM),
-      ram_protocol: FilterOptions(InternalConnectors.RAM),
+      ram_interface: FilterOptions(InternalConnectors.RAM),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
     form_factor: FormFactor.Mainboard.options,
     ram_form_factor: FormFactor.RAM.options,
-    ram_protocol: InternalConnectors.RAM.options,
+    ram_interface: InternalConnectors.RAM.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;

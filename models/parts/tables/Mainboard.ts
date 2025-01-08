@@ -75,7 +75,7 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
     type: DataType.STRING,
     validate: { isIn: [InternalConnectors.RAM.options] },
   })
-  declare ram_protocol: InternalConnectors.RAM | null;
+  declare ram_interface: InternalConnectors.RAM | null;
 
   @Column(DataType.TINYINT)
   declare ram_slot: number | null;
@@ -467,6 +467,9 @@ class MainboardPCIeModel extends Model {
   @Column(DataType.UUID)
   declare id: string;
 
+  @BelongsTo(() => MainboardModel)
+  declare mainboard: MainboardModel;
+
   @PrimaryKey
   @Column({
     type: DataType.STRING,
@@ -497,6 +500,9 @@ class MainboardStorageConnectorModel extends Model {
   @Column(DataType.UUID)
   declare id: string;
 
+  @BelongsTo(() => MainboardModel)
+  declare mainboard: MainboardModel;
+
   @PrimaryKey
   @Column({
     type: DataType.STRING,
@@ -525,6 +531,9 @@ class MainboardUSBConnectorModel extends Model {
   @ForeignKey(() => MainboardModel)
   @Column(DataType.UUID)
   declare id: string;
+
+  @BelongsTo(() => MainboardModel)
+  declare mainboard: MainboardModel;
 
   @PrimaryKey
   @Column({

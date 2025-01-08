@@ -23,10 +23,15 @@ import { SaveOptions } from "sequelize";
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: {
     attributes: ["id", ...Case.SummaryAttributes],
-    include: [CaseMainboardSupportModel, CasePSUSupportModel],
+    include: [
+      CaseMainboardSupportModel,
+      CaseRadiatorSupportModel,
+      CasePSUSupportModel,
+    ],
   },
   [ModelScopes.FILTER]: (options?: Case.FilterOptions) => {
-    const { mainboard_support, psu_support, ...where } = options ?? {};
+    const { mainboard_support, radiator_support, psu_support, ...where } =
+      options ?? {};
     return {
       where,
       include: [
@@ -34,6 +39,11 @@ import { SaveOptions } from "sequelize";
           model: CaseMainboardSupportModel,
           where: mainboard_support ? { form_factor: mainboard_support } : {},
           required: Boolean(mainboard_support),
+        },
+        {
+          model: CaseRadiatorSupportModel,
+          where: radiator_support ? { form_factor: radiator_support } : {},
+          required: Boolean(radiator_support),
         },
         {
           model: CasePSUSupportModel,
@@ -620,6 +630,9 @@ class CaseMainboardSupportModel extends Model {
   @Column(DataType.UUID)
   declare id: string;
 
+  @BelongsTo(() => CaseModel)
+  declare case: CaseModel;
+
   @PrimaryKey
   @Column({
     type: DataType.STRING,
@@ -638,6 +651,9 @@ class CaseFanSupportModel extends Model {
   @ForeignKey(() => CaseModel)
   @Column(DataType.UUID)
   declare id: string;
+
+  @BelongsTo(() => CaseModel)
+  declare case: CaseModel;
 
   @PrimaryKey
   @Column({ type: DataType.STRING, validate: { isIn: [Case.Side.options] } })
@@ -665,6 +681,9 @@ class CaseRadiatorSupportModel extends Model {
   @Column(DataType.UUID)
   declare id: string;
 
+  @BelongsTo(() => CaseModel)
+  declare case: CaseModel;
+
   @PrimaryKey
   @Column({ type: DataType.STRING, validate: { isIn: [Case.Side.options] } })
   declare case_side: Case.Side;
@@ -684,6 +703,9 @@ class CaseHardDriveSupportModel extends Model {
   @ForeignKey(() => CaseModel)
   @Column(DataType.UUID)
   declare id: string;
+
+  @BelongsTo(() => CaseModel)
+  declare case: CaseModel;
 
   @PrimaryKey
   @Column({
@@ -713,6 +735,9 @@ class CasePSUSupportModel extends Model {
   @ForeignKey(() => CaseModel)
   @Column(DataType.UUID)
   declare id: string;
+
+  @BelongsTo(() => CaseModel)
+  declare case: CaseModel;
 
   @PrimaryKey
   @Column({
