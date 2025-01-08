@@ -630,6 +630,9 @@ class CaseMainboardSupportModel extends Model {
   @Column(DataType.UUID)
   declare id: string;
 
+  @BelongsTo(() => CaseModel)
+  declare case: CaseModel;
+
   @PrimaryKey
   @Column({
     type: DataType.STRING,
@@ -648,6 +651,9 @@ class CaseFanSupportModel extends Model {
   @ForeignKey(() => CaseModel)
   @Column(DataType.UUID)
   declare id: string;
+
+  @BelongsTo(() => CaseModel)
+  declare case: CaseModel;
 
   @PrimaryKey
   @Column({ type: DataType.STRING, validate: { isIn: [Case.Side.options] } })
@@ -675,6 +681,9 @@ class CaseRadiatorSupportModel extends Model {
   @Column(DataType.UUID)
   declare id: string;
 
+  @BelongsTo(() => CaseModel)
+  declare case: CaseModel;
+
   @PrimaryKey
   @Column({ type: DataType.STRING, validate: { isIn: [Case.Side.options] } })
   declare case_side: Case.Side;
@@ -694,6 +703,9 @@ class CaseHardDriveSupportModel extends Model {
   @ForeignKey(() => CaseModel)
   @Column(DataType.UUID)
   declare id: string;
+
+  @BelongsTo(() => CaseModel)
+  declare case: CaseModel;
 
   @PrimaryKey
   @Column({
@@ -723,6 +735,9 @@ class CasePSUSupportModel extends Model {
   @ForeignKey(() => CaseModel)
   @Column(DataType.UUID)
   declare id: string;
+
+  @BelongsTo(() => CaseModel)
+  declare case: CaseModel;
 
   @PrimaryKey
   @Column({

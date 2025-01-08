@@ -134,6 +134,9 @@ class CPUBlockSocketModel extends Model {
   @Column(DataType.UUID)
   declare id: string;
 
+  @BelongsTo(() => CPUBlockModel)
+  declare cpu_block: CPUBlockModel;
+
   @PrimaryKey
   @Column(DataType.STRING)
   declare socket: string;

@@ -467,6 +467,9 @@ class MainboardPCIeModel extends Model {
   @Column(DataType.UUID)
   declare id: string;
 
+  @BelongsTo(() => MainboardModel)
+  declare mainboard: MainboardModel;
+
   @PrimaryKey
   @Column({
     type: DataType.STRING,
@@ -497,6 +500,9 @@ class MainboardStorageConnectorModel extends Model {
   @Column(DataType.UUID)
   declare id: string;
 
+  @BelongsTo(() => MainboardModel)
+  declare mainboard: MainboardModel;
+
   @PrimaryKey
   @Column({
     type: DataType.STRING,
@@ -525,6 +531,9 @@ class MainboardUSBConnectorModel extends Model {
   @ForeignKey(() => MainboardModel)
   @Column(DataType.UUID)
   declare id: string;
+
+  @BelongsTo(() => MainboardModel)
+  declare mainboard: MainboardModel;
 
   @PrimaryKey
   @Column({
