@@ -16,7 +16,7 @@ import {
   ModelScopes,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import { FormFactor } from "@/utils/interface/utils";
+import { FormFactor, Material } from "@/utils/interface/utils";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: { attributes: ["id", ...AIO.SummaryAttributes] },
@@ -53,9 +53,9 @@ class AIOModel extends Model implements PartDetailTable<AIO.Info> {
 
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [AIO.CPUPlate.options] },
+    validate: { isIn: [Material.Metal.options] },
   })
-  declare cpu_plate: AIO.CPUPlate | null;
+  declare cpu_plate: Material.Metal | null;
 
   @Column(DataType.FLOAT)
   declare pump_width: number | null;

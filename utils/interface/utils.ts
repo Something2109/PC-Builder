@@ -417,6 +417,30 @@ type ExternalPorts =
   | ExternalPorts.Display
   | ExternalPorts.Audio;
 
+namespace Material {
+  export const Metal = z.enum([
+    "Alluminium",
+    "Brass",
+    "Copper",
+    "Inox",
+    "Nickel-Plated Copper",
+    "Nickel",
+    "Stainless Steel",
+  ]);
+
+  export type Metal = z.infer<typeof Metal>;
+
+  export const Plastic = z.enum([
+    "Acetal",
+    "Acrylic",
+    "Nylon",
+    "Plexi",
+    "PPS-GF40",
+  ]);
+
+  export type Plastic = z.infer<typeof Plastic>;
+}
+
 type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
   [key in Attributes]?: NonNullable<Required<Info>[key]> extends number
     ? number[]
@@ -433,6 +457,7 @@ export {
   FormFactor,
   InternalConnectors,
   ExternalPorts,
+  Material,
   NumberFilterOptions,
   FilterOptions,
 };

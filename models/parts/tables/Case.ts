@@ -23,10 +23,15 @@ import { SaveOptions } from "sequelize";
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: {
     attributes: ["id", ...Case.SummaryAttributes],
-    include: [CaseMainboardSupportModel, CasePSUSupportModel],
+    include: [
+      CaseMainboardSupportModel,
+      CaseRadiatorSupportModel,
+      CasePSUSupportModel,
+    ],
   },
   [ModelScopes.FILTER]: (options?: Case.FilterOptions) => {
-    const { mainboard_support, psu_support, ...where } = options ?? {};
+    const { mainboard_support, radiator_support, psu_support, ...where } =
+      options ?? {};
     return {
       where,
       include: [
@@ -34,6 +39,11 @@ import { SaveOptions } from "sequelize";
           model: CaseMainboardSupportModel,
           where: mainboard_support ? { form_factor: mainboard_support } : {},
           required: Boolean(mainboard_support),
+        },
+        {
+          model: CaseRadiatorSupportModel,
+          where: radiator_support ? { form_factor: radiator_support } : {},
+          required: Boolean(radiator_support),
         },
         {
           model: CasePSUSupportModel,

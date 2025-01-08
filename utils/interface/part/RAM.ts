@@ -15,7 +15,7 @@ namespace RAM {
     kit: z.number(),
 
     form_factor: FormFactor.RAM,
-    protocol: InternalConnectors.RAM,
+    interface: InternalConnectors.RAM,
   });
 
   export type Info = z.infer<typeof Schema>;
@@ -24,7 +24,7 @@ namespace RAM {
     speed: true,
     capacity: true,
     form_factor: true,
-    protocol: true,
+    interface: true,
   });
 
   export const SummaryAttributes = SummarySchema.keyof().options;
@@ -37,13 +37,13 @@ namespace RAM {
     .object({
       capacity: NumberFilterOptions,
       form_factor: FilterOptions(FormFactor.RAM),
-      protocol: FilterOptions(InternalConnectors.RAM),
+      interface: FilterOptions(InternalConnectors.RAM),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
     form_factor: FormFactor.RAM.options,
-    protocol: InternalConnectors.RAM.options,
+    interface: InternalConnectors.RAM.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;
