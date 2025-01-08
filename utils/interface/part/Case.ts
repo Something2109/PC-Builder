@@ -70,6 +70,7 @@ export namespace Case {
   export const SummarySchema = Schema.pick({
     form_factor: true,
     mainboard_support: true,
+    radiator_support: true,
     psu_support: true,
   });
 
@@ -83,6 +84,7 @@ export namespace Case {
     .object({
       form_factor: FilterOptions(FormFactor.Case),
       mainboard_support: FilterOptions(FormFactor.Mainboard),
+      radiator_support: FilterOptions(FormFactor.Radiator),
       psu_support: FilterOptions(FormFactor.PSU),
     })
     .partial();
@@ -90,6 +92,7 @@ export namespace Case {
   export const DefaultFilterOptions = {
     form_factor: FormFactor.Case.options,
     mb_support: FormFactor.Mainboard.options,
+    radiator_support: FormFactor.Radiator.options,
     psu_support: FormFactor.PSU.options,
   };
 
