@@ -6,7 +6,7 @@ import {
   BadRequestException,
   Global,
 } from "@nestjs/common";
-import { ZodSchema, nativeEnum } from "zod";
+import { ZodError, ZodSchema, nativeEnum } from "zod";
 
 @Injectable()
 export class ZodValidationPipe implements PipeTransform {
@@ -16,8 +16,18 @@ export class ZodValidationPipe implements PipeTransform {
     try {
       return this.validator.parse(value);
     } catch (error) {
-      console.error(error);
-      throw new BadRequestException("Validation failed");
+      const err = error as ZodError;
+      console.error(err);
+
+      const messages: string[] = err.issues.map((issue) => {
+        let errVal = value;
+        issue.path.forEach((key) => (errVal = errVal[key]));
+        return `${issue.message} in [${issue.path.join("][")}]`;
+      });
+
+      throw new BadRequestException(
+        `Validation failed: ${messages.join(", ")}.`
+      );
     }
   }
 }
