@@ -75,7 +75,7 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
     type: DataType.STRING,
     validate: { isIn: [InternalConnectors.RAM.options] },
   })
-  declare ram_protocol: InternalConnectors.RAM | null;
+  declare ram_interface: InternalConnectors.RAM | null;
 
   @Column(DataType.TINYINT)
   declare ram_slot: number | null;
