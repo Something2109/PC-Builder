@@ -43,10 +43,10 @@ export default function RAMFieldset({
         defaultValue={defaultValue?.form_factor}
       />
       <SelectInputRow
-        name="protocol"
-        label="Protocol"
+        name="interface"
+        label="Interface"
         options={InternalConnectors.RAM.options}
-        defaultValue={defaultValue?.protocol}
+        defaultValue={defaultValue?.interface}
       />
     </TableWrapper>
   );

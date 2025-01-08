@@ -18,7 +18,7 @@ export function RAMTable({
       </TableRowWrapper>
       <TableRowWrapper>RAM Kit {defaultValue?.kit}</TableRowWrapper>
       <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
-      <TableRowWrapper>Protocol {defaultValue?.protocol}</TableRowWrapper>
+      <TableRowWrapper>Interface {defaultValue?.interface}</TableRowWrapper>
     </TableWrapper>
   );
 }

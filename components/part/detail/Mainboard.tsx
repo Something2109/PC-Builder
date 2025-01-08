@@ -16,7 +16,7 @@ export function MainboardTable({
         RAM Form Factor {defaultValue?.ram_form_factor}
       </TableRowWrapper>
       <TableRowWrapper>
-        RAM Protocol {defaultValue?.ram_protocol}
+        RAM Interface {defaultValue?.ram_interface}
       </TableRowWrapper>
       <TableRowWrapper>RAM Slot {defaultValue?.ram_slot}</TableRowWrapper>
       <TableRowWrapper>

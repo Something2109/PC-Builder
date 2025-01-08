@@ -29,10 +29,10 @@ export default function MainboardFieldset({
         defaultValue={defaultValue?.ram_form_factor}
       />
       <SelectInputRow
-        name="ram_protocol"
-        label="RAM Protocol"
+        name="ram_interface"
+        label="RAM Interface"
         options={InternalConnectors.RAM.options}
-        defaultValue={defaultValue?.ram_protocol}
+        defaultValue={defaultValue?.ram_interface}
       />
       <InputRow
         type="number"
