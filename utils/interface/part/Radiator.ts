@@ -1,11 +1,7 @@
-import { FormFactor, FilterOptions } from "../utils";
+import { FormFactor, Material, FilterOptions } from "../utils";
 import { z } from "zod";
 
 export namespace Radiator {
-  export const Material = z.enum(["Aluminum", "Copper"]);
-
-  export type Material = z.infer<typeof Material>;
-
   export const Schema = z.object({
     form_factor: FormFactor.Radiator,
 
@@ -14,7 +10,7 @@ export namespace Radiator {
     height: z.number(),
 
     fpi: z.number(),
-    material: Material,
+    material: Material.Metal,
   });
 
   export type Info = z.infer<typeof Schema>;
@@ -33,13 +29,13 @@ export namespace Radiator {
   export const FilterOptionSchema = z
     .object({
       form_factor: FilterOptions(FormFactor.Radiator),
-      material: FilterOptions(Material),
+      material: FilterOptions(Material.Metal),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
     form_factor: FormFactor.Radiator.options,
-    material: Material.options,
+    material: Material.Metal.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;
