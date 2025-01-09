@@ -3,6 +3,7 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
 import RAM from "@/utils/interface/part/RAM";
@@ -20,7 +21,9 @@ import {
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: { attributes: ["id", ...RAM.SummaryAttributes] },
-  [ModelScopes.FILTER]: (options: RAM.FilterOptions) => ({ where: options }),
+  [ModelScopes.FILTER]: (options: RAM.FilterOptions) => ({
+    where: defaultFilter(options),
+  }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.RAM })

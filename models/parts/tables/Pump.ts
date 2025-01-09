@@ -3,6 +3,7 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
 import Pump from "@/utils/interface/part/Pump";
@@ -20,7 +21,9 @@ import {
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: { attributes: ["id", ...Pump.SummaryAttributes] },
-  [ModelScopes.FILTER]: (options: Pump.FilterOptions) => ({ where: options }),
+  [ModelScopes.FILTER]: (options: Pump.FilterOptions) => ({
+    where: defaultFilter(options),
+  }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.PUMP })

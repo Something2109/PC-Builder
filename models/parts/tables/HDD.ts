@@ -3,6 +3,7 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
 import HDD from "@/utils/interface/part/HDD";
@@ -20,7 +21,9 @@ import {
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: { attributes: ["id", ...HDD.SummaryAttributes] },
-  [ModelScopes.FILTER]: (options: HDD.FilterOptions) => ({ where: options }),
+  [ModelScopes.FILTER]: (options: HDD.FilterOptions) => ({
+    where: defaultFilter(options),
+  }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.HDD })
