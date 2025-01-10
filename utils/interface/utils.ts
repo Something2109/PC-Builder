@@ -449,7 +449,7 @@ type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
     : string[];
 };
 
-const NumberFilterOptions = z.array(z.number());
+const NumberFilterOptions = z.array(z.number()).length(2);
 
 const FilterOptions = <T extends z.ZodTypeAny>(zodType: T) => z.array(zodType);
 

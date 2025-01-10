@@ -1,3 +1,7 @@
+import { NumberFilterOptions } from "@/utils/interface/utils";
+import { Op, WhereOptions } from "sequelize";
+import { Model } from "sequelize-typescript";
+
 enum Tables {
   ARTICLE = "article",
   PART = "part_information",
@@ -44,4 +48,30 @@ const PartDefaultScope = {
   },
 };
 
-export { Tables, ModelScopes, type PartDetailTable, PartDefaultScope };
+function defaultFilter<
+  T extends Model<Attributes, any>,
+  Attributes extends {}
+>(options?: { [key in keyof Attributes]?: string[] | number[] }) {
+  if (!options) return {};
+
+  const where = Object.entries(options).reduce((acc, [key, entries]) => {
+    const { success, data } = NumberFilterOptions.safeParse(entries);
+    if (success && data) {
+      const [min, max] = data.sort((a, b) => a - b);
+      acc[key] = { [Op.between]: [min, max] };
+    } else {
+      acc[key] = entries;
+    }
+    return acc;
+  }, {} as any);
+
+  return where as WhereOptions<T>;
+}
+
+export {
+  Tables,
+  ModelScopes,
+  defaultFilter,
+  type PartDetailTable,
+  PartDefaultScope,
+};
