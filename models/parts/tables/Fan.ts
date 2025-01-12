@@ -19,7 +19,10 @@ import {
 } from "sequelize-typescript";
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: { attributes: ["id", ...Fan.SummaryAttributes] },
+  [ModelScopes.SUMMARY]: (options: Fan.FilterOptions) => ({
+    attributes: ["id", ...Fan.SummaryAttributes],
+    where: options,
+  }),
   [ModelScopes.FILTER]: (options: Fan.FilterOptions) => ({ where: options }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
