@@ -333,10 +333,11 @@ abstract class BaseDetailPartService<
   }
 
   async filter(options?: Filter & SearchOptions): Promise<Filter> {
-    const { part, [this.part]: filter } = options ?? {};
+    let { part, [this.part]: filter } = options ?? {};
+    part = { ...part, part: [this.part] };
 
     const FilteredPart = PartInformation.scope({
-      method: [ModelScopes.FILTER, { ...part, part: [this.part] }],
+      method: [ModelScopes.FILTER, part],
     });
     const FilteredModel = Models[this.part].scope({
       method: [ModelScopes.FILTER, filter],
@@ -345,7 +346,7 @@ abstract class BaseDetailPartService<
     const result: Filter = {
       part: await this.filterFromModel(
         FilteredPart,
-        part ?? {},
+        part,
         Part.FilterAttributes,
         FilteredModel
       ),
