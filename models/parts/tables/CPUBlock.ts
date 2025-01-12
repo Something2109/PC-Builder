@@ -9,7 +9,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import { SaveOptions } from "sequelize";
+import { FindOptions, IncludeOptions, SaveOptions } from "sequelize";
 import CPUBlock from "@/utils/interface/part/CPUBlock";
 import {
   PartDetailTable,
@@ -21,22 +21,32 @@ import { InternalConnectors } from "@/utils/interface/utils";
 import { Material } from "@/utils/interface/utils";
 import { PartInformation } from "./Part";
 
+function createFilterOptions(options?: CPUBlock.FilterOptions): FindOptions {
+  const { socket, ...where } = options ?? {};
+
+  const include = [];
+  if (socket) {
+    include.push({
+      model: CPUBlockSocketModel,
+      where: { socket },
+      required: Boolean(socket),
+    });
+  }
+
+  return { where, include };
+}
+
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (options: CPUBlock.FilterOptions) => ({
     attributes: ["id", ...CPUBlock.SummaryAttributes],
-    where: options,
+    ...createFilterOptions(options),
   }),
   [ModelScopes.FILTER]: (options: CPUBlock.FilterOptions) => {
-    const { socket, ...rest } = options ?? {};
+    const { where, include } = createFilterOptions(options);
 
-    return {
-      where: rest,
-      include: {
-        model: CPUBlockSocketModel,
-        where: socket ? { socket } : {},
-        required: Boolean(socket),
-      },
-    };
+    (include as IncludeOptions[]).forEach((model) => (model.attributes = []));
+
+    return { where, include };
   },
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
