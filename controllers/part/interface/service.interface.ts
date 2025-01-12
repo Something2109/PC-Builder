@@ -166,7 +166,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
     const result: FilterOptionsType<Info, Attributes> = { ...initial };
 
     for (const attr of attribute) {
-      if (result[attr] && result[attr].length > 0) {
+      if (result[attr]) {
         continue;
       }
 
@@ -175,6 +175,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
         group: attr.toString(),
         order: [attr.toString()],
         include: include.map((value) => ({ model: value, attributes: [] })),
+        raw: true,
       });
 
       result[attr] = query.map((value) => value[attr]).filter((value) => value);
