@@ -3,6 +3,7 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
 import PSU from "@/utils/interface/part/PSU";
@@ -19,8 +20,13 @@ import {
 } from "sequelize-typescript";
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: { attributes: ["id", ...PSU.SummaryAttributes] },
-  [ModelScopes.FILTER]: (options: PSU.FilterOptions) => ({ where: options }),
+  [ModelScopes.SUMMARY]: (options: PSU.FilterOptions) => ({
+    attributes: ["id", ...PSU.SummaryAttributes],
+    where: options,
+  }),
+  [ModelScopes.FILTER]: (options: PSU.FilterOptions) => ({
+    where: defaultFilter(options),
+  }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.PSU })

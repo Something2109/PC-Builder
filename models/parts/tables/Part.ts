@@ -32,7 +32,14 @@ import { Includeable } from "sequelize";
 
 @DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: { attributes: [...Part.SummaryAttributes] },
+  [ModelScopes.SUMMARY]: (
+    options: Part.FilterOptions,
+    ...include: Includeable[]
+  ) => ({
+    attributes: ["id", ...Part.SummaryAttributes],
+    where: options,
+    include,
+  }),
   [ModelScopes.FILTER]: (
     options: Part.FilterOptions,
     ...include: Includeable[]

@@ -3,6 +3,7 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { GPUModel } from "./GPU";
 import { PartInformation } from "./Part";
@@ -27,11 +28,12 @@ type APIDisplayInterface = {
 };
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: {
+  [ModelScopes.SUMMARY]: (options: GraphicCard.FilterOptions) => ({
     attributes: ["id", ...GraphicCard.SummaryAttributes],
-  },
-  [ModelScopes.FILTER]: (options: GraphicCard.FilterOptions) => ({
     where: options,
+  }),
+  [ModelScopes.FILTER]: (options?: GraphicCard.FilterOptions) => ({
+    where: defaultFilter(options),
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))

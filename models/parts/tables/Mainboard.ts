@@ -30,7 +30,10 @@ import {
 import { SaveOptions } from "sequelize";
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: { attributes: ["id", ...Mainboard.SummaryAttributes] },
+  [ModelScopes.SUMMARY]: (options: Mainboard.FilterOptions) => ({
+    attributes: ["id", ...Mainboard.SummaryAttributes],
+    where: options,
+  }),
   [ModelScopes.FILTER]: (options: Mainboard.FilterOptions) => ({
     where: options,
   }),
@@ -467,6 +470,9 @@ class MainboardPCIeModel extends Model {
   @Column(DataType.UUID)
   declare id: string;
 
+  @BelongsTo(() => MainboardModel)
+  declare mainboard: MainboardModel;
+
   @PrimaryKey
   @Column({
     type: DataType.STRING,
@@ -497,6 +503,9 @@ class MainboardStorageConnectorModel extends Model {
   @Column(DataType.UUID)
   declare id: string;
 
+  @BelongsTo(() => MainboardModel)
+  declare mainboard: MainboardModel;
+
   @PrimaryKey
   @Column({
     type: DataType.STRING,
@@ -525,6 +534,9 @@ class MainboardUSBConnectorModel extends Model {
   @ForeignKey(() => MainboardModel)
   @Column(DataType.UUID)
   declare id: string;
+
+  @BelongsTo(() => MainboardModel)
+  declare mainboard: MainboardModel;
 
   @PrimaryKey
   @Column({

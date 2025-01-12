@@ -16,18 +16,17 @@ class PartAccess {
       let include;
       if (part && part.part && part.part[0]) {
         include = {
-          model: Models[part.part[0] as Products].scope(ModelScopes.SUMMARY),
+          model: Models[part.part[0] as Products].scope({
+            method: [ModelScopes.SUMMARY, detail[part.part[0] as Products]],
+          }),
           where: detail[part.part[0] as Products] ?? {},
           required: false,
         };
       }
 
-      const { rows, count } = await PartInformation.scope([
-        ModelScopes.SUMMARY,
-        {
-          method: [ModelScopes.FILTER, part],
-        },
-      ]).findAndCountAll({
+      const { rows, count } = await PartInformation.scope({
+        method: [ModelScopes.SUMMARY, part],
+      }).findAndCountAll({
         limit,
         offset: page * limit,
         include,
@@ -51,17 +50,16 @@ class PartAccess {
       let include;
       if (part && part.part && part.part[0]) {
         include = {
-          model: Models[part.part[0] as Products].scope(ModelScopes.SUMMARY),
+          model: Models[part.part[0] as Products].scope({
+            method: [ModelScopes.SUMMARY, detail[part.part[0] as Products]],
+          }),
           where: detail[part.part[0] as Products] ?? {},
         };
       }
 
-      const { rows, count } = await PartInformation.scope([
-        ModelScopes.SUMMARY,
-        {
-          method: [ModelScopes.FILTER, part],
-        },
-      ]).findAndCountAll({
+      const { rows, count } = await PartInformation.scope({
+        method: [ModelScopes.SUMMARY, part],
+      }).findAndCountAll({
         where: { name: { [Op.like]: `%${str}%` } },
         limit,
         offset: page * limit,
@@ -119,13 +117,9 @@ class PartAccess {
     id: string
   ): Promise<DetailInfo<typeof part> | null> {
     try {
-      const save = await PartInformation.scope(ModelScopes.FILTER).findByPk(
+      const save = await PartInformation.scope(ModelScopes.DETAIL).findByPk(
         id,
-        {
-          include: {
-            model: Models[part],
-          },
-        }
+        { include: { model: Models[part] } }
       );
 
       if (save) {

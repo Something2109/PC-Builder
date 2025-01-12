@@ -9,7 +9,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import { SaveOptions } from "sequelize";
+import { FindOptions, IncludeOptions, SaveOptions } from "sequelize";
 import CPUBlock from "@/utils/interface/part/CPUBlock";
 import {
   PartDetailTable,
@@ -21,19 +21,32 @@ import { InternalConnectors } from "@/utils/interface/utils";
 import { Material } from "@/utils/interface/utils";
 import { PartInformation } from "./Part";
 
-@Scopes(() => ({
-  [ModelScopes.SUMMARY]: { attributes: ["id", ...CPUBlock.SummaryAttributes] },
-  [ModelScopes.FILTER]: (options: CPUBlock.FilterOptions) => {
-    const { socket, ...rest } = options ?? {};
+function createFilterOptions(options?: CPUBlock.FilterOptions): FindOptions {
+  const { socket, ...where } = options ?? {};
 
-    return {
-      where: rest,
-      include: {
-        model: CPUBlockSocketModel,
-        where: socket ? { socket } : {},
-        required: Boolean(socket),
-      },
-    };
+  const include = [];
+  if (socket) {
+    include.push({
+      model: CPUBlockSocketModel,
+      where: { socket },
+      required: Boolean(socket),
+    });
+  }
+
+  return { where, include };
+}
+
+@Scopes(() => ({
+  [ModelScopes.SUMMARY]: (options: CPUBlock.FilterOptions) => ({
+    attributes: ["id", ...CPUBlock.SummaryAttributes],
+    ...createFilterOptions(options),
+  }),
+  [ModelScopes.FILTER]: (options: CPUBlock.FilterOptions) => {
+    const { where, include } = createFilterOptions(options);
+
+    (include as IncludeOptions[]).forEach((model) => (model.attributes = []));
+
+    return { where, include };
   },
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
@@ -133,6 +146,9 @@ class CPUBlockSocketModel extends Model {
   @ForeignKey(() => CPUBlockModel)
   @Column(DataType.UUID)
   declare id: string;
+
+  @BelongsTo(() => CPUBlockModel)
+  declare cpu_block: CPUBlockModel;
 
   @PrimaryKey
   @Column(DataType.STRING)

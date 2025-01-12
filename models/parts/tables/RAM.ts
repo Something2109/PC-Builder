@@ -3,6 +3,7 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
 import RAM from "@/utils/interface/part/RAM";
@@ -19,8 +20,13 @@ import {
 } from "sequelize-typescript";
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: { attributes: ["id", ...RAM.SummaryAttributes] },
-  [ModelScopes.FILTER]: (options: RAM.FilterOptions) => ({ where: options }),
+  [ModelScopes.SUMMARY]: (options: RAM.FilterOptions) => ({
+    attributes: ["id", ...RAM.SummaryAttributes],
+    where: options,
+  }),
+  [ModelScopes.FILTER]: (options: RAM.FilterOptions) => ({
+    where: defaultFilter(options),
+  }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.RAM })
