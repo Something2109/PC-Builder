@@ -309,10 +309,9 @@ abstract class BaseDetailPartService<
   ): Promise<ListResult<Detail>> {
     const { part, ...rest } = options ?? {};
 
-    const FilteredPart = PartInformation.scope([
-      ModelScopes.SUMMARY,
-      { method: [ModelScopes.FILTER, { ...part, part: [this.part] }] },
-    ]);
+    const FilteredPart = PartInformation.scope({
+      method: [ModelScopes.SUMMARY, { ...part, part: [this.part] }],
+    });
 
     const include: Includeable[] = ModelMapping[this.part].map((product) => ({
       model: Models[product].scope([
