@@ -20,7 +20,10 @@ import {
 } from "sequelize-typescript";
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: { attributes: ["id", ...PSU.SummaryAttributes] },
+  [ModelScopes.SUMMARY]: (options: PSU.FilterOptions) => ({
+    attributes: ["id", ...PSU.SummaryAttributes],
+    where: options,
+  }),
   [ModelScopes.FILTER]: (options: PSU.FilterOptions) => ({
     where: defaultFilter(options),
   }),

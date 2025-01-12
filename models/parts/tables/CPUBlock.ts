@@ -22,7 +22,10 @@ import { Material } from "@/utils/interface/utils";
 import { PartInformation } from "./Part";
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: { attributes: ["id", ...CPUBlock.SummaryAttributes] },
+  [ModelScopes.SUMMARY]: (options: CPUBlock.FilterOptions) => ({
+    attributes: ["id", ...CPUBlock.SummaryAttributes],
+    where: options,
+  }),
   [ModelScopes.FILTER]: (options: CPUBlock.FilterOptions) => {
     const { socket, ...rest } = options ?? {};
 

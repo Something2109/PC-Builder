@@ -18,40 +18,49 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import { SaveOptions } from "sequelize";
+import { FindOptions, IncludeOptions, SaveOptions } from "sequelize";
+
+function createFilterOptions(options?: Case.FilterOptions): FindOptions {
+  const { mainboard_support, radiator_support, psu_support, ...where } =
+    options ?? {};
+
+  const include = [];
+  if (mainboard_support) {
+    include.push({
+      model: CaseMainboardSupportModel,
+      where: { form_factor: mainboard_support },
+      required: Boolean(mainboard_support),
+    });
+  }
+  if (radiator_support) {
+    include.push({
+      model: CaseRadiatorSupportModel,
+      where: { form_factor: radiator_support },
+      required: Boolean(radiator_support),
+    });
+  }
+  if (psu_support) {
+    include.push({
+      model: CasePSUSupportModel,
+      where: { form_factor: psu_support },
+      required: Boolean(psu_support),
+    });
+  }
+
+  return { where, include };
+}
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: {
+  [ModelScopes.SUMMARY]: (options?: Case.FilterOptions) => ({
     attributes: ["id", ...Case.SummaryAttributes],
-    include: [
-      CaseMainboardSupportModel,
-      CaseRadiatorSupportModel,
-      CasePSUSupportModel,
-    ],
-  },
+    ...createFilterOptions(options),
+  }),
   [ModelScopes.FILTER]: (options?: Case.FilterOptions) => {
-    const { mainboard_support, radiator_support, psu_support, ...where } =
-      options ?? {};
-    return {
-      where,
-      include: [
-        {
-          model: CaseMainboardSupportModel,
-          where: mainboard_support ? { form_factor: mainboard_support } : {},
-          required: Boolean(mainboard_support),
-        },
-        {
-          model: CaseRadiatorSupportModel,
-          where: radiator_support ? { form_factor: radiator_support } : {},
-          required: Boolean(radiator_support),
-        },
-        {
-          model: CasePSUSupportModel,
-          where: psu_support ? { form_factor: psu_support } : {},
-          required: Boolean(psu_support),
-        },
-      ],
-    };
+    const { where, include } = createFilterOptions(options);
+
+    (include as IncludeOptions[]).forEach((model) => (model.attributes = []));
+
+    return { where, include };
   },
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
