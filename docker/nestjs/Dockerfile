@@ -1,8 +1,8 @@
 FROM node:lts-alpine3.21
 WORKDIR /usr/local/app
 
-COPY package.json ./
-COPY package-lock.json ./
+COPY ./docker/nestjs/package.json ./
+COPY ./docker/nestjs/package-lock.json ./
 
 RUN npm install
 
@@ -11,7 +11,7 @@ COPY crawlers ./crawlers
 COPY models ./models
 COPY utils ./utils
 COPY nest-cli.json ./
-COPY tsconfig.json ./
+COPY ./docker/nestjs/tsconfig.json ./
 
 EXPOSE 3000
 
