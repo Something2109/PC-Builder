@@ -1,0 +1,21 @@
+services:
+  nestjs:
+    build:
+      context: ../../
+      dockerfile: ./docker/nestjs/Dockerfile
+    ports:
+      - 5000:3000
+    environment:
+      - DATABASE_HOST=mysql
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=PC_Builder
+      - DATABASE_USERNAME=NestjsApp
+    env_file:
+      - .env
+    develop:
+      watch:
+        - action: sync
+          path: ../../
+          target: /usr/local/app
+          ignore:
+            - app

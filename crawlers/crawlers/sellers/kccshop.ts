@@ -1,6 +1,9 @@
-import { APIWebsiteInfo } from "../../crawler";
-import { SellerProduct } from "@/models/sellers/SellerProduct";
-import { Products } from "@/utils/Enum";
+import { APIWebsiteInfo } from "../../interface";
+import {
+  RetailProductSchema,
+  RetailProductType,
+} from "../../../utils/interface/retailer/Product";
+import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://kccshop.vn";
@@ -18,7 +21,7 @@ const mapping: { [key in Products]?: string } = {
   [Products.FAN]: "tan-nhiet-case",
 };
 
-const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
+const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
   domain,
 
   save: "sellers",
@@ -28,7 +31,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
       const url = new URL(`${domain}/${mapping[product]}/`);
       url.searchParams.set("page", page.toString());
 
-      return { url, type: "page", page, product };
+      return { url };
     }
 
     return null;
@@ -41,9 +44,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
     const itemContainer = dom.getElementById("js-category-holder");
 
     if (itemContainer) {
-      const list = [...dom.querySelectorAll(".p-item")].map((raw) => ({
-        raw,
-      }));
+      const list = [...dom.querySelectorAll(".p-item")];
 
       return { list, links: [], pages: link.page + 1 };
     }
@@ -53,8 +54,8 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse({ raw }) {
-    const name = raw.querySelector(".p-name")?.textContent;
+  async parse(raw) {
+    const name = raw.querySelector(".p-name")?.textContent!;
     const price =
       Number(
         raw
@@ -70,7 +71,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
       ?.children[0].getAttribute("src")}`;
     const availability = Boolean(raw.querySelector(".color-green"));
 
-    return new SellerProduct({ name, price, link, img, availability });
+    return RetailProductSchema.parse({ name, price, link, img, availability });
   },
 };
 

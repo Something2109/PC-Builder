@@ -1,6 +1,9 @@
-import { APIWebsiteInfo } from "../../crawler";
-import { SellerProduct } from "@/models/sellers/SellerProduct";
-import { Products } from "@/utils/Enum";
+import { APIWebsiteInfo } from "../../interface";
+import {
+  RetailProductSchema,
+  RetailProductType,
+} from "../../../utils/interface/retailer/Product";
+import { Products } from "../../../utils/Enum";
 
 const domain = "https://hacom.vn";
 const mapping: { [key in Products]?: string } = {
@@ -34,12 +37,12 @@ type HacomPartDataAPI = {
   quantity: string;
 };
 
-const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
+const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, RetailProductType> = {
   domain,
 
   save: "sellers",
 
-  path(product: Products, page = 1) {
+  path(product, page = 1) {
     if (mapping[product]) {
       const url = new URL(`${domain}/ajax/get_json.php`);
 
@@ -49,7 +52,7 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
       url.searchParams.set("show", "500");
       url.searchParams.set("category", mapping[product]);
 
-      return { url, type: "page", page, product };
+      return { url };
     }
 
     return null;
@@ -67,9 +70,7 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
 
     if (Array.isArray(data.list)) {
       return {
-        list: data.list.map((raw) => ({
-          raw,
-        })),
+        list: data.list,
         links: [],
         pages,
       };
@@ -78,14 +79,14 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, SellerProduct> = {
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse({ raw }) {
-    return new SellerProduct({
-      name: raw.productName,
-      price: Number(raw.price),
-      link: `https://hacom.vn${raw.productUrl}`,
-      img: raw.productImage.large,
-      availability: Number(raw.quantity) !== 0,
-    });
+  async parse(raw) {
+    const name = raw.productName;
+    const price = Number(raw.price);
+    const link = `https://hacom.vn${raw.productUrl}`;
+    const img = raw.productImage.large;
+    const availability = Number(raw.quantity) !== 0;
+
+    return RetailProductSchema.parse({ name, price, link, img, availability });
   },
 };
 

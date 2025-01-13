@@ -1,5 +1,5 @@
-import { APIWebsiteInfo } from "../../crawler";
-import { Products } from "@/utils/Enum";
+import { APIWebsiteInfo } from "../../interface";
+import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.msi.com";
@@ -25,7 +25,7 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
       url.searchParams.set("page_number", page.toString());
       url.searchParams.set("page_size", "500");
 
-      return { url, type: "page", page, product };
+      return { url };
     }
 
     return null;
@@ -45,11 +45,11 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
       links = data.result.getProductList.map(
         (raw: { product_line: string; link: string }) => {
           return {
-            url: new URL(
-              `${domain}/${raw["product_line"]}/${raw["link"]}/Specification`
-            ),
-            type: "product",
-            product: link.product,
+            request: {
+              url: new URL(
+                `${domain}/${raw["product_line"]}/${raw["link"]}/Specification`
+              ),
+            },
             result: {
               url: `${domain}/${raw["product_line"]}/${raw["link"]}`,
             },
@@ -73,19 +73,17 @@ const CrawlInfo: APIWebsiteInfo<Element, any> = {
       let table = dom.getElementById("product");
 
       if (!table) {
-        throw new Error(`Cannot find content table in ${link.url}`);
+        throw new Error(`Cannot find content table in ${link.request.url}`);
       }
 
-      list.push({
-        raw: table,
-        result: link.result,
-      });
+      list.push(table);
 
       return list;
     },
   },
 
-  parse: function ({ raw, result }) {
+  async parse(raw, info) {
+    const result = info.result ?? {};
     const model = raw.querySelector(".text-center h3")?.textContent;
     if (model) {
       result["Model"] = model.trim();

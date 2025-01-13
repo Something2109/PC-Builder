@@ -1,6 +1,9 @@
-import { APIWebsiteInfo } from "../../crawler";
-import { SellerProduct } from "@/models/sellers/SellerProduct";
-import { Products } from "@/utils/Enum";
+import { APIWebsiteInfo } from "../../interface";
+import {
+  RetailProductSchema,
+  RetailProductType,
+} from "../../../utils/interface/retailer/Product";
+import { Products } from "../../../utils/Enum";
 import { JSDOM } from "jsdom";
 
 const domain = "https://www.anphatpc.com.vn";
@@ -18,17 +21,17 @@ const mapping: { [key in Products]?: string } = {
   [Products.FAN]: "quat-tan-nhiet_dm1519.html",
 };
 
-const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
+const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
   domain,
 
   save: "sellers",
 
-  path(product: Products, page = 1) {
+  path(product, page = 1) {
     if (mapping[product]) {
       const url = new URL(`${domain}/${mapping[product]}`);
       url.searchParams.set("page", page.toString());
 
-      return { url, type: "page", page, product };
+      return { url };
     }
 
     return null;
@@ -43,11 +46,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
         .getElementsByTagName("b")
         .item(0)
         ?.textContent?.match(/\d+/);
-      const list = [...itemContainer.querySelectorAll(".p-item")].map(
-        (raw) => ({
-          raw,
-        })
-      );
+      const list = [...itemContainer.querySelectorAll(".p-item")];
       let pages;
 
       if (link.page == 1) {
@@ -60,7 +59,7 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse({ raw }) {
+  async parse(raw) {
     const name = raw.querySelector(".p-name")?.textContent?.trim();
     const price = Number(
       raw
@@ -71,10 +70,11 @@ const CrawlInfo: APIWebsiteInfo<Element, SellerProduct> = {
     const link = `${domain}${raw
       .querySelector(".p-name")
       ?.getAttribute("href")}`;
-    const img = raw.querySelector(".fit-img")?.getAttribute("data-src");
+    const img =
+      raw.querySelector(".fit-img")?.getAttribute("data-src") ?? undefined;
     const availability = Boolean(raw.querySelector(".btn-in-stock"));
 
-    return new SellerProduct({ name, price, link, img, availability });
+    return RetailProductSchema.parse({ name, price, link, img, availability });
   },
 };
 

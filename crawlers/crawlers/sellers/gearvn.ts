@@ -1,6 +1,9 @@
-import { APIWebsiteInfo } from "../../crawler";
-import { SellerProduct } from "@/models/sellers/SellerProduct";
-import { Products } from "@/utils/Enum";
+import { APIWebsiteInfo } from "../../interface";
+import {
+  RetailProductSchema,
+  RetailProductType,
+} from "../../../utils/interface/retailer/Product";
+import { Products } from "../../../utils/Enum";
 
 const domain = "https://gearvn.com";
 const mapping: { [key in Products]?: string } = {
@@ -35,7 +38,7 @@ type GearvnPartDataAPI = {
   ];
 };
 
-const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, SellerProduct> = {
+const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, RetailProductType> = {
   domain,
 
   save: "sellers",
@@ -49,7 +52,7 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, SellerProduct> = {
       url.searchParams.set("page", page.toString());
       url.searchParams.set("limit", "500");
 
-      return { url, type: "page", page, product };
+      return { url };
     }
     return null;
   },
@@ -62,9 +65,7 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, SellerProduct> = {
 
     if (Array.isArray(data.products)) {
       return {
-        list: data.products.map((raw) => ({
-          raw,
-        })),
+        list: data.products,
         links: [],
         pages: link.page + 1,
       };
@@ -73,14 +74,14 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, SellerProduct> = {
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
-  parse({ raw }) {
-    return new SellerProduct({
-      name: raw.title,
-      price: Number(raw.variants[0].price),
-      link: `${domain}/products/${raw.handle}`,
-      img: raw.image.src,
-      availability: raw.available,
-    });
+  async parse(raw) {
+    const name = raw.title;
+    const price = Number(raw.variants[0].price);
+    const link = `${domain}/products/${raw.handle}`;
+    const img = raw.image.src;
+    const availability = raw.available;
+
+    return RetailProductSchema.parse({ name, price, link, img, availability });
   },
 };
 
