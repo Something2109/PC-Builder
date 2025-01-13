@@ -53,7 +53,7 @@ class PartService extends BasePartService {
     const { part } = options ?? {};
 
     const FilteredPart = PartInformation.scope({
-      method: [ModelScopes.FILTER, { ...part, part: [Products.MAIN] }],
+      method: [ModelScopes.FILTER, part],
     });
 
     const result: Filter = {
