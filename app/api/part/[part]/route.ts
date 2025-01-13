@@ -1,30 +1,42 @@
 import { Database } from "@/models/Database";
 import { Products } from "@/utils/Enum";
+import { FilterOptions, FilterOptionSchema } from "@/utils/interface";
+import { SearchParams } from "@/utils/SearchParams";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
+export async function POST(
   request: NextRequest,
-  { params }: { params: { part: string } }
+  { params: { part } }: { params: { part: string } }
 ) {
-  let page = Number(request.nextUrl.searchParams.get("page"));
-  if (page < 1) {
-    page = 1;
-  }
-
-  if (Object.values(Products).includes(params.part as Products)) {
-    const article = Database.sellers.getProducts(params.part as Products, page);
-
-    if (article) {
-      return NextResponse.json(article);
+  try {
+    if (!Object.values(Products).includes(part as Products)) {
+      throw new Error(
+        "Cannot find the part you need. Check if the path is correct"
+      );
     }
-  }
 
-  return NextResponse.json(
-    {
-      message: "Cannot find the part you need. Check if the path is correct",
-    },
-    {
-      status: 404,
+    const body = await request.json();
+
+    const options: FilterOptions = {
+      ...FilterOptionSchema.parse(body),
+      ...SearchParams.toPageOptions(request.nextUrl.searchParams),
+    };
+    options.part = { part: [part], ...options.part };
+
+    const data = await Database.parts.list(options);
+
+    if (!data) {
+      return NextResponse.json(
+        { message: "There's an error finding filter for your option" },
+        { status: 500 }
+      );
     }
-  );
+
+    return NextResponse.json(data);
+  } catch (err) {
+    return NextResponse.json(
+      { message: (err as Error).message },
+      { status: 400 }
+    );
+  }
 }

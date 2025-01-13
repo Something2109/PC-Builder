@@ -1,0 +1,52 @@
+import { TableWrapper, InputRow, SelectInputRow } from "../TableWrapper";
+import Mainboard from "@/utils/interface/part/Mainboard";
+import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import { TableHTMLAttributes } from "react";
+
+export default function MainboardFieldset({
+  defaultValue,
+  ...rest
+}: {
+  defaultValue?: Partial<Mainboard.Info>;
+} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
+  return (
+    <TableWrapper {...rest}>
+      <SelectInputRow
+        name="form_factor"
+        label="Form Factor"
+        options={FormFactor.Fan.options}
+        defaultValue={defaultValue?.form_factor}
+      />
+      <InputRow
+        name="socket"
+        label="Socket"
+        defaultValue={defaultValue?.socket}
+      />
+      <SelectInputRow
+        name="ram_form_factor"
+        label="RAM Form Factor"
+        options={FormFactor.RAM.options}
+        defaultValue={defaultValue?.ram_form_factor}
+      />
+      <SelectInputRow
+        name="ram_interface"
+        label="RAM Interface"
+        options={InternalConnectors.RAM.options}
+        defaultValue={defaultValue?.ram_interface}
+      />
+      <InputRow
+        type="number"
+        name="ram_slot"
+        label="RAM Slot"
+        defaultValue={defaultValue?.ram_slot}
+      />
+      <InputRow
+        type="number"
+        name="expansion_slots"
+        label="Expansion Slots"
+        defaultValue={defaultValue?.expansion_slots}
+      />
+      <InputRow name="io_ports" label="I/O Ports" />
+    </TableWrapper>
+  );
+}

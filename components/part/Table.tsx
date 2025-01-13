@@ -1,0 +1,113 @@
+import { RowWrapper } from "../utils/FlexWrapper";
+import PartPicture from "./Picture";
+import { CPUTable } from "./detail/CPU";
+import { GPUTable } from "./detail/GPU";
+import { GraphicCardTable } from "./detail/GraphicCard";
+import { MainboardTable } from "./detail/Mainboard";
+import { RAMTable } from "./detail/RAM";
+import { HDDTable } from "./detail/HDD";
+import { PSUTable } from "./detail/PSU";
+import { CaseTable } from "./detail/Case";
+import { CoolerTable } from "./detail/Cooler";
+import { AIOTable } from "./detail/AIO";
+import { FanTable } from "./detail/Fan";
+import { SSDTable } from "./detail/SSD";
+import { TableHTMLAttributes } from "react";
+import { SummaryInfo } from "@/utils/interface";
+import { Products } from "@/utils/Enum";
+import { CPUBlockTable } from "./detail/CPUBlock";
+import { PumpTable } from "./detail/Pump";
+import { RadiatorTable } from "./detail/Radiator";
+
+const table = "border-separate border-spacing-0";
+const tableHeader =
+  "font-bold sticky top-32 bg-white dark:bg-background transition-colors ease-in-out duration-500 delay-0";
+const tableRow = "*:p-2 lg:table-row *:lg:border-b-2 ";
+const label = "lg:hidden";
+
+export default function PartTable({
+  data,
+  className,
+  ...rest
+}: { data: SummaryInfo<Products>[] } & TableHTMLAttributes<HTMLTableElement>) {
+  let keys: { [key in Products]?: string[] } = {};
+  const { id, part, name, brand, series, image_url, ...detail } = data[0];
+  Object.entries(detail).forEach(
+    ([key, value]) => (keys[key as Products] = Object.keys(value ?? {}))
+  );
+
+  return (
+    <table className={className?.concat(" ", table) ?? table} {...rest}>
+      <thead className={tableHeader}>
+        <tr className={`hidden ${tableRow}`}>
+          <td>Name</td>
+          <td>Brand</td>
+          <td>Series</td>
+          {Object.values(keys).map((attrs: string[]) =>
+            attrs.map((attr) => <td key={`table-header-${attr}`}>{attr}</td>)
+          )}
+        </tr>
+      </thead>
+      <tbody>
+        {data.map(({ id, part, name, brand, series, image_url, ...detail }) => (
+          <tr
+            key={id}
+            className={`grid grid-cols-2 border-b-2 ${tableRow} hover:rounded-lg hover:bg-line hover:dark:text-background`}
+          >
+            <td className="col-span-2">
+              <a href={`/part/${part}/${id}`}>
+                <RowWrapper className="align-middle items-center font-bold">
+                  <PartPicture
+                    part={{ image_url, part, name }}
+                    className="h-16 m-2"
+                  />
+                  {name}
+                </RowWrapper>
+              </a>
+            </td>
+            <td>
+              <RowWrapper>
+                <p className={label}>Brand:</p>
+                {brand}
+              </RowWrapper>
+            </td>
+            <td>
+              <RowWrapper>
+                <p className={label}>Series:</p>
+                {series}
+              </RowWrapper>
+            </td>
+            {Object.entries(keys).map(([key, attrs]) =>
+              attrs.map((attr) => (
+                <td key={`table-body-${id}-${key}-${attr}`}>
+                  <RowWrapper>
+                    <p className={label}>{`${attr}:`}</p>
+                    {(detail[key as Products] as Record<string, any>)[attr]}
+                  </RowWrapper>
+                </td>
+              ))
+            )}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+export const DetailTableComponent = {
+  [Products.CPU]: CPUTable,
+  [Products.GPU]: GPUTable,
+  [Products.GRAPHIC_CARD]: GraphicCardTable,
+  [Products.MAIN]: MainboardTable,
+  [Products.RAM]: RAMTable,
+  [Products.HDD]: HDDTable,
+  [Products.PSU]: PSUTable,
+  [Products.CASE]: CaseTable,
+  [Products.COOLER]: CoolerTable,
+  [Products.AIO]: AIOTable,
+  [Products.FAN]: FanTable,
+  [Products.SSD]: SSDTable,
+  [Products.CPU_BLOCK]: CPUBlockTable,
+  [Products.PUMP]: PumpTable,
+  [Products.RADIATOR]: RadiatorTable,
+};

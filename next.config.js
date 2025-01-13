@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    seller: "kccshop",
+    PageSize: "50",
   },
   experimental: {
     serverComponentsExternalPackages: ['sequelize'],

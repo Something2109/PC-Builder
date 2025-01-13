@@ -1,36 +1,54 @@
-import { Article, ArticleSummary, ArticleType } from "./articles/article";
-import { Connection } from "./interface";
-import { SellerProduct } from "./sellers/SellerProduct";
-import { Products } from "@/utils/Enum";
+import { Article } from "./articles/article";
+import { Connection } from "./Connection";
+import { Products, Topics } from "@/utils/Enum";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import path from "path";
+import { PartAccess } from "./parts/PartAccess";
+import { ArticleSummary, ArticleType } from "@/utils/interface/article/article";
+import { RetailProductType } from "@/utils/interface/retailer/Product";
 
 class MockDatabase {
   private static path = "./data";
   private static objects: {
-    [key in string]: DatabaseObject;
+    [key in string]: Object;
   } = {};
+
+  static initiate() {
+    this.objects.introduction = new Articles(this.path);
+    this.objects.sellers = new Seller(this.path);
+    this.objects.images = new Images();
+    this.objects.part = new PartAccess();
+
+    Connection.sync();
+  }
 
   static get articles(): Readonly<Articles> {
     if (!this.objects.introduction) {
-      this.objects.introduction = new Articles(this.path);
+      this.initiate();
     }
     return this.objects.introduction as Articles;
   }
 
   static get sellers(): Readonly<Seller> {
     if (!this.objects.sellers) {
-      this.objects.sellers = new Seller(this.path);
+      this.initiate();
     }
     return this.objects.sellers as Seller;
   }
 
   static get images(): Readonly<Images> {
     if (!this.objects.images) {
-      this.objects.images = new Images();
+      this.initiate();
     }
     return this.objects.images as Images;
+  }
+
+  static get parts(): Readonly<PartAccess> {
+    if (!this.objects.part) {
+      this.initiate();
+    }
+    return this.objects.part as PartAccess;
   }
 }
 
@@ -60,7 +78,7 @@ class Articles implements DatabaseObject {
   }
 
   async getSummary(criteria: {
-    topic: string;
+    topic: Topics;
     part?: Products;
   }): Promise<ArticleSummary[]> {
     try {
@@ -74,7 +92,7 @@ class Articles implements DatabaseObject {
 
       const save = await Article.findAll({ where: criteria });
 
-      return save.map((article) => toType(article));
+      return save.map((article: Article) => toType(article));
     } catch (error) {
       console.error(error);
     }
@@ -88,7 +106,7 @@ class Articles implements DatabaseObject {
       if (save) {
         return {
           type: "article",
-          ...save.toJSON(),
+          ...save.toJSON<Omit<ArticleType, "type">>(),
         };
       }
     } catch (error) {
@@ -170,11 +188,11 @@ class Seller implements DatabaseObject {
     page?: number,
     pageSize?: number
   ): {
-    list: SellerProduct[];
+    list: RetailProductType[];
     pages: number;
   } {
     page = page ?? 1;
-    pageSize = pageSize ?? 50;
+    pageSize = pageSize ?? Number(process.env.PageSize ?? 50);
     try {
       if (Object.values(Products).includes(product)) {
         const data = JSON.parse(
@@ -199,7 +217,5 @@ class Seller implements DatabaseObject {
     };
   }
 }
-
-Connection.sync();
 
 export { MockDatabase as Database };

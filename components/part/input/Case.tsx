@@ -1,0 +1,61 @@
+import {
+  TableWrapper,
+  InputRow,
+  SelectInputRow,
+  DimensionInputRow,
+} from "../TableWrapper";
+import Case from "@/utils/interface/part/Case";
+import { FormFactor } from "@/utils/interface/utils";
+import { ReactNode, TableHTMLAttributes } from "react";
+
+export default function CaseFieldset({
+  defaultValue,
+  ...rest
+}: {
+  defaultValue?: Partial<Case.Info>;
+} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">): ReactNode {
+  return (
+    <TableWrapper {...rest}>
+      <SelectInputRow
+        name="form_factor"
+        label="Form Factor"
+        options={FormFactor.Case.options}
+        defaultValue={defaultValue?.form_factor}
+      />
+      <DimensionInputRow defaultValue={defaultValue} />
+      <InputRow name="io_ports" label="I/O Ports" />
+      <SelectInputRow
+        name="mb_support"
+        label="Mainboard Support"
+        options={FormFactor.Mainboard.options}
+        defaultValue={defaultValue?.mainboard_support}
+      />
+      <InputRow
+        type="number"
+        name="expansion_slot"
+        label="Expansion Slot"
+        defaultValue={defaultValue?.expansion_slot}
+      />
+      <InputRow name="aio_support" label="AIO Support" />
+      <InputRow name="fan_support" label="Fan Support" />
+      <InputRow
+        type="number"
+        name="max_cooler_height"
+        label="Max Cooler Support"
+        defaultValue={defaultValue?.max_cooler_height}
+      />
+      <SelectInputRow
+        name="psu_support"
+        label="PSU Support"
+        options={FormFactor.PSU.options}
+        defaultValue={defaultValue?.psu_support}
+      />
+      <InputRow
+        type="number"
+        name="max_psu_length"
+        label="Max PSU Length"
+        defaultValue={defaultValue?.max_psu_length}
+      />
+    </TableWrapper>
+  );
+}

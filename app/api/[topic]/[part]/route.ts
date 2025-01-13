@@ -1,8 +1,4 @@
-import {
-  ArticleType,
-  ContentType,
-  ValidateArticle,
-} from "@/models/articles/article";
+import { ContentType, ValidateArticle } from "@/models/articles/article";
 import { Database } from "@/models/Database";
 import { Products, Topics } from "@/utils/Enum";
 import { NextRequest, NextResponse } from "next/server";

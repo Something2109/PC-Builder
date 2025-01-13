@@ -1,0 +1,188 @@
+import { InferAttributes, Op, Sequelize, WhereOptions } from "sequelize";
+import { PartInformation } from "@/models/parts/tables/Part";
+import { Products } from "@/utils/Enum";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
+import { Models, ModelFilters } from ".";
+import { IdSubQuery } from "../Connection";
+import { ModelScopes, Tables } from "../interface";
+
+class PartAccess {
+  async list(options?: FilterOptions & PageOptions) {
+    try {
+      let { page, limit, part, ...detail } = options ?? {};
+      page = (page ?? 1) - 1;
+      limit = limit ?? Number(process.env.PageSize ?? 50);
+
+      let include;
+      if (part && part.part && part.part[0]) {
+        include = {
+          model: Models[part.part[0] as Products].scope({
+            method: [ModelScopes.SUMMARY, detail[part.part[0] as Products]],
+          }),
+          where: detail[part.part[0] as Products] ?? {},
+          required: false,
+        };
+      }
+
+      const { rows, count } = await PartInformation.scope({
+        method: [ModelScopes.SUMMARY, part],
+      }).findAndCountAll({
+        limit,
+        offset: page * limit,
+        include,
+        distinct: true,
+      });
+
+      return { total: count, list: rows.map((value) => value.toJSON()) };
+    } catch (err) {
+      console.error(err);
+    }
+
+    return null;
+  }
+
+  async search(str: string, options?: FilterOptions & PageOptions) {
+    try {
+      let { page, limit, part, ...detail } = options ?? {};
+      page = (page ?? 1) - 1;
+      limit = limit ?? Number(process.env.PageSize ?? 50);
+
+      let include;
+      if (part && part.part && part.part[0]) {
+        include = {
+          model: Models[part.part[0] as Products].scope({
+            method: [ModelScopes.SUMMARY, detail[part.part[0] as Products]],
+          }),
+          where: detail[part.part[0] as Products] ?? {},
+        };
+      }
+
+      const { rows, count } = await PartInformation.scope({
+        method: [ModelScopes.SUMMARY, part],
+      }).findAndCountAll({
+        where: { name: { [Op.like]: `%${str}%` } },
+        limit,
+        offset: page * limit,
+        include,
+      });
+
+      if (count) {
+        return { total: count, list: rows.map((value) => value.toJSON()) };
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    return null;
+  }
+
+  async filter(options?: FilterOptions): Promise<FilterOptions | null> {
+    try {
+      const { part, ...detail } = options ?? {};
+      const result: FilterOptions = {};
+
+      const where: WhereOptions<InferAttributes<PartInformation>> = {
+        part: part ?? Object.values(Products),
+        ...part,
+      };
+
+      const ProductName =
+        part && part.part ? (part.part[0] as Products) : undefined;
+      if (ProductName) {
+        const subquery = IdSubQuery(
+          Models[ProductName].name,
+          detail[ProductName] ?? {}
+        );
+        where.id = [Sequelize.literal(subquery)];
+
+        const partSubquery = IdSubQuery(Tables.PART, where);
+
+        result[ProductName] = (await ModelFilters[ProductName]({
+          id: [Sequelize.literal(`(${partSubquery})`)],
+          ...(detail[ProductName] as any),
+        })) as any;
+      }
+
+      result.part = await ModelFilters.part(where as any);
+
+      return result;
+    } catch (err) {
+      console.error(err);
+    }
+    return null;
+  }
+
+  async get(
+    part: Products,
+    id: string
+  ): Promise<DetailInfo<typeof part> | null> {
+    try {
+      const save = await PartInformation.scope(ModelScopes.DETAIL).findByPk(
+        id,
+        { include: { model: Models[part] } }
+      );
+
+      if (save) {
+        return save.toJSON() as unknown as DetailInfo<typeof part>;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    return null;
+  }
+
+  async set(
+    data: DetailInfo<Products>,
+    id?: string
+  ): Promise<DetailInfo<Products>> {
+    const { [data.part as Products]: detail, part, ...info } = data;
+
+    let infoRow: PartInformation;
+    if (id) {
+      const row = await PartInformation.findByPk(id);
+      if (!row) {
+        throw new Error(`Cannot find the part with the id ${id}`);
+      }
+      infoRow = row.set(info);
+    } else {
+      infoRow = PartInformation.build({ part: part as Products, ...info });
+    }
+
+    await infoRow.save();
+    id = infoRow.id;
+
+    const [detailRow] = await Models[part as Products].findOrBuild({
+      where: { id },
+    });
+
+    detailRow.set({ id, ...detail });
+
+    await detailRow.save();
+
+    const result: DetailInfo<Products> = infoRow.toJSON();
+
+    result[part as Products] = detailRow.toJSON();
+
+    return result;
+  }
+
+  async delete(id: string) {
+    const save = await PartInformation.findByPk(id);
+
+    if (save) {
+      await save.destroy();
+
+      return save.toJSON();
+    }
+
+    return null;
+  }
+}
+
+type PageOptions = {
+  page?: number;
+  limit?: number;
+};
+
+export { PartAccess };

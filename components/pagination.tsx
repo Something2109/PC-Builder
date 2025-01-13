@@ -5,7 +5,7 @@ export default function PaginationBar({
   current,
   total,
 }: {
-  path: string;
+  path: string | ((page: number) => void);
   current: number;
   total: number;
 }) {
@@ -14,21 +14,50 @@ export default function PaginationBar({
   if (total > 0) {
     if (current > 1) {
       components.push(
-        <PaginationButton path={path} title={"<"} num={current - 1} />
+        <PaginationButton
+          key="Pagination-Begin"
+          path={path}
+          title={"<<"}
+          num={1}
+        />,
+        <PaginationButton
+          key="Pagination-Back"
+          path={path}
+          title={"<"}
+          num={current - 1}
+        />
       );
     }
 
-    for (let i = 1; i <= total; i++) {
+    const min = Math.max(1, current - 3);
+    const max = Math.min(total, current + 3);
+    for (let i = min; i <= max; i++) {
       if (i !== current) {
         components.push(
-          <PaginationButton path={path} title={String(i)} num={i} />
+          <PaginationButton
+            key={`Pagination-${i}`}
+            path={path}
+            title={String(i)}
+            num={i}
+          />
         );
       }
     }
 
     if (current < total) {
       components.push(
-        <PaginationButton path={path} title={">"} num={current + 1} />
+        <PaginationButton
+          key="Pagination-Forward"
+          path={path}
+          title={">"}
+          num={current + 1}
+        />,
+        <PaginationButton
+          key="Pagination-End"
+          path={path}
+          title={">>"}
+          num={total}
+        />
       );
     }
   }
@@ -43,16 +72,27 @@ function PaginationButton({
   title,
   num,
 }: {
-  path: string;
+  path: string | ((page: number) => void);
   title: string;
   num: number;
 }) {
+  if (typeof path === "string") {
+    return (
+      <a
+        href={`${path}${path.includes("?") ? "&" : "?"}page=${num}`}
+        className="block size-8 aspect-square content-center rounded-full border-2 border-line hover:bg-line hover:text-background"
+      >
+        <p className="m-auto size-fit font-bold">{title}</p>
+      </a>
+    );
+  }
   return (
-    <a
-      href={`${path}?page=${num}`}
+    <button
+      type="button"
+      onClick={() => path(num)}
       className="block size-8 aspect-square content-center rounded-full border-2 border-line hover:bg-line hover:text-background"
     >
       <p className="m-auto size-fit font-bold">{title}</p>
-    </a>
+    </button>
   );
 }

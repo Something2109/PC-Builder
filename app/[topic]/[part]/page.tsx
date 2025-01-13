@@ -4,6 +4,7 @@ import { ArticleType } from "@/models/articles/article";
 import { Database } from "@/models/Database";
 import { Products } from "@/utils/Enum";
 import { notFound, redirect } from "next/navigation";
+import React from "react";
 
 export default async function PartTopicPage({
   params,

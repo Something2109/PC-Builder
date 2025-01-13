@@ -15,6 +15,9 @@ const title: { [key in Products]: string } = {
   [Products.COOLER]: "Cooler",
   [Products.AIO]: "AIO",
   [Products.FAN]: "Fan",
+  [Products.CPU_BLOCK]: "CPU Block",
+  [Products.PUMP]: "Pump",
+  [Products.RADIATOR]: "Radiator",
 };
 
 export default function PartList({ path }: { path: string }) {
@@ -23,7 +26,6 @@ export default function PartList({ path }: { path: string }) {
       {Object.values(Products).map((part) => (
         <LinkButton
           image={`/images/icons/${part}.png`}
-          dark_image={`/images/icons/${part}-dark.png`}
           title={title[part]}
           link={`/${path}/${part}`}
           key={`PartList-${part}`}
@@ -40,23 +42,14 @@ type LinkButtonProps = {
   link: string;
 };
 
-function LinkButton({ image, dark_image, title, link }: LinkButtonProps) {
-  if (!dark_image) dark_image = image;
-
+function LinkButton({ image, title, link }: LinkButtonProps) {
   return (
     <RedirectButton className="flex flex-row" href={link}>
       <picture className="size-6 md:size-8">
         <Image
           src={image}
           alt={`${title} logo`}
-          className="dark:hidden"
-          width="128"
-          height="128"
-        />
-        <Image
-          src={dark_image}
-          alt={`${title} logo`}
-          className="hidden dark:block"
+          className="dark:invert transition ease-in-out duration-500 delay-0"
           width="128"
           height="128"
         />

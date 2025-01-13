@@ -1,6 +1,10 @@
+import { SearchBar } from "@/components/searchbar";
+import React from "react";
+
 export default function Page() {
   return (
     <>
+      <SearchBar />
       <h1>Main page</h1>
       <p>
         Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo

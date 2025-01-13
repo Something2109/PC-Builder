@@ -4,14 +4,13 @@ import {
   ListType,
   ParagraphType,
   SectionType,
-} from "@/models/articles/article";
+} from "@/utils/interface/article/article";
 import { Paragraph, ParagraphInput } from "./Paragraph";
 import { Picture, PictureInput } from "./Image";
 import { List, ListInput } from "./List";
 import { Section, SectionInput } from "./Section";
 import { Button } from "@/components/utils/Button";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
-import { TextareaHTMLAttributes, useRef, useEffect } from "react";
 
 export type ContentProps<T extends ContentType> = {
   content: T;
@@ -50,33 +49,6 @@ export function InputRenderer(props: InputContentProps<ContentType>) {
   }
 }
 
-export function InputArea({
-  className,
-  ...rest
-}: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  let classList = ["w-full bg-transparent resize-none overflow-y-hidden"];
-  if (className) {
-    classList.push(className);
-  }
-
-  const textarea = useRef<HTMLTextAreaElement>(null);
-  const resize = () => {
-    textarea.current!.style.height = "auto";
-    textarea.current!.style.height = textarea.current!.scrollHeight + "px";
-  };
-  useEffect(resize, []);
-
-  return (
-    <textarea
-      ref={textarea}
-      rows={1}
-      className={classList.join(" ")}
-      onInput={resize}
-      {...rest}
-    />
-  );
-}
-
 export function AddRow({
   list,
   set,
@@ -91,7 +63,7 @@ export function AddRow({
   }
 
   return (
-    <RowWrapper>
+    <RowWrapper className="justify-center">
       <Button onClick={() => add({ type: "section", title: "", content: [] })}>
         Add Section
       </Button>

@@ -1,6 +1,7 @@
 import PartList from "@/components/partlist";
 import { Topics } from "@/utils/Enum";
 import { notFound } from "next/navigation";
+import React from "react";
 
 export default function TopicLayout({
   params,

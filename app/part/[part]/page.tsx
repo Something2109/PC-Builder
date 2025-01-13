@@ -1,44 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import ListItem from "../_component/PartItem";
-import { redirect, usePathname, useSearchParams } from "next/navigation";
-import PaginationBar from "@/components/pagination";
+import { createContext, useRef, useState } from "react";
+import {
+  ColumnWrapper,
+  ResponsiveWrapper,
+} from "@/components/utils/FlexWrapper";
+import { FilterBar } from "@/components/filterbar";
+import { FilterOptions } from "@/utils/interface";
+import { Products } from "@/utils/Enum";
+import { TableLoader } from "@/components/tableloader";
+
+const OptionContext = createContext<FilterOptions & { q?: string }>({});
 
 export default function PartListPage({ params }: { params: { part: string } }) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  let current = Number(searchParams.get("page"));
-  if (current && current < 1) {
-    redirect(pathname);
-  } else if (current == 0) {
-    current = 1;
-  }
-
-  const [data, setList] = useState({ list: [], pages: 0 });
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch(`/api/part/${params.part}?${searchParams}`).then((response) => {
-      if (response.ok) {
-        response.json().then((data) => setList(data));
-      } else {
-        response.json().then((data) => setError(data.message));
-      }
-    });
-  }, []);
-
-  if (error) return <h1>{error}</h1>;
+  const [options, setOptions] = useState<FilterOptions>({
+    part: { part: [params.part] },
+  });
+  const defaultOptions = useRef<FilterOptions>({
+    part: { part: [params.part] },
+  });
 
   return (
-    <>
-      <div className="grid grid-cols-1 lg:grid-cols-5 xl:grid-flow-col-6 gap-1 xl:gap-3">
-        {data.list.map((item: any, index) => (
-          <ListItem item={item} key={index} />
-        ))}
-      </div>
-      <PaginationBar path={pathname} current={current} total={data.pages} />
-    </>
+    <OptionContext.Provider value={options}>
+      <ResponsiveWrapper className="w-full">
+        <ColumnWrapper className="hidden lg:block lg:w-1/5">
+          <FilterBar
+            context={OptionContext}
+            defaultOptions={defaultOptions.current}
+            set={setOptions}
+          />
+        </ColumnWrapper>
+        <ColumnWrapper className="lg:w-4/5">
+          <TableLoader part={params.part as Products} context={OptionContext} />
+        </ColumnWrapper>
+      </ResponsiveWrapper>
+    </OptionContext.Provider>
   );
 }

@@ -2,6 +2,8 @@ data
 
 .env
 
+dist
+
 # Logs
 logs
 *.log

@@ -1,11 +1,12 @@
 "use client";
 
 import { Button } from "@/components/utils/Button";
-import { ImageType } from "@/models/articles/article";
+import { ImageType } from "@/utils/interface/article/article";
 import { RowWrapper, ColumnWrapper } from "@/components/utils/FlexWrapper";
+import { TextArea } from "@/components/utils/Input";
 import Image from "next/image";
 import { useCallback, useState } from "react";
-import { ContentProps, InputArea, InputContentProps } from "./utils";
+import { ContentProps, InputContentProps } from "./utils";
 
 export function Picture({ content }: ContentProps<ImageType>) {
   return (
@@ -76,17 +77,17 @@ export function PictureInput({
   }, []);
 
   return (
-    <RowWrapper className="border-2 rounded-xl p-3">
+    <RowWrapper className="border-2 rounded-xl p-3 justify-between">
       <picture className="*:mx-auto *:my-2 text-center">
         {img}
-        <InputArea
+        <TextArea
           className="text-center"
           placeholder="Caption"
           defaultValue={content.caption}
           onChange={(e) => (content.caption = e.target.value)}
         />
       </picture>
-      <ColumnWrapper>
+      <ColumnWrapper className="justify-center">
         <Button onClick={updateSelf.shiftUp}>Up</Button>
         {content.src.length === 0 ? (
           <Button onClick={updateSelf.remove}>Remove</Button>

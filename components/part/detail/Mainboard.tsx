@@ -1,0 +1,27 @@
+import { TableRowWrapper, TableWrapper } from "../TableWrapper";
+import Mainboard from "@/utils/interface/part/Mainboard";
+import { TableHTMLAttributes } from "react";
+
+export function MainboardTable({
+  defaultValue,
+  ...rest
+}: {
+  defaultValue?: Partial<Mainboard.Info>;
+} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
+  return (
+    <TableWrapper {...rest}>
+      <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
+      <TableRowWrapper>Socket {defaultValue?.socket}</TableRowWrapper>
+      <TableRowWrapper>
+        RAM Form Factor {defaultValue?.ram_form_factor}
+      </TableRowWrapper>
+      <TableRowWrapper>
+        RAM Interface {defaultValue?.ram_interface}
+      </TableRowWrapper>
+      <TableRowWrapper>RAM Slot {defaultValue?.ram_slot}</TableRowWrapper>
+      <TableRowWrapper>
+        Expansion Slots {defaultValue?.expansion_slots}
+      </TableRowWrapper>
+    </TableWrapper>
+  );
+}
