@@ -17,3 +17,7 @@ services:
         - action: sync
           path: ../../
           target: /usr/local/app
+          ignore:
+            - crawlers
+            - docker
+            - nest-cli.json
