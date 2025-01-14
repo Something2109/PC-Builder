@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Products } from "../Enum";
+import { Info, Products } from "../Enum";
 import AIO from "./part/AIO";
 import Case from "./part/Case";
 import Cooler from "./part/Cooler";
@@ -19,51 +19,49 @@ import Radiator from "./part/Radiator";
 
 export const PartSummaryInfoSchema = z
   .object({
-    [Products.CPU]: CPU.SummarySchema,
-    [Products.GPU]: GPU.SummarySchema,
-    [Products.GRAPHIC_CARD]: GraphicCard.SummarySchema,
-    [Products.MAIN]: Mainboard.SummarySchema,
-    [Products.RAM]: RAM.SummarySchema,
-    [Products.SSD]: SSD.SummarySchema,
-    [Products.HDD]: HDD.SummarySchema,
-    [Products.PSU]: PSU.SummarySchema,
-    [Products.CASE]: Case.SummarySchema,
-    [Products.FAN]: Fan.SummarySchema,
-    [Products.COOLER]: Cooler.SummarySchema,
-    [Products.AIO]: AIO.SummarySchema,
-    [Products.CPU_BLOCK]: CPUBlock.SummarySchema,
-    [Products.PUMP]: Pump.SummarySchema,
-    [Products.RADIATOR]: Radiator.SummarySchema,
+    [Info.CPU]: CPU.SummarySchema,
+    [Info.GPU]: GPU.SummarySchema,
+    [Info.GRAPHIC_CARD]: GraphicCard.SummarySchema,
+    [Info.MAIN]: Mainboard.SummarySchema,
+    [Info.RAM]: RAM.SummarySchema,
+    [Info.SSD]: SSD.SummarySchema,
+    [Info.HDD]: HDD.SummarySchema,
+    [Info.PSU]: PSU.SummarySchema,
+    [Info.CASE]: Case.SummarySchema,
+    [Info.FAN]: Fan.SummarySchema,
+    [Info.COOLER]: Cooler.SummarySchema,
+    [Info.AIO]: AIO.SummarySchema,
+    [Info.CPU_BLOCK]: CPUBlock.SummarySchema,
+    [Info.PUMP]: Pump.SummarySchema,
+    [Info.RADIATOR]: Radiator.SummarySchema,
   })
   .partial();
 
-export type SummaryInfo<T extends Products> = z.infer<
-  typeof Part.SummarySchema
-> & {
+export type SummaryInfo<T extends Info> = z.infer<typeof Part.SummarySchema> & {
   [key in T]: z.infer<typeof PartSummaryInfoSchema>[T];
 };
 
 export const DetailInfoListSchema = z
   .object({
-    [Products.CPU]: CPU.Schema,
-    [Products.GPU]: GPU.Schema,
-    [Products.GRAPHIC_CARD]: GraphicCard.Schema,
-    [Products.MAIN]: Mainboard.Schema,
-    [Products.RAM]: RAM.Schema,
-    [Products.SSD]: SSD.Schema,
-    [Products.HDD]: HDD.Schema,
-    [Products.PSU]: PSU.Schema,
-    [Products.CASE]: Case.Schema,
-    [Products.FAN]: Fan.Schema,
-    [Products.COOLER]: Cooler.Schema,
-    [Products.AIO]: AIO.Schema,
-    [Products.CPU_BLOCK]: CPUBlock.Schema,
-    [Products.PUMP]: Pump.Schema,
-    [Products.RADIATOR]: Radiator.Schema,
+    [Info.CPU]: CPU.Schema,
+    [Info.GPU]: GPU.Schema,
+    [Info.GRAPHIC_CARD]: GraphicCard.Schema,
+    [Info.MAIN]: Mainboard.Schema,
+    [Info.RAM]: RAM.Schema,
+    [Info.SSD]: SSD.Schema,
+    [Info.HDD]: HDD.Schema,
+    [Info.PSU]: PSU.Schema,
+    [Info.CASE]: Case.Schema,
+    [Info.FAN]: Fan.Schema,
+    [Info.COOLER]: Cooler.Schema,
+    [Info.AIO]: AIO.Schema,
+    [Info.CPU_BLOCK]: CPUBlock.Schema,
+    [Info.PUMP]: Pump.Schema,
+    [Info.RADIATOR]: Radiator.Schema,
   })
   .partial();
 
-export type DetailInfo<T extends Products> = z.infer<typeof Part.Schema> & {
+export type DetailInfo<T extends Info> = z.infer<typeof Part.Schema> & {
   raw?: string;
 } & {
   [key in T]: z.infer<typeof DetailInfoListSchema>[T];
@@ -73,45 +71,63 @@ export const DetailInfoOptionsSchema = Part.Schema.partial().merge(
   z
     .object({
       raw: z.string(),
-      [Products.CPU]: CPU.Schema.partial().nullish(),
-      [Products.GPU]: GPU.Schema.partial().nullish(),
-      [Products.GRAPHIC_CARD]: GraphicCard.Schema.partial().nullish(),
-      [Products.MAIN]: Mainboard.Schema.partial().nullish(),
-      [Products.RAM]: RAM.Schema.partial().nullish(),
-      [Products.SSD]: SSD.Schema.partial().nullish(),
-      [Products.HDD]: HDD.Schema.partial().nullish(),
-      [Products.PSU]: PSU.Schema.partial().nullish(),
-      [Products.CASE]: Case.Schema.partial().nullish(),
-      [Products.FAN]: Fan.Schema.partial().nullish(),
-      [Products.COOLER]: Cooler.Schema.partial().nullish(),
-      [Products.AIO]: AIO.Schema.partial().nullish(),
-      [Products.CPU_BLOCK]: CPUBlock.Schema.partial().nullish(),
-      [Products.PUMP]: Pump.Schema.partial().nullish(),
-      [Products.RADIATOR]: Radiator.Schema.partial().nullish(),
+      [Info.CPU]: CPU.Schema.partial().nullish(),
+      [Info.GPU]: GPU.Schema.partial().nullish(),
+      [Info.GRAPHIC_CARD]: GraphicCard.Schema.partial().nullish(),
+      [Info.MAIN]: Mainboard.Schema.partial().nullish(),
+      [Info.RAM]: RAM.Schema.partial().nullish(),
+      [Info.SSD]: SSD.Schema.partial().nullish(),
+      [Info.HDD]: HDD.Schema.partial().nullish(),
+      [Info.PSU]: PSU.Schema.partial().nullish(),
+      [Info.CASE]: Case.Schema.partial().nullish(),
+      [Info.FAN]: Fan.Schema.partial().nullish(),
+      [Info.COOLER]: Cooler.Schema.partial().nullish(),
+      [Info.AIO]: AIO.Schema.partial().nullish(),
+      [Info.CPU_BLOCK]: CPUBlock.Schema.partial().nullish(),
+      [Info.PUMP]: Pump.Schema.partial().nullish(),
+      [Info.RADIATOR]: Radiator.Schema.partial().nullish(),
     })
     .partial()
 );
 
 export type DetailInfoOptions = z.infer<typeof DetailInfoOptionsSchema>;
 
+export const ProductInfo: { [key in Products]: Info[] } = {
+  [Products.CPU]: [Info.CPU, Info.GPU],
+  [Products.GPU]: [Info.GPU],
+  [Products.GRAPHIC_CARD]: [Info.GRAPHIC_CARD],
+  [Products.MAIN]: [Info.MAIN],
+  [Products.RAM]: [Info.RAM],
+  [Products.SSD]: [Info.SSD],
+  [Products.HDD]: [Info.HDD],
+  [Products.PSU]: [Info.PSU],
+  [Products.CASE]: [Info.CASE],
+  [Products.FAN]: [Info.FAN],
+  [Products.COOLER]: [Info.COOLER],
+  [Products.AIO]: [Info.AIO],
+  [Products.CPU_BLOCK]: [Info.CPU_BLOCK],
+  [Products.PUMP]: [Info.PUMP],
+  [Products.RADIATOR]: [Info.RADIATOR],
+};
+
 export const FilterOptionSchema = z
   .object({
     part: Part.FilterOptionSchema,
-    [Products.CPU]: CPU.FilterOptionSchema.nullish(),
-    [Products.GPU]: GPU.FilterOptionSchema.nullish(),
-    [Products.GRAPHIC_CARD]: GraphicCard.FilterOptionSchema.nullish(),
-    [Products.MAIN]: Mainboard.FilterOptionSchema.nullish(),
-    [Products.RAM]: RAM.FilterOptionSchema.nullish(),
-    [Products.SSD]: SSD.FilterOptionSchema.nullish(),
-    [Products.HDD]: HDD.FilterOptionSchema.nullish(),
-    [Products.PSU]: PSU.FilterOptionSchema.nullish(),
-    [Products.CASE]: Case.FilterOptionSchema.nullish(),
-    [Products.FAN]: Fan.FilterOptionSchema.nullish(),
-    [Products.COOLER]: Cooler.FilterOptionSchema.nullish(),
-    [Products.AIO]: AIO.FilterOptionSchema.nullish(),
-    [Products.CPU_BLOCK]: CPUBlock.FilterOptionSchema.nullish(),
-    [Products.PUMP]: Pump.FilterOptionSchema.nullish(),
-    [Products.RADIATOR]: Radiator.FilterOptionSchema.nullish(),
+    [Info.CPU]: CPU.FilterOptionSchema.nullish(),
+    [Info.GPU]: GPU.FilterOptionSchema.nullish(),
+    [Info.GRAPHIC_CARD]: GraphicCard.FilterOptionSchema.nullish(),
+    [Info.MAIN]: Mainboard.FilterOptionSchema.nullish(),
+    [Info.RAM]: RAM.FilterOptionSchema.nullish(),
+    [Info.SSD]: SSD.FilterOptionSchema.nullish(),
+    [Info.HDD]: HDD.FilterOptionSchema.nullish(),
+    [Info.PSU]: PSU.FilterOptionSchema.nullish(),
+    [Info.CASE]: Case.FilterOptionSchema.nullish(),
+    [Info.FAN]: Fan.FilterOptionSchema.nullish(),
+    [Info.COOLER]: Cooler.FilterOptionSchema.nullish(),
+    [Info.AIO]: AIO.FilterOptionSchema.nullish(),
+    [Info.CPU_BLOCK]: CPUBlock.FilterOptionSchema.nullish(),
+    [Info.PUMP]: Pump.FilterOptionSchema.nullish(),
+    [Info.RADIATOR]: Radiator.FilterOptionSchema.nullish(),
   })
   .partial();
 
@@ -119,21 +135,21 @@ export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 
 export const FilterAttributes = {
   part: Part.FilterAttributes,
-  [Products.CPU]: CPU.FilterAttributes,
-  [Products.GPU]: GPU.FilterAttributes,
-  [Products.GRAPHIC_CARD]: GraphicCard.FilterAttributes,
-  [Products.MAIN]: Mainboard.FilterAttributes,
-  [Products.RAM]: RAM.FilterAttributes,
-  [Products.SSD]: SSD.FilterAttributes,
-  [Products.HDD]: HDD.FilterAttributes,
-  [Products.PSU]: PSU.FilterAttributes,
-  [Products.CASE]: Case.FilterAttributes,
-  [Products.FAN]: Fan.FilterAttributes,
-  [Products.COOLER]: Cooler.FilterAttributes,
-  [Products.AIO]: AIO.FilterAttributes,
-  [Products.CPU_BLOCK]: CPUBlock.FilterAttributes,
-  [Products.PUMP]: Pump.FilterAttributes,
-  [Products.RADIATOR]: Radiator.FilterAttributes,
+  [Info.CPU]: CPU.FilterAttributes,
+  [Info.GPU]: GPU.FilterAttributes,
+  [Info.GRAPHIC_CARD]: GraphicCard.FilterAttributes,
+  [Info.MAIN]: Mainboard.FilterAttributes,
+  [Info.RAM]: RAM.FilterAttributes,
+  [Info.SSD]: SSD.FilterAttributes,
+  [Info.HDD]: HDD.FilterAttributes,
+  [Info.PSU]: PSU.FilterAttributes,
+  [Info.CASE]: Case.FilterAttributes,
+  [Info.FAN]: Fan.FilterAttributes,
+  [Info.COOLER]: Cooler.FilterAttributes,
+  [Info.AIO]: AIO.FilterAttributes,
+  [Info.CPU_BLOCK]: CPUBlock.FilterAttributes,
+  [Info.PUMP]: Pump.FilterAttributes,
+  [Info.RADIATOR]: Radiator.FilterAttributes,
 };
 
 export const DefaultFilterOptions = {

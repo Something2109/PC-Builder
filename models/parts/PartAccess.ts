@@ -6,6 +6,9 @@ import { Models, ModelFilters } from ".";
 import { IdSubQuery } from "../Connection";
 import { ModelScopes, Tables } from "../interface";
 
+/**
+ * @deprecated
+ */
 class PartAccess {
   async list(options?: FilterOptions & PageOptions) {
     try {
@@ -16,18 +19,17 @@ class PartAccess {
       let include;
       if (part && part.part && part.part[0]) {
         include = {
-          model: Models[part.part[0] as Products].scope(ModelScopes.SUMMARY),
+          model: Models[part.part[0] as Products].scope({
+            method: [ModelScopes.SUMMARY, detail[part.part[0] as Products]],
+          }),
           where: detail[part.part[0] as Products] ?? {},
           required: false,
         };
       }
 
-      const { rows, count } = await PartInformation.scope([
-        ModelScopes.SUMMARY,
-        {
-          method: [ModelScopes.FILTER, part],
-        },
-      ]).findAndCountAll({
+      const { rows, count } = await PartInformation.scope({
+        method: [ModelScopes.SUMMARY, part],
+      }).findAndCountAll({
         limit,
         offset: page * limit,
         include,
@@ -51,17 +53,16 @@ class PartAccess {
       let include;
       if (part && part.part && part.part[0]) {
         include = {
-          model: Models[part.part[0] as Products].scope(ModelScopes.SUMMARY),
+          model: Models[part.part[0] as Products].scope({
+            method: [ModelScopes.SUMMARY, detail[part.part[0] as Products]],
+          }),
           where: detail[part.part[0] as Products] ?? {},
         };
       }
 
-      const { rows, count } = await PartInformation.scope([
-        ModelScopes.SUMMARY,
-        {
-          method: [ModelScopes.FILTER, part],
-        },
-      ]).findAndCountAll({
+      const { rows, count } = await PartInformation.scope({
+        method: [ModelScopes.SUMMARY, part],
+      }).findAndCountAll({
         where: { name: { [Op.like]: `%${str}%` } },
         limit,
         offset: page * limit,
@@ -114,22 +115,15 @@ class PartAccess {
     return null;
   }
 
-  async get(
-    part: Products,
-    id: string
-  ): Promise<DetailInfo<typeof part> | null> {
+  async get(part: Products, id: string): Promise<any | null> {
     try {
-      const save = await PartInformation.scope(ModelScopes.FILTER).findByPk(
+      const save = await PartInformation.scope(ModelScopes.DETAIL).findByPk(
         id,
-        {
-          include: {
-            model: Models[part],
-          },
-        }
+        { include: { model: Models[part] } }
       );
 
       if (save) {
-        return save.toJSON() as unknown as DetailInfo<typeof part>;
+        return save.toJSON() as unknown as any;
       }
     } catch (err) {
       console.error(err);
@@ -138,10 +132,7 @@ class PartAccess {
     return null;
   }
 
-  async set(
-    data: DetailInfo<Products>,
-    id?: string
-  ): Promise<DetailInfo<Products>> {
+  async set(data: any, id?: string): Promise<any> {
     const { [data.part as Products]: detail, part, ...info } = data;
 
     let infoRow: PartInformation;
@@ -166,7 +157,7 @@ class PartAccess {
 
     await detailRow.save();
 
-    const result: DetailInfo<Products> = infoRow.toJSON();
+    const result: any = infoRow.toJSON();
 
     result[part as Products] = detailRow.toJSON();
 
