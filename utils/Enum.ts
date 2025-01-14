@@ -22,8 +22,7 @@ enum Products {
   RADIATOR = "radiator",
 }
 
-enum Tables {
-  ARTICLE = "article",
+enum Info {
   CPU = "cpu",
   GPU = "gpu",
   GRAPHIC_CARD = "graphic_card",
@@ -33,6 +32,12 @@ enum Tables {
   HDD = "hdd",
   PSU = "psu",
   CASE = "case",
+  COOLER = "cooler",
+  AIO = "aio",
+  FAN = "fan",
+  CPU_BLOCK = "cpu_block",
+  PUMP = "pump",
+  RADIATOR = "radiator",
 }
 
-export { Topics, Products, Tables };
+export { Topics, Products, Info };
