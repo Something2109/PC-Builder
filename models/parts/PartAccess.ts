@@ -6,6 +6,9 @@ import { Models, ModelFilters } from ".";
 import { IdSubQuery } from "../Connection";
 import { ModelScopes, Tables } from "../interface";
 
+/**
+ * @deprecated
+ */
 class PartAccess {
   async list(options?: FilterOptions & PageOptions) {
     try {
@@ -112,10 +115,7 @@ class PartAccess {
     return null;
   }
 
-  async get(
-    part: Products,
-    id: string
-  ): Promise<DetailInfo<typeof part> | null> {
+  async get(part: Products, id: string): Promise<any | null> {
     try {
       const save = await PartInformation.scope(ModelScopes.DETAIL).findByPk(
         id,
@@ -123,7 +123,7 @@ class PartAccess {
       );
 
       if (save) {
-        return save.toJSON() as unknown as DetailInfo<typeof part>;
+        return save.toJSON() as unknown as any;
       }
     } catch (err) {
       console.error(err);
@@ -132,10 +132,7 @@ class PartAccess {
     return null;
   }
 
-  async set(
-    data: DetailInfo<Products>,
-    id?: string
-  ): Promise<DetailInfo<Products>> {
+  async set(data: any, id?: string): Promise<any> {
     const { [data.part as Products]: detail, part, ...info } = data;
 
     let infoRow: PartInformation;
@@ -160,7 +157,7 @@ class PartAccess {
 
     await detailRow.save();
 
-    const result: DetailInfo<Products> = infoRow.toJSON();
+    const result: any = infoRow.toJSON();
 
     result[part as Products] = detailRow.toJSON();
 
