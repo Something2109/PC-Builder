@@ -296,12 +296,9 @@ abstract class BaseDetailPartService<
     });
 
     const include: Includeable[] = ProductInfo[this.part].map((info) => ({
-      model: InfoModels[info].scope([
-        ModelScopes.SUMMARY,
-        {
-          method: [ModelScopes.FILTER, rest[info]],
-        },
-      ]),
+      model: InfoModels[info].scope({
+        method: [ModelScopes.SUMMARY, rest[info]],
+      }),
       required: Boolean(rest[info]),
     }));
 
