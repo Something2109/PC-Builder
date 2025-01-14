@@ -7,7 +7,7 @@ import { ModelScopes } from "@/models/interface";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { FilterOptions } from "@/utils/interface";
 import Part from "@/utils/interface/part/Parts";
-import { Products } from "@/utils/Enum";
+import { Products, Info } from "@/utils/Enum";
 import CPUBlock from "@/utils/interface/part/CPUBlock";
 import {
   BaseDetailPartService,
@@ -15,7 +15,7 @@ import {
 } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [Products.CPU_BLOCK]: CPUBlock.Info;
+  [Info.CPU_BLOCK]: CPUBlock.Info;
 };
 
 @Injectable()

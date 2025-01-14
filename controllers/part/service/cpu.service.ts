@@ -1,26 +1,17 @@
-import { Includeable } from "sequelize";
 import { Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { ModelScopes } from "@/models/interface";
 import Part from "@/utils/interface/part/Parts";
-import { Products } from "@/utils/Enum";
+import { Products, Info } from "@/utils/Enum";
 import CPU from "@/utils/interface/part/CPU";
-import { CPUModel } from "@/models/parts/tables/CPU";
 import GPU from "@/utils/interface/part/GPU";
 import { GPUModel } from "@/models/parts/tables/GPU";
-import {
-  BaseDetailPartService,
-  PageOptions,
-  SearchOptions,
-} from "../interface/service.interface";
-import {
-  DetailInfoOptions as Options,
-  FilterOptions as Filter,
-} from "@/utils/interface";
+import { BaseDetailPartService } from "../interface/service.interface";
+import { FilterOptions as Filter } from "@/utils/interface";
 
 type Detail = Part.BasicInfo & {
-  [Products.CPU]: CPU.Info;
-  [Products.GPU]?: GPU.Info;
+  [Info.CPU]: CPU.Info;
+  [Info.GPU]?: GPU.Info;
 };
 
 @Injectable()

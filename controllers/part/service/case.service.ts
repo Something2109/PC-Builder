@@ -12,14 +12,14 @@ import { ModelScopes } from "@/models/interface";
 import { FilterOptions } from "@/utils/interface";
 import Part from "@/utils/interface/part/Parts";
 import Case from "@/utils/interface/part/Case";
-import { Products } from "@/utils/Enum";
+import { Products, Info } from "@/utils/Enum";
 import {
   BaseDetailPartService,
   SearchOptions,
 } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [Products.CASE]: Case.Info;
+  [Info.CASE]: Case.Info;
 };
 
 @Injectable()

@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import Part from "@/utils/interface/part/Parts";
-import { Products } from "@/utils/Enum";
+import { Products, Info } from "@/utils/Enum";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [Products.GRAPHIC_CARD]: GraphicCard.Info;
+  [Info.GRAPHIC_CARD]: GraphicCard.Info;
 };
 
 @Injectable()
