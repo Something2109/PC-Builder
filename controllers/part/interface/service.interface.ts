@@ -312,14 +312,14 @@ abstract class BaseDetailPartService<
   }
 
   async filter(options?: Filter & SearchOptions): Promise<Filter> {
-    let { part, [this.part]: filter } = options ?? {};
-    part = { ...part, part: [this.part] };
+    options = options ?? {};
+    const part = { ...options.part, part: [this.part] };
 
+    const FilteredInfos = ProductInfo[this.part].map((info) =>
+      InfoModels[info].scope({ method: [ModelScopes.FILTER, options[info]] })
+    );
     const FilteredPart = PartInformation.scope({
       method: [ModelScopes.FILTER, part],
-    });
-    const FilteredModel = InfoModels[this.part].scope({
-      method: [ModelScopes.FILTER, filter],
     });
 
     const result: Filter = {
@@ -327,15 +327,27 @@ abstract class BaseDetailPartService<
         FilteredPart,
         part,
         Part.FilterAttributes,
-        FilteredModel
-      ),
-      [this.part]: await this.filterFromModel(
-        FilteredModel,
-        (filter as any) ?? {},
-        FilterAttributes[this.part],
-        FilteredPart
+        ...FilteredInfos
       ),
     };
+
+    const infoPromise = FilteredInfos.map(async (model, index) => {
+      const info = ProductInfo[this.part][index];
+
+      let filter: any = null;
+      if (options[info] !== null) {
+        filter = await this.filterFromModel(
+          model,
+          (options[info] as any) ?? {},
+          FilterAttributes[info],
+          FilteredPart
+        );
+      }
+
+      result[info] = filter;
+    });
+
+    await Promise.all(infoPromise);
 
     return result;
   }
