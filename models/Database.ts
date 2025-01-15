@@ -8,6 +8,9 @@ import { PartAccess } from "./parts/PartAccess";
 import { ArticleSummary, ArticleType } from "@/utils/interface/article/article";
 import { RetailProductType } from "@/utils/interface/retailer/Product";
 
+/**
+ * @deprecated
+ */
 class MockDatabase {
   private static path = "./data";
   private static objects: {
@@ -56,6 +59,9 @@ interface DatabaseObject {
   path: string;
 }
 
+/**
+ * @deprecated
+ */
 class Articles implements DatabaseObject {
   path: string;
 
@@ -134,6 +140,9 @@ class Articles implements DatabaseObject {
   }
 }
 
+/**
+ * @deprecated
+ */
 class Images implements DatabaseObject {
   path: string;
 
@@ -176,6 +185,9 @@ class Images implements DatabaseObject {
   }
 }
 
+/**
+ * @deprecated
+ */
 class Seller implements DatabaseObject {
   path: string;
 

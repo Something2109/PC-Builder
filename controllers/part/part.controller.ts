@@ -9,7 +9,6 @@ import {
   ParseUUIDPipe,
   Delete,
   ParseEnumPipe,
-  ParseIntPipe,
   BadRequestException,
 } from "@nestjs/common";
 import { PartService } from "./part.service";
@@ -22,8 +21,9 @@ import {
 } from "@/utils/interface";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 
-const PageOptionValidator = new ParseIntPipe({ optional: true });
-const ProductValidator = new ParseEnumPipe(Products);
+const ProductValidator = new ParseEnumPipe(Products, {
+  exceptionFactory: () => new NotFoundException("Product's not found"),
+});
 const FilterValidator = new ZodValidationPipe(FilterOptionSchema);
 const DetailValidator = new ZodValidationPipe(DetailInfoOptionsSchema);
 
@@ -32,8 +32,18 @@ export class PartController {
   constructor(private service: PartService) {}
 
   @Get("filter")
-  async getDefaultFilter(@Body(FilterValidator) body: FilterOptions) {
-    const filter = await this.service.filter(body);
+  async getDefaultFilter(
+    @Query() params: Record<string, string | string[]>,
+    @Body(FilterValidator) body: FilterOptions
+  ) {
+    const service = this.service;
+
+    const options = {
+      ...body,
+      ...service.options(params),
+    };
+
+    const filter = await service.filter(options);
 
     return JSON.stringify(filter);
   }
@@ -41,11 +51,17 @@ export class PartController {
   @Get("filter/:part")
   async getPartFilter(
     @Param("part", ProductValidator) part: Products,
+    @Query() params: Record<string, string | string[]>,
     @Body(FilterValidator) body: FilterOptions
   ) {
     const service = this.findService(part);
 
-    const filter = await service.filter(body);
+    const options = {
+      ...body,
+      ...service.options(params),
+    };
+
+    const filter = await service.filter(options);
 
     return JSON.stringify(filter);
   }
@@ -53,13 +69,11 @@ export class PartController {
   @Get()
   async index(
     @Body(FilterValidator) body: FilterOptions,
-    @Query("q") q?: string,
-    @Query("page", PageOptionValidator) page?: number,
-    @Query("limit", PageOptionValidator) limit?: number
+    @Query() params: Record<string, string | string[]>
   ) {
     const service = this.service;
 
-    const options = { ...body, page, limit, q };
+    const options = { ...body, ...service.options(params) };
 
     let data = await service.list(options);
 
@@ -69,14 +83,12 @@ export class PartController {
   @Get(":part")
   async partList(
     @Param("part", ProductValidator) part: Products,
-    @Body(FilterValidator) body: FilterOptions,
-    @Query("q") q?: string,
-    @Query("page", PageOptionValidator) page?: number,
-    @Query("limit", PageOptionValidator) limit?: number
+    @Query() params: Record<string, string | string[]>,
+    @Body(FilterValidator) body: FilterOptions
   ) {
     const service = this.findService(part);
 
-    const options = { ...body, page, limit, q };
+    const options = { ...body, ...service.options(params) };
 
     let data = await service.list(options);
 

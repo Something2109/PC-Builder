@@ -7,25 +7,35 @@ import { ModelScopes } from "@/models/interface";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { FilterOptions } from "@/utils/interface";
 import Part from "@/utils/interface/part/Parts";
-import { Products } from "@/utils/Enum";
+import { Products, Info } from "@/utils/Enum";
 import CPUBlock from "@/utils/interface/part/CPUBlock";
 import {
   BaseDetailPartService,
   SearchOptions,
 } from "../interface/service.interface";
+import { Material, Primitive } from "@/utils/interface/utils";
 
 type Detail = Part.BasicInfo & {
-  [Products.CPU_BLOCK]: CPUBlock.Info;
+  [Info.CPU_BLOCK]: CPUBlock.Info;
 };
 
 @Injectable()
 class CPUBlockService extends BaseDetailPartService<Detail> {
   readonly part = Products.CPU_BLOCK;
 
-  async filter(
-    options?: FilterOptions & SearchOptions
-  ): Promise<FilterOptions> {
-    let { part, [this.part]: filter } = options ?? {};
+  options(params: Record<string, string | string[]>) {
+    const result = super.options(params);
+    result[Products.CPU_BLOCK] = {};
+
+    const options = result[Products.CPU_BLOCK];
+    this.parse(params, Primitive.String, options, "socket");
+    this.parse(params, Material.Metal, options, "plate");
+
+    return result;
+  }
+
+  async filter(options: FilterOptions & SearchOptions): Promise<FilterOptions> {
+    let { part, [Info.CPU_BLOCK]: filter } = options;
     filter = filter ?? {};
 
     if (!filter.socket) {

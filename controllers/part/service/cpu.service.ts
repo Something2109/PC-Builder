@@ -1,52 +1,32 @@
-import { Includeable } from "sequelize";
 import { Injectable } from "@nestjs/common";
-import { PartInformation } from "@/models/parts/tables/Part";
-import { ModelScopes } from "@/models/interface";
 import Part from "@/utils/interface/part/Parts";
-import { Products } from "@/utils/Enum";
+import { Products, Info } from "@/utils/Enum";
 import CPU from "@/utils/interface/part/CPU";
-import { CPUModel } from "@/models/parts/tables/CPU";
 import GPU from "@/utils/interface/part/GPU";
-import { GPUModel } from "@/models/parts/tables/GPU";
-import {
-  BaseDetailPartService,
-  PageOptions,
-  SearchOptions,
-} from "../interface/service.interface";
-import {
-  DetailInfoOptions as Options,
-  FilterOptions as Filter,
-} from "@/utils/interface";
+import { Primitive } from "@/utils/interface/utils";
+import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [Products.CPU]: CPU.Info;
-  [Products.GPU]?: GPU.Info;
+  [Info.CPU]: CPU.Info;
+  [Info.GPU]?: GPU.Info;
 };
 
 @Injectable()
 class CPUService extends BaseDetailPartService<Detail> {
   readonly part = Products.CPU;
 
-  async filter(options?: Filter): Promise<Filter> {
-    const result: Filter = super.filter(options) as Filter;
+  options(params: Record<string, string | string[]>) {
+    const result = super.options(params);
+    result[Products.CPU] = {};
 
-    const { part, gpu } = options ?? {};
-
-    if (gpu !== null) {
-      const FilteredPart = PartInformation.scope({
-        method: [ModelScopes.FILTER, { ...part, part: [this.part] }],
-      });
-      const FilteredGPU = GPUModel.scope({
-        method: [ModelScopes.FILTER, gpu],
-      });
-
-      result[Products.GPU] = await this.filterFromModel(
-        FilteredGPU,
-        gpu ?? {},
-        GPU.FilterAttributes,
-        FilteredPart
-      );
-    }
+    const options = result[Products.CPU];
+    this.parse(params, Primitive.String, options, "socket");
+    this.parse(params, Primitive.Number, options, "total_cores");
+    this.parse(params, Primitive.Number, options, "total_threads");
+    this.parse(params, Primitive.Number, options, "base_frequency");
+    this.parse(params, Primitive.Number, options, "turbo_frequency");
+    this.parse(params, Primitive.Number, options, "L3_cache");
+    this.parse(params, Primitive.Number, options, "tdp");
 
     return result;
   }

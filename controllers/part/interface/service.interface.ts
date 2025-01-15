@@ -1,22 +1,18 @@
-import {
-  CreationAttributes,
-  Includeable,
-  Model,
-  ModelStatic,
-  Op,
-} from "sequelize";
+import { CreationAttributes, Includeable, ModelStatic, Op } from "sequelize";
 import { Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
-import { Products } from "@/utils/Enum";
-import { Models } from "@/models/parts";
+import { Info, Products } from "@/utils/Enum";
+import { InfoModels } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
 import Part from "@/utils/interface/part/Parts";
-import { FilterOptionsType } from "@/utils/interface/utils";
+import { FilterOptionsType, Primitive } from "@/utils/interface/utils";
 import {
   FilterOptions as Filter,
   DetailInfoOptions as Options,
   FilterAttributes,
+  ProductInfo,
 } from "@/utils/interface";
+import { ZodSchema } from "zod";
 
 type ListResult<Part> = {
   total: number;
@@ -28,8 +24,8 @@ type SearchOptions = {
 };
 
 type PageOptions = {
-  page?: number;
-  limit?: number;
+  page: number;
+  limit: number;
 };
 
 /**
@@ -43,7 +39,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @returns The list of parts that satisfy the filter options.
    */
   abstract list(
-    options?: Filter & PageOptions & SearchOptions
+    options: Filter & PageOptions & SearchOptions
   ): Promise<ListResult<Detail>>;
 
   /**
@@ -52,7 +48,39 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @param options The filter options to apply.
    * @returns The created filter object.
    */
-  abstract filter(options?: Filter & SearchOptions): Promise<Filter>;
+  abstract filter(options: Filter & SearchOptions): Promise<Filter>;
+
+  /**
+   * Create the option to pass into the {@link list} and {@link filter} functions
+   * from an object of string or string array value
+   * (the object parsed from the {@link URLSearchParams} using Nest Query decorator).
+   * @param params The object of string key and string/string array value.
+   * @returns The option parsed from the {@link params}.
+   */
+  options(
+    params: Record<string, string | string[]>
+  ): Filter & PageOptions & SearchOptions {
+    const result: Filter & PageOptions & SearchOptions = {
+      page: 1,
+      limit: 50,
+    };
+
+    if (params.q) {
+      result.q = Array.isArray(params.q) ? params.q.join("|") : params.q;
+    }
+
+    const page = Number(
+      Array.isArray(params.page) ? params.page[0] : params.page
+    );
+    result.page = page > 0 ? page : 1;
+
+    const limit = Number(
+      Array.isArray(params.limit) ? params.limit[0] : params.limit
+    );
+    result.limit = limit > 0 ? limit : 50;
+
+    return result;
+  }
 
   /**
    * Create a new part with the given {@link Options} data.
@@ -270,30 +298,10 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
   }
 }
 
-const ModelMapping: {
-  [key in Products]: Products[];
-} = {
-  [Products.CPU]: [Products.CPU, Products.GPU],
-  [Products.GPU]: [Products.GPU],
-  [Products.GRAPHIC_CARD]: [Products.GRAPHIC_CARD],
-  [Products.MAIN]: [Products.MAIN],
-  [Products.RAM]: [Products.RAM],
-  [Products.SSD]: [Products.SSD],
-  [Products.HDD]: [Products.HDD],
-  [Products.PSU]: [Products.PSU],
-  [Products.CASE]: [Products.CASE],
-  [Products.COOLER]: [Products.COOLER],
-  [Products.AIO]: [Products.AIO],
-  [Products.FAN]: [Products.FAN],
-  [Products.CPU_BLOCK]: [Products.CPU_BLOCK],
-  [Products.PUMP]: [Products.PUMP],
-  [Products.RADIATOR]: [Products.RADIATOR],
-};
-
 /**
  * A base service class for handling parts data with detail information.
  * The service automatically handles the part type and the detail type
- * given the part model exists in the {@link Models} object.
+ * given the part model exists in the {@link InfoModels} object.
  * To define clearer logic, extends this class and override the methods.
  * @extends BasePartService
  */
@@ -305,23 +313,32 @@ abstract class BaseDetailPartService<
    */
   abstract part: Products;
 
+  options(params: Record<string, string | string[]>) {
+    const result = super.options(params);
+    result.part = {};
+
+    const options = result.part;
+    this.parse(params, Primitive.String, options, "part");
+    this.parse(params, Primitive.String, options, "brand");
+    this.parse(params, Primitive.String, options, "series");
+
+    return result;
+  }
+
   async list(
-    options?: Filter & PageOptions & SearchOptions
+    options: Filter & PageOptions & SearchOptions
   ): Promise<ListResult<Detail>> {
-    const { part, ...rest } = options ?? {};
+    const { part, ...rest } = options;
 
     const FilteredPart = PartInformation.scope({
       method: [ModelScopes.SUMMARY, { ...part, part: [this.part] }],
     });
 
-    const include: Includeable[] = ModelMapping[this.part].map((product) => ({
-      model: Models[product].scope([
-        ModelScopes.SUMMARY,
-        {
-          method: [ModelScopes.FILTER, rest[product]],
-        },
-      ]),
-      required: Boolean(rest[product]),
+    const include: Includeable[] = ProductInfo[this.part].map((info) => ({
+      model: InfoModels[info].scope({
+        method: [ModelScopes.SUMMARY, rest[info]],
+      }),
+      required: Boolean(rest[info]),
     }));
 
     const { rows, count } = await this.listFromPart(
@@ -333,15 +350,14 @@ abstract class BaseDetailPartService<
     return { total: count, list: rows.map((value) => value.toJSON()) };
   }
 
-  async filter(options?: Filter & SearchOptions): Promise<Filter> {
-    let { part, [this.part]: filter } = options ?? {};
-    part = { ...part, part: [this.part] };
+  async filter(options: Filter & SearchOptions): Promise<Filter> {
+    const part = { ...options.part, part: [this.part] };
 
+    const FilteredInfos = ProductInfo[this.part].map((info) =>
+      InfoModels[info].scope({ method: [ModelScopes.FILTER, options[info]] })
+    );
     const FilteredPart = PartInformation.scope({
       method: [ModelScopes.FILTER, part],
-    });
-    const FilteredModel = Models[this.part].scope({
-      method: [ModelScopes.FILTER, filter],
     });
 
     const result: Filter = {
@@ -349,43 +365,60 @@ abstract class BaseDetailPartService<
         FilteredPart,
         part,
         Part.FilterAttributes,
-        FilteredModel
-      ),
-      [this.part]: await this.filterFromModel(
-        FilteredModel,
-        (filter as any) ?? {},
-        FilterAttributes[this.part],
-        FilteredPart
+        ...FilteredInfos
       ),
     };
+
+    const infoPromise = FilteredInfos.map(async (model, index) => {
+      const info = ProductInfo[this.part][index];
+
+      let filter: any = null;
+      if (options[info] !== null) {
+        filter = await this.filterFromModel(
+          model,
+          (options[info] as any) ?? {},
+          FilterAttributes[info],
+          FilteredPart
+        );
+      }
+
+      result[info] = filter;
+    });
+
+    await Promise.all(infoPromise);
 
     return result;
   }
 
   /**
-   * Create the model instance of {@link model} with the given {@link data}.
-   * If the {@link id} is provided, update the id instance with the new data
-   * or create a new one if cant find.
-   * The {@link model} must have the id field as attribute to update.
-   * @param model The model to create the instance with.
-   * @param data The data to create the instance with.
-   * @param id The ID of the instance to update.
-   * @returns The created or updated instance.
+   * Extract the {@link key} properties from the {@link params} parameter
+   * and parse it with the {@link schema}. Then save it in the {@link dest} object
+   * using the {@link key} string.
+   * @param params The parameters to extract the key from.
+   * @param schema The schema to validate and parse the key values.
+   * @param dest The destination object to store the parsed values.
+   * @param key The key to extract and parse from the params.
    */
-  protected async setToModel<T extends Model<any, any>>(
-    model: ModelStatic<T>,
-    data: CreationAttributes<T>,
-    id?: string
-  ): Promise<T> {
-    const [instance, created] = await model.findOrBuild({
-      where: { id } as any, // add any type because the generic type does not contain the id field.
-      defaults: data,
-    });
-    if (!created) instance.set(data);
+  protected parse<Key extends string, Value>(
+    params: Record<string, string | string[]>,
+    schema: ZodSchema<Value>,
+    dest: { [key in Key]?: Value[] },
+    key: Key
+  ) {
+    let option = params[key];
 
-    await instance.save();
+    if (!option) return;
 
-    return instance;
+    if (!Array.isArray(option)) option = [option];
+
+    const parsedOption = option
+      .map((val) => schema.safeParse(val))
+      .filter((val) => val.success)
+      .map((val) => val.data);
+
+    if (parsedOption.length > 0) {
+      dest[key] = parsedOption;
+    }
   }
 
   protected async buildPart(
@@ -395,8 +428,8 @@ abstract class BaseDetailPartService<
     const part = Part.Schema.partial().parse(options);
     const instance = await super.buildPart(
       { ...part, part: this.part },
-      ...ModelMapping[this.part].map((product) =>
-        Models[product].scope(ModelScopes.DETAIL)
+      ...ProductInfo[this.part].map((info) =>
+        InfoModels[info].scope(ModelScopes.DETAIL)
       ),
       ...include
     );
@@ -404,8 +437,8 @@ abstract class BaseDetailPartService<
     if (typeof instance === "string") return instance;
 
     await Promise.all(
-      ModelMapping[this.part].map((product) =>
-        this.setDetailModel(instance, options, product)
+      ProductInfo[this.part].map((info) =>
+        this.setDetailModel(instance, options, info)
       )
     );
 
@@ -418,8 +451,8 @@ abstract class BaseDetailPartService<
   ): Promise<PartInformation | null> {
     const instance = await super.getPart(
       id,
-      ...ModelMapping[this.part].map((product) =>
-        Models[product].scope(ModelScopes.DETAIL)
+      ...ProductInfo[this.part].map((info) =>
+        InfoModels[info].scope(ModelScopes.DETAIL)
       ),
       ...include
     );
@@ -438,8 +471,8 @@ abstract class BaseDetailPartService<
     const instance = await super.setPart(
       { ...part, part: this.part },
       id,
-      ...ModelMapping[this.part].map((product) =>
-        Models[product].scope(ModelScopes.DETAIL)
+      ...ProductInfo[this.part].map((info) =>
+        InfoModels[info].scope(ModelScopes.DETAIL)
       ),
       ...include
     );
@@ -447,8 +480,8 @@ abstract class BaseDetailPartService<
     if (!instance || typeof instance === "string") return instance;
 
     await Promise.all(
-      ModelMapping[this.part].map((product) =>
-        this.setDetailModel(instance, options, product)
+      ProductInfo[this.part].map((info) =>
+        this.setDetailModel(instance, options, info)
       )
     );
 
@@ -459,41 +492,41 @@ abstract class BaseDetailPartService<
     await instance.save();
 
     await Promise.all(
-      ModelMapping[this.part].map((product) => instance[product]?.save())
+      ProductInfo[this.part].map((info) => instance[info]?.save())
     );
   }
 
   /**
-   * Extract the options of {@link part} from the {@link data} and set it
-   * to the corresponding {@link part} of the {@link instance}.
+   * Extract the options of {@link info} from the {@link data} and set it
+   * to the corresponding {@link info} of the {@link instance}.
    * If the options is null, destroy the part instance.
    * The options will only destroy the detail instance in the database
    * but not save the instance if it gets created or updated.
    * @param instance The instance to set the detail to.
    * @param data The data to extract the detail from.
-   * @param part The part to set the detail to.
+   * @param info The part to set the detail to.
    */
   protected async setDetailModel(
     instance: PartInformation,
     data: Options,
-    part: Products
+    info: Info
   ): Promise<void> {
-    const options = data[part];
+    const options = data[info];
 
-    if (options === null && instance[part]) {
-      await instance[part].destroy();
-      instance[part] = null as any;
-      instance.dataValues[part] = null;
+    if (options === null && instance[info]) {
+      await instance[info].destroy();
+      instance[info] = null as any;
+      instance.dataValues[info] = null;
     }
 
     if (options) {
-      if (!instance[part]) {
-        instance[part] = Models[part].build({
+      if (!instance[info]) {
+        instance[info] = InfoModels[info].build({
           id: instance.id,
         }) as never;
-        instance.dataValues[part] = instance[part];
+        instance.dataValues[info] = instance[info];
       }
-      instance[part].set(options);
+      instance[info].set(options);
     }
   }
 }
