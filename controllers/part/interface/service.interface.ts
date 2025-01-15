@@ -29,8 +29,8 @@ type SearchOptions = {
 };
 
 type PageOptions = {
-  page?: number;
-  limit?: number;
+  page: number;
+  limit: number;
 };
 
 /**
@@ -69,7 +69,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @returns The list of parts that satisfy the filter options.
    */
   abstract list(
-    options?: Filter & PageOptions & SearchOptions
+    options: Filter & PageOptions & SearchOptions
   ): Promise<ListResult<Detail>>;
 
   /**
@@ -78,7 +78,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @param options The filter options to apply.
    * @returns The created filter object.
    */
-  abstract filter(options?: Filter & SearchOptions): Promise<Filter>;
+  abstract filter(options: Filter & SearchOptions): Promise<Filter>;
 
   /**
    * Create a new part with the given {@link Options} data.
@@ -312,9 +312,9 @@ abstract class BaseDetailPartService<
   abstract part: Products;
 
   async list(
-    options?: Filter & PageOptions & SearchOptions
+    options: Filter & PageOptions & SearchOptions
   ): Promise<ListResult<Detail>> {
-    const { part, ...rest } = options ?? {};
+    const { part, ...rest } = options;
 
     const FilteredPart = PartInformation.scope({
       method: [ModelScopes.SUMMARY, { ...part, part: [this.part] }],
@@ -336,8 +336,7 @@ abstract class BaseDetailPartService<
     return { total: count, list: rows.map((value) => value.toJSON()) };
   }
 
-  async filter(options?: Filter & SearchOptions): Promise<Filter> {
-    options = options ?? {};
+  async filter(options: Filter & SearchOptions): Promise<Filter> {
     const part = { ...options.part, part: [this.part] };
 
     const FilteredInfos = ProductInfo[this.part].map((info) =>

@@ -22,10 +22,8 @@ type Detail = Part.BasicInfo & {
 class CPUBlockService extends BaseDetailPartService<Detail> {
   readonly part = Products.CPU_BLOCK;
 
-  async filter(
-    options?: FilterOptions & SearchOptions
-  ): Promise<FilterOptions> {
-    let { part, [this.part]: filter } = options ?? {};
+  async filter(options: FilterOptions & SearchOptions): Promise<FilterOptions> {
+    let { part, [Info.CPU_BLOCK]: filter } = options;
     filter = filter ?? {};
 
     if (!filter.socket) {

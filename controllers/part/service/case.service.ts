@@ -26,10 +26,8 @@ type Detail = Part.BasicInfo & {
 class CaseService extends BaseDetailPartService<Detail> {
   readonly part = Products.CASE;
 
-  async filter(
-    options?: FilterOptions & SearchOptions
-  ): Promise<FilterOptions> {
-    let { part, [this.part]: filter } = options ?? {};
+  async filter(options: FilterOptions & SearchOptions): Promise<FilterOptions> {
+    let { part, [Info.CASE]: filter } = options;
     filter = filter ?? {};
 
     const CasePartInclude = {

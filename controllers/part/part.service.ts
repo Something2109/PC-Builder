@@ -33,33 +33,28 @@ class PartService extends BasePartService {
     }, {} as ServiceObject);
   }
 
-  async list(options?: Filter & PageOptions & SearchOptions) {
-    let { part } = options ?? {};
+  async list(options: Filter & PageOptions & SearchOptions) {
+    let { part } = options;
 
     const FilteredPart = PartInformation.scope([
       ModelScopes.SUMMARY,
       { method: [ModelScopes.FILTER, part] },
     ]);
 
-    const { rows, count } = await this.listFromPart(
-      FilteredPart,
-      options ?? {}
-    );
+    const { rows, count } = await this.listFromPart(FilteredPart, options);
 
     return { total: count, list: rows.map((value) => value.toJSON()) };
   }
 
-  async filter(options?: Filter): Promise<Filter> {
-    const { part } = options ?? {};
-
+  async filter(options: Filter): Promise<Filter> {
     const FilteredPart = PartInformation.scope({
-      method: [ModelScopes.FILTER, part],
+      method: [ModelScopes.FILTER, options.part],
     });
 
     const result: Filter = {
       part: await this.filterFromModel(
         FilteredPart,
-        part ?? {},
+        options.part ?? {},
         Part.FilterAttributes
       ),
     };
