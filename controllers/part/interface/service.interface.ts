@@ -5,13 +5,14 @@ import { Info, Products } from "@/utils/Enum";
 import { InfoModels } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
 import Part from "@/utils/interface/part/Parts";
-import { FilterOptionsType } from "@/utils/interface/utils";
+import { FilterOptionsType, Primitive } from "@/utils/interface/utils";
 import {
   FilterOptions as Filter,
   DetailInfoOptions as Options,
   FilterAttributes,
   ProductInfo,
 } from "@/utils/interface";
+import { ZodSchema } from "zod";
 
 type ListResult<Part> = {
   total: number;
@@ -312,6 +313,18 @@ abstract class BaseDetailPartService<
    */
   abstract part: Products;
 
+  options(params: Record<string, string | string[]>) {
+    const result = super.options(params);
+    result.part = {};
+
+    const options = result.part;
+    this.parse(params, Primitive.String, options, "part");
+    this.parse(params, Primitive.String, options, "brand");
+    this.parse(params, Primitive.String, options, "series");
+
+    return result;
+  }
+
   async list(
     options: Filter & PageOptions & SearchOptions
   ): Promise<ListResult<Detail>> {
@@ -375,6 +388,37 @@ abstract class BaseDetailPartService<
     await Promise.all(infoPromise);
 
     return result;
+  }
+
+  /**
+   * Extract the {@link key} properties from the {@link params} parameter
+   * and parse it with the {@link schema}. Then save it in the {@link dest} object
+   * using the {@link key} string.
+   * @param params The parameters to extract the key from.
+   * @param schema The schema to validate and parse the key values.
+   * @param dest The destination object to store the parsed values.
+   * @param key The key to extract and parse from the params.
+   */
+  protected parse<Key extends string, Value>(
+    params: Record<string, string | string[]>,
+    schema: ZodSchema<Value>,
+    dest: { [key in Key]?: Value[] },
+    key: Key
+  ) {
+    let option = params[key];
+
+    if (!option) return;
+
+    if (!Array.isArray(option)) option = [option];
+
+    const parsedOption = option
+      .map((val) => schema.safeParse(val))
+      .filter((val) => val.success)
+      .map((val) => val.data);
+
+    if (parsedOption.length > 0) {
+      dest[key] = parsedOption;
+    }
   }
 
   protected async buildPart(
