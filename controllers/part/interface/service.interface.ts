@@ -1,10 +1,4 @@
-import {
-  CreationAttributes,
-  Includeable,
-  Model,
-  ModelStatic,
-  Op,
-} from "sequelize";
+import { CreationAttributes, Includeable, ModelStatic, Op } from "sequelize";
 import { Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { Info, Products } from "@/utils/Enum";
@@ -374,32 +368,6 @@ abstract class BaseDetailPartService<
     await Promise.all(infoPromise);
 
     return result;
-  }
-
-  /**
-   * Create the model instance of {@link model} with the given {@link data}.
-   * If the {@link id} is provided, update the id instance with the new data
-   * or create a new one if cant find.
-   * The {@link model} must have the id field as attribute to update.
-   * @param model The model to create the instance with.
-   * @param data The data to create the instance with.
-   * @param id The ID of the instance to update.
-   * @returns The created or updated instance.
-   */
-  protected async setToModel<T extends Model<any, any>>(
-    model: ModelStatic<T>,
-    data: CreationAttributes<T>,
-    id?: string
-  ): Promise<T> {
-    const [instance, created] = await model.findOrBuild({
-      where: { id } as any, // add any type because the generic type does not contain the id field.
-      defaults: data,
-    });
-    if (!created) instance.set(data);
-
-    await instance.save();
-
-    return instance;
   }
 
   protected async buildPart(
