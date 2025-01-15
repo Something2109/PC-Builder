@@ -38,6 +38,31 @@ type PageOptions = {
  */
 @Injectable()
 abstract class BasePartService<Detail = Part.BasicInfo> {
+  options(
+    params: Record<string, string | string[]>
+  ): Filter & PageOptions & SearchOptions {
+    const result: Filter & PageOptions & SearchOptions = {
+      page: 1,
+      limit: 50,
+    };
+
+    if (params.q) {
+      result.q = Array.isArray(params.q) ? params.q.join("|") : params.q;
+    }
+
+    const page = Number(
+      Array.isArray(params.page) ? params.page[0] : params.page
+    );
+    result.page = page > 0 ? page : 1;
+
+    const limit = Number(
+      Array.isArray(params.limit) ? params.limit[0] : params.limit
+    );
+    result.limit = limit > 0 ? limit : 50;
+
+    return result;
+  }
+
   /**
    * List all parts satisfying the given {@link Filter} options.
    * @param options The filter options to apply.
