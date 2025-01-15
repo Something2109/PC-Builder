@@ -32,6 +32,30 @@ type PageOptions = {
  */
 @Injectable()
 abstract class BasePartService<Detail = Part.BasicInfo> {
+  /**
+   * List all parts satisfying the given {@link Filter} options.
+   * @param options The filter options to apply.
+   * @returns The list of parts that satisfy the filter options.
+   */
+  abstract list(
+    options: Filter & PageOptions & SearchOptions
+  ): Promise<ListResult<Detail>>;
+
+  /**
+   * Create a new {@link Filter} object that filters
+   * the parts satisfying the given {@link Filter} options.
+   * @param options The filter options to apply.
+   * @returns The created filter object.
+   */
+  abstract filter(options: Filter & SearchOptions): Promise<Filter>;
+
+  /**
+   * Create the option to pass into the {@link list} and {@link filter} functions
+   * from an object of string or string array value
+   * (the object parsed from the {@link URLSearchParams} using Nest Query decorator).
+   * @param params The object of string key and string/string array value.
+   * @returns The option parsed from the {@link params}.
+   */
   options(
     params: Record<string, string | string[]>
   ): Filter & PageOptions & SearchOptions {
@@ -56,23 +80,6 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
 
     return result;
   }
-
-  /**
-   * List all parts satisfying the given {@link Filter} options.
-   * @param options The filter options to apply.
-   * @returns The list of parts that satisfy the filter options.
-   */
-  abstract list(
-    options: Filter & PageOptions & SearchOptions
-  ): Promise<ListResult<Detail>>;
-
-  /**
-   * Create a new {@link Filter} object that filters
-   * the parts satisfying the given {@link Filter} options.
-   * @param options The filter options to apply.
-   * @returns The created filter object.
-   */
-  abstract filter(options: Filter & SearchOptions): Promise<Filter>;
 
   /**
    * Create a new part with the given {@link Options} data.
