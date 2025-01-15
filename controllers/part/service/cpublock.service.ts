@@ -13,6 +13,7 @@ import {
   BaseDetailPartService,
   SearchOptions,
 } from "../interface/service.interface";
+import { Material, Primitive } from "@/utils/interface/utils";
 
 type Detail = Part.BasicInfo & {
   [Info.CPU_BLOCK]: CPUBlock.Info;
@@ -21,6 +22,17 @@ type Detail = Part.BasicInfo & {
 @Injectable()
 class CPUBlockService extends BaseDetailPartService<Detail> {
   readonly part = Products.CPU_BLOCK;
+
+  options(params: Record<string, string | string[]>) {
+    const result = super.options(params);
+    result[Products.CPU_BLOCK] = {};
+
+    const options = result[Products.CPU_BLOCK];
+    this.parse(params, Primitive.String, options, "socket");
+    this.parse(params, Material.Metal, options, "plate");
+
+    return result;
+  }
 
   async filter(options: FilterOptions & SearchOptions): Promise<FilterOptions> {
     let { part, [Info.CPU_BLOCK]: filter } = options;
