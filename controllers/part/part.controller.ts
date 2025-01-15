@@ -21,7 +21,9 @@ import {
 } from "@/utils/interface";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 
-const ProductValidator = new ParseEnumPipe(Products);
+const ProductValidator = new ParseEnumPipe(Products, {
+  exceptionFactory: () => new NotFoundException("Product's not found"),
+});
 const FilterValidator = new ZodValidationPipe(FilterOptionSchema);
 const DetailValidator = new ZodValidationPipe(DetailInfoOptionsSchema);
 
