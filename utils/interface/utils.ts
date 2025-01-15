@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+namespace Primitive {
+  export const String = z.string();
+
+  export const Number = z.coerce.number().refine((val) => val >= 0);
+}
+
 namespace FormFactor {
   export const Mainboard = z.enum([
     "Pico-ITX",
@@ -454,6 +460,7 @@ const NumberFilterOptions = z.array(z.number()).length(2);
 const FilterOptions = <T extends z.ZodTypeAny>(zodType: T) => z.array(zodType);
 
 export {
+  Primitive,
   FormFactor,
   InternalConnectors,
   ExternalPorts,
