@@ -1,43 +1,43 @@
-"use client";
-
-import { Products } from "@/utils/Enum";
-import React, { useEffect, useState } from "react";
 import PartPanel from "@/components/part/Panel";
-import Part from "@/utils/interface/part/Parts";
 import { SearchBar } from "@/components/searchbar";
+import PaginationBar from "@/components/pagination";
+import Part from "@/utils/interface/part/Parts";
+import { notFound } from "next/navigation";
 
-export default function List() {
-  const [data, setList] = useState<Record<Products, Part.BasicInfo[]> | null>();
-  const [error, setError] = useState(null);
+export default async function ListPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string };
+}) {
+  const page = searchParams["page"] ?? "1";
 
-  useEffect(() => {
-    fetch(`/api/part`).then((response) => {
-      if (response.ok) {
-        response.json().then((data) => setList(data));
-      } else {
-        response.json().then((data) => setError(data.message));
-      }
-    });
-  }, []);
+  const response = await fetch(
+    `${process.env.BACKEND_HOST}/api/part?page=${page}`
+  );
 
-  if (!data) return <h1>Loading</h1>;
-  if (error) return <h1>{error}</h1>;
+  if (!response) return notFound();
+
+  const data = (await response.json()) as {
+    total: number;
+    list: Part.BasicInfo[];
+  };
 
   return (
     <>
       <SearchBar />
-      {Object.entries(data).map(([key, value]) => {
-        return (
-          <div key={`${key}-${value.length}`}>
-            <h1 className="font-bold text-2xl my-2">{key.toUpperCase()}</h1>
-            <div className="grid grid-cols-1 lg:grid-cols-5 xl:grid-flow-col-6 gap-1 xl:gap-3">
-              {value.map((value) => {
-                return <PartPanel item={value} key={value.name} />;
-              })}
-            </div>
-          </div>
-        );
-      })}
+      <h1 className="font-bold text-2xl my-2">
+        {`${data.total} Product${data.total > 1 ? "s" : ""}`}
+      </h1>
+      <div className="grid grid-cols-1 lg:grid-cols-5 xl:grid-flow-col-6 gap-1 xl:gap-3">
+        {data.list.map((value) => {
+          return <PartPanel item={value} key={value.name} />;
+        })}
+      </div>
+      <PaginationBar
+        path={`/part`}
+        current={Number(page)}
+        total={Math.ceil(data.total / Number(process.env.PageSize))}
+      />
     </>
   );
 }
