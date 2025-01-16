@@ -11,18 +11,19 @@ import {
 import { ColumnWrapper, RowWrapper } from "./utils/FlexWrapper";
 import { InputButton } from "./utils/Button";
 import { FilterOptions } from "@/utils/interface";
+import { Products } from "@/utils/Enum";
 import { VerticalCollapsible } from "./utils/Collapsible";
 
 export function FilterBar({
-  defaultOptions,
+  part,
   context,
   set,
   className,
   ...rest
 }: {
-  defaultOptions?: FilterOptions;
-  context: Context<FilterOptions & { q?: string }>;
-  set: (options: FilterOptions) => void;
+  part: Products;
+  context: Context<URLSearchParams & { q?: string }>;
+  set: (options: URLSearchParams) => void;
 } & FormHTMLAttributes<HTMLFormElement>) {
   const [filter, setFilter] = useState<FilterOptions>({});
   const [error, setError] = useState(null);
@@ -30,10 +31,7 @@ export function FilterBar({
   const form = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    fetch(`/api/filter`, {
-      method: "POST",
-      body: JSON.stringify(options),
-    }).then((response) => {
+    fetch(`/api/part/filter/${part}?${options.toString()}`).then((response) => {
       if (response.ok) {
         response.json().then((data) => setFilter(data));
       } else {
@@ -47,28 +45,17 @@ export function FilterBar({
   rest.onSubmit = (e) => {
     e.preventDefault();
 
-    const filterOptions: {
-      [key in string]: { [key in string]: any[] } | null;
-    } = {
-      ...(defaultOptions ?? {}),
-    };
-
     const formData = new FormData(form.current!);
-    formData.entries().forEach(([key, value]) => {
-      const [part, name] = key.split("-");
-      if (part && name) {
-        filterOptions[part] = filterOptions[part] ?? {};
-        filterOptions[part][name] = filterOptions[part][name] ?? [];
+    formData.set("part", part);
 
-        filterOptions[part][name]!.push(value.toString());
-      }
-    });
+    const options = [...formData.entries()] as [string, string][];
+    const params = new URLSearchParams(options);
 
-    set(filterOptions as FilterOptions);
+    set(params);
   };
 
   rest.onReset = () => {
-    set(defaultOptions ?? {});
+    set(new URLSearchParams());
   };
 
   return (
@@ -112,7 +99,7 @@ function PartFieldset({
         <input
           type="checkbox"
           id={id}
-          name={`${name}-${input}`}
+          name={input}
           value={value}
           defaultChecked={value.length === 1}
         />

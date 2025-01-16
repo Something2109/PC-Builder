@@ -7,7 +7,6 @@ import {
   ResponsiveWrapper,
 } from "@/components/utils/FlexWrapper";
 import { ObjectTable } from "@/components/utils/ObjectTable";
-import { Database } from "@/models/Database";
 import { Products } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -18,11 +17,14 @@ export default async function PartDetailPage({
 }: {
   params: { part: Products; id: string };
 }) {
-  const partInfo = await Database.parts.get(part as Products, id);
+  const response = await fetch(
+    `${process.env.BACKEND_HOST}/api/part/${part}/${id}`
+  );
 
-  if (!partInfo) {
-    return notFound();
-  }
+  if (!response.ok) return notFound();
+
+  const partInfo = (await response.json()) as DetailInfo<typeof part>;
+
   const {
     name,
     url,

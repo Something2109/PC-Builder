@@ -6,6 +6,7 @@ services:
     ports:
       - 4000:3000
     environment:
+      - BACKEND_HOST=http://nestjs:3000
       - DATABASE_HOST=mysql
       - DATABASE_PORT=3306
       - DATABASE_NAME=PC_Builder

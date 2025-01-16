@@ -21,10 +21,7 @@ export function SearchBar({ q, part }: { q?: string; part?: string }) {
         params.set("part", part);
       }
 
-      fetch(`/api/search?${params.toString()}`, {
-        method: "POST",
-        body: "{}",
-      }).then((response) => {
+      fetch(`/api/part?${params.toString()}`).then((response) => {
         if (response.ok) {
           response.json().then((data) => setResult(data.list));
         }

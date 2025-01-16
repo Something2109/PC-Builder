@@ -9,7 +9,6 @@ RUN npm install
 
 COPY ./app ./app
 COPY ./components ./components
-COPY ./models ./models
 COPY ./public ./public
 COPY ./utils ./utils
 COPY next-env.d.ts ./
