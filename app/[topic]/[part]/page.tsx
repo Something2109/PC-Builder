@@ -1,7 +1,6 @@
 import { Article } from "@/components/article";
 import { RedirectButton } from "@/components/utils/Button";
-import { ArticleType } from "@/models/articles/article";
-import { Database } from "@/models/Database";
+import { ArticleType } from "@/utils/interface/article/article";
 import { Products } from "@/utils/Enum";
 import { notFound, redirect } from "next/navigation";
 import React from "react";
@@ -12,10 +11,13 @@ export default async function PartTopicPage({
   params: { topic: string; part: string };
 }) {
   if (Object.values(Products).includes(params.part as Products)) {
-    const data = await Database.articles.get(
-      params.topic,
-      params.part as Products
+    const response = await fetch(
+      `${process.env.BACKEND_HOST}/api/${params.topic}/${params.part}`
     );
+
+    if (!response.ok) return notFound();
+
+    const data = (await response.json()) as ArticleType;
     const editLink = `/${params.topic}/${params.part}/edit`;
 
     if (!data) {
