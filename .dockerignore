@@ -6,7 +6,6 @@ dist
 
 data
 docker
-public
 
 compose.yaml
 
