@@ -6,32 +6,30 @@ import {
   ResponsiveWrapper,
 } from "@/components/utils/FlexWrapper";
 import { FilterBar } from "@/components/filterbar";
-import { FilterOptions } from "@/utils/interface";
 import { Products } from "@/utils/Enum";
 import { TableLoader } from "@/components/tableloader";
 
-const OptionContext = createContext<FilterOptions & { q?: string }>({});
+const OptionContext = createContext<URLSearchParams>(new URLSearchParams());
 
-export default function PartListPage({ params }: { params: { part: string } }) {
-  const [options, setOptions] = useState<FilterOptions>({
-    part: { part: [params.part] },
-  });
-  const defaultOptions = useRef<FilterOptions>({
-    part: { part: [params.part] },
-  });
+export default function PartListPage({
+  params: { part },
+}: {
+  params: { part: Products };
+}) {
+  const [options, setOptions] = useState<URLSearchParams>(
+    new URLSearchParams()
+  );
+  const defaultOptions = useRef<URLSearchParams>(new URLSearchParams());
+  defaultOptions.current.append("part", part);
 
   return (
     <OptionContext.Provider value={options}>
       <ResponsiveWrapper className="w-full">
         <ColumnWrapper className="hidden lg:block lg:w-1/5">
-          <FilterBar
-            context={OptionContext}
-            defaultOptions={defaultOptions.current}
-            set={setOptions}
-          />
+          <FilterBar context={OptionContext} part={part} set={setOptions} />
         </ColumnWrapper>
         <ColumnWrapper className="lg:w-4/5">
-          <TableLoader part={params.part as Products} context={OptionContext} />
+          <TableLoader part={part} context={OptionContext} />
         </ColumnWrapper>
       </ResponsiveWrapper>
     </OptionContext.Provider>

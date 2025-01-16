@@ -1,7 +1,6 @@
 import React, { Context, useContext, useEffect, useState } from "react";
 import PaginationBar from "@/components/pagination";
 import PartTable from "@/components/part/Table";
-import { FilterOptions } from "@/utils/interface";
 import { Products } from "@/utils/Enum";
 import { RowWrapper } from "./utils/FlexWrapper";
 import { RedirectButton } from "./utils/Button";
@@ -11,7 +10,7 @@ export function TableLoader({
   context,
 }: {
   part: Products;
-  context: Context<FilterOptions>;
+  context: Context<URLSearchParams>;
 }) {
   const [page, setPage] = useState(1);
   const [data, setList] = useState({ total: 0, list: [] });
@@ -19,10 +18,9 @@ export function TableLoader({
   const options = useContext(context);
 
   useEffect(() => {
-    fetch(`/api/part/${part}?page=${page}`, {
-      method: "POST",
-      body: JSON.stringify(options),
-    }).then((response) => {
+    options.set("page", String(page));
+
+    fetch(`/api/part/${part}?${options.toString()}`).then((response) => {
       if (response.ok) {
         response.json().then((data) => setList(data));
         window.scroll({ top: 0, left: 0, behavior: "smooth" });
