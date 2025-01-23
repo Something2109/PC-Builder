@@ -4,7 +4,7 @@ import {
   SelectHTMLAttributes,
   TableHTMLAttributes,
 } from "react";
-import { Input, Select } from "../utils/Input";
+import { ChoiceInput, Input, Select } from "../utils/Input";
 
 const tableClass = "w-full border-2";
 const tableRow = "border-b-2 last:border-b-0 *:rounded-sm *:p-2";
@@ -113,6 +113,37 @@ export function SelectInputRow({
           </option>
         ))}
       </Select>
+    </TableRowWrapper>
+  );
+}
+
+export function ChoiceInputRow({
+  type,
+  name,
+  label,
+  options,
+  defaultValue,
+  ...rest
+}: {
+  type: "checkbox" | "radio";
+  name?: string;
+  label?: string;
+  options: string[];
+  defaultValue?: string[];
+} & HTMLAttributes<HTMLDivElement>) {
+  return (
+    <TableRowWrapper>
+      <label htmlFor={name}>{label}</label>
+      <div {...rest}>
+        {options.map((val) => (
+          <ChoiceInput
+            type={type}
+            name={name}
+            value={val}
+            defaultChecked={defaultValue?.includes(val) ?? false}
+          />
+        ))}
+      </div>
     </TableRowWrapper>
   );
 }

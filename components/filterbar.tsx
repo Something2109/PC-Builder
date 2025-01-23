@@ -13,6 +13,7 @@ import { InputButton } from "./utils/Button";
 import { FilterOptions } from "@/utils/interface";
 import { Products } from "@/utils/Enum";
 import { VerticalCollapsible } from "./utils/Collapsible";
+import { ChoiceInput } from "./utils/Input";
 
 export function FilterBar({
   part,
@@ -91,23 +92,6 @@ function PartFieldset({
   name: string;
   filter: Record<string, any[]> | null;
 }) {
-  function InputRow({ input, value }: { input: string; value: string }) {
-    const id = `filter-${name}-${value}`;
-
-    return (
-      <RowWrapper>
-        <input
-          type="checkbox"
-          id={id}
-          name={input}
-          value={value}
-          defaultChecked={value.length === 1}
-        />
-        <label htmlFor={id}>{value}</label>
-      </RowWrapper>
-    );
-  }
-
   return (
     <fieldset name={name} key={`filter-${name}`}>
       <VerticalCollapsible>
@@ -117,9 +101,10 @@ function PartFieldset({
             <VerticalCollapsible>
               <legend className="font-bold">{key.toUpperCase()}</legend>
               {value.map((options) => (
-                <InputRow
+                <ChoiceInput
+                  type="checkbox"
                   key={`filter-${key}-${options}`}
-                  input={key}
+                  name={key}
                   value={options}
                 />
               ))}
