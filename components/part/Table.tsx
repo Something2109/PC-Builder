@@ -12,12 +12,12 @@ import { CoolerTable } from "./detail/Cooler";
 import { AIOTable } from "./detail/AIO";
 import { FanTable } from "./detail/Fan";
 import { SSDTable } from "./detail/SSD";
-import { TableHTMLAttributes } from "react";
-import { SummaryInfo } from "@/utils/interface";
-import { Products } from "@/utils/Enum";
 import { CPUBlockTable } from "./detail/CPUBlock";
 import { PumpTable } from "./detail/Pump";
 import { RadiatorTable } from "./detail/Radiator";
+import { TableHTMLAttributes } from "react";
+import { SummaryInfo } from "@/utils/interface";
+import { Products, Info } from "@/utils/Enum";
 
 const table = "border-separate border-spacing-0";
 const tableHeader =
@@ -29,7 +29,7 @@ export default function PartTable({
   data,
   className,
   ...rest
-}: { data: SummaryInfo<Products>[] } & TableHTMLAttributes<HTMLTableElement>) {
+}: { data: SummaryInfo<Info>[] } & TableHTMLAttributes<HTMLTableElement>) {
   let keys: { [key in Products]?: string[] } = {};
   const { id, part, name, brand, series, image_url, ...detail } = data[0];
   Object.entries(detail).forEach(
@@ -95,19 +95,19 @@ export default function PartTable({
 }
 
 export const DetailTableComponent = {
-  [Products.CPU]: CPUTable,
-  [Products.GPU]: GPUTable,
-  [Products.GRAPHIC_CARD]: GraphicCardTable,
-  [Products.MAIN]: MainboardTable,
-  [Products.RAM]: RAMTable,
-  [Products.HDD]: HDDTable,
-  [Products.PSU]: PSUTable,
-  [Products.CASE]: CaseTable,
-  [Products.COOLER]: CoolerTable,
-  [Products.AIO]: AIOTable,
-  [Products.FAN]: FanTable,
-  [Products.SSD]: SSDTable,
-  [Products.CPU_BLOCK]: CPUBlockTable,
-  [Products.PUMP]: PumpTable,
-  [Products.RADIATOR]: RadiatorTable,
+  [Info.CPU]: CPUTable,
+  [Info.GPU]: GPUTable,
+  [Info.GRAPHIC_CARD]: GraphicCardTable,
+  [Info.MAIN]: MainboardTable,
+  [Info.RAM]: RAMTable,
+  [Info.HDD]: HDDTable,
+  [Info.PSU]: PSUTable,
+  [Info.CASE]: CaseTable,
+  [Info.COOLER]: CoolerTable,
+  [Info.AIO]: AIOTable,
+  [Info.FAN]: FanTable,
+  [Info.SSD]: SSDTable,
+  [Info.CPU_BLOCK]: CPUBlockTable,
+  [Info.PUMP]: PumpTable,
+  [Info.RADIATOR]: RadiatorTable,
 };

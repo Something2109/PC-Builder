@@ -7,33 +7,33 @@ import {
 } from "@/components/utils/FlexWrapper";
 import { Input } from "@/components/utils/Input";
 import { NotificationBar } from "@/components/utils/NotificationBar";
-import { Products } from "@/utils/Enum";
+import { Info, Products } from "@/utils/Enum";
 import { useRouter } from "next/navigation";
-import React, { lazy, FormEvent, useState, FormHTMLAttributes } from "react";
-import { DetailInfo } from "@/utils/interface";
+import { lazy, FormEvent, useState, FormHTMLAttributes } from "react";
+import { DetailInfo, ProductInfo } from "@/utils/interface";
 import { PictureInput } from "./input/utils";
 import { ObjectTable } from "../utils/ObjectTable";
 
 const PartFieldset = lazy(() => import("@/components/part/input/Part"));
 
 const InputComponent = {
-  [Products.CPU]: lazy(() => import("@/components/part/input/CPU")),
-  [Products.GPU]: lazy(() => import("@/components/part/input/GPU")),
-  [Products.GRAPHIC_CARD]: lazy(
+  [Info.CPU]: lazy(() => import("@/components/part/input/CPU")),
+  [Info.GPU]: lazy(() => import("@/components/part/input/GPU")),
+  [Info.GRAPHIC_CARD]: lazy(
     () => import("@/components/part/input/GraphicCard")
   ),
-  [Products.MAIN]: lazy(() => import("@/components/part/input/Mainboard")),
-  [Products.RAM]: lazy(() => import("@/components/part/input/RAM")),
-  [Products.HDD]: lazy(() => import("@/components/part/input/HDD")),
-  [Products.PSU]: lazy(() => import("@/components/part/input/PSU")),
-  [Products.CASE]: lazy(() => import("@/components/part/input/Case")),
-  [Products.COOLER]: lazy(() => import("@/components/part/input/Cooler")),
-  [Products.AIO]: lazy(() => import("@/components/part/input/AIO")),
-  [Products.FAN]: lazy(() => import("@/components/part/input/Fan")),
-  [Products.SSD]: lazy(() => import("@/components/part/input/SSD")),
-  [Products.CPU_BLOCK]: lazy(() => import("@/components/part/input/CPUBlock")),
-  [Products.PUMP]: lazy(() => import("@/components/part/input/Pump")),
-  [Products.RADIATOR]: lazy(() => import("@/components/part/input/Radiator")),
+  [Info.MAIN]: lazy(() => import("@/components/part/input/Mainboard")),
+  [Info.RAM]: lazy(() => import("@/components/part/input/RAM")),
+  [Info.HDD]: lazy(() => import("@/components/part/input/HDD")),
+  [Info.PSU]: lazy(() => import("@/components/part/input/PSU")),
+  [Info.CASE]: lazy(() => import("@/components/part/input/Case")),
+  [Info.COOLER]: lazy(() => import("@/components/part/input/Cooler")),
+  [Info.AIO]: lazy(() => import("@/components/part/input/AIO")),
+  [Info.FAN]: lazy(() => import("@/components/part/input/Fan")),
+  [Info.SSD]: lazy(() => import("@/components/part/input/SSD")),
+  [Info.CPU_BLOCK]: lazy(() => import("@/components/part/input/CPUBlock")),
+  [Info.PUMP]: lazy(() => import("@/components/part/input/Pump")),
+  [Info.RADIATOR]: lazy(() => import("@/components/part/input/Radiator")),
 };
 
 export default function PartForm({
@@ -42,7 +42,7 @@ export default function PartForm({
   ...rest
 }: {
   part: Products;
-  defaultValue?: DetailInfo<Products>;
+  defaultValue?: DetailInfo<Info>;
 } & Omit<FormHTMLAttributes<HTMLFormElement>, "defaultValue">) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -105,8 +105,6 @@ export default function PartForm({
     }
   };
 
-  const DetailInput = InputComponent[part as Products];
-
   return (
     <form {...rest}>
       <ResponsiveWrapper className="w-full">
@@ -150,13 +148,17 @@ export default function PartForm({
           />
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
-          <h1 className="text-4xl font-bold">Details</h1>
-          <DetailInput
-            className="sticky top-32"
-            defaultValue={
-              defaultValue ? (defaultValue[part as Products] as any) : undefined
-            }
-          />
+          {ProductInfo[part].map((info) => {
+            const Component = InputComponent[info];
+            const value = defaultValue ? defaultValue[info] : undefined;
+
+            return (
+              <>
+                <h1 className="text-4xl font-bold">{info}</h1>
+                <Component defaultValue={value as any} />
+              </>
+            );
+          })}
         </ColumnWrapper>
       </ResponsiveWrapper>
     </form>
