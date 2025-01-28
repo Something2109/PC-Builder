@@ -3,6 +3,7 @@ import {
   InputHTMLAttributes,
   SelectHTMLAttributes,
   TableHTMLAttributes,
+  TdHTMLAttributes,
 } from "react";
 import { ChoiceInput, Input, Select } from "../utils/Input";
 
@@ -32,15 +33,26 @@ export function TableRowWrapper({
   return (
     <tr className={className ? className.concat(" ", tableRow) : tableRow}>
       {[...children].map((child, index) => (
-        <td
+        <TableCellWrapper
           colSpan={index === 0 ? 2 : 1}
           key={new Date().getTime() + index}
-          className={`${tableCell} `}
         >
           {child}
-        </td>
+        </TableCellWrapper>
       ))}
     </tr>
+  );
+}
+
+export function TableCellWrapper({
+  className,
+  ...rest
+}: TdHTMLAttributes<HTMLTableCellElement>) {
+  return (
+    <td
+      className={className ? className.concat(" ", tableCell) : tableCell}
+      {...rest}
+    />
   );
 }
 
@@ -52,19 +64,17 @@ export function DimensionTableRow({
   return (
     <>
       <tr className={tableRow}>
-        <td className={tableCell} rowSpan={3}>
-          Dimension
-        </td>
-        <td className={`${tableCell} font-bold`}>Width</td>
-        <td className={tableCell}>{defaultValue?.width}</td>
+        <TableCellWrapper rowSpan={3}>Dimension</TableCellWrapper>
+        <TableCellWrapper className="font-bold">Width</TableCellWrapper>
+        <TableCellWrapper>{defaultValue?.width}</TableCellWrapper>
       </tr>
       <tr className={tableRow}>
-        <td className={tableCell}>Length</td>
-        <td className={tableCell}>{defaultValue?.length}</td>
+        <TableCellWrapper>Length</TableCellWrapper>
+        <TableCellWrapper>{defaultValue?.length}</TableCellWrapper>
       </tr>
       <tr className={tableRow}>
-        <td className={tableCell}>Height</td>
-        <td className={tableCell}>{defaultValue?.height}</td>
+        <TableCellWrapper>Height</TableCellWrapper>
+        <TableCellWrapper>{defaultValue?.height}</TableCellWrapper>
       </tr>
     </>
   );
@@ -156,13 +166,11 @@ export function DimensionInputRow({
   return (
     <>
       <tr className={tableRow}>
-        <td className={tableCell} rowSpan={3}>
-          Dimension
-        </td>
-        <td className={`${tableCell} font-bold`}>
+        <TableCellWrapper rowSpan={3}>Dimension</TableCellWrapper>
+        <TableCellWrapper className="font-bold">
           <label htmlFor="width">Width</label>
-        </td>
-        <td className={tableCell}>
+        </TableCellWrapper>
+        <TableCellWrapper>
           <Input
             type="number"
             step="0.01"
@@ -171,13 +179,13 @@ export function DimensionInputRow({
             placeholder="Width"
             defaultValue={defaultValue?.width}
           />
-        </td>
+        </TableCellWrapper>
       </tr>
       <tr className={tableRow}>
-        <td className={tableCell}>
+        <TableCellWrapper>
           <label htmlFor="length">Length</label>
-        </td>
-        <td className={tableCell}>
+        </TableCellWrapper>
+        <TableCellWrapper>
           <Input
             type="number"
             step="0.01"
@@ -186,13 +194,13 @@ export function DimensionInputRow({
             placeholder="Length"
             defaultValue={defaultValue?.length}
           />
-        </td>
+        </TableCellWrapper>
       </tr>
       <tr className={tableRow}>
-        <td className={tableCell}>
+        <TableCellWrapper>
           <label htmlFor="height">Height</label>
-        </td>
-        <td className={tableCell}>
+        </TableCellWrapper>
+        <TableCellWrapper>
           <Input
             type="number"
             step="0.01"
@@ -201,7 +209,7 @@ export function DimensionInputRow({
             placeholder="Height"
             defaultValue={defaultValue?.height}
           />
-        </td>
+        </TableCellWrapper>
       </tr>
     </>
   );
