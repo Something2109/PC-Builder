@@ -4,7 +4,31 @@ import {
   TableWrapper,
 } from "../TableWrapper";
 import Fan from "@/utils/interface/part/Fan";
-import { TableHTMLAttributes } from "react";
+import { FunctionComponent, TableHTMLAttributes } from "react";
+
+const Components: {
+  [key in keyof Fan.Info]: FunctionComponent<{ value: Fan.Info[key] }>;
+} = {
+  form_factor: ({ value }) => (
+    <TableRowWrapper>Form Factor {value}</TableRowWrapper>
+  ),
+  width: ({ value }) => <TableRowWrapper>Width {value}</TableRowWrapper>,
+  length: ({ value }) => <TableRowWrapper>Length {value}</TableRowWrapper>,
+  height: ({ value }) => <TableRowWrapper>Height {value}</TableRowWrapper>,
+  count: ({ value }) => <TableRowWrapper>Count {value}</TableRowWrapper>,
+  voltage: ({ value }) => <TableRowWrapper>Voltage {value}</TableRowWrapper>,
+  speed: ({ value }) => <TableRowWrapper>Speed {value}</TableRowWrapper>,
+  airflow: ({ value }) => <TableRowWrapper>Airflow {value}</TableRowWrapper>,
+  noise: ({ value }) => <TableRowWrapper>Noise {value}</TableRowWrapper>,
+  static_pressure: ({ value }) => (
+    <TableRowWrapper>Static Pressure {value}</TableRowWrapper>
+  ),
+  bearing: ({ value }) => <TableRowWrapper>Bearing {value}</TableRowWrapper>,
+  connector: ({ value }) => (
+    <TableRowWrapper>Power Connector {value}</TableRowWrapper>
+  ),
+  rgb: ({ value }) => <TableRowWrapper>RGB Connector {value}</TableRowWrapper>,
+};
 
 export function FanTable({
   defaultValue,
@@ -14,16 +38,13 @@ export function FanTable({
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
   return (
     <TableWrapper {...rest}>
-      <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
-      <DimensionTableRow defaultValue={defaultValue} />
-      <TableRowWrapper>Voltage {defaultValue?.voltage}</TableRowWrapper>
-      <TableRowWrapper>Speed {defaultValue?.speed}</TableRowWrapper>
-      <TableRowWrapper>Airflow {defaultValue?.airflow}</TableRowWrapper>
-      <TableRowWrapper>Noise {defaultValue?.noise}</TableRowWrapper>
-      <TableRowWrapper>
-        Static Pressure {defaultValue?.static_pressure}
-      </TableRowWrapper>
-      <TableRowWrapper>Form Factor {defaultValue?.bearing}</TableRowWrapper>
+      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
+        const Component = Components[key as keyof Fan.Info];
+
+        if (!value || !Component) return undefined;
+
+        return Component(value as never);
+      })}
     </TableWrapper>
   );
 }

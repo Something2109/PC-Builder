@@ -5,7 +5,50 @@ import {
   TableWrapper,
 } from "../TableWrapper";
 import Case from "@/utils/interface/part/Case";
-import { TableHTMLAttributes } from "react";
+import { FunctionComponent, TableHTMLAttributes } from "react";
+
+const Components: {
+  [key in keyof Case.Info]: FunctionComponent<{ value: Case.Info[key] }>;
+} = {
+  form_factor: ({ value }) => (
+    <TableRowWrapper>Form Factor {value}</TableRowWrapper>
+  ),
+  width: ({ value }) => <TableRowWrapper>Width {value}</TableRowWrapper>,
+  length: ({ value }) => <TableRowWrapper>Length {value}</TableRowWrapper>,
+  height: ({ value }) => <TableRowWrapper>Height {value}</TableRowWrapper>,
+  mainboard_support: ({ value }) => (
+    <TableRowWrapper>Mainboard Support {value.join(", ")}</TableRowWrapper>
+  ),
+  expansion_slot: ({ value }) => (
+    <TableRowWrapper>Expansion Slot {value}</TableRowWrapper>
+  ),
+  max_cooler_height: ({ value }) => (
+    <TableRowWrapper>Max Cooler Support {value}</TableRowWrapper>
+  ),
+  radiator_support: ({ value }) => (
+    <CaseSideTableRow label={"Radiator Support"} defaultValue={value} />
+  ),
+  fan_support: ({ value }) => (
+    <CaseSideTableRow label={"Fan Support"} defaultValue={value} />
+  ),
+  hard_drive_support: ({ value }) => (
+    <CaseSideTableRow label={"Hard Drive Support"} defaultValue={value} />
+  ),
+  psu_support: ({ value }) => (
+    <TableRowWrapper>PSU Support {value.join(", ")}</TableRowWrapper>
+  ),
+  max_psu_length: ({ value }) => (
+    <TableRowWrapper>Max PSU Length {value}</TableRowWrapper>
+  ),
+  front_panel_ports: ({ value }) => (
+    <TableRowWrapper>
+      Front Panel Ports
+      {Object.entries({ value })
+        .map(([key, count]) => `${count} * ${key}`)
+        .join(", ")}
+    </TableRowWrapper>
+  ),
+};
 
 export function CaseTable({
   defaultValue,
@@ -15,49 +58,13 @@ export function CaseTable({
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
   return (
     <TableWrapper {...rest}>
-      <TableRowWrapper>
-        Form Factor
-        {defaultValue?.form_factor}
-      </TableRowWrapper>
-      <DimensionTableRow defaultValue={defaultValue} />
-      <TableRowWrapper>
-        Mainboard Support
-        {defaultValue?.mainboard_support?.join(", ")}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Expansion Slot
-        {defaultValue?.expansion_slot}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Max Cooler Support
-        {defaultValue?.max_cooler_height}
-      </TableRowWrapper>
-      <CaseSideTableRow
-        label={"Radiator Support"}
-        defaultValue={defaultValue?.radiator_support}
-      />
-      <CaseSideTableRow
-        label={"Fan Support"}
-        defaultValue={defaultValue?.fan_support}
-      />
-      <CaseSideTableRow
-        label={"Hard Drive Support"}
-        defaultValue={defaultValue?.hard_drive_support}
-      />
-      <TableRowWrapper>
-        PSU Support
-        {defaultValue?.psu_support?.join(", ")}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Max PSU Length
-        {defaultValue?.max_psu_length}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Front Panel Ports
-        {Object.entries(defaultValue?.front_panel_ports ?? {})
-          .map(([key, value]) => `${value} * ${key}`)
-          .join(", ")}
-      </TableRowWrapper>
+      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
+        const Component = Components[key as keyof Case.Info];
+
+        if (!value || !Component) return undefined;
+
+        return Component(value as never);
+      })}
     </TableWrapper>
   );
 }
@@ -72,9 +79,9 @@ export function CaseSideTableRow({
   if (!defaultValue) return undefined;
 
   return Object.entries(defaultValue).map(([key, value], index, arr) => {
-    const tableValues = Array.isArray(value)
+    const tableValues = Array.isArray({ value })
       ? value.join(", ")
-      : Object.entries(value)
+      : Object.entries({ value })
           .map(([key, value]) => `${value} * ${key}`)
           .join(", ");
 

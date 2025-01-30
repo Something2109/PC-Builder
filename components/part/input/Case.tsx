@@ -6,7 +6,79 @@ import {
 } from "../TableWrapper";
 import Case from "@/utils/interface/part/Case";
 import { FormFactor } from "@/utils/interface/utils";
-import { ReactNode, TableHTMLAttributes } from "react";
+import { FunctionComponent, ReactNode, TableHTMLAttributes } from "react";
+
+const Components: {
+  [key in keyof Case.Info]: FunctionComponent<{ value: Case.Info[key] }>;
+} = {
+  form_factor: ({ value }) => (
+    <SelectInputRow
+      name="form_factor"
+      label="Form Factor"
+      options={FormFactor.Case.options}
+      defaultValue={value}
+    />
+  ),
+  width: ({ value }) => (
+    <InputRow
+      type="number"
+      step="0.01"
+      name="width"
+      label="Width"
+      defaultValue={value}
+    />
+  ),
+  length: ({ value }) => (
+    <InputRow
+      type="number"
+      step="0.01"
+      name="length"
+      label="Length"
+      defaultValue={value}
+    />
+  ),
+  height: ({ value }) => (
+    <InputRow
+      type="number"
+      step="0.01"
+      name="height"
+      label="Height"
+      defaultValue={value}
+    />
+  ),
+  mainboard_support: ({ value }) => <></>,
+  expansion_slot: ({ value }) => (
+    <InputRow
+      type="number"
+      name="expansion_slot"
+      label="Expansion Slot"
+      defaultValue={value}
+    />
+  ),
+  max_cooler_height: ({ value }) => (
+    <InputRow
+      type="number"
+      name="max_cooler_height"
+      label="Max Cooler Support"
+      defaultValue={value}
+    />
+  ),
+  radiator_support: ({ value }) => <></>,
+  fan_support: ({ value }) => <></>,
+  hard_drive_support: ({ value }) => <></>,
+  psu_support: ({ value }) => <></>,
+  max_psu_length: ({ value }) => (
+    <InputRow
+      type="number"
+      name="max_psu_length"
+      label="Max PSU Length"
+      defaultValue={value}
+    />
+  ),
+  front_panel_ports: function ({ value }): JSX.Element {
+    throw new Error("Function not implemented.");
+  },
+};
 
 export default function CaseFieldset({
   defaultValue,
@@ -16,46 +88,13 @@ export default function CaseFieldset({
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">): ReactNode {
   return (
     <TableWrapper {...rest}>
-      <SelectInputRow
-        name="form_factor"
-        label="Form Factor"
-        options={FormFactor.Case.options}
-        defaultValue={defaultValue?.form_factor}
-      />
-      <DimensionInputRow defaultValue={defaultValue} />
-      <InputRow name="io_ports" label="I/O Ports" />
-      <SelectInputRow
-        name="mb_support"
-        label="Mainboard Support"
-        options={FormFactor.Mainboard.options}
-        defaultValue={defaultValue?.mainboard_support}
-      />
-      <InputRow
-        type="number"
-        name="expansion_slot"
-        label="Expansion Slot"
-        defaultValue={defaultValue?.expansion_slot}
-      />
-      <InputRow name="aio_support" label="AIO Support" />
-      <InputRow name="fan_support" label="Fan Support" />
-      <InputRow
-        type="number"
-        name="max_cooler_height"
-        label="Max Cooler Support"
-        defaultValue={defaultValue?.max_cooler_height}
-      />
-      <SelectInputRow
-        name="psu_support"
-        label="PSU Support"
-        options={FormFactor.PSU.options}
-        defaultValue={defaultValue?.psu_support}
-      />
-      <InputRow
-        type="number"
-        name="max_psu_length"
-        label="Max PSU Length"
-        defaultValue={defaultValue?.max_psu_length}
-      />
+      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
+        const Component = Components[key as keyof Case.Info];
+
+        if (!value || !Component) return undefined;
+
+        return Component(value as never);
+      })}
     </TableWrapper>
   );
 }

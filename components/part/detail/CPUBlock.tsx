@@ -1,6 +1,18 @@
 import CPUBlock from "@/utils/interface/part/CPUBlock";
 import { TableRowWrapper, TableWrapper } from "../TableWrapper";
-import { TableHTMLAttributes } from "react";
+import { FunctionComponent, TableHTMLAttributes } from "react";
+
+const Components: {
+  [key in keyof CPUBlock.Info]: FunctionComponent<{
+    value: CPUBlock.Info[key];
+  }>;
+} = {
+  socket: ({ value }) => (
+    <TableRowWrapper>Socket {value.join(", ")}</TableRowWrapper>
+  ),
+  plate: ({ value }) => <TableRowWrapper>Plate {value}</TableRowWrapper>,
+  rgb: ({ value }) => <TableRowWrapper>RGB {value}</TableRowWrapper>,
+};
 
 export function CPUBlockTable({
   defaultValue,
@@ -10,17 +22,13 @@ export function CPUBlockTable({
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
   return (
     <TableWrapper {...rest}>
-      <TableRowWrapper>
-        Socket {defaultValue?.socket?.join(", ")}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Plate
-        {defaultValue?.plate}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        RGB
-        {defaultValue?.rgb}
-      </TableRowWrapper>
+      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
+        const Component = Components[key as keyof CPUBlock.Info];
+
+        if (!value || !Component) return undefined;
+
+        return Component(value as never);
+      })}
     </TableWrapper>
   );
 }

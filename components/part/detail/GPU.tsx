@@ -1,6 +1,40 @@
 import { TableRowWrapper, TableWrapper } from "../TableWrapper";
 import GPU from "@/utils/interface/part/GPU";
-import { TableHTMLAttributes } from "react";
+import { FunctionComponent, TableHTMLAttributes } from "react";
+
+const Components: {
+  [key in keyof GPU.Info]: FunctionComponent<{ value: GPU.Info[key] }>;
+} = {
+  family: ({ value }) => <TableRowWrapper>Family {value}</TableRowWrapper>,
+  core_count: ({ value }) => (
+    <TableRowWrapper>Core Count {value}</TableRowWrapper>
+  ),
+  execution_unit: ({ value }) => (
+    <TableRowWrapper>Execution Unit {value}</TableRowWrapper>
+  ),
+  base_frequency: ({ value }) => (
+    <TableRowWrapper>Base Frequency {value}</TableRowWrapper>
+  ),
+  boost_frequency: ({ value }) => (
+    <TableRowWrapper>Boost Frequency {value}</TableRowWrapper>
+  ),
+  extra_cores: ({ value }) => (
+    <TableRowWrapper>Extra Cores {value.toString()}</TableRowWrapper>
+  ),
+  memory_size: ({ value }) => (
+    <TableRowWrapper>Memory Size {value}</TableRowWrapper>
+  ),
+  memory_type: ({ value }) => (
+    <TableRowWrapper>Memory Type {value.toString()}</TableRowWrapper>
+  ),
+  memory_bus: ({ value }) => (
+    <TableRowWrapper>Memory Bus {value}</TableRowWrapper>
+  ),
+  tdp: ({ value }) => <TableRowWrapper>TDP {value}</TableRowWrapper>,
+  features: ({ value }) => (
+    <TableRowWrapper>Features {value.toString()}</TableRowWrapper>
+  ),
+};
 
 export function GPUTable({
   defaultValue,
@@ -10,29 +44,13 @@ export function GPUTable({
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
   return (
     <TableWrapper {...rest}>
-      <TableRowWrapper>Family {defaultValue?.family}</TableRowWrapper>
-      <TableRowWrapper>Core Count {defaultValue?.core_count}</TableRowWrapper>
-      <TableRowWrapper>
-        Execution Unit {defaultValue?.execution_unit}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Base Frequency {defaultValue?.base_frequency}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Boost Frequency {defaultValue?.boost_frequency}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Extra Cores {defaultValue?.extra_cores?.toString()}
-      </TableRowWrapper>
-      <TableRowWrapper>Memory Size {defaultValue?.memory_size}</TableRowWrapper>
-      <TableRowWrapper>
-        Memory Type {defaultValue?.memory_type?.toString()}
-      </TableRowWrapper>
-      <TableRowWrapper>Memory Bus {defaultValue?.memory_bus}</TableRowWrapper>
-      <TableRowWrapper>TDP {defaultValue?.tdp}</TableRowWrapper>
-      <TableRowWrapper>
-        Features {defaultValue?.features?.toString()}
-      </TableRowWrapper>
+      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
+        const Component = Components[key as keyof GPU.Info];
+
+        if (!value || !Component) return undefined;
+
+        return Component(value as never);
+      })}
     </TableWrapper>
   );
 }

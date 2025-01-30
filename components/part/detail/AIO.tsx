@@ -1,6 +1,39 @@
 import { TableRowWrapper, TableWrapper } from "../TableWrapper";
 import AIO from "@/utils/interface/part/AIO";
-import { TableHTMLAttributes } from "react";
+import { FunctionComponent, TableHTMLAttributes } from "react";
+
+const Components: {
+  [key in keyof AIO.Info]: FunctionComponent<{ value: AIO.Info[key] }>;
+} = {
+  form_factor: ({ value }) => (
+    <TableRowWrapper>Form Factor {value}</TableRowWrapper>
+  ),
+  socket: ({ value }) => <TableRowWrapper>Socket {value}</TableRowWrapper>,
+  cpu_plate: ({ value }) => (
+    <TableRowWrapper>CPU Plate {value}</TableRowWrapper>
+  ),
+  radiator_width: ({ value }) => (
+    <TableRowWrapper>Radiator Width {value}</TableRowWrapper>
+  ),
+  radiator_length: ({ value }) => (
+    <TableRowWrapper>Radiator Length {value}</TableRowWrapper>
+  ),
+  radiator_height: ({ value }) => (
+    <TableRowWrapper>Radiator Height {value}</TableRowWrapper>
+  ),
+  pump_width: ({ value }) => (
+    <TableRowWrapper>Pump Width {value}</TableRowWrapper>
+  ),
+  pump_length: ({ value }) => (
+    <TableRowWrapper>Pump Length {value}</TableRowWrapper>
+  ),
+  pump_height: ({ value }) => (
+    <TableRowWrapper>Pump Height {value}</TableRowWrapper>
+  ),
+  pump_speed: ({ value }) => (
+    <TableRowWrapper>Pump Speed {value}</TableRowWrapper>
+  ),
+};
 
 export function AIOTable({
   defaultValue,
@@ -10,34 +43,13 @@ export function AIOTable({
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
   return (
     <TableWrapper {...rest}>
-      <TableRowWrapper>
-        Form Factor
-        {defaultValue?.form_factor}
-      </TableRowWrapper>
-      <TableRowWrapper>Socket {defaultValue?.socket}</TableRowWrapper>
-      <TableRowWrapper>CPU Plate {defaultValue?.cpu_plate}</TableRowWrapper>
-      <TableRowWrapper>
-        Radiator
-        <TableWrapper className="w-full">
-          <TableRowWrapper>
-            Width {defaultValue?.radiator_width}
-          </TableRowWrapper>
-          <TableRowWrapper>
-            Length {defaultValue?.radiator_length}
-          </TableRowWrapper>
-          <TableRowWrapper>
-            Height {defaultValue?.radiator_height}
-          </TableRowWrapper>
-        </TableWrapper>
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Pump
-        <TableWrapper className="w-full">
-          <TableRowWrapper>Width {defaultValue?.pump_width}</TableRowWrapper>
-          <TableRowWrapper>Length {defaultValue?.pump_length}</TableRowWrapper>
-          <TableRowWrapper>Height {defaultValue?.pump_height}</TableRowWrapper>
-        </TableWrapper>
-      </TableRowWrapper>
+      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
+        const Component = Components[key as keyof AIO.Info];
+
+        if (!value || !Component) return undefined;
+
+        return Component(value as never);
+      })}
     </TableWrapper>
   );
 }

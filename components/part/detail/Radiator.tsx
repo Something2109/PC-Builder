@@ -4,7 +4,22 @@ import {
   TableWrapper,
   DimensionTableRow,
 } from "../TableWrapper";
-import { TableHTMLAttributes } from "react";
+import { FunctionComponent, TableHTMLAttributes } from "react";
+
+const Components: {
+  [key in keyof Radiator.Info]: FunctionComponent<{
+    value: Radiator.Info[key];
+  }>;
+} = {
+  form_factor: ({ value }) => (
+    <TableRowWrapper>Form Factor {value}</TableRowWrapper>
+  ),
+  width: ({ value }) => <TableRowWrapper>Width {value}</TableRowWrapper>,
+  length: ({ value }) => <TableRowWrapper>Length {value}</TableRowWrapper>,
+  height: ({ value }) => <TableRowWrapper>Height {value}</TableRowWrapper>,
+  fpi: ({ value }) => <TableRowWrapper>FPI {value}</TableRowWrapper>,
+  material: ({ value }) => <TableRowWrapper>Material {value}</TableRowWrapper>,
+};
 
 export function RadiatorTable({
   defaultValue,
@@ -14,19 +29,13 @@ export function RadiatorTable({
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
   return (
     <TableWrapper {...rest}>
-      <TableRowWrapper>
-        Form Factor
-        {defaultValue?.form_factor}
-      </TableRowWrapper>
-      <DimensionTableRow defaultValue={defaultValue} />
-      <TableRowWrapper>
-        FPI
-        {defaultValue?.fpi}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Material
-        {defaultValue?.material}
-      </TableRowWrapper>
+      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
+        const Component = Components[key as keyof Radiator.Info];
+
+        if (!value || !Component) return undefined;
+
+        return Component(value as never);
+      })}
     </TableWrapper>
   );
 }

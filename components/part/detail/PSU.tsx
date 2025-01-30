@@ -1,10 +1,33 @@
 import PSU from "@/utils/interface/part/PSU";
-import { TableHTMLAttributes } from "react";
+import { FunctionComponent, TableHTMLAttributes } from "react";
 import {
   DimensionTableRow,
   TableRowWrapper,
   TableWrapper,
 } from "../TableWrapper";
+
+const Components: {
+  [key in keyof PSU.Info]: FunctionComponent<{ value: PSU.Info[key] }>;
+} = {
+  wattage: ({ value }) => <TableRowWrapper>Wattage {value}</TableRowWrapper>,
+  efficiency: ({ value }) => (
+    <TableRowWrapper>Efficiency {value}</TableRowWrapper>
+  ),
+  form_factor: ({ value }) => (
+    <TableRowWrapper>Form Factor {value}</TableRowWrapper>
+  ),
+  width: ({ value }) => <TableRowWrapper>Width {value}</TableRowWrapper>,
+  length: ({ value }) => <TableRowWrapper>Length {value}</TableRowWrapper>,
+  height: ({ value }) => <TableRowWrapper>Height {value}</TableRowWrapper>,
+  modular: ({ value }) => <TableRowWrapper>Modular {value}</TableRowWrapper>,
+  atx_pin: ({ value }) => <TableRowWrapper>ATX Pin {value}</TableRowWrapper>,
+  cpu_pin: ({ value }) => <TableRowWrapper>CPU Pin {value}</TableRowWrapper>,
+  pcie_pin: ({ value }) => <TableRowWrapper>PCIe Pin {value}</TableRowWrapper>,
+  sata_pin: ({ value }) => <TableRowWrapper>SATA Pin {value}</TableRowWrapper>,
+  peripheral_pin: ({ value }) => (
+    <TableRowWrapper>Peripheral Pin {value}</TableRowWrapper>
+  ),
+};
 
 export function PSUTable({
   defaultValue,
@@ -14,18 +37,13 @@ export function PSUTable({
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
   return (
     <TableWrapper {...rest}>
-      <TableRowWrapper>Wattage {defaultValue?.wattage}</TableRowWrapper>
-      <TableRowWrapper>Efficiency {defaultValue?.efficiency}</TableRowWrapper>
-      <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
-      <DimensionTableRow defaultValue={defaultValue} />
-      <TableRowWrapper>Modular {defaultValue?.modular}</TableRowWrapper>
-      <TableRowWrapper>ATX Pin {defaultValue?.atx_pin}</TableRowWrapper>
-      <TableRowWrapper>CPU Pin {defaultValue?.cpu_pin}</TableRowWrapper>
-      <TableRowWrapper>PCIe Pin {defaultValue?.pcie_pin}</TableRowWrapper>
-      <TableRowWrapper>SATA Pin {defaultValue?.sata_pin}</TableRowWrapper>
-      <TableRowWrapper>
-        Peripheral Pin {defaultValue?.peripheral_pin}
-      </TableRowWrapper>
+      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
+        const Component = Components[key as keyof PSU.Info];
+
+        if (!value || !Component) return undefined;
+
+        return Component(value as never);
+      })}
     </TableWrapper>
   );
 }

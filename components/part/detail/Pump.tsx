@@ -4,7 +4,33 @@ import {
   TableWrapper,
   DimensionTableRow,
 } from "../TableWrapper";
-import { TableHTMLAttributes } from "react";
+import { FunctionComponent, TableHTMLAttributes } from "react";
+
+const Components: {
+  [key in keyof Pump.Info]: FunctionComponent<{ value: Pump.Info[key] }>;
+} = {
+  form_factor: ({ value }) => (
+    <TableRowWrapper>Form Factor {value}</TableRowWrapper>
+  ),
+  width: ({ value }) => <TableRowWrapper>Width {value}</TableRowWrapper>,
+  length: ({ value }) => <TableRowWrapper>Length {value}</TableRowWrapper>,
+  height: ({ value }) => <TableRowWrapper>Height {value}</TableRowWrapper>,
+  voltage: ({ value }) => <TableRowWrapper>Voltage {value}</TableRowWrapper>,
+  wattage: ({ value }) => <TableRowWrapper>Wattage {value}</TableRowWrapper>,
+  head_pressure: ({ value }) => (
+    <TableRowWrapper>Head Pressure {value}</TableRowWrapper>
+  ),
+  flow_rate: ({ value }) => (
+    <TableRowWrapper>Flow Rate {value}</TableRowWrapper>
+  ),
+  power_connector: ({ value }) => (
+    <TableRowWrapper>Power Connector {value}</TableRowWrapper>
+  ),
+  control_connector: ({ value }) => (
+    <TableRowWrapper>Control Connector {value}</TableRowWrapper>
+  ),
+  rgb: ({ value }) => <TableRowWrapper>RGB {value}</TableRowWrapper>,
+};
 
 export function PumpTable({
   defaultValue,
@@ -14,39 +40,13 @@ export function PumpTable({
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
   return (
     <TableWrapper {...rest}>
-      <TableRowWrapper>
-        Form Factor
-        {defaultValue?.form_factor}
-      </TableRowWrapper>
-      <DimensionTableRow defaultValue={defaultValue} />
-      <TableRowWrapper>
-        Voltage
-        {defaultValue?.voltage}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Wattage
-        {defaultValue?.wattage}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Head Pressure
-        {defaultValue?.head_pressure}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Flow Rate
-        {defaultValue?.flow_rate}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Power Connector
-        {defaultValue?.power_connector}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Control Connector
-        {defaultValue?.control_connector}
-      </TableRowWrapper>{" "}
-      <TableRowWrapper>
-        RGB
-        {defaultValue?.rgb}
-      </TableRowWrapper>
+      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
+        const Component = Components[key as keyof Pump.Info];
+
+        if (!value || !Component) return undefined;
+
+        return <Component value={value as never} />;
+      })}
     </TableWrapper>
   );
 }

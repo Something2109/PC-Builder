@@ -1,6 +1,28 @@
 import { TableRowWrapper, TableWrapper } from "../TableWrapper";
 import HDD from "@/utils/interface/part/HDD";
-import { TableHTMLAttributes } from "react";
+import { FunctionComponent, TableHTMLAttributes } from "react";
+
+const Components: {
+  [key in keyof HDD.Info]: FunctionComponent<{ value: HDD.Info[key] }>;
+} = {
+  rotational_speed: ({ value }) => (
+    <TableRowWrapper>Rotational Speed {value}</TableRowWrapper>
+  ),
+  read_speed: ({ value }) => (
+    <TableRowWrapper>Read Speed {value}</TableRowWrapper>
+  ),
+  write_speed: ({ value }) => (
+    <TableRowWrapper>Write Speed {value}</TableRowWrapper>
+  ),
+  capacity: ({ value }) => <TableRowWrapper>Capacity {value}</TableRowWrapper>,
+  cache: ({ value }) => <TableRowWrapper>Cache {value}</TableRowWrapper>,
+  form_factor: ({ value }) => (
+    <TableRowWrapper>Form Factor {value}</TableRowWrapper>
+  ),
+  interface: ({ value }) => (
+    <TableRowWrapper>Interface {value}</TableRowWrapper>
+  ),
+};
 
 export function HDDTable({
   defaultValue,
@@ -10,15 +32,13 @@ export function HDDTable({
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
   return (
     <TableWrapper {...rest}>
-      <TableRowWrapper>
-        Rotational Speed {defaultValue?.rotational_speed}
-      </TableRowWrapper>
-      <TableRowWrapper>Read Speed {defaultValue?.read_speed}</TableRowWrapper>
-      <TableRowWrapper>Write Speed {defaultValue?.write_speed}</TableRowWrapper>
-      <TableRowWrapper>Capacity {defaultValue?.capacity}</TableRowWrapper>
-      <TableRowWrapper>Cache {defaultValue?.cache}</TableRowWrapper>
-      <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
-      <TableRowWrapper>Interface {defaultValue?.interface}</TableRowWrapper>
+      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
+        const Component = Components[key as keyof HDD.Info];
+
+        if (!value || !Component) return undefined;
+
+        return Component(value as never);
+      })}
     </TableWrapper>
   );
 }
