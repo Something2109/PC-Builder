@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Context,
-  FormHTMLAttributes,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FormHTMLAttributes, useEffect, useState } from "react";
 import { ColumnWrapper, RowWrapper } from "./utils/FlexWrapper";
 import { InputButton } from "./utils/Button";
 import { FilterOptions } from "@/utils/interface";
@@ -18,18 +11,15 @@ import { ChoiceInput } from "./utils/Input";
 export function FilterBar({
   part,
   context,
-  set,
   className,
   ...rest
 }: {
   part: Products;
-  context: Context<URLSearchParams & { q?: string }>;
-  set: (options: URLSearchParams) => void;
+  context: string[][];
 } & FormHTMLAttributes<HTMLFormElement>) {
   const [filter, setFilter] = useState<FilterOptions>({});
   const [error, setError] = useState(null);
-  const options = useContext(context);
-  const form = useRef<HTMLFormElement>(null);
+  const options = new URLSearchParams(context);
 
   useEffect(() => {
     fetch(`/api/part/filter/${part}?${options.toString()}`).then((response) => {
@@ -39,34 +29,18 @@ export function FilterBar({
         response.json().then((data) => setError(data.message));
       }
     });
-  }, [options]);
+  }, []);
 
   if (error) return <h1>{error}</h1>;
 
-  rest.onSubmit = (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(form.current!);
-    formData.set("part", part);
-
-    const options = [...formData.entries()] as [string, string][];
-    const params = new URLSearchParams(options);
-
-    set(params);
-  };
-
-  rest.onReset = () => {
-    set(new URLSearchParams());
-  };
-
   return (
-    <form className={`flex flex-col gap-1 ${className}`} ref={form} {...rest}>
+    <form className={`flex flex-col gap-1 ${className}`} {...rest}>
       <RowWrapper className="sticky top-32 bg-white dark:bg-background transition-colors ease-in-out duration-500 delay-0">
         <InputButton type="submit" value="Filter" />
         <InputButton type="reset" />
       </RowWrapper>
       <input
-        defaultValue={options.q ?? ""}
+        defaultValue={options.get("q") ?? ""}
         type="text"
         name="q"
         placeholder="Search"
@@ -78,6 +52,7 @@ export function FilterBar({
             key={`filter-${part}`}
             name={part}
             filter={filterValue}
+            options={options}
           />
         ))}
       </ColumnWrapper>
@@ -88,29 +63,36 @@ export function FilterBar({
 function PartFieldset({
   name,
   filter,
+  options,
 }: {
   name: string;
   filter: Record<string, any[]> | null;
+  options: URLSearchParams;
 }) {
   return (
     <fieldset name={name} key={`filter-${name}`}>
       <VerticalCollapsible>
         <legend className="font-bold text-2xl">{name.toUpperCase()}</legend>
-        {Object.entries(filter ?? {}).map(([key, value]) => (
-          <fieldset key={`filter-${key}`}>
-            <VerticalCollapsible>
-              <legend className="font-bold">{key.toUpperCase()}</legend>
-              {value.map((options) => (
-                <ChoiceInput
-                  type="checkbox"
-                  key={`filter-${key}-${options}`}
-                  name={key}
-                  value={options}
-                />
-              ))}
-            </VerticalCollapsible>
-          </fieldset>
-        ))}
+        {Object.entries(filter ?? {}).map(([key, value]) => {
+          const keyOptions = options.getAll(key);
+
+          return (
+            <fieldset key={`filter-${key}`}>
+              <VerticalCollapsible>
+                <legend className="font-bold">{key.toUpperCase()}</legend>
+                {value.map((options) => (
+                  <ChoiceInput
+                    type="checkbox"
+                    key={`filter-${key}-${options}`}
+                    name={key}
+                    value={options}
+                    defaultChecked={keyOptions.includes(options.toString())}
+                  />
+                ))}
+              </VerticalCollapsible>
+            </fieldset>
+          );
+        })}
       </VerticalCollapsible>
     </fieldset>
   );
