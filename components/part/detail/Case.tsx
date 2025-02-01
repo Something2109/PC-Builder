@@ -38,7 +38,7 @@ const Components: {
   front_panel_ports: ({ value }) => (
     <TableRowWrapper>
       Front Panel Ports
-      {Object.entries({ value })
+      {Object.entries(value)
         .map(([key, count]) => `${count} * ${key}`)
         .join(", ")}
     </TableRowWrapper>
@@ -57,7 +57,7 @@ export function CaseSideTableRow({
   return Object.entries(defaultValue).map(([key, value], index, arr) => {
     const tableValues = Array.isArray({ value })
       ? value.join(", ")
-      : Object.entries({ value })
+      : Object.entries(value)
           .map(([key, value]) => `${value} * ${key}`)
           .join(", ");
 

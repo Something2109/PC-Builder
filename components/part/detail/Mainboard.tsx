@@ -28,7 +28,7 @@ const Components: {
   power_connectors: ({ value }) => (
     <TableRowWrapper>
       Power Connector
-      {Object.entries({ value })
+      {Object.entries(value)
         .map(([key, count]) => `${count} * ${key}`)
         .join(", ")}
     </TableRowWrapper>
@@ -36,7 +36,7 @@ const Components: {
   fan_connectors: ({ value }) => (
     <TableRowWrapper>
       Fan Connector
-      {Object.entries({ value })
+      {Object.entries(value)
         .map(([key, count]) => `${count} * ${key}`)
         .join(", ")}
     </TableRowWrapper>
@@ -44,7 +44,7 @@ const Components: {
   storage_connectors: ({ value }) => (
     <TableRowWrapper>
       Storage Connector
-      {Object.entries({ value })
+      {Object.entries(value)
         .map(([key, count]) => `${count} * ${key}`)
         .join(", ")}
     </TableRowWrapper>
@@ -52,7 +52,7 @@ const Components: {
   usb_connectors: ({ value }) => (
     <TableRowWrapper>
       USB Connector
-      {Object.entries({ value })
+      {Object.entries(value)
         .map(([key, count]) => `${count} * ${key}`)
         .join(", ")}
     </TableRowWrapper>
@@ -60,7 +60,7 @@ const Components: {
   miscelanous_connectors: ({ value }) => (
     <TableRowWrapper>
       Other Connector
-      {Object.entries({ value })
+      {Object.entries(value)
         .map(([key, count]) => `${count} * ${key}`)
         .join(", ")}
     </TableRowWrapper>
@@ -68,7 +68,7 @@ const Components: {
   back_panel_ports: ({ value }) => (
     <TableRowWrapper>
       Back Panel Connector
-      {Object.entries({ value })
+      {Object.entries(value)
         .map(([key, count]) => `${count} * ${key}`)
         .join(", ")}
     </TableRowWrapper>
@@ -85,7 +85,7 @@ export function PCIeTableRow({
   if (!defaultValue) return undefined;
 
   return Object.entries(defaultValue).map(([key, value], index, arr) => {
-    const tableValues = Object.entries({ value })
+    const tableValues = Object.entries(value)
       .map(([key, value]) => `${value} * ${key}`)
       .join(", ");
 

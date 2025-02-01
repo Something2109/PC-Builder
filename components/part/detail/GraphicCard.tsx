@@ -23,7 +23,7 @@ const Components: {
   power_connector: ({ value }) => (
     <TableRowWrapper>
       Power Connector
-      {Object.entries({ value })
+      {Object.entries(value)
         .map(([key, count]) => `${count} * ${key}`)
         .join(", ")}
     </TableRowWrapper>
@@ -31,7 +31,7 @@ const Components: {
   port: ({ value }) => (
     <TableRowWrapper>
       Display Connector
-      {Object.entries({ value })
+      {Object.entries(value)
         .map(([key, count]) => `${count} * ${key}`)
         .join(", ")}
     </TableRowWrapper>
