@@ -164,3 +164,103 @@ export const ProductInfo: { [key in Products]: Info[] } = {
   [Products.PUMP]: [Info.PUMP],
   [Products.RADIATOR]: [Info.RADIATOR],
 };
+
+/**
+ * The product filter options of each {@link Products} type.
+ * Contains the attributes and the schema to verify the corresponsding value.
+ * This is used to declare and verify the attributes of the product.
+ * The attributes here can be different from {@link Info} filter options
+ * and the mapping between the two should be defined in more specific implementation.
+ */
+export const ProductFilterOptions: {
+  [key in Products]: Record<string, ZodSchema>;
+} = {
+  [Products.CPU]: {
+    socket: Primitive.String,
+    total_cores: Primitive.Number,
+    total_threads: Primitive.Number,
+    base_frequency: Primitive.Number,
+    turbo_frequency: Primitive.Number,
+    L3_cache: Primitive.Number,
+    tdp: Primitive.Number,
+  },
+  [Products.GPU]: {
+    base_frequency: Primitive.Number,
+    boost_frequency: Primitive.Number,
+    memory_size: Primitive.Number,
+    memory_type: Primitive.String,
+    tdp: Primitive.Number,
+  },
+  [Products.GRAPHIC_CARD]: {
+    length: Primitive.Number,
+    base_frequency: Primitive.Number,
+    boost_frequency: Primitive.Number,
+    width: Primitive.Number,
+    height: Primitive.Number,
+    minimum_psu: Primitive.Number,
+  },
+  [Products.MAIN]: {
+    socket: Primitive.String,
+    form_factor: FormFactor.Mainboard,
+    ram_form_factor: FormFactor.RAM,
+    ram_interface: FormFactor.RAM,
+  },
+  [Products.RAM]: {
+    form_factor: FormFactor.RAM,
+    capacity: Primitive.Number,
+    interface: InternalConnectors.RAM,
+  },
+  [Products.SSD]: {
+    memory_type: SSD.MemoryCell,
+    form_factor: FormFactor.SSD,
+    capacity: Primitive.Number,
+    interface: InternalConnectors.Storage.SSD,
+    read_speed: Primitive.Number,
+    write_speed: Primitive.Number,
+  },
+  [Products.HDD]: {
+    form_factor: FormFactor.HDD,
+    capacity: Primitive.Number,
+    interface: InternalConnectors.Storage.HDD,
+    read_speed: Primitive.Number,
+    write_speed: Primitive.Number,
+    rotational_speed: Primitive.Number,
+  },
+  [Products.PSU]: {
+    form_factor: FormFactor.PSU,
+    wattage: Primitive.Number,
+    efficiency: Primitive.Number,
+    modular: PSU.Modular,
+  },
+  [Products.CASE]: {
+    form_factor: FormFactor.Case,
+    mainboard_support: FormFactor.Mainboard,
+    radiator_support: FormFactor.Radiator,
+    psu_support: FormFactor.PSU,
+  },
+  [Products.COOLER]: {
+    socket: Primitive.String,
+    cpu_plate: Material.Metal,
+  },
+  [Products.AIO]: {
+    socket: Primitive.String,
+    form_factor: FormFactor.Radiator,
+    cpu_plate: Material.Metal,
+  },
+  [Products.FAN]: {
+    form_factor: FormFactor.Fan,
+    bearing: Fan.Bearing,
+  },
+  [Products.CPU_BLOCK]: {
+    socket: Primitive.String,
+    plate: Material.Metal,
+  },
+  [Products.PUMP]: {
+    form_factor: FormFactor.Pump,
+    flow_rate: Primitive.Number,
+  },
+  [Products.RADIATOR]: {
+    form_factor: FormFactor.Radiator,
+    material: Material.Metal,
+  },
+};
