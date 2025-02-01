@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z, ZodSchema } from "zod";
 import { Info, Products } from "../Enum";
 import AIO from "./part/AIO";
 import Case from "./part/Case";
@@ -16,32 +16,52 @@ import SSD from "./part/SSD";
 import CPUBlock from "./part/CPUBlock";
 import Pump from "./part/Pump";
 import Radiator from "./part/Radiator";
+import { FormFactor, InternalConnectors, Material, Primitive } from "./utils";
 
-export const PartSummaryInfoSchema = z
-  .object({
-    [Info.CPU]: CPU.SummarySchema,
-    [Info.GPU]: GPU.SummarySchema,
-    [Info.GRAPHIC_CARD]: GraphicCard.SummarySchema,
-    [Info.MAIN]: Mainboard.SummarySchema,
-    [Info.RAM]: RAM.SummarySchema,
-    [Info.SSD]: SSD.SummarySchema,
-    [Info.HDD]: HDD.SummarySchema,
-    [Info.PSU]: PSU.SummarySchema,
-    [Info.CASE]: Case.SummarySchema,
-    [Info.FAN]: Fan.SummarySchema,
-    [Info.COOLER]: Cooler.SummarySchema,
-    [Info.AIO]: AIO.SummarySchema,
-    [Info.CPU_BLOCK]: CPUBlock.SummarySchema,
-    [Info.PUMP]: Pump.SummarySchema,
-    [Info.RADIATOR]: Radiator.SummarySchema,
-  })
-  .partial();
+/**
+ * DECLARE THE INFORMATION AND FILTER OBJECT OF EACH PRODUCT AND PRODUCT TYPE
+ * THAT TO BE USED IN ALL PART OF THE PROJECT.
+ */
 
-export type SummaryInfo<T extends Info> = z.infer<typeof Part.SummarySchema> & {
-  [key in T]: z.infer<typeof PartSummaryInfoSchema>[T];
-};
+/**
+ * The summary information of a specific product.
+ * Contains the most important information of the product from each {@link Info} type.
+ * This is a generic type used in all the {@link Products} type.
+ * The specific information that each {@link Products} type contains
+ * are declared in the mapping {@link ProductInfo}.
+ */
+export const SummaryInfo = Part.SummarySchema.merge(
+  z
+    .object({
+      [Info.CPU]: CPU.SummarySchema,
+      [Info.GPU]: GPU.SummarySchema,
+      [Info.GRAPHIC_CARD]: GraphicCard.SummarySchema,
+      [Info.MAIN]: Mainboard.SummarySchema,
+      [Info.RAM]: RAM.SummarySchema,
+      [Info.SSD]: SSD.SummarySchema,
+      [Info.HDD]: HDD.SummarySchema,
+      [Info.PSU]: PSU.SummarySchema,
+      [Info.CASE]: Case.SummarySchema,
+      [Info.FAN]: Fan.SummarySchema,
+      [Info.COOLER]: Cooler.SummarySchema,
+      [Info.AIO]: AIO.SummarySchema,
+      [Info.CPU_BLOCK]: CPUBlock.SummarySchema,
+      [Info.PUMP]: Pump.SummarySchema,
+      [Info.RADIATOR]: Radiator.SummarySchema,
+    })
+    .partial()
+);
 
-export const DetailInfoOptionsSchema = Part.Schema.partial().merge(
+export type SummaryInfo = z.infer<typeof SummaryInfo>;
+
+/**
+ * The detail information of a specific product.
+ * Contains the most detailed information of the product from each {@link Info} type.
+ * This is a generic type used in all the {@link Products} type.
+ * The specific information that each {@link Products} type contains
+ * are declared in the mapping {@link ProductInfo}.
+ */
+export const DetailInfo = Part.Schema.partial().merge(
   z
     .object({
       raw: z.string(),
@@ -64,27 +84,17 @@ export const DetailInfoOptionsSchema = Part.Schema.partial().merge(
     .partial()
 );
 
-export type DetailInfoOptions = z.infer<typeof DetailInfoOptionsSchema>;
+export type DetailInfo = z.infer<typeof DetailInfo>;
 
-export const ProductInfo: { [key in Products]: Info[] } = {
-  [Products.CPU]: [Info.CPU, Info.GPU],
-  [Products.GPU]: [Info.GPU],
-  [Products.GRAPHIC_CARD]: [Info.GRAPHIC_CARD],
-  [Products.MAIN]: [Info.MAIN],
-  [Products.RAM]: [Info.RAM],
-  [Products.SSD]: [Info.SSD],
-  [Products.HDD]: [Info.HDD],
-  [Products.PSU]: [Info.PSU],
-  [Products.CASE]: [Info.CASE],
-  [Products.FAN]: [Info.FAN],
-  [Products.COOLER]: [Info.COOLER],
-  [Products.AIO]: [Info.AIO],
-  [Products.CPU_BLOCK]: [Info.CPU_BLOCK],
-  [Products.PUMP]: [Info.PUMP],
-  [Products.RADIATOR]: [Info.RADIATOR],
-};
-
-export const FilterOptionSchema = z
+/**
+ * The filter options of the information.
+ * Contains the filter options of each {@link Info} type combined into one object.
+ * This object is used to pass the filter conditions of the user to each {@link Info} type.
+ * This is a generic type used in all the {@link Products} type.
+ * The specific information that each {@link Products} type contains
+ * are declared in the mapping {@link ProductInfo}.
+ */
+export const FilterOptions = z
   .object({
     part: Part.FilterOptionSchema,
     [Info.CPU]: CPU.FilterOptionSchema.nullish(),
@@ -105,10 +115,13 @@ export const FilterOptionSchema = z
   })
   .partial();
 
-export type FilterOptions = z.infer<typeof FilterOptionSchema>;
+export type FilterOptions = z.infer<typeof FilterOptions>;
 
+/**
+ * The filter attribute list of the information.
+ * Contains the attributes that can be used as filter in each {@link Info} type.
+ */
 export const FilterAttributes = {
-  part: Part.FilterAttributes,
   [Info.CPU]: CPU.FilterAttributes,
   [Info.GPU]: GPU.FilterAttributes,
   [Info.GRAPHIC_CARD]: GraphicCard.FilterAttributes,
@@ -124,4 +137,30 @@ export const FilterAttributes = {
   [Info.CPU_BLOCK]: CPUBlock.FilterAttributes,
   [Info.PUMP]: Pump.FilterAttributes,
   [Info.RADIATOR]: Radiator.FilterAttributes,
+};
+
+/**
+ * DECLARE THE PRODUCT RELATED MAPPING AND FILTER.
+ */
+
+/**
+ * The mapping from the {@link Products} to the {@link Info} type.
+ * Contains all the {@link Info} that a {@link Products} type can have.
+ */
+export const ProductInfo: { [key in Products]: Info[] } = {
+  [Products.CPU]: [Info.CPU, Info.GPU],
+  [Products.GPU]: [Info.GPU],
+  [Products.GRAPHIC_CARD]: [Info.GRAPHIC_CARD],
+  [Products.MAIN]: [Info.MAIN],
+  [Products.RAM]: [Info.RAM],
+  [Products.SSD]: [Info.SSD],
+  [Products.HDD]: [Info.HDD],
+  [Products.PSU]: [Info.PSU],
+  [Products.CASE]: [Info.CASE],
+  [Products.FAN]: [Info.FAN],
+  [Products.COOLER]: [Info.COOLER],
+  [Products.AIO]: [Info.AIO],
+  [Products.CPU_BLOCK]: [Info.CPU_BLOCK],
+  [Products.PUMP]: [Info.PUMP],
+  [Products.RADIATOR]: [Info.RADIATOR],
 };
