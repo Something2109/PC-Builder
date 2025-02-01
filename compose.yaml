@@ -1,3 +1,2 @@
 include:
-  - ./docker/database/compose.yaml
   - ./docker/nextjs/compose.yaml
