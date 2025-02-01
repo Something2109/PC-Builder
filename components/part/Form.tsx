@@ -149,6 +149,8 @@ export default function PartForm({
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
           {ProductInfo[part].map((info) => {
+            if (!info) return undefined;
+
             const Component = InputComponent[info];
             const value = defaultValue ? defaultValue[info] : undefined;
 

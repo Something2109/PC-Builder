@@ -53,6 +53,8 @@ export default async function PartDetailPage({
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
           {ProductInfo[part].map((info) => {
+            if (!partInfo[info]) return undefined;
+
             const Component = DetailTableComponent[info];
 
             return (
