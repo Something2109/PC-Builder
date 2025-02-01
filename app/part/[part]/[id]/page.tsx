@@ -10,7 +10,7 @@ import { ObjectTable } from "@/components/utils/ObjectTable";
 import { Products } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 import React from "react";
-import { ProductInfo } from "@/utils/interface";
+import { DetailInfo, ProductInfo } from "@/utils/interface";
 
 export default async function PartDetailPage({
   params: { part, id },
@@ -23,9 +23,7 @@ export default async function PartDetailPage({
 
   if (!response.ok) return notFound();
 
-  const partInfo = await response.json();
-
-  const { name, url, image_url, raw, ...rest } = partInfo;
+  const partInfo = (await response.json()) as DetailInfo;
 
   return (
     <>
@@ -33,10 +31,10 @@ export default async function PartDetailPage({
         <PartPicture className="w-full lg:w-1/3" part={partInfo} />
 
         <ColumnWrapper className="w-full lg:w-2/3 p-5">
-          <h1 className="text-4xl font-bold">{name}</h1>
-          <PartTable className="border-2" defaultValue={rest} />
-          {url ? (
-            <RedirectButton href={url} target="_blank">
+          <h1 className="text-4xl font-bold">{partInfo.name}</h1>
+          <PartTable className="border-2" defaultValue={partInfo} />
+          {partInfo.url ? (
+            <RedirectButton href={partInfo.url} target="_blank">
               To brand page
             </RedirectButton>
           ) : undefined}
@@ -50,7 +48,7 @@ export default async function PartDetailPage({
           <h1 className="text-4xl font-bold">Raw</h1>
           <ObjectTable
             className="border-2"
-            object={raw ? JSON.parse(raw) : undefined}
+            object={partInfo.raw ? JSON.parse(partInfo.raw) : undefined}
           />
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
@@ -60,7 +58,7 @@ export default async function PartDetailPage({
             return (
               <>
                 <h1 className="text-4xl font-bold">{info}</h1>
-                <Component defaultValue={rest ? rest[info] : undefined} />
+                <Component key={info} defaultValue={partInfo[info] as any} />
               </>
             );
           })}

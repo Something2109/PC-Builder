@@ -42,7 +42,7 @@ export default function PartForm({
   ...rest
 }: {
   part: Products;
-  defaultValue?: DetailInfo<Info>;
+  defaultValue?: DetailInfo;
 } & Omit<FormHTMLAttributes<HTMLFormElement>, "defaultValue">) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);

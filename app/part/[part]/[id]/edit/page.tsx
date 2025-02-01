@@ -1,7 +1,7 @@
 "use client";
 
 import PartForm from "@/components/part/Form";
-import { Info, Products } from "@/utils/Enum";
+import { Products } from "@/utils/Enum";
 import { DetailInfo } from "@/utils/interface";
 import React, { useEffect, useState } from "react";
 
@@ -10,7 +10,7 @@ export default function PartDetailEditPage({
 }: {
   params: { part: string; id: string };
 }) {
-  const [data, setData] = useState<DetailInfo<Info> | null>(null);
+  const [data, setData] = useState<DetailInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
   const SaveLink = `/api/part/${part}/${id}`;
 
@@ -18,7 +18,7 @@ export default function PartDetailEditPage({
     setError(null);
     fetch(SaveLink).then((response) => {
       if (response.ok) {
-        response.json().then((data: DetailInfo<Info>) => {
+        response.json().then((data: DetailInfo) => {
           setData(data);
           console.log(data);
         });

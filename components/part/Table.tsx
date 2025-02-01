@@ -29,7 +29,7 @@ export default function PartTable({
   data,
   className,
   ...rest
-}: { data: SummaryInfo<Info>[] } & TableHTMLAttributes<HTMLTableElement>) {
+}: { data: SummaryInfo[] } & TableHTMLAttributes<HTMLTableElement>) {
   let keys: { [key in Products]?: string[] } = {};
   const { id, part, name, brand, series, image_url, ...detail } = data[0];
   Object.entries(detail).forEach(
