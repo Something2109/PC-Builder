@@ -13,19 +13,14 @@ import {
 } from "@nestjs/common";
 import { PartService } from "./part.service";
 import { Products } from "@/utils/Enum";
-import {
-  DetailInfoOptions,
-  DetailInfoOptionsSchema,
-  FilterOptions,
-  FilterOptionSchema,
-} from "@/utils/interface";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 
 const ProductValidator = new ParseEnumPipe(Products, {
   exceptionFactory: () => new NotFoundException("Product's not found"),
 });
-const FilterValidator = new ZodValidationPipe(FilterOptionSchema);
-const DetailValidator = new ZodValidationPipe(DetailInfoOptionsSchema);
+const FilterValidator = new ZodValidationPipe(FilterOptions);
+const DetailValidator = new ZodValidationPipe(DetailInfo);
 
 @Controller("api/part")
 export class PartController {
@@ -98,7 +93,7 @@ export class PartController {
   @Post(":part")
   async createPart(
     @Param("part", ProductValidator) part: Products,
-    @Body(DetailValidator) body: DetailInfoOptions
+    @Body(DetailValidator) body: DetailInfo
   ) {
     const service = this.findService(part);
 
@@ -133,7 +128,7 @@ export class PartController {
   async setPart(
     @Param("part", ProductValidator) part: Products,
     @Param("id", ParseUUIDPipe) id: string,
-    @Body(DetailValidator) body: DetailInfoOptions
+    @Body(DetailValidator) body: DetailInfo
   ) {
     const service = this.findService(part);
 

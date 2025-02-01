@@ -9,16 +9,11 @@ import {
   PageOptions,
   SearchOptions,
 } from "./interface/service.interface";
-import {
-  DetailInfoOptions as Options,
-  FilterOptions as Filter,
-} from "@/utils/interface";
+import { FilterOptions as Filter } from "@/utils/interface";
 
 type ServiceObject = {
   [key in Products]?: BaseDetailPartService<any>;
 };
-
-type Detail = Part.BasicInfo;
 
 @Injectable()
 class PartService extends BasePartService {
