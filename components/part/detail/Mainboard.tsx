@@ -1,6 +1,7 @@
 import { Table, TableRowWrapper } from "../TableWrapper";
 import Mainboard from "@/utils/interface/part/Mainboard";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { InternalConnectors } from "@/utils/interface/utils";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof Mainboard.Info]: FunctionComponent<{
@@ -22,9 +23,7 @@ const Components: {
   expansion_slots: ({ value }) => (
     <TableRowWrapper>Expansion Slots {value}</TableRowWrapper>
   ),
-  pcies: ({ value }) => (
-    <PCIeTableRow label={"PCIe Slots"} defaultValue={value} />
-  ),
+  pcies: ({ value }) => <PCIeTableRow defaultValue={value} />,
   power_connectors: ({ value }) => (
     <TableRowWrapper>
       Power Connector
@@ -75,24 +74,30 @@ const Components: {
   ),
 };
 
-export function PCIeTableRow({
-  label,
-  defaultValue,
-}: {
-  label: string;
-  defaultValue?: Mainboard.PCIe;
-}) {
+const PCIeControllerName: {
+  [key in InternalConnectors.PCIe.Controller]: string;
+} = {
+  cpu: "CPU",
+  chipset: "Chipset",
+};
+
+function PCIeTableRow({ defaultValue }: { defaultValue?: Mainboard.PCIe }) {
   if (!defaultValue) return undefined;
 
-  return Object.entries(defaultValue).map(([key, value], index, arr) => {
+  return Object.entries(PCIeControllerName).map(([key, label], index, arr) => {
+    const value = defaultValue[key as InternalConnectors.PCIe.Controller];
+    if (!value) return undefined;
+
     const tableValues = Object.entries(value)
       .map(([key, value]) => `${value} * ${key}`)
       .join(", ");
 
     return (
       <Table.Row key={new Date().getTime() + index}>
-        {index === 0 && <Table.Cell rowSpan={arr.length}>{label}</Table.Cell>}
-        <Table.Cell className="font-bold">{key}</Table.Cell>
+        {index === 0 && (
+          <Table.Cell rowSpan={arr.length}>PCIe Slots</Table.Cell>
+        )}
+        <Table.Cell className="font-bold">{label}</Table.Cell>
         <Table.Cell>{tableValues}</Table.Cell>
       </Table.Row>
     );
