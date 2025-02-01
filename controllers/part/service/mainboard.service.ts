@@ -23,7 +23,7 @@ class MainboardService extends BaseDetailPartService<Detail> {
 
     const options = result[Products.MAIN];
     this.parse(params, Primitive.String, options, "socket");
-    this.parse(params, FormFactor.HDD, options, "form_factor");
+    this.parse(params, FormFactor.Mainboard, options, "form_factor");
     this.parse(params, FormFactor.RAM, options, "ram_form_factor");
     this.parse(params, InternalConnectors.RAM, options, "ram_interface");
 
