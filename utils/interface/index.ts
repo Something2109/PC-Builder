@@ -41,32 +41,6 @@ export type SummaryInfo<T extends Info> = z.infer<typeof Part.SummarySchema> & {
   [key in T]: z.infer<typeof PartSummaryInfoSchema>[T];
 };
 
-export const DetailInfoListSchema = z
-  .object({
-    [Info.CPU]: CPU.Schema,
-    [Info.GPU]: GPU.Schema,
-    [Info.GRAPHIC_CARD]: GraphicCard.Schema,
-    [Info.MAIN]: Mainboard.Schema,
-    [Info.RAM]: RAM.Schema,
-    [Info.SSD]: SSD.Schema,
-    [Info.HDD]: HDD.Schema,
-    [Info.PSU]: PSU.Schema,
-    [Info.CASE]: Case.Schema,
-    [Info.FAN]: Fan.Schema,
-    [Info.COOLER]: Cooler.Schema,
-    [Info.AIO]: AIO.Schema,
-    [Info.CPU_BLOCK]: CPUBlock.Schema,
-    [Info.PUMP]: Pump.Schema,
-    [Info.RADIATOR]: Radiator.Schema,
-  })
-  .partial();
-
-export type DetailInfo<T extends Info> = z.infer<typeof Part.Schema> & {
-  raw?: string;
-} & {
-  [key in T]: z.infer<typeof DetailInfoListSchema>[T];
-};
-
 export const DetailInfoOptionsSchema = Part.Schema.partial().merge(
   z
     .object({
@@ -150,19 +124,4 @@ export const FilterAttributes = {
   [Info.CPU_BLOCK]: CPUBlock.FilterAttributes,
   [Info.PUMP]: Pump.FilterAttributes,
   [Info.RADIATOR]: Radiator.FilterAttributes,
-};
-
-export const DefaultFilterOptions = {
-  [Products.MAIN]: Mainboard.DefaultFilterOptions,
-  [Products.RAM]: RAM.DefaultFilterOptions,
-  [Products.SSD]: SSD.DefaultFilterOptions,
-  [Products.HDD]: HDD.DefaultFilterOptions,
-  [Products.PSU]: PSU.DefaultFilterOptions,
-  [Products.CASE]: Case.DefaultFilterOptions,
-  [Products.COOLER]: Cooler.DefaultFilterOptions,
-  [Products.AIO]: AIO.DefaultFilterOptions,
-  [Products.FAN]: Fan.DefaultFilterOptions,
-  [Products.CPU_BLOCK]: CPUBlock.DefaultFilterOptions,
-  [Products.PUMP]: Pump.DefaultFilterOptions,
-  [Products.RADIATOR]: Radiator.DefaultFilterOptions,
 };
