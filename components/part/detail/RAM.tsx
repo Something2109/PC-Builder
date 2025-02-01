@@ -1,6 +1,6 @@
 import RAM from "@/utils/interface/part/RAM";
-import { FunctionComponent, TableHTMLAttributes } from "react";
-import { TableRowWrapper, TableWrapper } from "../TableWrapper";
+import { FunctionComponent } from "react";
+import { TableRowWrapper } from "../TableWrapper";
 
 const Components: {
   [key in keyof RAM.Info]: FunctionComponent<{ value: RAM.Info[key] }>;
@@ -22,21 +22,4 @@ const Components: {
   ),
 };
 
-export function RAMTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<RAM.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof RAM.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export { Components as RANComponents };

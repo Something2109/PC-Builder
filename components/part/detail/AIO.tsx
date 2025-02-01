@@ -1,6 +1,6 @@
-import { TableRowWrapper, TableWrapper } from "../TableWrapper";
+import { TableRowWrapper } from "../TableWrapper";
 import AIO from "@/utils/interface/part/AIO";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof AIO.Info]: FunctionComponent<{ value: AIO.Info[key] }>;
@@ -35,21 +35,4 @@ const Components: {
   ),
 };
 
-export function AIOTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<AIO.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof AIO.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export { Components as AIOComponents };

@@ -1,6 +1,6 @@
-import { TableRowWrapper, TableWrapper } from "../TableWrapper";
+import { TableRowWrapper } from "../TableWrapper";
 import SSD from "@/utils/interface/part/SSD";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof SSD.Info]: FunctionComponent<{ value: SSD.Info[key] }>;
@@ -25,21 +25,4 @@ const Components: {
   ),
 };
 
-export function SSDTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<SSD.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof SSD.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export { Components as SSDComponents };

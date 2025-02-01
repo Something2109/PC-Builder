@@ -1,6 +1,6 @@
 import CPU from "@/utils/interface/part/CPU";
-import { TableRowWrapper, TableWrapper } from "../TableWrapper";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { TableRowWrapper } from "../TableWrapper";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof CPU.Info]: FunctionComponent<{ value: CPU.Info[key] }>;
@@ -39,21 +39,4 @@ const Components: {
   ),
 };
 
-export function CPUTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<CPU.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof CPU.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export { Components as CPUComponents };

@@ -1,10 +1,6 @@
 import PSU from "@/utils/interface/part/PSU";
-import { FunctionComponent, TableHTMLAttributes } from "react";
-import {
-  DimensionTableRow,
-  TableRowWrapper,
-  TableWrapper,
-} from "../TableWrapper";
+import { FunctionComponent } from "react";
+import { TableRowWrapper } from "../TableWrapper";
 
 const Components: {
   [key in keyof PSU.Info]: FunctionComponent<{ value: PSU.Info[key] }>;
@@ -29,21 +25,4 @@ const Components: {
   ),
 };
 
-export function PSUTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<PSU.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof PSU.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export { Components as PSUComponents };

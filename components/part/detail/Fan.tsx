@@ -1,10 +1,6 @@
-import {
-  DimensionTableRow,
-  TableRowWrapper,
-  TableWrapper,
-} from "../TableWrapper";
+import { TableRowWrapper } from "../TableWrapper";
 import Fan from "@/utils/interface/part/Fan";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof Fan.Info]: FunctionComponent<{ value: Fan.Info[key] }>;
@@ -30,21 +26,4 @@ const Components: {
   rgb: ({ value }) => <TableRowWrapper>RGB Connector {value}</TableRowWrapper>,
 };
 
-export function FanTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Fan.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof Fan.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export { Components as FanComponents };

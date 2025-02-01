@@ -1,6 +1,6 @@
-import { TableRowWrapper, TableWrapper } from "../TableWrapper";
+import { TableRowWrapper } from "../TableWrapper";
 import GPU from "@/utils/interface/part/GPU";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof GPU.Info]: FunctionComponent<{ value: GPU.Info[key] }>;
@@ -36,21 +36,4 @@ const Components: {
   ),
 };
 
-export function GPUTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<GPU.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof GPU.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export { Components as GPUComponents };

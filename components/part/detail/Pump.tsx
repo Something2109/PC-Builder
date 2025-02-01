@@ -1,10 +1,6 @@
 import Pump from "@/utils/interface/part/Pump";
-import {
-  TableRowWrapper,
-  TableWrapper,
-  DimensionTableRow,
-} from "../TableWrapper";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { TableRowWrapper } from "../TableWrapper";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof Pump.Info]: FunctionComponent<{ value: Pump.Info[key] }>;
@@ -32,21 +28,4 @@ const Components: {
   rgb: ({ value }) => <TableRowWrapper>RGB {value}</TableRowWrapper>,
 };
 
-export function PumpTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Pump.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof Pump.Info];
-
-        if (!value || !Component) return undefined;
-
-        return <Component value={value as never} />;
-      })}
-    </TableWrapper>
-  );
-}
+export { Components as PumpComponents };

@@ -1,6 +1,6 @@
-import { TableRowWrapper, TableWrapper } from "../TableWrapper";
+import { TableRowWrapper } from "../TableWrapper";
 import HDD from "@/utils/interface/part/HDD";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof HDD.Info]: FunctionComponent<{ value: HDD.Info[key] }>;
@@ -24,21 +24,4 @@ const Components: {
   ),
 };
 
-export function HDDTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<HDD.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof HDD.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export { Components as HDDComponents };

@@ -1,10 +1,6 @@
-import {
-  DimensionTableRow,
-  TableRowWrapper,
-  TableWrapper,
-} from "../TableWrapper";
+import { TableRowWrapper } from "../TableWrapper";
 import Cooler from "@/utils/interface/part/Cooler";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof Cooler.Info]: FunctionComponent<{ value: Cooler.Info[key] }>;
@@ -18,21 +14,4 @@ const Components: {
   height: ({ value }) => <TableRowWrapper>Height {value}</TableRowWrapper>,
 };
 
-export function CoolerTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Cooler.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof Cooler.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export { Components as CoolerComponents };

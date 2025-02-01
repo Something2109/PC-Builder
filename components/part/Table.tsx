@@ -1,21 +1,22 @@
 import { RowWrapper } from "../utils/FlexWrapper";
 import PartPicture from "./Picture";
-import { CPUTable } from "./detail/CPU";
-import { GPUTable } from "./detail/GPU";
-import { GraphicCardTable } from "./detail/GraphicCard";
-import { MainboardTable } from "./detail/Mainboard";
-import { RAMTable } from "./detail/RAM";
-import { HDDTable } from "./detail/HDD";
-import { PSUTable } from "./detail/PSU";
-import { CaseTable } from "./detail/Case";
-import { CoolerTable } from "./detail/Cooler";
-import { AIOTable } from "./detail/AIO";
-import { FanTable } from "./detail/Fan";
-import { SSDTable } from "./detail/SSD";
-import { CPUBlockTable } from "./detail/CPUBlock";
-import { PumpTable } from "./detail/Pump";
-import { RadiatorTable } from "./detail/Radiator";
-import { TableHTMLAttributes } from "react";
+import { TableWrapper } from "./TableWrapper";
+import { CPUComponents } from "./detail/CPU";
+import { GPUComponents } from "./detail/GPU";
+import { GraphicCardComponents } from "./detail/GraphicCard";
+import { MainboardComponents } from "./detail/Mainboard";
+import { RANComponents } from "./detail/RAM";
+import { HDDComponents } from "./detail/HDD";
+import { PSUComponents } from "./detail/PSU";
+import { CaseComponents } from "./detail/Case";
+import { CoolerComponents } from "./detail/Cooler";
+import { AIOComponents } from "./detail/AIO";
+import { FanComponents } from "./detail/Fan";
+import { SSDComponents } from "./detail/SSD";
+import { CPUBlockComponents } from "./detail/CPUBlock";
+import { PumpComponents } from "./detail/Pump";
+import { RadiatorComponents } from "./detail/Radiator";
+import { FunctionComponent, TableHTMLAttributes } from "react";
 import { SummaryInfo } from "@/utils/interface";
 import { Products, Info } from "@/utils/Enum";
 
@@ -94,20 +95,41 @@ export default function PartTable({
   );
 }
 
+export function genericTable<T extends Record<string, any>>(Components: {
+  [key in keyof T]: FunctionComponent<{ value: T[key] }>;
+}) {
+  return ({
+    defaultValue,
+    ...rest
+  }: {
+    defaultValue?: Partial<T>;
+  } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => (
+    <TableWrapper {...rest}>
+      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
+        const Component = Components[key];
+
+        if (!value || !Component) return undefined;
+
+        return <Component value={value as never} />;
+      })}
+    </TableWrapper>
+  );
+}
+
 export const DetailTableComponent = {
-  [Info.CPU]: CPUTable,
-  [Info.GPU]: GPUTable,
-  [Info.GRAPHIC_CARD]: GraphicCardTable,
-  [Info.MAIN]: MainboardTable,
-  [Info.RAM]: RAMTable,
-  [Info.HDD]: HDDTable,
-  [Info.PSU]: PSUTable,
-  [Info.CASE]: CaseTable,
-  [Info.COOLER]: CoolerTable,
-  [Info.AIO]: AIOTable,
-  [Info.FAN]: FanTable,
-  [Info.SSD]: SSDTable,
-  [Info.CPU_BLOCK]: CPUBlockTable,
-  [Info.PUMP]: PumpTable,
-  [Info.RADIATOR]: RadiatorTable,
+  [Info.CPU]: genericTable(CPUComponents),
+  [Info.GPU]: genericTable(GPUComponents),
+  [Info.GRAPHIC_CARD]: genericTable(GraphicCardComponents),
+  [Info.MAIN]: genericTable(MainboardComponents),
+  [Info.RAM]: genericTable(RANComponents),
+  [Info.HDD]: genericTable(HDDComponents),
+  [Info.PSU]: genericTable(PSUComponents),
+  [Info.CASE]: genericTable(CaseComponents),
+  [Info.COOLER]: genericTable(CoolerComponents),
+  [Info.AIO]: genericTable(AIOComponents),
+  [Info.FAN]: genericTable(FanComponents),
+  [Info.SSD]: genericTable(SSDComponents),
+  [Info.CPU_BLOCK]: genericTable(CPUBlockComponents),
+  [Info.PUMP]: genericTable(PumpComponents),
+  [Info.RADIATOR]: genericTable(RadiatorComponents),
 };

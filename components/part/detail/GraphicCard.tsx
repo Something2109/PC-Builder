@@ -1,10 +1,6 @@
-import {
-  DimensionTableRow,
-  TableRowWrapper,
-  TableWrapper,
-} from "../TableWrapper";
+import { TableRowWrapper } from "../TableWrapper";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof GraphicCard.Info]: FunctionComponent<{
@@ -45,21 +41,4 @@ const Components: {
   },
 };
 
-export function GraphicCardTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<GraphicCard.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof GraphicCard.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export { Components as GraphicCardComponents };
