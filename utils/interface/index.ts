@@ -61,7 +61,7 @@ export type SummaryInfo = z.infer<typeof SummaryInfo>;
  * The specific information that each {@link Products} type contains
  * are declared in the mapping {@link ProductInfo}.
  */
-export const DetailInfo = Part.Schema.partial().merge(
+export const DetailInfo = Part.Schema.merge(
   z
     .object({
       raw: z.string(),
