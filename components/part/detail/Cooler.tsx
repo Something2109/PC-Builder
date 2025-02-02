@@ -1,4 +1,4 @@
-import { TableRowWrapper } from "../TableWrapper";
+import { TableRowWrapper, GenericTable } from "../TableWrapper";
 import Cooler from "@/utils/interface/part/Cooler";
 import { FunctionComponent } from "react";
 
@@ -14,4 +14,4 @@ const Components: {
   height: ({ value }) => <TableRowWrapper>Height {value}</TableRowWrapper>,
 };
 
-export { Components as CoolerComponents };
+export default GenericTable(Components);

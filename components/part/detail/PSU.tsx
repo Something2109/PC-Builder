@@ -1,6 +1,6 @@
 import PSU from "@/utils/interface/part/PSU";
 import { FunctionComponent } from "react";
-import { TableRowWrapper } from "../TableWrapper";
+import { TableRowWrapper, GenericTable } from "../TableWrapper";
 
 const Components: {
   [key in keyof PSU.Info]: FunctionComponent<{ value: PSU.Info[key] }>;
@@ -25,4 +25,4 @@ const Components: {
   ),
 };
 
-export { Components as PSUComponents };
+export default GenericTable(Components);

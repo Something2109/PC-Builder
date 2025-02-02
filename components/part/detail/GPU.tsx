@@ -1,4 +1,4 @@
-import { TableRowWrapper } from "../TableWrapper";
+import { TableRowWrapper, GenericTable } from "../TableWrapper";
 import GPU from "@/utils/interface/part/GPU";
 import { FunctionComponent } from "react";
 
@@ -36,4 +36,4 @@ const Components: {
   ),
 };
 
-export { Components as GPUComponents };
+export default GenericTable(Components);

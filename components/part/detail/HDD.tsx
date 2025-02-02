@@ -1,4 +1,4 @@
-import { TableRowWrapper } from "../TableWrapper";
+import { TableRowWrapper, GenericTable } from "../TableWrapper";
 import HDD from "@/utils/interface/part/HDD";
 import { FunctionComponent } from "react";
 
@@ -24,4 +24,4 @@ const Components: {
   ),
 };
 
-export { Components as HDDComponents };
+export default GenericTable(Components);

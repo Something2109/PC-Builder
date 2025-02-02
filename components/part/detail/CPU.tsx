@@ -1,5 +1,5 @@
 import CPU from "@/utils/interface/part/CPU";
-import { TableRowWrapper } from "../TableWrapper";
+import { TableRowWrapper, GenericTable } from "../TableWrapper";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -39,4 +39,4 @@ const Components: {
   ),
 };
 
-export { Components as CPUComponents };
+export default GenericTable(Components);

@@ -1,24 +1,8 @@
 import PartPicture from "./Picture";
-import { GenericTable } from "./TableWrapper";
-import { CPUComponents } from "./detail/CPU";
-import { GPUComponents } from "./detail/GPU";
-import { GraphicCardComponents } from "./detail/GraphicCard";
-import { MainboardComponents } from "./detail/Mainboard";
-import { RAMComponents } from "./detail/RAM";
-import { HDDComponents } from "./detail/HDD";
-import { PSUComponents } from "./detail/PSU";
-import { CaseComponents } from "./detail/Case";
-import { CoolerComponents } from "./detail/Cooler";
-import { AIOComponents } from "./detail/AIO";
-import { FanComponents } from "./detail/Fan";
-import { SSDComponents } from "./detail/SSD";
-import { CPUBlockComponents } from "./detail/CPUBlock";
-import { PumpComponents } from "./detail/Pump";
-import { RadiatorComponents } from "./detail/Radiator";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { SummaryInfo } from "@/utils/interface";
 import { Products, Info } from "@/utils/Enum";
-import { TableHTMLAttributes } from "react";
+import { lazy, TableHTMLAttributes } from "react";
 
 const table = "border-separate border-spacing-0";
 const tableHeader =
@@ -96,19 +80,21 @@ export default function PartTable({
 }
 
 export const DetailTableComponent = {
-  [Info.CPU]: GenericTable(CPUComponents),
-  [Info.GPU]: GenericTable(GPUComponents),
-  [Info.GRAPHIC_CARD]: GenericTable(GraphicCardComponents),
-  [Info.MAIN]: GenericTable(MainboardComponents),
-  [Info.RAM]: GenericTable(RAMComponents),
-  [Info.HDD]: GenericTable(HDDComponents),
-  [Info.PSU]: GenericTable(PSUComponents),
-  [Info.CASE]: GenericTable(CaseComponents),
-  [Info.COOLER]: GenericTable(CoolerComponents),
-  [Info.AIO]: GenericTable(AIOComponents),
-  [Info.FAN]: GenericTable(FanComponents),
-  [Info.SSD]: GenericTable(SSDComponents),
-  [Info.CPU_BLOCK]: GenericTable(CPUBlockComponents),
-  [Info.PUMP]: GenericTable(PumpComponents),
-  [Info.RADIATOR]: GenericTable(RadiatorComponents),
+  [Info.CPU]: lazy(() => import("@/components/part/detail/CPU")),
+  [Info.GPU]: lazy(() => import("@/components/part/detail/GPU")),
+  [Info.GRAPHIC_CARD]: lazy(
+    () => import("@/components/part/detail/GraphicCard")
+  ),
+  [Info.MAIN]: lazy(() => import("@/components/part/detail/Mainboard")),
+  [Info.RAM]: lazy(() => import("@/components/part/detail/RAM")),
+  [Info.HDD]: lazy(() => import("@/components/part/detail/HDD")),
+  [Info.PSU]: lazy(() => import("@/components/part/detail/PSU")),
+  [Info.CASE]: lazy(() => import("@/components/part/detail/Case")),
+  [Info.COOLER]: lazy(() => import("@/components/part/detail/Cooler")),
+  [Info.AIO]: lazy(() => import("@/components/part/detail/AIO")),
+  [Info.FAN]: lazy(() => import("@/components/part/detail/Fan")),
+  [Info.SSD]: lazy(() => import("@/components/part/detail/SSD")),
+  [Info.CPU_BLOCK]: lazy(() => import("@/components/part/detail/CPUBlock")),
+  [Info.PUMP]: lazy(() => import("@/components/part/detail/Pump")),
+  [Info.RADIATOR]: lazy(() => import("@/components/part/detail/Radiator")),
 };

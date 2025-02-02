@@ -1,4 +1,4 @@
-import { TableRowWrapper } from "../TableWrapper";
+import { TableRowWrapper, GenericTable } from "../TableWrapper";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
 import { FunctionComponent } from "react";
 
@@ -41,4 +41,4 @@ const Components: {
   },
 };
 
-export { Components as GraphicCardComponents };
+export default GenericTable(Components);

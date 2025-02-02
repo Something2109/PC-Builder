@@ -1,4 +1,4 @@
-import { Table, TableRowWrapper } from "../TableWrapper";
+import { Table, TableRowWrapper, GenericTable } from "../TableWrapper";
 import Mainboard from "@/utils/interface/part/Mainboard";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
@@ -104,4 +104,4 @@ function PCIeTableRow({ defaultValue }: { defaultValue?: Mainboard.PCIe }) {
   });
 }
 
-export { Components as MainboardComponents };
+export default GenericTable(Components);

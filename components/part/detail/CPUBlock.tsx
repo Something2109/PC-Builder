@@ -1,5 +1,5 @@
 import CPUBlock from "@/utils/interface/part/CPUBlock";
-import { TableRowWrapper } from "../TableWrapper";
+import { TableRowWrapper, GenericTable } from "../TableWrapper";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -14,4 +14,4 @@ const Components: {
   rgb: ({ value }) => <TableRowWrapper>RGB {value}</TableRowWrapper>,
 };
 
-export { Components as CPUBlockComponents };
+export default GenericTable(Components);

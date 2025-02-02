@@ -1,6 +1,6 @@
 import RAM from "@/utils/interface/part/RAM";
 import { FunctionComponent } from "react";
-import { TableRowWrapper } from "../TableWrapper";
+import { TableRowWrapper, GenericTable } from "../TableWrapper";
 
 const Components: {
   [key in keyof RAM.Info]: FunctionComponent<{ value: RAM.Info[key] }>;
@@ -22,4 +22,4 @@ const Components: {
   ),
 };
 
-export { Components as RAMComponents };
+export default GenericTable(Components);

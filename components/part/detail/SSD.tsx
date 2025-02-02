@@ -1,4 +1,4 @@
-import { TableRowWrapper } from "../TableWrapper";
+import { TableRowWrapper, GenericTable } from "../TableWrapper";
 import SSD from "@/utils/interface/part/SSD";
 import { FunctionComponent } from "react";
 
@@ -25,4 +25,4 @@ const Components: {
   ),
 };
 
-export { Components as SSDComponents };
+export default GenericTable(Components);

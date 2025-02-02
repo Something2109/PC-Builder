@@ -1,4 +1,4 @@
-import { TableRowWrapper } from "../TableWrapper";
+import { TableRowWrapper, GenericTable } from "../TableWrapper";
 import AIO from "@/utils/interface/part/AIO";
 import { FunctionComponent } from "react";
 
@@ -35,4 +35,4 @@ const Components: {
   ),
 };
 
-export { Components as AIOComponents };
+export default GenericTable(Components);

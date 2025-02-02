@@ -1,4 +1,4 @@
-import { TableRowWrapper } from "../TableWrapper";
+import { TableRowWrapper, GenericTable } from "../TableWrapper";
 import Fan from "@/utils/interface/part/Fan";
 import { FunctionComponent } from "react";
 
@@ -26,4 +26,4 @@ const Components: {
   rgb: ({ value }) => <TableRowWrapper>RGB Connector {value}</TableRowWrapper>,
 };
 
-export { Components as FanComponents };
+export default GenericTable(Components);
