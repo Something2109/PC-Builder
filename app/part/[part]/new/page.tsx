@@ -2,12 +2,22 @@
 
 import { PartForm } from "@/components/part/Form";
 import { Products } from "@/utils/Enum";
+import Part from "@/utils/interface/part/Parts";
 import React from "react";
 
 export default function PartDetailEditPage({
   params: { part },
 }: {
-  params: { part: string };
+  params: { part: Products };
 }) {
-  return <PartForm part={part as Products} />;
+  const value: Part.BasicInfo = {
+    part,
+    id: "",
+    name: "",
+    code_name: "",
+    brand: "",
+    series: "",
+  };
+
+  return <PartForm part={part} defaultValue={value} />;
 }

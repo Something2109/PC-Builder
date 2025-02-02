@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 export default function PartDetailEditPage({
   params: { part, id },
 }: {
-  params: { part: string; id: string };
+  params: { part: Products; id: string };
 }) {
   const [data, setData] = useState<DetailInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
