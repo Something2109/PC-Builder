@@ -41,6 +41,23 @@ export namespace PSU {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    wattage: "Wattage",
+    efficiency: "Efficiency",
+
+    form_factor: "Form Factor",
+    width: "Width",
+    length: "Length",
+    height: "Height",
+    modular: "Modular Type",
+
+    atx_pin: "ATX Pins",
+    cpu_pin: "CPU Pins",
+    pcie_pin: "PCIe Pins",
+    sata_pin: "SATA Pins",
+    peripheral_pin: "Peripheral Pins",
+  };
+
   export const SummarySchema = Schema.pick({
     wattage: true,
     efficiency: true,

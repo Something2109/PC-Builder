@@ -20,6 +20,17 @@ namespace RAM {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    speed: "Speed",
+    capacity: "Capacity",
+    voltage: "Voltage",
+    latency: "Latency",
+    kit: "Kit",
+
+    form_factor: "Form Factor",
+    interface: "Interface",
+  };
+
   export const SummarySchema = Schema.pick({
     speed: true,
     capacity: true,

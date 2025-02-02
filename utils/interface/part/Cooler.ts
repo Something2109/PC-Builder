@@ -13,6 +13,15 @@ export namespace Cooler {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    socket: "Socket",
+    cpu_plate: "CPU Plate",
+
+    width: "Width",
+    length: "Length",
+    height: "Height",
+  };
+
   export const SummarySchema = Schema.pick({
     socket: true,
     cpu_plate: true,

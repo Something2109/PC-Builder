@@ -118,10 +118,81 @@ export const FilterOptions = z
 export type FilterOptions = z.infer<typeof FilterOptions>;
 
 /**
+ * DECLARE THE {@link Info} RELATED MAPPING OBJECTS
+ * TO BE USED IN MANY DYNAMIC MAPPING OF THE PROJECT
+ */
+
+/**
+ * The label list of the information.
+ * Contains the label corresponding to each {@link Info} type.
+ */
+export const InfoLabels: Record<Info, string> = {
+  [Info.CPU]: "CPU",
+  [Info.GPU]: "GPU",
+  [Info.GRAPHIC_CARD]: "Graphic Card",
+  [Info.MAIN]: "Mainboard",
+  [Info.RAM]: "RAM",
+  [Info.SSD]: "SSD",
+  [Info.HDD]: "HDD",
+  [Info.PSU]: "PSU",
+  [Info.CASE]: "Case",
+  [Info.FAN]: "Fan",
+  [Info.COOLER]: "Cooler",
+  [Info.AIO]: "AIO",
+  [Info.CPU_BLOCK]: "CPU Block",
+  [Info.PUMP]: "Pump",
+  [Info.RADIATOR]: "Radiator",
+};
+
+/**
+ * The attribute label list of the information.
+ * Contains the label corresponding to each attribute in each {@link Info} type.
+ */
+export const AttributeLabels: Record<Info, Record<string, string>> = {
+  [Info.CPU]: CPU.Label,
+  [Info.GPU]: GPU.Label,
+  [Info.GRAPHIC_CARD]: GraphicCard.Label,
+  [Info.MAIN]: Mainboard.Label,
+  [Info.RAM]: RAM.Label,
+  [Info.SSD]: SSD.Label,
+  [Info.HDD]: HDD.Label,
+  [Info.PSU]: PSU.Label,
+  [Info.CASE]: Case.Label,
+  [Info.FAN]: Fan.Label,
+  [Info.COOLER]: Cooler.Label,
+  [Info.AIO]: AIO.Label,
+  [Info.CPU_BLOCK]: CPUBlock.Label,
+  [Info.PUMP]: Pump.Label,
+  [Info.RADIATOR]: Radiator.Label,
+};
+
+/**
+ * The summary attribute list of the information.
+ * Contains the attributes that are considered as the notable attributes of each {@link Info} type.
+ */
+export const SummaryAttributes: Record<Info, string[]> = {
+  [Info.CPU]: CPU.SummaryAttributes,
+  [Info.GPU]: GPU.SummaryAttributes,
+  [Info.GRAPHIC_CARD]: GraphicCard.SummaryAttributes,
+  [Info.MAIN]: Mainboard.SummaryAttributes,
+  [Info.RAM]: RAM.SummaryAttributes,
+  [Info.SSD]: SSD.SummaryAttributes,
+  [Info.HDD]: HDD.SummaryAttributes,
+  [Info.PSU]: PSU.SummaryAttributes,
+  [Info.CASE]: Case.SummaryAttributes,
+  [Info.FAN]: Fan.SummaryAttributes,
+  [Info.COOLER]: Cooler.SummaryAttributes,
+  [Info.AIO]: AIO.SummaryAttributes,
+  [Info.CPU_BLOCK]: CPUBlock.SummaryAttributes,
+  [Info.PUMP]: Pump.SummaryAttributes,
+  [Info.RADIATOR]: Radiator.SummaryAttributes,
+};
+
+/**
  * The filter attribute list of the information.
  * Contains the attributes that can be used as filter in each {@link Info} type.
  */
-export const FilterAttributes = {
+export const FilterAttributes: Record<Info, string[]> = {
   [Info.CPU]: CPU.FilterAttributes,
   [Info.GPU]: GPU.FilterAttributes,
   [Info.GRAPHIC_CARD]: GraphicCard.FilterAttributes,
