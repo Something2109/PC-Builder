@@ -1,5 +1,5 @@
 import Radiator from "@/utils/interface/part/Radiator";
-import { TableRowWrapper, GenericTable } from "../TableWrapper";
+import { GenericTable } from "../TableWrapper";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -7,14 +7,12 @@ const Components: {
     value: Radiator.Info[key];
   }>;
 } = {
-  form_factor: ({ value }) => (
-    <TableRowWrapper>Form Factor {value}</TableRowWrapper>
-  ),
-  width: ({ value }) => <TableRowWrapper>Width {value}</TableRowWrapper>,
-  length: ({ value }) => <TableRowWrapper>Length {value}</TableRowWrapper>,
-  height: ({ value }) => <TableRowWrapper>Height {value}</TableRowWrapper>,
-  fpi: ({ value }) => <TableRowWrapper>FPI {value}</TableRowWrapper>,
-  material: ({ value }) => <TableRowWrapper>Material {value}</TableRowWrapper>,
+  form_factor: ({ value }) => value,
+  width: ({ value }) => value,
+  length: ({ value }) => value,
+  height: ({ value }) => value,
+  fpi: ({ value }) => value,
+  material: ({ value }) => value,
 };
 
-export default GenericTable(Components);
+export default GenericTable(Components, Radiator.Label);

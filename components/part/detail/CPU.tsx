@@ -1,42 +1,24 @@
 import CPU from "@/utils/interface/part/CPU";
-import { TableRowWrapper, GenericTable } from "../TableWrapper";
+import { GenericTable } from "../TableWrapper";
 import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof CPU.Info]: FunctionComponent<{ value: CPU.Info[key] }>;
 } = {
-  family: ({ value }) => <TableRowWrapper>Family {value}</TableRowWrapper>,
-  socket: ({ value }) => <TableRowWrapper>Socket {value}</TableRowWrapper>,
-  total_cores: ({ value }) => (
-    <TableRowWrapper>Total Cores {value}</TableRowWrapper>
-  ),
-  total_threads: ({ value }) => (
-    <TableRowWrapper>Total Threads {value}</TableRowWrapper>
-  ),
-  base_frequency: ({ value }) => (
-    <TableRowWrapper>Base Frequency {value}</TableRowWrapper>
-  ),
-  turbo_frequency: ({ value }) => (
-    <TableRowWrapper>Turbo Frequency {value}</TableRowWrapper>
-  ),
-  cores: ({ value }) => (
-    <TableRowWrapper>Core Type {value.toString()}</TableRowWrapper>
-  ),
-  L2_cache: ({ value }) => <TableRowWrapper>L2 Cache {value}</TableRowWrapper>,
-  L3_cache: ({ value }) => <TableRowWrapper>L3 Cache {value}</TableRowWrapper>,
-  max_memory: ({ value }) => (
-    <TableRowWrapper>Max Memory Support {value}</TableRowWrapper>
-  ),
-  max_memory_channel: ({ value }) => (
-    <TableRowWrapper>Max Memory Channel Support {value}</TableRowWrapper>
-  ),
-  max_memory_bandwidth: ({ value }) => (
-    <TableRowWrapper>Max Memory Bandwidth {value}</TableRowWrapper>
-  ),
-  tdp: ({ value }) => <TableRowWrapper>TDP {value}</TableRowWrapper>,
-  lithography: ({ value }) => (
-    <TableRowWrapper>Lithography {value}</TableRowWrapper>
-  ),
+  family: ({ value }) => value,
+  socket: ({ value }) => value,
+  total_cores: ({ value }) => value,
+  total_threads: ({ value }) => value,
+  base_frequency: ({ value }) => value,
+  turbo_frequency: ({ value }) => value,
+  cores: ({ value }) => value.toString(),
+  L2_cache: ({ value }) => value,
+  L3_cache: ({ value }) => value,
+  max_memory: ({ value }) => value,
+  max_memory_channel: ({ value }) => value,
+  max_memory_bandwidth: ({ value }) => value,
+  tdp: ({ value }) => value,
+  lithography: ({ value }) => value,
 };
 
-export default GenericTable(Components);
+export default GenericTable(Components, CPU.Label);

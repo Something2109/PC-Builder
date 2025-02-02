@@ -1,5 +1,5 @@
 import CPUBlock from "@/utils/interface/part/CPUBlock";
-import { TableRowWrapper, GenericTable } from "../TableWrapper";
+import { GenericTable } from "../TableWrapper";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -7,11 +7,9 @@ const Components: {
     value: CPUBlock.Info[key];
   }>;
 } = {
-  socket: ({ value }) => (
-    <TableRowWrapper>Socket {value.join(", ")}</TableRowWrapper>
-  ),
-  plate: ({ value }) => <TableRowWrapper>Plate {value}</TableRowWrapper>,
-  rgb: ({ value }) => <TableRowWrapper>RGB {value}</TableRowWrapper>,
+  socket: ({ value }) => value.join(", "),
+  plate: ({ value }) => value,
+  rgb: ({ value }) => value,
 };
 
-export default GenericTable(Components);
+export default GenericTable(Components, CPUBlock.Label);

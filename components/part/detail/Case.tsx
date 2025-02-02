@@ -1,25 +1,17 @@
-import { Table, TableRowWrapper, GenericTable } from "../TableWrapper";
+import { Table, GenericTable } from "../TableWrapper";
 import Case from "@/utils/interface/part/Case";
 import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof Case.Info]: FunctionComponent<{ value: Case.Info[key] }>;
 } = {
-  form_factor: ({ value }) => (
-    <TableRowWrapper>Form Factor {value}</TableRowWrapper>
-  ),
-  width: ({ value }) => <TableRowWrapper>Width {value}</TableRowWrapper>,
-  length: ({ value }) => <TableRowWrapper>Length {value}</TableRowWrapper>,
-  height: ({ value }) => <TableRowWrapper>Height {value}</TableRowWrapper>,
-  mainboard_support: ({ value }) => (
-    <TableRowWrapper>Mainboard Support {value.join(", ")}</TableRowWrapper>
-  ),
-  expansion_slot: ({ value }) => (
-    <TableRowWrapper>Expansion Slot {value}</TableRowWrapper>
-  ),
-  max_cooler_height: ({ value }) => (
-    <TableRowWrapper>Max Cooler Support {value}</TableRowWrapper>
-  ),
+  form_factor: ({ value }) => value,
+  width: ({ value }) => value,
+  length: ({ value }) => value,
+  height: ({ value }) => value,
+  mainboard_support: ({ value }) => value.join(", "),
+  expansion_slot: ({ value }) => value,
+  max_cooler_height: ({ value }) => value,
   radiator_support: ({ value }) => (
     <CaseSideTableRow label={"Radiator Support"} defaultValue={value} />
   ),
@@ -29,20 +21,12 @@ const Components: {
   hard_drive_support: ({ value }) => (
     <CaseSideTableRow label={"Hard Drive Support"} defaultValue={value} />
   ),
-  psu_support: ({ value }) => (
-    <TableRowWrapper>PSU Support {value.join(", ")}</TableRowWrapper>
-  ),
-  max_psu_length: ({ value }) => (
-    <TableRowWrapper>Max PSU Length {value}</TableRowWrapper>
-  ),
-  front_panel_ports: ({ value }) => (
-    <TableRowWrapper>
-      Front Panel Ports
-      {Object.entries(value)
-        .map(([key, count]) => `${count} * ${key}`)
-        .join(", ")}
-    </TableRowWrapper>
-  ),
+  psu_support: ({ value }) => value.join(", "),
+  max_psu_length: ({ value }) => value,
+  front_panel_ports: ({ value }) =>
+    Object.entries(value)
+      .map(([key, count]) => `${count} * ${key}`)
+      .join(", "),
 };
 
 export function CaseSideTableRow({
@@ -54,21 +38,26 @@ export function CaseSideTableRow({
 }) {
   if (!defaultValue) return undefined;
 
-  return Object.entries(defaultValue).map(([key, value], index, arr) => {
-    const tableValues = Array.isArray({ value })
-      ? value.join(", ")
-      : Object.entries(value)
-          .map(([key, value]) => `${value} * ${key}`)
-          .join(", ");
+  return (
+    <table className="w-full">
+      <tbody>
+        {Object.entries(defaultValue).map(([key, value], index, arr) => {
+          const tableValues = Array.isArray({ value })
+            ? value.join(", ")
+            : Object.entries(value)
+                .map(([key, value]) => `${value} * ${key}`)
+                .join(", ");
 
-    return (
-      <Table.Row key={new Date().getTime() + index}>
-        {index === 0 && <Table.Cell rowSpan={arr.length}>{label}</Table.Cell>}
-        <Table.Cell className="font-bold">{key}</Table.Cell>
-        <Table.Cell>{tableValues}</Table.Cell>
-      </Table.Row>
-    );
-  });
+          return (
+            <Table.Row key={new Date().getTime() + index}>
+              <Table.Cell className="font-bold">{key}</Table.Cell>
+              <Table.Cell>{tableValues}</Table.Cell>
+            </Table.Row>
+          );
+        })}
+      </tbody>
+    </table>
+  );
 }
 
-export default GenericTable(Components);
+export default GenericTable(Components, Case.Label);

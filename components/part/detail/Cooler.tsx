@@ -1,17 +1,15 @@
-import { TableRowWrapper, GenericTable } from "../TableWrapper";
+import { GenericTable } from "../TableWrapper";
 import Cooler from "@/utils/interface/part/Cooler";
 import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof Cooler.Info]: FunctionComponent<{ value: Cooler.Info[key] }>;
 } = {
-  socket: ({ value }) => <TableRowWrapper>Socket {value}</TableRowWrapper>,
-  cpu_plate: ({ value }) => (
-    <TableRowWrapper>CPU Plate {value}</TableRowWrapper>
-  ),
-  width: ({ value }) => <TableRowWrapper>Width {value}</TableRowWrapper>,
-  length: ({ value }) => <TableRowWrapper>Length {value}</TableRowWrapper>,
-  height: ({ value }) => <TableRowWrapper>Height {value}</TableRowWrapper>,
+  socket: ({ value }) => value,
+  cpu_plate: ({ value }) => value,
+  width: ({ value }) => value,
+  length: ({ value }) => value,
+  height: ({ value }) => value,
 };
 
-export default GenericTable(Components);
+export default GenericTable(Components, Cooler.Label);

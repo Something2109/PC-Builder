@@ -1,38 +1,20 @@
-import { TableRowWrapper, GenericTable } from "../TableWrapper";
+import { GenericTable } from "../TableWrapper";
 import AIO from "@/utils/interface/part/AIO";
 import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof AIO.Info]: FunctionComponent<{ value: AIO.Info[key] }>;
 } = {
-  form_factor: ({ value }) => (
-    <TableRowWrapper>Form Factor {value}</TableRowWrapper>
-  ),
-  socket: ({ value }) => <TableRowWrapper>Socket {value}</TableRowWrapper>,
-  cpu_plate: ({ value }) => (
-    <TableRowWrapper>CPU Plate {value}</TableRowWrapper>
-  ),
-  radiator_width: ({ value }) => (
-    <TableRowWrapper>Radiator Width {value}</TableRowWrapper>
-  ),
-  radiator_length: ({ value }) => (
-    <TableRowWrapper>Radiator Length {value}</TableRowWrapper>
-  ),
-  radiator_height: ({ value }) => (
-    <TableRowWrapper>Radiator Height {value}</TableRowWrapper>
-  ),
-  pump_width: ({ value }) => (
-    <TableRowWrapper>Pump Width {value}</TableRowWrapper>
-  ),
-  pump_length: ({ value }) => (
-    <TableRowWrapper>Pump Length {value}</TableRowWrapper>
-  ),
-  pump_height: ({ value }) => (
-    <TableRowWrapper>Pump Height {value}</TableRowWrapper>
-  ),
-  pump_speed: ({ value }) => (
-    <TableRowWrapper>Pump Speed {value}</TableRowWrapper>
-  ),
+  form_factor: ({ value }) => value,
+  socket: ({ value }) => value,
+  cpu_plate: ({ value }) => value,
+  radiator_width: ({ value }) => value,
+  radiator_length: ({ value }) => value,
+  radiator_height: ({ value }) => value,
+  pump_width: ({ value }) => value,
+  pump_length: ({ value }) => value,
+  pump_height: ({ value }) => value,
+  pump_speed: ({ value }) => value,
 };
 
-export default GenericTable(Components);
+export default GenericTable(Components, AIO.Label);

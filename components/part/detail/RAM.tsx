@@ -1,25 +1,17 @@
 import RAM from "@/utils/interface/part/RAM";
 import { FunctionComponent } from "react";
-import { TableRowWrapper, GenericTable } from "../TableWrapper";
+import { GenericTable } from "../TableWrapper";
 
 const Components: {
   [key in keyof RAM.Info]: FunctionComponent<{ value: RAM.Info[key] }>;
 } = {
-  speed: ({ value }) => <TableRowWrapper>Speed {value}</TableRowWrapper>,
-  capacity: ({ value }) => <TableRowWrapper>Capacity {value}</TableRowWrapper>,
-  voltage: ({ value }) => <TableRowWrapper>Voltage {value}</TableRowWrapper>,
-  latency: ({ value }) => (
-    <TableRowWrapper>
-      Latency {value.map((val) => val.toString()).join(" - ")}
-    </TableRowWrapper>
-  ),
-  kit: ({ value }) => <TableRowWrapper>RAM Kit {value}</TableRowWrapper>,
-  form_factor: ({ value }) => (
-    <TableRowWrapper>Form Factor {value}</TableRowWrapper>
-  ),
-  interface: ({ value }) => (
-    <TableRowWrapper>Interface {value}</TableRowWrapper>
-  ),
+  speed: ({ value }) => value,
+  capacity: ({ value }) => value,
+  voltage: ({ value }) => value,
+  latency: ({ value }) => value.map((val) => val.toString()).join(" - "),
+  kit: ({ value }) => value,
+  form_factor: ({ value }) => value,
+  interface: ({ value }) => value,
 };
 
-export default GenericTable(Components);
+export default GenericTable(Components, RAM.Label);
