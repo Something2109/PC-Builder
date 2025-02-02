@@ -7,6 +7,7 @@ import {
   TdHTMLAttributes,
 } from "react";
 import { ChoiceInput, Input, Select } from "../utils/Input";
+import { RowWrapper } from "../utils/FlexWrapper";
 
 export namespace Table {
   const tableRow = "border-b-2 last:border-b-0 *:rounded-sm *:p-2";
@@ -30,6 +31,32 @@ export namespace Table {
       className={className ? className.concat(" ", tableCell) : tableCell}
       {...attr}
     />
+  );
+}
+
+export function GenericSummaryCells<T extends Record<string, any>>(
+  Components: {
+    [key in keyof T]: FunctionComponent<{ value: T[key] | undefined }>;
+  },
+  Labels: {
+    [key in string]: string;
+  }
+) {
+  return ({ defaultValue }: { defaultValue?: Partial<T> }) => (
+    <>
+      {Object.entries(Components).map(([key, Component], index) => {
+        const value = defaultValue ? defaultValue[key] : undefined;
+
+        return (
+          <td key={new Date().getTime() + index}>
+            <RowWrapper>
+              <p className="lg:hidden">{Labels[key]}:</p>
+            </RowWrapper>
+            <Component value={value} />
+          </td>
+        );
+      })}
+    </>
   );
 }
 
