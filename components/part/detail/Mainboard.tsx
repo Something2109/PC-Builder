@@ -54,21 +54,23 @@ function PCIeTableRow({ defaultValue }: { defaultValue?: Mainboard.PCIe }) {
 
   return (
     <table className="w-full">
-      {Object.entries(PCIeControllerName).map(([key, label], index, arr) => {
-        const value = defaultValue[key as InternalConnectors.PCIe.Controller];
-        if (!value) return undefined;
+      <tbody>
+        {Object.entries(PCIeControllerName).map(([key, label], index, arr) => {
+          const value = defaultValue[key as InternalConnectors.PCIe.Controller];
+          if (!value) return undefined;
 
-        const tableValues = Object.entries(value)
-          .map(([key, value]) => `${value} * ${key}`)
-          .join(", ");
+          const tableValues = Object.entries(value)
+            .map(([key, value]) => `${value} * ${key}`)
+            .join(", ");
 
-        return (
-          <Table.Row key={new Date().getTime() + index}>
-            <Table.Cell className="font-bold">{label}</Table.Cell>
-            <Table.Cell>{tableValues}</Table.Cell>
-          </Table.Row>
-        );
-      })}
+          return (
+            <Table.Row key={new Date().getTime() + index}>
+              <Table.Cell className="font-bold">{label}</Table.Cell>
+              <Table.Cell>{tableValues}</Table.Cell>
+            </Table.Row>
+          );
+        })}
+      </tbody>
     </table>
   );
 }
