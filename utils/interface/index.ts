@@ -118,10 +118,32 @@ export const FilterOptions = z
 export type FilterOptions = z.infer<typeof FilterOptions>;
 
 /**
+ * The summary attribute list of the information.
+ * Contains the attributes that are considered as the notable attributes of each {@link Info} type.
+ */
+export const SummaryAttributes: Record<Info, string[]> = {
+  [Info.CPU]: CPU.SummaryAttributes,
+  [Info.GPU]: GPU.SummaryAttributes,
+  [Info.GRAPHIC_CARD]: GraphicCard.SummaryAttributes,
+  [Info.MAIN]: Mainboard.SummaryAttributes,
+  [Info.RAM]: RAM.SummaryAttributes,
+  [Info.SSD]: SSD.SummaryAttributes,
+  [Info.HDD]: HDD.SummaryAttributes,
+  [Info.PSU]: PSU.SummaryAttributes,
+  [Info.CASE]: Case.SummaryAttributes,
+  [Info.FAN]: Fan.SummaryAttributes,
+  [Info.COOLER]: Cooler.SummaryAttributes,
+  [Info.AIO]: AIO.SummaryAttributes,
+  [Info.CPU_BLOCK]: CPUBlock.SummaryAttributes,
+  [Info.PUMP]: Pump.SummaryAttributes,
+  [Info.RADIATOR]: Radiator.SummaryAttributes,
+};
+
+/**
  * The filter attribute list of the information.
  * Contains the attributes that can be used as filter in each {@link Info} type.
  */
-export const FilterAttributes = {
+export const FilterAttributes: Record<Info, string[]> = {
   [Info.CPU]: CPU.FilterAttributes,
   [Info.GPU]: GPU.FilterAttributes,
   [Info.GRAPHIC_CARD]: GraphicCard.FilterAttributes,
