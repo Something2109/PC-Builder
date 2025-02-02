@@ -44,7 +44,7 @@ export function TableLoader({
         } ${part.toLocaleUpperCase()}`}</h1>
         <RedirectButton href={`/part/${part}/new`}>New</RedirectButton>
       </RowWrapper>
-      <PartTable data={data.list} className="w-full" />
+      <PartTable part={part} data={data.list} className="w-full" />
       <PaginationBar
         path={setPage}
         current={page}

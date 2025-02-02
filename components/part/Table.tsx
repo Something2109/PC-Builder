@@ -1,83 +1,95 @@
-import PartPicture from "./Picture";
-import { RowWrapper } from "@/components/utils/FlexWrapper";
-import { SummaryInfo } from "@/utils/interface";
+import {
+  AttributeLabels,
+  ProductInfo,
+  SummaryAttributes,
+  SummaryInfo,
+} from "@/utils/interface";
 import { Products, Info } from "@/utils/Enum";
 import { lazy, TableHTMLAttributes } from "react";
+import { PartSummaryCells } from "./summary/Part";
+import Part from "@/utils/interface/part/Parts";
 
 const table = "border-separate border-spacing-0";
 const tableHeader =
   "font-bold sticky top-32 bg-white dark:bg-background transition-colors ease-in-out duration-500 delay-0";
 const tableRow = "*:p-2 lg:table-row *:lg:border-b-2 ";
-const label = "lg:hidden";
 
 export default function PartTable({
   data,
   className,
+  part,
   ...rest
-}: { data: SummaryInfo[] } & TableHTMLAttributes<HTMLTableElement>) {
-  let keys: { [key in Products]?: string[] } = {};
-  const { id, part, name, brand, series, image_url, ...detail } = data[0];
-  Object.entries(detail).forEach(
-    ([key, value]) => (keys[key as Products] = Object.keys(value ?? {}))
-  );
-
+}: {
+  data: SummaryInfo[];
+  part: Products;
+} & TableHTMLAttributes<HTMLTableElement>) {
   return (
     <table className={className?.concat(" ", table) ?? table} {...rest}>
-      <thead className={tableHeader}>
-        <tr className={`hidden ${tableRow}`}>
-          <td>Name</td>
-          <td>Brand</td>
-          <td>Series</td>
-          {Object.values(keys).map((attrs: string[]) =>
-            attrs.map((attr) => <td key={`table-header-${attr}`}>{attr}</td>)
-          )}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map(({ id, part, name, brand, series, image_url, ...detail }) => (
-          <tr
-            key={id}
-            className={`grid grid-cols-2 border-b-2 ${tableRow} hover:rounded-lg hover:bg-line hover:dark:text-background`}
-          >
-            <td className="col-span-2">
-              <a href={`/part/${part}/${id}`}>
-                <RowWrapper className="align-middle items-center font-bold">
-                  <PartPicture
-                    part={{ image_url, part, name }}
-                    className="h-16 m-2"
-                  />
-                  {name}
-                </RowWrapper>
-              </a>
-            </td>
-            <td>
-              <RowWrapper>
-                <p className={label}>Brand:</p>
-                {brand}
-              </RowWrapper>
-            </td>
-            <td>
-              <RowWrapper>
-                <p className={label}>Series:</p>
-                {series}
-              </RowWrapper>
-            </td>
-            {Object.entries(keys).map(([key, attrs]) =>
-              attrs.map((attr) => (
-                <td key={`table-body-${id}-${key}-${attr}`}>
-                  <RowWrapper>
-                    <p className={label}>{`${attr}:`}</p>
-                    {(detail[key as Products] as Record<string, any>)[attr]}
-                  </RowWrapper>
-                </td>
-              ))
-            )}
-          </tr>
-        ))}
-      </tbody>
+      <TableHead part={part} />
+      <TableBody data={data} part={part} />
     </table>
   );
 }
+
+const TableHead = ({ part }: { part: Products }) => (
+  <thead className={tableHeader}>
+    <tr className={`hidden ${tableRow}`}>
+      <td>{Part.Label.name}</td>
+      <td>{Part.Label.brand}</td>
+      <td>{Part.Label.series}</td>
+      {ProductInfo[part].map((info: Info) => (
+        <>
+          {SummaryAttributes[info].map((attr) => (
+            <td key={`Header-${attr}`}>{AttributeLabels[info][attr]}</td>
+          ))}
+        </>
+      ))}
+    </tr>
+  </thead>
+);
+
+const TableBody = ({ data, part }: { data: SummaryInfo[]; part: Products }) => (
+  <tbody>
+    {data.map((product) => (
+      <tr
+        key={product.id}
+        className={`grid grid-cols-2 border-b-2 ${tableRow} hover:rounded-lg hover:bg-line hover:dark:text-background`}
+      >
+        <PartSummaryCells defaultValue={product} />
+        {ProductInfo[part].map((info) => {
+          const Component = SummaryInfoComponent[info];
+
+          return (
+            <Component
+              key={`${product.id}-${info}`}
+              defaultValue={product[info]}
+            />
+          );
+        })}
+      </tr>
+    ))}
+  </tbody>
+);
+
+export const SummaryInfoComponent = {
+  [Info.CPU]: lazy(() => import("@/components/part/summary/CPU")),
+  [Info.GPU]: lazy(() => import("@/components/part/summary/GPU")),
+  [Info.GRAPHIC_CARD]: lazy(
+    () => import("@/components/part/summary/GraphicCard")
+  ),
+  [Info.MAIN]: lazy(() => import("@/components/part/summary/Mainboard")),
+  [Info.RAM]: lazy(() => import("@/components/part/summary/RAM")),
+  [Info.HDD]: lazy(() => import("@/components/part/summary/HDD")),
+  [Info.PSU]: lazy(() => import("@/components/part/summary/PSU")),
+  [Info.CASE]: lazy(() => import("@/components/part/summary/Case")),
+  [Info.COOLER]: lazy(() => import("@/components/part/summary/Cooler")),
+  [Info.AIO]: lazy(() => import("@/components/part/summary/AIO")),
+  [Info.FAN]: lazy(() => import("@/components/part/summary/Fan")),
+  [Info.SSD]: lazy(() => import("@/components/part/summary/SSD")),
+  [Info.CPU_BLOCK]: lazy(() => import("@/components/part/summary/CPUBlock")),
+  [Info.PUMP]: lazy(() => import("@/components/part/summary/Pump")),
+  [Info.RADIATOR]: lazy(() => import("@/components/part/summary/Radiator")),
+};
 
 export const DetailTableComponent = {
   [Info.CPU]: lazy(() => import("@/components/part/detail/CPU")),
