@@ -1,65 +1,46 @@
-import { InputRow, SelectInputRow, GenericTable } from "../TableWrapper";
+import { GenericInputTable } from "../TableWrapper";
+import { Input, OptionSelect } from "@/components/utils/Input";
 import SSD from "@/utils/interface/part/SSD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 
 const Components: {
-  [key in keyof SSD.Info]: FunctionComponent<{ value: SSD.Info[key] }>;
+  [key in keyof SSD.Info]: FunctionComponent<{ value?: SSD.Info[key] }>;
 } = {
   memory_type: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="memory_type"
-      label="Memory Type"
       options={SSD.MemoryCell.options}
       defaultValue={value}
     />
   ),
   read_speed: ({ value }) => (
-    <InputRow
-      type="number"
-      name="read_speed"
-      label="Read Speed"
-      defaultValue={value}
-    />
+    <Input type="number" name="read_speed" defaultValue={value} />
   ),
   write_speed: ({ value }) => (
-    <InputRow
-      type="number"
-      name="write_speed"
-      label="Write Speed"
-      defaultValue={value}
-    />
+    <Input type="number" name="write_speed" defaultValue={value} />
   ),
   capacity: ({ value }) => (
-    <InputRow
-      type="number"
-      name="capacity"
-      label="Capacity"
-      defaultValue={value}
-    />
+    <Input type="number" name="capacity" defaultValue={value} />
   ),
   cache: ({ value }) => (
-    <InputRow type="number" name="cache" label="Cache" defaultValue={value} />
+    <Input type="number" name="cache" defaultValue={value} />
   ),
-  tbw: ({ value }) => (
-    <InputRow type="number" name="tbw" label="TBW" defaultValue={value} />
-  ),
+  tbw: ({ value }) => <Input type="number" name="tbw" defaultValue={value} />,
   form_factor: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="form_factor"
-      label="Form Factor"
       options={FormFactor.SSD.options}
       defaultValue={value}
     />
   ),
   interface: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="interface"
-      label="Interface"
       options={InternalConnectors.Storage.SSD.options}
       defaultValue={value}
     />
   ),
 };
 
-export default GenericTable(Components);
+export default GenericInputTable(Components, SSD.Label);

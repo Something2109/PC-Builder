@@ -1,50 +1,37 @@
-import { InputRow, SelectInputRow, GenericTable } from "../TableWrapper";
+import { GenericInputTable } from "../TableWrapper";
+import { Input, OptionSelect } from "@/components/utils/Input";
 import RAM from "@/utils/interface/part/RAM";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 
 const Components: {
-  [key in keyof RAM.Info]: FunctionComponent<{ value: RAM.Info[key] }>;
+  [key in keyof RAM.Info]: FunctionComponent<{ value?: RAM.Info[key] }>;
 } = {
   speed: ({ value }) => (
-    <InputRow type="number" name="speed" label="Speed" defaultValue={value} />
+    <Input type="number" name="speed" defaultValue={value} />
   ),
   capacity: ({ value }) => (
-    <InputRow
-      type="number"
-      name="capacity"
-      label="Capacity"
-      defaultValue={value}
-    />
+    <Input type="number" name="capacity" defaultValue={value} />
   ),
   voltage: ({ value }) => (
-    <InputRow
-      type="number"
-      name="voltage"
-      label="Voltage"
-      defaultValue={value}
-    />
+    <Input type="number" name="voltage" defaultValue={value} />
   ),
   latency: ({ value }) => <></>,
-  kit: ({ value }) => (
-    <InputRow type="number" name="kit" label="RAM Kit" defaultValue={value} />
-  ),
+  kit: ({ value }) => <Input type="number" name="kit" defaultValue={value} />,
   form_factor: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="form_factor"
-      label="Form Factor"
       options={FormFactor.RAM.options}
       defaultValue={value}
     />
   ),
   interface: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="interface"
-      label="Interface"
       options={InternalConnectors.RAM.options}
       defaultValue={value}
     />
   ),
 };
 
-export default GenericTable(Components);
+export default GenericInputTable(Components, RAM.Label);

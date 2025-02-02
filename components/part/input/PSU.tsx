@@ -1,110 +1,60 @@
-import { InputRow, SelectInputRow, GenericTable } from "../TableWrapper";
+import { GenericInputTable } from "../TableWrapper";
+import { Input, OptionSelect } from "@/components/utils/Input";
 import PSU from "@/utils/interface/part/PSU";
 import { FormFactor } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 
 const Components: {
-  [key in keyof PSU.Info]: FunctionComponent<{ value: PSU.Info[key] }>;
+  [key in keyof PSU.Info]: FunctionComponent<{ value?: PSU.Info[key] }>;
 } = {
   wattage: ({ value }) => (
-    <InputRow
-      type="number"
-      name="wattage"
-      label="Wattage"
-      defaultValue={value}
-    />
+    <Input type="number" name="wattage" defaultValue={value} />
   ),
   efficiency: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="efficiency"
-      label="Efficiency"
       options={PSU.Efficiency.options}
       defaultValue={value}
     />
   ),
   form_factor: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="form_factor"
-      label="Form Factor"
       options={FormFactor.PSU.options}
       defaultValue={value}
     />
   ),
   width: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="width"
-      label="Width"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="width" defaultValue={value} />
   ),
   length: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="length"
-      label="Length"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="length" defaultValue={value} />
   ),
   height: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="height"
-      label="Height"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="height" defaultValue={value} />
   ),
   modular: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="modular"
-      label="Modular"
       options={PSU.Modular.options}
       defaultValue={value}
     />
   ),
   atx_pin: ({ value }) => (
-    <InputRow
-      type="number"
-      name="atx_pin"
-      label="ATX Pin"
-      defaultValue={value}
-    />
+    <Input type="number" name="atx_pin" defaultValue={value} />
   ),
   cpu_pin: ({ value }) => (
-    <InputRow
-      type="number"
-      name="cpu_pin"
-      label="CPU Pin"
-      defaultValue={value}
-    />
+    <Input type="number" name="cpu_pin" defaultValue={value} />
   ),
   pcie_pin: ({ value }) => (
-    <InputRow
-      type="number"
-      name="pcie_pin"
-      label="PCIe Pin"
-      defaultValue={value}
-    />
+    <Input type="number" name="pcie_pin" defaultValue={value} />
   ),
   sata_pin: ({ value }) => (
-    <InputRow
-      type="number"
-      name="sata_pin"
-      label="SATA Pin"
-      defaultValue={value}
-    />
+    <Input type="number" name="sata_pin" defaultValue={value} />
   ),
   peripheral_pin: ({ value }) => (
-    <InputRow
-      type="number"
-      name="peripheral_pin"
-      label="Peripheral Pin"
-      defaultValue={value}
-    />
+    <Input type="number" name="peripheral_pin" defaultValue={value} />
   ),
 };
 
-export default GenericTable(Components);
+export default GenericInputTable(Components, PSU.Label);

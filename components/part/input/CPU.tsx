@@ -1,95 +1,43 @@
-import { InputRow, GenericTable } from "../TableWrapper";
+import { GenericInputTable } from "../TableWrapper";
+import { Input } from "@/components/utils/Input";
 import CPU from "@/utils/interface/part/CPU";
 import { FunctionComponent } from "react";
 
 export const Components: {
-  [key in keyof CPU.Info]: FunctionComponent<{ value: CPU.Info[key] }>;
+  [key in keyof CPU.Info]: FunctionComponent<{ value?: CPU.Info[key] }>;
 } = {
-  family: ({ value }) => (
-    <InputRow name="family" label="Family" defaultValue={value} />
-  ),
-  socket: ({ value }) => (
-    <InputRow name="socket" label="Socket" defaultValue={value} />
-  ),
+  family: ({ value }) => <Input name="family" defaultValue={value} />,
+  socket: ({ value }) => <Input name="socket" defaultValue={value} />,
   total_cores: ({ value }) => (
-    <InputRow
-      type="number"
-      name="total_cores"
-      label="Total Cores"
-      defaultValue={value}
-    />
+    <Input type="number" name="total_cores" defaultValue={value} />
   ),
   total_threads: ({ value }) => (
-    <InputRow
-      type="number"
-      name="total_threads"
-      label="Total Threads"
-      defaultValue={value}
-    />
+    <Input type="number" name="total_threads" defaultValue={value} />
   ),
   base_frequency: ({ value }) => (
-    <InputRow
-      type="number"
-      name="base_frequency"
-      label="Base Frequency"
-      defaultValue={value}
-    />
+    <Input type="number" name="base_frequency" defaultValue={value} />
   ),
   turbo_frequency: ({ value }) => (
-    <InputRow
-      type="number"
-      name="turbo_frequency"
-      label="Turbo Frequency"
-      defaultValue={value}
-    />
+    <Input type="number" name="turbo_frequency" defaultValue={value} />
   ),
   cores: ({ value }) => <></>,
   L2_cache: ({ value }) => (
-    <InputRow
-      type="number"
-      name="L2_cache"
-      label="L2 Cache"
-      defaultValue={value}
-    />
+    <Input type="number" name="L2_cache" defaultValue={value} />
   ),
   L3_cache: ({ value }) => (
-    <InputRow
-      type="number"
-      name="L3_cache"
-      label="L3 Cache"
-      defaultValue={value}
-    />
+    <Input type="number" name="L3_cache" defaultValue={value} />
   ),
   max_memory: ({ value }) => (
-    <InputRow
-      type="number"
-      name="max_memory"
-      label="Max Memory Support"
-      defaultValue={value}
-    />
+    <Input type="number" name="max_memory" defaultValue={value} />
   ),
   max_memory_channel: ({ value }) => (
-    <InputRow
-      type="number"
-      name="max_memory_channel"
-      label="Max Memory Channel Support"
-      defaultValue={value}
-    />
+    <Input type="number" name="max_memory_channel" defaultValue={value} />
   ),
   max_memory_bandwidth: ({ value }) => (
-    <InputRow
-      type="number"
-      name="max_memory_bandwidth"
-      label="Max Memory Bandwidth"
-      defaultValue={value}
-    />
+    <Input type="number" name="max_memory_bandwidth" defaultValue={value} />
   ),
-  tdp: ({ value }) => (
-    <InputRow type="number" name="tdp" label="TDP" defaultValue={value} />
-  ),
-  lithography: ({ value }) => (
-    <InputRow name="lithography" label="Lithography" defaultValue={value} />
-  ),
+  tdp: ({ value }) => <Input type="number" name="tdp" defaultValue={value} />,
+  lithography: ({ value }) => <Input name="lithography" defaultValue={value} />,
 };
 
-export default GenericTable(Components);
+export default GenericInputTable(Components, CPU.Label);

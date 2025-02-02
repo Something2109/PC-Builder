@@ -1,93 +1,63 @@
-import { GenericTable, InputRow, SelectInputRow } from "../TableWrapper";
+import { GenericInputTable } from "../TableWrapper";
+import { Input, OptionSelect } from "@/components/utils/Input";
 import AIO from "@/utils/interface/part/AIO";
 import { FormFactor, Material } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 
 const Components: {
-  [key in keyof AIO.Info]: FunctionComponent<{ value: AIO.Info[key] }>;
+  [key in keyof AIO.Info]: FunctionComponent<{ value?: AIO.Info[key] }>;
 } = {
   form_factor: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="form_factor"
-      label="Form Factor"
       options={FormFactor.Radiator.options}
       defaultValue={value}
     />
   ),
-  socket: ({ value }) => (
-    <InputRow name="socket" label="Socket" defaultValue={value} />
-  ),
+  socket: ({ value }) => <Input name="socket" defaultValue={value} />,
   cpu_plate: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="cpu_plate"
-      label="CPU Plate"
       options={Material.Metal.options}
       defaultValue={value}
     />
   ),
   radiator_width: ({ value }) => (
-    <InputRow
+    <Input
       type="number"
       step="0.01"
       name="radiator_width"
-      label="Radiator Width"
       defaultValue={value}
     />
   ),
   radiator_length: ({ value }) => (
-    <InputRow
+    <Input
       type="number"
       step="0.01"
       name="radiator_length"
-      label="Radiator Length"
       defaultValue={value}
     />
   ),
   radiator_height: ({ value }) => (
-    <InputRow
+    <Input
       type="number"
       step="0.01"
       name="radiator_height"
-      label="Radiator Height"
       defaultValue={value}
     />
   ),
   pump_width: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="pump_width"
-      label="Pump Width"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="pump_width" defaultValue={value} />
   ),
   pump_length: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="pump_length"
-      label="Pump Length"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="pump_length" defaultValue={value} />
   ),
   pump_height: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="pump_height"
-      label="Pump Height"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="pump_height" defaultValue={value} />
   ),
   pump_speed: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="pump_speed"
-      label="Pump Speed"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="pump_speed" defaultValue={value} />
   ),
 };
 
-export default GenericTable(Components);
+export default GenericInputTable(Components, AIO.Label);

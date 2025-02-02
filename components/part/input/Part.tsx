@@ -1,6 +1,6 @@
 "use client";
 
-import { TableWrapper, InputRow } from "../TableWrapper";
+import { TableWrapper, TableRowWrapper } from "../TableWrapper";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
@@ -30,39 +30,55 @@ export default function PartFieldset({
           defaultValue={defaultValue?.name}
           required
         />
-        <TableWrapper {...rest}>
-          <InputRow
-            name="code_name"
-            label="Code Name"
-            defaultValue={code_name}
-            required
-          />
-          <InputRow
-            name="brand"
-            label="Brand"
-            defaultValue={brand}
-            options={["Intel", "AMD"]}
-            required
-          />
-          <InputRow
-            name="series"
-            label="Series"
-            defaultValue={series}
-            required
-          />
-          <InputRow
-            type="date"
-            name="launch_date"
-            label="Launch Date"
-            defaultValue={launch_date.toISOString().slice(0, 10)}
-            required
-          />
-          <InputRow
-            name="url"
-            label="Brand URL"
-            defaultValue={url ?? undefined}
-            required
-          />
+        <TableWrapper>
+          <TableRowWrapper>
+            <label htmlFor="code_name">{Part.Label.code_name}</label>
+            <Input
+              name="code_name"
+              id="code_name"
+              placeholder={Part.Label.code_name}
+              defaultValue={code_name}
+            />
+          </TableRowWrapper>
+          <TableRowWrapper>
+            <label htmlFor="brand">{Part.Label.brand}</label>
+            <Input
+              name="brand"
+              id="brand"
+              placeholder={Part.Label.brand}
+              defaultValue={brand}
+            />
+          </TableRowWrapper>
+          <TableRowWrapper>
+            <label htmlFor="series">{Part.Label.series}</label>
+            <Input
+              name="series"
+              id="series"
+              placeholder={Part.Label.series}
+              defaultValue={series}
+            />
+          </TableRowWrapper>
+          <TableRowWrapper>
+            <label htmlFor="launch_date">{Part.Label.launch_date}</label>
+            <Input
+              type="date"
+              name="launch_date"
+              id="launch_date"
+              placeholder={Part.Label.launch_date}
+              defaultValue={launch_date.toISOString().slice(0, 10)}
+            />
+          </TableRowWrapper>
+          <TableRowWrapper>
+            <label htmlFor="url">{Part.Label.url}</label>
+            <Input
+              type="url"
+              name="url"
+              id="url"
+              placeholder={Part.Label.url}
+              defaultValue={url ?? undefined}
+              required
+            />
+          </TableRowWrapper>
         </TableWrapper>
       </ColumnWrapper>
     </ResponsiveWrapper>

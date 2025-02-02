@@ -1,69 +1,34 @@
-import { InputRow, GenericTable } from "../TableWrapper";
+import { GenericTable } from "../TableWrapper";
+import { Input } from "@/components/utils/Input";
 import GPU from "@/utils/interface/part/GPU";
 import { FunctionComponent } from "react";
 
 const Components: {
-  [key in keyof GPU.Info]: FunctionComponent<{ value: GPU.Info[key] }>;
+  [key in keyof GPU.Info]: FunctionComponent<{ value?: GPU.Info[key] }>;
 } = {
-  family: ({ value }) => (
-    <InputRow name="family" label="Family" defaultValue={value} />
-  ),
+  family: ({ value }) => <Input name="family" defaultValue={value} />,
   core_count: ({ value }) => (
-    <InputRow
-      type="number"
-      name="core_count"
-      label="Core Count"
-      defaultValue={value}
-    />
+    <Input type="number" name="core_count" defaultValue={value} />
   ),
   execution_unit: ({ value }) => (
-    <InputRow
-      type="number"
-      name="execution_unit"
-      label="Execution Unit"
-      defaultValue={value}
-    />
+    <Input type="number" name="execution_unit" defaultValue={value} />
   ),
   base_frequency: ({ value }) => (
-    <InputRow
-      type="number"
-      name="base_frequency"
-      label="Base Frequency"
-      defaultValue={value}
-    />
+    <Input type="number" name="base_frequency" defaultValue={value} />
   ),
   boost_frequency: ({ value }) => (
-    <InputRow
-      type="number"
-      name="boost_frequency"
-      label="Boost Frequency"
-      defaultValue={value}
-    />
+    <Input type="number" name="boost_frequency" defaultValue={value} />
   ),
   extra_cores: ({ value }) => <></>,
   memory_size: ({ value }) => (
-    <InputRow
-      type="number"
-      name="memory_size"
-      label="Memory Size"
-      defaultValue={value}
-    />
+    <Input type="number" name="memory_size" defaultValue={value} />
   ),
-  memory_type: ({ value }) => (
-    <InputRow name="memory_type" label="Memory Type" defaultValue={value} />
-  ),
+  memory_type: ({ value }) => <Input name="memory_type" defaultValue={value} />,
   memory_bus: ({ value }) => (
-    <InputRow
-      type="number"
-      name="memory_bus"
-      label="Memory Bus"
-      defaultValue={value}
-    />
+    <Input type="number" name="memory_bus" defaultValue={value} />
   ),
-  tdp: ({ value }) => (
-    <InputRow type="number" name="tdp" label="TDP" defaultValue={value} />
-  ),
+  tdp: ({ value }) => <Input type="number" name="tdp" defaultValue={value} />,
   features: ({ value }) => <></>,
 };
 
-export default GenericTable(Components);
+export default GenericTable(Components, GPU.Label);

@@ -1,49 +1,29 @@
-import { InputRow, SelectInputRow, GenericTable } from "../TableWrapper";
+import { GenericInputTable } from "../TableWrapper";
+import { Input, OptionSelect, Select } from "@/components/utils/Input";
 import Cooler from "@/utils/interface/part/Cooler";
 import { Material } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 
 const Components: {
-  [key in keyof Cooler.Info]: FunctionComponent<{ value: Cooler.Info[key] }>;
+  [key in keyof Cooler.Info]: FunctionComponent<{ value?: Cooler.Info[key] }>;
 } = {
-  socket: ({ value }) => (
-    <InputRow name="socket" label="Socket" defaultValue={value} />
-  ),
+  socket: ({ value }) => <Input name="socket" defaultValue={value} />,
   cpu_plate: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="cpu_plate"
-      label="CPU Plate"
       options={Material.Metal.options}
       defaultValue={value}
     />
   ),
   width: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="width"
-      label="Width"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="width" defaultValue={value} />
   ),
   length: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="length"
-      label="Length"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="length" defaultValue={value} />
   ),
   height: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="height"
-      label="Height"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="height" defaultValue={value} />
   ),
 };
 
-export default GenericTable(Components);
+export default GenericInputTable(Components, Cooler.Label);

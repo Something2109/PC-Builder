@@ -1,102 +1,61 @@
+import { GenericInputTable } from "../TableWrapper";
+import { Input, OptionSelect } from "@/components/utils/Input";
 import Pump from "@/utils/interface/part/Pump";
-import { InputRow, SelectInputRow, GenericTable } from "../TableWrapper";
-import { FunctionComponent } from "react";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import { FunctionComponent } from "react";
 
 const Components: {
-  [key in keyof Pump.Info]: FunctionComponent<{ value: Pump.Info[key] }>;
+  [key in keyof Pump.Info]: FunctionComponent<{ value?: Pump.Info[key] }>;
 } = {
   form_factor: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="form_factor"
-      label="Form Factor"
       options={FormFactor.Pump.options}
       defaultValue={value}
     />
   ),
   width: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="width"
-      label="Width"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="width" defaultValue={value} />
   ),
   length: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="length"
-      label="Length"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="length" defaultValue={value} />
   ),
   height: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="height"
-      label="Height"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="height" defaultValue={value} />
   ),
   voltage: ({ value }) => (
-    <InputRow
-      type="number"
-      name="voltage"
-      label="Voltage"
-      defaultValue={value}
-    />
+    <Input type="number" name="voltage" defaultValue={value} />
   ),
   wattage: ({ value }) => (
-    <InputRow
-      type="number"
-      name="wattage"
-      label="Wattage"
-      defaultValue={value}
-    />
+    <Input type="number" name="wattage" defaultValue={value} />
   ),
   head_pressure: ({ value }) => (
-    <InputRow
-      type="number"
-      name="head_pressure"
-      label="Head Pressure"
-      defaultValue={value}
-    />
+    <Input type="number" name="head_pressure" defaultValue={value} />
   ),
   flow_rate: ({ value }) => (
-    <InputRow
-      type="number"
-      name="flow_rate"
-      label="Flow Rate"
-      defaultValue={value}
-    />
+    <Input type="number" name="flow_rate" defaultValue={value} />
   ),
   power_connector: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="power_connector"
-      label="Power Connector"
       options={InternalConnectors.Power.Miscellanous.options}
       defaultValue={value}
     />
   ),
   control_connector: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="control_connector"
-      label="Control Connector"
       options={InternalConnectors.Fan.Connector.options}
       defaultValue={value}
     />
   ),
   rgb: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="rgb"
-      label="RGB"
       options={InternalConnectors.RGB.options}
       defaultValue={value}
     />
   ),
 };
 
-export default GenericTable(Components);
+export default GenericInputTable(Components, Pump.Label);

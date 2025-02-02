@@ -1,103 +1,67 @@
-import { InputRow, SelectInputRow, GenericTable } from "../TableWrapper";
+import { GenericInputTable } from "../TableWrapper";
+import { Input, OptionSelect } from "@/components/utils/Input";
 import Fan from "@/utils/interface/part/Fan";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 
 const Components: {
-  [key in keyof Fan.Info]: FunctionComponent<{ value: Fan.Info[key] }>;
+  [key in keyof Fan.Info]: FunctionComponent<{ value?: Fan.Info[key] }>;
 } = {
   form_factor: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="form_factor"
-      label="Form Factor"
       options={FormFactor.Fan.options}
       defaultValue={value}
     />
   ),
   width: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="width"
-      label="Width"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="width" defaultValue={value} />
   ),
   length: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="length"
-      label="Length"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="length" defaultValue={value} />
   ),
   height: ({ value }) => (
-    <InputRow
-      type="number"
-      step="0.01"
-      name="height"
-      label="Height"
-      defaultValue={value}
-    />
+    <Input type="number" step="0.01" name="height" defaultValue={value} />
   ),
   count: ({ value }) => (
-    <InputRow type="number" name="count" label="Count" defaultValue={value} />
+    <Input type="number" name="count" defaultValue={value} />
   ),
   voltage: ({ value }) => (
-    <InputRow
-      type="number"
-      name="voltage"
-      label="Voltage"
-      defaultValue={value}
-    />
+    <Input type="number" name="voltage" defaultValue={value} />
   ),
   speed: ({ value }) => (
-    <InputRow type="number" name="speed" label="Speed" defaultValue={value} />
+    <Input type="number" name="speed" defaultValue={value} />
   ),
   airflow: ({ value }) => (
-    <InputRow
-      type="number"
-      name="airflow"
-      label="Airflow"
-      defaultValue={value}
-    />
+    <Input type="number" name="airflow" defaultValue={value} />
   ),
   noise: ({ value }) => (
-    <InputRow type="number" name="noise" label="Noise" defaultValue={value} />
+    <Input type="number" name="noise" defaultValue={value} />
   ),
   static_pressure: ({ value }) => (
-    <InputRow
-      type="number"
-      name="static_pressure"
-      label="Static Pressure"
-      defaultValue={value}
-    />
+    <Input type="number" name="static_pressure" defaultValue={value} />
   ),
   bearing: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="bearing"
-      label="Bearing"
       options={Fan.Bearing.options}
       defaultValue={value}
     />
   ),
   connector: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="connector"
-      label="Power Connector"
       options={InternalConnectors.Fan.Connector.options}
       defaultValue={value}
     />
   ),
   rgb: ({ value }) => (
-    <SelectInputRow
+    <OptionSelect
       name="rgb"
-      label="RGB Connector"
       options={InternalConnectors.RGB.options}
       defaultValue={value}
     />
   ),
 };
 
-export default GenericTable(Components);
+export default GenericInputTable(Components, Fan.Label);
