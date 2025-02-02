@@ -82,6 +82,24 @@ export function Select({
   return <select className={classList.join(" ")} {...rest} />;
 }
 
+export function OptionSelect({
+  options,
+  ...rest
+}: { options: string[] | number[] } & SelectHTMLAttributes<HTMLSelectElement>) {
+  return (
+    <Select {...rest}>
+      {options.map((value) => (
+        <option
+          key={`${rest.name ?? new Date().getTime()}-${value}`}
+          value={value}
+        >
+          {value}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
 export function ChoiceInput({
   name,
   value,
