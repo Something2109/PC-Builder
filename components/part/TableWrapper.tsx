@@ -62,9 +62,10 @@ export function GenericSummaryCells<T extends Record<string, any>>(
 
 const tableClass = "w-full border-2";
 
-export function GenericTable<T extends Record<string, any>>(Components: {
-  [key in keyof T]: FunctionComponent<{ value: T[key] }>;
-}) {
+export function GenericTable<T extends Record<string, any>>(
+  Components: { [key in keyof T]: FunctionComponent<{ value: T[key] }> },
+  Labels: { [key in string]: string }
+) {
   return ({
     defaultValue,
     ...rest
@@ -72,12 +73,17 @@ export function GenericTable<T extends Record<string, any>>(Components: {
     defaultValue?: Partial<T>;
   } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => (
     <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key];
+      {Object.entries(Components).map(([key, Component]) => {
+        const value = defaultValue ? defaultValue[key] : undefined;
 
-        if (!value || !Component) return undefined;
+        if (!value) return undefined;
 
-        return <Component key={key} value={value as never} />;
+        return (
+          <TableRowWrapper key={key}>
+            {Labels[key]}
+            <Component value={value} />
+          </TableRowWrapper>
+        );
       })}
     </TableWrapper>
   );
