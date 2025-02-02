@@ -8,7 +8,7 @@ import { ObjectTable } from "@/components/utils/ObjectTable";
 import { Products } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 import React from "react";
-import { DetailInfo, ProductInfo } from "@/utils/interface";
+import { DetailInfo, InfoLabels, ProductInfo } from "@/utils/interface";
 
 export default async function PartDetailPage({
   params: { part, id },
@@ -36,13 +36,13 @@ export default async function PartDetailPage({
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
           {ProductInfo[part].map((info) => {
-            if (!partInfo[info]) return undefined;
-
             const Component = DetailTableComponent[info];
+
+            if (!partInfo[info] || !Component) return undefined;
 
             return (
               <>
-                <h1 className="text-4xl font-bold">{info}</h1>
+                <h1 className="text-4xl font-bold">{InfoLabels[info]}</h1>
                 <Component key={info} defaultValue={partInfo[info] as any} />
               </>
             );

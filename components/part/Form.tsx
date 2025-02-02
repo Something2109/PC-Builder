@@ -9,7 +9,7 @@ import {
 import { Info, Products } from "@/utils/Enum";
 import { useRouter } from "next/navigation";
 import { lazy, FormEvent, useState, FormHTMLAttributes } from "react";
-import { DetailInfo, ProductInfo } from "@/utils/interface";
+import { DetailInfo, InfoLabels, ProductInfo } from "@/utils/interface";
 import { ObjectTable } from "../utils/ObjectTable";
 import { NotificationBar } from "../utils/NotificationBar";
 
@@ -130,14 +130,15 @@ export default function PartForm({
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
           {ProductInfo[part].map((info) => {
-            if (!info) return undefined;
-
             const Component = InputComponent[info];
+
+            if (!Component) return undefined;
+
             const value = defaultValue ? defaultValue[info] : undefined;
 
             return (
               <>
-                <h1 className="text-4xl font-bold">{info}</h1>
+                <h1 className="text-4xl font-bold">{InfoLabels[info]}</h1>
                 <Component defaultValue={value as any} />
               </>
             );

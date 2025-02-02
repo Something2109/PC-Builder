@@ -62,7 +62,7 @@ const TableBody = ({ data, part }: { data: SummaryInfo[]; part: Products }) => (
           return (
             <Component
               key={`${product.id}-${info}`}
-              defaultValue={product[info]}
+              defaultValue={product[info] as any}
             />
           );
         })}
