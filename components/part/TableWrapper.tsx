@@ -10,8 +10,9 @@ import { ChoiceInput, Input, Select } from "../utils/Input";
 import { RowWrapper } from "../utils/FlexWrapper";
 
 export namespace Table {
-  const tableRow = "border-b-2 last:border-b-0 *:rounded-sm *:p-2";
-  const tableCell = "border-r-2 last:border-r-0 first:font-bold";
+  const tableRow = "border-b-2 last:border-b-0 *:rounded-sm";
+  const tableCell =
+    "border-r-2 last:border-r-0 first:font-bold p-2 [&:has(table)]:p-0";
 
   export const Row = ({
     className,
