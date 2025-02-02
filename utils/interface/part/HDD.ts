@@ -20,6 +20,17 @@ export namespace HDD {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    rotational_speed: "Rotational Speed",
+    read_speed: "Read Speed",
+    write_speed: "Write Speed",
+    capacity: "Capacity",
+    cache: "Cache",
+
+    form_factor: "Form Factor",
+    interface: "Interface",
+  };
+
   export const SummarySchema = Schema.pick({
     form_factor: true,
     interface: true,

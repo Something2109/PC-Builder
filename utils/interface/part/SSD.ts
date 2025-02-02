@@ -25,6 +25,18 @@ namespace SSD {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    memory_type: "Memory Cell",
+    read_speed: "Read Speed",
+    write_speed: "Write Speed",
+    capacity: "Capacity",
+    cache: "Cache",
+    tbw: "TBW",
+
+    form_factor: "Form Factor",
+    interface: "Interface",
+  };
+
   export const SummarySchema = Schema.pick({
     form_factor: true,
     interface: true,

@@ -20,6 +20,22 @@ export namespace AIO {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    form_factor: "Form Factor",
+
+    radiator_width: "Radiator Width",
+    radiator_length: "Radiator Length",
+    radiator_height: "Radiator Height",
+
+    socket: "Socket",
+    cpu_plate: "CPU Plate",
+
+    pump_width: "Pump Width",
+    pump_length: "Pump Length",
+    pump_height: "Pump Height",
+    pump_speed: "Pump Speed",
+  };
+
   export const SummarySchema = Schema.pick({
     form_factor: true,
     socket: true,

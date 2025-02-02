@@ -46,6 +46,24 @@ namespace GPU {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    family: "Family",
+
+    core_count: "Core Count",
+    execution_unit: "Execution Unit",
+    base_frequency: "Base Frequency",
+    boost_frequency: "Boost Frequency",
+    extra_cores: "Extra Cores",
+
+    memory_size: "Memory Size",
+    memory_type: "Memory Type",
+    memory_bus: "Memory Bus",
+
+    tdp: "TDP",
+
+    features: "Features",
+  };
+
   export const SummarySchema = Schema.pick({
     core_count: true,
     memory_size: true,
