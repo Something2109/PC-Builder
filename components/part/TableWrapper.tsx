@@ -1,4 +1,5 @@
 import {
+  FunctionComponent,
   HTMLAttributes,
   InputHTMLAttributes,
   SelectHTMLAttributes,
@@ -33,6 +34,27 @@ export namespace Table {
 }
 
 const tableClass = "w-full border-2";
+
+export function GenericTable<T extends Record<string, any>>(Components: {
+  [key in keyof T]: FunctionComponent<{ value: T[key] }>;
+}) {
+  return ({
+    defaultValue,
+    ...rest
+  }: {
+    defaultValue?: Partial<T>;
+  } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => (
+    <TableWrapper {...rest}>
+      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
+        const Component = Components[key];
+
+        if (!value || !Component) return undefined;
+
+        return <Component key={key} value={value as never} />;
+      })}
+    </TableWrapper>
+  );
+}
 
 export function TableWrapper({
   className,

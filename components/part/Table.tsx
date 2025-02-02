@@ -1,6 +1,5 @@
-import { RowWrapper } from "../utils/FlexWrapper";
 import PartPicture from "./Picture";
-import { TableWrapper } from "./TableWrapper";
+import { GenericTable } from "./TableWrapper";
 import { CPUComponents } from "./detail/CPU";
 import { GPUComponents } from "./detail/GPU";
 import { GraphicCardComponents } from "./detail/GraphicCard";
@@ -16,9 +15,10 @@ import { SSDComponents } from "./detail/SSD";
 import { CPUBlockComponents } from "./detail/CPUBlock";
 import { PumpComponents } from "./detail/Pump";
 import { RadiatorComponents } from "./detail/Radiator";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { SummaryInfo } from "@/utils/interface";
 import { Products, Info } from "@/utils/Enum";
+import { TableHTMLAttributes } from "react";
 
 const table = "border-separate border-spacing-0";
 const tableHeader =
@@ -95,41 +95,20 @@ export default function PartTable({
   );
 }
 
-export function genericTable<T extends Record<string, any>>(Components: {
-  [key in keyof T]: FunctionComponent<{ value: T[key] }>;
-}) {
-  return ({
-    defaultValue,
-    ...rest
-  }: {
-    defaultValue?: Partial<T>;
-  } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key];
-
-        if (!value || !Component) return undefined;
-
-        return <Component value={value as never} />;
-      })}
-    </TableWrapper>
-  );
-}
-
 export const DetailTableComponent = {
-  [Info.CPU]: genericTable(CPUComponents),
-  [Info.GPU]: genericTable(GPUComponents),
-  [Info.GRAPHIC_CARD]: genericTable(GraphicCardComponents),
-  [Info.MAIN]: genericTable(MainboardComponents),
-  [Info.RAM]: genericTable(RANComponents),
-  [Info.HDD]: genericTable(HDDComponents),
-  [Info.PSU]: genericTable(PSUComponents),
-  [Info.CASE]: genericTable(CaseComponents),
-  [Info.COOLER]: genericTable(CoolerComponents),
-  [Info.AIO]: genericTable(AIOComponents),
-  [Info.FAN]: genericTable(FanComponents),
-  [Info.SSD]: genericTable(SSDComponents),
-  [Info.CPU_BLOCK]: genericTable(CPUBlockComponents),
-  [Info.PUMP]: genericTable(PumpComponents),
-  [Info.RADIATOR]: genericTable(RadiatorComponents),
+  [Info.CPU]: GenericTable(CPUComponents),
+  [Info.GPU]: GenericTable(GPUComponents),
+  [Info.GRAPHIC_CARD]: GenericTable(GraphicCardComponents),
+  [Info.MAIN]: GenericTable(MainboardComponents),
+  [Info.RAM]: GenericTable(RANComponents),
+  [Info.HDD]: GenericTable(HDDComponents),
+  [Info.PSU]: GenericTable(PSUComponents),
+  [Info.CASE]: GenericTable(CaseComponents),
+  [Info.COOLER]: GenericTable(CoolerComponents),
+  [Info.AIO]: GenericTable(AIOComponents),
+  [Info.FAN]: GenericTable(FanComponents),
+  [Info.SSD]: GenericTable(SSDComponents),
+  [Info.CPU_BLOCK]: GenericTable(CPUBlockComponents),
+  [Info.PUMP]: GenericTable(PumpComponents),
+  [Info.RADIATOR]: GenericTable(RadiatorComponents),
 };
