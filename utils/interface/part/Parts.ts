@@ -25,6 +25,10 @@ namespace Part {
     code_name: "Code Name",
     brand: "Brand",
     series: "Series",
+
+    launch_date: "Launch Date",
+    url: "Brand URL",
+    image_url: "Image URL",
   };
 
   export const SummarySchema = Schema.pick({
