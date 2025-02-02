@@ -90,6 +90,33 @@ export function GenericTable<T extends Record<string, any>>(
   );
 }
 
+export function GenericInputTable<T extends Record<string, any>>(
+  Components: {
+    [key in keyof T]: FunctionComponent<{ value?: T[key]; id?: string }>;
+  },
+  Labels: { [key in string]: string }
+) {
+  return ({
+    defaultValue,
+    ...rest
+  }: {
+    defaultValue?: Partial<T>;
+  } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => (
+    <TableWrapper {...rest}>
+      {Object.entries(Components).map(([key, Component]) => {
+        const value = defaultValue ? defaultValue[key] : undefined;
+
+        return (
+          <TableRowWrapper key={key}>
+            {Labels[key]}
+            <Component value={value} />
+          </TableRowWrapper>
+        );
+      })}
+    </TableWrapper>
+  );
+}
+
 export function TableWrapper({
   className,
   children,
