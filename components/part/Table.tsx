@@ -4,7 +4,7 @@ import { CPUComponents } from "./detail/CPU";
 import { GPUComponents } from "./detail/GPU";
 import { GraphicCardComponents } from "./detail/GraphicCard";
 import { MainboardComponents } from "./detail/Mainboard";
-import { RANComponents } from "./detail/RAM";
+import { RAMComponents } from "./detail/RAM";
 import { HDDComponents } from "./detail/HDD";
 import { PSUComponents } from "./detail/PSU";
 import { CaseComponents } from "./detail/Case";
@@ -100,7 +100,7 @@ export const DetailTableComponent = {
   [Info.GPU]: GenericTable(GPUComponents),
   [Info.GRAPHIC_CARD]: GenericTable(GraphicCardComponents),
   [Info.MAIN]: GenericTable(MainboardComponents),
-  [Info.RAM]: GenericTable(RANComponents),
+  [Info.RAM]: GenericTable(RAMComponents),
   [Info.HDD]: GenericTable(HDDComponents),
   [Info.PSU]: GenericTable(PSUComponents),
   [Info.CASE]: GenericTable(CaseComponents),

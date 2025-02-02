@@ -22,4 +22,4 @@ const Components: {
   ),
 };
 
-export { Components as RANComponents };
+export { Components as RAMComponents };
