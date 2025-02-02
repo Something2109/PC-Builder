@@ -4,15 +4,14 @@ import { Button, InputButton } from "@/components/utils/Button";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
+  RowWrapper,
 } from "@/components/utils/FlexWrapper";
-import { Input } from "@/components/utils/Input";
-import { NotificationBar } from "@/components/utils/NotificationBar";
 import { Info, Products } from "@/utils/Enum";
 import { useRouter } from "next/navigation";
 import { lazy, FormEvent, useState, FormHTMLAttributes } from "react";
 import { DetailInfo, ProductInfo } from "@/utils/interface";
-import { PictureInput } from "./input/utils";
 import { ObjectTable } from "../utils/ObjectTable";
+import { NotificationBar } from "../utils/NotificationBar";
 
 const PartFieldset = lazy(() => import("@/components/part/input/Part"));
 
@@ -42,7 +41,7 @@ export default function PartForm({
   ...rest
 }: {
   part: Products;
-  defaultValue?: DetailInfo;
+  defaultValue: DetailInfo;
 } & Omit<FormHTMLAttributes<HTMLFormElement>, "defaultValue">) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -107,36 +106,18 @@ export default function PartForm({
 
   return (
     <form {...rest}>
-      <ResponsiveWrapper className="w-full">
-        <PictureInput
-          className="w-full lg:w-1/3"
-          part={{
-            part,
-            name: defaultValue?.name ?? "New part",
-            image_url: defaultValue?.image_url,
-          }}
-        />
-
-        <ColumnWrapper className="w-full lg:w-2/3 p-5">
-          <Input
-            name="name"
-            placeholder="Name"
-            className="text-4xl font-bold"
-            defaultValue={defaultValue?.name}
-            required
+      <RowWrapper className="flex-row-reverse sticky top-32">
+        <Button onClick={onDelete}>Delete</Button>
+        <InputButton type="submit" />
+        {error ? (
+          <NotificationBar
+            message={error}
+            remove={() => setError(null)}
+            alert
           />
-          <PartFieldset defaultValue={defaultValue} />
-          {error ? (
-            <NotificationBar
-              message={error}
-              remove={() => setError(null)}
-              alert
-            />
-          ) : undefined}
-          <InputButton type="submit" />
-          <Button onClick={onDelete}>Delete</Button>
-        </ColumnWrapper>
-      </ResponsiveWrapper>
+        ) : undefined}
+      </RowWrapper>
+      <PartFieldset defaultValue={defaultValue} />
       <ResponsiveWrapper className="w-full align-top">
         <ColumnWrapper className="basis-1/2">
           <h1 className="text-4xl font-bold">Raw</h1>

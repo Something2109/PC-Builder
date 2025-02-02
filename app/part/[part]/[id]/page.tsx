@@ -1,7 +1,5 @@
 import { DetailTableComponent } from "@/components/part/Table";
 import { PartTable } from "@/components/part/detail/Part";
-import PartPicture from "@/components/part/Picture";
-import { RedirectButton } from "@/components/utils/Button";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
@@ -27,22 +25,7 @@ export default async function PartDetailPage({
 
   return (
     <>
-      <ResponsiveWrapper className="w-full">
-        <PartPicture className="w-full lg:w-1/3" part={partInfo} />
-
-        <ColumnWrapper className="w-full lg:w-2/3 p-5">
-          <h1 className="text-4xl font-bold">{partInfo.name}</h1>
-          <PartTable className="border-2" defaultValue={partInfo} />
-          {partInfo.url ? (
-            <RedirectButton href={partInfo.url} target="_blank">
-              To brand page
-            </RedirectButton>
-          ) : undefined}
-          <RedirectButton href={`/part/${part}/${id}/edit`} className="w-full">
-            Edit
-          </RedirectButton>
-        </ColumnWrapper>
-      </ResponsiveWrapper>
+      <PartTable className="border-2" defaultValue={partInfo} />
       <ResponsiveWrapper className="w-full align-top">
         <ColumnWrapper className="basis-1/2">
           <h1 className="text-4xl font-bold">Raw</h1>
