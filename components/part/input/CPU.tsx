@@ -1,9 +1,8 @@
-import { TableWrapper, TableRowWrapper, InputRow } from "../TableWrapper";
-import { Input } from "@/components/utils/Input";
+import { InputRow, GenericTable } from "../TableWrapper";
 import CPU from "@/utils/interface/part/CPU";
-import { FunctionComponent, ReactNode, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
-const Components: {
+export const Components: {
   [key in keyof CPU.Info]: FunctionComponent<{ value: CPU.Info[key] }>;
 } = {
   family: ({ value }) => (
@@ -93,21 +92,4 @@ const Components: {
   ),
 };
 
-export default function CPUFieldset({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<CPU.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">): ReactNode {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof CPU.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export default GenericTable(Components);

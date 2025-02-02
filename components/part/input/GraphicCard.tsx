@@ -1,6 +1,6 @@
-import { TableWrapper, InputRow, DimensionInputRow } from "../TableWrapper";
+import { InputRow, GenericTable } from "../TableWrapper";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof GraphicCard.Info]: FunctionComponent<{
@@ -71,21 +71,4 @@ const Components: {
   gpu: ({ value }) => <></>,
 };
 
-export default function GraphicCardFieldset({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<GraphicCard.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof GraphicCard.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export default GenericTable(Components);

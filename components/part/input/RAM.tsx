@@ -1,7 +1,7 @@
-import { TableWrapper, InputRow, SelectInputRow } from "../TableWrapper";
+import { InputRow, SelectInputRow, GenericTable } from "../TableWrapper";
 import RAM from "@/utils/interface/part/RAM";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof RAM.Info]: FunctionComponent<{ value: RAM.Info[key] }>;
@@ -47,21 +47,4 @@ const Components: {
   ),
 };
 
-export default function RAMFieldset({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<RAM.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof RAM.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export default GenericTable(Components);

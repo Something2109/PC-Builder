@@ -1,12 +1,7 @@
 import Radiator from "@/utils/interface/part/Radiator";
 import { FormFactor, Material } from "@/utils/interface/utils";
-import {
-  TableWrapper,
-  InputRow,
-  SelectInputRow,
-  DimensionInputRow,
-} from "../TableWrapper";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { InputRow, SelectInputRow, GenericTable } from "../TableWrapper";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof Radiator.Info]: FunctionComponent<{
@@ -61,21 +56,4 @@ const Components: {
   ),
 };
 
-export default function RadiatorTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Radiator.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof Radiator.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export default GenericTable(Components);

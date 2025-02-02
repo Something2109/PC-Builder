@@ -1,12 +1,7 @@
-import {
-  TableWrapper,
-  InputRow,
-  SelectInputRow,
-  DimensionInputRow,
-} from "../TableWrapper";
+import { InputRow, SelectInputRow, GenericTable } from "../TableWrapper";
 import Case from "@/utils/interface/part/Case";
 import { FormFactor } from "@/utils/interface/utils";
-import { FunctionComponent, ReactNode, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof Case.Info]: FunctionComponent<{ value: Case.Info[key] }>;
@@ -80,21 +75,4 @@ const Components: {
   },
 };
 
-export default function CaseFieldset({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Case.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">): ReactNode {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof Case.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export default GenericTable(Components);

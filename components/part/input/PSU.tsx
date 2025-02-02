@@ -1,12 +1,7 @@
-import {
-  TableWrapper,
-  InputRow,
-  SelectInputRow,
-  DimensionInputRow,
-} from "../TableWrapper";
+import { InputRow, SelectInputRow, GenericTable } from "../TableWrapper";
 import PSU from "@/utils/interface/part/PSU";
 import { FormFactor } from "@/utils/interface/utils";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof PSU.Info]: FunctionComponent<{ value: PSU.Info[key] }>;
@@ -112,21 +107,4 @@ const Components: {
   ),
 };
 
-export default function PSUFieldset({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<PSU.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof PSU.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export default GenericTable(Components);

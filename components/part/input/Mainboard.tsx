@@ -1,7 +1,7 @@
-import { TableWrapper, InputRow, SelectInputRow } from "../TableWrapper";
+import { InputRow, SelectInputRow, GenericTable } from "../TableWrapper";
 import Mainboard from "@/utils/interface/part/Mainboard";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { FunctionComponent, TableHTMLAttributes } from "react";
+import { FunctionComponent } from "react";
 
 const Components: {
   [key in keyof Mainboard.Info]: FunctionComponent<{
@@ -63,21 +63,4 @@ const Components: {
   back_panel_ports: ({ value }) => <></>,
 };
 
-export default function MainboardFieldset({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Mainboard.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      {Object.entries(defaultValue ?? {}).map(([key, value]) => {
-        const Component = Components[key as keyof Mainboard.Info];
-
-        if (!value || !Component) return undefined;
-
-        return Component(value as never);
-      })}
-    </TableWrapper>
-  );
-}
+export default GenericTable(Components);
