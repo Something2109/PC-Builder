@@ -1,4 +1,3 @@
-import { InferAttributes, ModelStatic } from "sequelize";
 import { Model, ModelCtor } from "sequelize-typescript";
 import { CPUModel } from "./tables/CPU";
 import { GPUModel } from "./tables/GPU";
@@ -15,7 +14,7 @@ import { FanModel } from "./tables/Fan";
 import { CPUBlockModel } from "./tables/CPUBlock";
 import { PumpModel } from "./tables/Pump";
 import { RadiatorModel } from "./tables/Radiator";
-import { Info, Products } from "@/utils/Enum";
+import { Info } from "@/utils/Enum";
 
 export const InfoModels: { [key in Info]: ModelCtor<Model> } = {
   [Info.CPU]: CPUModel,
@@ -33,22 +32,4 @@ export const InfoModels: { [key in Info]: ModelCtor<Model> } = {
   [Info.CPU_BLOCK]: CPUBlockModel,
   [Info.PUMP]: PumpModel,
   [Info.RADIATOR]: RadiatorModel,
-};
-
-export const Models: { [key in Products]: ModelCtor<Model> } = {
-  [Products.CPU]: CPUModel,
-  [Products.GPU]: GPUModel,
-  [Products.GRAPHIC_CARD]: GraphicCardModel,
-  [Products.MAIN]: MainboardModel,
-  [Products.RAM]: RAMModel,
-  [Products.SSD]: SSDModel,
-  [Products.HDD]: HDDModel,
-  [Products.PSU]: PSUModel,
-  [Products.CASE]: CaseModel,
-  [Products.COOLER]: CoolerModel,
-  [Products.AIO]: AIOModel,
-  [Products.FAN]: FanModel,
-  [Products.CPU_BLOCK]: CPUBlockModel,
-  [Products.PUMP]: PumpModel,
-  [Products.RADIATOR]: RadiatorModel,
 };
