@@ -455,9 +455,18 @@ type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
     : string[];
 };
 
-const NumberFilterOptions = z.array(z.number()).length(2);
+const FilterOptions = <T extends z.ZodType>(zodType: T, min = 1) =>
+  z.preprocess((arg) => {
+    return (Array.isArray(arg) ? arg : [arg])
+      .map((val) => zodType.safeParse(val))
+      .filter((val) => val.success)
+      .map((val) => val.data)
+      .sort((a, b) => a - b);
+  }, z.array(zodType).min(min));
 
-const FilterOptions = <T extends z.ZodTypeAny>(zodType: T) => z.array(zodType);
+const NumberFilterOptions = FilterOptions(Primitive.Number, 2).transform(
+  (arg) => [arg[0], arg[arg.length - 1]]
+);
 
 export {
   Primitive,
