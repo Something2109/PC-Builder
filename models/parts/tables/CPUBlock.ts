@@ -25,16 +25,15 @@ import { PartInformation } from "./Part";
 function createFilterOptions(options?: CPUBlock.FilterOptions): FindOptions {
   const { socket, ...where } = options ?? {};
 
-  const include = [];
+  const socket_model: IncludeOptions = {
+    model: CPUBlockSocketModel,
+    required: Boolean(socket),
+  };
   if (socket) {
-    include.push({
-      model: CPUBlockSocketModel,
-      where: { socket },
-      required: Boolean(socket),
-    });
+    socket_model.where = { socket };
   }
 
-  return { where: defaultFilter(where), include };
+  return { where: defaultFilter(where), include: [socket_model] };
 }
 
 @Scopes(() => ({
