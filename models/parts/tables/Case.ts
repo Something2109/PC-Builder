@@ -24,30 +24,31 @@ function createFilterOptions(options?: Case.FilterOptions): FindOptions {
   const { mainboard_support, radiator_support, psu_support, ...where } =
     options ?? {};
 
-  const include = [];
+  const mainboard_model: IncludeOptions = {
+    model: CaseMainboardSupportModel,
+    required: Boolean(mainboard_support),
+  };
   if (mainboard_support) {
-    include.push({
-      model: CaseMainboardSupportModel,
-      where: { form_factor: mainboard_support },
-      required: Boolean(mainboard_support),
-    });
-  }
-  if (radiator_support) {
-    include.push({
-      model: CaseRadiatorSupportModel,
-      where: { form_factor: radiator_support },
-      required: Boolean(radiator_support),
-    });
-  }
-  if (psu_support) {
-    include.push({
-      model: CasePSUSupportModel,
-      where: { form_factor: psu_support },
-      required: Boolean(psu_support),
-    });
+    mainboard_model.where = { form_factor: mainboard_support };
   }
 
-  return { where, include };
+  const radiator_model: IncludeOptions = {
+    model: CaseRadiatorSupportModel,
+    required: Boolean(radiator_support),
+  };
+  if (radiator_support) {
+    radiator_model.where = { form_factor: radiator_support };
+  }
+
+  const psu_model: IncludeOptions = {
+    model: CasePSUSupportModel,
+    required: Boolean(psu_support),
+  };
+  if (psu_support) {
+    psu_model.where = { form_factor: psu_support };
+  }
+
+  return { where, include: [mainboard_model, radiator_model, psu_model] };
 }
 
 @Scopes(() => ({
