@@ -38,19 +38,21 @@ export function GenericSummaryCells<T extends Record<string, any>>(
   },
   Labels: {
     [key in string]: string;
-  }
+  },
+  Attributes: string[]
 ) {
   return ({ defaultValue }: { defaultValue?: Partial<T> }) => (
     <>
-      {Object.entries(Components).map(([key, Component], index) => {
-        const value = defaultValue ? defaultValue[key] : undefined;
+      {Attributes.map((attr, index) => {
+        const Component = Components[attr];
+        const value = defaultValue ? defaultValue[attr] : undefined;
 
         return (
           <td key={new Date().getTime() + index}>
             <RowWrapper>
-              <p className="lg:hidden">{Labels[key]}:</p>
+              <p className="lg:hidden">{Labels[attr]}:</p>
+              {Component ? <Component value={value} /> : undefined}
             </RowWrapper>
-            <Component value={value} />
           </td>
         );
       })}
