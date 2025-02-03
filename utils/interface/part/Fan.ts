@@ -28,6 +28,26 @@ namespace Fan {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    form_factor: "Form Factor",
+
+    width: "Width",
+    length: "Length",
+    height: "Height",
+    count: "Count",
+
+    voltage: "Voltage",
+
+    speed: "Speed",
+    airflow: "Airflow",
+    noise: "Noise",
+    static_pressure: "Static Pressure",
+    bearing: "Bearing",
+
+    connector: "Power Connector",
+    rgb: "RGB",
+  };
+
   export const SummarySchema = Schema.pick({
     form_factor: true,
     bearing: true,

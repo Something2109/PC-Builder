@@ -36,6 +36,22 @@ namespace GraphicCard {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    width: "Width",
+    length: "Length",
+    height: "Height",
+
+    base_frequency: "Base Frequency",
+    boost_frequency: "Boost Frequency",
+
+    pcie: "PCIe Version",
+    minimum_psu: "Minimum PSU Wattage",
+    power_connector: "Power Connector",
+    port: "Port",
+
+    gpu: "GPU Engine",
+  };
+
   export const SummarySchema = Schema.pick({
     length: true,
     base_frequency: true,

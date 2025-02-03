@@ -36,6 +36,26 @@ export namespace CPU {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    socket: "Socket",
+
+    base_frequency: "Base Frequency",
+    turbo_frequency: "Turbo Frequency",
+    family: "Family",
+    total_cores: "Total Cores",
+    total_threads: "Total Threads",
+    cores: "Cores",
+
+    L2_cache: "L2 Cache",
+    L3_cache: "L3 Cache",
+    max_memory: "Max Memory Capacity",
+    max_memory_channel: "Max Memory Channel",
+    max_memory_bandwidth: "Max Memory Bandwidth",
+
+    tdp: "TDP",
+    lithography: "Lithography",
+  };
+
   export const SummarySchema = Schema.pick({
     socket: true,
     total_cores: true,
