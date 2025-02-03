@@ -3,6 +3,7 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
 import { FormFactor } from "@/utils/interface/utils";
@@ -47,7 +48,7 @@ function createFilterOptions(options?: Case.FilterOptions): FindOptions {
     });
   }
 
-  return { where, include };
+  return { where: defaultFilter(where), include };
 }
 
 @Scopes(() => ({

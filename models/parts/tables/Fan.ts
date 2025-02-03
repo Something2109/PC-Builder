@@ -3,6 +3,7 @@ import {
   PartDefaultScope,
   PartDetailTable,
   Tables,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
 import Fan from "@/utils/interface/part/Fan";
@@ -21,9 +22,11 @@ import {
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (options: Fan.FilterOptions) => ({
     attributes: ["id", ...Fan.SummaryAttributes],
-    where: options,
+    where: defaultFilter(options),
   }),
-  [ModelScopes.FILTER]: (options: Fan.FilterOptions) => ({ where: options }),
+  [ModelScopes.FILTER]: (options: Fan.FilterOptions) => ({
+    where: defaultFilter(options),
+  }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.FAN })

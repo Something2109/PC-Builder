@@ -16,6 +16,7 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { Material } from "@/utils/interface/utils";
@@ -33,7 +34,7 @@ function createFilterOptions(options?: CPUBlock.FilterOptions): FindOptions {
     });
   }
 
-  return { where, include };
+  return { where: defaultFilter(where), include };
 }
 
 @Scopes(() => ({

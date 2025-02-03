@@ -3,6 +3,7 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
 import Mainboard from "@/utils/interface/part/Mainboard";
@@ -32,10 +33,10 @@ import { SaveOptions } from "sequelize";
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (options: Mainboard.FilterOptions) => ({
     attributes: ["id", ...Mainboard.SummaryAttributes],
-    where: options,
+    where: defaultFilter(options),
   }),
   [ModelScopes.FILTER]: (options: Mainboard.FilterOptions) => ({
-    where: options,
+    where: defaultFilter(options),
   }),
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,

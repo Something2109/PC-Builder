@@ -21,7 +21,7 @@ import {
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (options: GPU.FilterOptions) => ({
     attributes: ["id", ...GPU.SummaryAttributes],
-    where: options,
+    where: defaultFilter(options),
   }),
   [ModelScopes.FILTER]: (options?: GPU.FilterOptions) => ({
     where: defaultFilter(options),
