@@ -18,6 +18,19 @@ namespace Part {
 
   export type BasicInfo = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof BasicInfo]: string } = {
+    id: "ID",
+    part: "Product Type",
+    name: "Name",
+    code_name: "Code Name",
+    brand: "Brand",
+    series: "Series",
+
+    launch_date: "Launch Date",
+    url: "Brand URL",
+    image_url: "Image URL",
+  };
+
   export const SummarySchema = Schema.pick({
     id: true,
     part: true,

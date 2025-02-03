@@ -68,6 +68,28 @@ namespace Mainboard {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    form_factor: "Form Factor",
+
+    socket: "Socket",
+    chipset: "Chipset",
+
+    ram_form_factor: "RAM Form Factor",
+    ram_interface: "RAM Interface",
+    ram_slot: "RAM Slots",
+    expansion_slots: "Expansion Slot",
+
+    pcies: "PCIe Slots",
+
+    power_connectors: "Power Connectors",
+    fan_connectors: "Fan Connectors",
+    storage_connectors: "Storage Connectors",
+    usb_connectors: "USB Connectors",
+    miscelanous_connectors: "Misc Connectors",
+
+    back_panel_ports: "Back Panel Ports",
+  };
+
   export const SummarySchema = Schema.pick({
     form_factor: true,
     socket: true,

@@ -10,6 +10,12 @@ export namespace CPUBlock {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    socket: "Socket",
+    plate: "Plate",
+    rgb: "RGB",
+  };
+
   export const SummarySchema = Schema.pick({
     socket: true,
     plate: true,

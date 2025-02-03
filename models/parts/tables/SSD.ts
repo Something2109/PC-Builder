@@ -22,7 +22,7 @@ import {
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (options: SSD.FilterOptions) => ({
     attributes: ["id", ...SSD.SummaryAttributes],
-    where: options,
+    where: defaultFilter(options),
   }),
   [ModelScopes.FILTER]: (options: SSD.FilterOptions) => ({
     where: defaultFilter(options),

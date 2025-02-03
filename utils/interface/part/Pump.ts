@@ -26,6 +26,23 @@ export namespace Pump {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    form_factor: "Form Factor",
+
+    width: "Width",
+    length: "Length",
+    height: "Height",
+
+    voltage: "Voltage",
+    wattage: "Wattage",
+    head_pressure: "Head Pressure",
+    flow_rate: "Flow Rate",
+
+    power_connector: "Power Connector",
+    control_connector: "Control Connector",
+    rgb: "RGB",
+  };
+
   export const SummarySchema = Schema.pick({
     head_pressure: true,
     flow_rate: true,

@@ -67,6 +67,29 @@ export namespace Case {
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    form_factor: "Form Factor",
+
+    width: "Width",
+    length: "Length",
+    height: "Height",
+
+    mainboard_support: "Mainboard Support",
+    expansion_slot: "Expansion Slot",
+
+    max_cooler_height: "Max Cooler Height",
+
+    radiator_support: "Radiator Support",
+    fan_support: "Fan Support",
+
+    hard_drive_support: "Hard Drive Support",
+
+    psu_support: "PSU Support",
+    max_psu_length: "Max PSU Length",
+
+    front_panel_ports: "Front Panel Ports",
+  };
+
   export const SummarySchema = Schema.pick({
     form_factor: true,
     mainboard_support: true,

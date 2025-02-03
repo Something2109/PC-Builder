@@ -22,7 +22,7 @@ import {
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (options: Pump.FilterOptions) => ({
     attributes: ["id", ...Pump.SummaryAttributes],
-    where: options,
+    where: defaultFilter(options),
   }),
   [ModelScopes.FILTER]: (options: Pump.FilterOptions) => ({
     where: defaultFilter(options),

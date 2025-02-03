@@ -30,7 +30,7 @@ type APIDisplayInterface = {
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (options: GraphicCard.FilterOptions) => ({
     attributes: ["id", ...GraphicCard.SummaryAttributes],
-    where: options,
+    where: defaultFilter(options),
   }),
   [ModelScopes.FILTER]: (options?: GraphicCard.FilterOptions) => ({
     where: defaultFilter(options),

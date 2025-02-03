@@ -3,6 +3,7 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
 import { FormFactor } from "@/utils/interface/utils";
@@ -48,7 +49,10 @@ function createFilterOptions(options?: Case.FilterOptions): FindOptions {
     psu_model.where = { form_factor: psu_support };
   }
 
-  return { where, include: [mainboard_model, radiator_model, psu_model] };
+  return {
+    where: defaultFilter(where),
+    include: [mainboard_model, radiator_model, psu_model],
+  };
 }
 
 @Scopes(() => ({
