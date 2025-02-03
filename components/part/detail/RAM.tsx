@@ -1,6 +1,6 @@
 import RAM from "@/utils/interface/part/RAM";
 import { FunctionComponent } from "react";
-import { GenericTable } from "../TableWrapper";
+import { GenericDetailTable } from "../TableWrapper";
 
 const Components: {
   [key in keyof RAM.Info]: FunctionComponent<{ value: RAM.Info[key] }>;
@@ -14,4 +14,4 @@ const Components: {
   interface: ({ value }) => value,
 };
 
-export default GenericTable(Components, RAM.Label);
+export default GenericDetailTable(Components, RAM.Label);

@@ -1,5 +1,5 @@
 import CPUBlock from "@/utils/interface/part/CPUBlock";
-import { GenericTable } from "../TableWrapper";
+import { GenericDetailTable } from "../TableWrapper";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -12,4 +12,4 @@ const Components: {
   rgb: ({ value }) => value,
 };
 
-export default GenericTable(Components, CPUBlock.Label);
+export default GenericDetailTable(Components, CPUBlock.Label);

@@ -1,4 +1,4 @@
-import { GenericTable } from "../TableWrapper";
+import { GenericDetailTable } from "../TableWrapper";
 import AIO from "@/utils/interface/part/AIO";
 import { FunctionComponent } from "react";
 
@@ -17,4 +17,4 @@ const Components: {
   pump_speed: ({ value }) => value,
 };
 
-export default GenericTable(Components, AIO.Label);
+export default GenericDetailTable(Components, AIO.Label);

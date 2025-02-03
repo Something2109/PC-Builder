@@ -1,5 +1,5 @@
 import Radiator from "@/utils/interface/part/Radiator";
-import { GenericTable } from "../TableWrapper";
+import { GenericDetailTable } from "../TableWrapper";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -15,4 +15,4 @@ const Components: {
   material: ({ value }) => value,
 };
 
-export default GenericTable(Components, Radiator.Label);
+export default GenericDetailTable(Components, Radiator.Label);

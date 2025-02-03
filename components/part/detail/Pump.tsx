@@ -1,5 +1,5 @@
 import Pump from "@/utils/interface/part/Pump";
-import { GenericTable } from "../TableWrapper";
+import { GenericDetailTable } from "../TableWrapper";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -18,4 +18,4 @@ const Components: {
   rgb: ({ value }) => value,
 };
 
-export default GenericTable(Components, Pump.Label);
+export default GenericDetailTable(Components, Pump.Label);

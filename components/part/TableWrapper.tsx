@@ -62,7 +62,7 @@ export function GenericSummaryCells<T extends Record<string, any>>(
 
 const tableClass = "w-full border-2";
 
-export function GenericTable<T extends Record<string, any>>(
+export function GenericDetailTable<T extends Record<string, any>>(
   Components: { [key in keyof T]: FunctionComponent<{ value: T[key] }> },
   Labels: { [key in string]: string }
 ) {

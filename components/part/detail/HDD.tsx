@@ -1,4 +1,4 @@
-import { GenericTable } from "../TableWrapper";
+import { GenericDetailTable } from "../TableWrapper";
 import HDD from "@/utils/interface/part/HDD";
 import { FunctionComponent } from "react";
 
@@ -14,4 +14,4 @@ const Components: {
   interface: ({ value }) => value,
 };
 
-export default GenericTable(Components, HDD.Label);
+export default GenericDetailTable(Components, HDD.Label);

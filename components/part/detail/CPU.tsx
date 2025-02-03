@@ -1,5 +1,5 @@
 import CPU from "@/utils/interface/part/CPU";
-import { GenericTable } from "../TableWrapper";
+import { GenericDetailTable } from "../TableWrapper";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -21,4 +21,4 @@ const Components: {
   lithography: ({ value }) => value,
 };
 
-export default GenericTable(Components, CPU.Label);
+export default GenericDetailTable(Components, CPU.Label);

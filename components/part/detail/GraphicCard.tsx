@@ -1,4 +1,4 @@
-import { GenericTable } from "../TableWrapper";
+import { GenericDetailTable } from "../TableWrapper";
 import GraphicCard from "@/utils/interface/part/GraphicCard";
 import { FunctionComponent } from "react";
 
@@ -25,4 +25,4 @@ const Components: {
   gpu: ({ value }) => <></>,
 };
 
-export default GenericTable(Components, GraphicCard.Label);
+export default GenericDetailTable(Components, GraphicCard.Label);

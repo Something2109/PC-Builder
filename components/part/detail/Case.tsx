@@ -1,4 +1,4 @@
-import { Table, GenericTable } from "../TableWrapper";
+import { Table, GenericDetailTable } from "../TableWrapper";
 import Case from "@/utils/interface/part/Case";
 import { FunctionComponent } from "react";
 
@@ -60,4 +60,4 @@ export function CaseSideTableRow({
   );
 }
 
-export default GenericTable(Components, Case.Label);
+export default GenericDetailTable(Components, Case.Label);

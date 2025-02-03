@@ -1,4 +1,4 @@
-import { GenericTable } from "../TableWrapper";
+import { GenericDetailTable } from "../TableWrapper";
 import Fan from "@/utils/interface/part/Fan";
 import { FunctionComponent } from "react";
 
@@ -20,4 +20,4 @@ const Components: {
   rgb: ({ value }) => value,
 };
 
-export default GenericTable(Components, Fan.Label);
+export default GenericDetailTable(Components, Fan.Label);

@@ -1,4 +1,4 @@
-import { GenericTable } from "../TableWrapper";
+import { GenericDetailTable } from "../TableWrapper";
 import Cooler from "@/utils/interface/part/Cooler";
 import { FunctionComponent } from "react";
 
@@ -12,4 +12,4 @@ const Components: {
   height: ({ value }) => value,
 };
 
-export default GenericTable(Components, Cooler.Label);
+export default GenericDetailTable(Components, Cooler.Label);

@@ -1,4 +1,4 @@
-import { GenericTable } from "../TableWrapper";
+import { GenericDetailTable } from "../TableWrapper";
 import SSD from "@/utils/interface/part/SSD";
 import { FunctionComponent } from "react";
 
@@ -15,4 +15,4 @@ const Components: {
   interface: ({ value }) => value,
 };
 
-export default GenericTable(Components, SSD.Label);
+export default GenericDetailTable(Components, SSD.Label);

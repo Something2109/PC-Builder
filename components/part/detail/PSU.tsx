@@ -1,6 +1,6 @@
 import PSU from "@/utils/interface/part/PSU";
 import { FunctionComponent } from "react";
-import { GenericTable } from "../TableWrapper";
+import { GenericDetailTable } from "../TableWrapper";
 
 const Components: {
   [key in keyof PSU.Info]: FunctionComponent<{ value: PSU.Info[key] }>;
@@ -19,4 +19,4 @@ const Components: {
   peripheral_pin: ({ value }) => value,
 };
 
-export default GenericTable(Components, PSU.Label);
+export default GenericDetailTable(Components, PSU.Label);

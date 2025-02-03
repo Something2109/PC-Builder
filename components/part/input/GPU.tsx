@@ -1,4 +1,4 @@
-import { GenericTable } from "../TableWrapper";
+import { GenericInputTable } from "../TableWrapper";
 import { Input } from "@/components/utils/Input";
 import GPU from "@/utils/interface/part/GPU";
 import { FunctionComponent } from "react";
@@ -31,4 +31,4 @@ const Components: {
   features: ({ value }) => <></>,
 };
 
-export default GenericTable(Components, GPU.Label);
+export default GenericInputTable(Components, GPU.Label);
