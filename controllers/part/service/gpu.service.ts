@@ -15,14 +15,15 @@ class GPUService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.GPU] = {};
 
-    const options = result[Products.GPU];
+    const options = {};
     this.parse(params, Primitive.Number, options, "base_frequency");
     this.parse(params, Primitive.Number, options, "boost_frequency");
     this.parse(params, Primitive.Number, options, "memory_size");
     this.parse(params, Primitive.String, options, "memory_type");
     this.parse(params, Primitive.Number, options, "tdp");
+
+    if (Object.keys(options).length > 0) result[Products.GPU] = options;
 
     return result;
   }

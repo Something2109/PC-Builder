@@ -19,12 +19,13 @@ class RAMService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.RAM] = {};
 
-    const options = result[Products.RAM];
+    const options = {};
     this.parse(params, FormFactor.RAM, options, "form_factor");
     this.parse(params, Primitive.Number, options, "capacity");
     this.parse(params, InternalConnectors.RAM, options, "interface");
+
+    if (Object.keys(options).length > 0) result[Products.RAM] = options;
 
     return result;
   }

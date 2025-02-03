@@ -19,13 +19,14 @@ class MainboardService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.MAIN] = {};
 
-    const options = result[Products.MAIN];
+    const options = {};
     this.parse(params, Primitive.String, options, "socket");
     this.parse(params, FormFactor.Mainboard, options, "form_factor");
     this.parse(params, FormFactor.RAM, options, "ram_form_factor");
     this.parse(params, InternalConnectors.RAM, options, "ram_interface");
+
+    if (Object.keys(options).length > 0) result[Products.MAIN] = options;
 
     return result;
   }

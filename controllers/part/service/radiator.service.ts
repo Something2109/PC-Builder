@@ -15,11 +15,12 @@ class RadiatorService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.RADIATOR] = {};
 
-    const options = result[Products.RADIATOR];
+    const options = {};
     this.parse(params, FormFactor.Radiator, options, "form_factor");
     this.parse(params, Material.Metal, options, "material");
+
+    if (Object.keys(options).length > 0) result[Products.RADIATOR] = options;
 
     return result;
   }

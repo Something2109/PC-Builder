@@ -15,11 +15,12 @@ class CoolerService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.COOLER] = {};
 
-    const options = result[Products.COOLER];
+    const options = {};
     this.parse(params, Primitive.String, options, "socket");
     this.parse(params, Material.Metal, options, "cpu_plate");
+
+    if (Object.keys(options).length > 0) result[Products.COOLER] = options;
 
     return result;
   }

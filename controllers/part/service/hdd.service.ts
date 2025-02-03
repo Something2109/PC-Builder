@@ -19,15 +19,16 @@ class HDDService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.HDD] = {};
 
-    const options = result[Products.HDD];
+    const options = {};
     this.parse(params, FormFactor.HDD, options, "form_factor");
     this.parse(params, Primitive.Number, options, "capacity");
     this.parse(params, InternalConnectors.Storage.HDD, options, "interface");
     this.parse(params, Primitive.Number, options, "read_speed");
     this.parse(params, Primitive.Number, options, "write_speed");
     this.parse(params, Primitive.Number, options, "rotational_speed");
+
+    if (Object.keys(options).length > 0) result[Products.HDD] = options;
 
     return result;
   }

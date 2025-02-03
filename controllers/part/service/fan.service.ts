@@ -15,11 +15,12 @@ class FanService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.FAN] = {};
 
-    const options = result[Products.FAN];
+    const options = {};
     this.parse(params, FormFactor.Fan, options, "form_factor");
     this.parse(params, Fan.Bearing, options, "bearing");
+
+    if (Object.keys(options).length > 0) result[Products.FAN] = options;
 
     return result;
   }

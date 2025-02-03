@@ -19,9 +19,8 @@ class PumpService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.PUMP] = {};
 
-    const options = result[Products.PUMP];
+    const options = {};
     this.parse(params, FormFactor.Pump, options, "form_factor");
     this.parse(params, Primitive.Number, options, "flow_rate");
     this.parse(
@@ -36,6 +35,8 @@ class PumpService extends BaseDetailPartService<Detail> {
       options,
       "control_connector"
     );
+
+    if (Object.keys(options).length > 0) result[Products.PUMP] = options;
 
     return result;
   }

@@ -17,9 +17,8 @@ class CPUService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.CPU] = {};
 
-    const options = result[Products.CPU];
+    const options = {};
     this.parse(params, Primitive.String, options, "socket");
     this.parse(params, Primitive.Number, options, "total_cores");
     this.parse(params, Primitive.Number, options, "total_threads");
@@ -27,6 +26,8 @@ class CPUService extends BaseDetailPartService<Detail> {
     this.parse(params, Primitive.Number, options, "turbo_frequency");
     this.parse(params, Primitive.Number, options, "L3_cache");
     this.parse(params, Primitive.Number, options, "tdp");
+
+    if (Object.keys(options).length > 0) result[Products.CPU] = options;
 
     return result;
   }

@@ -19,15 +19,16 @@ class SSDService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.SSD] = {};
 
-    const options = result[Products.SSD];
+    const options = {};
     this.parse(params, SSD.MemoryCell, options, "memory_type");
     this.parse(params, FormFactor.SSD, options, "form_factor");
     this.parse(params, Primitive.Number, options, "capacity");
     this.parse(params, InternalConnectors.Storage.SSD, options, "interface");
     this.parse(params, Primitive.Number, options, "read_speed");
     this.parse(params, Primitive.Number, options, "write_speed");
+
+    if (Object.keys(options).length > 0) result[Products.SSD] = options;
 
     return result;
   }

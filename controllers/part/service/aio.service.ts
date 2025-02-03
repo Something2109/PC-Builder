@@ -15,12 +15,13 @@ class AIOService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.AIO] = {};
 
-    const options = result[Products.AIO];
+    const options = {};
     this.parse(params, Primitive.String, options, "socket");
     this.parse(params, FormFactor.Radiator, options, "form_factor");
     this.parse(params, Material.Metal, options, "cpu_plate");
+
+    if (Object.keys(options).length > 0) result[Products.AIO] = options;
 
     return result;
   }

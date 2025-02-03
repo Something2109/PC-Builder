@@ -29,13 +29,14 @@ class CaseService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.CASE] = {};
 
-    const options = result[Products.CASE];
+    const options = {};
     this.parse(params, FormFactor.Case, options, "form_factor");
     this.parse(params, FormFactor.Mainboard, options, "mainboard_support");
     this.parse(params, FormFactor.Radiator, options, "radiator_support");
     this.parse(params, FormFactor.PSU, options, "psu_support");
+
+    if (Object.keys(options).length > 0) result[Products.CASE] = options;
 
     return result;
   }

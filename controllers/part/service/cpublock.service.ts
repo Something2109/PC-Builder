@@ -25,11 +25,12 @@ class CPUBlockService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.CPU_BLOCK] = {};
 
-    const options = result[Products.CPU_BLOCK];
+    const options = {};
     this.parse(params, Primitive.String, options, "socket");
     this.parse(params, Material.Metal, options, "plate");
+
+    if (Object.keys(options).length > 0) result[Products.CPU_BLOCK] = options;
 
     return result;
   }

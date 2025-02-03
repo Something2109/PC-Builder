@@ -15,15 +15,17 @@ class GraphicCardService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.GRAPHIC_CARD] = {};
 
-    const options = result[Products.GRAPHIC_CARD];
+    const options = {};
     this.parse(params, Primitive.Number, options, "length");
     this.parse(params, Primitive.Number, options, "base_frequency");
     this.parse(params, Primitive.Number, options, "boost_frequency");
     this.parse(params, Primitive.Number, options, "width");
     this.parse(params, Primitive.Number, options, "height");
     this.parse(params, Primitive.Number, options, "minimum_psu");
+
+    if (Object.keys(options).length > 0)
+      result[Products.GRAPHIC_CARD] = options;
 
     return result;
   }
