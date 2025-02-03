@@ -13,4 +13,8 @@ const Components: {
   minimum_psu: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, GraphicCard.Label);
+export default GenericSummaryCells(
+  Components,
+  GraphicCard.Label,
+  GraphicCard.SummaryAttributes
+);

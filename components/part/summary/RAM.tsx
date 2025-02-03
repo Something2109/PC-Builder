@@ -11,4 +11,8 @@ const Components: {
   interface: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, RAM.Label);
+export default GenericSummaryCells(
+  Components,
+  RAM.Label,
+  RAM.SummaryAttributes
+);

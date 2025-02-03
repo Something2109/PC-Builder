@@ -11,4 +11,8 @@ const Components: {
   modular: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, PSU.Label);
+export default GenericSummaryCells(
+  Components,
+  PSU.Label,
+  PSU.SummaryAttributes
+);

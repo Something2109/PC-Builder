@@ -13,4 +13,8 @@ const Components: {
   ram_interface: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, Mainboard.Label);
+export default GenericSummaryCells(
+  Components,
+  Mainboard.Label,
+  Mainboard.SummaryAttributes
+);

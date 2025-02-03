@@ -10,4 +10,8 @@ const Components: {
   cpu_plate: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, AIO.Label);
+export default GenericSummaryCells(
+  Components,
+  AIO.Label,
+  AIO.SummaryAttributes
+);

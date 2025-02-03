@@ -12,4 +12,8 @@ const Components: {
   tdp: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, GPU.Label);
+export default GenericSummaryCells(
+  Components,
+  GPU.Label,
+  GPU.SummaryAttributes
+);

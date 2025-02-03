@@ -10,4 +10,8 @@ const Components: {
   power_connector: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, Pump.Label);
+export default GenericSummaryCells(
+  Components,
+  Pump.Label,
+  Pump.SummaryAttributes
+);

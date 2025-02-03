@@ -11,4 +11,8 @@ const Components: {
   plate: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, CPUBlock.Label);
+export default GenericSummaryCells(
+  Components,
+  CPUBlock.Label,
+  CPUBlock.SummaryAttributes
+);

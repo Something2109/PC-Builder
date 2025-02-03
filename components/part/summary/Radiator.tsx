@@ -11,4 +11,8 @@ const Components: {
   material: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, Radiator.Label);
+export default GenericSummaryCells(
+  Components,
+  Radiator.Label,
+  Radiator.SummaryAttributes
+);

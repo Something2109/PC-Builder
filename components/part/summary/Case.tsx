@@ -17,4 +17,8 @@ const Components: {
   psu_support: ({ value }) => value?.join(", "),
 };
 
-export default GenericSummaryCells(Components, Case.Label);
+export default GenericSummaryCells(
+  Components,
+  Case.Label,
+  Case.SummaryAttributes
+);

@@ -11,4 +11,8 @@ const Components: {
   interface: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, SSD.Label);
+export default GenericSummaryCells(
+  Components,
+  SSD.Label,
+  SSD.SummaryAttributes
+);

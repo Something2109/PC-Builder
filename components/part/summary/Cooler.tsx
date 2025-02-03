@@ -12,4 +12,8 @@ const Components: {
   height: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, Cooler.Label);
+export default GenericSummaryCells(
+  Components,
+  Cooler.Label,
+  Cooler.SummaryAttributes
+);

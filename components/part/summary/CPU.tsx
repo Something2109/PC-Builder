@@ -12,4 +12,8 @@ const Components: {
   turbo_frequency: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, CPU.Label);
+export default GenericSummaryCells(
+  Components,
+  CPU.Label,
+  CPU.SummaryAttributes
+);

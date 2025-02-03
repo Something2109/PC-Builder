@@ -10,4 +10,8 @@ const Components: {
   interface: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, HDD.Label);
+export default GenericSummaryCells(
+  Components,
+  HDD.Label,
+  HDD.SummaryAttributes
+);

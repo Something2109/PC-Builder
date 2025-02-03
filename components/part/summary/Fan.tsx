@@ -10,4 +10,8 @@ const Components: {
   bearing: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, Fan.Label);
+export default GenericSummaryCells(
+  Components,
+  Fan.Label,
+  Fan.SummaryAttributes
+);
