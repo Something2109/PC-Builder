@@ -6,7 +6,7 @@ import {
   defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import Cooler from "@/utils/interface/part/Cooler";
+import Cooler from "@/utils/interface/info/Cooler";
 import { Material } from "@/utils/interface/utils";
 import {
   BelongsTo,

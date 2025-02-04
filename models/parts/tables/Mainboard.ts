@@ -6,7 +6,7 @@ import {
   defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import Mainboard from "@/utils/interface/part/Mainboard";
+import Mainboard from "@/utils/interface/info/Mainboard";
 import {
   ExternalPorts,
   InternalConnectors,

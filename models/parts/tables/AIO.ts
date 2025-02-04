@@ -8,7 +8,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import AIO from "@/utils/interface/part/AIO";
+import AIO from "@/utils/interface/info/AIO";
 import {
   PartDetailTable,
   PartDefaultScope,

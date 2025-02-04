@@ -7,7 +7,7 @@ import {
 } from "../../interface";
 import { PartInformation } from "./Part";
 import { FormFactor } from "@/utils/interface/utils";
-import Case from "@/utils/interface/part/Case";
+import Case from "@/utils/interface/info/Case";
 import {
   BelongsTo,
   Column,
