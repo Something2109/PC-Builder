@@ -1,19 +1,19 @@
 import { Info as InfoEnum } from "../Enum";
-import AIO from "./part/AIO";
-import Case from "./part/Case";
-import Cooler from "./part/Cooler";
-import CPU from "./part/CPU";
-import Fan from "./part/Fan";
-import GPU from "./part/GPU";
-import GraphicCard from "./part/GraphicCard";
-import HDD from "./part/HDD";
-import Mainboard from "./part/Mainboard";
-import PSU from "./part/PSU";
-import RAM from "./part/RAM";
-import SSD from "./part/SSD";
-import CPUBlock from "./part/CPUBlock";
-import Pump from "./part/Pump";
-import Radiator from "./part/Radiator";
+import AIO from "./info/AIO";
+import Case from "./info/Case";
+import Cooler from "./info/Cooler";
+import CPU from "./info/CPU";
+import Fan from "./info/Fan";
+import GPU from "./info/GPU";
+import GraphicCard from "./info/GraphicCard";
+import HDD from "./info/HDD";
+import Mainboard from "./info/Mainboard";
+import PSU from "./info/PSU";
+import RAM from "./info/RAM";
+import SSD from "./info/SSD";
+import CPUBlock from "./info/CPUBlock";
+import Pump from "./info/Pump";
+import Radiator from "./info/Radiator";
 
 /**
  * DECLARE THE {@link InfoEnum} RELATED MAPPING OBJECTS

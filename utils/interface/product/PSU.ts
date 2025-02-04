@@ -1,5 +1,5 @@
 import { FilterOptions, NumberFilterOptions, FormFactor } from "../utils";
-import PSU from "../part/PSU";
+import PSU from "../info/PSU";
 import { Info } from "../../Enum";
 import { z } from "zod";
 

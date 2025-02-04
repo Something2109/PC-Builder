@@ -1,4 +1,4 @@
-import Part from "./interface/part/Parts";
+import Part from "./interface/info/Parts";
 
 const FilterOptions: {
   [key in keyof Part.FilterOptions]: (

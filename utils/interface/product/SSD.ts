@@ -6,7 +6,7 @@ import {
 } from "../utils";
 import { Info } from "../../Enum";
 import { z } from "zod";
-import SSD from "../part/SSD";
+import SSD from "../info/SSD";
 
 export namespace SSDProduct {
   export const Label = "SSD";
