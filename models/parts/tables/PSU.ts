@@ -6,7 +6,7 @@ import {
   defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import PSU from "@/utils/interface/part/PSU";
+import PSU from "@/utils/interface/info/PSU";
 import { FormFactor } from "@/utils/interface/utils";
 import {
   BelongsTo,

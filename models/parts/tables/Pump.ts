@@ -6,7 +6,7 @@ import {
   defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import Pump from "@/utils/interface/part/Pump";
+import Pump from "@/utils/interface/info/Pump";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,

@@ -6,7 +6,7 @@ import {
   defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import CPU from "@/utils/interface/part/CPU";
+import CPU from "@/utils/interface/info/CPU";
 import {
   BelongsTo,
   Column,

@@ -6,7 +6,7 @@ import {
   defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import Radiator from "@/utils/interface/part/Radiator";
+import Radiator from "@/utils/interface/info/Radiator";
 import { FormFactor, Material } from "@/utils/interface/utils";
 import {
   BelongsTo,

@@ -10,7 +10,7 @@ import {
   Table,
 } from "sequelize-typescript";
 import { FindOptions, IncludeOptions, SaveOptions } from "sequelize";
-import CPUBlock from "@/utils/interface/part/CPUBlock";
+import CPUBlock from "@/utils/interface/info/CPUBlock";
 import {
   PartDetailTable,
   PartDefaultScope,

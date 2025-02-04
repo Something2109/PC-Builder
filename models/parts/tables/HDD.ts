@@ -6,7 +6,7 @@ import {
   defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import HDD from "@/utils/interface/part/HDD";
+import HDD from "@/utils/interface/info/HDD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,

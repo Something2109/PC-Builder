@@ -6,7 +6,7 @@ import {
   defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import RAM from "@/utils/interface/part/RAM";
+import RAM from "@/utils/interface/info/RAM";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,

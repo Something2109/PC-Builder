@@ -6,7 +6,7 @@ import {
   defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import SSD from "@/utils/interface/part/SSD";
+import SSD from "@/utils/interface/info/SSD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,
