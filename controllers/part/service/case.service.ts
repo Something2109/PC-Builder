@@ -11,12 +11,13 @@ import {
 import { ModelScopes } from "@/models/interface";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import Part from "@/utils/interface/info/Parts";
-import { FormFactor } from "@/utils/interface/utils";
+import Case from "@/utils/interface/product/Case";
 import { Products, Info } from "@/utils/Enum";
 import {
   BaseDetailPartService,
   SearchOptions,
 } from "../interface/service.interface";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
   [Info.CASE]: DetailInfo[Info.CASE];
@@ -29,13 +30,16 @@ class CaseService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options: FilterOptions[Info.CASE] = {};
-    this.parse(params, FormFactor.Case, options, "form_factor");
-    this.parse(params, FormFactor.Mainboard, options, "mainboard_support");
-    this.parse(params, FormFactor.Radiator, options, "radiator_support");
-    this.parse(params, FormFactor.PSU, options, "psu_support");
+    const parsedParams = Case.Filter.parse(params);
+    const options = new FilterOptionBuilder<
+      NonNullable<FilterOptions[Info.CASE]>
+    >()
+      .add("form_factor", parsedParams["form_factor"])
+      .add("mainboard_support", parsedParams["mainboard_support"])
+      .add("radiator_support", parsedParams["radiator_support"])
+      .add("psu_support", parsedParams["psu_support"]);
 
-    if (Object.keys(options).length > 0) result[Products.CASE] = options;
+    if (options.build()) result[Info.CASE] = options.build();
 
     return result;
   }

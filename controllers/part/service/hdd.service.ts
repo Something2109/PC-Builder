@@ -1,13 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import Part from "@/utils/interface/info/Parts";
-import {
-  FormFactor,
-  InternalConnectors,
-  Primitive,
-} from "@/utils/interface/utils";
+import HDD from "@/utils/interface/product/HDD";
 import { Products, Info } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
   [Info.HDD]: DetailInfo[Info.HDD];
@@ -20,15 +17,18 @@ class HDDService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options: FilterOptions[Info.HDD] = {};
-    this.parse(params, FormFactor.HDD, options, "form_factor");
-    this.parse(params, Primitive.Number, options, "capacity");
-    this.parse(params, InternalConnectors.Storage.HDD, options, "interface");
-    this.parse(params, Primitive.Number, options, "read_speed");
-    this.parse(params, Primitive.Number, options, "write_speed");
-    this.parse(params, Primitive.Number, options, "rotational_speed");
+    const parsedParams = HDD.Filter.parse(params);
+    const options = new FilterOptionBuilder<
+      NonNullable<FilterOptions[Info.HDD]>
+    >()
+      .add("form_factor", parsedParams["form_factor"])
+      .add("capacity", parsedParams["capacity"])
+      .add("interface", parsedParams["interface"])
+      .add("read_speed", parsedParams["read_speed"])
+      .add("write_speed", parsedParams["write_speed"])
+      .add("rotational_speed", parsedParams["rotational_speed"]);
 
-    if (Object.keys(options).length > 0) result[Info.HDD] = options;
+    if (options.build()) result[Info.HDD] = options.build();
 
     return result;
   }

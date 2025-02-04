@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import Part from "@/utils/interface/info/Parts";
-import { Primitive } from "@/utils/interface/utils";
+import GraphicCard from "@/utils/interface/product/GraphicCard";
 import { Products, Info } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
   [Info.GRAPHIC_CARD]: DetailInfo[Info.GRAPHIC_CARD];
@@ -16,15 +17,18 @@ class GraphicCardService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options: FilterOptions[Info.GRAPHIC_CARD] = {};
-    this.parse(params, Primitive.Number, options, "length");
-    this.parse(params, Primitive.Number, options, "base_frequency");
-    this.parse(params, Primitive.Number, options, "boost_frequency");
-    this.parse(params, Primitive.Number, options, "width");
-    this.parse(params, Primitive.Number, options, "height");
-    this.parse(params, Primitive.Number, options, "minimum_psu");
+    const parsedParams = GraphicCard.Filter.parse(params);
+    const options = new FilterOptionBuilder<
+      NonNullable<FilterOptions[Info.GRAPHIC_CARD]>
+    >()
+      .add("length", parsedParams["length"])
+      .add("base_frequency", parsedParams["base_frequency"])
+      .add("boost_frequency", parsedParams["boost_frequency"])
+      .add("width", parsedParams["width"])
+      .add("height", parsedParams["height"])
+      .add("minimum_psu", parsedParams["minimum_psu"]);
 
-    if (Object.keys(options).length > 0) result[Info.GRAPHIC_CARD] = options;
+    if (options.build()) result[Info.GRAPHIC_CARD] = options.build();
 
     return result;
   }

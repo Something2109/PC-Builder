@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import Part from "@/utils/interface/info/Parts";
+import Cooler from "@/utils/interface/product/Cooler";
 import { Products, Info } from "@/utils/Enum";
-import { Material, Primitive } from "@/utils/interface/utils";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
   [Info.COOLER]: DetailInfo[Info.COOLER];
@@ -16,11 +17,14 @@ class CoolerService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options: FilterOptions[Info.COOLER] = {};
-    this.parse(params, Primitive.String, options, "socket");
-    this.parse(params, Material.Metal, options, "cpu_plate");
+    const parsedParams = Cooler.Filter.parse(params);
+    const options = new FilterOptionBuilder<
+      NonNullable<FilterOptions[Info.COOLER]>
+    >()
+      .add("socket", parsedParams["socket"])
+      .add("cpu_plate", parsedParams["cpu_plate"]);
 
-    if (Object.keys(options).length > 0) result[Info.COOLER] = options;
+    if (options.build()) result[Info.COOLER] = options.build();
 
     return result;
   }

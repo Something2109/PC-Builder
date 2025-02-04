@@ -1,13 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import Part from "@/utils/interface/info/Parts";
-import {
-  FormFactor,
-  InternalConnectors,
-  Primitive,
-} from "@/utils/interface/utils";
+import Mainboard from "@/utils/interface/product/Mainboard";
 import { Products, Info } from "@/utils/Enum";
 import { BaseDetailPartService } from "../interface/service.interface";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
   [Info.MAIN]: DetailInfo[Info.MAIN];
@@ -20,13 +17,16 @@ class MainboardService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options: FilterOptions[Info.MAIN] = {};
-    this.parse(params, Primitive.String, options, "socket");
-    this.parse(params, FormFactor.Mainboard, options, "form_factor");
-    this.parse(params, FormFactor.RAM, options, "ram_form_factor");
-    this.parse(params, InternalConnectors.RAM, options, "ram_interface");
+    const parsedParams = Mainboard.Filter.parse(params);
+    const options = new FilterOptionBuilder<
+      NonNullable<FilterOptions[Info.MAIN]>
+    >()
+      .add("socket", parsedParams["socket"])
+      .add("form_factor", parsedParams["form_factor"])
+      .add("ram_form_factor", parsedParams["ram_form_factor"])
+      .add("ram_interface", parsedParams["ram_interface"]);
 
-    if (Object.keys(options).length > 0) result[Info.MAIN] = options;
+    if (options.build()) result[Info.MAIN] = options.build();
 
     return result;
   }
