@@ -6,11 +6,11 @@ import {
   Primitive,
 } from "@/utils/interface/utils";
 import { Products, Info } from "@/utils/Enum";
-import Pump from "@/utils/interface/part/Pump";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [Info.PUMP]: Pump.Info;
+  [Info.PUMP]: DetailInfo[Info.PUMP];
 };
 
 @Injectable()
@@ -20,7 +20,7 @@ class PumpService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options = {};
+    const options: FilterOptions[Info.PUMP] = {};
     this.parse(params, FormFactor.Pump, options, "form_factor");
     this.parse(params, Primitive.Number, options, "flow_rate");
     this.parse(
@@ -36,7 +36,7 @@ class PumpService extends BaseDetailPartService<Detail> {
       "control_connector"
     );
 
-    if (Object.keys(options).length > 0) result[Products.PUMP] = options;
+    if (Object.keys(options).length > 0) result[Info.PUMP] = options;
 
     return result;
   }

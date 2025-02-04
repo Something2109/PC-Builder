@@ -2,11 +2,11 @@ import { Injectable } from "@nestjs/common";
 import Part from "@/utils/interface/part/Parts";
 import { Primitive } from "@/utils/interface/utils";
 import { Products, Info } from "@/utils/Enum";
-import GraphicCard from "@/utils/interface/part/GraphicCard";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [Info.GRAPHIC_CARD]: GraphicCard.Info;
+  [Info.GRAPHIC_CARD]: DetailInfo[Info.GRAPHIC_CARD];
 };
 
 @Injectable()
@@ -16,7 +16,7 @@ class GraphicCardService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options = {};
+    const options: FilterOptions[Info.GRAPHIC_CARD] = {};
     this.parse(params, Primitive.Number, options, "length");
     this.parse(params, Primitive.Number, options, "base_frequency");
     this.parse(params, Primitive.Number, options, "boost_frequency");
@@ -24,8 +24,7 @@ class GraphicCardService extends BaseDetailPartService<Detail> {
     this.parse(params, Primitive.Number, options, "height");
     this.parse(params, Primitive.Number, options, "minimum_psu");
 
-    if (Object.keys(options).length > 0)
-      result[Products.GRAPHIC_CARD] = options;
+    if (Object.keys(options).length > 0) result[Info.GRAPHIC_CARD] = options;
 
     return result;
   }

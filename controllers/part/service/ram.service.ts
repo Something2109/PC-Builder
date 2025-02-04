@@ -6,11 +6,11 @@ import {
   InternalConnectors,
   Primitive,
 } from "@/utils/interface/utils";
-import RAM from "@/utils/interface/part/RAM";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [Info.RAM]: RAM.Info;
+  [Info.RAM]: DetailInfo[Info.RAM];
 };
 
 @Injectable()
@@ -20,12 +20,12 @@ class RAMService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options = {};
+    const options: FilterOptions[Info.RAM] = {};
     this.parse(params, FormFactor.RAM, options, "form_factor");
     this.parse(params, Primitive.Number, options, "capacity");
     this.parse(params, InternalConnectors.RAM, options, "interface");
 
-    if (Object.keys(options).length > 0) result[Products.RAM] = options;
+    if (Object.keys(options).length > 0) result[Info.RAM] = options;
 
     return result;
   }

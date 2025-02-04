@@ -9,9 +9,8 @@ import {
   CaseRadiatorSupportModel,
 } from "@/models/parts/tables/Case";
 import { ModelScopes } from "@/models/interface";
-import { FilterOptions } from "@/utils/interface";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import Part from "@/utils/interface/part/Parts";
-import Case from "@/utils/interface/part/Case";
 import { FormFactor } from "@/utils/interface/utils";
 import { Products, Info } from "@/utils/Enum";
 import {
@@ -20,7 +19,7 @@ import {
 } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [Info.CASE]: Case.Info;
+  [Info.CASE]: DetailInfo[Info.CASE];
 };
 
 @Injectable()
@@ -30,7 +29,7 @@ class CaseService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options = {};
+    const options: FilterOptions[Info.CASE] = {};
     this.parse(params, FormFactor.Case, options, "form_factor");
     this.parse(params, FormFactor.Mainboard, options, "mainboard_support");
     this.parse(params, FormFactor.Radiator, options, "radiator_support");

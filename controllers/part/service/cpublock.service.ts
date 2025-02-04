@@ -5,10 +5,9 @@ import {
 } from "@/models/parts/tables/CPUBlock";
 import { ModelScopes } from "@/models/interface";
 import { PartInformation } from "@/models/parts/tables/Part";
-import { FilterOptions } from "@/utils/interface";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import Part from "@/utils/interface/part/Parts";
 import { Products, Info } from "@/utils/Enum";
-import CPUBlock from "@/utils/interface/part/CPUBlock";
 import {
   BaseDetailPartService,
   SearchOptions,
@@ -16,7 +15,7 @@ import {
 import { Material, Primitive } from "@/utils/interface/utils";
 
 type Detail = Part.BasicInfo & {
-  [Info.CPU_BLOCK]: CPUBlock.Info;
+  [Info.CPU_BLOCK]: DetailInfo[Info.CPU_BLOCK];
 };
 
 @Injectable()
@@ -26,11 +25,11 @@ class CPUBlockService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options = {};
+    const options: FilterOptions[Info.CPU_BLOCK] = {};
     this.parse(params, Primitive.String, options, "socket");
     this.parse(params, Material.Metal, options, "plate");
 
-    if (Object.keys(options).length > 0) result[Products.CPU_BLOCK] = options;
+    if (Object.keys(options).length > 0) result[Info.CPU_BLOCK] = options;
 
     return result;
   }

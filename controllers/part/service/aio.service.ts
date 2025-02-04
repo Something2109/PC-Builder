@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import Part from "@/utils/interface/part/Parts";
 import { Info, Products } from "@/utils/Enum";
-import AIO from "@/utils/interface/part/AIO";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { FormFactor, Material, Primitive } from "@/utils/interface/utils";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [Info.AIO]: AIO.Info;
+  [Info.AIO]: DetailInfo[Info.AIO];
 };
 
 @Injectable()
@@ -16,12 +16,12 @@ class AIOService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options = {};
+    const options: FilterOptions[Info.AIO] = {};
     this.parse(params, Primitive.String, options, "socket");
     this.parse(params, FormFactor.Radiator, options, "form_factor");
     this.parse(params, Material.Metal, options, "cpu_plate");
 
-    if (Object.keys(options).length > 0) result[Products.AIO] = options;
+    if (Object.keys(options).length > 0) result[Info.AIO] = options;
 
     return result;
   }

@@ -5,12 +5,13 @@ import {
   InternalConnectors,
   Primitive,
 } from "@/utils/interface/utils";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { Products, Info } from "@/utils/Enum";
 import SSD from "@/utils/interface/part/SSD";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [Info.SSD]: SSD.Info;
+  [Info.SSD]: DetailInfo[Info.SSD];
 };
 
 @Injectable()
@@ -20,7 +21,7 @@ class SSDService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options = {};
+    const options: FilterOptions[Info.SSD] = {};
     this.parse(params, SSD.MemoryCell, options, "memory_type");
     this.parse(params, FormFactor.SSD, options, "form_factor");
     this.parse(params, Primitive.Number, options, "capacity");
@@ -28,7 +29,7 @@ class SSDService extends BaseDetailPartService<Detail> {
     this.parse(params, Primitive.Number, options, "read_speed");
     this.parse(params, Primitive.Number, options, "write_speed");
 
-    if (Object.keys(options).length > 0) result[Products.SSD] = options;
+    if (Object.keys(options).length > 0) result[Info.SSD] = options;
 
     return result;
   }

@@ -1,14 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import Part from "@/utils/interface/part/Parts";
 import { Products, Info } from "@/utils/Enum";
-import CPU from "@/utils/interface/part/CPU";
-import GPU from "@/utils/interface/part/GPU";
+import Part from "@/utils/interface/part/Parts";
 import { Primitive } from "@/utils/interface/utils";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [Info.CPU]: CPU.Info;
-  [Info.GPU]?: GPU.Info;
+  [Info.CPU]: DetailInfo[Info.CPU];
+  [Info.GPU]?: DetailInfo[Info.GPU];
 };
 
 @Injectable()
@@ -18,7 +17,7 @@ class CPUService extends BaseDetailPartService<Detail> {
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
 
-    const options = {};
+    const options: FilterOptions[Info.CPU] = {};
     this.parse(params, Primitive.String, options, "socket");
     this.parse(params, Primitive.Number, options, "total_cores");
     this.parse(params, Primitive.Number, options, "total_threads");
@@ -27,7 +26,7 @@ class CPUService extends BaseDetailPartService<Detail> {
     this.parse(params, Primitive.Number, options, "L3_cache");
     this.parse(params, Primitive.Number, options, "tdp");
 
-    if (Object.keys(options).length > 0) result[Products.CPU] = options;
+    if (Object.keys(options).length > 0) result[Info.CPU] = options;
 
     return result;
   }
