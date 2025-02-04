@@ -1,5 +1,5 @@
-import { z, ZodSchema } from "zod";
-import { Info, Products } from "../Enum";
+import { z } from "zod";
+import { Info } from "../Enum";
 import AIO from "./part/AIO";
 import Case from "./part/Case";
 import Cooler from "./part/Cooler";
@@ -16,7 +16,8 @@ import SSD from "./part/SSD";
 import CPUBlock from "./part/CPUBlock";
 import Pump from "./part/Pump";
 import Radiator from "./part/Radiator";
-import { FormFactor, InternalConnectors, Material, Primitive } from "./utils";
+import { Info as InfoNamespace } from "./info";
+import { Product } from "./product";
 
 /**
  * DECLARE THE INFORMATION AND FILTER OBJECT OF EACH PRODUCT AND PRODUCT TYPE
@@ -117,221 +118,18 @@ export const FilterOptions = z
 
 export type FilterOptions = z.infer<typeof FilterOptions>;
 
-/**
- * DECLARE THE {@link Info} RELATED MAPPING OBJECTS
- * TO BE USED IN MANY DYNAMIC MAPPING OF THE PROJECT
- */
+const InfoLabels = InfoNamespace.Label;
+const AttributeLabels = InfoNamespace.AttributeLabels;
+const SummaryAttributes = InfoNamespace.SummaryAttributes;
+const FilterAttributes = InfoNamespace.FilterAttributes;
+const ProductInfo = Product.Info;
+const ProductFilterOptions = Product.FilterOptions;
 
-/**
- * The label list of the information.
- * Contains the label corresponding to each {@link Info} type.
- */
-export const InfoLabels: Record<Info, string> = {
-  [Info.CPU]: "CPU",
-  [Info.GPU]: "GPU",
-  [Info.GRAPHIC_CARD]: "Graphic Card",
-  [Info.MAIN]: "Mainboard",
-  [Info.RAM]: "RAM",
-  [Info.SSD]: "SSD",
-  [Info.HDD]: "HDD",
-  [Info.PSU]: "PSU",
-  [Info.CASE]: "Case",
-  [Info.FAN]: "Fan",
-  [Info.COOLER]: "Cooler",
-  [Info.AIO]: "AIO",
-  [Info.CPU_BLOCK]: "CPU Block",
-  [Info.PUMP]: "Pump",
-  [Info.RADIATOR]: "Radiator",
-};
-
-/**
- * The attribute label list of the information.
- * Contains the label corresponding to each attribute in each {@link Info} type.
- */
-export const AttributeLabels: Record<Info, Record<string, string>> = {
-  [Info.CPU]: CPU.Label,
-  [Info.GPU]: GPU.Label,
-  [Info.GRAPHIC_CARD]: GraphicCard.Label,
-  [Info.MAIN]: Mainboard.Label,
-  [Info.RAM]: RAM.Label,
-  [Info.SSD]: SSD.Label,
-  [Info.HDD]: HDD.Label,
-  [Info.PSU]: PSU.Label,
-  [Info.CASE]: Case.Label,
-  [Info.FAN]: Fan.Label,
-  [Info.COOLER]: Cooler.Label,
-  [Info.AIO]: AIO.Label,
-  [Info.CPU_BLOCK]: CPUBlock.Label,
-  [Info.PUMP]: Pump.Label,
-  [Info.RADIATOR]: Radiator.Label,
-};
-
-/**
- * The summary attribute list of the information.
- * Contains the attributes that are considered as the notable attributes of each {@link Info} type.
- */
-export const SummaryAttributes: Record<Info, string[]> = {
-  [Info.CPU]: CPU.SummaryAttributes,
-  [Info.GPU]: GPU.SummaryAttributes,
-  [Info.GRAPHIC_CARD]: GraphicCard.SummaryAttributes,
-  [Info.MAIN]: Mainboard.SummaryAttributes,
-  [Info.RAM]: RAM.SummaryAttributes,
-  [Info.SSD]: SSD.SummaryAttributes,
-  [Info.HDD]: HDD.SummaryAttributes,
-  [Info.PSU]: PSU.SummaryAttributes,
-  [Info.CASE]: Case.SummaryAttributes,
-  [Info.FAN]: Fan.SummaryAttributes,
-  [Info.COOLER]: Cooler.SummaryAttributes,
-  [Info.AIO]: AIO.SummaryAttributes,
-  [Info.CPU_BLOCK]: CPUBlock.SummaryAttributes,
-  [Info.PUMP]: Pump.SummaryAttributes,
-  [Info.RADIATOR]: Radiator.SummaryAttributes,
-};
-
-/**
- * The filter attribute list of the information.
- * Contains the attributes that can be used as filter in each {@link Info} type.
- */
-export const FilterAttributes: Record<Info, string[]> = {
-  [Info.CPU]: CPU.FilterAttributes,
-  [Info.GPU]: GPU.FilterAttributes,
-  [Info.GRAPHIC_CARD]: GraphicCard.FilterAttributes,
-  [Info.MAIN]: Mainboard.FilterAttributes,
-  [Info.RAM]: RAM.FilterAttributes,
-  [Info.SSD]: SSD.FilterAttributes,
-  [Info.HDD]: HDD.FilterAttributes,
-  [Info.PSU]: PSU.FilterAttributes,
-  [Info.CASE]: Case.FilterAttributes,
-  [Info.FAN]: Fan.FilterAttributes,
-  [Info.COOLER]: Cooler.FilterAttributes,
-  [Info.AIO]: AIO.FilterAttributes,
-  [Info.CPU_BLOCK]: CPUBlock.FilterAttributes,
-  [Info.PUMP]: Pump.FilterAttributes,
-  [Info.RADIATOR]: Radiator.FilterAttributes,
-};
-
-/**
- * DECLARE THE PRODUCT RELATED MAPPING AND FILTER.
- */
-
-/**
- * The mapping from the {@link Products} to the {@link Info} type.
- * Contains all the {@link Info} that a {@link Products} type can have.
- */
-export const ProductInfo: { [key in Products]: Info[] } = {
-  [Products.CPU]: [Info.CPU, Info.GPU],
-  [Products.GPU]: [Info.GPU],
-  [Products.GRAPHIC_CARD]: [Info.GRAPHIC_CARD],
-  [Products.MAIN]: [Info.MAIN],
-  [Products.RAM]: [Info.RAM],
-  [Products.SSD]: [Info.SSD],
-  [Products.HDD]: [Info.HDD],
-  [Products.PSU]: [Info.PSU],
-  [Products.CASE]: [Info.CASE],
-  [Products.FAN]: [Info.FAN],
-  [Products.COOLER]: [Info.COOLER],
-  [Products.AIO]: [Info.AIO],
-  [Products.CPU_BLOCK]: [Info.CPU_BLOCK],
-  [Products.PUMP]: [Info.PUMP],
-  [Products.RADIATOR]: [Info.RADIATOR],
-};
-
-/**
- * The product filter options of each {@link Products} type.
- * Contains the attributes and the schema to verify the corresponsding value.
- * This is used to declare and verify the attributes of the product.
- * The attributes here can be different from {@link Info} filter options
- * and the mapping between the two should be defined in more specific implementation.
- */
-export const ProductFilterOptions: {
-  [key in Products]: Record<string, ZodSchema>;
-} = {
-  [Products.CPU]: {
-    socket: Primitive.String,
-    total_cores: Primitive.Number,
-    total_threads: Primitive.Number,
-    base_frequency: Primitive.Number,
-    turbo_frequency: Primitive.Number,
-    L3_cache: Primitive.Number,
-    tdp: Primitive.Number,
-  },
-  [Products.GPU]: {
-    base_frequency: Primitive.Number,
-    boost_frequency: Primitive.Number,
-    memory_size: Primitive.Number,
-    memory_type: Primitive.String,
-    tdp: Primitive.Number,
-  },
-  [Products.GRAPHIC_CARD]: {
-    length: Primitive.Number,
-    base_frequency: Primitive.Number,
-    boost_frequency: Primitive.Number,
-    width: Primitive.Number,
-    height: Primitive.Number,
-    minimum_psu: Primitive.Number,
-  },
-  [Products.MAIN]: {
-    socket: Primitive.String,
-    form_factor: FormFactor.Mainboard,
-    ram_form_factor: FormFactor.RAM,
-    ram_interface: FormFactor.RAM,
-  },
-  [Products.RAM]: {
-    form_factor: FormFactor.RAM,
-    capacity: Primitive.Number,
-    interface: InternalConnectors.RAM,
-  },
-  [Products.SSD]: {
-    memory_type: SSD.MemoryCell,
-    form_factor: FormFactor.SSD,
-    capacity: Primitive.Number,
-    interface: InternalConnectors.Storage.SSD,
-    read_speed: Primitive.Number,
-    write_speed: Primitive.Number,
-  },
-  [Products.HDD]: {
-    form_factor: FormFactor.HDD,
-    capacity: Primitive.Number,
-    interface: InternalConnectors.Storage.HDD,
-    read_speed: Primitive.Number,
-    write_speed: Primitive.Number,
-    rotational_speed: Primitive.Number,
-  },
-  [Products.PSU]: {
-    form_factor: FormFactor.PSU,
-    wattage: Primitive.Number,
-    efficiency: Primitive.Number,
-    modular: PSU.Modular,
-  },
-  [Products.CASE]: {
-    form_factor: FormFactor.Case,
-    mainboard_support: FormFactor.Mainboard,
-    radiator_support: FormFactor.Radiator,
-    psu_support: FormFactor.PSU,
-  },
-  [Products.COOLER]: {
-    socket: Primitive.String,
-    cpu_plate: Material.Metal,
-  },
-  [Products.AIO]: {
-    socket: Primitive.String,
-    form_factor: FormFactor.Radiator,
-    cpu_plate: Material.Metal,
-  },
-  [Products.FAN]: {
-    form_factor: FormFactor.Fan,
-    bearing: Fan.Bearing,
-  },
-  [Products.CPU_BLOCK]: {
-    socket: Primitive.String,
-    plate: Material.Metal,
-  },
-  [Products.PUMP]: {
-    form_factor: FormFactor.Pump,
-    flow_rate: Primitive.Number,
-  },
-  [Products.RADIATOR]: {
-    form_factor: FormFactor.Radiator,
-    material: Material.Metal,
-  },
+export {
+  InfoLabels,
+  AttributeLabels,
+  SummaryAttributes,
+  FilterAttributes,
+  ProductInfo,
+  ProductFilterOptions,
 };
