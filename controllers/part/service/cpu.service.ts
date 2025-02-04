@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Products, Info } from "@/utils/Enum";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 import { Primitive } from "@/utils/interface/utils";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { ModelScopes } from "@/models/interface";
 import { Products } from "@/utils/Enum";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 import {
   BaseDetailPartService,
   BasePartService,

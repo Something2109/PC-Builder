@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { Products, Info } from "@/utils/Enum";
-import Fan from "@/utils/interface/part/Fan";
+import Fan from "@/utils/interface/info/Fan";
 import { FormFactor } from "@/utils/interface/utils";
 import { BaseDetailPartService } from "../interface/service.interface";
 

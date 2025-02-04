@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 import { FormFactor, Primitive } from "@/utils/interface/utils";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { Products, Info } from "@/utils/Enum";
-import PSU from "@/utils/interface/part/PSU";
+import PSU from "@/utils/interface/info/PSU";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {

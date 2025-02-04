@@ -6,7 +6,7 @@ import {
 import { ModelScopes } from "@/models/interface";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 import { Products, Info } from "@/utils/Enum";
 import {
   BaseDetailPartService,

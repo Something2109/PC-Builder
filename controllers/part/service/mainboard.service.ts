@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 import {
   FormFactor,
   InternalConnectors,
