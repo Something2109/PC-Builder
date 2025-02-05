@@ -1,21 +1,16 @@
-import { FormFactor, FilterOptions, Material } from "../utils";
+import { FormFactor, Material, FilterOptions, Primitive } from "../utils";
 import { z } from "zod";
 
-export namespace AIO {
+export namespace Radiator {
   export const Schema = z.object({
     form_factor: FormFactor.Radiator,
 
-    radiator_width: z.number(),
-    radiator_length: z.number(),
-    radiator_height: z.number(),
+    width: Primitive.Number,
+    length: Primitive.Number,
+    height: Primitive.Number,
 
-    socket: z.string(),
-    cpu_plate: Material.Metal,
-
-    pump_width: z.number(),
-    pump_length: z.number(),
-    pump_height: z.number(),
-    pump_speed: z.number(),
+    fpi: Primitive.Number,
+    material: Material.Metal,
   });
 
   export type Info = z.infer<typeof Schema>;
@@ -23,23 +18,17 @@ export namespace AIO {
   export const Label: { [key in keyof Info]: string } = {
     form_factor: "Form Factor",
 
-    radiator_width: "Radiator Width",
-    radiator_length: "Radiator Length",
-    radiator_height: "Radiator Height",
+    width: "Width",
+    length: "Length",
+    height: "Height",
 
-    socket: "Socket",
-    cpu_plate: "CPU Plate",
-
-    pump_width: "Pump Width",
-    pump_length: "Pump Length",
-    pump_height: "Pump Height",
-    pump_speed: "Pump Speed",
+    fpi: "FPI",
+    material: "Material",
   };
 
   export const SummarySchema = Schema.pick({
     form_factor: true,
-    socket: true,
-    cpu_plate: true,
+    material: true,
   });
 
   export const SummaryAttributes = SummarySchema.keyof().options;
@@ -51,14 +40,13 @@ export namespace AIO {
   export const FilterOptionSchema = z
     .object({
       form_factor: FilterOptions(FormFactor.Radiator),
-      socket: FilterOptions(z.string()),
-      cpu_plate: FilterOptions(Material.Metal),
+      material: FilterOptions(Material.Metal),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
     form_factor: FormFactor.Radiator.options,
-    cpu_plate: Material.Metal.options,
+    material: Material.Metal.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;
@@ -68,4 +56,4 @@ export namespace AIO {
   export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
-export default AIO;
+export default Radiator;

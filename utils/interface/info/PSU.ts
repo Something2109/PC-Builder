@@ -1,4 +1,9 @@
-import { FormFactor, FilterOptions, NumberFilterOptions } from "../utils";
+import {
+  FormFactor,
+  FilterOptions,
+  NumberFilterOptions,
+  Primitive,
+} from "../utils";
 import { z } from "zod";
 
 export namespace PSU {
@@ -23,20 +28,20 @@ export namespace PSU {
   export type Efficiency = z.infer<typeof Efficiency>;
 
   export const Schema = z.object({
-    wattage: z.number(),
+    wattage: Primitive.Number,
     efficiency: Efficiency,
 
     form_factor: FormFactor.PSU,
-    width: z.number(),
-    length: z.number(),
-    height: z.number(),
+    width: Primitive.Number,
+    length: Primitive.Number,
+    height: Primitive.Number,
     modular: Modular,
 
-    atx_pin: z.number(),
-    cpu_pin: z.number(),
-    pcie_pin: z.number(),
-    sata_pin: z.number(),
-    peripheral_pin: z.number(),
+    atx_pin: Primitive.Number,
+    cpu_pin: Primitive.Number,
+    pcie_pin: Primitive.Number,
+    sata_pin: Primitive.Number,
+    peripheral_pin: Primitive.Number,
   });
 
   export type Info = z.infer<typeof Schema>;

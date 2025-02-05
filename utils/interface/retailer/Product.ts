@@ -1,10 +1,11 @@
+import { Primitive } from "../utils";
 import { z } from "zod";
 
 export const RetailProductSchema = z.object({
-  name: z.string(),
-  price: z.number(),
-  link: z.string().url(),
-  img: z.string().url().nullish(),
+  name: Primitive.String,
+  price: Primitive.Number,
+  link: Primitive.String.url(),
+  img: Primitive.String.url().nullish(),
   availability: z.boolean(),
 });
 
