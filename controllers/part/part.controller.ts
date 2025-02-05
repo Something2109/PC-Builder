@@ -20,7 +20,7 @@ const ProductValidator = new ParseEnumPipe(Products, {
   exceptionFactory: () => new NotFoundException("Product's not found"),
 });
 const FilterValidator = new ZodValidationPipe(FilterOptions);
-const DetailValidator = new ZodValidationPipe(DetailInfo);
+const DetailValidator = new ZodValidationPipe(DetailInfo.partial());
 
 @Controller("api/part")
 export class PartController {
