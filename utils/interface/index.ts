@@ -17,7 +17,7 @@ import CPUBlock from "./info/CPUBlock";
 import Pump from "./info/Pump";
 import Radiator from "./info/Radiator";
 import { Info as InfoNamespace } from "./info";
-import { Product } from "./product";
+import { Product as ProductNamespace } from "./product";
 import { Primitive } from "./utils";
 
 /**
@@ -123,8 +123,8 @@ const InfoLabels = InfoNamespace.Label;
 const AttributeLabels = InfoNamespace.AttributeLabels;
 const SummaryAttributes = InfoNamespace.SummaryAttributes;
 const FilterAttributes = InfoNamespace.FilterAttributes;
-const ProductInfo = Product.Info;
-const ProductFilterOptions = Product.FilterOptions;
+const ProductInfo = ProductNamespace.Info;
+const ProductFilterOptions = ProductNamespace.FilterOptions;
 
 export {
   InfoLabels,
