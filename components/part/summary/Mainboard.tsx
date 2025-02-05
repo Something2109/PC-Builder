@@ -1,5 +1,5 @@
 import { GenericSummaryCells } from "../TableWrapper";
-import Mainboard from "@/utils/interface/part/Mainboard";
+import Mainboard from "@/utils/interface/info/Mainboard";
 import { FunctionComponent } from "react";
 
 const Components: {

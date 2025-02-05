@@ -1,4 +1,4 @@
-import RAM from "@/utils/interface/part/RAM";
+import RAM from "@/utils/interface/info/RAM";
 import { FunctionComponent } from "react";
 import { GenericSummaryCells } from "../TableWrapper";
 

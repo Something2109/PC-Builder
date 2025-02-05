@@ -1,6 +1,6 @@
 import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
-import RAM from "@/utils/interface/part/RAM";
+import RAM from "@/utils/interface/info/RAM";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 

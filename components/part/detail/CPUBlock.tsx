@@ -1,4 +1,4 @@
-import CPUBlock from "@/utils/interface/part/CPUBlock";
+import CPUBlock from "@/utils/interface/info/CPUBlock";
 import { GenericDetailTable } from "../TableWrapper";
 import { FunctionComponent } from "react";
 

@@ -1,5 +1,5 @@
 import { GenericDetailTable } from "../TableWrapper";
-import AIO from "@/utils/interface/part/AIO";
+import AIO from "@/utils/interface/info/AIO";
 import { FunctionComponent } from "react";
 
 const Components: {

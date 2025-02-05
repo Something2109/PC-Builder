@@ -6,7 +6,7 @@ import {
   ResponsiveWrapper,
 } from "@/components/utils/FlexWrapper";
 import { Input } from "@/components/utils/Input";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 import { useState, TableHTMLAttributes } from "react";
 
 export default function PartFieldset({

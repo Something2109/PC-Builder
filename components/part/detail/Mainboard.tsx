@@ -1,5 +1,5 @@
 import { Table, GenericDetailTable } from "../TableWrapper";
-import Mainboard from "@/utils/interface/part/Mainboard";
+import Mainboard from "@/utils/interface/info/Mainboard";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 

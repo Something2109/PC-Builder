@@ -1,6 +1,6 @@
 import { GenericInputTable } from "../TableWrapper";
 import { Input } from "@/components/utils/Input";
-import GPU from "@/utils/interface/part/GPU";
+import GPU from "@/utils/interface/info/GPU";
 import { FunctionComponent } from "react";
 
 const Components: {

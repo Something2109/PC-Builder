@@ -7,7 +7,7 @@ import {
 import { Products, Info } from "@/utils/Enum";
 import { lazy, TableHTMLAttributes } from "react";
 import { PartSummaryCells } from "./summary/Part";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 
 const table = "border-separate border-spacing-0";
 const tableHeader =

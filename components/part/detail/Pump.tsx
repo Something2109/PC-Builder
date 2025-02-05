@@ -1,4 +1,4 @@
-import Pump from "@/utils/interface/part/Pump";
+import Pump from "@/utils/interface/info/Pump";
 import { GenericDetailTable } from "../TableWrapper";
 import { FunctionComponent } from "react";
 

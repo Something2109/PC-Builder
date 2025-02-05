@@ -1,6 +1,6 @@
 import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
-import Case from "@/utils/interface/part/Case";
+import Case from "@/utils/interface/info/Case";
 import { FormFactor } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 

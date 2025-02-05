@@ -1,5 +1,5 @@
 import { GenericDetailTable } from "../TableWrapper";
-import Fan from "@/utils/interface/part/Fan";
+import Fan from "@/utils/interface/info/Fan";
 import { FunctionComponent } from "react";
 
 const Components: {

@@ -1,4 +1,4 @@
-import CPUBlock from "@/utils/interface/part/CPUBlock";
+import CPUBlock from "@/utils/interface/info/CPUBlock";
 import { InternalConnectors, Material } from "@/utils/interface/utils";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { GenericInputTable } from "../TableWrapper";

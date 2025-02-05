@@ -1,6 +1,6 @@
 import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
-import PSU from "@/utils/interface/part/PSU";
+import PSU from "@/utils/interface/info/PSU";
 import { FormFactor } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 

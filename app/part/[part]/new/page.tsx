@@ -2,7 +2,7 @@
 
 import { PartForm } from "@/components/part/Form";
 import { Products } from "@/utils/Enum";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 import React from "react";
 
 export default function PartDetailEditPage({

@@ -1,5 +1,5 @@
 import { GenericSummaryCells } from "../TableWrapper";
-import GraphicCard from "@/utils/interface/part/GraphicCard";
+import GraphicCard from "@/utils/interface/info/GraphicCard";
 import { FunctionComponent } from "react";
 
 const Components: {

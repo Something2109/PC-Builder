@@ -1,4 +1,4 @@
-import Radiator from "@/utils/interface/part/Radiator";
+import Radiator from "@/utils/interface/info/Radiator";
 import { GenericSummaryCells } from "../TableWrapper";
 import { FunctionComponent } from "react";
 

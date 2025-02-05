@@ -1,6 +1,6 @@
 import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
-import SSD from "@/utils/interface/part/SSD";
+import SSD from "@/utils/interface/info/SSD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 

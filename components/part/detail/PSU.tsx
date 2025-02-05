@@ -1,4 +1,4 @@
-import PSU from "@/utils/interface/part/PSU";
+import PSU from "@/utils/interface/info/PSU";
 import { FunctionComponent } from "react";
 import { GenericDetailTable } from "../TableWrapper";
 

@@ -1,6 +1,6 @@
 import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
-import AIO from "@/utils/interface/part/AIO";
+import AIO from "@/utils/interface/info/AIO";
 import { FormFactor, Material } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 

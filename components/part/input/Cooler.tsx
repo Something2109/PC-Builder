@@ -1,6 +1,6 @@
 import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect, Select } from "@/components/utils/Input";
-import Cooler from "@/utils/interface/part/Cooler";
+import Cooler from "@/utils/interface/info/Cooler";
 import { Material } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 

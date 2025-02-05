@@ -1,4 +1,4 @@
-import CPU from "@/utils/interface/part/CPU";
+import CPU from "@/utils/interface/info/CPU";
 import { GenericSummaryCells } from "../TableWrapper";
 import { FunctionComponent } from "react";
 

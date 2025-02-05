@@ -1,5 +1,5 @@
 import { GenericDetailTable } from "../TableWrapper";
-import GPU from "@/utils/interface/part/GPU";
+import GPU from "@/utils/interface/info/GPU";
 import { FunctionComponent } from "react";
 
 const Components: {

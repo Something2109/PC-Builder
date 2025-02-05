@@ -1,5 +1,5 @@
 import { GenericDetailTable } from "../TableWrapper";
-import HDD from "@/utils/interface/part/HDD";
+import HDD from "@/utils/interface/info/HDD";
 import { FunctionComponent } from "react";
 
 const Components: {

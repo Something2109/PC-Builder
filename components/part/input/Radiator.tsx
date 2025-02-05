@@ -1,6 +1,6 @@
 import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
-import Radiator from "@/utils/interface/part/Radiator";
+import Radiator from "@/utils/interface/info/Radiator";
 import { FormFactor, Material } from "@/utils/interface/utils";
 import { FunctionComponent } from "react";
 

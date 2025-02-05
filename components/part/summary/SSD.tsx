@@ -1,5 +1,5 @@
 import { GenericSummaryCells } from "../TableWrapper";
-import SSD from "@/utils/interface/part/SSD";
+import SSD from "@/utils/interface/info/SSD";
 import { FunctionComponent } from "react";
 
 const Components: {

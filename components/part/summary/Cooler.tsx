@@ -1,5 +1,5 @@
 import { GenericSummaryCells } from "../TableWrapper";
-import Cooler from "@/utils/interface/part/Cooler";
+import Cooler from "@/utils/interface/info/Cooler";
 import { FunctionComponent } from "react";
 
 const Components: {

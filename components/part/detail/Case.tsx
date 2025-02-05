@@ -1,5 +1,5 @@
 import { Table, GenericDetailTable } from "../TableWrapper";
-import Case from "@/utils/interface/part/Case";
+import Case from "@/utils/interface/info/Case";
 import { FunctionComponent } from "react";
 
 const Components: {
