@@ -1,19 +1,11 @@
 "use client";
 
-import { Button, InputButton } from "@/components/utils/Button";
-import {
-  ColumnWrapper,
-  ResponsiveWrapper,
-  RowWrapper,
-} from "@/components/utils/FlexWrapper";
-import { Info, Products } from "@/utils/Enum";
-import { useRouter } from "next/navigation";
-import { lazy, FormEvent, useState, FormHTMLAttributes } from "react";
-import { DetailInfo, InfoLabels, ProductInfo } from "@/utils/interface";
-import { ObjectTable } from "../utils/ObjectTable";
+import { Button } from "@/components/utils/Button";
+import { RowWrapper } from "@/components/utils/FlexWrapper";
+import { Info } from "@/utils/Enum";
+import React, { lazy, useCallback, useState } from "react";
+import { DetailInfo, InfoLabels } from "@/utils/interface";
 import { NotificationBar } from "../utils/NotificationBar";
-
-const PartFieldset = lazy(() => import("@/components/part/input/Part"));
 
 const InputComponent = {
   [Info.CPU]: lazy(() => import("@/components/part/input/CPU")),
@@ -35,118 +27,60 @@ const InputComponent = {
   [Info.RADIATOR]: lazy(() => import("@/components/part/input/Radiator")),
 };
 
-export default function PartForm({
-  part,
+export type FormContainer = {
+  [key in Info]?: boolean;
+};
+
+export function InfoForm({
+  path,
+  info,
   defaultValue,
-  ...rest
+  remove,
 }: {
-  part: Products;
-  defaultValue: DetailInfo;
-} & Omit<FormHTMLAttributes<HTMLFormElement>, "defaultValue">) {
-  const router = useRouter();
+  path: string;
+  info: Info;
+  defaultValue?: any;
+  remove: (info: Info) => void;
+}) {
   const [error, setError] = useState<string | null>(null);
+  const save = useCallback(
+    async (data: Partial<DetailInfo[typeof info]> | null) => {
+      const body = JSON.stringify({ [info]: data });
 
-  rest.onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
-
-    const formData = new FormData(e.currentTarget);
-    const {
-      name,
-      code_name,
-      brand,
-      series,
-      launch_date,
-      url,
-      image_url,
-      ...detail
-    } = Object.fromEntries(formData.entries());
-
-    const result = {
-      id: defaultValue?.id ?? undefined,
-      part,
-      name,
-      code_name,
-      brand,
-      series,
-      url: (url as string).length > 0 ? url : null,
-      image_url: (image_url as string).length > 0 ? image_url : null,
-      launch_date,
-      [part]: detail,
-    };
-
-    fetch("/api/part", {
-      method: "POST",
-      body: JSON.stringify(result),
-    }).then((response) => {
-      if (response.ok) {
-        response
-          .json()
-          .then((value) => router.push(`/part/${value.part}/${value.id}`));
-      } else {
-        response.json().then((value) => setError(value.message));
-      }
-    });
-  };
-
-  const onDelete = () => {
-    if (confirm(`Are you sure you want to delete ${defaultValue?.name}`)) {
-      fetch("/api/part", {
-        method: "DELETE",
-        body: JSON.stringify(defaultValue),
-      }).then((response) => {
-        if (response.ok) {
-          response.json().then((value) => router.push(`/part/${value.part}`));
-        } else {
-          response.json().then((value) => setError(value.message));
-        }
+      const response = await fetch(path, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
       });
-    }
-  };
+
+      if (!response.ok) {
+        setError((await response.json()).message);
+      }
+
+      return false;
+    },
+    [defaultValue]
+  );
+
+  const Component = InputComponent[info];
+
+  if (!Component) return undefined;
 
   return (
-    <form {...rest}>
-      <RowWrapper className="flex-row-reverse sticky top-32">
-        <Button onClick={onDelete}>Delete</Button>
-        <InputButton type="submit" />
-        {error ? (
-          <NotificationBar
-            message={error}
-            remove={() => setError(null)}
-            alert
-          />
-        ) : undefined}
+    <form className="flex flex-col gap-1">
+      <RowWrapper className="sticky top-32 justify-between items-center">
+        <h1 className="text-4xl font-bold">{InfoLabels[info]}</h1>
+        <Button
+          type="submit"
+          formAction={async () => (await save(null)) && remove(info)}
+        >
+          Delete
+        </Button>
       </RowWrapper>
-      <PartFieldset defaultValue={defaultValue} />
-      <ResponsiveWrapper className="w-full align-top">
-        <ColumnWrapper className="basis-1/2">
-          <h1 className="text-4xl font-bold">Raw</h1>
-          <ObjectTable
-            className="border-2"
-            object={
-              defaultValue?.raw ? JSON.parse(defaultValue.raw) : undefined
-            }
-          />
-        </ColumnWrapper>
-        <ColumnWrapper className="basis-1/2">
-          {ProductInfo[part].map((info) => {
-            const Component = InputComponent[info];
-
-            if (!Component) return undefined;
-
-            const value = defaultValue ? defaultValue[info] : undefined;
-
-            return (
-              <>
-                <h1 className="text-4xl font-bold">{InfoLabels[info]}</h1>
-                <Component defaultValue={value as any} />
-              </>
-            );
-          })}
-        </ColumnWrapper>
-      </ResponsiveWrapper>
+      <Component onSubmit={save} defaultValue={defaultValue} />
+      {error ? (
+        <NotificationBar message={error} remove={() => setError(null)} alert />
+      ) : undefined}
     </form>
   );
 }
-
-export { PartForm };
