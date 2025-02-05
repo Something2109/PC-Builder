@@ -1,4 +1,4 @@
-import { FormFactor, FilterOptions, ExternalPorts } from "../utils";
+import { FormFactor, FilterOptions, ExternalPorts, Primitive } from "../utils";
 import { z } from "zod";
 
 export namespace Case {
@@ -15,7 +15,7 @@ export namespace Case {
 
   export const FanSupportSchema = z.record(
     Side,
-    z.record(FormFactor.Fan, z.number())
+    z.record(FormFactor.Fan, Primitive.Number)
   );
 
   export type FanSupport = z.infer<typeof FanSupportSchema>;
@@ -30,14 +30,14 @@ export namespace Case {
 
   export const HardDriveSupportSchema = z.record(
     HardDrivePlace,
-    z.record(HardDriveSize, z.number())
+    z.record(HardDriveSize, Primitive.Number)
   );
 
   export type HardDriveSupport = z.infer<typeof HardDriveSupportSchema>;
 
   export const FrontPanelPortSchema = z.record(
     ExternalPorts.Schema,
-    z.number()
+    Primitive.Number
   );
 
   export type FrontPanelPort = z.infer<typeof FrontPanelPortSchema>;
@@ -45,14 +45,14 @@ export namespace Case {
   export const Schema = z.object({
     form_factor: FormFactor.Case,
 
-    width: z.number(),
-    length: z.number(),
-    height: z.number(),
+    width: Primitive.Number,
+    length: Primitive.Number,
+    height: Primitive.Number,
 
     mainboard_support: z.array(FormFactor.Mainboard),
-    expansion_slot: z.number(),
+    expansion_slot: Primitive.Number,
 
-    max_cooler_height: z.number(),
+    max_cooler_height: Primitive.Number,
 
     radiator_support: RadiatorSupportSchema,
     fan_support: FanSupportSchema,
@@ -60,7 +60,7 @@ export namespace Case {
     hard_drive_support: HardDriveSupportSchema,
 
     psu_support: z.array(FormFactor.PSU),
-    max_psu_length: z.number(),
+    max_psu_length: Primitive.Number,
 
     front_panel_ports: FrontPanelPortSchema,
   });

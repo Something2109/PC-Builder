@@ -621,13 +621,29 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   async save(options?: SaveOptions<any> | undefined): Promise<this> {
     const result = await super.save(options);
 
-    await Promise.all([
-      ...this.mainboard_support_data?.map((support) => support.save(options)),
-      ...this.radiator_support_data?.map((support) => support.save(options)),
-      ...this.fan_support_data?.map((support) => support.save(options)),
-      ...this.hard_drive_support_data?.map((support) => support.save(options)),
-      ...this.psu_support_data?.map((support) => support.save(options)),
-    ]);
+    const promises: Promise<any>[] = [];
+    this.mainboard_support_data &&
+      promises.push(
+        ...this.mainboard_support_data?.map((support) => support.save(options))
+      );
+    this.radiator_support_data &&
+      promises.push(
+        ...this.radiator_support_data?.map((support) => support.save(options))
+      );
+    this.fan_support_data &&
+      promises.push(
+        ...this.fan_support_data?.map((support) => support.save(options))
+      );
+    this.hard_drive_support_data &&
+      promises.push(
+        ...this.hard_drive_support_data?.map((support) => support.save(options))
+      );
+    this.psu_support_data &&
+      promises.push(
+        ...this.psu_support_data?.map((support) => support.save(options))
+      );
+
+    await Promise.all(promises);
 
     return result;
   }

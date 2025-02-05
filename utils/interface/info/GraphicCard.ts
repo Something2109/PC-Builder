@@ -3,31 +3,35 @@ import {
   ExternalPorts,
   InternalConnectors,
   NumberFilterOptions,
+  Primitive,
 } from "../utils";
 import { z } from "zod";
 
 namespace GraphicCard {
   export const PowerConnectorSchema = z.record(
     InternalConnectors.Power.GraphicCard,
-    z.number()
+    Primitive.Number
   );
 
   export type PowerConnectorType = z.infer<typeof PowerConnectorSchema>;
 
-  export const PortSchema = z.record(ExternalPorts.Display.Schema, z.number());
+  export const PortSchema = z.record(
+    ExternalPorts.Display.Schema,
+    Primitive.Number
+  );
 
   export type Port = z.infer<typeof PortSchema>;
 
   export const Schema = z.object({
-    width: z.number(),
-    length: z.number(),
-    height: z.number(),
+    width: Primitive.Number,
+    length: Primitive.Number,
+    height: Primitive.Number,
 
-    base_frequency: z.number(),
-    boost_frequency: z.number(),
+    base_frequency: Primitive.Number,
+    boost_frequency: Primitive.Number,
 
-    pcie: z.number(),
-    minimum_psu: z.number(),
+    pcie: Primitive.Number,
+    minimum_psu: Primitive.Number,
     power_connector: PowerConnectorSchema,
     port: PortSchema,
 

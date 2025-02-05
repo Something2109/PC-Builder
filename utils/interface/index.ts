@@ -17,7 +17,8 @@ import CPUBlock from "./info/CPUBlock";
 import Pump from "./info/Pump";
 import Radiator from "./info/Radiator";
 import { Info as InfoNamespace } from "./info";
-import { Product } from "./product";
+import { Product as ProductNamespace } from "./product";
+import { Primitive } from "./utils";
 
 /**
  * DECLARE THE INFORMATION AND FILTER OBJECT OF EACH PRODUCT AND PRODUCT TYPE
@@ -65,7 +66,7 @@ export type SummaryInfo = z.infer<typeof SummaryInfo>;
 export const DetailInfo = Part.Schema.merge(
   z
     .object({
-      raw: z.string(),
+      raw: Primitive.String,
       [Info.CPU]: CPU.Schema.partial().nullish(),
       [Info.GPU]: GPU.Schema.partial().nullish(),
       [Info.GRAPHIC_CARD]: GraphicCard.Schema.partial().nullish(),
@@ -122,8 +123,8 @@ const InfoLabels = InfoNamespace.Label;
 const AttributeLabels = InfoNamespace.AttributeLabels;
 const SummaryAttributes = InfoNamespace.SummaryAttributes;
 const FilterAttributes = InfoNamespace.FilterAttributes;
-const ProductInfo = Product.Info;
-const ProductFilterOptions = Product.FilterOptions;
+const ProductInfo = ProductNamespace.Info;
+const ProductFilterOptions = ProductNamespace.FilterOptions;
 
 export {
   InfoLabels,

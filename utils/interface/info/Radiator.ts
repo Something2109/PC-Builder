@@ -1,15 +1,15 @@
-import { FormFactor, Material, FilterOptions } from "../utils";
+import { FormFactor, Material, FilterOptions, Primitive } from "../utils";
 import { z } from "zod";
 
 export namespace Radiator {
   export const Schema = z.object({
     form_factor: FormFactor.Radiator,
 
-    width: z.number(),
-    length: z.number(),
-    height: z.number(),
+    width: Primitive.Number,
+    length: Primitive.Number,
+    height: Primitive.Number,
 
-    fpi: z.number(),
+    fpi: Primitive.Number,
     material: Material.Metal,
   });
 

@@ -3,16 +3,17 @@ import {
   FilterOptions,
   NumberFilterOptions,
   InternalConnectors,
+  Primitive,
 } from "../utils";
 import { z } from "zod";
 
 namespace RAM {
   export const Schema = z.object({
-    speed: z.number(),
-    capacity: z.number(),
-    voltage: z.number(),
-    latency: z.array(z.number()),
-    kit: z.number(),
+    speed: Primitive.Number,
+    capacity: Primitive.Number,
+    voltage: Primitive.Number,
+    latency: z.array(Primitive.Number),
+    kit: Primitive.Number,
 
     form_factor: FormFactor.RAM,
     interface: InternalConnectors.RAM,

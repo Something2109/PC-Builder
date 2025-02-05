@@ -1,9 +1,14 @@
-import { FilterOptions, InternalConnectors, Material } from "../utils";
+import {
+  FilterOptions,
+  InternalConnectors,
+  Material,
+  Primitive,
+} from "../utils";
 import { z } from "zod";
 
 export namespace CPUBlock {
   export const Schema = z.object({
-    socket: z.array(z.string()),
+    socket: z.array(Primitive.String),
     plate: Material.Metal,
     rgb: InternalConnectors.RGB,
   });
@@ -29,7 +34,7 @@ export namespace CPUBlock {
 
   export const FilterOptionSchema = z
     .object({
-      socket: FilterOptions(z.string()),
+      socket: FilterOptions(Primitive.String),
       plate: FilterOptions(Material.Metal),
     })
     .partial();
