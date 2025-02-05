@@ -1,5 +1,6 @@
 import {
   AttributeLabels,
+  InfoLabels,
   ProductInfo,
   SummaryAttributes,
   SummaryInfo,
@@ -110,3 +111,22 @@ export const DetailTableComponent = {
   [Info.PUMP]: lazy(() => import("@/components/part/detail/Pump")),
   [Info.RADIATOR]: lazy(() => import("@/components/part/detail/Radiator")),
 };
+
+export function InfoTable({
+  info,
+  defaultValue,
+}: {
+  info: Info;
+  defaultValue?: any;
+}) {
+  const Component = DetailTableComponent[info];
+
+  if (!defaultValue || !Component) return undefined;
+
+  return (
+    <>
+      <h1 className="text-4xl font-bold">{InfoLabels[info]}</h1>
+      <Component key={info} defaultValue={defaultValue} />
+    </>
+  );
+}
