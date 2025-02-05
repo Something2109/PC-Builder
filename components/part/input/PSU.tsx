@@ -2,6 +2,7 @@ import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import PSU from "@/utils/interface/info/PSU";
 import { FormFactor } from "@/utils/interface/utils";
+import { Info } from "@/utils/Enum";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -57,4 +58,10 @@ const Components: {
   ),
 };
 
-export default GenericInputTable(Components, PSU.Label);
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return PSU.Schema.partial().parse(raw);
+}
+
+export default GenericInputTable(Components, PSU.Label, submit);

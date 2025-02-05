@@ -2,6 +2,7 @@ import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import AIO from "@/utils/interface/info/AIO";
 import { FormFactor, Material } from "@/utils/interface/utils";
+import { Info } from "@/utils/Enum";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -60,4 +61,9 @@ const Components: {
   ),
 };
 
-export default GenericInputTable(Components, AIO.Label);
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return AIO.Schema.partial().parse(raw);
+}
+export default GenericInputTable(Components, AIO.Label, submit);

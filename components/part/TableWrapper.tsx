@@ -5,6 +5,7 @@ import {
   TdHTMLAttributes,
 } from "react";
 import { RowWrapper } from "../utils/FlexWrapper";
+import { Button } from "../utils/Button";
 
 export namespace Table {
   const tableRow = "border-b-2 last:border-b-0 *:rounded-sm";
@@ -93,27 +94,37 @@ export function GenericInputTable<T extends Record<string, any>>(
   Components: {
     [key in keyof T]: FunctionComponent<{ value?: T[key]; id?: string }>;
   },
-  Labels: { [key in string]: string }
+  Labels: { [key in string]: string },
+  transform: (data: FormData) => Partial<T>
 ) {
   return ({
+    onSubmit,
     defaultValue,
     ...rest
   }: {
+    onSubmit: (data: Partial<T>) => Promise<boolean>;
     defaultValue?: Partial<T>;
-  } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => (
-    <TableWrapper {...rest}>
-      {Object.entries(Components).map(([key, Component]) => {
-        const value = defaultValue ? defaultValue[key] : undefined;
+  } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => {
+    defaultValue = defaultValue ?? ({} as T);
+    const submit = async (formData: FormData) =>
+      await onSubmit(transform(formData));
 
-        return (
-          <TableRowWrapper key={key}>
-            {Labels[key]}
-            <Component value={value} />
-          </TableRowWrapper>
-        );
-      })}
-    </TableWrapper>
-  );
+    return (
+      <>
+        <TableWrapper {...rest}>
+          {Object.entries(Components).map(([key, Component]) => (
+            <TableRowWrapper key={key}>
+              {Labels[key]}
+              <Component value={defaultValue[key]} />
+            </TableRowWrapper>
+          ))}
+        </TableWrapper>
+        <Button type="submit" formAction={submit} className="w-full">
+          Save
+        </Button>
+      </>
+    );
+  };
 }
 
 export function TableWrapper({

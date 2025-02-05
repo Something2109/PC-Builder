@@ -2,6 +2,7 @@ import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import HDD from "@/utils/interface/info/HDD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import { Info } from "@/utils/Enum";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -38,4 +39,10 @@ const Components: {
   ),
 };
 
-export default GenericInputTable(Components, HDD.Label);
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return HDD.Schema.partial().parse(raw);
+}
+
+export default GenericInputTable(Components, HDD.Label, submit);

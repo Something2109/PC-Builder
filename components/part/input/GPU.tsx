@@ -1,6 +1,7 @@
 import { GenericInputTable } from "../TableWrapper";
 import { Input } from "@/components/utils/Input";
 import GPU from "@/utils/interface/info/GPU";
+import { Info } from "@/utils/Enum";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -31,4 +32,10 @@ const Components: {
   features: ({ value }) => <></>,
 };
 
-export default GenericInputTable(Components, GPU.Label);
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return GPU.Schema.partial().parse(raw);
+}
+
+export default GenericInputTable(Components, GPU.Label, submit);

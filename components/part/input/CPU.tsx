@@ -1,6 +1,7 @@
 import { GenericInputTable } from "../TableWrapper";
 import { Input } from "@/components/utils/Input";
 import CPU from "@/utils/interface/info/CPU";
+import { Info } from "@/utils/Enum";
 import { FunctionComponent } from "react";
 
 export const Components: {
@@ -40,4 +41,9 @@ export const Components: {
   lithography: ({ value }) => <Input name="lithography" defaultValue={value} />,
 };
 
-export default GenericInputTable(Components, CPU.Label);
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return raw;
+}
+export default GenericInputTable(Components, CPU.Label, submit);

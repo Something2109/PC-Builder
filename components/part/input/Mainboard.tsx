@@ -2,6 +2,7 @@ import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import Mainboard from "@/utils/interface/info/Mainboard";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import { Info } from "@/utils/Enum";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -12,7 +13,7 @@ const Components: {
   form_factor: ({ value }) => (
     <OptionSelect
       name="form_factor"
-      options={FormFactor.Fan.options}
+      options={FormFactor.Mainboard.options}
       defaultValue={value}
     />
   ),
@@ -47,4 +48,10 @@ const Components: {
   back_panel_ports: ({ value }) => <></>,
 };
 
-export default GenericInputTable(Components, Mainboard.Label);
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return Mainboard.Schema.partial().parse(raw);
+}
+
+export default GenericInputTable(Components, Mainboard.Label, submit);

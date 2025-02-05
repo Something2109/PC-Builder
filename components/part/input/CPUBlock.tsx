@@ -1,5 +1,6 @@
 import CPUBlock from "@/utils/interface/info/CPUBlock";
 import { InternalConnectors, Material } from "@/utils/interface/utils";
+import { Info } from "@/utils/Enum";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { GenericInputTable } from "../TableWrapper";
 import { FunctionComponent } from "react";
@@ -26,4 +27,10 @@ const Components: {
   ),
 };
 
-export default GenericInputTable(Components, CPUBlock.Label);
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return CPUBlock.Schema.partial().parse(raw);
+}
+
+export default GenericInputTable(Components, CPUBlock.Label, submit);

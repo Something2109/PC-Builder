@@ -2,6 +2,7 @@ import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import Pump from "@/utils/interface/info/Pump";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import { Info } from "@/utils/Enum";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -58,4 +59,10 @@ const Components: {
   ),
 };
 
-export default GenericInputTable(Components, Pump.Label);
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return Pump.Schema.partial().parse(raw);
+}
+
+export default GenericInputTable(Components, Pump.Label, submit);

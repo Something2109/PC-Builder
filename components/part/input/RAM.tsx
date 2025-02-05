@@ -2,6 +2,7 @@ import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import RAM from "@/utils/interface/info/RAM";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import { Info } from "@/utils/Enum";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -34,4 +35,10 @@ const Components: {
   ),
 };
 
-export default GenericInputTable(Components, RAM.Label);
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return RAM.Schema.partial().parse(raw);
+}
+
+export default GenericInputTable(Components, RAM.Label, submit);

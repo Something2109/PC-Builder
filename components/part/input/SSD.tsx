@@ -2,6 +2,7 @@ import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import SSD from "@/utils/interface/info/SSD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import { Info } from "@/utils/Enum";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -43,4 +44,10 @@ const Components: {
   ),
 };
 
-export default GenericInputTable(Components, SSD.Label);
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return raw;
+}
+
+export default GenericInputTable(Components, SSD.Label, submit);

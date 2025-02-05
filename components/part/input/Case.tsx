@@ -2,6 +2,7 @@ import { GenericInputTable } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import Case from "@/utils/interface/info/Case";
 import { FormFactor } from "@/utils/interface/utils";
+import { Info } from "@/utils/Enum";
 import { FunctionComponent } from "react";
 
 const Components: {
@@ -40,4 +41,9 @@ const Components: {
   front_panel_ports: ({ value }) => <></>,
 };
 
-export default GenericInputTable(Components, Case.Label);
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return Case.Schema.partial().parse(raw);
+}
+export default GenericInputTable(Components, Case.Label, submit);
