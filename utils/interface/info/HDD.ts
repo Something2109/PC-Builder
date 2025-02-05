@@ -3,16 +3,17 @@ import {
   InternalConnectors,
   FilterOptions,
   NumberFilterOptions,
+  Primitive,
 } from "../utils";
 import { z } from "zod";
 
 export namespace HDD {
   export const Schema = z.object({
-    rotational_speed: z.number(),
-    read_speed: z.number(),
-    write_speed: z.number(),
-    capacity: z.number(),
-    cache: z.number(),
+    rotational_speed: Primitive.Number,
+    read_speed: Primitive.Number,
+    write_speed: Primitive.Number,
+    capacity: Primitive.Number,
+    cache: Primitive.Number,
 
     form_factor: FormFactor.HDD,
     interface: InternalConnectors.Storage.HDD,

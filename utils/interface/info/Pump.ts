@@ -3,6 +3,7 @@ import {
   FilterOptions,
   InternalConnectors,
   NumberFilterOptions,
+  Primitive,
 } from "../utils";
 import { z } from "zod";
 
@@ -10,14 +11,14 @@ export namespace Pump {
   export const Schema = z.object({
     form_factor: FormFactor.Pump,
 
-    width: z.number(),
-    length: z.number(),
-    height: z.number(),
+    width: Primitive.Number,
+    length: Primitive.Number,
+    height: Primitive.Number,
 
-    voltage: z.number(),
-    wattage: z.number(),
-    head_pressure: z.number(),
-    flow_rate: z.number(),
+    voltage: Primitive.Number,
+    wattage: Primitive.Number,
+    head_pressure: Primitive.Number,
+    flow_rate: Primitive.Number,
 
     power_connector: InternalConnectors.Power.Miscellanous,
     control_connector: InternalConnectors.Fan.Connector,

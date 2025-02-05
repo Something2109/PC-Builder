@@ -3,6 +3,7 @@ import {
   FilterOptions,
   NumberFilterOptions,
   InternalConnectors,
+  Primitive,
 } from "../utils";
 import { z } from "zod";
 
@@ -13,11 +14,11 @@ namespace SSD {
 
   export const Schema = z.object({
     memory_type: MemoryCell,
-    read_speed: z.number(),
-    write_speed: z.number(),
-    capacity: z.number(),
-    cache: z.number(),
-    tbw: z.number(),
+    read_speed: Primitive.Number,
+    write_speed: Primitive.Number,
+    capacity: Primitive.Number,
+    cache: Primitive.Number,
+    tbw: Primitive.Number,
 
     form_factor: FormFactor.SSD,
     interface: InternalConnectors.Storage.SSD,

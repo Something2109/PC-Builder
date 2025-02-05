@@ -1,37 +1,37 @@
-import { FilterOptions, NumberFilterOptions } from "../utils";
+import { FilterOptions, NumberFilterOptions, Primitive } from "../utils";
 import { z } from "zod";
 
 export namespace CPU {
   const CoreSchema = z.record(
-    z.string(),
+    Primitive.String,
     z.object({
-      count: z.number().optional(),
+      count: Primitive.Number.optional(),
 
-      base_frequency: z.number(),
-      turbo_frequency: z.number().optional(),
+      base_frequency: Primitive.Number,
+      turbo_frequency: Primitive.Number.optional(),
     })
   );
 
   export type Core = z.infer<typeof CoreSchema>;
 
   export const Schema = z.object({
-    family: z.string(),
+    family: Primitive.String,
 
-    socket: z.string(),
-    total_cores: z.number(),
-    total_threads: z.number(),
-    base_frequency: z.number(),
-    turbo_frequency: z.number(),
+    socket: Primitive.String,
+    total_cores: Primitive.Number,
+    total_threads: Primitive.Number,
+    base_frequency: Primitive.Number,
+    turbo_frequency: Primitive.Number,
     cores: CoreSchema,
 
-    L2_cache: z.number(),
-    L3_cache: z.number(),
-    max_memory: z.number(),
-    max_memory_channel: z.number(),
-    max_memory_bandwidth: z.number(),
+    L2_cache: Primitive.Number,
+    L3_cache: Primitive.Number,
+    max_memory: Primitive.Number,
+    max_memory_channel: Primitive.Number,
+    max_memory_bandwidth: Primitive.Number,
 
-    tdp: z.number(),
-    lithography: z.string(),
+    tdp: Primitive.Number,
+    lithography: Primitive.String,
   });
 
   export type Info = z.infer<typeof Schema>;
@@ -72,7 +72,7 @@ export namespace CPU {
 
   export const FilterOptionSchema = z
     .object({
-      socket: FilterOptions(z.string()),
+      socket: FilterOptions(Primitive.String),
       total_cores: NumberFilterOptions,
       total_threads: NumberFilterOptions,
       base_frequency: NumberFilterOptions,
