@@ -11,7 +11,7 @@ namespace Part {
     brand: Primitive.String,
     series: Primitive.String,
 
-    launch_date: z.date().nullable().optional(),
+    launch_date: z.coerce.date().nullable().optional(),
     url: Primitive.String.nullable().optional(),
     image_url: Primitive.String.nullable().optional(),
   });
