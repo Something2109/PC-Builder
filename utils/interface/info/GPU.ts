@@ -1,41 +1,41 @@
-import { FilterOptions, NumberFilterOptions } from "../utils";
+import { FilterOptions, NumberFilterOptions, Primitive } from "../utils";
 import { z } from "zod";
 
 namespace GPU {
   const CoreSchema = z.record(
-    z.string(),
+    Primitive.String,
     z
       .object({
-        generation: z.number(),
-        count: z.number(),
+        generation: Primitive.Number,
+        count: Primitive.Number,
       })
       .partial()
   );
 
   const FeatureSchema = z
     .object({
-      DirectX: z.string(),
-      OpenGL: z.string(),
-      OpenCL: z.string(),
-      Vulkan: z.string(),
-      CUDA: z.string(),
+      DirectX: Primitive.String,
+      OpenGL: Primitive.String,
+      OpenCL: Primitive.String,
+      Vulkan: Primitive.String,
+      CUDA: Primitive.String,
     })
     .partial();
 
   export const Schema = z.object({
-    family: z.string(),
+    family: Primitive.String,
 
-    core_count: z.number(),
-    execution_unit: z.number(),
-    base_frequency: z.number(),
-    boost_frequency: z.number(),
+    core_count: Primitive.Number,
+    execution_unit: Primitive.Number,
+    base_frequency: Primitive.Number,
+    boost_frequency: Primitive.Number,
     extra_cores: CoreSchema,
 
-    memory_size: z.number(),
-    memory_type: z.string(),
-    memory_bus: z.number(),
+    memory_size: Primitive.Number,
+    memory_type: Primitive.String,
+    memory_bus: Primitive.Number,
 
-    tdp: z.number(),
+    tdp: Primitive.Number,
 
     features: FeatureSchema,
   });
@@ -83,7 +83,7 @@ namespace GPU {
       base_frequency: NumberFilterOptions,
       boost_frequency: NumberFilterOptions,
       memory_size: NumberFilterOptions,
-      memory_type: FilterOptions(z.string()),
+      memory_type: FilterOptions(Primitive.String),
       tdp: NumberFilterOptions,
     })
     .partial();

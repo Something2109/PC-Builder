@@ -1,21 +1,21 @@
-import { FormFactor, FilterOptions, Material } from "../utils";
+import { FormFactor, FilterOptions, Material, Primitive } from "../utils";
 import { z } from "zod";
 
 export namespace AIO {
   export const Schema = z.object({
     form_factor: FormFactor.Radiator,
 
-    radiator_width: z.number(),
-    radiator_length: z.number(),
-    radiator_height: z.number(),
+    radiator_width: Primitive.Number,
+    radiator_length: Primitive.Number,
+    radiator_height: Primitive.Number,
 
-    socket: z.string(),
+    socket: Primitive.String,
     cpu_plate: Material.Metal,
 
-    pump_width: z.number(),
-    pump_length: z.number(),
-    pump_height: z.number(),
-    pump_speed: z.number(),
+    pump_width: Primitive.Number,
+    pump_length: Primitive.Number,
+    pump_height: Primitive.Number,
+    pump_speed: Primitive.Number,
   });
 
   export type Info = z.infer<typeof Schema>;
@@ -51,7 +51,7 @@ export namespace AIO {
   export const FilterOptionSchema = z
     .object({
       form_factor: FilterOptions(FormFactor.Radiator),
-      socket: FilterOptions(z.string()),
+      socket: FilterOptions(Primitive.String),
       cpu_plate: FilterOptions(Material.Metal),
     })
     .partial();

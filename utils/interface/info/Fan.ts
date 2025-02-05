@@ -1,4 +1,9 @@
-import { FilterOptions, FormFactor, InternalConnectors } from "../utils";
+import {
+  FilterOptions,
+  FormFactor,
+  InternalConnectors,
+  Primitive,
+} from "../utils";
 import { z } from "zod";
 
 namespace Fan {
@@ -9,17 +14,17 @@ namespace Fan {
   export const Schema = z.object({
     form_factor: FormFactor.Fan,
 
-    width: z.number(),
-    length: z.number(),
-    height: z.number(),
-    count: z.number(),
+    width: Primitive.Number,
+    length: Primitive.Number,
+    height: Primitive.Number,
+    count: Primitive.Number,
 
-    voltage: z.number(),
+    voltage: Primitive.Number,
 
-    speed: z.number(),
-    airflow: z.number(),
-    noise: z.number(),
-    static_pressure: z.number(),
+    speed: Primitive.Number,
+    airflow: Primitive.Number,
+    noise: Primitive.Number,
+    static_pressure: Primitive.Number,
     bearing: Bearing,
 
     connector: InternalConnectors.Fan.Connector,

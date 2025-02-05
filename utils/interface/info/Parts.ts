@@ -1,19 +1,19 @@
-import { FilterOptions } from "../utils";
+import { FilterOptions, Primitive } from "../utils";
 import { z } from "zod";
 
 namespace Part {
   export const Schema = z.object({
-    id: z.string(),
+    id: Primitive.String,
 
-    part: z.string(),
-    name: z.string(),
-    code_name: z.string(),
-    brand: z.string(),
-    series: z.string(),
+    part: Primitive.String,
+    name: Primitive.String,
+    code_name: Primitive.String,
+    brand: Primitive.String,
+    series: Primitive.String,
 
     launch_date: z.date().nullable().optional(),
-    url: z.string().nullable().optional(),
-    image_url: z.string().nullable().optional(),
+    url: Primitive.String.nullable().optional(),
+    image_url: Primitive.String.nullable().optional(),
   });
 
   export type BasicInfo = z.infer<typeof Schema>;
@@ -48,9 +48,9 @@ namespace Part {
 
   export const FilterOptionSchema = z
     .object({
-      part: FilterOptions(z.string()),
-      brand: FilterOptions(z.string()),
-      series: FilterOptions(z.string()),
+      part: FilterOptions(Primitive.String),
+      brand: FilterOptions(Primitive.String),
+      series: FilterOptions(Primitive.String),
     })
     .partial();
 

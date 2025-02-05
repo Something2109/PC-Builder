@@ -18,6 +18,7 @@ import Pump from "./info/Pump";
 import Radiator from "./info/Radiator";
 import { Info as InfoNamespace } from "./info";
 import { Product } from "./product";
+import { Primitive } from "./utils";
 
 /**
  * DECLARE THE INFORMATION AND FILTER OBJECT OF EACH PRODUCT AND PRODUCT TYPE
@@ -65,7 +66,7 @@ export type SummaryInfo = z.infer<typeof SummaryInfo>;
 export const DetailInfo = Part.Schema.merge(
   z
     .object({
-      raw: z.string(),
+      raw: Primitive.String,
       [Info.CPU]: CPU.Schema.partial().nullish(),
       [Info.GPU]: GPU.Schema.partial().nullish(),
       [Info.GRAPHIC_CARD]: GraphicCard.Schema.partial().nullish(),
