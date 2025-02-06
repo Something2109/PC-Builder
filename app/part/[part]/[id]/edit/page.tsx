@@ -10,13 +10,14 @@ import {
 import { ObjectTable } from "@/components/utils/ObjectTable";
 import { Products, Info } from "@/utils/Enum";
 import { DetailInfo, InfoLabels, ProductInfo } from "@/utils/interface";
-import { useEffect, useReducer, useRef, useState } from "react";
+import { use, useEffect, useReducer, useRef, useState } from "react";
 
 export default function PartDetailEditPage({
-  params: { part, id },
+  params,
 }: {
-  params: { part: Products; id: string };
+  params: Promise<{ part: Products; id: string }>;
 }) {
+  const { part, id } = use(params);
   const SaveLink = useRef(`/api/part/${part}/${id}`);
   const [forms, setForm] = useReducer(
     (state: FormContainer, info: Info) => ({ ...state, [info]: !state[info] }),

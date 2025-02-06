@@ -3,20 +3,22 @@ import { Topics } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 import React from "react";
 
-export default function TopicLayout({
+export default async function TopicLayout({
   params,
   children,
 }: {
-  params: { topic: string };
+  params: Promise<{ topic: string }>;
   children: React.ReactNode;
 }) {
-  if (!Object.values(Topics).includes(params.topic as Topics)) {
+  const { topic } = await params;
+
+  if (!Object.values(Topics).includes(topic as Topics)) {
     return notFound();
   }
 
   return (
     <>
-      <PartList path={params.topic} />
+      <PartList path={topic} />
       <section className="my-2">{children}</section>
     </>
   );

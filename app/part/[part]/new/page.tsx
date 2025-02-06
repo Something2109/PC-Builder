@@ -9,13 +9,15 @@ import {
 } from "@/components/utils/FlexWrapper";
 import { Products, Info } from "@/utils/Enum";
 import { InfoLabels, ProductInfo } from "@/utils/interface";
-import { useReducer, useRef } from "react";
+import { use, useReducer, useRef } from "react";
 
 export default function PartDetailNewPage({
-  params: { part },
+  params,
 }: {
-  params: { part: Products };
+  params: Promise<{ part: Products }>;
 }) {
+  const { part } = use(params);
+
   const SaveLink = useRef(`/api/part/${part}`);
   const [forms, setForm] = useReducer(
     (state: FormContainer, info: Info) => ({ ...state, [info]: !state[info] }),

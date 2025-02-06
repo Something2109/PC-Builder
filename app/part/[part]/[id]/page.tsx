@@ -11,10 +11,12 @@ import React from "react";
 import { DetailInfo, InfoLabels, ProductInfo } from "@/utils/interface";
 
 export default async function PartDetailPage({
-  params: { part, id },
+  params,
 }: {
-  params: { part: Products; id: string };
+  params: Promise<{ part: Products; id: string }>;
 }) {
+  const { part, id } = await params;
+
   const response = await fetch(
     `${process.env.BACKEND_HOST}/api/part/${part}/${id}`
   );

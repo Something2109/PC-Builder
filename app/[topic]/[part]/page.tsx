@@ -8,17 +8,18 @@ import React from "react";
 export default async function PartTopicPage({
   params,
 }: {
-  params: { topic: string; part: string };
+  params: Promise<{ topic: string; part: string }>;
 }) {
-  if (Object.values(Products).includes(params.part as Products)) {
+  const { topic, part } = await params;
+  if (Object.values(Products).includes(part as Products)) {
     const response = await fetch(
-      `${process.env.BACKEND_HOST}/api/${params.topic}/${params.part}`
+      `${process.env.BACKEND_HOST}/api/${topic}/${part}`
     );
 
     if (!response.ok) return notFound();
 
     const data = (await response.json()) as ArticleType;
-    const editLink = `/${params.topic}/${params.part}/edit`;
+    const editLink = `/${topic}/${part}/edit`;
 
     if (!data) {
       return redirect(editLink);
