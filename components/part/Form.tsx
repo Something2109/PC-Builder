@@ -79,7 +79,12 @@ export function InfoForm({
           type="submit"
           className="w-full"
           formAction={() => save({})}
-        >{`Add ${InfoLabels[info]} Info`}</Button>
+          disabled={pending}
+        >
+          {pending
+            ? `Adding ${InfoLabels[info]} ...`
+            : `Add ${InfoLabels[info]} Info`}
+        </Button>
       </form>
     );
   }
