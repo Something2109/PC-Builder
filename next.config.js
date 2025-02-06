@@ -3,9 +3,6 @@ const nextConfig = {
   env: {
     PageSize: "50",
   },
-  experimental: {
-    serverComponentsExternalPackages: ['sequelize'],
-  },
   images: {
     remotePatterns: [
       {
