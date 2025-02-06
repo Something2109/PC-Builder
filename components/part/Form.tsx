@@ -27,20 +27,14 @@ const InputComponent = {
   [Info.RADIATOR]: lazy(() => import("@/components/part/input/Radiator")),
 };
 
-export type FormContainer = {
-  [key in Info]?: boolean;
-};
-
 export function InfoForm({
   path,
   info,
   defaultValue,
-  remove,
 }: {
   path: string;
   info: Info;
   defaultValue?: Partial<DetailInfo[typeof info]>;
-  remove: (info: Info) => void;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [formValue, save, pending] = useActionState<
@@ -48,7 +42,7 @@ export function InfoForm({
     Partial<DetailInfo[typeof info]>
   >(async (prev, data) => {
     const label = InfoLabels[info];
-    const operation = data ? "save" : "delete";
+    const operation = prev ? (data ? "save" : "delete") : "add";
 
     setError(null);
     if (!confirm(`Are you sure you want to ${operation} ${label} info?`))
@@ -70,9 +64,6 @@ export function InfoForm({
     }
 
     const newData = (await response.json()) as DetailInfo;
-    if (!newData) {
-      remove(info);
-    }
 
     return newData[info];
   }, defaultValue);
@@ -81,12 +72,24 @@ export function InfoForm({
 
   if (!Component) return undefined;
 
+  if (!formValue) {
+    return (
+      <form className="flex flex-col gap-1">
+        <Button
+          type="submit"
+          className="w-full"
+          formAction={() => save({})}
+        >{`Add ${InfoLabels[info]} Info`}</Button>
+      </form>
+    );
+  }
+
   return (
     <form className="flex flex-col gap-1">
       <RowWrapper className="sticky top-32 justify-between items-center">
         <h1 className="text-4xl font-bold">{InfoLabels[info]}</h1>
         {!pending && (
-          <Button type="submit" formAction={async () => await save(null)}>
+          <Button type="submit" formAction={() => save(null)}>
             Delete
           </Button>
         )}

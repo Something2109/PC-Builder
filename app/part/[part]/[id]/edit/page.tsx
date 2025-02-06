@@ -1,16 +1,15 @@
 "use client";
 
-import { InfoForm, FormContainer } from "@/components/part/Form";
+import { InfoForm } from "@/components/part/Form";
 import PartForm from "@/components/part/input/Part";
-import { Button } from "@/components/utils/Button";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
 } from "@/components/utils/FlexWrapper";
 import { ObjectTable } from "@/components/utils/ObjectTable";
 import { Products, Info } from "@/utils/Enum";
-import { DetailInfo, InfoLabels, ProductInfo } from "@/utils/interface";
-import { use, useEffect, useReducer, useRef, useState } from "react";
+import { DetailInfo, ProductInfo } from "@/utils/interface";
+import { use, useEffect, useRef, useState } from "react";
 
 export default function PartDetailEditPage({
   params,
@@ -19,11 +18,6 @@ export default function PartDetailEditPage({
 }) {
   const { part, id } = use(params);
   const SaveLink = useRef(`/api/part/${part}/${id}`);
-  const [forms, setForm] = useReducer(
-    (state: FormContainer, info: Info) => ({ ...state, [info]: !state[info] }),
-    ProductInfo[part],
-    (init) => Object.fromEntries(init.map((val) => [val, true]))
-  );
   const [data, setData] = useState<DetailInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,23 +56,14 @@ export default function PartDetailEditPage({
           />
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
-          {ProductInfo[part].map((info) =>
-            forms[info] ? (
-              <InfoForm
-                key={info}
-                path={SaveLink.current}
-                info={info}
-                defaultValue={data[info]}
-                remove={setForm}
-              />
-            ) : (
-              <Button
-                key={info}
-                className="w-full"
-                onClick={() => setForm(info)}
-              >{`Add ${InfoLabels[info]} Info`}</Button>
-            )
-          )}
+          {ProductInfo[part].map((info) => (
+            <InfoForm
+              key={info}
+              path={SaveLink.current}
+              info={info}
+              defaultValue={data[info]}
+            />
+          ))}
         </ColumnWrapper>
       </ResponsiveWrapper>
     </>
