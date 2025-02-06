@@ -23,6 +23,7 @@ export default function PartForm({
   part: Products;
   defaultValue?: Part.BasicInfo;
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [formValue, save, pending] = useActionState<
     Part.BasicInfo | undefined,
@@ -58,6 +59,10 @@ export default function PartForm({
     }
 
     const newData = (await response.json()) as Part.BasicInfo;
+
+    if (!prev && newData) router.push(`/part/${part}/${newData.id}/edit`);
+
+    if (!formData) router.push(`/part/${part}`);
 
     return newData;
   }, defaultValue);
