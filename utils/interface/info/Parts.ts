@@ -12,8 +12,8 @@ namespace Part {
     series: Primitive.String,
 
     launch_date: z.coerce.date().nullable().optional(),
-    url: Primitive.String.nullable().optional(),
-    image_url: Primitive.String.nullable().optional(),
+    url: Primitive.String.url().nullable().optional(),
+    image_url: Primitive.String.url().nullable().optional(),
   });
 
   export type BasicInfo = z.infer<typeof Schema>;
