@@ -1,4 +1,4 @@
-import { ArticleSummary } from "@/models/articles/article";
+import { ArticleSummary } from "@/utils/interface/article/article";
 import { ColumnWrapper } from "./FlexWrapper";
 import Link from "next/link";
 
