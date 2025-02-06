@@ -1,8 +1,9 @@
 services:
-  nestjs:
+  nestjs-prod:
     build:
       context: ../../
       dockerfile: ./docker/nestjs/Dockerfile
+      target: prod
     ports:
       - 5000:3000
     environment:
@@ -12,6 +13,24 @@ services:
       - DATABASE_USERNAME=NestjsApp
     env_file:
       - .env
+    profiles:
+      - production
+  nestjs-dev:
+    build:
+      context: ../../
+      dockerfile: ./docker/nestjs/Dockerfile
+      target: dev
+    ports:
+      - 5000:3000
+    environment:
+      - DATABASE_HOST=mysql
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=PC_Builder
+      - DATABASE_USERNAME=NestjsApp
+    env_file:
+      - .env
+    profiles:
+      - development
     develop:
       watch:
         - action: sync
