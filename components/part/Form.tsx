@@ -45,6 +45,12 @@ export function InfoForm({
   const [error, setError] = useState<string | null>(null);
   const save = useCallback(
     async (data: Partial<DetailInfo[typeof info]> | null) => {
+      const label = InfoLabels[info];
+      const operation = data ? "save" : "delete";
+
+      if (!confirm(`Are you sure you want to ${operation} ${label} info?`))
+        return false;
+
       const body = JSON.stringify({ [info]: data });
 
       const response = await fetch(path, {
@@ -55,9 +61,11 @@ export function InfoForm({
 
       if (!response.ok) {
         setError((await response.json()).message);
+      } else {
+        alert(`Successfully ${operation} ${label} info.`);
       }
 
-      return false;
+      return response.ok;
     },
     [defaultValue]
   );
