@@ -1,17 +1,18 @@
 "use client";
 
 import { EditableArticle } from "@/components/article";
-import { ArticleType } from "@/models/articles/article";
+import { ArticleType } from "@/utils/interface/article/article";
 import { Button, RedirectButton } from "@/components/utils/Button";
 import { NotificationBar } from "@/components/utils/NotificationBar";
-import React, { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { ColumnWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
 
 export default function PartTopicEditPage({
   params,
 }: {
-  params: { topic: string; part: string };
+  params: Promise<{ topic: string; part: string }>;
 }) {
+  const { topic, part } = use(params);
   const [data, setData] = useState<ArticleType | null>(null);
   const [error, setError] = useState<{ message: string }>({
     message: "Loading",
@@ -20,8 +21,8 @@ export default function PartTopicEditPage({
     message: string;
     alert: boolean;
   } | null>(null);
-  const pageLink = `/${params.topic}/${params.part}`;
-  const SaveLink = `/api/${params.topic}/${params.part}`;
+  const pageLink = `/${topic}/${part}`;
+  const SaveLink = `/api/${topic}/${part}`;
 
   useEffect(() => {
     fetch(SaveLink).then((response) => {

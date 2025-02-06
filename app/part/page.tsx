@@ -7,9 +7,9 @@ import { notFound } from "next/navigation";
 export default async function ListPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string };
+  searchParams: Promise<{ [key: string]: string }>;
 }) {
-  const page = searchParams["page"] ?? "1";
+  const page = (await searchParams)["page"] ?? "1";
 
   const response = await fetch(
     `${process.env.BACKEND_HOST}/api/part?page=${page}`

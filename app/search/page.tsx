@@ -7,12 +7,13 @@ import { notFound } from "next/navigation";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { [key: string]: string };
+  searchParams: Promise<{ [key: string]: string }>;
 }) {
-  let search = searchParams["q"] ?? "";
-  const page = searchParams["page"] ?? "1";
+  const query = await searchParams;
+  let search = query["q"] ?? "";
+  const page = query["page"] ?? "1";
 
-  const params = new URLSearchParams(searchParams);
+  const params = new URLSearchParams(query);
 
   const response = await fetch(
     `${process.env.BACKEND_HOST}/api/part?${params.toString()}`

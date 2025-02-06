@@ -6,14 +6,17 @@ import { FilterBar } from "@/components/filterbar";
 import { Products } from "@/utils/Enum";
 import { TableLoader } from "@/components/tableloader";
 
-export default function PartListPage({
-  params: { part },
+export default async function PartListPage({
+  params,
   searchParams,
 }: {
-  params: { part: Products };
-  searchParams: Record<string, string | string[]>;
+  params: Promise<{ part: Products }>;
+  searchParams: Promise<Record<string, string | string[]>>;
 }) {
-  const options = Object.entries(searchParams).reduce((acc, [key, value]) => {
+  const { part } = await params;
+  const query = await searchParams;
+
+  const options = Object.entries(query).reduce((acc, [key, value]) => {
     if (key === "part") {
       acc.push([key, part]);
     } else {

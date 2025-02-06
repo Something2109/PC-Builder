@@ -5,10 +5,11 @@ import { notFound } from "next/navigation";
 import React from "react";
 
 export default async function TopicPage({
-  params: { topic },
+  params,
 }: {
-  params: { topic: string };
+  params: Promise<{ topic: string }>;
 }) {
+  const { topic } = await params;
   const response = await fetch(`${process.env.BACKEND_HOST}/api/${topic}`);
 
   if (!response.ok) return notFound();

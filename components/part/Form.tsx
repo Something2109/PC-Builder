@@ -3,7 +3,7 @@
 import { Button } from "@/components/utils/Button";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { Info } from "@/utils/Enum";
-import React, { lazy, useCallback, useState } from "react";
+import React, { lazy, useActionState, useCallback, useState } from "react";
 import { DetailInfo, InfoLabels } from "@/utils/interface";
 import { NotificationBar } from "../utils/NotificationBar";
 
@@ -27,65 +27,78 @@ const InputComponent = {
   [Info.RADIATOR]: lazy(() => import("@/components/part/input/Radiator")),
 };
 
-export type FormContainer = {
-  [key in Info]?: boolean;
-};
-
 export function InfoForm({
   path,
   info,
   defaultValue,
-  remove,
 }: {
   path: string;
   info: Info;
-  defaultValue?: any;
-  remove: (info: Info) => void;
+  defaultValue?: Partial<DetailInfo[typeof info]>;
 }) {
   const [error, setError] = useState<string | null>(null);
-  const save = useCallback(
-    async (data: Partial<DetailInfo[typeof info]> | null) => {
-      const label = InfoLabels[info];
-      const operation = data ? "save" : "delete";
+  const [formValue, save, pending] = useActionState<
+    Partial<DetailInfo[typeof info]>,
+    Partial<DetailInfo[typeof info]>
+  >(async (prev, data) => {
+    const label = InfoLabels[info];
+    const operation = prev ? (data ? "save" : "delete") : "add";
 
-      if (!confirm(`Are you sure you want to ${operation} ${label} info?`))
-        return false;
+    setError(null);
+    if (!confirm(`Are you sure you want to ${operation} ${label} info?`))
+      return prev;
 
-      const body = JSON.stringify({ [info]: data });
+    const body = JSON.stringify({ [info]: data });
 
-      const response = await fetch(path, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body,
-      });
+    const response = await fetch(path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+    });
 
-      if (!response.ok) {
-        setError((await response.json()).message);
-      } else {
-        alert(`Successfully ${operation} ${label} info.`);
-      }
+    if (!response.ok) {
+      setError((await response.json()).message);
+      return prev;
+    } else {
+      alert(`Successfully ${operation} ${label} info.`);
+    }
 
-      return response.ok;
-    },
-    [defaultValue]
-  );
+    const newData = (await response.json()) as DetailInfo;
+
+    return newData[info];
+  }, defaultValue);
 
   const Component = InputComponent[info];
 
   if (!Component) return undefined;
 
+  if (!formValue) {
+    return (
+      <form className="flex flex-col gap-1">
+        <Button
+          type="submit"
+          className="w-full"
+          formAction={() => save({})}
+        >{`Add ${InfoLabels[info]} Info`}</Button>
+      </form>
+    );
+  }
+
   return (
     <form className="flex flex-col gap-1">
       <RowWrapper className="sticky top-32 justify-between items-center">
         <h1 className="text-4xl font-bold">{InfoLabels[info]}</h1>
-        <Button
-          type="submit"
-          formAction={async () => (await save(null)) && remove(info)}
-        >
-          Delete
-        </Button>
+        {!pending && (
+          <Button type="submit" formAction={() => save(null)}>
+            Delete
+          </Button>
+        )}
       </RowWrapper>
-      <Component onSubmit={save} defaultValue={defaultValue} />
+      <Component
+        pending={pending}
+        onSubmit={save}
+        defaultValue={formValue as any}
+      />
       {error ? (
         <NotificationBar message={error} remove={() => setError(null)} alert />
       ) : undefined}
