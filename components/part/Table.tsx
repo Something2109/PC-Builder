@@ -38,13 +38,14 @@ const TableHead = ({ part }: { part: Products }) => (
       <td>{Part.Label.name}</td>
       <td>{Part.Label.brand}</td>
       <td>{Part.Label.series}</td>
-      {ProductInfo[part].map((info: Info) => (
-        <>
-          {SummaryAttributes[info].map((attr) => (
-            <td key={`Header-${attr}`}>{AttributeLabels[info][attr]}</td>
-          ))}
-        </>
-      ))}
+      {ProductInfo[part]
+        .map((info: Info) =>
+          SummaryAttributes[info].map((attr) => AttributeLabels[info][attr])
+        )
+        .flat()
+        .map((attr) => (
+          <td key={`Header-${attr}`}>{attr}</td>
+        ))}
     </tr>
   </thead>
 );
