@@ -1,30 +1,28 @@
-import {
-  DimensionTableRow,
-  TableRowWrapper,
-  TableWrapper,
-} from "../TableWrapper";
-import GraphicCard from "@/utils/interface/part/GraphicCard";
-import { TableHTMLAttributes } from "react";
+import { GenericDetailTable } from "../TableWrapper";
+import GraphicCard from "@/utils/interface/info/GraphicCard";
+import { FunctionComponent } from "react";
 
-export function GraphicCardTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<GraphicCard.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <DimensionTableRow defaultValue={defaultValue} />
-      <TableRowWrapper>
-        Base Frequency {defaultValue?.base_frequency}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Boost Frequency {defaultValue?.boost_frequency}
-      </TableRowWrapper>
-      <TableRowWrapper>PCIe Version {defaultValue?.pcie}</TableRowWrapper>
-      <TableRowWrapper>
-        Minimum PSU Required {defaultValue?.minimum_psu}
-      </TableRowWrapper>
-    </TableWrapper>
-  );
-}
+const Components: {
+  [key in keyof GraphicCard.Info]: FunctionComponent<{
+    value: GraphicCard.Info[key];
+  }>;
+} = {
+  width: ({ value }) => value,
+  length: ({ value }) => value,
+  height: ({ value }) => value,
+  base_frequency: ({ value }) => value,
+  boost_frequency: ({ value }) => value,
+  pcie: ({ value }) => value,
+  minimum_psu: ({ value }) => value,
+  power_connector: ({ value }) =>
+    Object.entries(value)
+      .map(([key, count]) => `${count} * ${key}`)
+      .join(", "),
+  port: ({ value }) =>
+    Object.entries(value)
+      .map(([key, count]) => `${count} * ${key}`)
+      .join(", "),
+  gpu: ({ value }) => <></>,
+};
+
+export default GenericDetailTable(Components, GraphicCard.Label);

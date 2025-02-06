@@ -1,27 +1,78 @@
-import { TableRowWrapper, TableWrapper } from "../TableWrapper";
-import Mainboard from "@/utils/interface/part/Mainboard";
-import { TableHTMLAttributes } from "react";
+import { Table, GenericDetailTable } from "../TableWrapper";
+import Mainboard from "@/utils/interface/info/Mainboard";
+import { InternalConnectors } from "@/utils/interface/utils";
+import { FunctionComponent } from "react";
 
-export function MainboardTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Mainboard.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
+const Components: {
+  [key in keyof Mainboard.Info]: FunctionComponent<{
+    value: Mainboard.Info[key];
+  }>;
+} = {
+  form_factor: ({ value }) => value,
+  socket: ({ value }) => value,
+  chipset: ({ value }) => value,
+  ram_form_factor: ({ value }) => value,
+  ram_interface: ({ value }) => value,
+  ram_slot: ({ value }) => value,
+  expansion_slots: ({ value }) => value,
+  pcies: ({ value }) => <PCIeTableRow defaultValue={value} />,
+  power_connectors: ({ value }) =>
+    Object.entries(value)
+      .map(([key, count]) => `${count} * ${key}`)
+      .join(", "),
+  fan_connectors: ({ value }) =>
+    Object.entries(value)
+      .map(([key, count]) => `${count} * ${key}`)
+      .join(", "),
+  storage_connectors: ({ value }) =>
+    Object.entries(value)
+      .map(([key, count]) => `${count} * ${key}`)
+      .join(", "),
+  usb_connectors: ({ value }) =>
+    Object.entries(value)
+      .map(([key, count]) => `${count} * ${key}`)
+      .join(", "),
+  miscelanous_connectors: ({ value }) =>
+    Object.entries(value)
+      .map(([key, count]) => `${count} * ${key}`)
+      .join(", "),
+  back_panel_ports: ({ value }) =>
+    Object.entries(value)
+      .map(([key, count]) => `${count} * ${key}`)
+      .join(", "),
+};
+
+const PCIeControllerName: {
+  [key in InternalConnectors.PCIe.Controller]: string;
+} = {
+  cpu: "CPU",
+  chipset: "Chipset",
+};
+
+function PCIeTableRow({ defaultValue }: { defaultValue?: Mainboard.PCIe }) {
+  if (!defaultValue) return undefined;
+
   return (
-    <TableWrapper {...rest}>
-      <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
-      <TableRowWrapper>Socket {defaultValue?.socket}</TableRowWrapper>
-      <TableRowWrapper>
-        RAM Form Factor {defaultValue?.ram_form_factor}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        RAM Interface {defaultValue?.ram_interface}
-      </TableRowWrapper>
-      <TableRowWrapper>RAM Slot {defaultValue?.ram_slot}</TableRowWrapper>
-      <TableRowWrapper>
-        Expansion Slots {defaultValue?.expansion_slots}
-      </TableRowWrapper>
-    </TableWrapper>
+    <table className="w-full">
+      <tbody>
+        {Object.entries(PCIeControllerName).map(([key, label], index, arr) => {
+          const value = defaultValue[key as InternalConnectors.PCIe.Controller];
+          if (!value) return undefined;
+
+          const tableValues = Object.entries(value)
+            .map(([key, value]) => `${value} * ${key}`)
+            .join(", ");
+
+          return (
+            <Table.Row key={new Date().getTime() + index}>
+              <Table.Cell className="font-bold">{label}</Table.Cell>
+              <Table.Cell>{tableValues}</Table.Cell>
+            </Table.Row>
+          );
+        })}
+      </tbody>
+    </table>
   );
 }
+
+export default GenericDetailTable(Components, Mainboard.Label);

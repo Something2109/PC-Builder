@@ -1,61 +1,49 @@
-import {
-  TableWrapper,
-  InputRow,
-  SelectInputRow,
-  DimensionInputRow,
-} from "../TableWrapper";
-import Case from "@/utils/interface/part/Case";
+import { GenericInputTable } from "../TableWrapper";
+import { Input, OptionSelect } from "@/components/utils/Input";
+import Case from "@/utils/interface/info/Case";
 import { FormFactor } from "@/utils/interface/utils";
-import { ReactNode, TableHTMLAttributes } from "react";
+import { Info } from "@/utils/Enum";
+import { FunctionComponent } from "react";
 
-export default function CaseFieldset({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Case.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">): ReactNode {
-  return (
-    <TableWrapper {...rest}>
-      <SelectInputRow
-        name="form_factor"
-        label="Form Factor"
-        options={FormFactor.Case.options}
-        defaultValue={defaultValue?.form_factor}
-      />
-      <DimensionInputRow defaultValue={defaultValue} />
-      <InputRow name="io_ports" label="I/O Ports" />
-      <SelectInputRow
-        name="mb_support"
-        label="Mainboard Support"
-        options={FormFactor.Mainboard.options}
-        defaultValue={defaultValue?.mainboard_support}
-      />
-      <InputRow
-        type="number"
-        name="expansion_slot"
-        label="Expansion Slot"
-        defaultValue={defaultValue?.expansion_slot}
-      />
-      <InputRow name="aio_support" label="AIO Support" />
-      <InputRow name="fan_support" label="Fan Support" />
-      <InputRow
-        type="number"
-        name="max_cooler_height"
-        label="Max Cooler Support"
-        defaultValue={defaultValue?.max_cooler_height}
-      />
-      <SelectInputRow
-        name="psu_support"
-        label="PSU Support"
-        options={FormFactor.PSU.options}
-        defaultValue={defaultValue?.psu_support}
-      />
-      <InputRow
-        type="number"
-        name="max_psu_length"
-        label="Max PSU Length"
-        defaultValue={defaultValue?.max_psu_length}
-      />
-    </TableWrapper>
-  );
+const Components: {
+  [key in keyof Case.Info]: FunctionComponent<{ value?: Case.Info[key] }>;
+} = {
+  form_factor: ({ value }) => (
+    <OptionSelect
+      name="form_factor"
+      options={FormFactor.Case.options}
+      defaultValue={value}
+    />
+  ),
+  width: ({ value }) => (
+    <Input type="number" step="0.01" name="width" defaultValue={value} />
+  ),
+  length: ({ value }) => (
+    <Input type="number" step="0.01" name="length" defaultValue={value} />
+  ),
+  height: ({ value }) => (
+    <Input type="number" step="0.01" name="height" defaultValue={value} />
+  ),
+  mainboard_support: ({ value }) => <></>,
+  expansion_slot: ({ value }) => (
+    <Input type="number" name="expansion_slot" defaultValue={value} />
+  ),
+  max_cooler_height: ({ value }) => (
+    <Input type="number" name="max_cooler_height" defaultValue={value} />
+  ),
+  radiator_support: ({ value }) => <></>,
+  fan_support: ({ value }) => <></>,
+  hard_drive_support: ({ value }) => <></>,
+  psu_support: ({ value }) => <></>,
+  max_psu_length: ({ value }) => (
+    <Input type="number" name="max_psu_length" defaultValue={value} />
+  ),
+  front_panel_ports: ({ value }) => <></>,
+};
+
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return Case.Schema.partial().parse(raw);
 }
+export default GenericInputTable(Components, Case.Label, submit);

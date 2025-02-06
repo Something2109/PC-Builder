@@ -1,24 +1,17 @@
-import RAM from "@/utils/interface/part/RAM";
-import { TableHTMLAttributes } from "react";
-import { TableRowWrapper, TableWrapper } from "../TableWrapper";
+import RAM from "@/utils/interface/info/RAM";
+import { FunctionComponent } from "react";
+import { GenericDetailTable } from "../TableWrapper";
 
-export function RAMTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<RAM.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <TableRowWrapper>Speed {defaultValue?.speed}</TableRowWrapper>
-      <TableRowWrapper>Capacity {defaultValue?.capacity}</TableRowWrapper>
-      <TableRowWrapper>Voltage {defaultValue?.voltage}</TableRowWrapper>
-      <TableRowWrapper>
-        Latency {defaultValue?.latency?.toString()}
-      </TableRowWrapper>
-      <TableRowWrapper>RAM Kit {defaultValue?.kit}</TableRowWrapper>
-      <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
-      <TableRowWrapper>Interface {defaultValue?.interface}</TableRowWrapper>
-    </TableWrapper>
-  );
-}
+const Components: {
+  [key in keyof RAM.Info]: FunctionComponent<{ value: RAM.Info[key] }>;
+} = {
+  speed: ({ value }) => value,
+  capacity: ({ value }) => value,
+  voltage: ({ value }) => value,
+  latency: ({ value }) => value.map((val) => val.toString()).join(" - "),
+  kit: ({ value }) => value,
+  form_factor: ({ value }) => value,
+  interface: ({ value }) => value,
+};
+
+export default GenericDetailTable(Components, RAM.Label);

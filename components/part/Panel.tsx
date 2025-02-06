@@ -1,4 +1,4 @@
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 import PartPicture from "./Picture";
 
 export default function PartPanel({ item }: { item: Part.BasicInfo }) {

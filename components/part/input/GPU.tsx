@@ -1,65 +1,41 @@
-import { TableWrapper, InputRow } from "../TableWrapper";
-import GPU from "@/utils/interface/part/GPU";
-import { TableHTMLAttributes } from "react";
+import { GenericInputTable } from "../TableWrapper";
+import { Input } from "@/components/utils/Input";
+import GPU from "@/utils/interface/info/GPU";
+import { Info } from "@/utils/Enum";
+import { FunctionComponent } from "react";
 
-export default function GPUFieldset({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<GPU.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <InputRow
-        name="family"
-        label="Family"
-        defaultValue={defaultValue?.family}
-      />
-      <InputRow
-        type="number"
-        name="core_count"
-        label="Core Count"
-        defaultValue={defaultValue?.core_count}
-      />
-      <InputRow
-        type="number"
-        name="execution_unit"
-        label="Execution Unit"
-        defaultValue={defaultValue?.execution_unit}
-      />
-      <InputRow
-        type="number"
-        name="base_frequency"
-        label="Base Frequency"
-        defaultValue={defaultValue?.base_frequency}
-      />
-      <InputRow
-        type="number"
-        name="boost_frequency"
-        label="Boost Frequency"
-        defaultValue={defaultValue?.boost_frequency}
-      />
-      <InputRow name="extra_cores" label="Extra Cores" />
-      <InputRow
-        type="number"
-        name="memory_size"
-        label="Memory Size"
-        defaultValue={defaultValue?.memory_size}
-      />
-      <InputRow name="memory_type" label="Memory Type" />
-      <InputRow
-        type="number"
-        name="memory_bus"
-        label="Memory Bus"
-        defaultValue={defaultValue?.memory_bus}
-      />
-      <InputRow
-        type="number"
-        name="tdp"
-        label="TDP"
-        defaultValue={defaultValue?.tdp}
-      />
-      <InputRow name="features" label="Features" />
-    </TableWrapper>
-  );
+const Components: {
+  [key in keyof GPU.Info]: FunctionComponent<{ value?: GPU.Info[key] }>;
+} = {
+  family: ({ value }) => <Input name="family" defaultValue={value} />,
+  core_count: ({ value }) => (
+    <Input type="number" name="core_count" defaultValue={value} />
+  ),
+  execution_unit: ({ value }) => (
+    <Input type="number" name="execution_unit" defaultValue={value} />
+  ),
+  base_frequency: ({ value }) => (
+    <Input type="number" name="base_frequency" defaultValue={value} />
+  ),
+  boost_frequency: ({ value }) => (
+    <Input type="number" name="boost_frequency" defaultValue={value} />
+  ),
+  extra_cores: ({ value }) => <></>,
+  memory_size: ({ value }) => (
+    <Input type="number" name="memory_size" defaultValue={value} />
+  ),
+  memory_type: ({ value }) => <Input name="memory_type" defaultValue={value} />,
+  memory_bus: ({ value }) => (
+    <Input type="number" name="memory_bus" defaultValue={value} />
+  ),
+  tdp: ({ value }) => <Input type="number" name="tdp" defaultValue={value} />,
+  features: ({ value }) => <></>,
+};
+
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return GPU.Schema.partial().parse(raw);
 }
+
+export default GenericInputTable(Components, GPU.Label, submit);

@@ -1,4 +1,6 @@
-import React, { Context, useContext, useEffect, useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import PaginationBar from "@/components/pagination";
 import PartTable from "@/components/part/Table";
 import { Products } from "@/utils/Enum";
@@ -10,12 +12,12 @@ export function TableLoader({
   context,
 }: {
   part: Products;
-  context: Context<URLSearchParams>;
+  context: string[][];
 }) {
   const [page, setPage] = useState(1);
   const [data, setList] = useState({ total: 0, list: [] });
   const [error, setError] = useState(null);
-  const options = useContext(context);
+  const options = new URLSearchParams(context);
 
   useEffect(() => {
     options.set("page", String(page));
@@ -28,7 +30,7 @@ export function TableLoader({
         response.json().then((data) => setError(data.message));
       }
     });
-  }, [page, options]);
+  }, [page]);
 
   if (error) return <h1>{error}</h1>;
 
@@ -42,7 +44,7 @@ export function TableLoader({
         } ${part.toLocaleUpperCase()}`}</h1>
         <RedirectButton href={`/part/${part}/new`}>New</RedirectButton>
       </RowWrapper>
-      <PartTable data={data.list} className="w-full" />
+      <PartTable part={part} data={data.list} className="w-full" />
       <PaginationBar
         path={setPage}
         current={page}

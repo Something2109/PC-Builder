@@ -1,52 +1,21 @@
-import Pump from "@/utils/interface/part/Pump";
-import {
-  TableRowWrapper,
-  TableWrapper,
-  DimensionTableRow,
-} from "../TableWrapper";
-import { TableHTMLAttributes } from "react";
+import Pump from "@/utils/interface/info/Pump";
+import { GenericDetailTable } from "../TableWrapper";
+import { FunctionComponent } from "react";
 
-export function PumpTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Pump.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <TableRowWrapper>
-        Form Factor
-        {defaultValue?.form_factor}
-      </TableRowWrapper>
-      <DimensionTableRow defaultValue={defaultValue} />
-      <TableRowWrapper>
-        Voltage
-        {defaultValue?.voltage}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Wattage
-        {defaultValue?.wattage}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Head Pressure
-        {defaultValue?.head_pressure}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Flow Rate
-        {defaultValue?.flow_rate}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Power Connector
-        {defaultValue?.power_connector}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Control Connector
-        {defaultValue?.control_connector}
-      </TableRowWrapper>{" "}
-      <TableRowWrapper>
-        RGB
-        {defaultValue?.rgb}
-      </TableRowWrapper>
-    </TableWrapper>
-  );
-}
+const Components: {
+  [key in keyof Pump.Info]: FunctionComponent<{ value: Pump.Info[key] }>;
+} = {
+  form_factor: ({ value }) => value,
+  width: ({ value }) => value,
+  length: ({ value }) => value,
+  height: ({ value }) => value,
+  voltage: ({ value }) => value,
+  wattage: ({ value }) => value,
+  head_pressure: ({ value }) => value,
+  flow_rate: ({ value }) => value,
+  power_connector: ({ value }) => value,
+  control_connector: ({ value }) => value,
+  rgb: ({ value }) => value,
+};
+
+export default GenericDetailTable(Components, Pump.Label);

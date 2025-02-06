@@ -1,59 +1,48 @@
-import { TableWrapper, InputRow, SelectInputRow } from "../TableWrapper";
-import HDD from "@/utils/interface/part/HDD";
+import { GenericInputTable } from "../TableWrapper";
+import { Input, OptionSelect } from "@/components/utils/Input";
+import HDD from "@/utils/interface/info/HDD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { TableHTMLAttributes } from "react";
+import { Info } from "@/utils/Enum";
+import { FunctionComponent } from "react";
 
-export default function HDDFieldset({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<HDD.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <InputRow
-        type="number"
-        name="rotational_speed"
-        label="Rotational Speed"
-        defaultValue={defaultValue?.rotational_speed}
-      />
-      <InputRow
-        type="number"
-        name="read_speed"
-        label="Read Speed"
-        defaultValue={defaultValue?.read_speed}
-      />
-      <InputRow
-        type="number"
-        name="write_speed"
-        label="Write Speed"
-        defaultValue={defaultValue?.write_speed}
-      />
-      <InputRow
-        type="number"
-        name="capacity"
-        label="Capacity"
-        defaultValue={defaultValue?.capacity}
-      />
-      <InputRow
-        type="number"
-        name="cache"
-        label="Cache"
-        defaultValue={defaultValue?.cache}
-      />
-      <SelectInputRow
-        name="form_factor"
-        label="Form Factor"
-        options={FormFactor.HDD.options}
-        defaultValue={defaultValue?.form_factor}
-      />
-      <SelectInputRow
-        name="interface"
-        label="Interface"
-        options={InternalConnectors.Storage.HDD.options}
-        defaultValue={defaultValue?.interface}
-      />
-      <InputRow name="features" label="Features" />
-    </TableWrapper>
-  );
+const Components: {
+  [key in keyof HDD.Info]: FunctionComponent<{ value?: HDD.Info[key] }>;
+} = {
+  rotational_speed: ({ value }) => (
+    <Input type="number" name="rotational_speed" defaultValue={value} />
+  ),
+  read_speed: ({ value }) => (
+    <Input type="number" name="read_speed" defaultValue={value} />
+  ),
+  write_speed: ({ value }) => (
+    <Input type="number" name="write_speed" defaultValue={value} />
+  ),
+  capacity: ({ value }) => (
+    <Input type="number" name="capacity" defaultValue={value} />
+  ),
+  cache: ({ value }) => (
+    <Input type="number" name="cache" defaultValue={value} />
+  ),
+  form_factor: ({ value }) => (
+    <OptionSelect
+      name="form_factor"
+      options={FormFactor.HDD.options}
+      defaultValue={value}
+    />
+  ),
+  interface: ({ value }) => (
+    <OptionSelect
+      name="interface"
+      options={InternalConnectors.Storage.HDD.options}
+      defaultValue={value}
+    />
+  ),
+};
+
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return HDD.Schema.partial().parse(raw);
 }
+
+export default GenericInputTable(Components, HDD.Label, submit);

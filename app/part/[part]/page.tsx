@@ -1,6 +1,3 @@
-"use client";
-
-import { createContext, useRef, useState } from "react";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
@@ -9,29 +6,33 @@ import { FilterBar } from "@/components/filterbar";
 import { Products } from "@/utils/Enum";
 import { TableLoader } from "@/components/tableloader";
 
-const OptionContext = createContext<URLSearchParams>(new URLSearchParams());
-
 export default function PartListPage({
   params: { part },
+  searchParams,
 }: {
   params: { part: Products };
+  searchParams: Record<string, string | string[]>;
 }) {
-  const [options, setOptions] = useState<URLSearchParams>(
-    new URLSearchParams()
-  );
-  const defaultOptions = useRef<URLSearchParams>(new URLSearchParams());
-  defaultOptions.current.append("part", part);
+  const options = Object.entries(searchParams).reduce((acc, [key, value]) => {
+    if (key === "part") {
+      acc.push([key, part]);
+    } else {
+      Array.isArray(value)
+        ? value.forEach((v) => acc.push([key, v]))
+        : acc.push([key, value]);
+    }
+
+    return acc;
+  }, [] as string[][]);
 
   return (
-    <OptionContext.Provider value={options}>
-      <ResponsiveWrapper className="w-full">
-        <ColumnWrapper className="hidden lg:block lg:w-1/5">
-          <FilterBar context={OptionContext} part={part} set={setOptions} />
-        </ColumnWrapper>
-        <ColumnWrapper className="lg:w-4/5">
-          <TableLoader part={part} context={OptionContext} />
-        </ColumnWrapper>
-      </ResponsiveWrapper>
-    </OptionContext.Provider>
+    <ResponsiveWrapper className="w-full">
+      <ColumnWrapper className="hidden lg:block lg:w-1/5">
+        <FilterBar context={options} part={part} />
+      </ColumnWrapper>
+      <ColumnWrapper className="lg:w-4/5">
+        <TableLoader context={options} part={part} />
+      </ColumnWrapper>
+    </ResponsiveWrapper>
   );
 }

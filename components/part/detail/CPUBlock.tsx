@@ -1,26 +1,15 @@
-import CPUBlock from "@/utils/interface/part/CPUBlock";
-import { TableRowWrapper, TableWrapper } from "../TableWrapper";
-import { TableHTMLAttributes } from "react";
+import CPUBlock from "@/utils/interface/info/CPUBlock";
+import { GenericDetailTable } from "../TableWrapper";
+import { FunctionComponent } from "react";
 
-export function CPUBlockTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<CPUBlock.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <TableRowWrapper>
-        Socket {defaultValue?.socket?.join(", ")}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Plate
-        {defaultValue?.plate}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        RGB
-        {defaultValue?.rgb}
-      </TableRowWrapper>
-    </TableWrapper>
-  );
-}
+const Components: {
+  [key in keyof CPUBlock.Info]: FunctionComponent<{
+    value: CPUBlock.Info[key];
+  }>;
+} = {
+  socket: ({ value }) => value.join(", "),
+  plate: ({ value }) => value,
+  rgb: ({ value }) => value,
+};
+
+export default GenericDetailTable(Components, CPUBlock.Label);

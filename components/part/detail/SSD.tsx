@@ -1,23 +1,18 @@
-import { TableRowWrapper, TableWrapper } from "../TableWrapper";
-import SSD from "@/utils/interface/part/SSD";
-import { TableHTMLAttributes } from "react";
+import { GenericDetailTable } from "../TableWrapper";
+import SSD from "@/utils/interface/info/SSD";
+import { FunctionComponent } from "react";
 
-export function SSDTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<SSD.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <TableRowWrapper>Memory Type {defaultValue?.memory_type}</TableRowWrapper>
-      <TableRowWrapper>Read Speed {defaultValue?.read_speed}</TableRowWrapper>
-      <TableRowWrapper>Write Speed {defaultValue?.write_speed}</TableRowWrapper>
-      <TableRowWrapper>Capacity {defaultValue?.capacity}</TableRowWrapper>
-      <TableRowWrapper>Cache {defaultValue?.cache}</TableRowWrapper>
-      <TableRowWrapper>TBW {defaultValue?.tbw}</TableRowWrapper>
-      <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
-      <TableRowWrapper>Interface {defaultValue?.interface}</TableRowWrapper>
-    </TableWrapper>
-  );
-}
+const Components: {
+  [key in keyof SSD.Info]: FunctionComponent<{ value: SSD.Info[key] }>;
+} = {
+  memory_type: ({ value }) => value,
+  read_speed: ({ value }) => value,
+  write_speed: ({ value }) => value,
+  capacity: ({ value }) => value,
+  cache: ({ value }) => value,
+  tbw: ({ value }) => value,
+  form_factor: ({ value }) => value,
+  interface: ({ value }) => value,
+};
+
+export default GenericDetailTable(Components, SSD.Label);

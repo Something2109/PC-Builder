@@ -1,32 +1,18 @@
-import Radiator from "@/utils/interface/part/Radiator";
-import {
-  TableRowWrapper,
-  TableWrapper,
-  DimensionTableRow,
-} from "../TableWrapper";
-import { TableHTMLAttributes } from "react";
+import Radiator from "@/utils/interface/info/Radiator";
+import { GenericDetailTable } from "../TableWrapper";
+import { FunctionComponent } from "react";
 
-export function RadiatorTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Radiator.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <TableRowWrapper>
-        Form Factor
-        {defaultValue?.form_factor}
-      </TableRowWrapper>
-      <DimensionTableRow defaultValue={defaultValue} />
-      <TableRowWrapper>
-        FPI
-        {defaultValue?.fpi}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Material
-        {defaultValue?.material}
-      </TableRowWrapper>
-    </TableWrapper>
-  );
-}
+const Components: {
+  [key in keyof Radiator.Info]: FunctionComponent<{
+    value: Radiator.Info[key];
+  }>;
+} = {
+  form_factor: ({ value }) => value,
+  width: ({ value }) => value,
+  length: ({ value }) => value,
+  height: ({ value }) => value,
+  fpi: ({ value }) => value,
+  material: ({ value }) => value,
+};
+
+export default GenericDetailTable(Components, Radiator.Label);

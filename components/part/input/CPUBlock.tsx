@@ -1,33 +1,36 @@
-import CPUBlock from "@/utils/interface/part/CPUBlock";
+import CPUBlock from "@/utils/interface/info/CPUBlock";
 import { InternalConnectors, Material } from "@/utils/interface/utils";
-import { TableWrapper, InputRow, SelectInputRow } from "../TableWrapper";
-import { TableHTMLAttributes } from "react";
+import { Info } from "@/utils/Enum";
+import { Input, OptionSelect } from "@/components/utils/Input";
+import { GenericInputTable } from "../TableWrapper";
+import { FunctionComponent } from "react";
 
-export default function CPUBlockTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<CPUBlock.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <InputRow
-        name="socket"
-        label="Socket"
-        defaultValue={defaultValue?.socket}
-      />
-      <SelectInputRow
-        name="plate"
-        label="Plate"
-        options={Material.Metal.options}
-        defaultValue={defaultValue?.plate}
-      />
-      <SelectInputRow
-        name="rgb"
-        label="RGB"
-        options={InternalConnectors.RGB.options}
-        defaultValue={defaultValue?.rgb}
-      />
-    </TableWrapper>
-  );
+const Components: {
+  [key in keyof CPUBlock.Info]: FunctionComponent<{
+    value?: CPUBlock.Info[key];
+  }>;
+} = {
+  socket: ({ value }) => <Input name="socket" defaultValue={value} />,
+  plate: ({ value }) => (
+    <OptionSelect
+      name="plate"
+      options={Material.Metal.options}
+      defaultValue={value}
+    />
+  ),
+  rgb: ({ value }) => (
+    <OptionSelect
+      name="rgb"
+      options={InternalConnectors.RGB.options}
+      defaultValue={value}
+    />
+  ),
+};
+
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return CPUBlock.Schema.partial().parse(raw);
 }
+
+export default GenericInputTable(Components, CPUBlock.Label, submit);

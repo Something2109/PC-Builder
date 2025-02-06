@@ -1,7 +1,7 @@
 import PartPanel from "@/components/part/Panel";
 import { SearchBar } from "@/components/searchbar";
 import PaginationBar from "@/components/pagination";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 import { notFound } from "next/navigation";
 
 export default async function ListPage({

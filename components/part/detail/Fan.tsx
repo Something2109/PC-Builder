@@ -1,29 +1,23 @@
-import {
-  DimensionTableRow,
-  TableRowWrapper,
-  TableWrapper,
-} from "../TableWrapper";
-import Fan from "@/utils/interface/part/Fan";
-import { TableHTMLAttributes } from "react";
+import { GenericDetailTable } from "../TableWrapper";
+import Fan from "@/utils/interface/info/Fan";
+import { FunctionComponent } from "react";
 
-export function FanTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Fan.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <TableRowWrapper>Form Factor {defaultValue?.form_factor}</TableRowWrapper>
-      <DimensionTableRow defaultValue={defaultValue} />
-      <TableRowWrapper>Voltage {defaultValue?.voltage}</TableRowWrapper>
-      <TableRowWrapper>Speed {defaultValue?.speed}</TableRowWrapper>
-      <TableRowWrapper>Airflow {defaultValue?.airflow}</TableRowWrapper>
-      <TableRowWrapper>Noise {defaultValue?.noise}</TableRowWrapper>
-      <TableRowWrapper>
-        Static Pressure {defaultValue?.static_pressure}
-      </TableRowWrapper>
-      <TableRowWrapper>Form Factor {defaultValue?.bearing}</TableRowWrapper>
-    </TableWrapper>
-  );
-}
+const Components: {
+  [key in keyof Fan.Info]: FunctionComponent<{ value: Fan.Info[key] }>;
+} = {
+  form_factor: ({ value }) => value,
+  width: ({ value }) => value,
+  length: ({ value }) => value,
+  height: ({ value }) => value,
+  count: ({ value }) => value,
+  voltage: ({ value }) => value,
+  speed: ({ value }) => value,
+  airflow: ({ value }) => value,
+  noise: ({ value }) => value,
+  static_pressure: ({ value }) => value,
+  bearing: ({ value }) => value,
+  connector: ({ value }) => value,
+  rgb: ({ value }) => value,
+};
+
+export default GenericDetailTable(Components, Fan.Label);

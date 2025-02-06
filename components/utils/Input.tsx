@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  HTMLAttributes,
   HTMLInputTypeAttribute,
   InputHTMLAttributes,
   SelectHTMLAttributes,
@@ -8,6 +9,7 @@ import {
   useEffect,
   useRef,
 } from "react";
+import { RowWrapper } from "./FlexWrapper";
 
 const defaultStyle = "w-full bg-transparent resize-none overflow-y-hidden";
 const defaultValueList: { [key in HTMLInputTypeAttribute]?: string | number } =
@@ -78,4 +80,40 @@ export function Select({
   }
 
   return <select className={classList.join(" ")} {...rest} />;
+}
+
+export function OptionSelect({
+  options,
+  ...rest
+}: { options: string[] | number[] } & SelectHTMLAttributes<HTMLSelectElement>) {
+  return (
+    <Select {...rest}>
+      {options.map((value) => (
+        <option
+          key={`${rest.name ?? new Date().getTime()}-${value}`}
+          value={value}
+        >
+          {value}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
+export function ChoiceInput({
+  name,
+  value,
+  type,
+  ...rest
+}: {
+  type: "checkbox" | "radio";
+} & InputHTMLAttributes<HTMLInputElement>) {
+  const id = `choice-${type}-${name}-${value}`;
+
+  return (
+    <RowWrapper>
+      <input type={type} id={id} name={name} value={value} {...rest} />
+      <label htmlFor={id}>{value}</label>
+    </RowWrapper>
+  );
 }

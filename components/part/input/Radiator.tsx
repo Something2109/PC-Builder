@@ -1,40 +1,45 @@
-import Radiator from "@/utils/interface/part/Radiator";
+import { GenericInputTable } from "../TableWrapper";
+import { Input, OptionSelect } from "@/components/utils/Input";
+import Radiator from "@/utils/interface/info/Radiator";
 import { FormFactor, Material } from "@/utils/interface/utils";
-import {
-  TableWrapper,
-  InputRow,
-  SelectInputRow,
-  DimensionInputRow,
-} from "../TableWrapper";
-import { TableHTMLAttributes } from "react";
+import { Info } from "@/utils/Enum";
+import { FunctionComponent } from "react";
 
-export default function RadiatorTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Radiator.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <SelectInputRow
-        name="form_factor"
-        label="Form Factor"
-        options={FormFactor.Pump.options}
-        defaultValue={defaultValue?.form_factor}
-      />
-      <DimensionInputRow defaultValue={defaultValue} />
-      <InputRow
-        type="number"
-        name="fpi"
-        label="FPI"
-        defaultValue={defaultValue?.fpi}
-      />
-      <SelectInputRow
-        name="material"
-        label="Material"
-        options={Material.Metal.options}
-        defaultValue={defaultValue?.material}
-      />
-    </TableWrapper>
-  );
+const Components: {
+  [key in keyof Radiator.Info]: FunctionComponent<{
+    value?: Radiator.Info[key];
+  }>;
+} = {
+  form_factor: ({ value }) => (
+    <OptionSelect
+      name="form_factor"
+      options={FormFactor.Pump.options}
+      defaultValue={value}
+    />
+  ),
+  width: ({ value }) => (
+    <Input type="number" step="0.01" name="width" defaultValue={value} />
+  ),
+  length: ({ value }) => (
+    <Input type="number" step="0.01" name="length" defaultValue={value} />
+  ),
+  height: ({ value }) => (
+    <Input type="number" step="0.01" name="height" defaultValue={value} />
+  ),
+  fpi: ({ value }) => <Input type="number" name="fpi" defaultValue={value} />,
+  material: ({ value }) => (
+    <OptionSelect
+      name="material"
+      options={Material.Metal.options}
+      defaultValue={value}
+    />
+  ),
+};
+
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return Radiator.Schema.partial().parse(raw);
 }
+
+export default GenericInputTable(Components, Radiator.Label, submit);

@@ -1,14 +1,131 @@
 import {
+  FunctionComponent,
   HTMLAttributes,
-  InputHTMLAttributes,
-  SelectHTMLAttributes,
   TableHTMLAttributes,
+  TdHTMLAttributes,
 } from "react";
-import { Input, Select } from "../utils/Input";
+import { RowWrapper } from "../utils/FlexWrapper";
+import { Button } from "../utils/Button";
+
+export namespace Table {
+  const tableRow = "border-b-2 last:border-b-0 *:rounded-sm";
+  const tableCell =
+    "border-r-2 last:border-r-0 first:font-bold p-2 [&:has(table)]:p-0";
+
+  export const Row = ({
+    className,
+    ...attr
+  }: HTMLAttributes<HTMLTableRowElement>) => (
+    <tr
+      className={className ? className.concat(" ", tableRow) : tableRow}
+      {...attr}
+    />
+  );
+
+  export const Cell = ({
+    className,
+    ...attr
+  }: TdHTMLAttributes<HTMLTableCellElement>) => (
+    <td
+      className={className ? className.concat(" ", tableCell) : tableCell}
+      {...attr}
+    />
+  );
+}
+
+export function GenericSummaryCells<T extends Record<string, any>>(
+  Components: {
+    [key in keyof T]: FunctionComponent<{ value: T[key] | undefined }>;
+  },
+  Labels: {
+    [key in string]: string;
+  },
+  Attributes: string[]
+) {
+  return ({ defaultValue }: { defaultValue?: Partial<T> }) => (
+    <>
+      {Attributes.map((attr, index) => {
+        const Component = Components[attr];
+        const value = defaultValue ? defaultValue[attr] : undefined;
+
+        return (
+          <td key={new Date().getTime() + index}>
+            <RowWrapper>
+              <p className="lg:hidden">{Labels[attr]}:</p>
+              {Component ? <Component value={value} /> : undefined}
+            </RowWrapper>
+          </td>
+        );
+      })}
+    </>
+  );
+}
 
 const tableClass = "w-full border-2";
-const tableRow = "border-b-2 last:border-b-0 *:rounded-sm *:p-2";
-const tableCell = "border-r-2 last:border-r-0 first:font-bold";
+
+export function GenericDetailTable<T extends Record<string, any>>(
+  Components: { [key in keyof T]: FunctionComponent<{ value: T[key] }> },
+  Labels: { [key in string]: string }
+) {
+  return ({
+    defaultValue,
+    ...rest
+  }: {
+    defaultValue?: Partial<T>;
+  } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => (
+    <TableWrapper {...rest}>
+      {Object.entries(Components).map(([key, Component]) => {
+        const value = defaultValue ? defaultValue[key] : undefined;
+
+        if (!value) return undefined;
+
+        return (
+          <TableRowWrapper key={key}>
+            {Labels[key]}
+            <Component value={value} />
+          </TableRowWrapper>
+        );
+      })}
+    </TableWrapper>
+  );
+}
+
+export function GenericInputTable<T extends Record<string, any>>(
+  Components: {
+    [key in keyof T]: FunctionComponent<{ value?: T[key]; id?: string }>;
+  },
+  Labels: { [key in string]: string },
+  transform: (data: FormData) => Partial<T>
+) {
+  return ({
+    onSubmit,
+    defaultValue,
+    ...rest
+  }: {
+    onSubmit: (data: Partial<T>) => Promise<boolean>;
+    defaultValue?: Partial<T>;
+  } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => {
+    defaultValue = defaultValue ?? ({} as T);
+    const submit = async (formData: FormData) =>
+      await onSubmit(transform(formData));
+
+    return (
+      <>
+        <TableWrapper {...rest}>
+          {Object.entries(Components).map(([key, Component]) => (
+            <TableRowWrapper key={key}>
+              {Labels[key]}
+              <Component value={defaultValue[key]} />
+            </TableRowWrapper>
+          ))}
+        </TableWrapper>
+        <Button type="submit" formAction={submit} className="w-full">
+          Save
+        </Button>
+      </>
+    );
+  };
+}
 
 export function TableWrapper({
   className,
@@ -26,152 +143,19 @@ export function TableWrapper({
 }
 
 export function TableRowWrapper({
-  className,
   children,
+  ...rest
 }: { children: React.ReactNode[] } & HTMLAttributes<HTMLTableRowElement>) {
   return (
-    <tr className={className ? className.concat(" ", tableRow) : tableRow}>
+    <Table.Row {...rest}>
       {[...children].map((child, index) => (
-        <td
+        <Table.Cell
           colSpan={index === 0 ? 2 : 1}
           key={new Date().getTime() + index}
-          className={`${tableCell} `}
         >
           {child}
-        </td>
+        </Table.Cell>
       ))}
-    </tr>
-  );
-}
-
-export function DimensionTableRow({
-  defaultValue,
-}: {
-  defaultValue?: { width?: number; length?: number; height?: number };
-}) {
-  return (
-    <>
-      <tr className={tableRow}>
-        <td className={tableCell} rowSpan={3}>
-          Dimension
-        </td>
-        <td className={`${tableCell} font-bold`}>Width</td>
-        <td className={tableCell}>{defaultValue?.width}</td>
-      </tr>
-      <tr className={tableRow}>
-        <td className={tableCell}>Length</td>
-        <td className={tableCell}>{defaultValue?.length}</td>
-      </tr>
-      <tr className={tableRow}>
-        <td className={tableCell}>Height</td>
-        <td className={tableCell}>{defaultValue?.height}</td>
-      </tr>
-    </>
-  );
-}
-
-export function InputRow({
-  name,
-  label,
-  options,
-  ...rest
-}: {
-  label: string;
-  options?: string[];
-} & InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <TableRowWrapper>
-      <label htmlFor={name}>{label}</label>
-      <Input
-        name={name}
-        id={name}
-        placeholder={label}
-        list={options ? `${name}s` : undefined}
-        {...rest}
-      />
-    </TableRowWrapper>
-  );
-}
-
-export function SelectInputRow({
-  name,
-  label,
-  options,
-  ...rest
-}: {
-  name: string;
-  label: string;
-  options: any[];
-} & SelectHTMLAttributes<HTMLSelectElement>) {
-  return (
-    <TableRowWrapper>
-      <label htmlFor={name}>{label}</label>
-      <Select name={name} id={name} {...rest}>
-        {Object.values(options).map((product) => (
-          <option key={`${name}-${product}`} value={product}>
-            {product}
-          </option>
-        ))}
-      </Select>
-    </TableRowWrapper>
-  );
-}
-
-export function DimensionInputRow({
-  defaultValue,
-}: {
-  defaultValue?: { width?: number; length?: number; height?: number };
-}) {
-  return (
-    <>
-      <tr className={tableRow}>
-        <td className={tableCell} rowSpan={3}>
-          Dimension
-        </td>
-        <td className={`${tableCell} font-bold`}>
-          <label htmlFor="width">Width</label>
-        </td>
-        <td className={tableCell}>
-          <Input
-            type="number"
-            step="0.01"
-            name="width"
-            id="width"
-            placeholder="Width"
-            defaultValue={defaultValue?.width}
-          />
-        </td>
-      </tr>
-      <tr className={tableRow}>
-        <td className={tableCell}>
-          <label htmlFor="length">Length</label>
-        </td>
-        <td className={tableCell}>
-          <Input
-            type="number"
-            step="0.01"
-            name="length"
-            id="length"
-            placeholder="Length"
-            defaultValue={defaultValue?.length}
-          />
-        </td>
-      </tr>
-      <tr className={tableRow}>
-        <td className={tableCell}>
-          <label htmlFor="height">Height</label>
-        </td>
-        <td className={tableCell}>
-          <Input
-            type="number"
-            step="0.01"
-            name="height"
-            id="height"
-            placeholder="Height"
-            defaultValue={defaultValue?.height}
-          />
-        </td>
-      </tr>
-    </>
+    </Table.Row>
   );
 }

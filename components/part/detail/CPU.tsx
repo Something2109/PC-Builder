@@ -1,62 +1,24 @@
-import CPU from "@/utils/interface/part/CPU";
-import { TableRowWrapper, TableWrapper } from "../TableWrapper";
-import { TableHTMLAttributes } from "react";
+import CPU from "@/utils/interface/info/CPU";
+import { GenericDetailTable } from "../TableWrapper";
+import { FunctionComponent } from "react";
 
-export function CPUTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<CPU.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <TableRowWrapper>Family {defaultValue?.family}</TableRowWrapper>
-      <TableRowWrapper>Socket {defaultValue?.socket}</TableRowWrapper>
-      <TableRowWrapper>
-        Total Cores
-        {defaultValue?.total_cores}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Total Threads
-        {defaultValue?.total_threads}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Base Frequency
-        {defaultValue?.base_frequency}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Turbo Frequency
-        {defaultValue?.turbo_frequency}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Core Type
-        {defaultValue?.cores?.toString()}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        L2 Cache
-        {defaultValue?.L2_cache}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        L3 Cache
-        {defaultValue?.L3_cache}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Max Memory Support
-        {defaultValue?.max_memory}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Max Memory Channel Support
-        {defaultValue?.max_memory_channel}
-      </TableRowWrapper>
-      <TableRowWrapper>
-        Max Memory Bandwidth
-        {defaultValue?.max_memory_bandwidth}
-      </TableRowWrapper>
-      <TableRowWrapper>TDP {defaultValue?.tdp}</TableRowWrapper>
-      <TableRowWrapper>
-        Lithography
-        {defaultValue?.lithography}
-      </TableRowWrapper>
-    </TableWrapper>
-  );
-}
+const Components: {
+  [key in keyof CPU.Info]: FunctionComponent<{ value: CPU.Info[key] }>;
+} = {
+  family: ({ value }) => value,
+  socket: ({ value }) => value,
+  total_cores: ({ value }) => value,
+  total_threads: ({ value }) => value,
+  base_frequency: ({ value }) => value,
+  turbo_frequency: ({ value }) => value,
+  cores: ({ value }) => value.toString(),
+  L2_cache: ({ value }) => value,
+  L3_cache: ({ value }) => value,
+  max_memory: ({ value }) => value,
+  max_memory_channel: ({ value }) => value,
+  max_memory_bandwidth: ({ value }) => value,
+  tdp: ({ value }) => value,
+  lithography: ({ value }) => value,
+};
+
+export default GenericDetailTable(Components, CPU.Label);

@@ -1,22 +1,15 @@
-import {
-  DimensionTableRow,
-  TableRowWrapper,
-  TableWrapper,
-} from "../TableWrapper";
-import Cooler from "@/utils/interface/part/Cooler";
-import { TableHTMLAttributes } from "react";
+import { GenericDetailTable } from "../TableWrapper";
+import Cooler from "@/utils/interface/info/Cooler";
+import { FunctionComponent } from "react";
 
-export function CoolerTable({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Cooler.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <TableRowWrapper>Socket {defaultValue?.socket}</TableRowWrapper>
-      <TableRowWrapper>CPU Plate {defaultValue?.cpu_plate}</TableRowWrapper>
-      <DimensionTableRow defaultValue={defaultValue} />
-    </TableWrapper>
-  );
-}
+const Components: {
+  [key in keyof Cooler.Info]: FunctionComponent<{ value: Cooler.Info[key] }>;
+} = {
+  socket: ({ value }) => value,
+  cpu_plate: ({ value }) => value,
+  width: ({ value }) => value,
+  length: ({ value }) => value,
+  height: ({ value }) => value,
+};
+
+export default GenericDetailTable(Components, Cooler.Label);

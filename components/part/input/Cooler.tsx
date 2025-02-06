@@ -1,33 +1,35 @@
-import {
-  TableWrapper,
-  InputRow,
-  SelectInputRow,
-  DimensionInputRow,
-} from "../TableWrapper";
-import Cooler from "@/utils/interface/part/Cooler";
+import { GenericInputTable } from "../TableWrapper";
+import { Input, OptionSelect } from "@/components/utils/Input";
+import Cooler from "@/utils/interface/info/Cooler";
 import { Material } from "@/utils/interface/utils";
-import { TableHTMLAttributes } from "react";
+import { Info } from "@/utils/Enum";
+import { FunctionComponent } from "react";
 
-export default function CoolerFieldset({
-  defaultValue,
-  ...rest
-}: {
-  defaultValue?: Partial<Cooler.Info>;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  return (
-    <TableWrapper {...rest}>
-      <InputRow
-        name="socket"
-        label="Socket"
-        defaultValue={defaultValue?.socket}
-      />
-      <SelectInputRow
-        name="cpu_plate"
-        label="CPU Plate"
-        options={Material.Metal.options}
-        defaultValue={defaultValue?.cpu_plate}
-      />
-      <DimensionInputRow defaultValue={defaultValue} />
-    </TableWrapper>
-  );
+const Components: {
+  [key in keyof Cooler.Info]: FunctionComponent<{ value?: Cooler.Info[key] }>;
+} = {
+  socket: ({ value }) => <Input name="socket" defaultValue={value} />,
+  cpu_plate: ({ value }) => (
+    <OptionSelect
+      name="cpu_plate"
+      options={Material.Metal.options}
+      defaultValue={value}
+    />
+  ),
+  width: ({ value }) => (
+    <Input type="number" step="0.01" name="width" defaultValue={value} />
+  ),
+  length: ({ value }) => (
+    <Input type="number" step="0.01" name="length" defaultValue={value} />
+  ),
+  height: ({ value }) => (
+    <Input type="number" step="0.01" name="height" defaultValue={value} />
+  ),
+};
+
+function submit(formData: FormData) {
+  const raw = Object.fromEntries(formData.entries());
+
+  return Cooler.Schema.partial().parse(raw);
 }
+export default GenericInputTable(Components, Cooler.Label, submit);
