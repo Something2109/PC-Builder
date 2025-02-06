@@ -98,10 +98,12 @@ export function GenericInputTable<T extends Record<string, any>>(
   transform: (data: FormData) => Partial<T>
 ) {
   return ({
+    pending,
     onSubmit,
     defaultValue,
     ...rest
   }: {
+    pending: boolean;
     onSubmit: (data: Partial<T>) => void;
     defaultValue?: Partial<T>;
   } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => {
@@ -121,8 +123,9 @@ export function GenericInputTable<T extends Record<string, any>>(
           type="submit"
           formAction={(formData: FormData) => onSubmit(transform(formData))}
           className="w-full"
+          disabled={pending}
         >
-          Save
+          {pending ? "Saving..." : "Save"}
         </Button>
       </>
     );

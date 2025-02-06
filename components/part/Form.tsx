@@ -85,11 +85,17 @@ export function InfoForm({
     <form className="flex flex-col gap-1">
       <RowWrapper className="sticky top-32 justify-between items-center">
         <h1 className="text-4xl font-bold">{InfoLabels[info]}</h1>
-        <Button type="submit" formAction={async () => await save(null)}>
-          Delete
-        </Button>
+        {!pending && (
+          <Button type="submit" formAction={async () => await save(null)}>
+            Delete
+          </Button>
+        )}
       </RowWrapper>
-      <Component onSubmit={save} defaultValue={formValue as any} />
+      <Component
+        pending={pending}
+        onSubmit={save}
+        defaultValue={formValue as any}
+      />
       {error ? (
         <NotificationBar message={error} remove={() => setError(null)} alert />
       ) : undefined}
