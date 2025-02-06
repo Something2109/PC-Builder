@@ -8,12 +8,12 @@ const Components: {
   form_factor: ({ value }) => value,
   mainboard_support: ({ value }) => value?.join(", "),
   radiator_support: ({ value }) =>
-    Object.values(value ?? {})
-      .reduce((acc, val) => {
-        acc.push(...val);
+    [
+      ...Object.values(value ?? {}).reduce((acc, val) => {
+        val.forEach((type) => acc.add(type));
         return acc;
-      }, [])
-      .join(", "),
+      }, new Set()),
+    ].join(", "),
   psu_support: ({ value }) => value?.join(", "),
 };
 
