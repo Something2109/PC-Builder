@@ -137,6 +137,18 @@ export default function PartForm({
               />
             </TableRowWrapper>
           </TableWrapper>
+          <Button type="submit" className="w-full" disabled={pending}>
+            {pending ? "Saving..." : "Save"}
+          </Button>
+          {!pending && formValue && (
+            <Button
+              type="submit"
+              className="w-full"
+              formAction={() => save(null)}
+            >
+              Delete
+            </Button>
+          )}
           {error ? (
             <NotificationBar
               message={error}
@@ -144,9 +156,6 @@ export default function PartForm({
               alert
             />
           ) : undefined}
-          <Button type="submit" className="w-full">
-            Save
-          </Button>
         </ColumnWrapper>
       </ResponsiveWrapper>
     </form>
