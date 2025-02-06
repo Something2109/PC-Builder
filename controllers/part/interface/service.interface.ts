@@ -4,11 +4,11 @@ import { PartInformation } from "@/models/parts/tables/Part";
 import { Info, Products } from "@/utils/Enum";
 import { InfoModels } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 import { FilterOptionsType, Primitive } from "@/utils/interface/utils";
 import {
   FilterOptions as Filter,
-  DetailInfoOptions as Options,
+  DetailInfo as Options,
   FilterAttributes,
   ProductInfo,
 } from "@/utils/interface";

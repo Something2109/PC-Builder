@@ -1,76 +1,72 @@
 import { z } from "zod";
-import { Info, Products } from "../Enum";
-import AIO from "./part/AIO";
-import Case from "./part/Case";
-import Cooler from "./part/Cooler";
-import CPU from "./part/CPU";
-import Fan from "./part/Fan";
-import GPU from "./part/GPU";
-import GraphicCard from "./part/GraphicCard";
-import HDD from "./part/HDD";
-import Mainboard from "./part/Mainboard";
-import Part from "./part/Parts";
-import PSU from "./part/PSU";
-import RAM from "./part/RAM";
-import SSD from "./part/SSD";
-import CPUBlock from "./part/CPUBlock";
-import Pump from "./part/Pump";
-import Radiator from "./part/Radiator";
+import { Info } from "../Enum";
+import AIO from "./info/AIO";
+import Case from "./info/Case";
+import Cooler from "./info/Cooler";
+import CPU from "./info/CPU";
+import Fan from "./info/Fan";
+import GPU from "./info/GPU";
+import GraphicCard from "./info/GraphicCard";
+import HDD from "./info/HDD";
+import Mainboard from "./info/Mainboard";
+import Part from "./info/Parts";
+import PSU from "./info/PSU";
+import RAM from "./info/RAM";
+import SSD from "./info/SSD";
+import CPUBlock from "./info/CPUBlock";
+import Pump from "./info/Pump";
+import Radiator from "./info/Radiator";
+import { Info as InfoNamespace } from "./info";
+import { Product as ProductNamespace } from "./product";
+import { Primitive } from "./utils";
 
-export const PartSummaryInfoSchema = z
-  .object({
-    [Info.CPU]: CPU.SummarySchema,
-    [Info.GPU]: GPU.SummarySchema,
-    [Info.GRAPHIC_CARD]: GraphicCard.SummarySchema,
-    [Info.MAIN]: Mainboard.SummarySchema,
-    [Info.RAM]: RAM.SummarySchema,
-    [Info.SSD]: SSD.SummarySchema,
-    [Info.HDD]: HDD.SummarySchema,
-    [Info.PSU]: PSU.SummarySchema,
-    [Info.CASE]: Case.SummarySchema,
-    [Info.FAN]: Fan.SummarySchema,
-    [Info.COOLER]: Cooler.SummarySchema,
-    [Info.AIO]: AIO.SummarySchema,
-    [Info.CPU_BLOCK]: CPUBlock.SummarySchema,
-    [Info.PUMP]: Pump.SummarySchema,
-    [Info.RADIATOR]: Radiator.SummarySchema,
-  })
-  .partial();
+/**
+ * DECLARE THE INFORMATION AND FILTER OBJECT OF EACH PRODUCT AND PRODUCT TYPE
+ * THAT TO BE USED IN ALL PART OF THE PROJECT.
+ */
 
-export type SummaryInfo<T extends Info> = z.infer<typeof Part.SummarySchema> & {
-  [key in T]: z.infer<typeof PartSummaryInfoSchema>[T];
-};
-
-export const DetailInfoListSchema = z
-  .object({
-    [Info.CPU]: CPU.Schema,
-    [Info.GPU]: GPU.Schema,
-    [Info.GRAPHIC_CARD]: GraphicCard.Schema,
-    [Info.MAIN]: Mainboard.Schema,
-    [Info.RAM]: RAM.Schema,
-    [Info.SSD]: SSD.Schema,
-    [Info.HDD]: HDD.Schema,
-    [Info.PSU]: PSU.Schema,
-    [Info.CASE]: Case.Schema,
-    [Info.FAN]: Fan.Schema,
-    [Info.COOLER]: Cooler.Schema,
-    [Info.AIO]: AIO.Schema,
-    [Info.CPU_BLOCK]: CPUBlock.Schema,
-    [Info.PUMP]: Pump.Schema,
-    [Info.RADIATOR]: Radiator.Schema,
-  })
-  .partial();
-
-export type DetailInfo<T extends Info> = z.infer<typeof Part.Schema> & {
-  raw?: string;
-} & {
-  [key in T]: z.infer<typeof DetailInfoListSchema>[T];
-};
-
-export const DetailInfoOptionsSchema = Part.Schema.partial().merge(
+/**
+ * The summary information of a specific product.
+ * Contains the most important information of the product from each {@link Info} type.
+ * This is a generic type used in all the {@link Products} type.
+ * The specific information that each {@link Products} type contains
+ * are declared in the mapping {@link ProductInfo}.
+ */
+export const SummaryInfo = Part.SummarySchema.merge(
   z
     .object({
-      raw: z.string(),
+      [Info.CPU]: CPU.SummarySchema,
+      [Info.GPU]: GPU.SummarySchema,
+      [Info.GRAPHIC_CARD]: GraphicCard.SummarySchema,
+      [Info.MAIN]: Mainboard.SummarySchema,
+      [Info.RAM]: RAM.SummarySchema,
+      [Info.SSD]: SSD.SummarySchema,
+      [Info.HDD]: HDD.SummarySchema,
+      [Info.PSU]: PSU.SummarySchema,
+      [Info.CASE]: Case.SummarySchema,
+      [Info.FAN]: Fan.SummarySchema,
+      [Info.COOLER]: Cooler.SummarySchema,
+      [Info.AIO]: AIO.SummarySchema,
+      [Info.CPU_BLOCK]: CPUBlock.SummarySchema,
+      [Info.PUMP]: Pump.SummarySchema,
+      [Info.RADIATOR]: Radiator.SummarySchema,
+    })
+    .partial()
+);
+
+export type SummaryInfo = z.infer<typeof SummaryInfo>;
+
+/**
+ * The detail information of a specific product.
+ * Contains the most detailed information of the product from each {@link Info} type.
+ * This is a generic type used in all the {@link Products} type.
+ * The specific information that each {@link Products} type contains
+ * are declared in the mapping {@link ProductInfo}.
+ */
+export const DetailInfo = Part.Schema.merge(
+  z
+    .object({
+      raw: Primitive.String,
       [Info.CPU]: CPU.Schema.partial().nullish(),
       [Info.GPU]: GPU.Schema.partial().nullish(),
       [Info.GRAPHIC_CARD]: GraphicCard.Schema.partial().nullish(),
@@ -90,27 +86,17 @@ export const DetailInfoOptionsSchema = Part.Schema.partial().merge(
     .partial()
 );
 
-export type DetailInfoOptions = z.infer<typeof DetailInfoOptionsSchema>;
+export type DetailInfo = z.infer<typeof DetailInfo>;
 
-export const ProductInfo: { [key in Products]: Info[] } = {
-  [Products.CPU]: [Info.CPU, Info.GPU],
-  [Products.GPU]: [Info.GPU],
-  [Products.GRAPHIC_CARD]: [Info.GRAPHIC_CARD],
-  [Products.MAIN]: [Info.MAIN],
-  [Products.RAM]: [Info.RAM],
-  [Products.SSD]: [Info.SSD],
-  [Products.HDD]: [Info.HDD],
-  [Products.PSU]: [Info.PSU],
-  [Products.CASE]: [Info.CASE],
-  [Products.FAN]: [Info.FAN],
-  [Products.COOLER]: [Info.COOLER],
-  [Products.AIO]: [Info.AIO],
-  [Products.CPU_BLOCK]: [Info.CPU_BLOCK],
-  [Products.PUMP]: [Info.PUMP],
-  [Products.RADIATOR]: [Info.RADIATOR],
-};
-
-export const FilterOptionSchema = z
+/**
+ * The filter options of the information.
+ * Contains the filter options of each {@link Info} type combined into one object.
+ * This object is used to pass the filter conditions of the user to each {@link Info} type.
+ * This is a generic type used in all the {@link Products} type.
+ * The specific information that each {@link Products} type contains
+ * are declared in the mapping {@link ProductInfo}.
+ */
+export const FilterOptions = z
   .object({
     part: Part.FilterOptionSchema,
     [Info.CPU]: CPU.FilterOptionSchema.nullish(),
@@ -131,38 +117,20 @@ export const FilterOptionSchema = z
   })
   .partial();
 
-export type FilterOptions = z.infer<typeof FilterOptionSchema>;
+export type FilterOptions = z.infer<typeof FilterOptions>;
 
-export const FilterAttributes = {
-  part: Part.FilterAttributes,
-  [Info.CPU]: CPU.FilterAttributes,
-  [Info.GPU]: GPU.FilterAttributes,
-  [Info.GRAPHIC_CARD]: GraphicCard.FilterAttributes,
-  [Info.MAIN]: Mainboard.FilterAttributes,
-  [Info.RAM]: RAM.FilterAttributes,
-  [Info.SSD]: SSD.FilterAttributes,
-  [Info.HDD]: HDD.FilterAttributes,
-  [Info.PSU]: PSU.FilterAttributes,
-  [Info.CASE]: Case.FilterAttributes,
-  [Info.FAN]: Fan.FilterAttributes,
-  [Info.COOLER]: Cooler.FilterAttributes,
-  [Info.AIO]: AIO.FilterAttributes,
-  [Info.CPU_BLOCK]: CPUBlock.FilterAttributes,
-  [Info.PUMP]: Pump.FilterAttributes,
-  [Info.RADIATOR]: Radiator.FilterAttributes,
-};
+const InfoLabels = InfoNamespace.Label;
+const AttributeLabels = InfoNamespace.AttributeLabels;
+const SummaryAttributes = InfoNamespace.SummaryAttributes;
+const FilterAttributes = InfoNamespace.FilterAttributes;
+const ProductInfo = ProductNamespace.Info;
+const ProductFilterOptions = ProductNamespace.FilterOptions;
 
-export const DefaultFilterOptions = {
-  [Products.MAIN]: Mainboard.DefaultFilterOptions,
-  [Products.RAM]: RAM.DefaultFilterOptions,
-  [Products.SSD]: SSD.DefaultFilterOptions,
-  [Products.HDD]: HDD.DefaultFilterOptions,
-  [Products.PSU]: PSU.DefaultFilterOptions,
-  [Products.CASE]: Case.DefaultFilterOptions,
-  [Products.COOLER]: Cooler.DefaultFilterOptions,
-  [Products.AIO]: AIO.DefaultFilterOptions,
-  [Products.FAN]: Fan.DefaultFilterOptions,
-  [Products.CPU_BLOCK]: CPUBlock.DefaultFilterOptions,
-  [Products.PUMP]: Pump.DefaultFilterOptions,
-  [Products.RADIATOR]: Radiator.DefaultFilterOptions,
+export {
+  InfoLabels,
+  AttributeLabels,
+  SummaryAttributes,
+  FilterAttributes,
+  ProductInfo,
+  ProductFilterOptions,
 };

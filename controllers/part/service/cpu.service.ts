@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import Part from "@/utils/interface/part/Parts";
 import { Products, Info } from "@/utils/Enum";
-import CPU from "@/utils/interface/part/CPU";
-import GPU from "@/utils/interface/part/GPU";
-import { Primitive } from "@/utils/interface/utils";
+import Part from "@/utils/interface/info/Parts";
+import CPU from "@/utils/interface/product/CPU";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.CPU]: CPU.Info;
-  [Info.GPU]?: GPU.Info;
+  [Info.CPU]: DetailInfo[Info.CPU];
+  [Info.GPU]?: DetailInfo[Info.GPU];
 };
 
 @Injectable()
@@ -17,16 +17,20 @@ class CPUService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.CPU] = {};
 
-    const options = result[Products.CPU];
-    this.parse(params, Primitive.String, options, "socket");
-    this.parse(params, Primitive.Number, options, "total_cores");
-    this.parse(params, Primitive.Number, options, "total_threads");
-    this.parse(params, Primitive.Number, options, "base_frequency");
-    this.parse(params, Primitive.Number, options, "turbo_frequency");
-    this.parse(params, Primitive.Number, options, "L3_cache");
-    this.parse(params, Primitive.Number, options, "tdp");
+    const parsedParams = CPU.Filter.parse(params);
+    const options = new FilterOptionBuilder<
+      NonNullable<FilterOptions[Info.CPU]>
+    >()
+      .add("socket", parsedParams["socket"])
+      .add("total_cores", parsedParams["total_cores"])
+      .add("total_threads", parsedParams["total_threads"])
+      .add("base_frequency", parsedParams["base_frequency"])
+      .add("turbo_frequency", parsedParams["turbo_frequency"])
+      .add("L3_cache", parsedParams["L3_cache"])
+      .add("tdp", parsedParams["tdp"]);
+
+    if (options.build()) result[Info.CPU] = options.build();
 
     return result;
   }

@@ -1,17 +1,26 @@
-import { FilterOptions, Material } from "../utils";
+import { FilterOptions, Material, Primitive } from "../utils";
 import { z } from "zod";
 
 export namespace Cooler {
   export const Schema = z.object({
-    socket: z.string(),
+    socket: Primitive.String,
     cpu_plate: Material.Metal,
 
-    width: z.number(),
-    length: z.number(),
-    height: z.number(),
+    width: Primitive.Number,
+    length: Primitive.Number,
+    height: Primitive.Number,
   });
 
   export type Info = z.infer<typeof Schema>;
+
+  export const Label: { [key in keyof Info]: string } = {
+    socket: "Socket",
+    cpu_plate: "CPU Plate",
+
+    width: "Width",
+    length: "Length",
+    height: "Height",
+  };
 
   export const SummarySchema = Schema.pick({
     socket: true,
@@ -27,7 +36,7 @@ export namespace Cooler {
 
   export const FilterOptionSchema = z
     .object({
-      socket: FilterOptions(z.string()),
+      socket: FilterOptions(Primitive.String),
       cpu_plate: FilterOptions(Material.Metal),
     })
     .partial();

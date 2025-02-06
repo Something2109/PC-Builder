@@ -1,16 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import Part from "@/utils/interface/part/Parts";
-import {
-  FormFactor,
-  InternalConnectors,
-  Primitive,
-} from "@/utils/interface/utils";
+import Part from "@/utils/interface/info/Parts";
+import Pump from "@/utils/interface/product/Pump";
 import { Products, Info } from "@/utils/Enum";
-import Pump from "@/utils/interface/part/Pump";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.PUMP]: Pump.Info;
+  [Info.PUMP]: DetailInfo[Info.PUMP];
 };
 
 @Injectable()
@@ -19,23 +16,17 @@ class PumpService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.PUMP] = {};
 
-    const options = result[Products.PUMP];
-    this.parse(params, FormFactor.Pump, options, "form_factor");
-    this.parse(params, Primitive.Number, options, "flow_rate");
-    this.parse(
-      params,
-      InternalConnectors.Power.Miscellanous,
-      options,
-      "power_connector"
-    );
-    this.parse(
-      params,
-      InternalConnectors.Fan.Connector,
-      options,
-      "control_connector"
-    );
+    const parsedParams = Pump.Filter.parse(params);
+    const options = new FilterOptionBuilder<
+      NonNullable<FilterOptions[Info.PUMP]>
+    >()
+      .add("form_factor", parsedParams["form_factor"])
+      .add("flow_rate", parsedParams["flow_rate"])
+      .add("power_connector", parsedParams["power_connector"])
+      .add("control_connector", parsedParams["control_connector"]);
+
+    if (options.build()) result[Info.PUMP] = options.build();
 
     return result;
   }

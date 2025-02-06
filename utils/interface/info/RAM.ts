@@ -1,29 +1,42 @@
 import {
   FormFactor,
-  InternalConnectors,
   FilterOptions,
   NumberFilterOptions,
+  InternalConnectors,
+  Primitive,
 } from "../utils";
 import { z } from "zod";
 
-export namespace HDD {
+namespace RAM {
   export const Schema = z.object({
-    rotational_speed: z.number(),
-    read_speed: z.number(),
-    write_speed: z.number(),
-    capacity: z.number(),
-    cache: z.number(),
+    speed: Primitive.Number,
+    capacity: Primitive.Number,
+    voltage: Primitive.Number,
+    latency: z.array(Primitive.Number),
+    kit: Primitive.Number,
 
-    form_factor: FormFactor.HDD,
-    interface: InternalConnectors.Storage.HDD,
+    form_factor: FormFactor.RAM,
+    interface: InternalConnectors.RAM,
   });
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    speed: "Speed",
+    capacity: "Capacity",
+    voltage: "Voltage",
+    latency: "Latency",
+    kit: "Kit",
+
+    form_factor: "Form Factor",
+    interface: "Interface",
+  };
+
   export const SummarySchema = Schema.pick({
+    speed: true,
+    capacity: true,
     form_factor: true,
     interface: true,
-    capacity: true,
   });
 
   export const SummaryAttributes = SummarySchema.keyof().options;
@@ -34,18 +47,15 @@ export namespace HDD {
 
   export const FilterOptionSchema = z
     .object({
-      form_factor: FilterOptions(FormFactor.HDD),
-      interface: FilterOptions(InternalConnectors.Storage.HDD),
-      read_speed: NumberFilterOptions,
-      write_speed: NumberFilterOptions,
       capacity: NumberFilterOptions,
-      rotational_speed: NumberFilterOptions,
+      form_factor: FilterOptions(FormFactor.RAM),
+      interface: FilterOptions(InternalConnectors.RAM),
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
-    form_factor: FormFactor.HDD.options,
-    interface: InternalConnectors.Storage.HDD.options,
+    form_factor: FormFactor.RAM.options,
+    interface: InternalConnectors.RAM.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;
@@ -55,4 +65,4 @@ export namespace HDD {
   export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
-export default HDD;
+export default RAM;

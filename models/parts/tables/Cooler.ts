@@ -3,9 +3,10 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import Cooler from "@/utils/interface/part/Cooler";
+import Cooler from "@/utils/interface/info/Cooler";
 import { Material } from "@/utils/interface/utils";
 import {
   BelongsTo,
@@ -21,9 +22,11 @@ import {
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (options: Cooler.FilterOptions) => ({
     attributes: ["id", ...Cooler.SummaryAttributes],
-    where: options,
+    where: defaultFilter(options),
   }),
-  [ModelScopes.FILTER]: (options: Cooler.FilterOptions) => ({ where: options }),
+  [ModelScopes.FILTER]: (options: Cooler.FilterOptions) => ({
+    where: defaultFilter(options),
+  }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.COOLER })

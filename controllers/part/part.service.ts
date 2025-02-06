@@ -2,23 +2,18 @@ import { Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { ModelScopes } from "@/models/interface";
 import { Products } from "@/utils/Enum";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
 import {
   BaseDetailPartService,
   BasePartService,
   PageOptions,
   SearchOptions,
 } from "./interface/service.interface";
-import {
-  DetailInfoOptions as Options,
-  FilterOptions as Filter,
-} from "@/utils/interface";
+import { FilterOptions as Filter } from "@/utils/interface";
 
 type ServiceObject = {
   [key in Products]?: BaseDetailPartService<any>;
 };
-
-type Detail = Part.BasicInfo;
 
 @Injectable()
 class PartService extends BasePartService {

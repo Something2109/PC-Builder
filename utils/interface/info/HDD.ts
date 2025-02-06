@@ -1,35 +1,41 @@
 import {
   FormFactor,
+  InternalConnectors,
   FilterOptions,
   NumberFilterOptions,
-  InternalConnectors,
+  Primitive,
 } from "../utils";
 import { z } from "zod";
 
-namespace SSD {
-  export const MemoryCell = z.enum(["SLC", "MLC", "TLC", "QLC", "3D"]);
-
-  export type MemoryCell = z.infer<typeof MemoryCell>;
-
+export namespace HDD {
   export const Schema = z.object({
-    memory_type: MemoryCell,
-    read_speed: z.number(),
-    write_speed: z.number(),
-    capacity: z.number(),
-    cache: z.number(),
-    tbw: z.number(),
+    rotational_speed: Primitive.Number,
+    read_speed: Primitive.Number,
+    write_speed: Primitive.Number,
+    capacity: Primitive.Number,
+    cache: Primitive.Number,
 
-    form_factor: FormFactor.SSD,
-    interface: InternalConnectors.Storage.SSD,
+    form_factor: FormFactor.HDD,
+    interface: InternalConnectors.Storage.HDD,
   });
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    rotational_speed: "Rotational Speed",
+    read_speed: "Read Speed",
+    write_speed: "Write Speed",
+    capacity: "Capacity",
+    cache: "Cache",
+
+    form_factor: "Form Factor",
+    interface: "Interface",
+  };
+
   export const SummarySchema = Schema.pick({
     form_factor: true,
     interface: true,
-    read_speed: true,
-    write_speed: true,
+    capacity: true,
   });
 
   export const SummaryAttributes = SummarySchema.keyof().options;
@@ -40,19 +46,18 @@ namespace SSD {
 
   export const FilterOptionSchema = z
     .object({
-      memory_type: FilterOptions(MemoryCell),
-      form_factor: FilterOptions(FormFactor.SSD),
-      interface: FilterOptions(InternalConnectors.Storage.SSD),
+      form_factor: FilterOptions(FormFactor.HDD),
+      interface: FilterOptions(InternalConnectors.Storage.HDD),
       read_speed: NumberFilterOptions,
       write_speed: NumberFilterOptions,
       capacity: NumberFilterOptions,
+      rotational_speed: NumberFilterOptions,
     })
     .partial();
 
   export const DefaultFilterOptions: FilterOptions = {
-    memory_type: MemoryCell.options,
-    form_factor: FormFactor.SSD.options,
-    interface: InternalConnectors.Storage.SSD.options,
+    form_factor: FormFactor.HDD.options,
+    interface: InternalConnectors.Storage.HDD.options,
   };
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;
@@ -62,4 +67,4 @@ namespace SSD {
   export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
-export default SSD;
+export default HDD;

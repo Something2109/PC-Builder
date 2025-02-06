@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
+import Radiator from "@/utils/interface/product/Radiator";
 import { Products, Info } from "@/utils/Enum";
-import Radiator from "@/utils/interface/part/Radiator";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
-import { FormFactor, Material } from "@/utils/interface/utils";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.RADIATOR]: Radiator.Info;
+  [Info.RADIATOR]: DetailInfo[Info.RADIATOR];
 };
 
 @Injectable()
@@ -15,11 +16,15 @@ class RadiatorService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.RADIATOR] = {};
 
-    const options = result[Products.RADIATOR];
-    this.parse(params, FormFactor.Radiator, options, "form_factor");
-    this.parse(params, Material.Metal, options, "material");
+    const parsedParams = Radiator.Filter.parse(params);
+    const options = new FilterOptionBuilder<
+      NonNullable<FilterOptions[Info.RADIATOR]>
+    >()
+      .add("form_factor", parsedParams["form_factor"])
+      .add("material", parsedParams["material"]);
+
+    if (options.build()) result[Info.RADIATOR] = options.build();
 
     return result;
   }

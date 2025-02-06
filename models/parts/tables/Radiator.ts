@@ -3,9 +3,10 @@ import {
   PartDefaultScope,
   PartDetailTable,
   Tables,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import Radiator from "@/utils/interface/part/Radiator";
+import Radiator from "@/utils/interface/info/Radiator";
 import { FormFactor, Material } from "@/utils/interface/utils";
 import {
   BelongsTo,
@@ -21,10 +22,10 @@ import {
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (options: Radiator.FilterOptions) => ({
     attributes: ["id", ...Radiator.SummaryAttributes],
-    where: options,
+    where: defaultFilter(options),
   }),
   [ModelScopes.FILTER]: (options: Radiator.FilterOptions) => ({
-    where: options,
+    where: defaultFilter(options),
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))

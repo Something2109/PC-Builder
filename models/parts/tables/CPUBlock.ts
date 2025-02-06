@@ -10,12 +10,13 @@ import {
   Table,
 } from "sequelize-typescript";
 import { FindOptions, IncludeOptions, SaveOptions } from "sequelize";
-import CPUBlock from "@/utils/interface/part/CPUBlock";
+import CPUBlock from "@/utils/interface/info/CPUBlock";
 import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { Material } from "@/utils/interface/utils";
@@ -24,16 +25,15 @@ import { PartInformation } from "./Part";
 function createFilterOptions(options?: CPUBlock.FilterOptions): FindOptions {
   const { socket, ...where } = options ?? {};
 
-  const include = [];
+  const socket_model: IncludeOptions = {
+    model: CPUBlockSocketModel,
+    required: Boolean(socket),
+  };
   if (socket) {
-    include.push({
-      model: CPUBlockSocketModel,
-      where: { socket },
-      required: Boolean(socket),
-    });
+    socket_model.where = { socket };
   }
 
-  return { where, include };
+  return { where: defaultFilter(where), include: [socket_model] };
 }
 
 @Scopes(() => ({

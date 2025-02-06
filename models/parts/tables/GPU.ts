@@ -6,7 +6,7 @@ import {
   defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import GPU from "@/utils/interface/part/GPU";
+import GPU from "@/utils/interface/info/GPU";
 import {
   BelongsTo,
   Column,
@@ -21,7 +21,7 @@ import {
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (options: GPU.FilterOptions) => ({
     attributes: ["id", ...GPU.SummaryAttributes],
-    where: options,
+    where: defaultFilter(options),
   }),
   [ModelScopes.FILTER]: (options?: GPU.FilterOptions) => ({
     where: defaultFilter(options),

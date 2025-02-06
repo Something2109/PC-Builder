@@ -5,18 +5,18 @@ import {
 } from "@/models/parts/tables/CPUBlock";
 import { ModelScopes } from "@/models/interface";
 import { PartInformation } from "@/models/parts/tables/Part";
-import { FilterOptions } from "@/utils/interface";
-import Part from "@/utils/interface/part/Parts";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
+import Part from "@/utils/interface/info/Parts";
+import CPUBlock from "@/utils/interface/product/CPUBlock";
 import { Products, Info } from "@/utils/Enum";
-import CPUBlock from "@/utils/interface/part/CPUBlock";
 import {
   BaseDetailPartService,
   SearchOptions,
 } from "../interface/service.interface";
-import { Material, Primitive } from "@/utils/interface/utils";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.CPU_BLOCK]: CPUBlock.Info;
+  [Info.CPU_BLOCK]: DetailInfo[Info.CPU_BLOCK];
 };
 
 @Injectable()
@@ -25,11 +25,15 @@ class CPUBlockService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.CPU_BLOCK] = {};
 
-    const options = result[Products.CPU_BLOCK];
-    this.parse(params, Primitive.String, options, "socket");
-    this.parse(params, Material.Metal, options, "plate");
+    const parsedParams = CPUBlock.Filter.parse(params);
+    const options = new FilterOptionBuilder<
+      NonNullable<FilterOptions[Info.CPU_BLOCK]>
+    >()
+      .add("socket", parsedParams["socket"])
+      .add("plate", parsedParams["plate"]);
+
+    if (options.build()) result[Info.CPU_BLOCK] = options.build();
 
     return result;
   }

@@ -1,30 +1,29 @@
 import {
-  FormFactor,
   FilterOptions,
-  NumberFilterOptions,
   InternalConnectors,
+  Material,
+  Primitive,
 } from "../utils";
 import { z } from "zod";
 
-namespace RAM {
+export namespace CPUBlock {
   export const Schema = z.object({
-    speed: z.number(),
-    capacity: z.number(),
-    voltage: z.number(),
-    latency: z.array(z.number()),
-    kit: z.number(),
-
-    form_factor: FormFactor.RAM,
-    interface: InternalConnectors.RAM,
+    socket: z.array(Primitive.String),
+    plate: Material.Metal,
+    rgb: InternalConnectors.RGB,
   });
 
   export type Info = z.infer<typeof Schema>;
 
+  export const Label: { [key in keyof Info]: string } = {
+    socket: "Socket",
+    plate: "Plate",
+    rgb: "RGB",
+  };
+
   export const SummarySchema = Schema.pick({
-    speed: true,
-    capacity: true,
-    form_factor: true,
-    interface: true,
+    socket: true,
+    plate: true,
   });
 
   export const SummaryAttributes = SummarySchema.keyof().options;
@@ -35,16 +34,12 @@ namespace RAM {
 
   export const FilterOptionSchema = z
     .object({
-      capacity: NumberFilterOptions,
-      form_factor: FilterOptions(FormFactor.RAM),
-      interface: FilterOptions(InternalConnectors.RAM),
+      socket: FilterOptions(Primitive.String),
+      plate: FilterOptions(Material.Metal),
     })
     .partial();
 
-  export const DefaultFilterOptions: FilterOptions = {
-    form_factor: FormFactor.RAM.options,
-    interface: InternalConnectors.RAM.options,
-  };
+  export const DefaultFilterOptions: FilterOptions = {};
 
   export const FilterAttributes = FilterOptionSchema.keyof().options;
 
@@ -53,4 +48,4 @@ namespace RAM {
   export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
-export default RAM;
+export default CPUBlock;

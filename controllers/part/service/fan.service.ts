@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
+import FanProduct from "@/utils/interface/product/Fan";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { Products, Info } from "@/utils/Enum";
-import Fan from "@/utils/interface/part/Fan";
-import { FormFactor } from "@/utils/interface/utils";
 import { BaseDetailPartService } from "../interface/service.interface";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.FAN]: Fan.Info;
+  [Info.FAN]: DetailInfo[Info.FAN];
 };
 
 @Injectable()
@@ -15,11 +16,15 @@ class FanService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.FAN] = {};
 
-    const options = result[Products.FAN];
-    this.parse(params, FormFactor.Fan, options, "form_factor");
-    this.parse(params, Fan.Bearing, options, "bearing");
+    const parsedParams = FanProduct.Filter.parse(params);
+    const options = new FilterOptionBuilder<
+      NonNullable<FilterOptions[Info.FAN]>
+    >()
+      .add("form_factor", parsedParams["form_factor"])
+      .add("bearing", parsedParams["bearing"]);
+
+    if (options.build()) result[Info.FAN] = options.build();
 
     return result;
   }

@@ -1,5 +1,10 @@
-import { ModelScopes, PartDefaultScope, Tables } from "@/models/interface";
-import Part from "@/utils/interface/part/Parts";
+import {
+  ModelScopes,
+  PartDefaultScope,
+  Tables,
+  defaultFilter,
+} from "@/models/interface";
+import Part from "@/utils/interface/info/Parts";
 import { Products, Info } from "@/utils/Enum";
 import {
   Column,
@@ -37,13 +42,13 @@ import { Includeable } from "sequelize";
     ...include: Includeable[]
   ) => ({
     attributes: ["id", ...Part.SummaryAttributes],
-    where: options,
+    where: defaultFilter(options),
     include,
   }),
   [ModelScopes.FILTER]: (
     options: Part.FilterOptions,
     ...include: Includeable[]
-  ) => ({ where: options, include }),
+  ) => ({ where: defaultFilter(options), include }),
   [ModelScopes.DETAIL]: { attributes: { exclude: ["createdAt", "updatedAt"] } },
 }))
 @Table({ modelName: Tables.PART })

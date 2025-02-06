@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import Part from "@/utils/interface/part/Parts";
-import { FormFactor, Primitive } from "@/utils/interface/utils";
+import Part from "@/utils/interface/info/Parts";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { Products, Info } from "@/utils/Enum";
-import PSU from "@/utils/interface/part/PSU";
+import PSUProduct from "@/utils/interface/product/PSU";
 import { BaseDetailPartService } from "../interface/service.interface";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.PSU]: PSU.Info;
+  [Info.PSU]: DetailInfo[Info.PSU];
 };
 
 @Injectable()
@@ -15,13 +16,17 @@ class PSUService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.PSU] = {};
 
-    const options = result[Products.PSU];
-    this.parse(params, FormFactor.PSU, options, "form_factor");
-    this.parse(params, Primitive.Number, options, "wattage");
-    this.parse(params, PSU.Efficiency, options, "efficiency");
-    this.parse(params, PSU.Modular, options, "modular");
+    const parsedParams = PSUProduct.Filter.parse(params);
+    const options = new FilterOptionBuilder<
+      NonNullable<FilterOptions[Info.PSU]>
+    >()
+      .add("form_factor", parsedParams["form_factor"])
+      .add("wattage", parsedParams["wattage"])
+      .add("efficiency", parsedParams["efficiency"])
+      .add("modular", parsedParams["modular"]);
+
+    if (options.build()) result[Info.PSU] = options.build();
 
     return result;
   }

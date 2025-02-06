@@ -3,9 +3,10 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import Mainboard from "@/utils/interface/part/Mainboard";
+import Mainboard from "@/utils/interface/info/Mainboard";
 import {
   ExternalPorts,
   InternalConnectors,
@@ -32,10 +33,10 @@ import { SaveOptions } from "sequelize";
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (options: Mainboard.FilterOptions) => ({
     attributes: ["id", ...Mainboard.SummaryAttributes],
-    where: options,
+    where: defaultFilter(options),
   }),
   [ModelScopes.FILTER]: (options: Mainboard.FilterOptions) => ({
-    where: options,
+    where: defaultFilter(options),
   }),
   [ModelScopes.DETAIL]: {
     ...PartDefaultScope,
@@ -449,11 +450,17 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   async save(options?: SaveOptions<any> | undefined): Promise<this> {
     const result = await super.save(options);
 
-    await Promise.all([
-      ...this.pcie_data?.map((pcie) => pcie.save(options)),
-      ...this.storage_connector_data?.map((storage) => storage.save(options)),
-      ...this.usb_data?.map((usb) => usb.save(options)),
-    ]);
+    const promises: Promise<any>[] = [];
+    this.pcie_data &&
+      promises.push(...this.pcie_data.map((pcie) => pcie.save(options)));
+    this.storage_connector_data &&
+      promises.push(
+        ...this.storage_connector_data?.map((storage) => storage.save(options))
+      );
+    this.usb_data &&
+      promises.push(...this.usb_data?.map((usb) => usb.save(options)));
+
+    await Promise.all(promises);
 
     return result;
   }

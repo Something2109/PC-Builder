@@ -8,12 +8,13 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import AIO from "@/utils/interface/part/AIO";
+import AIO from "@/utils/interface/info/AIO";
 import {
   PartDetailTable,
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
 import { FormFactor, Material } from "@/utils/interface/utils";
@@ -21,9 +22,11 @@ import { FormFactor, Material } from "@/utils/interface/utils";
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (options: AIO.FilterOptions) => ({
     attributes: ["id", ...AIO.SummaryAttributes],
-    where: options,
+    where: defaultFilter(options),
   }),
-  [ModelScopes.FILTER]: (options: AIO.FilterOptions) => ({ where: options }),
+  [ModelScopes.FILTER]: (options: AIO.FilterOptions) => ({
+    where: defaultFilter(options),
+  }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Tables.AIO })

@@ -1,5 +1,5 @@
 import { SequelizeOptions } from "sequelize-typescript";
-import { Models } from "./parts";
+import { InfoModels } from "./parts";
 import { Article } from "./articles/article";
 import { RetailProduct } from "./sellers/SellerProduct";
 import { PartInformation } from "./parts/tables/Part";
@@ -31,7 +31,7 @@ export const ConnectionOptions: SequelizeOptions = {
     CaseHardDriveSupportModel,
     CasePSUSupportModel,
     CPUBlockSocketModel,
-    ...Object.values(Models),
+    ...Object.values(InfoModels),
   ],
   define: {
     freezeTableName: true,

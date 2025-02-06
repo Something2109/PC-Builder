@@ -3,10 +3,11 @@ import {
   PartDefaultScope,
   Tables,
   ModelScopes,
+  defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
 import { FormFactor } from "@/utils/interface/utils";
-import Case from "@/utils/interface/part/Case";
+import Case from "@/utils/interface/info/Case";
 import {
   BelongsTo,
   Column,
@@ -24,30 +25,34 @@ function createFilterOptions(options?: Case.FilterOptions): FindOptions {
   const { mainboard_support, radiator_support, psu_support, ...where } =
     options ?? {};
 
-  const include = [];
+  const mainboard_model: IncludeOptions = {
+    model: CaseMainboardSupportModel,
+    required: Boolean(mainboard_support),
+  };
   if (mainboard_support) {
-    include.push({
-      model: CaseMainboardSupportModel,
-      where: { form_factor: mainboard_support },
-      required: Boolean(mainboard_support),
-    });
-  }
-  if (radiator_support) {
-    include.push({
-      model: CaseRadiatorSupportModel,
-      where: { form_factor: radiator_support },
-      required: Boolean(radiator_support),
-    });
-  }
-  if (psu_support) {
-    include.push({
-      model: CasePSUSupportModel,
-      where: { form_factor: psu_support },
-      required: Boolean(psu_support),
-    });
+    mainboard_model.where = { form_factor: mainboard_support };
   }
 
-  return { where, include };
+  const radiator_model: IncludeOptions = {
+    model: CaseRadiatorSupportModel,
+    required: Boolean(radiator_support),
+  };
+  if (radiator_support) {
+    radiator_model.where = { form_factor: radiator_support };
+  }
+
+  const psu_model: IncludeOptions = {
+    model: CasePSUSupportModel,
+    required: Boolean(psu_support),
+  };
+  if (psu_support) {
+    psu_model.where = { form_factor: psu_support };
+  }
+
+  return {
+    where: defaultFilter(where),
+    include: [mainboard_model, radiator_model, psu_model],
+  };
 }
 
 @Scopes(() => ({
@@ -616,13 +621,29 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   async save(options?: SaveOptions<any> | undefined): Promise<this> {
     const result = await super.save(options);
 
-    await Promise.all([
-      ...this.mainboard_support_data?.map((support) => support.save(options)),
-      ...this.radiator_support_data?.map((support) => support.save(options)),
-      ...this.fan_support_data?.map((support) => support.save(options)),
-      ...this.hard_drive_support_data?.map((support) => support.save(options)),
-      ...this.psu_support_data?.map((support) => support.save(options)),
-    ]);
+    const promises: Promise<any>[] = [];
+    this.mainboard_support_data &&
+      promises.push(
+        ...this.mainboard_support_data?.map((support) => support.save(options))
+      );
+    this.radiator_support_data &&
+      promises.push(
+        ...this.radiator_support_data?.map((support) => support.save(options))
+      );
+    this.fan_support_data &&
+      promises.push(
+        ...this.fan_support_data?.map((support) => support.save(options))
+      );
+    this.hard_drive_support_data &&
+      promises.push(
+        ...this.hard_drive_support_data?.map((support) => support.save(options))
+      );
+    this.psu_support_data &&
+      promises.push(
+        ...this.psu_support_data?.map((support) => support.save(options))
+      );
+
+    await Promise.all(promises);
 
     return result;
   }

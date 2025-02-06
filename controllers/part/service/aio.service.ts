@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import Part from "@/utils/interface/part/Parts";
+import Part from "@/utils/interface/info/Parts";
+import AIO from "@/utils/interface/product/AIO";
 import { Info, Products } from "@/utils/Enum";
-import AIO from "@/utils/interface/part/AIO";
-import { FormFactor, Material, Primitive } from "@/utils/interface/utils";
+import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.AIO]: AIO.Info;
+  [Info.AIO]: DetailInfo[Info.AIO];
 };
 
 @Injectable()
@@ -15,12 +16,16 @@ class AIOService extends BaseDetailPartService<Detail> {
 
   options(params: Record<string, string | string[]>) {
     const result = super.options(params);
-    result[Products.AIO] = {};
 
-    const options = result[Products.AIO];
-    this.parse(params, Primitive.String, options, "socket");
-    this.parse(params, FormFactor.Radiator, options, "form_factor");
-    this.parse(params, Material.Metal, options, "cpu_plate");
+    const parsedParams = AIO.Filter.parse(params);
+    const options = new FilterOptionBuilder<
+      NonNullable<FilterOptions[Info.AIO]>
+    >()
+      .add("socket", parsedParams["socket"])
+      .add("form_factor", parsedParams["form_factor"])
+      .add("cpu_plate", parsedParams["cpu_plate"]);
+
+    if (options.build()) result[Info.AIO] = options.build();
 
     return result;
   }
