@@ -2,7 +2,7 @@
 
 import { FormHTMLAttributes, useEffect, useState } from "react";
 import { ColumnWrapper, RowWrapper } from "./utils/FlexWrapper";
-import { InputButton } from "./utils/Button";
+import { Button } from "./utils/Button";
 import { FilterOptions } from "@/utils/interface";
 import { Products } from "@/utils/Enum";
 import { VerticalCollapsible } from "./utils/Collapsible";
@@ -36,8 +36,8 @@ export function FilterBar({
   return (
     <form className={`flex flex-col gap-1 ${className}`} {...rest}>
       <RowWrapper className="sticky top-32 bg-white dark:bg-background transition-colors ease-in-out duration-500 delay-0">
-        <InputButton type="submit" value="Filter" />
-        <InputButton type="reset" />
+        <Button type="submit">Filter</Button>
+        <Button type="reset">Reset</Button>
       </RowWrapper>
       <input
         defaultValue={options.get("q") ?? ""}
