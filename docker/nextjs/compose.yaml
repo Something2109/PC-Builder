@@ -8,10 +8,6 @@ services:
       - 4000:3000
     environment:
       - BACKEND_HOST=http://nestjs-prod:3000
-      - DATABASE_HOST=mysql
-      - DATABASE_PORT=3306
-      - DATABASE_NAME=PC_Builder
-      - DATABASE_USERNAME=NestjsApp
     env_file:
       - .env
     profiles:
@@ -25,10 +21,6 @@ services:
       - 4000:3000
     environment:
       - BACKEND_HOST=http://nestjs-dev:3000
-      - DATABASE_HOST=mysql
-      - DATABASE_PORT=3306
-      - DATABASE_NAME=PC_Builder
-      - DATABASE_USERNAME=NestjsApp
     env_file:
       - .env
     profiles:
