@@ -20,7 +20,8 @@ const ProductValidator = new ParseEnumPipe(Products, {
   exceptionFactory: () => new NotFoundException("Product's not found"),
 });
 const FilterValidator = new ZodValidationPipe(FilterOptions);
-const DetailValidator = new ZodValidationPipe(DetailInfo.partial());
+const CreateValidator = new ZodValidationPipe(DetailInfo);
+const UpdateValidator = new ZodValidationPipe(DetailInfo.partial());
 
 @Controller("api/part")
 export class PartController {
@@ -93,7 +94,7 @@ export class PartController {
   @Post(":part")
   async createPart(
     @Param("part", ProductValidator) part: Products,
-    @Body(DetailValidator) body: DetailInfo
+    @Body(CreateValidator) body: DetailInfo
   ) {
     const service = this.findService(part);
 
@@ -128,7 +129,7 @@ export class PartController {
   async setPart(
     @Param("part", ProductValidator) part: Products,
     @Param("id", ParseUUIDPipe) id: string,
-    @Body(DetailValidator) body: DetailInfo
+    @Body(UpdateValidator) body: DetailInfo
   ) {
     const service = this.findService(part);
 
