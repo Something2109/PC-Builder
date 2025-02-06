@@ -1,4 +1,4 @@
-FROM node:alpine3.21
+FROM node:alpine3.21 AS base
 
 WORKDIR /usr/local/app
 
@@ -19,4 +19,14 @@ COPY tsconfig.json ./
 
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+ENTRYPOINT [ "npm", "run" ]
+
+FROM base AS dev
+
+CMD ["dev"]
+
+FROM base as prod
+
+RUN npm run build
+
+CMD ["start"]
