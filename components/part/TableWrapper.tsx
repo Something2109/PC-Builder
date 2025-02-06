@@ -102,12 +102,10 @@ export function GenericInputTable<T extends Record<string, any>>(
     defaultValue,
     ...rest
   }: {
-    onSubmit: (data: Partial<T>) => Promise<boolean>;
+    onSubmit: (data: Partial<T>) => void;
     defaultValue?: Partial<T>;
   } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => {
     defaultValue = defaultValue ?? ({} as T);
-    const submit = async (formData: FormData) =>
-      await onSubmit(transform(formData));
 
     return (
       <>
@@ -119,7 +117,11 @@ export function GenericInputTable<T extends Record<string, any>>(
             </TableRowWrapper>
           ))}
         </TableWrapper>
-        <Button type="submit" formAction={submit} className="w-full">
+        <Button
+          type="submit"
+          formAction={(formData: FormData) => onSubmit(transform(formData))}
+          className="w-full"
+        >
           Save
         </Button>
       </>
