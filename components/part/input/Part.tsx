@@ -8,9 +8,10 @@ import {
 import { Input } from "@/components/utils/Input";
 import Part from "@/utils/interface/info/Parts";
 import { Products } from "@/utils/Enum";
-import { useState, TableHTMLAttributes, useCallback } from "react";
+import { useState, TableHTMLAttributes, useActionState } from "react";
 import { NotificationBar } from "@/components/utils/NotificationBar";
 import { Button } from "@/components/utils/Button";
+import { useRouter } from "next/navigation";
 
 export default function PartForm({
   path,
@@ -22,29 +23,52 @@ export default function PartForm({
   part: Products;
   defaultValue?: Part.BasicInfo;
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  let { code_name, url, brand, series, launch_date } = defaultValue ?? {};
-  launch_date = new Date(launch_date ?? new Date());
-
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const save = useCallback(
-    async (formData: FormData) => {
-      const data = Part.Schema.partial().parse(
-        Object.fromEntries(formData.entries())
-      );
-      const body = JSON.stringify(data);
+  const [formValue, save, pending] = useActionState<
+    Part.BasicInfo | undefined,
+    FormData | null
+  >(async (prev, formData) => {
+    const operation = prev ? (formData ? "save" : "delete") : "add";
+    const RequestPayload: RequestInit = {};
 
-      const response = await fetch(path, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body,
-      });
+    if (formData) {
+      const raw = Object.fromEntries(formData.entries()) as any;
+      if (!raw.url) raw.url = undefined;
+      if (!raw.image_url) raw.image_url = undefined;
 
-      if (!response.ok) {
-        setError((await response.json()).message);
-      }
-    },
-    [defaultValue]
-  );
+      const data = Part.Schema.omit({ id: true, part: true }).parse(raw);
+      RequestPayload.method = "POST";
+      RequestPayload.headers = { "Content-Type": "application/json" };
+      RequestPayload.body = JSON.stringify(data);
+    } else {
+      RequestPayload.method = "DELETE";
+    }
+
+    setError(null);
+    if (!confirm(`Are you sure you want to ${operation} basic info?`))
+      return prev;
+
+    const response = await fetch(path, RequestPayload);
+
+    if (!response.ok) {
+      setError((await response.json()).message);
+      return prev;
+    } else {
+      alert(`Successfully ${operation} part info.`);
+    }
+
+    const newData = (await response.json()) as Part.BasicInfo;
+
+    if (!prev && newData) router.push(`/part/${part}/${newData.id}/edit`);
+
+    if (!formData) router.push(`/part/${part}`);
+
+    return newData;
+  }, defaultValue);
+
+  let { name, code_name, url, brand, series, launch_date } = formValue ?? {};
+  launch_date = new Date(launch_date ?? new Date());
 
   return (
     <form action={save}>
@@ -60,7 +84,7 @@ export default function PartForm({
             name="name"
             placeholder="Name"
             className="text-4xl font-bold"
-            defaultValue={defaultValue?.name}
+            defaultValue={name}
             required
           />
           <TableWrapper>
@@ -113,6 +137,18 @@ export default function PartForm({
               />
             </TableRowWrapper>
           </TableWrapper>
+          <Button type="submit" className="w-full" disabled={pending}>
+            {pending ? "Saving..." : "Save"}
+          </Button>
+          {!pending && formValue && (
+            <Button
+              type="submit"
+              className="w-full"
+              formAction={() => save(null)}
+            >
+              Delete
+            </Button>
+          )}
           {error ? (
             <NotificationBar
               message={error}
@@ -120,9 +156,6 @@ export default function PartForm({
               alert
             />
           ) : undefined}
-          <Button type="submit" className="w-full">
-            Save
-          </Button>
         </ColumnWrapper>
       </ResponsiveWrapper>
     </form>
