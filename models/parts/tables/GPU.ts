@@ -28,19 +28,7 @@ import {
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({
-  modelName: Tables.GPU,
-  validate: {
-    coreValidate() {
-      if (!this.core_count && !this.execution_unit) {
-        throw new Error("Not enough core information provided");
-      }
-      if (!this.base_frequency && !this.boost_frequency) {
-        throw new Error("Not enough frequency information provided");
-      }
-    },
-  },
-})
+@Table({ modelName: Tables.GPU })
 class GPUModel extends Model implements PartDetailTable<GPU.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
