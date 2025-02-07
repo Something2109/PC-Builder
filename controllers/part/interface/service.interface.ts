@@ -1,10 +1,10 @@
 import { CreationAttributes, Includeable, ModelStatic, Op } from "sequelize";
 import { Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
-import { Info, Products } from "@/utils/Enum";
 import { InfoModels } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
 import Part from "@/utils/interface/info/Parts";
+import { APIMapping } from "@/utils/interface/api";
 import { FilterOptionsType, Primitive } from "@/utils/interface/utils";
 import {
   FilterOptions as Filter,
@@ -12,12 +12,8 @@ import {
   FilterAttributes,
   ProductInfo,
 } from "@/utils/interface";
+import { Info, Products } from "@/utils/Enum";
 import { ZodSchema } from "zod";
-
-type ListResult<Part> = {
-  total: number;
-  list: Part[];
-};
 
 type SearchOptions = {
   q?: string;
@@ -40,7 +36,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    */
   abstract list(
     options: Filter & PageOptions & SearchOptions
-  ): Promise<ListResult<Detail>>;
+  ): Promise<APIMapping.Payload<Detail>>;
 
   /**
    * Create a new {@link Filter} object that filters
@@ -327,7 +323,7 @@ abstract class BaseDetailPartService<
 
   async list(
     options: Filter & PageOptions & SearchOptions
-  ): Promise<ListResult<Detail>> {
+  ): Promise<APIMapping.Payload<Detail>> {
     const { part, ...rest } = options;
 
     const FilteredPart = PartInformation.scope({
