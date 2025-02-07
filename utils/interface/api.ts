@@ -6,6 +6,16 @@ import { ZodIssue } from "zod";
  */
 export namespace APIMapping {
   /**
+   * The payload generic object.
+   * Contains a total number telling the total number of T
+   * and the list of specific number of T object.
+   */
+  export type Payload<T> = {
+    total: number;
+    list: T[];
+  };
+
+  /**
    * The default type that are guaranteed to not have any inner path.
    * Contains the primitive type and some atomic object.
    */
