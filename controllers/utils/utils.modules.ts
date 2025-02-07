@@ -1,4 +1,3 @@
-import { Products, Topics } from "@/utils/Enum";
 import {
   Module,
   PipeTransform,
@@ -6,7 +5,8 @@ import {
   BadRequestException,
   Global,
 } from "@nestjs/common";
-import { ZodError, ZodSchema, nativeEnum } from "zod";
+import { ZodError, ZodSchema } from "zod";
+import { APIMapping } from "@/utils/interface/api";
 
 @Injectable()
 export class ZodValidationPipe implements PipeTransform {
@@ -19,15 +19,9 @@ export class ZodValidationPipe implements PipeTransform {
       const err = error as ZodError;
       console.error(err);
 
-      const messages: string[] = err.issues.map((issue) => {
-        let errVal = value;
-        issue.path.forEach((key) => (errVal = errVal[key]));
-        return `${issue.message} in [${issue.path.join("][")}]`;
-      });
+      const body = APIMapping.toError(err.issues);
 
-      throw new BadRequestException(
-        `Validation failed: ${messages.join(", ")}.`
-      );
+      throw new BadRequestException(body);
     }
   }
 }
