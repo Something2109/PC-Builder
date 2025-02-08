@@ -1,100 +1,101 @@
-import { Extract } from "./String";
+/**
+ * The generic unit class.
+ * Use in parsing and exchanging unit value in the project.
+ * Created by passing an object of unit name key and ratio value
+ * or an array of unit in ascending value order and the step between each unit.
+ */
+class Unit<Units extends string> {
+  private readonly Exchanger: Record<Units, number>;
+  private readonly Regexp: RegExp;
 
-class UnitExtract<Units extends string> {
-  private ratio: Record<Units, number>;
-  private readonly UnitRegexp: RegExp;
-  private readonly NumberRegexp: RegExp;
+  constructor(ratio: Units[] | Record<Units, number>, step = 1) {
+    ratio = Array.isArray(ratio)
+      ? ratio.reduce((acc, curr, index) => {
+          acc[curr] = Math.pow(step, index);
+          return acc;
+        }, {} as Record<Units, number>)
+      : ratio;
+    this.Exchanger = ratio;
 
-  constructor(ratio: Record<Units, number>) {
-    this.ratio = ratio;
-    this.UnitRegexp = new RegExp(Object.keys(ratio).join("|"));
-    this.NumberRegexp = new RegExp(
-      `${Extract.NumberRegexp.source} *(${this.UnitRegexp.source})`,
-      "g"
+    const NumberRegex = "-?\\d+\\.?\\d*|-?\\d*\\.?\\d+";
+    const UnitRegex = Object.keys(ratio).join("|");
+    this.Regexp = new RegExp(
+      `(^|\\W)(${NumberRegex})?[ _-]*(${UnitRegex})(\\W|$)`
     );
   }
 
-  list(): Units[] {
-    return Object.keys(this.ratio) as Units[];
+  /**
+   * Extract the first number value and unit name from the string parameter.
+   * If no number found, return null and the discovered unit name.
+   * If no unit name found, return null.
+   * @param str The string to extract.
+   * @returns A tuple of number and the unit name or null.
+   */
+  parse(str: string): [number | null, Units] | null {
+    const result = str.match(this.Regexp);
+
+    if (!result) return null;
+
+    return this.extractRegexResult(result);
   }
 
-  unit(str?: string | null): Units | null {
-    if (!str) {
-      return null;
-    }
+  /**
+   * Extract all occurence of number value and unit name from the string parameter.
+   * Return an array of value and unit name tuples.
+   * @param str The string to extract.
+   * @returns An array of number value and unit tuples.
+   */
+  parseAll(str: string): [number | null, Units][] {
+    const results = str.matchAll(this.Regexp);
 
-    const result = str.match(this.UnitRegexp);
-    if (result) return result[0] as Units;
-
-    return null;
+    return [...results].map((result) => this.extractRegexResult(result));
   }
 
-  find(str?: string | null): [number, Units] | null {
-    if (!str) {
-      return null;
-    }
-
-    const unitStr = str.match(this.NumberRegexp);
-    if (!unitStr) {
-      return null;
-    }
-
-    let number = Extract.number(str);
-    let src = this.unit(unitStr[0]);
-    if (number && src) return [number, src];
-
-    return null;
+  /**
+   * Return the number representing the amount of {@link dest} unit
+   * that equal to 1 {@link src} unit.
+   * @param src The first unit name.
+   * @param dest The second unit name.
+   * @returns The number representing the ratio.
+   */
+  ratio(src: Units, dest: Units): number {
+    return this.Exchanger[src] / this.Exchanger[dest];
   }
 
+  /**
+   * Exchange the {@link num} number corresponding to the {@link src} unit name
+   * to the value corresponding to the {@link dest} unit.
+   * @param num The number to exchange.
+   * @param src The first unit name.
+   * @param dest The second unit name.
+   * @returns The numnber value corresponding to the {@link dest} unit.
+   */
   exchange(num: number, src: Units, dest: Units) {
-    return (num * this.ratio[src]) / this.ratio[dest];
+    return num * this.ratio(src, dest);
   }
 
-  read(str: string, dest: Units, src?: Units): number | null {
-    let number: number | null;
+  /**
+   * The utility function used to transform the regex result
+   * to the parse result type.
+   * @param result The regex match result.
+   * @returns The result tuple of {@link parse} and {@link parseAll}.
+   */
+  private extractRegexResult(
+    result: RegExpMatchArray | RegExpExecArray
+  ): [number | null, Units] {
+    const [_, __, num, unit] = result;
 
-    if (!src) {
-      const extract = this.find(str);
-      if (!extract) return null;
-
-      number = extract[0];
-      src = extract[1];
-    } else {
-      number = Extract.number(str);
-    }
-
-    if (src && number) {
-      return this.exchange(number, src, dest);
-    }
-
-    return null;
+    return [num ? Number(num) : null, unit as Units];
   }
 }
 
-const MemoryUnits = new UnitExtract({
-  B: 1,
-  KB: 1024,
-  MB: 1024 * 1024,
-  GB: 1024 * 1024 * 1024,
-  TB: 1024 * 1024 * 1024 * 1024,
-  PB: 1024 * 1024 * 1024 * 1024 * 1024,
-});
+const MemoryUnits = new Unit(["B", "KB", "MB", "GB", "TB", "PB"], 1024);
 
-const FrequencyUnits = new UnitExtract({
-  Hz: 1,
-  KHz: 1000,
-  MHz: 1000 * 1000,
-  GHz: 1000 * 1000 * 1000,
-  THz: 1000 * 1000 * 1000 * 1000,
-  PHz: 1000 * 1000 * 1000 * 1000 * 1000,
-});
+const FrequencyUnits = new Unit(
+  ["Hz", "KHz", "MHz", "GHz", "THz", "PHz"],
+  1000
+);
 
-const LengthUnits = new UnitExtract({
-  mm: 1 / 1000,
-  cm: 1 / 100,
-  dm: 1 / 10,
-  m: 1,
-  km: 1000,
-});
+const LengthUnits = new Unit(["mm", "cm", "dm", "m", "km"], 1000);
 
-export { UnitExtract, MemoryUnits, FrequencyUnits, LengthUnits };
+export { Unit as UnitExtract, MemoryUnits, FrequencyUnits, LengthUnits };
