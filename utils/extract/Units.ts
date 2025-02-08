@@ -98,4 +98,13 @@ const FrequencyUnits = new Unit(
 
 const LengthUnits = new Unit(["mm", "cm", "dm", "m", "km"], 1000);
 
-export { Unit as UnitExtract, MemoryUnits, FrequencyUnits, LengthUnits };
+const TimeUnits = new Unit({
+  ns: 1,
+  μs: 1000,
+  ms: 1000 * 1000,
+  s: 1000 * 1000 * 1000,
+  min: 60 * 1000 * 1000 * 1000,
+  h: 60 * 60 * 1000 * 1000 * 1000,
+});
+
+export { Unit, MemoryUnits, FrequencyUnits, LengthUnits, TimeUnits };
