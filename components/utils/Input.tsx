@@ -1,15 +1,18 @@
 "use client";
 
 import {
-  HTMLAttributes,
+  ChangeEvent,
   HTMLInputTypeAttribute,
   InputHTMLAttributes,
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
+  useCallback,
   useEffect,
   useRef,
+  useState,
 } from "react";
 import { RowWrapper } from "./FlexWrapper";
+import { UnitInterface } from "@/utils/extract/Units";
 
 const defaultStyle = "w-full bg-transparent resize-none overflow-y-hidden";
 const defaultValueList: { [key in HTMLInputTypeAttribute]?: string | number } =
@@ -67,6 +70,52 @@ export function Input({
       defaultValue={defaultValue}
       {...rest}
     />
+  );
+}
+
+export function SuffixInput({
+  suffix,
+  ...rest
+}: { suffix: string } & InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <RowWrapper className="items-baseline">
+      <Input {...rest} />
+      <p>{suffix}</p>
+    </RowWrapper>
+  );
+}
+
+export function UnitInput<T extends string>({
+  Unit,
+  defaultUnit,
+  name,
+  defaultValue,
+  ...rest
+}: {
+  Unit: UnitInterface<T>;
+  defaultUnit: T;
+} & Omit<InputHTMLAttributes<HTMLInputElement>, "type">) {
+  const [submit, setSubmit] = useState<number>(Number(defaultValue ?? 0));
+  rest.onChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.currentTarget.value;
+
+      const result = Unit.parse(value);
+      if (result && result[0]) {
+        e.currentTarget.value = `${result[0]} ${result[1]}`;
+        setSubmit(Unit.exchange(result[0], result[1], defaultUnit));
+      } else {
+        setSubmit(0);
+      }
+    },
+    [Unit]
+  );
+
+  return (
+    <>
+      <input type="hidden" name={name} value={submit} />
+      <Input defaultValue={`${submit} ${defaultUnit}`} {...rest} />
+    </>
   );
 }
 
