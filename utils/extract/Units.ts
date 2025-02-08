@@ -108,6 +108,111 @@ class Unit<Units extends string> implements UnitInterface<Units> {
   }
 }
 
+type DerivedUnitName<
+  Unit1 extends string,
+  Unit2 extends string
+> = `${Unit1}/${Unit2}`;
+
+/**
+ * The generic derived unit class.
+ * Use in parsing and exchanging unit value in the project.
+ * Created by passing two units to the constructor.
+ */
+class DerivedUnit<Unit1 extends string, Unit2 extends string>
+  implements UnitInterface<DerivedUnitName<Unit1, Unit2>>
+{
+  private readonly unit1: UnitInterface<Unit1>;
+  private readonly unit2: UnitInterface<Unit2>;
+  private readonly Regexp: RegExp;
+
+  constructor(unit1: UnitInterface<Unit1>, unit2: UnitInterface<Unit2>) {
+    this.unit1 = unit1;
+    this.unit2 = unit2;
+
+    const NumberRegex = "-?\\d+\\.?\\d*|-?\\d*\\.?\\d+";
+    const Unit1Regex = unit1.list().join("|");
+    const Unit2Regex = unit2.list().join("|");
+    this.Regexp = new RegExp(
+      `(^|\\W)(${NumberRegex})?[ _-]*(${Unit1Regex})\/(${Unit2Regex})(\\W|$)`
+    );
+  }
+
+  list(): DerivedUnitName<Unit1, Unit2>[] {
+    return this.unit1
+      .list()
+      .map((val1) => this.unit2.list().map((val2) => this.toUnit(val1, val2)))
+      .flat();
+  }
+
+  parse(str: string): [number | null, DerivedUnitName<Unit1, Unit2>] | null {
+    const result = str.match(this.Regexp);
+
+    if (!result) return null;
+
+    const [num, unit1, unit2] = this.extractRegexResult(result);
+
+    return [num, this.toUnit(unit1, unit2)];
+  }
+
+  parseAll(str: string): [number | null, DerivedUnitName<Unit1, Unit2>][] {
+    const results = str.matchAll(this.Regexp);
+
+    return [...results].map((result) => {
+      const [num, unit1, unit2] = this.extractRegexResult(result);
+
+      return [num, this.toUnit(unit1, unit2)];
+    });
+  }
+
+  ratio(
+    src: DerivedUnitName<Unit1, Unit2>,
+    dest: DerivedUnitName<Unit1, Unit2>
+  ): number {
+    const result1 = src.match(this.Regexp);
+    const result2 = dest.match(this.Regexp);
+
+    if (!result1) throw new Error(`Cannot extract unit from type ${src}`);
+    if (!result2) throw new Error(`Cannot extract unit from type ${dest}`);
+
+    const [_, src1, src2] = this.extractRegexResult(result1);
+    const [__, dest1, dest2] = this.extractRegexResult(result2);
+
+    return this.unit1.ratio(src1, dest1) / this.unit2.ratio(src2, dest2);
+  }
+
+  exchange(
+    num: number,
+    src: DerivedUnitName<Unit1, Unit2>,
+    dest: DerivedUnitName<Unit1, Unit2>
+  ): number {
+    return num * this.ratio(src, dest);
+  }
+
+  /**
+   * Create the name of the composite unit by combining the name of the 2 units.
+   * @param unit1 The first unit.
+   * @param unit2 The second unit.
+   * @returns The composite unit.
+   */
+  private toUnit(unit1: Unit1, unit2: Unit2): DerivedUnitName<Unit1, Unit2> {
+    return `${unit1}/${unit2}` as DerivedUnitName<Unit1, Unit2>;
+  }
+
+  /**
+   * The utility function used to transform the regex result
+   * to the parse result type.
+   * @param result The regex match result.
+   * @returns The result tuple of {@link parse} and {@link parseAll}.
+   */
+  private extractRegexResult(
+    result: RegExpMatchArray | RegExpExecArray
+  ): [number | null, Unit1, Unit2] {
+    const [_, __, num, unit1, unit2] = result;
+
+    return [num ? Number(num) : null, unit1 as Unit1, unit2 as Unit2];
+  }
+}
+
 const MemoryUnits = new Unit(["B", "KB", "MB", "GB", "TB", "PB"], 1024);
 
 const FrequencyUnits = new Unit(
@@ -130,6 +235,14 @@ const TimeUnits = new Unit({
 
 const TransferUnits = new Unit(["T", "KT", "MT", "GT"], 1000);
 
+const MemorySpeedUnit = new DerivedUnit(MemoryUnits, TimeUnits);
+
+const LengthSpeedUnit = new DerivedUnit(LengthUnits, TimeUnits);
+
+const VolumeSpeedUnit = new DerivedUnit(VolumeUnits, TimeUnits);
+
+const TransferSpeedUnit = new DerivedUnit(TransferUnits, TimeUnits);
+
 export {
   type UnitInterface,
   MemoryUnits,
@@ -137,4 +250,8 @@ export {
   LengthUnits,
   TimeUnits,
   TransferUnits,
+  MemorySpeedUnit,
+  LengthSpeedUnit,
+  VolumeSpeedUnit,
+  TransferSpeedUnit,
 };
