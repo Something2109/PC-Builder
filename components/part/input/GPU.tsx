@@ -1,35 +1,19 @@
-import { GenericInputTable } from "../TableWrapper";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 import { Input } from "@/components/utils/Input";
 import GPU from "@/utils/interface/info/GPU";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof GPU.Info]: FunctionComponent<{ value?: GPU.Info[key] }>;
-} = {
-  family: ({ value }) => <Input name="family" defaultValue={value} />,
-  core_count: ({ value }) => (
-    <Input type="number" name="core_count" defaultValue={value} />
-  ),
-  execution_unit: ({ value }) => (
-    <Input type="number" name="execution_unit" defaultValue={value} />
-  ),
-  base_frequency: ({ value }) => (
-    <Input type="number" name="base_frequency" defaultValue={value} />
-  ),
-  boost_frequency: ({ value }) => (
-    <Input type="number" name="boost_frequency" defaultValue={value} />
-  ),
-  extra_cores: ({ value }) => <></>,
-  memory_size: ({ value }) => (
-    <Input type="number" name="memory_size" defaultValue={value} />
-  ),
-  memory_type: ({ value }) => <Input name="memory_type" defaultValue={value} />,
-  memory_bus: ({ value }) => (
-    <Input type="number" name="memory_bus" defaultValue={value} />
-  ),
-  tdp: ({ value }) => <Input type="number" name="tdp" defaultValue={value} />,
-  features: ({ value }) => <></>,
+const Components: InfoInputMapping<GPU.Info> = {
+  family: (props) => <Input {...props} />,
+  core_count: (props) => <Input type="number" {...props} />,
+  execution_unit: (props) => <Input type="number" {...props} />,
+  base_frequency: (props) => <Input type="number" step={0.01} {...props} />,
+  boost_frequency: (props) => <Input type="number" step={0.01} {...props} />,
+  extra_cores: (props) => <></>,
+  memory_size: (props) => <Input type="number" {...props} />,
+  memory_type: (props) => <Input {...props} />,
+  memory_bus: (props) => <Input type="number" {...props} />,
+  tdp: (props) => <Input type="number" {...props} />,
+  features: (props) => <></>,
 };
 
 function submit(formData: FormData) {

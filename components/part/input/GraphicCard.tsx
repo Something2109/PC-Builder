@@ -1,36 +1,18 @@
-import { GenericInputTable } from "../TableWrapper";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 import { Input } from "@/components/utils/Input";
 import GraphicCard from "@/utils/interface/info/GraphicCard";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof GraphicCard.Info]: FunctionComponent<{
-    value?: GraphicCard.Info[key];
-  }>;
-} = {
-  width: ({ value }) => (
-    <Input type="number" step="0.01" name="width" defaultValue={value} />
-  ),
-  length: ({ value }) => (
-    <Input type="number" step="0.01" name="length" defaultValue={value} />
-  ),
-  height: ({ value }) => (
-    <Input type="number" step="0.01" name="height" defaultValue={value} />
-  ),
-  base_frequency: ({ value }) => (
-    <Input type="number" name="base_frequency" defaultValue={value} />
-  ),
-  boost_frequency: ({ value }) => (
-    <Input type="number" name="boost_frequency" defaultValue={value} />
-  ),
-  pcie: ({ value }) => <Input type="number" name="pcie" defaultValue={value} />,
-  minimum_psu: ({ value }) => (
-    <Input type="number" name="minimum_psu" defaultValue={value} />
-  ),
-  power_connector: ({ value }) => <></>,
-  port: ({ value }) => <></>,
-  gpu: ({ value }) => <></>,
+const Components: InfoInputMapping<GraphicCard.Info> = {
+  width: (props) => <Input type="number" step="0.01" {...props} />,
+  length: (props) => <Input type="number" step="0.01" {...props} />,
+  height: (props) => <Input type="number" step="0.01" {...props} />,
+  base_frequency: (props) => <Input type="number" {...props} />,
+  boost_frequency: (props) => <Input type="number" {...props} />,
+  pcie: (props) => <Input type="number" {...props} />,
+  minimum_psu: (props) => <Input type="number" {...props} />,
+  power_connector: (props) => <></>,
+  port: (props) => <></>,
+  gpu: (props) => <></>,
 };
 
 function submit(formData: FormData) {

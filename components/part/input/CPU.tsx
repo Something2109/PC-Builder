@@ -1,44 +1,22 @@
-import { GenericInputTable } from "../TableWrapper";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 import { Input } from "@/components/utils/Input";
 import CPU from "@/utils/interface/info/CPU";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
 
-export const Components: {
-  [key in keyof CPU.Info]: FunctionComponent<{ value?: CPU.Info[key] }>;
-} = {
-  family: ({ value }) => <Input name="family" defaultValue={value} />,
-  socket: ({ value }) => <Input name="socket" defaultValue={value} />,
-  total_cores: ({ value }) => (
-    <Input type="number" name="total_cores" defaultValue={value} />
-  ),
-  total_threads: ({ value }) => (
-    <Input type="number" name="total_threads" defaultValue={value} />
-  ),
-  base_frequency: ({ value }) => (
-    <Input type="number" name="base_frequency" defaultValue={value} />
-  ),
-  turbo_frequency: ({ value }) => (
-    <Input type="number" name="turbo_frequency" defaultValue={value} />
-  ),
-  cores: ({ value }) => <></>,
-  L2_cache: ({ value }) => (
-    <Input type="number" name="L2_cache" defaultValue={value} />
-  ),
-  L3_cache: ({ value }) => (
-    <Input type="number" name="L3_cache" defaultValue={value} />
-  ),
-  max_memory: ({ value }) => (
-    <Input type="number" name="max_memory" defaultValue={value} />
-  ),
-  max_memory_channel: ({ value }) => (
-    <Input type="number" name="max_memory_channel" defaultValue={value} />
-  ),
-  max_memory_bandwidth: ({ value }) => (
-    <Input type="number" name="max_memory_bandwidth" defaultValue={value} />
-  ),
-  tdp: ({ value }) => <Input type="number" name="tdp" defaultValue={value} />,
-  lithography: ({ value }) => <Input name="lithography" defaultValue={value} />,
+export const Components: InfoInputMapping<CPU.Info> = {
+  family: (props) => <Input {...props} />,
+  socket: (props) => <Input {...props} />,
+  total_cores: (props) => <Input type="number" {...props} />,
+  total_threads: (props) => <Input type="number" {...props} />,
+  base_frequency: (props) => <Input type="number" step={0.01} {...props} />,
+  turbo_frequency: (props) => <Input type="number" step={0.01} {...props} />,
+  cores: (props) => <></>,
+  L2_cache: (props) => <Input type="number" {...props} />,
+  L3_cache: (props) => <Input type="number" {...props} />,
+  max_memory: (props) => <Input type="number" {...props} />,
+  max_memory_channel: (props) => <Input type="number" {...props} />,
+  max_memory_bandwidth: (props) => <Input type="number" {...props} />,
+  tdp: (props) => <Input type="number" {...props} />,
+  lithography: (props) => <Input {...props} />,
 };
 
 function submit(formData: FormData) {

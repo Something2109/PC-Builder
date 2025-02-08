@@ -1,61 +1,33 @@
-import { GenericInputTable } from "../TableWrapper";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import Pump from "@/utils/interface/info/Pump";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof Pump.Info]: FunctionComponent<{ value?: Pump.Info[key] }>;
-} = {
-  form_factor: ({ value }) => (
+const Components: InfoInputMapping<Pump.Info> = {
+  form_factor: (props) => (
+    <OptionSelect options={FormFactor.Pump.options} {...props} />
+  ),
+  width: (props) => <Input type="number" step="0.01" {...props} />,
+  length: (props) => <Input type="number" step="0.01" {...props} />,
+  height: (props) => <Input type="number" step="0.01" {...props} />,
+  voltage: (props) => <Input type="number" {...props} />,
+  wattage: (props) => <Input type="number" {...props} />,
+  head_pressure: (props) => <Input type="number" {...props} />,
+  flow_rate: (props) => <Input type="number" {...props} />,
+  power_connector: (props) => (
     <OptionSelect
-      name="form_factor"
-      options={FormFactor.Pump.options}
-      defaultValue={value}
-    />
-  ),
-  width: ({ value }) => (
-    <Input type="number" step="0.01" name="width" defaultValue={value} />
-  ),
-  length: ({ value }) => (
-    <Input type="number" step="0.01" name="length" defaultValue={value} />
-  ),
-  height: ({ value }) => (
-    <Input type="number" step="0.01" name="height" defaultValue={value} />
-  ),
-  voltage: ({ value }) => (
-    <Input type="number" name="voltage" defaultValue={value} />
-  ),
-  wattage: ({ value }) => (
-    <Input type="number" name="wattage" defaultValue={value} />
-  ),
-  head_pressure: ({ value }) => (
-    <Input type="number" name="head_pressure" defaultValue={value} />
-  ),
-  flow_rate: ({ value }) => (
-    <Input type="number" name="flow_rate" defaultValue={value} />
-  ),
-  power_connector: ({ value }) => (
-    <OptionSelect
-      name="power_connector"
       options={InternalConnectors.Power.Miscellanous.options}
-      defaultValue={value}
+      {...props}
     />
   ),
-  control_connector: ({ value }) => (
+  control_connector: (props) => (
     <OptionSelect
-      name="control_connector"
       options={InternalConnectors.Fan.Connector.options}
-      defaultValue={value}
+      {...props}
     />
   ),
-  rgb: ({ value }) => (
-    <OptionSelect
-      name="rgb"
-      options={InternalConnectors.RGB.options}
-      defaultValue={value}
-    />
+  rgb: (props) => (
+    <OptionSelect options={InternalConnectors.RGB.options} {...props} />
   ),
 };
 

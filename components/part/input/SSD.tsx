@@ -1,46 +1,22 @@
-import { GenericInputTable } from "../TableWrapper";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import SSD from "@/utils/interface/info/SSD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof SSD.Info]: FunctionComponent<{ value?: SSD.Info[key] }>;
-} = {
-  memory_type: ({ value }) => (
-    <OptionSelect
-      name="memory_type"
-      options={SSD.MemoryCell.options}
-      defaultValue={value}
-    />
+const Components: InfoInputMapping<SSD.Info> = {
+  memory_type: (props) => (
+    <OptionSelect options={SSD.MemoryCell.options} {...props} />
   ),
-  read_speed: ({ value }) => (
-    <Input type="number" name="read_speed" defaultValue={value} />
+  read_speed: (props) => <Input type="number" {...props} />,
+  write_speed: (props) => <Input type="number" {...props} />,
+  capacity: (props) => <Input type="number" {...props} />,
+  cache: (props) => <Input type="number" {...props} />,
+  tbw: (props) => <Input type="number" {...props} />,
+  form_factor: (props) => (
+    <OptionSelect options={FormFactor.SSD.options} {...props} />
   ),
-  write_speed: ({ value }) => (
-    <Input type="number" name="write_speed" defaultValue={value} />
-  ),
-  capacity: ({ value }) => (
-    <Input type="number" name="capacity" defaultValue={value} />
-  ),
-  cache: ({ value }) => (
-    <Input type="number" name="cache" defaultValue={value} />
-  ),
-  tbw: ({ value }) => <Input type="number" name="tbw" defaultValue={value} />,
-  form_factor: ({ value }) => (
-    <OptionSelect
-      name="form_factor"
-      options={FormFactor.SSD.options}
-      defaultValue={value}
-    />
-  ),
-  interface: ({ value }) => (
-    <OptionSelect
-      name="interface"
-      options={InternalConnectors.Storage.SSD.options}
-      defaultValue={value}
-    />
+  interface: (props) => (
+    <OptionSelect options={InternalConnectors.Storage.SSD.options} {...props} />
   ),
 };
 

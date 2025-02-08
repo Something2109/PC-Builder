@@ -1,6 +1,8 @@
 import {
   FunctionComponent,
   HTMLAttributes,
+  InputHTMLAttributes,
+  SelectHTMLAttributes,
   TableHTMLAttributes,
   TdHTMLAttributes,
 } from "react";
@@ -90,10 +92,20 @@ export function GenericDetailTable<T extends Record<string, any>>(
   );
 }
 
+type CustomInputComponent<Value> = FunctionComponent<
+  { value?: Value; defaultValue?: Value } & Omit<
+    InputHTMLAttributes<HTMLInputElement> &
+      SelectHTMLAttributes<HTMLSelectElement>,
+    "defaultValue" | "value"
+  >
+>;
+
+export type InfoInputMapping<T extends Record<string, any>> = {
+  [key in keyof T]: CustomInputComponent<T[key]>;
+};
+
 export function GenericInputTable<T extends Record<string, any>>(
-  Components: {
-    [key in keyof T]: FunctionComponent<{ value?: T[key]; id?: string }>;
-  },
+  Components: InfoInputMapping<T>,
   Labels: { [key in string]: string },
   transform: (data: FormData) => Partial<T>
 ) {
@@ -115,7 +127,12 @@ export function GenericInputTable<T extends Record<string, any>>(
           {Object.entries(Components).map(([key, Component]) => (
             <TableRowWrapper key={key}>
               {Labels[key]}
-              <Component value={defaultValue[key]} />
+              <Component
+                name={key}
+                title={Labels[key]}
+                placeholder={Labels[key]}
+                defaultValue={defaultValue[key]}
+              />
             </TableRowWrapper>
           ))}
         </TableWrapper>
