@@ -1,10 +1,53 @@
+interface UnitInterface<Units extends string> {
+  /**
+   * Get the full list of unit names.
+   */
+  list(): Units[];
+
+  /**
+   * Extract the first number value and unit name from the string parameter.
+   * If no number found, return null and the discovered unit name.
+   * If no unit name found, return null.
+   * @param str The string to extract.
+   * @returns A tuple of number and the unit name or null.
+   */
+  parse(str: string): [number | null, Units] | null;
+
+  /**
+   * Extract all occurence of number value and unit name from the string parameter.
+   * Return an array of value and unit name tuples.
+   * @param str The string to extract.
+   * @returns An array of number value and unit tuples.
+   */
+  parseAll(str: string): [number | null, Units][];
+
+  /**
+   * Return the number representing the amount of {@link dest} unit
+   * that equal to 1 {@link src} unit.
+   * @param src The first unit name.
+   * @param dest The second unit name.
+   * @returns The number representing the ratio.
+   */
+  ratio(src: Units, dest: Units): number;
+
+  /**
+   * Exchange the {@link num} number corresponding to the {@link src} unit name
+   * to the value corresponding to the {@link dest} unit.
+   * @param num The number to exchange.
+   * @param src The first unit name.
+   * @param dest The second unit name.
+   * @returns The numnber value corresponding to the {@link dest} unit.
+   */
+  exchange(num: number, src: Units, dest: Units): number;
+}
+
 /**
  * The generic unit class.
  * Use in parsing and exchanging unit value in the project.
  * Created by passing an object of unit name key and ratio value
  * or an array of unit in ascending value order and the step between each unit.
  */
-class Unit<Units extends string> {
+class Unit<Units extends string> implements UnitInterface<Units> {
   private readonly Exchanger: Record<Units, number>;
   private readonly Regexp: RegExp;
 
@@ -24,13 +67,10 @@ class Unit<Units extends string> {
     );
   }
 
-  /**
-   * Extract the first number value and unit name from the string parameter.
-   * If no number found, return null and the discovered unit name.
-   * If no unit name found, return null.
-   * @param str The string to extract.
-   * @returns A tuple of number and the unit name or null.
-   */
+  list() {
+    return Object.keys(this.Exchanger) as Units[];
+  }
+
   parse(str: string): [number | null, Units] | null {
     const result = str.match(this.Regexp);
 
@@ -39,37 +79,16 @@ class Unit<Units extends string> {
     return this.extractRegexResult(result);
   }
 
-  /**
-   * Extract all occurence of number value and unit name from the string parameter.
-   * Return an array of value and unit name tuples.
-   * @param str The string to extract.
-   * @returns An array of number value and unit tuples.
-   */
   parseAll(str: string): [number | null, Units][] {
     const results = str.matchAll(this.Regexp);
 
     return [...results].map((result) => this.extractRegexResult(result));
   }
 
-  /**
-   * Return the number representing the amount of {@link dest} unit
-   * that equal to 1 {@link src} unit.
-   * @param src The first unit name.
-   * @param dest The second unit name.
-   * @returns The number representing the ratio.
-   */
   ratio(src: Units, dest: Units): number {
     return this.Exchanger[src] / this.Exchanger[dest];
   }
 
-  /**
-   * Exchange the {@link num} number corresponding to the {@link src} unit name
-   * to the value corresponding to the {@link dest} unit.
-   * @param num The number to exchange.
-   * @param src The first unit name.
-   * @param dest The second unit name.
-   * @returns The numnber value corresponding to the {@link dest} unit.
-   */
   exchange(num: number, src: Units, dest: Units) {
     return num * this.ratio(src, dest);
   }
@@ -98,6 +117,8 @@ const FrequencyUnits = new Unit(
 
 const LengthUnits = new Unit(["mm", "cm", "dm", "m", "km"], 1000);
 
+const VolumeUnits = new Unit(["ml", "L"], 1000);
+
 const TimeUnits = new Unit({
   ns: 1,
   μs: 1000,
@@ -107,4 +128,13 @@ const TimeUnits = new Unit({
   h: 60 * 60 * 1000 * 1000 * 1000,
 });
 
-export { Unit, MemoryUnits, FrequencyUnits, LengthUnits, TimeUnits };
+const TransferUnits = new Unit(["T", "KT", "MT", "GT"], 1000);
+
+export {
+  type UnitInterface,
+  MemoryUnits,
+  FrequencyUnits,
+  LengthUnits,
+  TimeUnits,
+  TransferUnits,
+};
