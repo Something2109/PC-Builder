@@ -35,6 +35,10 @@ export namespace Table {
   );
 }
 
+export type InfoLabel<T extends Record<string, any>> = {
+  [key in keyof T]: string;
+};
+
 export type InfoSummaryMapping<
   T extends Record<string, any>,
   Attrs extends keyof T
@@ -47,7 +51,7 @@ export function GenericSummaryCells<
   Attrs extends string
 >(
   Components: InfoSummaryMapping<T, Attrs>,
-  Labels: { [key in string]: string },
+  Labels: InfoLabel<T>,
   Attributes: Attrs[]
 ) {
   return ({ defaultValue }: { defaultValue?: Partial<T> }) => (
@@ -79,7 +83,7 @@ export type InfoDetailMapping<T extends Record<string, any>> = {
 
 export function GenericDetailTable<T extends Record<string, any>>(
   Components: InfoDetailMapping<T>,
-  Labels: { [key in string]: string }
+  Labels: InfoLabel<T>
 ) {
   return ({
     defaultValue,
@@ -118,7 +122,7 @@ export type InfoInputMapping<T extends Record<string, any>> = {
 
 export function GenericInputTable<T extends Record<string, any>>(
   Components: InfoInputMapping<T>,
-  Labels: { [key in string]: string },
+  Labels: InfoLabel<T>,
   transform: (data: FormData) => Partial<T>
 ) {
   return ({
