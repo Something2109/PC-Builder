@@ -7,7 +7,11 @@ export default function PartPanel({ item }: { item: Part.BasicInfo }) {
 
   return (
     <a href={`/part/${item.part}/${item.id}`} className={frameClass}>
-      <PartPicture part={item} className="h-20 lg:size-auto content-center" />
+      <PartPicture
+        part={item.part}
+        src={item.image_url ?? undefined}
+        className="h-20 lg:size-auto content-center"
+      />
       <div className="size-full ml-3 flex flex-col justify-between lg:ml-0 lg:mt-2">
         <h3 className="mb-2 text-xs sm:text-sm md:text-md font-bold">
           {item.name}
