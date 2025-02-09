@@ -1,3 +1,4 @@
+import { SuffixDisplay } from "@/components/utils/Display";
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import GraphicCard from "@/utils/interface/info/GraphicCard";
 
@@ -5,9 +6,13 @@ const Components: InfoSummaryMapping<
   GraphicCard.Info,
   GraphicCard.Summarizable
 > = {
-  length: ({ value }) => value,
-  base_frequency: ({ value }) => value,
-  boost_frequency: ({ value }) => value,
+  length: ({ value }) => <SuffixDisplay suffix="mm">{value}</SuffixDisplay>,
+  base_frequency: ({ value }) => (
+    <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>
+  ),
+  boost_frequency: ({ value }) => (
+    <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>
+  ),
   minimum_psu: ({ value }) => value,
 };
 

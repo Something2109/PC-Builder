@@ -1,10 +1,11 @@
+import { SuffixDisplay } from "@/components/utils/Display";
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import Cooler from "@/utils/interface/info/Cooler";
 
 const Components: InfoSummaryMapping<Cooler.Info, Cooler.Summarizable> = {
   socket: ({ value }) => value,
   cpu_plate: ({ value }) => value,
-  height: ({ value }) => value,
+  height: ({ value }) => <SuffixDisplay suffix="mm">{value}</SuffixDisplay>,
 };
 
 export default GenericSummaryCells(
