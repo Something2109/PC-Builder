@@ -34,7 +34,7 @@ const Components: InfoInputMapping<Fan.Info> = {
     <SuffixInput suffix="dBA" type="number" step={0.01} {...props} />
   ),
   static_pressure: (props) => (
-    <SuffixInput suffix="mm H₂O" type="number" {...props} />
+    <SuffixInput suffix="mm H₂O" type="number" step={0.01} {...props} />
   ),
   bearing: (props) => <OptionSelect options={Fan.Bearing.options} {...props} />,
   connector: (props) => (
