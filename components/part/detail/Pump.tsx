@@ -1,12 +1,9 @@
 import Pump from "@/utils/interface/info/Pump";
-import { GenericDetailTable } from "../TableWrapper";
-import { FunctionComponent } from "react";
+import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/extract/Units";
 
-const Components: {
-  [key in keyof Pump.Info]: FunctionComponent<{ value: Pump.Info[key] }>;
-} = {
+const Components: InfoDetailMapping<Pump.Info> = {
   form_factor: ({ value }) => value,
   width: ({ value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />

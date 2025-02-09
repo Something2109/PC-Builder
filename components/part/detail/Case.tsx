@@ -1,12 +1,9 @@
-import { Table, GenericDetailTable } from "../TableWrapper";
+import { Table, GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { UnitDisplay } from "@/components/utils/Display";
 import Case from "@/utils/interface/info/Case";
 import { LengthUnits } from "@/utils/extract/Units";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof Case.Info]: FunctionComponent<{ value: Case.Info[key] }>;
-} = {
+const Components: InfoDetailMapping<Case.Info> = {
   form_factor: ({ value }) => value,
   width: ({ value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
@@ -17,7 +14,7 @@ const Components: {
   height: ({ value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
-  mainboard_support: ({ value }) => value.join(", "),
+  mainboard_support: ({ value }) => value?.join(", "),
   expansion_slot: ({ value }) => value,
   max_cooler_height: ({ value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
@@ -31,12 +28,12 @@ const Components: {
   hard_drive_support: ({ value }) => (
     <CaseSideTableRow label={"Hard Drive Support"} defaultValue={value} />
   ),
-  psu_support: ({ value }) => value.join(", "),
+  psu_support: ({ value }) => value?.join(", "),
   max_psu_length: ({ value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
   front_panel_ports: ({ value }) =>
-    Object.entries(value)
+    Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
 };

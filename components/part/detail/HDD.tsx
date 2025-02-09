@@ -1,12 +1,9 @@
-import { GenericDetailTable } from "../TableWrapper";
+import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import HDD from "@/utils/interface/info/HDD";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof HDD.Info]: FunctionComponent<{ value: HDD.Info[key] }>;
-} = {
+const Components: InfoDetailMapping<HDD.Info> = {
   rotational_speed: ({ value }) => (
     <SuffixDisplay suffix="RPM">{value}</SuffixDisplay>
   ),

@@ -1,12 +1,9 @@
-import { GenericDetailTable } from "../TableWrapper";
+import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { UnitDisplay, SuffixDisplay } from "@/components/utils/Display";
 import GPU from "@/utils/interface/info/GPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/extract/Units";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof GPU.Info]: FunctionComponent<{ value: GPU.Info[key] }>;
-} = {
+const Components: InfoDetailMapping<GPU.Info> = {
   family: ({ value }) => value,
   core_count: ({ value }) => value,
   execution_unit: ({ value }) => value,
@@ -16,14 +13,14 @@ const Components: {
   boost_frequency: ({ value }) => (
     <UnitDisplay Unit={FrequencyUnits} defaultUnit="MHz" defaultValue={value} />
   ),
-  extra_cores: ({ value }) => value.toString(),
+  extra_cores: ({ value }) => value?.toString(),
   memory_size: ({ value }) => (
     <UnitDisplay Unit={MemoryUnits} defaultUnit="GB" defaultValue={value} />
   ),
-  memory_type: ({ value }) => value.toString(),
+  memory_type: ({ value }) => value?.toString(),
   memory_bus: ({ value }) => value,
   tdp: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
-  features: ({ value }) => value.toString(),
+  features: ({ value }) => value?.toString(),
 };
 
 export default GenericDetailTable(Components, GPU.Label);

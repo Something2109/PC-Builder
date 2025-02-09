@@ -1,12 +1,9 @@
-import { GenericDetailTable } from "../TableWrapper";
+import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import { LengthUnits } from "@/utils/extract/Units";
 import AIO from "@/utils/interface/info/AIO";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof AIO.Info]: FunctionComponent<{ value: AIO.Info[key] }>;
-} = {
+const Components: InfoDetailMapping<AIO.Info> = {
   form_factor: ({ value }) => value,
   socket: ({ value }) => value,
   cpu_plate: ({ value }) => value,

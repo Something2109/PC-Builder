@@ -1,12 +1,9 @@
-import { GenericDetailTable } from "../TableWrapper";
+import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import Fan from "@/utils/interface/info/Fan";
 import { LengthUnits } from "@/utils/extract/Units";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof Fan.Info]: FunctionComponent<{ value: Fan.Info[key] }>;
-} = {
+const Components: InfoDetailMapping<Fan.Info> = {
   form_factor: ({ value }) => value,
   width: ({ value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />

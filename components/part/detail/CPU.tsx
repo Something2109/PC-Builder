@@ -1,6 +1,5 @@
 import CPU from "@/utils/interface/info/CPU";
-import { GenericDetailTable } from "../TableWrapper";
-import { FunctionComponent } from "react";
+import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { UnitDisplay, SuffixDisplay } from "@/components/utils/Display";
 import {
   FrequencyUnits,
@@ -8,9 +7,7 @@ import {
   MemoryUnits,
 } from "@/utils/extract/Units";
 
-const Components: {
-  [key in keyof CPU.Info]: FunctionComponent<{ value: CPU.Info[key] }>;
-} = {
+const Components: InfoDetailMapping<CPU.Info> = {
   family: ({ value }) => value,
   socket: ({ value }) => value,
   total_cores: ({ value }) => (
@@ -25,7 +22,7 @@ const Components: {
   turbo_frequency: ({ value }) => (
     <UnitDisplay Unit={FrequencyUnits} defaultUnit="GHz" defaultValue={value} />
   ),
-  cores: ({ value }) => value.toString(),
+  cores: ({ value }) => value?.toString(),
   L2_cache: ({ value }) => (
     <UnitDisplay Unit={MemoryUnits} defaultUnit="MB" defaultValue={value} />
   ),

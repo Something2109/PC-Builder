@@ -1,12 +1,9 @@
-import { GenericDetailTable } from "../TableWrapper";
+import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { UnitDisplay } from "@/components/utils/Display";
 import Cooler from "@/utils/interface/info/Cooler";
 import { LengthUnits } from "@/utils/extract/Units";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof Cooler.Info]: FunctionComponent<{ value: Cooler.Info[key] }>;
-} = {
+const Components: InfoDetailMapping<Cooler.Info> = {
   socket: ({ value }) => value,
   cpu_plate: ({ value }) => value,
   width: ({ value }) => (

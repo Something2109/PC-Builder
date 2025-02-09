@@ -65,8 +65,12 @@ export function GenericSummaryCells<T extends Record<string, any>>(
 
 const tableClass = "w-full border-2";
 
+export type InfoDetailMapping<T extends Record<string, any>> = {
+  [key in keyof T]: FunctionComponent<{ value?: T[key] }>;
+};
+
 export function GenericDetailTable<T extends Record<string, any>>(
-  Components: { [key in keyof T]: FunctionComponent<{ value: T[key] }> },
+  Components: InfoDetailMapping<T>,
   Labels: { [key in string]: string }
 ) {
   return ({

@@ -1,14 +1,9 @@
-import { GenericDetailTable } from "../TableWrapper";
+import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import GraphicCard from "@/utils/interface/info/GraphicCard";
 import { LengthUnits, FrequencyUnits } from "@/utils/extract/Units";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof GraphicCard.Info]: FunctionComponent<{
-    value: GraphicCard.Info[key];
-  }>;
-} = {
+const Components: InfoDetailMapping<GraphicCard.Info> = {
   width: ({ value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
@@ -27,11 +22,11 @@ const Components: {
   pcie: ({ value }) => value,
   minimum_psu: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
   power_connector: ({ value }) =>
-    Object.entries(value)
+    Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
   port: ({ value }) =>
-    Object.entries(value)
+    Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
   gpu: ({ value }) => <></>,
