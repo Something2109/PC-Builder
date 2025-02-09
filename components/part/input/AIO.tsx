@@ -1,7 +1,13 @@
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import {
+  Input,
+  UnitInput,
+  OptionSelect,
+  SuffixInput,
+} from "@/components/utils/Input";
 import AIO from "@/utils/interface/info/AIO";
 import { FormFactor, Material } from "@/utils/interface/utils";
+import { LengthUnits } from "@/utils/extract/Units";
 
 const Components: InfoInputMapping<AIO.Info> = {
   form_factor: (props) => (
@@ -11,13 +17,25 @@ const Components: InfoInputMapping<AIO.Info> = {
   cpu_plate: (props) => (
     <OptionSelect options={Material.Metal.options} {...props} />
   ),
-  radiator_width: (props) => <Input type="number" step="0.01" {...props} />,
-  radiator_length: (props) => <Input type="number" step="0.01" {...props} />,
-  radiator_height: (props) => <Input type="number" step="0.01" {...props} />,
-  pump_width: (props) => <Input type="number" step="0.01" {...props} />,
-  pump_length: (props) => <Input type="number" step="0.01" {...props} />,
-  pump_height: (props) => <Input type="number" step="0.01" {...props} />,
-  pump_speed: (props) => <Input type="number" step="0.01" {...props} />,
+  radiator_width: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
+  radiator_length: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
+  radiator_height: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
+  pump_width: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
+  pump_length: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
+  pump_height: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
+  pump_speed: (props) => <SuffixInput suffix="RPM" type="number" {...props} />,
 };
 
 function submit(formData: FormData) {

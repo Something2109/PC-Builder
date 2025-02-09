@@ -1,5 +1,5 @@
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import { Input, SuffixInput, OptionSelect } from "@/components/utils/Input";
 import Mainboard from "@/utils/interface/info/Mainboard";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 
@@ -15,7 +15,9 @@ const Components: InfoInputMapping<Mainboard.Info> = {
   ram_interface: (props) => (
     <OptionSelect options={InternalConnectors.RAM.options} {...props} />
   ),
-  ram_slot: (props) => <Input type="number" {...props} />,
+  ram_slot: (props) => (
+    <SuffixInput suffix="slot(s)" type="number" {...props} />
+  ),
   expansion_slots: (props) => <Input type="number" {...props} />,
   pcies: (props) => <></>,
   power_connectors: (props) => <></>,

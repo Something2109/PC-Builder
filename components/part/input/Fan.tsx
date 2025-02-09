@@ -1,21 +1,41 @@
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import {
+  Input,
+  UnitInput,
+  OptionSelect,
+  SuffixInput,
+} from "@/components/utils/Input";
 import Fan from "@/utils/interface/info/Fan";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import { LengthUnits } from "@/utils/extract/Units";
 
 const Components: InfoInputMapping<Fan.Info> = {
   form_factor: (props) => (
     <OptionSelect options={FormFactor.Fan.options} {...props} />
   ),
-  width: (props) => <Input type="number" step="0.01" {...props} />,
-  length: (props) => <Input type="number" step="0.01" {...props} />,
-  height: (props) => <Input type="number" step="0.01" {...props} />,
+  width: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
+  length: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
+  height: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
   count: (props) => <Input type="number" {...props} />,
-  voltage: (props) => <Input type="number" {...props} />,
-  speed: (props) => <Input type="number" {...props} />,
-  airflow: (props) => <Input type="number" {...props} />,
-  noise: (props) => <Input type="number" {...props} />,
-  static_pressure: (props) => <Input type="number" {...props} />,
+  voltage: (props) => (
+    <SuffixInput suffix="V" type="number" step={0.01} {...props} />
+  ),
+  speed: (props) => <SuffixInput suffix="RPM" type="number" {...props} />,
+  airflow: (props) => (
+    <SuffixInput suffix="CFM" type="number" step={0.01} {...props} />
+  ),
+  noise: (props) => (
+    <SuffixInput suffix="dBA" type="number" step={0.01} {...props} />
+  ),
+  static_pressure: (props) => (
+    <SuffixInput suffix="mm H₂O" type="number" {...props} />
+  ),
   bearing: (props) => <OptionSelect options={Fan.Bearing.options} {...props} />,
   connector: (props) => (
     <OptionSelect

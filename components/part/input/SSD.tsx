@@ -1,17 +1,26 @@
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import { UnitInput, OptionSelect } from "@/components/utils/Input";
 import SSD from "@/utils/interface/info/SSD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
 
 const Components: InfoInputMapping<SSD.Info> = {
   memory_type: (props) => (
     <OptionSelect options={SSD.MemoryCell.options} {...props} />
   ),
-  read_speed: (props) => <Input type="number" {...props} />,
-  write_speed: (props) => <Input type="number" {...props} />,
-  capacity: (props) => <Input type="number" {...props} />,
-  cache: (props) => <Input type="number" {...props} />,
-  tbw: (props) => <Input type="number" {...props} />,
+  read_speed: (props) => (
+    <UnitInput Unit={MemorySpeedUnit} defaultUnit="MB/s" {...props} />
+  ),
+  write_speed: (props) => (
+    <UnitInput Unit={MemorySpeedUnit} defaultUnit="MB/s" {...props} />
+  ),
+  capacity: (props) => (
+    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
+  ),
+  cache: (props) => (
+    <UnitInput Unit={MemoryUnits} defaultUnit="MB" {...props} />
+  ),
+  tbw: (props) => <UnitInput Unit={MemoryUnits} defaultUnit="TB" {...props} />,
   form_factor: (props) => (
     <OptionSelect options={FormFactor.SSD.options} {...props} />
   ),

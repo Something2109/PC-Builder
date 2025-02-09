@@ -1,14 +1,25 @@
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
 import HDD from "@/utils/interface/info/HDD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
 
 const Components: InfoInputMapping<HDD.Info> = {
-  rotational_speed: (props) => <Input type="number" {...props} />,
-  read_speed: (props) => <Input type="number" {...props} />,
-  write_speed: (props) => <Input type="number" {...props} />,
-  capacity: (props) => <Input type="number" {...props} />,
-  cache: (props) => <Input type="number" {...props} />,
+  rotational_speed: (props) => (
+    <SuffixInput suffix="RPM" type="number" {...props} />
+  ),
+  read_speed: (props) => (
+    <UnitInput Unit={MemorySpeedUnit} defaultUnit="MB/s" {...props} />
+  ),
+  write_speed: (props) => (
+    <UnitInput Unit={MemorySpeedUnit} defaultUnit="MB/s" {...props} />
+  ),
+  capacity: (props) => (
+    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
+  ),
+  cache: (props) => (
+    <UnitInput Unit={MemoryUnits} defaultUnit="MB" {...props} />
+  ),
   form_factor: (props) => (
     <OptionSelect options={FormFactor.HDD.options} {...props} />
   ),

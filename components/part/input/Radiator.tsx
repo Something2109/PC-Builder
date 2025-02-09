@@ -1,15 +1,22 @@
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import { Input, UnitInput, OptionSelect } from "@/components/utils/Input";
 import Radiator from "@/utils/interface/info/Radiator";
 import { FormFactor, Material } from "@/utils/interface/utils";
+import { LengthUnits } from "@/utils/extract/Units";
 
 const Components: InfoInputMapping<Radiator.Info> = {
   form_factor: (props) => (
     <OptionSelect options={FormFactor.Pump.options} {...props} />
   ),
-  width: (props) => <Input type="number" step="0.01" {...props} />,
-  length: (props) => <Input type="number" step="0.01" {...props} />,
-  height: (props) => <Input type="number" step="0.01" {...props} />,
+  width: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
+  length: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
+  height: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
   fpi: (props) => <Input type="number" {...props} />,
   material: (props) => (
     <OptionSelect options={Material.Metal.options} {...props} />

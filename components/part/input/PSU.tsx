@@ -1,19 +1,31 @@
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import {
+  Input,
+  SuffixInput,
+  UnitInput,
+  OptionSelect,
+} from "@/components/utils/Input";
 import PSU from "@/utils/interface/info/PSU";
 import { FormFactor } from "@/utils/interface/utils";
+import { LengthUnits } from "@/utils/extract/Units";
 
 const Components: InfoInputMapping<PSU.Info> = {
-  wattage: (props) => <Input type="number" {...props} />,
+  wattage: (props) => <SuffixInput suffix="W" type="number" {...props} />,
   efficiency: (props) => (
     <OptionSelect options={PSU.Efficiency.options} {...props} />
   ),
   form_factor: (props) => (
     <OptionSelect options={FormFactor.PSU.options} {...props} />
   ),
-  width: (props) => <Input type="number" step="0.01" {...props} />,
-  length: (props) => <Input type="number" step="0.01" {...props} />,
-  height: (props) => <Input type="number" step="0.01" {...props} />,
+  width: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
+  length: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
+  height: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  ),
   modular: (props) => <OptionSelect options={PSU.Modular.options} {...props} />,
   atx_pin: (props) => <Input type="number" {...props} />,
   cpu_pin: (props) => <Input type="number" {...props} />,
