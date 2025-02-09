@@ -12,7 +12,7 @@ export function SuffixDisplay({
   suffix: string;
   children?: string | number;
 }) {
-  return children ?? `${children} ${suffix}`;
+  return children && `${children} ${suffix}`;
 }
 
 export function UnitDisplay<T extends string>({
