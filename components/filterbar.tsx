@@ -15,7 +15,7 @@ export function FilterBar({
   ...rest
 }: {
   part: Products;
-  context: string[][];
+  context: URLSearchParams;
 } & FormHTMLAttributes<HTMLFormElement>) {
   const [filter, setFilter] = useState<FilterOptions>({});
   const [error, setError] = useState(null);
