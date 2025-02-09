@@ -19,7 +19,7 @@ export default async function PartListPage({
   searchParams: Promise<Record<string, string | string[]>>;
 }) {
   const { part } = await params;
-  const query = await searchParams;
+  const { part: _, ...query } = await searchParams;
 
   const queryEntries = Object.entries(query).reduce((acc, [key, value]) => {
     Array.isArray(value)
@@ -28,7 +28,6 @@ export default async function PartListPage({
     return acc;
   }, [] as string[][]);
   const options = new URLSearchParams(queryEntries);
-  options.delete("part");
 
   const response = await fetch(
     `${process.env.BACKEND_HOST}/api/part/${part}?${options}`
