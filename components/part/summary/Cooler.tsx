@@ -1,12 +1,7 @@
-import { GenericSummaryCells } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import Cooler from "@/utils/interface/info/Cooler";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in Cooler.Summarizable]: FunctionComponent<{
-    value?: Cooler.Info[key];
-  }>;
-} = {
+const Components: InfoSummaryMapping<Cooler.Info, Cooler.Summarizable> = {
   socket: ({ value }) => value,
   cpu_plate: ({ value }) => value,
   height: ({ value }) => value,

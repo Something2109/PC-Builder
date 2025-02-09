@@ -1,10 +1,7 @@
 import CPU from "@/utils/interface/info/CPU";
-import { GenericSummaryCells } from "../TableWrapper";
-import { FunctionComponent } from "react";
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 
-const Components: {
-  [key in CPU.Summarizable]: FunctionComponent<{ value?: CPU.Info[key] }>;
-} = {
+const Components: InfoSummaryMapping<CPU.Info, CPU.Summarizable> = {
   socket: ({ value }) => value,
   total_cores: ({ value }) => value,
   total_threads: ({ value }) => value,

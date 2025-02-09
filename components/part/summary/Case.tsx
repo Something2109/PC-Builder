@@ -1,10 +1,7 @@
-import { GenericSummaryCells } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import Case from "@/utils/interface/info/Case";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in Case.Summarizable]: FunctionComponent<{ value?: Case.Info[key] }>;
-} = {
+const Components: InfoSummaryMapping<Case.Info, Case.Summarizable> = {
   form_factor: ({ value }) => value,
   mainboard_support: ({ value }) => value?.join(", "),
   radiator_support: ({ value }) =>

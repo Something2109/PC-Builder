@@ -1,12 +1,10 @@
-import { GenericSummaryCells } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import GraphicCard from "@/utils/interface/info/GraphicCard";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in GraphicCard.Summarizable]: FunctionComponent<{
-    value?: GraphicCard.Info[key];
-  }>;
-} = {
+const Components: InfoSummaryMapping<
+  GraphicCard.Info,
+  GraphicCard.Summarizable
+> = {
   length: ({ value }) => value,
   base_frequency: ({ value }) => value,
   boost_frequency: ({ value }) => value,

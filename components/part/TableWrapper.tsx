@@ -35,19 +35,27 @@ export namespace Table {
   );
 }
 
-export function GenericSummaryCells<T extends Record<string, any>>(
-  Components: {
-    [key in keyof T]: FunctionComponent<{ value: T[key] | undefined }>;
-  },
-  Labels: {
-    [key in string]: string;
-  },
-  Attributes: string[]
+export type InfoSummaryMapping<
+  T extends Record<string, any>,
+  Attrs extends keyof T
+> = {
+  [key in Attrs]: FunctionComponent<{ value?: T[key] }>;
+};
+
+export function GenericSummaryCells<
+  T extends Record<Attrs, any>,
+  Attrs extends string
+>(
+  Components: InfoSummaryMapping<T, Attrs>,
+  Labels: { [key in string]: string },
+  Attributes: Attrs[]
 ) {
   return ({ defaultValue }: { defaultValue?: Partial<T> }) => (
     <>
       {Attributes.map((attr, index) => {
-        const Component = Components[attr];
+        const Component = Components[attr] as FunctionComponent<{
+          value?: T[typeof attr];
+        }>;
         const value = defaultValue ? defaultValue[attr] : undefined;
 
         return (

@@ -1,10 +1,7 @@
-import { GenericSummaryCells } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import AIO from "@/utils/interface/info/AIO";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in AIO.Summarizable]: FunctionComponent<{ value?: AIO.Info[key] }>;
-} = {
+const Components: InfoSummaryMapping<AIO.Info, AIO.Summarizable> = {
   form_factor: ({ value }) => value,
   socket: ({ value }) => value,
   cpu_plate: ({ value }) => value,

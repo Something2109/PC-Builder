@@ -1,10 +1,7 @@
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import RAM from "@/utils/interface/info/RAM";
-import { FunctionComponent } from "react";
-import { GenericSummaryCells } from "../TableWrapper";
 
-const Components: {
-  [key in RAM.Summarizable]: FunctionComponent<{ value?: RAM.Info[key] }>;
-} = {
+const Components: InfoSummaryMapping<RAM.Info, RAM.Summarizable> = {
   speed: ({ value }) => value,
   capacity: ({ value }) => value,
   form_factor: ({ value }) => value,
