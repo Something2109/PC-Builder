@@ -5,7 +5,7 @@ import {
 } from "@/components/utils/FlexWrapper";
 import SummaryTable from "@/components/part/Summary";
 import { RedirectButton } from "@/components/utils/Button";
-import PaginationBar from "@/components/pagination";
+import PaginationBar from "@/components/utils/PaginationBar";
 import { FilterBar } from "@/components/filterbar";
 import Part from "@/utils/interface/info/Parts";
 import { Products } from "@/utils/Enum";

@@ -67,6 +67,9 @@ export default function PaginationBar({
   );
 }
 
+const PaginationButtonStyle =
+  "block size-8 aspect-square content-center rounded-full border-2 border-line hover:bg-line hover:text-background";
+
 function PaginationButton({
   path,
   title,
@@ -80,7 +83,7 @@ function PaginationButton({
     return (
       <a
         href={`${path}${path.includes("?") ? "&" : "?"}page=${num}`}
-        className="block size-8 aspect-square content-center rounded-full border-2 border-line hover:bg-line hover:text-background"
+        className={PaginationButtonStyle}
       >
         <p className="m-auto size-fit font-bold">{title}</p>
       </a>
@@ -90,7 +93,7 @@ function PaginationButton({
     <button
       type="button"
       onClick={() => path(num)}
-      className="block size-8 aspect-square content-center rounded-full border-2 border-line hover:bg-line hover:text-background"
+      className={PaginationButtonStyle}
     >
       <p className="m-auto size-fit font-bold">{title}</p>
     </button>
