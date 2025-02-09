@@ -1,3 +1,4 @@
+import { SuffixDisplay } from "@/components/utils/Display";
 import { Table, GenericDetailTable } from "../TableWrapper";
 import Mainboard from "@/utils/interface/info/Mainboard";
 import { InternalConnectors } from "@/utils/interface/utils";
@@ -13,7 +14,9 @@ const Components: {
   chipset: ({ value }) => value,
   ram_form_factor: ({ value }) => value,
   ram_interface: ({ value }) => value,
-  ram_slot: ({ value }) => value,
+  ram_slot: ({ value }) => (
+    <SuffixDisplay suffix="slot(s)">{value}</SuffixDisplay>
+  ),
   expansion_slots: ({ value }) => value,
   pcies: ({ value }) => <PCIeTableRow defaultValue={value} />,
   power_connectors: ({ value }) =>
