@@ -2,9 +2,10 @@
 
 import { Button } from "@/components/utils/Button";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
+import { Info as InfoNamespace } from "@/utils/interface/info";
 import { Info } from "@/utils/Enum";
-import React, { lazy, useActionState, useCallback, useState } from "react";
-import { DetailInfo, InfoLabels } from "@/utils/interface";
+import React, { lazy, useActionState, useRef, useState } from "react";
+import { DetailInfo } from "@/utils/interface";
 import { NotificationBar } from "../utils/NotificationBar";
 
 const InputComponent = {
@@ -36,16 +37,18 @@ export function InfoForm({
   info: Info;
   defaultValue?: Partial<DetailInfo[typeof info]>;
 }) {
+  const label = useRef(InfoNamespace.Label[info]);
   const [error, setError] = useState<string | null>(null);
   const [formValue, save, pending] = useActionState<
     Partial<DetailInfo[typeof info]>,
     Partial<DetailInfo[typeof info]>
   >(async (prev, data) => {
-    const label = InfoLabels[info];
     const operation = prev ? (data ? "save" : "delete") : "add";
 
     setError(null);
-    if (!confirm(`Are you sure you want to ${operation} ${label} info?`))
+    if (
+      !confirm(`Are you sure you want to ${operation} ${label.current} info?`)
+    )
       return prev;
 
     const body = JSON.stringify({ [info]: data });
@@ -60,7 +63,7 @@ export function InfoForm({
       setError((await response.json()).message);
       return prev;
     } else {
-      alert(`Successfully ${operation} ${label} info.`);
+      alert(`Successfully ${operation} ${label.current} info.`);
     }
 
     const newData = (await response.json()) as DetailInfo;
@@ -82,8 +85,8 @@ export function InfoForm({
           disabled={pending}
         >
           {pending
-            ? `Adding ${InfoLabels[info]} ...`
-            : `Add ${InfoLabels[info]} Info`}
+            ? `Adding ${label.current} ...`
+            : `Add ${label.current} Info`}
         </Button>
       </form>
     );
@@ -92,7 +95,7 @@ export function InfoForm({
   return (
     <form className="flex flex-col gap-1">
       <RowWrapper className="sticky top-32 justify-between items-center">
-        <h1 className="text-4xl font-bold">{InfoLabels[info]}</h1>
+        <h1 className="text-4xl font-bold">{label.current}</h1>
         {!pending && (
           <Button type="submit" formAction={() => save(null)}>
             Delete

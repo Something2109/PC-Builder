@@ -5,7 +5,7 @@ import {
   ResponsiveWrapper,
 } from "@/components/utils/FlexWrapper";
 import { Products } from "@/utils/Enum";
-import { ProductInfo } from "@/utils/interface";
+import { Product } from "@/utils/interface/product";
 
 export default async function PartDetailNewPage({
   params,
@@ -24,7 +24,7 @@ export default async function PartDetailNewPage({
           <h1 className="text-4xl font-bold">Raw</h1>
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
-          {ProductInfo[part].map((info) => (
+          {Product.Info[part].map((info) => (
             <InfoForm key={info} path={SaveLink} info={info} />
           ))}
         </ColumnWrapper>

@@ -2,12 +2,9 @@
 
 import { PartSummaryCells } from "./summary/Part";
 import { Info, Products } from "@/utils/Enum";
-import {
-  AttributeLabels,
-  ProductInfo,
-  SummaryAttributes,
-  SummaryInfo,
-} from "@/utils/interface";
+import { Info as InfoNamespace } from "@/utils/interface/info";
+import { Product } from "@/utils/interface/product";
+import { SummaryInfo } from "@/utils/interface";
 import Part from "@/utils/interface/info/Parts";
 import { lazy, TableHTMLAttributes } from "react";
 
@@ -58,9 +55,11 @@ const TableHead = ({ part }: { part: Products }) => (
       <td>{Part.Label.name}</td>
       <td>{Part.Label.brand}</td>
       <td>{Part.Label.series}</td>
-      {ProductInfo[part]
+      {Product.Info[part]
         .map((info: Info) =>
-          SummaryAttributes[info].map((attr) => AttributeLabels[info][attr])
+          InfoNamespace.SummaryAttributes[info].map(
+            (attr) => InfoNamespace.AttributeLabels[info][attr]
+          )
         )
         .flat()
         .map((attr) => (
@@ -78,7 +77,7 @@ const TableBody = ({ data, part }: { data: SummaryInfo[]; part: Products }) => (
         className={`grid grid-cols-2 border-b-2 ${tableRow} hover:rounded-lg hover:bg-line hover:dark:text-background`}
       >
         <PartSummaryCells defaultValue={product} />
-        {ProductInfo[part].map((info) => {
+        {Product.Info[part].map((info) => {
           const Component = SummaryInfoComponent[info];
 
           return (

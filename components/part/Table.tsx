@@ -1,6 +1,6 @@
 "use client";
 
-import { InfoLabels } from "@/utils/interface";
+import { Info as InfoNamespace } from "@/utils/interface/info";
 import { Info } from "@/utils/Enum";
 import { lazy } from "react";
 
@@ -37,7 +37,7 @@ export function InfoTable({
 
   return (
     <>
-      <h1 className="text-4xl font-bold">{InfoLabels[info]}</h1>
+      <h1 className="text-4xl font-bold">{InfoNamespace.Label[info]}</h1>
       <Component key={info} defaultValue={defaultValue} />
     </>
   );
