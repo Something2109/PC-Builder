@@ -5,7 +5,7 @@ import {
   defaultFilter,
 } from "@/models/interface";
 import Part from "@/utils/interface/info/Parts";
-import { Products, Info } from "@/utils/Enum";
+import { Products, Infos } from "@/utils/Enum";
 import {
   Column,
   DataType,
@@ -90,49 +90,49 @@ class PartInformation extends Model implements Part.BasicInfo {
   declare raw?: string;
 
   @HasOne(() => CPUModel)
-  declare [Info.CPU]: CPUModel;
+  declare [Infos.CPU]: CPUModel;
 
   @HasOne(() => GPUModel)
-  declare [Info.GPU]: GPUModel;
+  declare [Infos.GPU]: GPUModel;
 
   @HasOne(() => GraphicCardModel)
-  declare [Info.GRAPHIC_CARD]: GraphicCardModel;
+  declare [Infos.GRAPHIC_CARD]: GraphicCardModel;
 
   @HasOne(() => MainboardModel)
-  declare [Info.MAIN]: MainboardModel;
+  declare [Infos.MAIN]: MainboardModel;
 
   @HasOne(() => RAMModel)
-  declare [Info.RAM]: RAMModel;
+  declare [Infos.RAM]: RAMModel;
 
   @HasOne(() => SSDModel)
-  declare [Info.SSD]: SSDModel;
+  declare [Infos.SSD]: SSDModel;
 
   @HasOne(() => HDDModel)
-  declare [Info.HDD]: HDDModel;
+  declare [Infos.HDD]: HDDModel;
 
   @HasOne(() => PSUModel)
-  declare [Info.PSU]: PSUModel;
+  declare [Infos.PSU]: PSUModel;
 
   @HasOne(() => CaseModel)
-  declare [Info.CASE]: CaseModel;
+  declare [Infos.CASE]: CaseModel;
 
   @HasOne(() => CoolerModel)
-  declare [Info.COOLER]: CoolerModel;
+  declare [Infos.COOLER]: CoolerModel;
 
   @HasOne(() => AIOModel)
-  declare [Info.AIO]: AIOModel;
+  declare [Infos.AIO]: AIOModel;
 
   @HasOne(() => FanModel)
-  declare [Info.FAN]: FanModel;
+  declare [Infos.FAN]: FanModel;
 
   @HasOne(() => CPUBlockModel)
-  declare [Info.CPU_BLOCK]: CPUBlockModel;
+  declare [Infos.CPU_BLOCK]: CPUBlockModel;
 
   @HasOne(() => PumpModel)
-  declare [Info.PUMP]: PumpModel;
+  declare [Infos.PUMP]: PumpModel;
 
   @HasOne(() => RadiatorModel)
-  declare [Info.RADIATOR]: RadiatorModel;
+  declare [Infos.RADIATOR]: RadiatorModel;
 }
 
 export { PartInformation };
