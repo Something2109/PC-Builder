@@ -16,8 +16,6 @@ import SSD from "./info/SSD";
 import CPUBlock from "./info/CPUBlock";
 import Pump from "./info/Pump";
 import Radiator from "./info/Radiator";
-import { Info as InfoNamespace } from "./info";
-import { Product as ProductNamespace } from "./product";
 import { Primitive } from "./utils";
 
 /**
@@ -118,19 +116,3 @@ export const FilterOptions = z
   .partial();
 
 export type FilterOptions = z.infer<typeof FilterOptions>;
-
-const InfoLabels = InfoNamespace.Label;
-const AttributeLabels = InfoNamespace.AttributeLabels;
-const SummaryAttributes = InfoNamespace.SummaryAttributes;
-const FilterAttributes = InfoNamespace.FilterAttributes;
-const ProductInfo = ProductNamespace.Info;
-const ProductFilterOptions = ProductNamespace.FilterOptions;
-
-export {
-  InfoLabels,
-  AttributeLabels,
-  SummaryAttributes,
-  FilterAttributes,
-  ProductInfo,
-  ProductFilterOptions,
-};
