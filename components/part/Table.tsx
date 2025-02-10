@@ -1,34 +1,34 @@
 "use client";
 
-import { Info as InfoNamespace } from "@/utils/interface/info";
-import { Info } from "@/utils/Enum";
+import { Information } from "@/utils/interface/info";
+import { Infos } from "@/utils/Enum";
 import { lazy } from "react";
 
 export const DetailTableComponent = {
-  [Info.CPU]: lazy(() => import("@/components/part/detail/CPU")),
-  [Info.GPU]: lazy(() => import("@/components/part/detail/GPU")),
-  [Info.GRAPHIC_CARD]: lazy(
+  [Infos.CPU]: lazy(() => import("@/components/part/detail/CPU")),
+  [Infos.GPU]: lazy(() => import("@/components/part/detail/GPU")),
+  [Infos.GRAPHIC_CARD]: lazy(
     () => import("@/components/part/detail/GraphicCard")
   ),
-  [Info.MAIN]: lazy(() => import("@/components/part/detail/Mainboard")),
-  [Info.RAM]: lazy(() => import("@/components/part/detail/RAM")),
-  [Info.HDD]: lazy(() => import("@/components/part/detail/HDD")),
-  [Info.PSU]: lazy(() => import("@/components/part/detail/PSU")),
-  [Info.CASE]: lazy(() => import("@/components/part/detail/Case")),
-  [Info.COOLER]: lazy(() => import("@/components/part/detail/Cooler")),
-  [Info.AIO]: lazy(() => import("@/components/part/detail/AIO")),
-  [Info.FAN]: lazy(() => import("@/components/part/detail/Fan")),
-  [Info.SSD]: lazy(() => import("@/components/part/detail/SSD")),
-  [Info.CPU_BLOCK]: lazy(() => import("@/components/part/detail/CPUBlock")),
-  [Info.PUMP]: lazy(() => import("@/components/part/detail/Pump")),
-  [Info.RADIATOR]: lazy(() => import("@/components/part/detail/Radiator")),
+  [Infos.MAIN]: lazy(() => import("@/components/part/detail/Mainboard")),
+  [Infos.RAM]: lazy(() => import("@/components/part/detail/RAM")),
+  [Infos.HDD]: lazy(() => import("@/components/part/detail/HDD")),
+  [Infos.PSU]: lazy(() => import("@/components/part/detail/PSU")),
+  [Infos.CASE]: lazy(() => import("@/components/part/detail/Case")),
+  [Infos.COOLER]: lazy(() => import("@/components/part/detail/Cooler")),
+  [Infos.AIO]: lazy(() => import("@/components/part/detail/AIO")),
+  [Infos.FAN]: lazy(() => import("@/components/part/detail/Fan")),
+  [Infos.SSD]: lazy(() => import("@/components/part/detail/SSD")),
+  [Infos.CPU_BLOCK]: lazy(() => import("@/components/part/detail/CPUBlock")),
+  [Infos.PUMP]: lazy(() => import("@/components/part/detail/Pump")),
+  [Infos.RADIATOR]: lazy(() => import("@/components/part/detail/Radiator")),
 };
 
 export function InfoTable({
   info,
   defaultValue,
 }: {
-  info: Info;
+  info: Infos;
   defaultValue?: any;
 }) {
   const Component = DetailTableComponent[info];
@@ -37,7 +37,7 @@ export function InfoTable({
 
   return (
     <>
-      <h1 className="text-4xl font-bold">{InfoNamespace.Label[info]}</h1>
+      <h1 className="text-4xl font-bold">{Information.Label[info]}</h1>
       <Component key={info} defaultValue={defaultValue} />
     </>
   );

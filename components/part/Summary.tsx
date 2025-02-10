@@ -1,31 +1,31 @@
 "use client";
 
 import { PartSummaryCells } from "./summary/Part";
-import { Info, Products } from "@/utils/Enum";
-import { Info as InfoNamespace } from "@/utils/interface/info";
+import { Infos, Products } from "@/utils/Enum";
+import { Information } from "@/utils/interface/info";
 import { Product } from "@/utils/interface/product";
 import { SummaryInfo } from "@/utils/interface";
 import Part from "@/utils/interface/info/Parts";
 import { lazy, TableHTMLAttributes } from "react";
 
 export const SummaryInfoComponent = {
-  [Info.CPU]: lazy(() => import("@/components/part/summary/CPU")),
-  [Info.GPU]: lazy(() => import("@/components/part/summary/GPU")),
-  [Info.GRAPHIC_CARD]: lazy(
+  [Infos.CPU]: lazy(() => import("@/components/part/summary/CPU")),
+  [Infos.GPU]: lazy(() => import("@/components/part/summary/GPU")),
+  [Infos.GRAPHIC_CARD]: lazy(
     () => import("@/components/part/summary/GraphicCard")
   ),
-  [Info.MAIN]: lazy(() => import("@/components/part/summary/Mainboard")),
-  [Info.RAM]: lazy(() => import("@/components/part/summary/RAM")),
-  [Info.HDD]: lazy(() => import("@/components/part/summary/HDD")),
-  [Info.PSU]: lazy(() => import("@/components/part/summary/PSU")),
-  [Info.CASE]: lazy(() => import("@/components/part/summary/Case")),
-  [Info.COOLER]: lazy(() => import("@/components/part/summary/Cooler")),
-  [Info.AIO]: lazy(() => import("@/components/part/summary/AIO")),
-  [Info.FAN]: lazy(() => import("@/components/part/summary/Fan")),
-  [Info.SSD]: lazy(() => import("@/components/part/summary/SSD")),
-  [Info.CPU_BLOCK]: lazy(() => import("@/components/part/summary/CPUBlock")),
-  [Info.PUMP]: lazy(() => import("@/components/part/summary/Pump")),
-  [Info.RADIATOR]: lazy(() => import("@/components/part/summary/Radiator")),
+  [Infos.MAIN]: lazy(() => import("@/components/part/summary/Mainboard")),
+  [Infos.RAM]: lazy(() => import("@/components/part/summary/RAM")),
+  [Infos.HDD]: lazy(() => import("@/components/part/summary/HDD")),
+  [Infos.PSU]: lazy(() => import("@/components/part/summary/PSU")),
+  [Infos.CASE]: lazy(() => import("@/components/part/summary/Case")),
+  [Infos.COOLER]: lazy(() => import("@/components/part/summary/Cooler")),
+  [Infos.AIO]: lazy(() => import("@/components/part/summary/AIO")),
+  [Infos.FAN]: lazy(() => import("@/components/part/summary/Fan")),
+  [Infos.SSD]: lazy(() => import("@/components/part/summary/SSD")),
+  [Infos.CPU_BLOCK]: lazy(() => import("@/components/part/summary/CPUBlock")),
+  [Infos.PUMP]: lazy(() => import("@/components/part/summary/Pump")),
+  [Infos.RADIATOR]: lazy(() => import("@/components/part/summary/Radiator")),
 };
 
 export default function SummaryTable({
@@ -56,9 +56,9 @@ const TableHead = ({ part }: { part: Products }) => (
       <td>{Part.Label.brand}</td>
       <td>{Part.Label.series}</td>
       {Product.Info[part]
-        .map((info: Info) =>
-          InfoNamespace.SummaryAttributes[info].map(
-            (attr) => InfoNamespace.AttributeLabels[info][attr]
+        .map((info: Infos) =>
+          Information.SummaryAttributes[info].map(
+            (attr) => Information.AttributeLabels[info][attr]
           )
         )
         .flat()
