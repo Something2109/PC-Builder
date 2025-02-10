@@ -17,13 +17,14 @@ type ServiceObject = {
 
 @Injectable()
 class PartService extends BasePartService {
+  readonly logger: Logger = new Logger(PartService.name);
   readonly PartService: ServiceObject;
 
   constructor(...services: BaseDetailPartService<any>[]) {
     super();
     this.PartService = services.reduce((acc, service) => {
       acc[service.part] = service;
-      console.log(service);
+      this.logger.log(`Loaded the ${service.part} product service`);
       return acc;
     }, {} as ServiceObject);
   }

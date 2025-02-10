@@ -4,12 +4,15 @@ import {
   Injectable,
   BadRequestException,
   Global,
+  Logger,
 } from "@nestjs/common";
 import { ZodError, ZodSchema } from "zod";
 import { APIMapping } from "@/utils/interface/api";
 
 @Injectable()
 export class ZodValidationPipe implements PipeTransform {
+  private static readonly logger = new Logger(ZodValidationPipe.name);
+
   constructor(private validator: ZodSchema) {}
 
   transform(value: any) {
@@ -17,7 +20,7 @@ export class ZodValidationPipe implements PipeTransform {
       return this.validator.parse(value);
     } catch (error) {
       const err = error as ZodError;
-      console.error(err);
+      ZodValidationPipe.logger.error(err);
 
       const body = APIMapping.toError(err.issues);
 

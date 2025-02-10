@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, Logger } from "@nestjs/common";
 import { ArticleModule } from "./article/article.module";
 import { PartModule } from "./part/part.module";
 import { ConfigModule } from "@nestjs/config";
@@ -20,6 +20,10 @@ import { ConnectionOptions } from "@/models/options";
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       autoLoadModels: true,
+      logging: (
+        (logger: Logger) => (sql: string, timeout: any) =>
+          setTimeout(() => logger.verbose(sql), timeout ?? 0)
+      )(new Logger("Sequelize")),
       ...ConnectionOptions,
     }),
   ],
