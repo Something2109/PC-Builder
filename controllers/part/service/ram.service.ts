@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import Part from "@/utils/interface/info/Parts";
 import RAM from "@/utils/interface/product/RAM";
-import { Products, Info } from "@/utils/Enum";
+import { Products, Infos } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.RAM]: DetailInfo[Info.RAM];
+  [Infos.RAM]: DetailInfo[Infos.RAM];
 };
 
 @Injectable()
@@ -19,13 +19,13 @@ class RAMService extends BaseDetailPartService<Detail> {
 
     const parsedParams = RAM.Filter.parse(params);
     const options = new FilterOptionBuilder<
-      NonNullable<FilterOptions[Info.RAM]>
+      NonNullable<FilterOptions[Infos.RAM]>
     >()
       .add("form_factor", parsedParams["form_factor"])
       .add("capacity", parsedParams["capacity"])
       .add("interface", parsedParams["interface"]);
 
-    if (options.build()) result[Info.RAM] = options.build();
+    if (options.build()) result[Infos.RAM] = options.build();
 
     return result;
   }

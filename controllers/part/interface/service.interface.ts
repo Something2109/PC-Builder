@@ -10,9 +10,9 @@ import {
   FilterOptions as Filter,
   DetailInfo as Options,
 } from "@/utils/interface";
-import { Info, Products } from "@/utils/Enum";
+import { Infos, Products } from "@/utils/Enum";
 import { Product } from "@/utils/interface/product";
-import { Info as InfoNamespace } from "@/utils/interface/info";
+import { Information } from "@/utils/interface/info";
 import { ZodSchema } from "zod";
 
 type SearchOptions = {
@@ -373,7 +373,7 @@ abstract class BaseDetailPartService<
         filter = await this.filterFromModel(
           model,
           (options[info] as any) ?? {},
-          InfoNamespace.FilterAttributes[info],
+          Information.FilterAttributes[info],
           FilteredPart
         );
       }
@@ -505,7 +505,7 @@ abstract class BaseDetailPartService<
   protected async setDetailModel(
     instance: PartInformation,
     data: Options,
-    info: Info
+    info: Infos
   ): Promise<void> {
     const options = data[info];
 

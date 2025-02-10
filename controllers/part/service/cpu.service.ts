@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Products, Info } from "@/utils/Enum";
+import { Products, Infos } from "@/utils/Enum";
 import Part from "@/utils/interface/info/Parts";
 import CPU from "@/utils/interface/product/CPU";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
@@ -7,8 +7,8 @@ import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.CPU]: DetailInfo[Info.CPU];
-  [Info.GPU]?: DetailInfo[Info.GPU];
+  [Infos.CPU]: DetailInfo[Infos.CPU];
+  [Infos.GPU]?: DetailInfo[Infos.GPU];
 };
 
 @Injectable()
@@ -20,7 +20,7 @@ class CPUService extends BaseDetailPartService<Detail> {
 
     const parsedParams = CPU.Filter.parse(params);
     const options = new FilterOptionBuilder<
-      NonNullable<FilterOptions[Info.CPU]>
+      NonNullable<FilterOptions[Infos.CPU]>
     >()
       .add("socket", parsedParams["socket"])
       .add("total_cores", parsedParams["total_cores"])
@@ -30,7 +30,7 @@ class CPUService extends BaseDetailPartService<Detail> {
       .add("L3_cache", parsedParams["L3_cache"])
       .add("tdp", parsedParams["tdp"]);
 
-    if (options.build()) result[Info.CPU] = options.build();
+    if (options.build()) result[Infos.CPU] = options.build();
 
     return result;
   }

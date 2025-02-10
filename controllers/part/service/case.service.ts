@@ -12,7 +12,7 @@ import { ModelScopes } from "@/models/interface";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import Part from "@/utils/interface/info/Parts";
 import Case from "@/utils/interface/product/Case";
-import { Products, Info } from "@/utils/Enum";
+import { Products, Infos } from "@/utils/Enum";
 import {
   BaseDetailPartService,
   SearchOptions,
@@ -20,7 +20,7 @@ import {
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.CASE]: DetailInfo[Info.CASE];
+  [Infos.CASE]: DetailInfo[Infos.CASE];
 };
 
 @Injectable()
@@ -32,20 +32,20 @@ class CaseService extends BaseDetailPartService<Detail> {
 
     const parsedParams = Case.Filter.parse(params);
     const options = new FilterOptionBuilder<
-      NonNullable<FilterOptions[Info.CASE]>
+      NonNullable<FilterOptions[Infos.CASE]>
     >()
       .add("form_factor", parsedParams["form_factor"])
       .add("mainboard_support", parsedParams["mainboard_support"])
       .add("radiator_support", parsedParams["radiator_support"])
       .add("psu_support", parsedParams["psu_support"]);
 
-    if (options.build()) result[Info.CASE] = options.build();
+    if (options.build()) result[Infos.CASE] = options.build();
 
     return result;
   }
 
   async filter(options: FilterOptions & SearchOptions): Promise<FilterOptions> {
-    let { part, [Info.CASE]: filter } = options;
+    let { part, [Infos.CASE]: filter } = options;
     filter = filter ?? {};
 
     const CasePartInclude = {
