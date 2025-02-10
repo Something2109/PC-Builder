@@ -1,5 +1,5 @@
 import { ZodSchema } from "zod";
-import { Info, Products } from "../Enum";
+import { Infos, Products } from "../Enum";
 import AIOProduct from "./product/AIO";
 import CaseProduct from "./product/Case";
 import CoolerProduct from "./product/Cooler";
@@ -42,7 +42,7 @@ export namespace Product {
    * The mapping from the {@link Products} to the {@link Info} type.
    * Contains all the {@link Info} that a {@link Products} type can have.
    */
-  export const Info: { [key in Products]: Info[] } = {
+  export const Info: { [key in Products]: Infos[] } = {
     [Products.CPU]: CPUProduct.Primary,
     [Products.GPU]: GPUProduct.Primary,
     [Products.GRAPHIC_CARD]: GraphicCard.Primary,

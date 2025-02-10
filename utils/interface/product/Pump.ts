@@ -4,13 +4,13 @@ import {
   FormFactor,
   InternalConnectors,
 } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace Pump {
   export const Label = "Pump";
 
-  export const Primary = [Info.PUMP];
+  export const Primary = [Infos.PUMP];
   export const Secondary = [];
 
   export const Filter = z

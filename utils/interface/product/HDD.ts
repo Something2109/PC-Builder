@@ -4,13 +4,13 @@ import {
   FormFactor,
   InternalConnectors,
 } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace HDD {
   export const Label = "HDD";
 
-  export const Primary = [Info.HDD];
+  export const Primary = [Infos.HDD];
   export const Secondary = [];
 
   export const Filter = z

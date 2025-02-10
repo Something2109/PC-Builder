@@ -1,11 +1,11 @@
 import { FilterOptions, NumberFilterOptions, Primitive } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace GPU {
   export const Label = "GPU";
 
-  export const Primary = [Info.GPU];
+  export const Primary = [Infos.GPU];
   export const Secondary = [];
 
   export const Filter = z
