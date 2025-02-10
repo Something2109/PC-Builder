@@ -1,11 +1,11 @@
 import { FilterOptions, FormFactor, Material, Primitive } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace AIO {
   export const Label = "AIO";
 
-  export const Primary = [Info.AIO];
+  export const Primary = [Infos.AIO];
   export const Secondary = [];
 
   export const Filter = z

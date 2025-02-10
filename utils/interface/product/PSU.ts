@@ -1,12 +1,12 @@
 import { FilterOptions, NumberFilterOptions, FormFactor } from "../utils";
 import PSU from "../info/PSU";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace PSUProduct {
   export const Label = "PSU";
 
-  export const Primary = [Info.PSU];
+  export const Primary = [Infos.PSU];
   export const Secondary = [];
 
   export const Filter = z

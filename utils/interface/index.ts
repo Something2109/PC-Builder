@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Info } from "../Enum";
+import { Infos } from "../Enum";
 import AIO from "./info/AIO";
 import Case from "./info/Case";
 import Cooler from "./info/Cooler";
@@ -16,8 +16,6 @@ import SSD from "./info/SSD";
 import CPUBlock from "./info/CPUBlock";
 import Pump from "./info/Pump";
 import Radiator from "./info/Radiator";
-import { Info as InfoNamespace } from "./info";
-import { Product as ProductNamespace } from "./product";
 import { Primitive } from "./utils";
 
 /**
@@ -27,7 +25,7 @@ import { Primitive } from "./utils";
 
 /**
  * The summary information of a specific product.
- * Contains the most important information of the product from each {@link Info} type.
+ * Contains the most important information of the product from each {@link Infos} type.
  * This is a generic type used in all the {@link Products} type.
  * The specific information that each {@link Products} type contains
  * are declared in the mapping {@link ProductInfo}.
@@ -35,21 +33,21 @@ import { Primitive } from "./utils";
 export const SummaryInfo = Part.SummarySchema.merge(
   z
     .object({
-      [Info.CPU]: CPU.SummarySchema,
-      [Info.GPU]: GPU.SummarySchema,
-      [Info.GRAPHIC_CARD]: GraphicCard.SummarySchema,
-      [Info.MAIN]: Mainboard.SummarySchema,
-      [Info.RAM]: RAM.SummarySchema,
-      [Info.SSD]: SSD.SummarySchema,
-      [Info.HDD]: HDD.SummarySchema,
-      [Info.PSU]: PSU.SummarySchema,
-      [Info.CASE]: Case.SummarySchema,
-      [Info.FAN]: Fan.SummarySchema,
-      [Info.COOLER]: Cooler.SummarySchema,
-      [Info.AIO]: AIO.SummarySchema,
-      [Info.CPU_BLOCK]: CPUBlock.SummarySchema,
-      [Info.PUMP]: Pump.SummarySchema,
-      [Info.RADIATOR]: Radiator.SummarySchema,
+      [Infos.CPU]: CPU.SummarySchema,
+      [Infos.GPU]: GPU.SummarySchema,
+      [Infos.GRAPHIC_CARD]: GraphicCard.SummarySchema,
+      [Infos.MAIN]: Mainboard.SummarySchema,
+      [Infos.RAM]: RAM.SummarySchema,
+      [Infos.SSD]: SSD.SummarySchema,
+      [Infos.HDD]: HDD.SummarySchema,
+      [Infos.PSU]: PSU.SummarySchema,
+      [Infos.CASE]: Case.SummarySchema,
+      [Infos.FAN]: Fan.SummarySchema,
+      [Infos.COOLER]: Cooler.SummarySchema,
+      [Infos.AIO]: AIO.SummarySchema,
+      [Infos.CPU_BLOCK]: CPUBlock.SummarySchema,
+      [Infos.PUMP]: Pump.SummarySchema,
+      [Infos.RADIATOR]: Radiator.SummarySchema,
     })
     .partial()
 );
@@ -58,7 +56,7 @@ export type SummaryInfo = z.infer<typeof SummaryInfo>;
 
 /**
  * The detail information of a specific product.
- * Contains the most detailed information of the product from each {@link Info} type.
+ * Contains the most detailed information of the product from each {@link Infos} type.
  * This is a generic type used in all the {@link Products} type.
  * The specific information that each {@link Products} type contains
  * are declared in the mapping {@link ProductInfo}.
@@ -67,21 +65,21 @@ export const DetailInfo = Part.Schema.merge(
   z
     .object({
       raw: Primitive.String,
-      [Info.CPU]: CPU.Schema.partial().nullish(),
-      [Info.GPU]: GPU.Schema.partial().nullish(),
-      [Info.GRAPHIC_CARD]: GraphicCard.Schema.partial().nullish(),
-      [Info.MAIN]: Mainboard.Schema.partial().nullish(),
-      [Info.RAM]: RAM.Schema.partial().nullish(),
-      [Info.SSD]: SSD.Schema.partial().nullish(),
-      [Info.HDD]: HDD.Schema.partial().nullish(),
-      [Info.PSU]: PSU.Schema.partial().nullish(),
-      [Info.CASE]: Case.Schema.partial().nullish(),
-      [Info.FAN]: Fan.Schema.partial().nullish(),
-      [Info.COOLER]: Cooler.Schema.partial().nullish(),
-      [Info.AIO]: AIO.Schema.partial().nullish(),
-      [Info.CPU_BLOCK]: CPUBlock.Schema.partial().nullish(),
-      [Info.PUMP]: Pump.Schema.partial().nullish(),
-      [Info.RADIATOR]: Radiator.Schema.partial().nullish(),
+      [Infos.CPU]: CPU.Schema.partial().nullish(),
+      [Infos.GPU]: GPU.Schema.partial().nullish(),
+      [Infos.GRAPHIC_CARD]: GraphicCard.Schema.partial().nullish(),
+      [Infos.MAIN]: Mainboard.Schema.partial().nullish(),
+      [Infos.RAM]: RAM.Schema.partial().nullish(),
+      [Infos.SSD]: SSD.Schema.partial().nullish(),
+      [Infos.HDD]: HDD.Schema.partial().nullish(),
+      [Infos.PSU]: PSU.Schema.partial().nullish(),
+      [Infos.CASE]: Case.Schema.partial().nullish(),
+      [Infos.FAN]: Fan.Schema.partial().nullish(),
+      [Infos.COOLER]: Cooler.Schema.partial().nullish(),
+      [Infos.AIO]: AIO.Schema.partial().nullish(),
+      [Infos.CPU_BLOCK]: CPUBlock.Schema.partial().nullish(),
+      [Infos.PUMP]: Pump.Schema.partial().nullish(),
+      [Infos.RADIATOR]: Radiator.Schema.partial().nullish(),
     })
     .partial()
 );
@@ -90,8 +88,8 @@ export type DetailInfo = z.infer<typeof DetailInfo>;
 
 /**
  * The filter options of the information.
- * Contains the filter options of each {@link Info} type combined into one object.
- * This object is used to pass the filter conditions of the user to each {@link Info} type.
+ * Contains the filter options of each {@link Infos} type combined into one object.
+ * This object is used to pass the filter conditions of the user to each {@link Infos} type.
  * This is a generic type used in all the {@link Products} type.
  * The specific information that each {@link Products} type contains
  * are declared in the mapping {@link ProductInfo}.
@@ -99,38 +97,22 @@ export type DetailInfo = z.infer<typeof DetailInfo>;
 export const FilterOptions = z
   .object({
     part: Part.FilterOptionSchema,
-    [Info.CPU]: CPU.FilterOptionSchema.nullish(),
-    [Info.GPU]: GPU.FilterOptionSchema.nullish(),
-    [Info.GRAPHIC_CARD]: GraphicCard.FilterOptionSchema.nullish(),
-    [Info.MAIN]: Mainboard.FilterOptionSchema.nullish(),
-    [Info.RAM]: RAM.FilterOptionSchema.nullish(),
-    [Info.SSD]: SSD.FilterOptionSchema.nullish(),
-    [Info.HDD]: HDD.FilterOptionSchema.nullish(),
-    [Info.PSU]: PSU.FilterOptionSchema.nullish(),
-    [Info.CASE]: Case.FilterOptionSchema.nullish(),
-    [Info.FAN]: Fan.FilterOptionSchema.nullish(),
-    [Info.COOLER]: Cooler.FilterOptionSchema.nullish(),
-    [Info.AIO]: AIO.FilterOptionSchema.nullish(),
-    [Info.CPU_BLOCK]: CPUBlock.FilterOptionSchema.nullish(),
-    [Info.PUMP]: Pump.FilterOptionSchema.nullish(),
-    [Info.RADIATOR]: Radiator.FilterOptionSchema.nullish(),
+    [Infos.CPU]: CPU.FilterOptionSchema.nullish(),
+    [Infos.GPU]: GPU.FilterOptionSchema.nullish(),
+    [Infos.GRAPHIC_CARD]: GraphicCard.FilterOptionSchema.nullish(),
+    [Infos.MAIN]: Mainboard.FilterOptionSchema.nullish(),
+    [Infos.RAM]: RAM.FilterOptionSchema.nullish(),
+    [Infos.SSD]: SSD.FilterOptionSchema.nullish(),
+    [Infos.HDD]: HDD.FilterOptionSchema.nullish(),
+    [Infos.PSU]: PSU.FilterOptionSchema.nullish(),
+    [Infos.CASE]: Case.FilterOptionSchema.nullish(),
+    [Infos.FAN]: Fan.FilterOptionSchema.nullish(),
+    [Infos.COOLER]: Cooler.FilterOptionSchema.nullish(),
+    [Infos.AIO]: AIO.FilterOptionSchema.nullish(),
+    [Infos.CPU_BLOCK]: CPUBlock.FilterOptionSchema.nullish(),
+    [Infos.PUMP]: Pump.FilterOptionSchema.nullish(),
+    [Infos.RADIATOR]: Radiator.FilterOptionSchema.nullish(),
   })
   .partial();
 
 export type FilterOptions = z.infer<typeof FilterOptions>;
-
-const InfoLabels = InfoNamespace.Label;
-const AttributeLabels = InfoNamespace.AttributeLabels;
-const SummaryAttributes = InfoNamespace.SummaryAttributes;
-const FilterAttributes = InfoNamespace.FilterAttributes;
-const ProductInfo = ProductNamespace.Info;
-const ProductFilterOptions = ProductNamespace.FilterOptions;
-
-export {
-  InfoLabels,
-  AttributeLabels,
-  SummaryAttributes,
-  FilterAttributes,
-  ProductInfo,
-  ProductFilterOptions,
-};

@@ -4,13 +4,13 @@ import {
   InternalConnectors,
   Primitive,
 } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace Mainboard {
   export const Label = "Mainboard";
 
-  export const Primary = [Info.MAIN];
+  export const Primary = [Infos.MAIN];
   export const Secondary = [];
 
   export const Filter = z

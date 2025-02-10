@@ -1,12 +1,12 @@
 import { FilterOptions, FormFactor } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 import Fan from "../info/Fan";
 
 export namespace FanProduct {
   export const Label = "Fan";
 
-  export const Primary = [Info.FAN];
+  export const Primary = [Infos.FAN];
   export const Secondary = [];
 
   export const Filter = z

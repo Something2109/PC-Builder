@@ -1,11 +1,11 @@
 import { FilterOptions, FormFactor, Material, Primitive } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace Cooler {
   export const Label = "Cooler";
 
-  export const Primary = [Info.COOLER];
+  export const Primary = [Infos.COOLER];
   export const Secondary = [];
 
   export const Filter = z
