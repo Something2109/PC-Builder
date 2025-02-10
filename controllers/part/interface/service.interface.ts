@@ -34,9 +34,20 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @param options The filter options to apply.
    * @returns The list of parts that satisfy the filter options.
    */
-  abstract list(
+  async list(
     options: Filter & PageOptions & SearchOptions
-  ): Promise<APIMapping.Payload<Detail>>;
+  ): Promise<APIMapping.Payload<Detail>> {
+    let { part } = options;
+
+    const FilteredPart = PartInformation.scope([
+      ModelScopes.SUMMARY,
+      { method: [ModelScopes.FILTER, part] },
+    ]);
+
+    const { rows, count } = await this.listFromPart(FilteredPart, options);
+
+    return { total: count, list: rows.map((value) => value.toJSON()) };
+  }
 
   /**
    * Create a new {@link Filter} object that filters
@@ -44,7 +55,21 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @param options The filter options to apply.
    * @returns The created filter object.
    */
-  abstract filter(options: Filter & SearchOptions): Promise<Filter>;
+  async filter(options: Filter & SearchOptions): Promise<Filter> {
+    const FilteredPart = PartInformation.scope({
+      method: [ModelScopes.FILTER, options.part],
+    });
+
+    const result: Filter = {
+      part: await this.filterFromModel(
+        FilteredPart,
+        options.part ?? {},
+        Part.FilterAttributes
+      ),
+    };
+
+    return result;
+  }
 
   /**
    * Create the option to pass into the {@link list} and {@link filter} functions
@@ -527,9 +552,4 @@ abstract class BaseDetailPartService<
   }
 }
 
-export {
-  BasePartService,
-  BaseDetailPartService,
-  type PageOptions,
-  type SearchOptions,
-};
+export { BasePartService, BaseDetailPartService };

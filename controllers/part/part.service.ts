@@ -1,15 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import { PartInformation } from "@/models/parts/tables/Part";
-import { ModelScopes } from "@/models/interface";
+import { Injectable, Logger } from "@nestjs/common";
 import { Products } from "@/utils/Enum";
-import Part from "@/utils/interface/info/Parts";
 import {
   BaseDetailPartService,
   BasePartService,
-  PageOptions,
-  SearchOptions,
 } from "./interface/service.interface";
-import { FilterOptions as Filter } from "@/utils/interface";
 
 type ServiceObject = {
   [key in Products]?: BaseDetailPartService<any>;
@@ -27,35 +21,6 @@ class PartService extends BasePartService {
       this.logger.log(`Loaded the ${service.part} product service`);
       return acc;
     }, {} as ServiceObject);
-  }
-
-  async list(options: Filter & PageOptions & SearchOptions) {
-    let { part } = options;
-
-    const FilteredPart = PartInformation.scope([
-      ModelScopes.SUMMARY,
-      { method: [ModelScopes.FILTER, part] },
-    ]);
-
-    const { rows, count } = await this.listFromPart(FilteredPart, options);
-
-    return { total: count, list: rows.map((value) => value.toJSON()) };
-  }
-
-  async filter(options: Filter): Promise<Filter> {
-    const FilteredPart = PartInformation.scope({
-      method: [ModelScopes.FILTER, options.part],
-    });
-
-    const result: Filter = {
-      part: await this.filterFromModel(
-        FilteredPart,
-        options.part ?? {},
-        Part.FilterAttributes
-      ),
-    };
-
-    return result;
   }
 }
 

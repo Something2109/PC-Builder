@@ -13,10 +13,7 @@ import { DetailInfo, FilterOptions } from "@/utils/interface";
 import Part from "@/utils/interface/info/Parts";
 import Case from "@/utils/interface/product/Case";
 import { Products, Infos } from "@/utils/Enum";
-import {
-  BaseDetailPartService,
-  SearchOptions,
-} from "../interface/service.interface";
+import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
@@ -44,7 +41,7 @@ class CaseService extends BaseDetailPartService<Detail> {
     return result;
   }
 
-  async filter(options: FilterOptions & SearchOptions): Promise<FilterOptions> {
+  async filter(options: FilterOptions): Promise<FilterOptions> {
     let { part, [Infos.CASE]: filter } = options;
     filter = filter ?? {};
 
