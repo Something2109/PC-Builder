@@ -9,10 +9,10 @@ import { FilterOptionsType, Primitive } from "@/utils/interface/utils";
 import {
   FilterOptions as Filter,
   DetailInfo as Options,
-  FilterAttributes,
-  ProductInfo,
 } from "@/utils/interface";
 import { Info, Products } from "@/utils/Enum";
+import { Product } from "@/utils/interface/product";
+import { Info as InfoNamespace } from "@/utils/interface/info";
 import { ZodSchema } from "zod";
 
 type SearchOptions = {
@@ -330,7 +330,7 @@ abstract class BaseDetailPartService<
       method: [ModelScopes.SUMMARY, { ...part, part: [this.part] }],
     });
 
-    const include: Includeable[] = ProductInfo[this.part].map((info) => ({
+    const include: Includeable[] = Product.Info[this.part].map((info) => ({
       model: InfoModels[info].scope({
         method: [ModelScopes.SUMMARY, rest[info]],
       }),
@@ -349,7 +349,7 @@ abstract class BaseDetailPartService<
   async filter(options: Filter & SearchOptions): Promise<Filter> {
     const part = { ...options.part, part: [this.part] };
 
-    const FilteredInfos = ProductInfo[this.part].map((info) =>
+    const FilteredInfos = Product.Info[this.part].map((info) =>
       InfoModels[info].scope({ method: [ModelScopes.FILTER, options[info]] })
     );
     const FilteredPart = PartInformation.scope({
@@ -366,14 +366,14 @@ abstract class BaseDetailPartService<
     };
 
     const infoPromise = FilteredInfos.map(async (model, index) => {
-      const info = ProductInfo[this.part][index];
+      const info = Product.Info[this.part][index];
 
       let filter: any = null;
       if (options[info] !== null) {
         filter = await this.filterFromModel(
           model,
           (options[info] as any) ?? {},
-          FilterAttributes[info],
+          InfoNamespace.FilterAttributes[info],
           FilteredPart
         );
       }
@@ -424,7 +424,7 @@ abstract class BaseDetailPartService<
     const part = Part.Schema.partial().parse(options);
     const instance = await super.buildPart(
       { ...part, part: this.part },
-      ...ProductInfo[this.part].map((info) =>
+      ...Product.Info[this.part].map((info) =>
         InfoModels[info].scope(ModelScopes.DETAIL)
       ),
       ...include
@@ -433,7 +433,7 @@ abstract class BaseDetailPartService<
     if (typeof instance === "string") return instance;
 
     await Promise.all(
-      ProductInfo[this.part].map((info) =>
+      Product.Info[this.part].map((info) =>
         this.setDetailModel(instance, options, info)
       )
     );
@@ -447,7 +447,7 @@ abstract class BaseDetailPartService<
   ): Promise<PartInformation | null> {
     const instance = await super.getPart(
       id,
-      ...ProductInfo[this.part].map((info) =>
+      ...Product.Info[this.part].map((info) =>
         InfoModels[info].scope(ModelScopes.DETAIL)
       ),
       ...include
@@ -467,7 +467,7 @@ abstract class BaseDetailPartService<
     const instance = await super.setPart(
       { ...part, part: this.part },
       id,
-      ...ProductInfo[this.part].map((info) =>
+      ...Product.Info[this.part].map((info) =>
         InfoModels[info].scope(ModelScopes.DETAIL)
       ),
       ...include
@@ -476,7 +476,7 @@ abstract class BaseDetailPartService<
     if (!instance || typeof instance === "string") return instance;
 
     await Promise.all(
-      ProductInfo[this.part].map((info) =>
+      Product.Info[this.part].map((info) =>
         this.setDetailModel(instance, options, info)
       )
     );
@@ -488,7 +488,7 @@ abstract class BaseDetailPartService<
     await instance.save();
 
     await Promise.all(
-      ProductInfo[this.part].map((info) => instance[info]?.save())
+      Product.Info[this.part].map((info) => instance[info]?.save())
     );
   }
 
