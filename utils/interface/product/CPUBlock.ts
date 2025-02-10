@@ -1,11 +1,11 @@
 import { FilterOptions, Material, Primitive } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace CPUBlock {
   export const Label = "CPU Block";
 
-  export const Primary = [Info.CPU_BLOCK];
+  export const Primary = [Infos.CPU_BLOCK];
   export const Secondary = [];
 
   export const Filter = z

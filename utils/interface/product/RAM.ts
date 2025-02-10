@@ -4,13 +4,13 @@ import {
   FormFactor,
   InternalConnectors,
 } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace RAM {
   export const Label = "RAM";
 
-  export const Primary = [Info.RAM];
+  export const Primary = [Infos.RAM];
   export const Secondary = [];
 
   export const Filter = z

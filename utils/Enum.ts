@@ -22,7 +22,7 @@ enum Products {
   RADIATOR = "radiator",
 }
 
-enum Info {
+enum Infos {
   CPU = "cpu",
   GPU = "gpu",
   GRAPHIC_CARD = "graphic_card",
@@ -40,4 +40,4 @@ enum Info {
   RADIATOR = "radiator",
 }
 
-export { Topics, Products, Info };
+export { Topics, Products, Infos };

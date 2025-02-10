@@ -4,14 +4,14 @@ import {
   FormFactor,
   InternalConnectors,
 } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 import SSD from "../info/SSD";
 
 export namespace SSDProduct {
   export const Label = "SSD";
 
-  export const Primary = [Info.SSD];
+  export const Primary = [Infos.SSD];
   export const Secondary = [];
 
   export const Filter = z

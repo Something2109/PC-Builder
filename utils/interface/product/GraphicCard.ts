@@ -1,11 +1,11 @@
 import { NumberFilterOptions } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace GraphicCard {
   export const Label = "Graphic Card";
 
-  export const Primary = [Info.GRAPHIC_CARD];
+  export const Primary = [Infos.GRAPHIC_CARD];
   export const Secondary = [];
 
   export const Filter = z

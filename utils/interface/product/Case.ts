@@ -1,11 +1,11 @@
 import { FilterOptions, FormFactor } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace Case {
   export const Label = "Case";
 
-  export const Primary = [Info.CASE];
+  export const Primary = [Infos.CASE];
   export const Secondary = [];
 
   export const Filter = z
