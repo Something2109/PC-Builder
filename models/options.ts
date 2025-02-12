@@ -1,6 +1,6 @@
 import { SequelizeOptions } from "sequelize-typescript";
 import { InfoModels } from "./parts";
-import { Article } from "./articles/article";
+import { ArticleModel } from "./articles/article";
 import { RetailProduct } from "./sellers/SellerProduct";
 import { PartInformation } from "./parts/tables/Part";
 import {
@@ -19,7 +19,7 @@ import { CPUBlockSocketModel } from "./parts/tables/CPUBlock";
 
 export const ConnectionOptions: SequelizeOptions = {
   models: [
-    Article,
+    ArticleModel,
     RetailProduct,
     PartInformation,
     MainboardPCIeModel,
