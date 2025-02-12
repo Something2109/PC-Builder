@@ -14,13 +14,7 @@ import {
 import { RowWrapper } from "./FlexWrapper";
 import { UnitInterface } from "@/utils/extract/Units";
 
-const defaultStyle = "w-full bg-transparent resize-none overflow-y-hidden";
-const defaultValueList: { [key in HTMLInputTypeAttribute]?: string | number } =
-  {
-    text: "",
-    date: new Date().toISOString().slice(0, 10),
-    number: 0,
-  };
+const defaultStyle = "only:w-full bg-transparent resize-none overflow-y-hidden";
 
 export function TextArea({
   className,
@@ -58,9 +52,6 @@ export function Input({
   const classList = [defaultStyle, "px-1"];
   if (className) {
     classList.push(className);
-  }
-  if (type) {
-    defaultValue = defaultValue ?? defaultValueList[type] ?? undefined;
   }
 
   return (
@@ -139,6 +130,7 @@ export function OptionSelect({
     <Select {...rest}>
       {options.map((value) => (
         <option
+          className="text-background"
           key={`${rest.name ?? new Date().getTime()}-${value}`}
           value={value}
         >
