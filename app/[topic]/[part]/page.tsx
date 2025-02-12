@@ -1,6 +1,6 @@
-import { Article } from "@/components/article";
+import { ArticleComponent } from "@/components/article";
 import { RedirectButton } from "@/components/utils/Button";
-import { ArticleType } from "@/utils/interface/article/article";
+import { Article } from "@/utils/interface/article/article";
 import { Products } from "@/utils/Enum";
 import { notFound, redirect } from "next/navigation";
 import React from "react";
@@ -18,7 +18,7 @@ export default async function PartTopicPage({
 
     if (!response.ok) return notFound();
 
-    const data = (await response.json()) as ArticleType;
+    const data = (await response.json()) as Article.Type;
     const editLink = `/${topic}/${part}/edit`;
 
     if (!data) {
@@ -27,7 +27,7 @@ export default async function PartTopicPage({
 
     return (
       <>
-        <Article article={data as ArticleType} />
+        <ArticleComponent article={data as Article.Type} />
         <RedirectButton href={editLink} className={"font-bold"}>
           Edit
         </RedirectButton>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/utils/Button";
-import { SectionType } from "@/utils/interface/article/article";
+import { Article } from "@/utils/interface/article/article";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { TextArea } from "@/components/utils/Input";
 import {
@@ -14,7 +14,7 @@ import {
 } from "./utils";
 import { useState } from "react";
 
-export function Section({ content, prefix }: ContentProps<SectionType>) {
+export function Section({ content, prefix }: ContentProps<Article.Section>) {
   let sectionCount = 1;
   return (
     <section className="flex flex-col gap-1 w-full">
@@ -36,7 +36,7 @@ export function SectionInput({
   content,
   prefix,
   updateSelf,
-}: InputContentProps<SectionType>) {
+}: InputContentProps<Article.Section>) {
   const [count, setCount] = useState(content.content.length);
 
   let sectionCount = 1;

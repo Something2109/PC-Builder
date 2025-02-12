@@ -1,14 +1,14 @@
 "use client";
 
 import { Button } from "@/components/utils/Button";
-import { ImageType } from "@/utils/interface/article/article";
+import { Article } from "@/utils/interface/article/article";
 import { RowWrapper, ColumnWrapper } from "@/components/utils/FlexWrapper";
 import { TextArea } from "@/components/utils/Input";
 import Image from "next/image";
 import { useCallback, useState } from "react";
 import { ContentProps, InputContentProps } from "./utils";
 
-export function Picture({ content }: ContentProps<ImageType>) {
+export function Picture({ content }: ContentProps<Article.Image>) {
   return (
     <picture className="*:mx-auto *:my-2 text-center">
       <Image src={content.src} width={800} height={450} alt={content.caption} />
@@ -17,10 +17,15 @@ export function Picture({ content }: ContentProps<ImageType>) {
   );
 }
 
+type ImageInput = Article.Image & {
+  initial?: string;
+  image?: string;
+};
+
 export function PictureInput({
   content,
   updateSelf,
-}: InputContentProps<ImageType>) {
+}: InputContentProps<ImageInput>) {
   const getImageFromSrc = useCallback(() => {
     return content.src.length > 0 ? (
       <Image src={content.src} width={800} height={450} alt={content.caption} />

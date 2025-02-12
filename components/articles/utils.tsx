@@ -1,10 +1,4 @@
-import {
-  ContentType,
-  ImageType,
-  ListType,
-  ParagraphType,
-  SectionType,
-} from "@/utils/interface/article/article";
+import { Article } from "@/utils/interface/article/article";
 import { Paragraph, ParagraphInput } from "./Paragraph";
 import { Picture, PictureInput } from "./Image";
 import { List, ListInput } from "./List";
@@ -12,40 +6,42 @@ import { Section, SectionInput } from "./Section";
 import { Button } from "@/components/utils/Button";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 
-export type ContentProps<T extends ContentType> = {
+export type ContentProps<T extends Article.Content> = {
   content: T;
   prefix?: string;
 };
 
-export function ContentRenderer(props: ContentProps<ContentType>) {
+export function ContentRenderer(props: ContentProps<Article.Content>) {
   switch (props.content.type) {
     case "paragraph":
-      return <Paragraph {...(props as ContentProps<ParagraphType>)} />;
+      return <Paragraph {...(props as ContentProps<Article.Paragraph>)} />;
     case "image":
-      return <Picture {...(props as ContentProps<ImageType>)} />;
+      return <Picture {...(props as ContentProps<Article.Image>)} />;
     case "list":
-      return <List {...(props as ContentProps<ListType>)} />;
+      return <List {...(props as ContentProps<Article.List>)} />;
     case "section":
-      return <Section {...(props as ContentProps<SectionType>)} />;
+      return <Section {...(props as ContentProps<Article.Section>)} />;
   }
 }
 
-export type InputContentProps<T extends ContentType> = {
+export type InputContentProps<T extends Article.Content> = {
   updateSelf: ReturnType<typeof updateContent<any>>;
 } & ContentProps<T>;
 
-export function InputRenderer(props: InputContentProps<ContentType>) {
+export function InputRenderer(props: InputContentProps<Article.Content>) {
   switch (props.content.type) {
     case "paragraph":
       return (
-        <ParagraphInput {...(props as InputContentProps<ParagraphType>)} />
+        <ParagraphInput {...(props as InputContentProps<Article.Paragraph>)} />
       );
     case "section":
-      return <SectionInput {...(props as InputContentProps<SectionType>)} />;
+      return (
+        <SectionInput {...(props as InputContentProps<Article.Section>)} />
+      );
     case "image":
-      return <PictureInput {...(props as InputContentProps<ImageType>)} />;
+      return <PictureInput {...(props as InputContentProps<Article.Image>)} />;
     case "list":
-      return <ListInput {...(props as InputContentProps<ListType>)} />;
+      return <ListInput {...(props as InputContentProps<Article.List>)} />;
   }
 }
 
@@ -53,10 +49,10 @@ export function AddRow({
   list,
   set,
 }: {
-  list: ContentType[];
+  list: Article.Content[];
   set: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  function add(ct: ContentType) {
+  function add(ct: Article.Content) {
     list.push(ct);
     console.log(ct);
     set((prev) => ++prev);

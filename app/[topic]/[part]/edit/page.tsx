@@ -1,7 +1,7 @@
 "use client";
 
 import { EditableArticle } from "@/components/article";
-import { ArticleType } from "@/utils/interface/article/article";
+import { Article } from "@/utils/interface/article/article";
 import { Button, RedirectButton } from "@/components/utils/Button";
 import { NotificationBar } from "@/components/utils/NotificationBar";
 import { use, useEffect, useState } from "react";
@@ -13,7 +13,7 @@ export default function PartTopicEditPage({
   params: Promise<{ topic: string; part: string }>;
 }) {
   const { topic, part } = use(params);
-  const [data, setData] = useState<ArticleType | null>(null);
+  const [data, setData] = useState<Omit<Article.Type, "id"> | null>(null);
   const [error, setError] = useState<{ message: string }>({
     message: "Loading",
   });
@@ -27,7 +27,7 @@ export default function PartTopicEditPage({
   useEffect(() => {
     fetch(SaveLink).then((response) => {
       if (response.ok) {
-        response.json().then((data: ArticleType) => {
+        response.json().then((data: Article.Type) => {
           setData(data);
         });
       } else {
@@ -51,7 +51,6 @@ export default function PartTopicEditPage({
     } else {
       setNoti({ message: (await response.json()).message, alert: true });
       setData({
-        type: "article",
         title: "",
         author: "admin",
         standfirst: "",
@@ -78,7 +77,7 @@ export default function PartTopicEditPage({
         ) : undefined}
       </ColumnWrapper>
 
-      <EditableArticle article={data as ArticleType} />
+      <EditableArticle article={data as Article.Type} />
     </>
   ) : (
     <h1>{error.message}</h1>
