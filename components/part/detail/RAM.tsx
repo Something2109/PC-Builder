@@ -7,7 +7,7 @@ const Components: InfoDetailMapping<RAM.Info> = {
   speed: ({ value }) => (
     <UnitDisplay
       Unit={TransferSpeedUnit}
-      defaultUnit="mm"
+      defaultUnit="MT/s"
       defaultValue={value}
     />
   ),
