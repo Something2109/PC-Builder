@@ -1,6 +1,6 @@
-import { Article } from "@/models/articles/article";
+import { ArticleModel } from "@/models/articles/article";
 import { Products, Topics } from "@/utils/Enum";
-import { ArticleSummary, ArticleType } from "@/utils/interface/article/article";
+import { Article } from "@/utils/interface/article/article";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
@@ -8,38 +8,35 @@ export class ArticleService {
   async getSummary(criteria: {
     topic: Topics;
     part?: Products;
-  }): Promise<ArticleSummary[]> {
-    const toType = (article: Article) => ({
-      url: `/${article.topic}/${article.part}`,
+  }): Promise<Article.Summary[]> {
+    const toType = (article: ArticleModel) => ({
+      id: article.id,
       title: article.title,
       author: article.author,
       standfirst: article.standfirst,
       createdAt: article.createdAt,
     });
 
-    const save = await Article.findAll({ where: criteria });
+    const save = await ArticleModel.findAll({ where: criteria });
 
     return save.map((article) => toType(article));
   }
 
-  async get(topic: string, part: Products): Promise<ArticleType | null> {
-    const save = await Article.findOne({ where: { topic, part } });
+  async get(topic: string, part: Products): Promise<Article.Type | null> {
+    const save = await ArticleModel.findOne({ where: { topic, part } });
 
     if (save) {
-      return {
-        type: "article",
-        ...save.toJSON<Omit<ArticleType, "type">>(),
-      };
+      return save.toJSON<Article.Type>();
     }
 
     return null;
   }
 
-  async set(topic: string, part: Products, article: ArticleType) {
+  async set(topic: string, part: Products, article: Article.Type) {
     if (Object.values(Products).includes(part)) {
-      const { type, ...data } = article;
+      const { id, ...data } = article;
 
-      let [save] = await Article.findOrBuild({ where: { topic, part } });
+      let [save] = await ArticleModel.findOrBuild({ where: { topic, part } });
       save.set({ ...data });
 
       await save.save();
