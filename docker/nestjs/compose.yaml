@@ -7,8 +7,9 @@ services:
     ports:
       - 5000:3000
     environment:
-      - DATABASE_HOST=mysql
-      - DATABASE_PORT=3306
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MONGO_HOST=mongo:27017
       - DATABASE_NAME=${DATABASE_NAME:-PC_Builder}
       - DATABASE_USERNAME=${DATABASE_USERNAME:-NestjsApp}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD:?error}
@@ -24,8 +25,9 @@ services:
     ports:
       - 5000:3000
     environment:
-      - DATABASE_HOST=mysql
-      - DATABASE_PORT=3306
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MONGO_HOST=mongo:27017
       - DATABASE_NAME=${DATABASE_NAME:-PC_Builder}
       - DATABASE_USERNAME=${DATABASE_USERNAME:-NestjsApp}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD:?error}

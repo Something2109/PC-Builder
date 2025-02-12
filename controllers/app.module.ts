@@ -1,10 +1,12 @@
 import { Module, Logger } from "@nestjs/common";
-import { ArticleModule } from "./article/article.module";
-import { PartModule } from "./part/part.module";
 import { ConfigModule } from "@nestjs/config";
-import { CrawlerModule } from "./crawler/crawler.module";
+import { MongooseModule } from "@nestjs/mongoose";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { ConnectionOptions } from "@/models/options";
+import { Connection } from "mongoose";
+import { ArticleModule } from "./article/article.module";
+import { CrawlerModule } from "./crawler/crawler.module";
+import { PartModule } from "./part/part.module";
 
 @Module({
   imports: [
@@ -14,8 +16,8 @@ import { ConnectionOptions } from "@/models/options";
     ConfigModule.forRoot(),
     SequelizeModule.forRoot({
       dialect: "mysql",
-      host: process.env.DATABASE_HOST,
-      port: Number(process.env.DATABASE_PORT),
+      host: process.env.MYSQL_HOST,
+      port: Number(process.env.MYSQL_PORT),
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
@@ -26,6 +28,30 @@ import { ConnectionOptions } from "@/models/options";
       )(new Logger("Sequelize")),
       ...ConnectionOptions,
     }),
+    MongooseModule.forRoot(
+      `mongodb://${process.env.MONGO_HOST}/${process.env.DATABASE_NAME}`,
+      {
+        onConnectionCreate: (connection: Connection) => {
+          const logger = new Logger("Mongodb");
+
+          connection.on("connected", () =>
+            logger.verbose("Mongodb database connected")
+          );
+          connection.on("open", () => logger.verbose("Mongodb database open"));
+          connection.on("disconnected", () =>
+            logger.verbose("Mongodb database disconnected")
+          );
+          connection.on("reconnected", () =>
+            logger.verbose("Mongodb database reconnected")
+          );
+          connection.on("disconnecting", () =>
+            logger.verbose("Mongodb database disconnecting")
+          );
+
+          return connection;
+        },
+      }
+    ),
   ],
 })
 export class AppModule {}

@@ -11,5 +11,15 @@ services:
       - MYSQL_USER=${DATABASE_USERNAME:-NestjsApp}
       - MYSQL_PASSWORD=${DATABASE_PASSWORD:?error}
       - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD:?error}
+
+  mongo:
+    image: mongodb/mongodb-community-server
+    ports:
+      - 27017:27017
+    volumes:
+      - Mongo:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=${DATABASE_NAME:-PC_Builder}
 volumes:
   Mysql:
+  Mongo:
