@@ -8,12 +8,17 @@ import {
 } from "../interface";
 import { Products } from "../../utils/Enum";
 
-type CrawlHandlerOptions = { delay?: number; timeout?: number };
+type CrawlHandlerOptions = {
+  delay?: number;
+  timeout?: number;
+  log?: boolean | ((msg: string) => void);
+};
 
 /** Constants */
 
 const DEFAULT_DELAY_TIME = 0;
 const DEFAULT_TIMEOUT_TIME = 10000;
+const DEFAULT_LOG_OPTION = (msg: string) => console.log(msg);
 
 const DELAY_FLAG = "delay" as const;
 const TIMEOUT_FLAG = "fetch_fail" as const;
@@ -30,6 +35,7 @@ class CrawlHandler<Raw, Final, Fetched>
   private readonly info: APIWebsiteInfo<Raw, Final, Fetched>;
   private delay: number;
   private timeout: number;
+  private log: ((msg: string) => void) | null;
   readonly created;
   readonly processed;
 
@@ -52,6 +58,11 @@ class CrawlHandler<Raw, Final, Fetched>
     this.info = info;
     this.delay = options?.delay ?? DEFAULT_DELAY_TIME;
     this.timeout = options?.timeout ?? DEFAULT_TIMEOUT_TIME;
+    this.log = options?.log
+      ? options.log instanceof Function
+        ? options.log
+        : DEFAULT_LOG_OPTION
+      : null;
     this.created = { page: 0, product: 0, parse: 0 };
     this.processed = { page: 0, product: 0, parse: 0, error: 0 };
   }
@@ -60,6 +71,12 @@ class CrawlHandler<Raw, Final, Fetched>
     if (!products) {
       products = Object.values(Products);
     }
+
+    this.logMessage(
+      `Start crawling info in ${
+        this.info.domain
+      } and product in ${products.join(", ")}`
+    );
 
     const infos: CrawlInfo<Final>[] = [];
     products.forEach((product) => {
@@ -73,7 +90,7 @@ class CrawlHandler<Raw, Final, Fetched>
   }
 
   public async fetch(info: CrawlInfo<Final>): Promise<Fetched> {
-    console.log(`Fetching: ${info.request.url.toString()}`);
+    this.logMessage(`Fetching: ${info.request.url.toString()}`);
 
     const timeoutController = new AbortController();
     const fetchProcess = this.info.fetch
@@ -116,7 +133,7 @@ class CrawlHandler<Raw, Final, Fetched>
   }
 
   public async extract(info: CrawlInfo<Final>, response: Fetched) {
-    console.log(`Extracting: ${info.request.url.toString()}`);
+    this.logMessage(`Extracting: ${info.request.url.toString()}`);
 
     let links: RequestOptions<Final>[] = [],
       list: Raw[] = [],
@@ -145,7 +162,7 @@ class CrawlHandler<Raw, Final, Fetched>
   }
 
   public async parse(info: CrawlInfo<Final>, raw: Raw) {
-    console.log(`Parsing ${info.request.url.toString()}`);
+    this.logMessage(`Parsing ${info.request.url.toString()}`);
 
     const result = {
       info,
@@ -159,7 +176,7 @@ class CrawlHandler<Raw, Final, Fetched>
   }
 
   public async error(info: CrawlInfo<Final>, error: Error) {
-    console.log(`Parsing ${info.request.url.toString()}`);
+    this.logMessage(`Parsing ${info.request.url.toString()}`);
 
     const result = {
       info,
@@ -253,6 +270,14 @@ class CrawlHandler<Raw, Final, Fetched>
 
     this.created[type]++;
     return { request, type, product, page, result };
+  }
+
+  /**
+   * Log the message using the log function provided.
+   * @param msg The message to log.
+   */
+  private logMessage(msg: string) {
+    this.log && console.log(msg);
   }
 }
 

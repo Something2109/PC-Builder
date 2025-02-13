@@ -5,7 +5,7 @@ import { z } from "zod";
 import { Products } from "../utils/Enum";
 import { FileWriter, ProcessWriter } from "./utils/writer";
 import { isCrawlInfo } from "./interface";
-import { CrawlHandler } from "./utils/handler";
+import { CrawlHandler, CrawlHandlerOptions } from "./utils/handler";
 
 /** Create an argument object based on the {@link process.argv} list */
 
@@ -15,10 +15,9 @@ const argumentList: Record<string, string[]> = {};
 for (const arg of process.argv) {
   if (arg.match(/^-{1,2}(\w|\d|-)+/)) {
     key = arg.replace(/-{1,2}/, "");
+    argumentList[key] = [];
   } else if (key) {
-    argumentList[key]
-      ? argumentList[key].push(arg)
-      : (argumentList[key] = [arg]);
+    argumentList[key].push(arg);
   }
 }
 
@@ -53,7 +52,7 @@ if (!isCrawlInfo(websiteInfo)) {
 
 /** Handler option check */
 
-const options: { delay?: number; timeout?: number } = {};
+const options: CrawlHandlerOptions = {};
 
 if (argumentList["delay"] && argumentList["delay"][0]) {
   options.delay = z.coerce
@@ -71,17 +70,15 @@ if (argumentList["timeout"] && argumentList["timeout"][0]) {
     .parse(argumentList["timeout"][0]);
 }
 
+if (argumentList["log"] !== undefined) {
+  options.log = true;
+}
+
 /** Product argument check */
 
 const productList = argumentList["product"]
   ? z.array(z.nativeEnum(Products)).parse(argumentList["product"])
   : Object.values(Products);
-
-console.log(
-  `Start crawling with info in ${filepath} and product in ${productList.join(
-    ", "
-  )}`
-);
 
 /** File path check and output creation */
 
