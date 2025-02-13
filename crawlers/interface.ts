@@ -54,23 +54,29 @@ type OutputObject<Result = unknown> =
 
 /** Describe required types for the crawl API inferface */
 
-type ExtractFunctionType<Raw, Result> =
-  | ExtractFunction<CrawlInfo<Result>, DefaultExtractResult<Raw, Result>>
+type ExtractFunctionType<Raw, Result, Fetched> =
+  | ExtractFunction<
+      CrawlInfo<Result>,
+      DefaultExtractResult<Raw, Result>,
+      Fetched
+    >
   | {
       page: ExtractFunction<
         CrawlInfo<Result, "page">,
-        ExtractPageResult<Result>
+        ExtractPageResult<Result>,
+        Fetched
       >;
 
       product: ExtractFunction<
         CrawlInfo<Result, "product">,
-        ExtractProductResult<Raw>
+        ExtractProductResult<Raw>,
+        Fetched
       >;
     };
 
-type ExtractFunction<Link extends CrawlInfo<unknown>, Result> = (
+type ExtractFunction<Link extends CrawlInfo<unknown>, Result, Fetched> = (
   info: Link,
-  response: Response
+  response: Fetched
 ) => Promise<Result>;
 
 type DefaultExtractResult<Raw, Result> = {
@@ -88,7 +94,7 @@ type ExtractProductResult<Raw> = Raw[];
  * The API that all the website crawling object must implement to be
  * used in the crawler.
  */
-interface APIWebsiteInfo<Raw, Final> {
+interface APIWebsiteInfo<Raw, Final, Fetched = Response> {
   /**
    * The website domain.
    */
@@ -108,6 +114,15 @@ interface APIWebsiteInfo<Raw, Final> {
   path(product: Products, page: number): RequestOptions<Final> | null;
 
   /**
+   * The custom fetch function for getting the data page ready
+   * to extract data in the {@link extract} functions.
+   * If none specified, the crawler uses the default {@link fetch} function of Node
+   * @params request The request object to fetch object from.
+   * @returns The {@link Fetched} object specified.
+   */
+  fetch?(request: RequestObject): Promise<Fetched>;
+
+  /**
    * Extract the data list from the response object.
    * Can be a function or an object contains 2 functions
    * with the key {@link InfoType}.
@@ -118,7 +133,7 @@ interface APIWebsiteInfo<Raw, Final> {
    * The page function should return an object of the links array and pages number.
    * The product function should return the list array.
    */
-  extract: ExtractFunctionType<Raw, Final>;
+  extract: ExtractFunctionType<Raw, Final, Fetched>;
 
   /**
    * Parse each item from the result of the extract function to the useful data.
@@ -137,7 +152,7 @@ type CrawlRecordKey = InfoType | "parse";
  * The crawl handler interface.
  * Contains the basic crawl handler functions to crawl data.
  */
-interface CrawlHandlerInterface<Raw, Final> {
+interface CrawlHandlerInterface<Raw, Final, Fetched = Response> {
   readonly created: Record<CrawlRecordKey, number>;
   readonly processed: Record<CrawlRecordKey | "error", number>;
 
@@ -157,7 +172,7 @@ interface CrawlHandlerInterface<Raw, Final> {
    * @param info The given crawl info in the parameter.
    * @returns The response fetched from the info.
    */
-  fetch(info: CrawlInfo<Final>): Promise<Response>;
+  fetch(info: CrawlInfo<Final>): Promise<Fetched>;
 
   /**
    * Run the extract function in the website info
@@ -171,7 +186,7 @@ interface CrawlHandlerInterface<Raw, Final> {
    */
   extract(
     info: CrawlInfo<Final>,
-    response: Response
+    response: Fetched
   ): Promise<{ raw: Raw[]; info: CrawlInfo<Final>[] }>;
 
   /**

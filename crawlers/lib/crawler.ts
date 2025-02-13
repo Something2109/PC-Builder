@@ -2,9 +2,9 @@ import { Products } from "../../utils/Enum";
 import { pipeline, Readable, Transform, Writable } from "stream";
 import { CrawlHandlerInterface, CrawlInfo, OutputObject } from "../interface";
 
-type FetchResult<Result> = {
+type FetchResult<Result, Fetched> = {
   info: CrawlInfo<Result>;
-  response: Response;
+  response: Fetched;
 };
 
 type ExtractResult<Raw, Result> = {
@@ -22,8 +22,8 @@ type TransformCallback<Content> = (err?: Error | null, value?: Content) => void;
  * to decrease the block time of each crawl info's process affect the next one's process.
  * Should be used when dealing with large data of crawl info.
  */
-class Crawler<Raw, Final> {
-  private readonly handler: CrawlHandlerInterface<Raw, Final>;
+class Crawler<Raw, Final, Fetched = Response> {
+  private readonly handler: CrawlHandlerInterface<Raw, Final, Fetched>;
   private input: Readable;
   private output: Writable;
   private autoEnd: boolean;
@@ -38,7 +38,7 @@ class Crawler<Raw, Final> {
    * Take auto as a boolean to determine if it automatically close the crawler when finish crawling.
    */
   constructor(
-    handler: CrawlHandlerInterface<Raw, Final>,
+    handler: CrawlHandlerInterface<Raw, Final, Fetched>,
     options?: { output?: Writable; autoEnd?: boolean }
   ) {
     this.handler = handler;
@@ -96,7 +96,7 @@ class Crawler<Raw, Final> {
       transform(
         info: CrawlInfo<Final>,
         _,
-        next: TransformCallback<FetchResult<Final>>
+        next: TransformCallback<FetchResult<Final, Fetched>>
       ) {
         fetch(info)
           .then((response) => next(null, { info, response }))
@@ -123,7 +123,7 @@ class Crawler<Raw, Final> {
       objectMode: true,
       autoDestroy: false,
       transform(
-        { info, response }: FetchResult<Final>,
+        { info, response }: FetchResult<Final, Fetched>,
         _,
         callback: TransformCallback<ExtractResult<Raw, Final>>
       ) {

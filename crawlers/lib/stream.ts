@@ -10,11 +10,11 @@ import { CrawlHandlerInterface } from "../interface";
  * for more info).
  * Should be used when dealing with seperate crawl info.
  */
-class CrawlStream<Raw, Final> extends Transform {
-  private readonly handler: CrawlHandlerInterface<Raw, Final>;
+class CrawlStream<Raw, Final, Fetched> extends Transform {
+  private readonly handler: CrawlHandlerInterface<Raw, Final, Fetched>;
 
   constructor(
-    handler: CrawlHandlerInterface<Raw, Final>,
+    handler: CrawlHandlerInterface<Raw, Final, Fetched>,
     options?: Omit<TransformOptions, "objectMode">
   ) {
     super({ objectMode: true, ...options });

@@ -24,8 +24,10 @@ const TIMEOUT_FLAG = "fetch_fail" as const;
  * Contains the basic crawl handler functions to crawl data
  * using the {@link APIWebsiteInfo}.
  */
-class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
-  private readonly info: APIWebsiteInfo<Raw, Final>;
+class CrawlHandler<Raw, Final, Fetched>
+  implements CrawlHandlerInterface<Raw, Final, Fetched>
+{
+  private readonly info: APIWebsiteInfo<Raw, Final, Fetched>;
   private delay: number;
   private timeout: number;
   readonly created;
@@ -39,7 +41,10 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
    * The output's write function's chunk parameter must implement the {@link OutputObject}
    * to work properly.
    */
-  constructor(info: APIWebsiteInfo<Raw, Final>, options?: CrawlHandlerOptions) {
+  constructor(
+    info: APIWebsiteInfo<Raw, Final, Fetched>,
+    options?: CrawlHandlerOptions
+  ) {
     if (!isCrawlInfo(info)) {
       throw new Error("The provided info is not implemented the API");
     }
@@ -67,11 +72,13 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
     return infos;
   }
 
-  public async fetch(info: CrawlInfo<Final>) {
+  public async fetch(info: CrawlInfo<Final>): Promise<Fetched> {
     console.log(`Fetching: ${info.request.url.toString()}`);
 
     const timeoutController = new AbortController();
-    const fetchProcess = fetch(info.request.url, info.request);
+    const fetchProcess = this.info.fetch
+      ? this.info.fetch(info.request)
+      : (fetch(info.request.url, info.request) as Promise<Fetched>);
     const delayTimeout = setTimeout(this.delay, DELAY_FLAG);
     const fetchTimeout = setTimeout(this.timeout, TIMEOUT_FLAG, {
       signal: timeoutController.signal,
@@ -101,14 +108,14 @@ class CrawlHandler<Raw, Final> implements CrawlHandlerInterface<Raw, Final> {
 
     timeoutController.abort();
 
-    if (!response.ok) {
+    if (response instanceof Response && !response.ok) {
       throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
     }
 
     return response;
   }
 
-  public async extract(info: CrawlInfo<Final>, response: Response) {
+  public async extract(info: CrawlInfo<Final>, response: Fetched) {
     console.log(`Extracting: ${info.request.url.toString()}`);
 
     let links: RequestOptions<Final>[] = [],
