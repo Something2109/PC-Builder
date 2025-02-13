@@ -2,7 +2,12 @@ import fs from "fs";
 import path from "path";
 import { ChildProcess, fork } from "child_process";
 import { Products } from "../../utils/Enum";
-import { isCrawlInfo, OutputObject, ProgressInfo } from "../interface";
+import {
+  CrawlInfo,
+  isCrawlInfo,
+  OutputObject,
+  ProgressInfo,
+} from "../interface";
 import { CrawlHandlerOptions } from "crawlers/utils/handler";
 
 enum CrawlState {
@@ -19,20 +24,48 @@ type ChillProcessStartOptions = CrawlHandlerOptions & {
   products: Products[];
 };
 
+type CrawlerChildProcessOptions = {
+  log?: (msg: string) => void;
+  output?: (result: any) => void;
+  error?: (error: Error) => void;
+};
+
 const EXEC_DIRECTORY = path.dirname(__dirname);
+const DEFAULT_LOG_FUNCTION = (msg: string) =>
+  console.log(`[${new Date().toISOString()}]: ${msg}`);
+const DEFAULT_OUTPUT_FUNCTION = (result: any) => console.log(result);
+const DEFAULT_ERROR_FUNCTION = (error: Error, info?: CrawlInfo<any>) => {
+  const errorMsg = error.stack
+    ? error.stack
+    : `${error.name}: ${error.message}`;
+
+  console.error(
+    `[${new Date().toISOString()}]: ${errorMsg}\n\tWhen crawling: ${
+      info?.request.url
+    }`
+  );
+};
 
 class CrawlerChildProcess {
   private path: string;
   private process: ChildProcess | null;
   private progress: ProgressInfo | null;
-  private summary?: {
-    [key in Products]?: number;
-  } & { error?: number };
+  private summary?: { [key in Products | "error"]?: number };
+  private resolver: {
+    log: (msg: string) => void;
+    output: (result: any, info?: CrawlInfo<any>) => void;
+    error: (error: Error, info?: CrawlInfo<any>) => void;
+  };
 
-  constructor(filepath: string) {
+  constructor(filepath: string, options?: CrawlerChildProcessOptions) {
     this.path = this.pathResolver(filepath);
     this.process = null;
     this.progress = null;
+    this.resolver = {
+      log: options?.log ?? DEFAULT_LOG_FUNCTION,
+      output: options?.output ?? DEFAULT_OUTPUT_FUNCTION,
+      error: options?.error ?? DEFAULT_ERROR_FUNCTION,
+    };
   }
 
   /**
@@ -52,10 +85,10 @@ class CrawlerChildProcess {
         .on("exit", () => {
           this.process = null;
 
-          console.log(
+          this.resolver.log(
             `Crawled ${Object.entries(this.summary!)
               .map(([product, count]) => `${count} ${product}`)
-              .join(", ")}`
+              .join(", ")} from ${path.basename(this.path, ".js")}`
           );
 
           this.summary = undefined;
@@ -158,19 +191,25 @@ class CrawlerChildProcess {
   private outputResolver({ progress, ...chunk }: OutputObject) {
     this.progress = progress;
 
-    if (!this.summary) {
-      this.summary = {};
+    if (!("result" in chunk) && !("error" in chunk)) return;
+
+    if ("result" in chunk) {
+      this.resolver.output(chunk.result, chunk.info);
     }
 
-    if ("result" in chunk || "error" in chunk) {
-      const productType = "error" in chunk ? "error" : chunk.info.product;
-
-      if (!this.summary[productType]) {
-        this.summary[productType] = 0;
-      }
-
-      this.summary[productType]++;
+    if ("error" in chunk) {
+      this.resolver.error(chunk.error, chunk.info);
     }
+
+    const productType = "error" in chunk ? "error" : chunk.info.product;
+
+    if (!this.summary) this.summary = {};
+
+    if (!this.summary[productType]) {
+      this.summary[productType] = 0;
+    }
+
+    this.summary[productType]++;
   }
 }
 
