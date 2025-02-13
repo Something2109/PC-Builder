@@ -66,13 +66,9 @@ class Crawler<Raw, Final, Fetched = Response> {
       ParseStream,
       this.output,
       (error) => {
-        if (error) {
-          console.error(error);
-        }
+        if (error) throw error;
       }
     );
-
-    this.input.on("end", () => console.log("End"));
 
     this.handler.start(products).forEach((info) => {
       this.input.push(info);

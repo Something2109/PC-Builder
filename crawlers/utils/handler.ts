@@ -180,7 +180,7 @@ class CrawlHandler<Raw, Final, Fetched>
 
     const result = {
       info,
-      error,
+      error: { name: error.name, message: error.message, stack: error.stack },
       progress: { created: this.created, processed: this.processed },
     };
 
