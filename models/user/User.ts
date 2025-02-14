@@ -17,7 +17,9 @@ import {
 
 enum UserModelScope {
   VERIFY = "verify",
+  SUMMARY = "summary",
   FILTER = "filter",
+  DETAIL = "detail",
 }
 
 @DefaultScope(() => ({ attributes: { exclude: ["password"] } }))
@@ -25,8 +27,14 @@ enum UserModelScope {
   [UserModelScope.VERIFY]: () => ({
     attributes: ["id", "username", "password", "role"],
   }),
+  [UserModelScope.SUMMARY]: () => ({
+    attributes: ["id", "username", "name", "role"],
+  }),
   [UserModelScope.FILTER]: (options: User.FilterOptions) => ({
     where: defaultFilter(options),
+  }),
+  [UserModelScope.DETAIL]: () => ({
+    attributes: { exclude: ["password"] },
   }),
 }))
 @Table({ tableName: Tables.USER })
