@@ -3,12 +3,12 @@ import { Primitive } from "../utils";
 import { Roles } from "@/utils/Enum";
 
 namespace User {
-  export const SignUpOptions = z.object({
+  export const LogInOptions = z.object({
     username: Primitive.String.min(8),
     password: Primitive.String.min(8),
   });
 
-  export type LogInOptions = z.infer<typeof SignUpOptions>;
+  export type LogInOptions = z.infer<typeof LogInOptions>;
 
   export const Information = z.object({
     name: Primitive.String.nullable(),
@@ -20,7 +20,7 @@ namespace User {
 
   export const Schema = z
     .object({ id: Primitive.String.uuid() })
-    .extend(SignUpOptions.shape)
+    .extend(LogInOptions.shape)
     .extend(Information.shape);
 
   export type Type = z.infer<typeof Schema>;
