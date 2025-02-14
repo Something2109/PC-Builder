@@ -18,7 +18,6 @@ const Components: InfoInputMapping<Mainboard.Info> = {
   ram_slot: (props) => (
     <SuffixInput suffix="slot(s)" type="number" {...props} />
   ),
-  expansion_slots: (props) => <Input type="number" {...props} />,
   pcies: (props) => <></>,
   power_connectors: (props) => <></>,
   fan_connectors: (props) => <></>,

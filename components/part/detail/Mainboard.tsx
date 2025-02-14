@@ -12,7 +12,6 @@ const Components: InfoDetailMapping<Mainboard.Info> = {
   ram_slot: ({ value }) => (
     <SuffixDisplay suffix="slot(s)">{value}</SuffixDisplay>
   ),
-  expansion_slots: ({ value }) => value,
   pcies: ({ value }) => <PCIeTableRow defaultValue={value} />,
   power_connectors: ({ value }) =>
     Object.entries(value ?? {})
