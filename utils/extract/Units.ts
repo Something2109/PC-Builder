@@ -220,7 +220,7 @@ const FrequencyUnits = new Unit(
   1000
 );
 
-const LengthUnits = new Unit(["mm", "cm", "dm", "m", "km"], 1000);
+const LengthUnits = new Unit(["mm", "cm", "dm", "m", "km"], 10);
 
 const VolumeUnits = new Unit(["ml", "L"], 1000);
 
