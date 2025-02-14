@@ -5,6 +5,39 @@ import { ZodIssue } from "zod";
  * Define the error message type based on the object structure.
  */
 export namespace APIMapping {
+  const DEFAULT_PAGE = 1;
+  const DEFAULT_ITEM_LIMIT = 50;
+
+  /**
+   * The page option interface.
+   * Provide the option for pagination querying.
+   */
+  export type PageOptions = {
+    page: number;
+    limit: number;
+  };
+
+  /**
+   * Extract the page options from the query parameters.
+   * @param query The query to extract options from.
+   * @returns The page options.
+   */
+  export function toPageOptions(
+    query: Record<string, string | string[]>
+  ): PageOptions {
+    const page = Number(Array.isArray(query.page) ? query.page[0] : query.page);
+    const limit = Number(
+      Array.isArray(query.limit) ? query.limit[0] : query.limit
+    );
+
+    const result: PageOptions = {
+      page: page > 0 ? page : DEFAULT_PAGE,
+      limit: limit > 0 ? limit : DEFAULT_ITEM_LIMIT,
+    };
+
+    return result;
+  }
+
   /**
    * The payload generic object.
    * Contains a total number telling the total number of T
