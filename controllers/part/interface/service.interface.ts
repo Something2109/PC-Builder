@@ -19,10 +19,7 @@ type SearchOptions = {
   q?: string;
 };
 
-type PageOptions = {
-  page: number;
-  limit: number;
-};
+type PageOptions = APIMapping.PageOptions;
 
 /**
  * A base service class for handling parts data.
@@ -81,24 +78,12 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
   options(
     params: Record<string, string | string[]>
   ): Filter & PageOptions & SearchOptions {
-    const result: Filter & PageOptions & SearchOptions = {
-      page: 1,
-      limit: 50,
-    };
+    const result: Filter & PageOptions & SearchOptions =
+      APIMapping.toPageOptions(params);
 
     if (params.q) {
       result.q = Array.isArray(params.q) ? params.q.join("|") : params.q;
     }
-
-    const page = Number(
-      Array.isArray(params.page) ? params.page[0] : params.page
-    );
-    result.page = page > 0 ? page : 1;
-
-    const limit = Number(
-      Array.isArray(params.limit) ? params.limit[0] : params.limit
-    );
-    result.limit = limit > 0 ? limit : 50;
 
     return result;
   }
@@ -176,7 +161,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
     options: PageOptions & SearchOptions,
     ...include: Includeable[]
   ): Promise<{ rows: PartInformation[]; count: number }> {
-    const { page = 1, limit = 50 } = options ?? {};
+    const { page, limit } = options;
     const where = options?.q
       ? { name: { [Op.like]: `%${options.q}%` } }
       : undefined;
