@@ -4,6 +4,12 @@ enum Topics {
   FORUM = "forum",
 }
 
+enum Roles {
+  ADMIN = "admin",
+  USER = "user",
+  GUEST = "guest",
+}
+
 enum Products {
   CPU = "cpu",
   GPU = "gpu",
@@ -40,4 +46,4 @@ enum Infos {
   RADIATOR = "radiator",
 }
 
-export { Topics, Products, Infos };
+export { Topics, Roles, Products, Infos };
