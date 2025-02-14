@@ -16,13 +16,15 @@ export class UserService {
 
     if (!user || user.password !== password) return null;
 
-    return user.toJSON();
+    const { password: _, ...info } = user.toJSON();
+
+    return info as User.JwtPayload;
   }
 
   async create({
     username,
     password,
-  }: User.LogInOptions): Promise<User.Information | null> {
+  }: User.LogInOptions): Promise<User.Detail | null> {
     const [user, created] = await UserModel.findOrBuild({
       where: { username },
       defaults: { password },
@@ -34,7 +36,9 @@ export class UserService {
       async (transaction) => await user.save({ transaction })
     );
 
-    return user.toJSON();
+    const { password: _, ...result } = user.toJSON();
+
+    return result;
   }
 
   async list({
@@ -44,7 +48,7 @@ export class UserService {
   }: User.FilterOptions & APIMapping.PageOptions): Promise<
     User.Information[] | null
   > {
-    const userList = await UserModel.findAll({
+    const userList = await UserModel.scope(UserModelScope.SUMMARY).findAll({
       where: options,
       offset: (page - 1) * limit,
       limit,
@@ -53,8 +57,10 @@ export class UserService {
     return userList.map((val) => val.toJSON());
   }
 
-  async get(username: string): Promise<User.Information | null> {
-    const user = await UserModel.findOne({ where: { username } });
+  async get(username: string): Promise<User.Detail | null> {
+    const user = await UserModel.scope(UserModelScope.DETAIL).findOne({
+      where: { username },
+    });
 
     if (!user) return null;
 
