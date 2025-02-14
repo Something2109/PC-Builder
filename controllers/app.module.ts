@@ -8,6 +8,7 @@ import { ArticleModule } from "./article/article.module";
 import { CrawlerModule } from "./crawler/crawler.module";
 import { PartModule } from "./part/part.module";
 import { UserModule } from "./user/user.module";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
   imports: [
@@ -16,6 +17,11 @@ import { UserModule } from "./user/user.module";
     ArticleModule,
     UserModule,
     ConfigModule.forRoot(),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: "2 days" },
+    }),
     SequelizeModule.forRoot({
       dialect: "mysql",
       host: process.env.MYSQL_HOST,
