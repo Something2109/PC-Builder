@@ -7,12 +7,14 @@ import { Connection } from "mongoose";
 import { ArticleModule } from "./article/article.module";
 import { CrawlerModule } from "./crawler/crawler.module";
 import { PartModule } from "./part/part.module";
+import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
     PartModule,
     CrawlerModule,
     ArticleModule,
+    UserModule,
     ConfigModule.forRoot(),
     SequelizeModule.forRoot({
       dialect: "mysql",
