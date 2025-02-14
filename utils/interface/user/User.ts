@@ -25,13 +25,32 @@ namespace User {
 
   export type Type = z.infer<typeof Schema>;
 
+  export const Summary = Schema.pick({
+    id: true,
+    username: true,
+    name: true,
+    role: true,
+  });
+
+  export type Summary = z.infer<typeof Summary>;
+
+  export const Detail = Schema.omit({ password: true });
+
+  export type Detail = z.infer<typeof Detail>;
+
   export const FilterOptions = z
-    .object({
-      role: z.array(z.nativeEnum(Roles)),
-    })
+    .object({ role: z.array(z.nativeEnum(Roles)) })
     .partial();
 
   export type FilterOptions = z.infer<typeof FilterOptions>;
+
+  export const JwtPayload = Schema.pick({
+    id: true,
+    username: true,
+    role: true,
+  });
+
+  export type JwtPayload = z.infer<typeof JwtPayload>;
 }
 
 export { User };
