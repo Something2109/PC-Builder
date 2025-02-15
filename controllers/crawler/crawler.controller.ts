@@ -11,7 +11,7 @@ import { CrawlerService } from "./crawler.service";
 import { z } from "zod";
 import { Products } from "@/utils/Enum";
 
-@Controller("api/crawler")
+@Controller("crawler")
 export class CrawlerController {
   constructor(private service: CrawlerService) {}
 

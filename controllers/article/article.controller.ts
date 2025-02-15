@@ -16,7 +16,7 @@ import { ZodValidationPipe } from "controllers/utils/utils.modules";
 const ArticleValidator = new ZodValidationPipe(Article.Schema.partial());
 const QueryValidator = new QueryFilterPipe();
 
-@Controller("api/article")
+@Controller("article")
 export class ArticleController {
   constructor(private articleService: ArticleService) {}
 

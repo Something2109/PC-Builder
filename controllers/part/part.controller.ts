@@ -25,7 +25,7 @@ const CreateValidator = new ZodValidationPipe(
 );
 const UpdateValidator = new ZodValidationPipe(DetailInfo.partial());
 
-@Controller("api/part")
+@Controller("part")
 export class PartController {
   constructor(private service: PartService) {}
 

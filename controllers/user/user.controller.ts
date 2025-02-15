@@ -18,7 +18,7 @@ import { APIMapping } from "@/utils/interface/api";
 const SignUpValidator = new ZodValidationPipe(User.LogInOptions);
 const InformationValidator = new ZodValidationPipe(User.Information.partial());
 
-@Controller("api/user")
+@Controller("user")
 export class UserController {
   constructor(private userService: UserService) {}
 
