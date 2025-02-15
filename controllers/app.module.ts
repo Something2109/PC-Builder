@@ -9,6 +9,8 @@ import { CrawlerModule } from "./crawler/crawler.module";
 import { PartModule } from "./part/part.module";
 import { UserModule } from "./user/user.module";
 import { JwtModule } from "@nestjs/jwt";
+import { APP_GUARD } from "@nestjs/core";
+import { AuthGuard } from "./utils/role/role.guard";
 
 @Module({
   imports: [
@@ -60,6 +62,12 @@ import { JwtModule } from "@nestjs/jwt";
         },
       }
     ),
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}
