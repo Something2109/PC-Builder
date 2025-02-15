@@ -9,9 +9,11 @@ import {
   Query,
 } from "@nestjs/common";
 import { Article } from "@/utils/interface/article/article";
+import { Roles } from "@/utils/Enum";
 import { QueryFilterPipe, ArticleFilter } from "./article.pipe";
 import { ArticleService } from "./services/article.service";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
+import { Role } from "controllers/utils/role/role.decorator";
 
 const ArticleValidator = new ZodValidationPipe(Article.Schema.partial());
 const QueryValidator = new QueryFilterPipe();
@@ -47,6 +49,7 @@ export class ArticleController {
     return JSON.stringify(result);
   }
 
+  @Role(Roles.ADMIN, Roles.GUEST)
   @Post(":id")
   async setArticle(
     @Param("id") id: string,
@@ -61,6 +64,7 @@ export class ArticleController {
     return JSON.stringify(result);
   }
 
+  @Role(Roles.ADMIN, Roles.GUEST)
   @Delete(":id")
   async deleteArticle(@Param("id") id: string) {
     const result = await this.articleService.delete(id);

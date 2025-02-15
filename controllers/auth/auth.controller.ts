@@ -4,13 +4,16 @@ import {
   Post,
   InternalServerErrorException,
   ConflictException,
+  UseGuards,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
+import { LoginAuthorizationGuard } from "./auth.guard";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { User } from "@/utils/interface/user/User";
 
 const SignUpValidator = new ZodValidationPipe(User.LogInOptions);
 
+@UseGuards(LoginAuthorizationGuard)
 @Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}

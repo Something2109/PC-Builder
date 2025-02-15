@@ -8,9 +8,11 @@ import {
   Delete,
 } from "@nestjs/common";
 import { CrawlerService } from "./crawler.service";
+import { Role } from "controllers/utils/role/role.decorator";
 import { z } from "zod";
-import { Products } from "@/utils/Enum";
+import { Products, Roles } from "@/utils/Enum";
 
+@Role(Roles.ADMIN)
 @Controller("crawler")
 export class CrawlerController {
   constructor(private service: CrawlerService) {}
