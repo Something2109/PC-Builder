@@ -9,6 +9,13 @@ import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { Roles } from "@/utils/Enum";
 
+/**
+ * The global guard used by the application.
+ * Read the jwt bearer from the request and authorize
+ * based on the role saved in the bearer
+ * and save the payload to the request object as "user" property.
+ * Will only save the user payload if the context requires roles.
+ */
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private reflector: Reflector, private jwtService: JwtService) {}
@@ -25,7 +32,8 @@ export class AuthGuard implements CanActivate {
 
     // Extract token.
     const [type, token] = request.headers.authorization?.split(" ") ?? [];
-    if (type !== "Bearer") throw new UnauthorizedException();
+    if (type !== "Bearer")
+      throw new UnauthorizedException("You must log in to do this action!");
 
     // Verify token.
     try {
