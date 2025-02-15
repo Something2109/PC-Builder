@@ -7,6 +7,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { ConnectionOptions } from "@/models/options";
 import { Connection } from "mongoose";
 import { ArticleModule } from "./article/article.module";
+import { AuthModule } from "./auth/auth.module";
 import { CrawlerModule } from "./crawler/crawler.module";
 import { PartModule } from "./part/part.module";
 import { UserModule } from "./user/user.module";
@@ -68,6 +69,7 @@ const Mongo = MongooseModule.forRoot(
     Sequelize,
     Mongo,
     ArticleModule,
+    AuthModule,
     CrawlerModule,
     PartModule,
     UserModule,
