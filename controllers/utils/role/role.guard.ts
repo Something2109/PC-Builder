@@ -1,4 +1,4 @@
-import { ROLES_KEY } from "controllers/utils/role/role.decorator";
+import { ROLE_METADATA_KEY } from "controllers/utils/role/role.decorator";
 import {
   CanActivate,
   ExecutionContext,
@@ -15,10 +15,10 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // Extract the role required by the context (controller and handler function).
-    const requiredRoles = this.reflector.getAllAndOverride<Roles[]>(ROLES_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const requiredRoles = this.reflector.getAllAndOverride<Roles[]>(
+      ROLE_METADATA_KEY,
+      [context.getHandler(), context.getClass()]
+    );
     if (!requiredRoles) return true; // No role required.
 
     const request = context.switchToHttp().getRequest();
