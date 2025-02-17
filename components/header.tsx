@@ -4,6 +4,7 @@ import { RowWrapper } from "./utils/FlexWrapper";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { DarkModeButton } from "./body";
+import { RedirectButton } from "./utils/Button";
 
 export default function Header() {
   const [navbar, setNavbar] = useState(false);
@@ -22,7 +23,7 @@ export default function Header() {
         >
           PC Builder
         </Link>
-        <RowWrapper className="m-10">
+        <RowWrapper className="m-10 items-center">
           <DarkModeButton />
           <button
             type="button"
@@ -38,15 +39,14 @@ export default function Header() {
   );
 }
 
-const transitionClass = "transition-all ease-in-out duration-500 delay-0";
 const smallScreen =
-  "sticky z-50 mx-auto top-16 md:top-20 flex flex-row flex-wrap overflow-y-auto bg-navigation h-fit";
+  "sticky z-50 mx-auto top-16 md:top-20 flex flex-row flex-wrap overflow-y-hidden bg-navigation h-fit";
 const mediumScreen = "md:justify-evenly md:max-h-fit";
 
 function NavigationBar({ toggle }: { toggle: boolean }) {
   return (
     <nav
-      className={`${transitionClass} ${smallScreen} ${mediumScreen} ${
+      className={`transition-nav ${smallScreen} ${mediumScreen} ${
         toggle ? "max-h-9" : "max-h-0"
       }`}
     >

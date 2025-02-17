@@ -24,7 +24,7 @@ function ArticleLink({
         <img
           src="/images/icons/pc.png"
           alt="thumbnail"
-          className="dark:invert transition ease-in-out duration-500 delay-0"
+          className="dark:invert transition-props"
         />
       </picture>
       <ColumnWrapper className="h-fit">

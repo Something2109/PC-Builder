@@ -28,7 +28,7 @@ export function ThemeBody({ children }: { children: React.ReactNode }) {
     <body
       className={`${
         dark ? "dark" : ""
-      } transition-all ease-in-out duration-500 delay-0 dark:text-line dark:bg-background overflow-y-scroll`}
+      } transition-props dark:text-line bg-w dark:bg-background overflow-y-scroll`}
     >
       <DarkChanger value={setDark}>{children}</DarkChanger>
     </body>
@@ -51,14 +51,14 @@ export function DarkModeButton() {
           width={40}
           height={40}
           alt="dark"
-          className="dark:w-0 transition-all ease-in-out duration-500 delay-0"
+          className="dark:w-0 transition-all transition-props"
         />
         <Image
           src="/images/icons/light-mode.png"
           width={40}
           height={40}
           alt="light"
-          className="w-0 dark:w-12 transition-all ease-in-out duration-500 delay-0"
+          className="w-0 dark:w-12 transition-all transition-props"
         />
       </picture>
     </button>

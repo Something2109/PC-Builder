@@ -49,7 +49,7 @@ function LinkButton({ image, title, link }: LinkButtonProps) {
         <Image
           src={image}
           alt={`${title} logo`}
-          className="dark:invert transition ease-in-out duration-500 delay-0"
+          className="dark:invert transition-props"
           width="128"
           height="128"
         />

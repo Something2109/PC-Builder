@@ -46,7 +46,7 @@ export default function SummaryTable({
 }
 
 const tableHead =
-  "font-bold sticky top-32 bg-white dark:bg-background transition-colors ease-in-out duration-500 delay-0";
+  "font-bold sticky top-32 bg-white dark:bg-background transition-bg";
 const tableRow = "*:p-2 lg:table-row *:lg:border-b-2 ";
 
 const TableHead = ({ part }: { part: Products }) => (
