@@ -1,8 +1,11 @@
 import { UserModel, UserModelScope } from "@/models/user/User";
-import { Roles } from "@/utils/Enum";
 import { APIMapping } from "@/utils/interface/api";
 import { User } from "@/utils/interface/user/User";
-import { Injectable } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { Sequelize } from "sequelize-typescript";
 
 @Injectable()
@@ -14,7 +17,15 @@ export class UserService {
       where: { username },
     });
 
-    if (!user || user.password !== password) return null;
+    if (!user)
+      throw new NotFoundException({
+        username: `No username match ${username}`,
+      });
+
+    if (user.password !== password)
+      throw new UnauthorizedException({
+        password: "Password not match",
+      });
 
     const { password: _, ...info } = user.toJSON();
 

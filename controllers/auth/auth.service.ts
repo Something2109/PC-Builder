@@ -1,5 +1,8 @@
-import { User } from "@/utils/interface/user/User";
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "controllers/user/user.service";
 
@@ -13,7 +16,8 @@ export class AuthService {
   async signUp(username: string, password: string): Promise<any> {
     const user = await this.userService.create({ username, password });
 
-    if (!user) return null;
+    if (!user)
+      throw new ConflictException(`Username ${username} has been used`);
 
     return await this.logIn(username, password);
   }
@@ -24,8 +28,6 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+    return await this.jwtService.signAsync(payload);
   }
 }
