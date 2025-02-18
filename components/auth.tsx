@@ -1,6 +1,10 @@
 "use client";
 
+import { Input } from "./utils/Input";
+import { Button, RedirectButton } from "./utils/Button";
+import { NotificationBar } from "./utils/NotificationBar";
 import { User } from "@/utils/interface/user/User";
+import { Roles } from "@/utils/Enum";
 import {
   ActionDispatch,
   createContext,
@@ -12,13 +16,11 @@ import {
   useState,
 } from "react";
 import { decode } from "jsonwebtoken";
-import { Button, RedirectButton } from "./utils/Button";
 import { usePathname, useRouter } from "next/navigation";
-import { Input } from "./utils/Input";
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
-import { NotificationBar } from "./utils/NotificationBar";
 
 const AUTH_KEY = "Authorization";
+const LoginPath = "/auth/login";
 const AuthChanger = createContext<ActionDispatch<[string | null]> | null>(null);
 
 export const AuthContext = createContext<User.JwtPayload | null>(null);
@@ -59,16 +61,38 @@ export function AuthWrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
+export function AuthRole({
+  children,
+  roles,
+}: {
+  roles: Roles[];
+  children: React.ReactNode;
+}) {
+  const user = useContext(AuthContext);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  if (!user) {
+    router.push(`${LoginPath}?redirect=${pathname}`);
+    return;
+  }
+
+  if (!roles.includes(user.role))
+    return <h1>You are not authorized to access this page</h1>;
+
+  return children;
+}
+
 export function LoginButton() {
   const User = useContext(AuthContext);
   const setUser = useContext(AuthChanger);
   const pathname = usePathname();
 
-  if (pathname === "/auth/login") return;
+  if (pathname === LoginPath) return;
 
   return (
     <RedirectButton
-      href={`/auth/login?redirect=${pathname}`}
+      href={`${LoginPath}?redirect=${pathname}`}
       onClick={User ? () => setUser!(null) : undefined}
     >
       {User ? "Log out" : "Log in"}
