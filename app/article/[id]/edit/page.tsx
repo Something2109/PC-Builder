@@ -6,6 +6,8 @@ import { Button, RedirectButton } from "@/components/utils/Button";
 import { NotificationBar } from "@/components/utils/NotificationBar";
 import { use, useEffect, useState } from "react";
 import { ColumnWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
+import { AuthRole } from "@/components/auth";
+import { Roles } from "@/utils/Enum";
 
 export default function ArticleEditPage({
   params,
@@ -61,7 +63,7 @@ export default function ArticleEditPage({
   }
 
   return data ? (
-    <>
+    <AuthRole roles={[Roles.USER, Roles.ADMIN]}>
       <ColumnWrapper className="sticky top-16 md:top-32 bg-white dark:bg-background">
         <RowWrapper className="*:w-full">
           <RedirectButton href={pageLink}>Back</RedirectButton>
@@ -78,7 +80,7 @@ export default function ArticleEditPage({
       </ColumnWrapper>
 
       <EditableArticle article={data as Article.Type} />
-    </>
+    </AuthRole>
   ) : (
     <h1>{error.message}</h1>
   );

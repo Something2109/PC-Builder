@@ -1,10 +1,11 @@
+import { AuthRole } from "@/components/auth";
 import { InfoForm } from "@/components/part/Form";
 import PartForm from "@/components/part/input/Part";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
 } from "@/components/utils/FlexWrapper";
-import { Products } from "@/utils/Enum";
+import { Products, Roles } from "@/utils/Enum";
 import { Product } from "@/utils/interface/product";
 
 export default async function PartDetailNewPage({
@@ -17,7 +18,7 @@ export default async function PartDetailNewPage({
   const SaveLink = `/api/part/${part}`;
 
   return (
-    <>
+    <AuthRole roles={[Roles.ADMIN]}>
       <PartForm path={SaveLink} part={part} />
       <ResponsiveWrapper className="w-full align-top">
         <ColumnWrapper className="basis-1/2">
@@ -29,6 +30,6 @@ export default async function PartDetailNewPage({
           ))}
         </ColumnWrapper>
       </ResponsiveWrapper>
-    </>
+    </AuthRole>
   );
 }

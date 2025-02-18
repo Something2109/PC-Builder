@@ -6,9 +6,10 @@ import {
 } from "@/components/utils/FlexWrapper";
 import { ObjectTable } from "@/components/utils/ObjectTable";
 import { Product } from "@/utils/interface/product";
-import { Products } from "@/utils/Enum";
+import { Products, Roles } from "@/utils/Enum";
 import { DetailInfo } from "@/utils/interface";
 import { notFound } from "next/navigation";
+import { AuthRole } from "@/components/auth";
 
 export default async function PartDetailEditPage({
   params,
@@ -27,7 +28,7 @@ export default async function PartDetailEditPage({
   const SaveLink = `/api/part/${part}/${id}`;
 
   return (
-    <>
+    <AuthRole roles={[Roles.ADMIN]}>
       <PartForm path={SaveLink} part={part} defaultValue={data} />
       <ResponsiveWrapper className="w-full align-top">
         <ColumnWrapper className="basis-1/2">
@@ -48,6 +49,6 @@ export default async function PartDetailEditPage({
           ))}
         </ColumnWrapper>
       </ResponsiveWrapper>
-    </>
+    </AuthRole>
   );
 }
