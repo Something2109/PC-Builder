@@ -1,15 +1,9 @@
-import {
-  Body,
-  Controller,
-  Post,
-  InternalServerErrorException,
-  ConflictException,
-  UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Post, UseGuards, Res } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginAuthorizationGuard } from "./auth.guard";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { User } from "@/utils/interface/user/User";
+import { Response } from "express";
 
 const SignUpValidator = new ZodValidationPipe(User.LogInOptions);
 
@@ -19,17 +13,44 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post("signup")
-  signUp(@Body(SignUpValidator) payload: User.LogInOptions) {
-    const result = this.authService.signUp(payload.username, payload.password);
+  async signUp(
+    @Res() res: Response,
+    @Body(SignUpValidator) payload: User.LogInOptions
+  ) {
+    const access_token = await this.authService.signUp(
+      payload.username,
+      payload.password
+    );
 
-    if (!result)
-      throw new ConflictException(`Username ${payload.username} has been used`);
+    this.setToken(res, access_token);
 
-    return result;
+    return res;
   }
 
   @Post("login")
-  logIn(@Body(SignUpValidator) payload: User.LogInOptions) {
-    return this.authService.logIn(payload.username, payload.password);
+  async logIn(
+    @Res() res: Response,
+    @Body(SignUpValidator) payload: User.LogInOptions
+  ) {
+    const access_token = await this.authService.logIn(
+      payload.username,
+      payload.password
+    );
+
+    this.setToken(res, access_token);
+
+    return res;
+  }
+
+  private setToken(res: Response, token: string) {
+    const expired = new Date();
+    expired.setDate(expired.getDate() + 2);
+
+    res.setHeader(
+      "Set-Cookie",
+      `Authorization=Bearer ${token}; Path=/; Expires=${expired}; SameSite=Strict; Secure; HttpOnly`
+    );
+
+    res.json({ access_token: token });
   }
 }
