@@ -8,6 +8,7 @@ import { RedirectButton } from "@/components/utils/Button";
 import PaginationBar from "@/components/utils/PaginationBar";
 import { FilterBar } from "@/components/filterbar";
 import Part from "@/utils/interface/info/Parts";
+import { Product } from "@/utils/interface/product";
 import { Products } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 
@@ -50,9 +51,10 @@ export default async function PartListPage({
       </ColumnWrapper>
       <ColumnWrapper className="lg:w-4/5">
         <RowWrapper className="justify-between place-items-center">
-          <h1 className="text-xl font-bold" id="list">{`${
-            data.total
-          } ${part.toLocaleUpperCase()}`}</h1>
+          <h1
+            className="text-xl font-bold"
+            id="list"
+          >{`${data.total} ${Product.Label[part]}`}</h1>
           <RedirectButton href={`/part/${part}/new`}>New</RedirectButton>
         </RowWrapper>
         <SummaryTable part={part} data={data.list} />
