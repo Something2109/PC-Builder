@@ -3,6 +3,7 @@
 import { Input } from "./utils/Input";
 import { Button, RedirectButton } from "./utils/Button";
 import { NotificationBar } from "./utils/NotificationBar";
+import { ColumnWrapper } from "./utils/FlexWrapper";
 import { User } from "@/utils/interface/user/User";
 import { Roles } from "@/utils/Enum";
 import {
@@ -19,6 +20,7 @@ import {
 } from "react";
 import { decode } from "jsonwebtoken";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 const AUTH_KEY = "Authorization";
@@ -95,6 +97,31 @@ export function LoginButton() {
     <RedirectButton href={`${LoginPath}?redirect=${pathname}`}>
       Log in
     </RedirectButton>
+  );
+}
+
+export function UserPanel() {
+  const user = useContext(AuthContext);
+  const [display, setDisplay] = useState(false);
+
+  if (!user) return;
+
+  return (
+    <div className="relative text-center">
+      <Button
+        className="w-28 border-2 py-1"
+        onClick={() => setDisplay(!display)}
+      >
+        {user.username}
+      </Button>
+      <ColumnWrapper
+        className={`absolute transition-nav h-fit overflow-y-hidden ${
+          display ? "max-h-20" : "max-h-0"
+        }  z-5 top-9 w-28 rounded bg-blue-400`}
+      >
+        <LogoutButton className="px-2 py-1 border-0 rounded hover:bg-line dark:hover:text-background" />
+      </ColumnWrapper>
+    </div>
   );
 }
 

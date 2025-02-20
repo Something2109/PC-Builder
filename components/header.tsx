@@ -4,7 +4,7 @@ import { RowWrapper } from "./utils/FlexWrapper";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { DarkModeButton } from "./body";
-import { LoginButton } from "./auth";
+import { LoginButton, UserPanel } from "./auth";
 
 export default function Header() {
   const [navbar, setNavbar] = useState(false);
@@ -25,6 +25,7 @@ export default function Header() {
         </Link>
         <RowWrapper className="m-10 items-center">
           <DarkModeButton />
+          <UserPanel />
           <LoginButton />
           <button
             type="button"
