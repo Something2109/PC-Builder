@@ -14,7 +14,7 @@ export class AuthController {
 
   @Post("signup")
   async signUp(
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Body(SignUpValidator) payload: User.LogInOptions
   ) {
     const access_token = await this.authService.signUp(
@@ -23,13 +23,11 @@ export class AuthController {
     );
 
     this.setToken(res, access_token);
-
-    return res;
   }
 
   @Post("login")
   async logIn(
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Body(SignUpValidator) payload: User.LogInOptions
   ) {
     const access_token = await this.authService.logIn(
@@ -38,27 +36,23 @@ export class AuthController {
     );
 
     this.setToken(res, access_token);
-
-    return res;
   }
 
   @Post("logout")
-  async logOut(@Res() res: Response) {
+  async logOut(@Res({ passthrough: true }) res: Response) {
     this.setToken(res);
-
-    return res;
   }
 
   private setToken(res: Response, token?: string) {
     const expired = new Date();
     expired.setDate(expired.getDate() + 2);
 
-    res.setHeader(
-      "Set-Cookie",
-      `Authorization=${
-        token ? `Bearer ${token}` : ""
-      }; Path=/; Expires=${expired}; SameSite=Strict; Secure; HttpOnly`
-    );
+    res.cookie("Authorization", token ? `Bearer ${token}` : "", {
+      expires: expired,
+      sameSite: "strict",
+      secure: true,
+      httpOnly: true,
+    });
 
     res.json({ access_token: token });
   }
