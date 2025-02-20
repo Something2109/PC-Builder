@@ -1,12 +1,14 @@
-import { GenericSummaryCells } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { SuffixDisplay } from "@/components/utils/Display";
 import SSD from "@/utils/interface/info/SSD";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in SSD.Summarizable]: FunctionComponent<{ value?: SSD.Info[key] }>;
-} = {
-  read_speed: ({ value }) => value,
-  write_speed: ({ value }) => value,
+const Components: InfoSummaryMapping<SSD.Info, SSD.Summarizable> = {
+  read_speed: ({ value }) => (
+    <SuffixDisplay suffix="MB/s">{value}</SuffixDisplay>
+  ),
+  write_speed: ({ value }) => (
+    <SuffixDisplay suffix="MB/s">{value}</SuffixDisplay>
+  ),
   form_factor: ({ value }) => value,
   interface: ({ value }) => value,
 };

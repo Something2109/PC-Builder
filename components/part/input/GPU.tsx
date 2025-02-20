@@ -1,35 +1,26 @@
-import { GenericInputTable } from "../TableWrapper";
-import { Input } from "@/components/utils/Input";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { Input, SuffixInput, UnitInput } from "@/components/utils/Input";
 import GPU from "@/utils/interface/info/GPU";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
+import { MemoryUnits, FrequencyUnits } from "@/utils/extract/Units";
 
-const Components: {
-  [key in keyof GPU.Info]: FunctionComponent<{ value?: GPU.Info[key] }>;
-} = {
-  family: ({ value }) => <Input name="family" defaultValue={value} />,
-  core_count: ({ value }) => (
-    <Input type="number" name="core_count" defaultValue={value} />
+const Components: InfoInputMapping<GPU.Info> = {
+  family: (props) => <Input {...props} />,
+  core_count: (props) => <Input type="number" {...props} />,
+  execution_unit: (props) => <Input type="number" {...props} />,
+  base_frequency: (props) => (
+    <UnitInput Unit={FrequencyUnits} defaultUnit="MHz" {...props} />
   ),
-  execution_unit: ({ value }) => (
-    <Input type="number" name="execution_unit" defaultValue={value} />
+  boost_frequency: (props) => (
+    <UnitInput Unit={FrequencyUnits} defaultUnit="MHz" {...props} />
   ),
-  base_frequency: ({ value }) => (
-    <Input type="number" name="base_frequency" defaultValue={value} />
+  extra_cores: (props) => <></>,
+  memory_size: (props) => (
+    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
   ),
-  boost_frequency: ({ value }) => (
-    <Input type="number" name="boost_frequency" defaultValue={value} />
-  ),
-  extra_cores: ({ value }) => <></>,
-  memory_size: ({ value }) => (
-    <Input type="number" name="memory_size" defaultValue={value} />
-  ),
-  memory_type: ({ value }) => <Input name="memory_type" defaultValue={value} />,
-  memory_bus: ({ value }) => (
-    <Input type="number" name="memory_bus" defaultValue={value} />
-  ),
-  tdp: ({ value }) => <Input type="number" name="tdp" defaultValue={value} />,
-  features: ({ value }) => <></>,
+  memory_type: (props) => <Input {...props} />,
+  memory_bus: (props) => <Input type="number" {...props} />,
+  tdp: (props) => <SuffixInput suffix="W" type="number" {...props} />,
+  features: (props) => <></>,
 };
 
 function submit(formData: FormData) {

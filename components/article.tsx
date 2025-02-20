@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArticleType } from "@/utils/interface/article/article";
+import { Article } from "@/utils/interface/article/article";
 import { Paragraph } from "@/components/articles/Paragraph";
 import { TextArea } from "@/components/utils/Input";
 import {
@@ -11,7 +11,7 @@ import {
   updateContent,
 } from "@/components/articles/utils";
 
-function Article({ article }: { article: ArticleType }) {
+function ArticleComponent({ article }: { article: Article.Type }) {
   let sectionCount = 1;
   return (
     <article className="flex flex-col gap-2 w-full">
@@ -28,7 +28,7 @@ function Article({ article }: { article: ArticleType }) {
   );
 }
 
-function EditableArticle({ article }: { article: ArticleType }) {
+function EditableArticle({ article }: { article: Article.Type }) {
   const [change, setChange] = useState(0);
 
   let sectionCount = 1;
@@ -59,4 +59,4 @@ function EditableArticle({ article }: { article: ArticleType }) {
   );
 }
 
-export { Article, EditableArticle };
+export { ArticleComponent, EditableArticle };

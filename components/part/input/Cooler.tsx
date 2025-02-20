@@ -1,29 +1,22 @@
-import { GenericInputTable } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { Input, UnitInput, OptionSelect } from "@/components/utils/Input";
 import Cooler from "@/utils/interface/info/Cooler";
 import { Material } from "@/utils/interface/utils";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
+import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: {
-  [key in keyof Cooler.Info]: FunctionComponent<{ value?: Cooler.Info[key] }>;
-} = {
-  socket: ({ value }) => <Input name="socket" defaultValue={value} />,
-  cpu_plate: ({ value }) => (
-    <OptionSelect
-      name="cpu_plate"
-      options={Material.Metal.options}
-      defaultValue={value}
-    />
+const Components: InfoInputMapping<Cooler.Info> = {
+  socket: (props) => <Input {...props} />,
+  cpu_plate: (props) => (
+    <OptionSelect options={Material.Metal.options} {...props} />
   ),
-  width: ({ value }) => (
-    <Input type="number" step="0.01" name="width" defaultValue={value} />
+  width: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  length: ({ value }) => (
-    <Input type="number" step="0.01" name="length" defaultValue={value} />
+  length: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  height: ({ value }) => (
-    <Input type="number" step="0.01" name="height" defaultValue={value} />
+  height: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
 };
 

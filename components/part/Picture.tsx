@@ -1,28 +1,31 @@
 "use client";
 
+import { ImgHTMLAttributes, useRef } from "react";
+
 export default function PartPicture({
-  part: { image_url, part, name },
+  part,
+  src,
   className,
+  onError,
 }: {
-  part: { image_url?: string | null; part: string; name: string };
-  className?: string;
-}) {
+  part: string;
+} & ImgHTMLAttributes<HTMLImageElement>) {
+  const defaultUrl = useRef(`/images/icons/${part}.png`);
   const classlist = ["rounded-lg bg-white aspect-square *:m-auto p-1"];
   if (className) {
     classlist.push(className);
   }
-  const imgClass = "max-w-full max-h-full size-full";
-  const defaultUrl = `/images/icons/${part}.png`;
 
   return (
     <picture className={classlist.join(" ")}>
       <img
-        src={image_url ?? defaultUrl}
-        alt={name}
-        className={imgClass}
-        onError={({ currentTarget }) => {
-          currentTarget.onerror = null;
-          currentTarget.src = defaultUrl;
+        src={src ?? defaultUrl.current}
+        alt={src ?? defaultUrl.current}
+        className="max-w-full max-h-full size-full"
+        onError={(e) => {
+          if (onError) onError(e);
+          e.currentTarget.onerror = null;
+          e.currentTarget.src = defaultUrl.current;
         }}
       />
     </picture>

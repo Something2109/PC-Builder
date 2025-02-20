@@ -1,16 +1,21 @@
+import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import PSU from "@/utils/interface/info/PSU";
-import { FunctionComponent } from "react";
-import { GenericDetailTable } from "../TableWrapper";
+import { LengthUnits } from "@/utils/extract/Units";
+import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 
-const Components: {
-  [key in keyof PSU.Info]: FunctionComponent<{ value: PSU.Info[key] }>;
-} = {
-  wattage: ({ value }) => value,
+const Components: InfoDetailMapping<PSU.Info> = {
+  wattage: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
   efficiency: ({ value }) => value,
   form_factor: ({ value }) => value,
-  width: ({ value }) => value,
-  length: ({ value }) => value,
-  height: ({ value }) => value,
+  width: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  length: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  height: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
   modular: ({ value }) => value,
   atx_pin: ({ value }) => value,
   cpu_pin: ({ value }) => value,

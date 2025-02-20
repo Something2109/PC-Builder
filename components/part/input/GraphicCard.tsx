@@ -1,36 +1,29 @@
-import { GenericInputTable } from "../TableWrapper";
-import { Input } from "@/components/utils/Input";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { Input, SuffixInput, UnitInput } from "@/components/utils/Input";
 import GraphicCard from "@/utils/interface/info/GraphicCard";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
+import { FrequencyUnits, LengthUnits } from "@/utils/extract/Units";
 
-const Components: {
-  [key in keyof GraphicCard.Info]: FunctionComponent<{
-    value?: GraphicCard.Info[key];
-  }>;
-} = {
-  width: ({ value }) => (
-    <Input type="number" step="0.01" name="width" defaultValue={value} />
+const Components: InfoInputMapping<GraphicCard.Info> = {
+  width: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  length: ({ value }) => (
-    <Input type="number" step="0.01" name="length" defaultValue={value} />
+  length: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  height: ({ value }) => (
-    <Input type="number" step="0.01" name="height" defaultValue={value} />
+  height: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  base_frequency: ({ value }) => (
-    <Input type="number" name="base_frequency" defaultValue={value} />
+  base_frequency: (props) => (
+    <UnitInput Unit={FrequencyUnits} defaultUnit="MHz" {...props} />
   ),
-  boost_frequency: ({ value }) => (
-    <Input type="number" name="boost_frequency" defaultValue={value} />
+  boost_frequency: (props) => (
+    <UnitInput Unit={FrequencyUnits} defaultUnit="MHz" {...props} />
   ),
-  pcie: ({ value }) => <Input type="number" name="pcie" defaultValue={value} />,
-  minimum_psu: ({ value }) => (
-    <Input type="number" name="minimum_psu" defaultValue={value} />
-  ),
-  power_connector: ({ value }) => <></>,
-  port: ({ value }) => <></>,
-  gpu: ({ value }) => <></>,
+  pcie: (props) => <Input type="number" {...props} />,
+  minimum_psu: (props) => <SuffixInput suffix="W" type="number" {...props} />,
+  power_connector: (props) => <></>,
+  port: (props) => <></>,
+  gpu: (props) => <></>,
 };
 
 function submit(formData: FormData) {

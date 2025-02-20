@@ -16,7 +16,8 @@ export function PartSummaryCells({
         <a href={`/part/${part}/${id}`}>
           <RowWrapper className="align-middle items-center font-bold">
             <PartPicture
-              part={{ image_url, part, name }}
+              part={part}
+              src={image_url ?? undefined}
               className="h-16 m-2"
             />
             {name}

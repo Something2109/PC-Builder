@@ -1,43 +1,40 @@
-import { Table, GenericDetailTable } from "../TableWrapper";
+import { SuffixDisplay } from "@/components/utils/Display";
+import { Table, GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import Mainboard from "@/utils/interface/info/Mainboard";
 import { InternalConnectors } from "@/utils/interface/utils";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof Mainboard.Info]: FunctionComponent<{
-    value: Mainboard.Info[key];
-  }>;
-} = {
+const Components: InfoDetailMapping<Mainboard.Info> = {
   form_factor: ({ value }) => value,
   socket: ({ value }) => value,
   chipset: ({ value }) => value,
   ram_form_factor: ({ value }) => value,
   ram_interface: ({ value }) => value,
-  ram_slot: ({ value }) => value,
-  expansion_slots: ({ value }) => value,
+  ram_slot: ({ value }) => (
+    <SuffixDisplay suffix="slot(s)">{value}</SuffixDisplay>
+  ),
   pcies: ({ value }) => <PCIeTableRow defaultValue={value} />,
   power_connectors: ({ value }) =>
-    Object.entries(value)
+    Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
   fan_connectors: ({ value }) =>
-    Object.entries(value)
+    Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
   storage_connectors: ({ value }) =>
-    Object.entries(value)
+    Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
   usb_connectors: ({ value }) =>
-    Object.entries(value)
+    Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
   miscelanous_connectors: ({ value }) =>
-    Object.entries(value)
+    Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
   back_panel_ports: ({ value }) =>
-    Object.entries(value)
+    Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
 };

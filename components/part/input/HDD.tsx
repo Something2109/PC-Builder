@@ -1,41 +1,30 @@
-import { GenericInputTable } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
 import HDD from "@/utils/interface/info/HDD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
+import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
 
-const Components: {
-  [key in keyof HDD.Info]: FunctionComponent<{ value?: HDD.Info[key] }>;
-} = {
-  rotational_speed: ({ value }) => (
-    <Input type="number" name="rotational_speed" defaultValue={value} />
+const Components: InfoInputMapping<HDD.Info> = {
+  rotational_speed: (props) => (
+    <SuffixInput suffix="RPM" type="number" {...props} />
   ),
-  read_speed: ({ value }) => (
-    <Input type="number" name="read_speed" defaultValue={value} />
+  read_speed: (props) => (
+    <UnitInput Unit={MemorySpeedUnit} defaultUnit="MB/s" {...props} />
   ),
-  write_speed: ({ value }) => (
-    <Input type="number" name="write_speed" defaultValue={value} />
+  write_speed: (props) => (
+    <UnitInput Unit={MemorySpeedUnit} defaultUnit="MB/s" {...props} />
   ),
-  capacity: ({ value }) => (
-    <Input type="number" name="capacity" defaultValue={value} />
+  capacity: (props) => (
+    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
   ),
-  cache: ({ value }) => (
-    <Input type="number" name="cache" defaultValue={value} />
+  cache: (props) => (
+    <UnitInput Unit={MemoryUnits} defaultUnit="MB" {...props} />
   ),
-  form_factor: ({ value }) => (
-    <OptionSelect
-      name="form_factor"
-      options={FormFactor.HDD.options}
-      defaultValue={value}
-    />
+  form_factor: (props) => (
+    <OptionSelect options={FormFactor.HDD.options} {...props} />
   ),
-  interface: ({ value }) => (
-    <OptionSelect
-      name="interface"
-      options={InternalConnectors.Storage.HDD.options}
-      defaultValue={value}
-    />
+  interface: (props) => (
+    <OptionSelect options={InternalConnectors.Storage.HDD.options} {...props} />
   ),
 };
 

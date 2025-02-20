@@ -1,38 +1,25 @@
-import { GenericInputTable } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { Input, UnitInput, OptionSelect } from "@/components/utils/Input";
 import Radiator from "@/utils/interface/info/Radiator";
 import { FormFactor, Material } from "@/utils/interface/utils";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
+import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: {
-  [key in keyof Radiator.Info]: FunctionComponent<{
-    value?: Radiator.Info[key];
-  }>;
-} = {
-  form_factor: ({ value }) => (
-    <OptionSelect
-      name="form_factor"
-      options={FormFactor.Pump.options}
-      defaultValue={value}
-    />
+const Components: InfoInputMapping<Radiator.Info> = {
+  form_factor: (props) => (
+    <OptionSelect options={FormFactor.Pump.options} {...props} />
   ),
-  width: ({ value }) => (
-    <Input type="number" step="0.01" name="width" defaultValue={value} />
+  width: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  length: ({ value }) => (
-    <Input type="number" step="0.01" name="length" defaultValue={value} />
+  length: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  height: ({ value }) => (
-    <Input type="number" step="0.01" name="height" defaultValue={value} />
+  height: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  fpi: ({ value }) => <Input type="number" name="fpi" defaultValue={value} />,
-  material: ({ value }) => (
-    <OptionSelect
-      name="material"
-      options={Material.Metal.options}
-      defaultValue={value}
-    />
+  fpi: (props) => <Input type="number" {...props} />,
+  material: (props) => (
+    <OptionSelect options={Material.Metal.options} {...props} />
   ),
 };
 

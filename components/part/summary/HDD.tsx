@@ -1,11 +1,9 @@
-import { GenericSummaryCells } from "../TableWrapper";
+import { SuffixDisplay } from "@/components/utils/Display";
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import HDD from "@/utils/interface/info/HDD";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in HDD.Summarizable]: FunctionComponent<{ value?: HDD.Info[key] }>;
-} = {
-  capacity: ({ value }) => value,
+const Components: InfoSummaryMapping<HDD.Info, HDD.Summarizable> = {
+  capacity: ({ value }) => <SuffixDisplay suffix="GB">{value}</SuffixDisplay>,
   form_factor: ({ value }) => value,
   interface: ({ value }) => value,
 };

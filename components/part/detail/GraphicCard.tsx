@@ -1,25 +1,32 @@
-import { GenericDetailTable } from "../TableWrapper";
+import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import GraphicCard from "@/utils/interface/info/GraphicCard";
-import { FunctionComponent } from "react";
+import { LengthUnits, FrequencyUnits } from "@/utils/extract/Units";
 
-const Components: {
-  [key in keyof GraphicCard.Info]: FunctionComponent<{
-    value: GraphicCard.Info[key];
-  }>;
-} = {
-  width: ({ value }) => value,
-  length: ({ value }) => value,
-  height: ({ value }) => value,
-  base_frequency: ({ value }) => value,
-  boost_frequency: ({ value }) => value,
+const Components: InfoDetailMapping<GraphicCard.Info> = {
+  width: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  length: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  height: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  base_frequency: ({ value }) => (
+    <UnitDisplay Unit={FrequencyUnits} defaultUnit="MHz" defaultValue={value} />
+  ),
+  boost_frequency: ({ value }) => (
+    <UnitDisplay Unit={FrequencyUnits} defaultUnit="MHz" defaultValue={value} />
+  ),
   pcie: ({ value }) => value,
-  minimum_psu: ({ value }) => value,
+  minimum_psu: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
   power_connector: ({ value }) =>
-    Object.entries(value)
+    Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
   port: ({ value }) =>
-    Object.entries(value)
+    Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
   gpu: ({ value }) => <></>,

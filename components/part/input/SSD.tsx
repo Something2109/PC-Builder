@@ -1,46 +1,31 @@
-import { GenericInputTable } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { UnitInput, OptionSelect } from "@/components/utils/Input";
 import SSD from "@/utils/interface/info/SSD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
+import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
 
-const Components: {
-  [key in keyof SSD.Info]: FunctionComponent<{ value?: SSD.Info[key] }>;
-} = {
-  memory_type: ({ value }) => (
-    <OptionSelect
-      name="memory_type"
-      options={SSD.MemoryCell.options}
-      defaultValue={value}
-    />
+const Components: InfoInputMapping<SSD.Info> = {
+  memory_type: (props) => (
+    <OptionSelect options={SSD.MemoryCell.options} {...props} />
   ),
-  read_speed: ({ value }) => (
-    <Input type="number" name="read_speed" defaultValue={value} />
+  read_speed: (props) => (
+    <UnitInput Unit={MemorySpeedUnit} defaultUnit="MB/s" {...props} />
   ),
-  write_speed: ({ value }) => (
-    <Input type="number" name="write_speed" defaultValue={value} />
+  write_speed: (props) => (
+    <UnitInput Unit={MemorySpeedUnit} defaultUnit="MB/s" {...props} />
   ),
-  capacity: ({ value }) => (
-    <Input type="number" name="capacity" defaultValue={value} />
+  capacity: (props) => (
+    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
   ),
-  cache: ({ value }) => (
-    <Input type="number" name="cache" defaultValue={value} />
+  cache: (props) => (
+    <UnitInput Unit={MemoryUnits} defaultUnit="MB" {...props} />
   ),
-  tbw: ({ value }) => <Input type="number" name="tbw" defaultValue={value} />,
-  form_factor: ({ value }) => (
-    <OptionSelect
-      name="form_factor"
-      options={FormFactor.SSD.options}
-      defaultValue={value}
-    />
+  tbw: (props) => <UnitInput Unit={MemoryUnits} defaultUnit="TB" {...props} />,
+  form_factor: (props) => (
+    <OptionSelect options={FormFactor.SSD.options} {...props} />
   ),
-  interface: ({ value }) => (
-    <OptionSelect
-      name="interface"
-      options={InternalConnectors.Storage.SSD.options}
-      defaultValue={value}
-    />
+  interface: (props) => (
+    <OptionSelect options={InternalConnectors.Storage.SSD.options} {...props} />
   ),
 };
 

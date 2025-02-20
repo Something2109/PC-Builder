@@ -1,13 +1,8 @@
 import CPUBlock from "@/utils/interface/info/CPUBlock";
-import { GenericDetailTable } from "../TableWrapper";
-import { FunctionComponent } from "react";
+import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 
-const Components: {
-  [key in keyof CPUBlock.Info]: FunctionComponent<{
-    value: CPUBlock.Info[key];
-  }>;
-} = {
-  socket: ({ value }) => value.join(", "),
+const Components: InfoDetailMapping<CPUBlock.Info> = {
+  socket: ({ value }) => value?.join(", "),
   plate: ({ value }) => value,
   rgb: ({ value }) => value,
 };

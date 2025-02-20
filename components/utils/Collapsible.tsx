@@ -22,9 +22,7 @@ function VerticalCollapsible({
       </button>
 
       <ColumnWrapper
-        className={`${
-          collapse ? "h-0" : "h-fit"
-        } mx-2 overflow-auto transition-all ease-in-out duration-500 delay-0`}
+        className={`${collapse ? "h-0" : "h-fit"} mx-2 overflow-auto`}
       >
         {rest}
       </ColumnWrapper>

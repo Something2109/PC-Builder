@@ -1,12 +1,10 @@
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { SuffixDisplay } from "@/components/utils/Display";
 import RAM from "@/utils/interface/info/RAM";
-import { FunctionComponent } from "react";
-import { GenericSummaryCells } from "../TableWrapper";
 
-const Components: {
-  [key in RAM.Summarizable]: FunctionComponent<{ value?: RAM.Info[key] }>;
-} = {
-  speed: ({ value }) => value,
-  capacity: ({ value }) => value,
+const Components: InfoSummaryMapping<RAM.Info, RAM.Summarizable> = {
+  speed: ({ value }) => <SuffixDisplay suffix="MT/s">{value}</SuffixDisplay>,
+  capacity: ({ value }) => <SuffixDisplay suffix="GB">{value}</SuffixDisplay>,
   form_factor: ({ value }) => value,
   interface: ({ value }) => value,
 };

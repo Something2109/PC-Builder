@@ -1,17 +1,24 @@
-import { Table, GenericDetailTable } from "../TableWrapper";
+import { Table, GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { UnitDisplay } from "@/components/utils/Display";
 import Case from "@/utils/interface/info/Case";
-import { FunctionComponent } from "react";
+import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: {
-  [key in keyof Case.Info]: FunctionComponent<{ value: Case.Info[key] }>;
-} = {
+const Components: InfoDetailMapping<Case.Info> = {
   form_factor: ({ value }) => value,
-  width: ({ value }) => value,
-  length: ({ value }) => value,
-  height: ({ value }) => value,
-  mainboard_support: ({ value }) => value.join(", "),
+  width: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  length: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  height: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  mainboard_support: ({ value }) => value?.join(", "),
   expansion_slot: ({ value }) => value,
-  max_cooler_height: ({ value }) => value,
+  max_cooler_height: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
   radiator_support: ({ value }) => (
     <CaseSideTableRow label={"Radiator Support"} defaultValue={value} />
   ),
@@ -21,10 +28,12 @@ const Components: {
   hard_drive_support: ({ value }) => (
     <CaseSideTableRow label={"Hard Drive Support"} defaultValue={value} />
   ),
-  psu_support: ({ value }) => value.join(", "),
-  max_psu_length: ({ value }) => value,
+  psu_support: ({ value }) => value?.join(", "),
+  max_psu_length: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
   front_panel_ports: ({ value }) =>
-    Object.entries(value)
+    Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
 };

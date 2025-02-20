@@ -1,29 +1,15 @@
 import CPUBlock from "@/utils/interface/info/CPUBlock";
 import { InternalConnectors, Material } from "@/utils/interface/utils";
-import { Info } from "@/utils/Enum";
 import { Input, OptionSelect } from "@/components/utils/Input";
-import { GenericInputTable } from "../TableWrapper";
-import { FunctionComponent } from "react";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 
-const Components: {
-  [key in keyof CPUBlock.Info]: FunctionComponent<{
-    value?: CPUBlock.Info[key];
-  }>;
-} = {
-  socket: ({ value }) => <Input name="socket" defaultValue={value} />,
-  plate: ({ value }) => (
-    <OptionSelect
-      name="plate"
-      options={Material.Metal.options}
-      defaultValue={value}
-    />
+const Components: InfoInputMapping<CPUBlock.Info> = {
+  socket: (props) => <Input {...props} />,
+  plate: (props) => (
+    <OptionSelect options={Material.Metal.options} {...props} />
   ),
-  rgb: ({ value }) => (
-    <OptionSelect
-      name="rgb"
-      options={InternalConnectors.RGB.options}
-      defaultValue={value}
-    />
+  rgb: (props) => (
+    <OptionSelect options={InternalConnectors.RGB.options} {...props} />
   ),
 };
 

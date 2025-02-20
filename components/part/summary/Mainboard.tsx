@@ -1,12 +1,7 @@
-import { GenericSummaryCells } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import Mainboard from "@/utils/interface/info/Mainboard";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in Mainboard.Summarizable]: FunctionComponent<{
-    value?: Mainboard.Info[key];
-  }>;
-} = {
+const Components: InfoSummaryMapping<Mainboard.Info, Mainboard.Summarizable> = {
   form_factor: ({ value }) => value,
   socket: ({ value }) => value,
   ram_form_factor: ({ value }) => value,

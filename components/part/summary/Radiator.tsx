@@ -1,12 +1,7 @@
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import Radiator from "@/utils/interface/info/Radiator";
-import { GenericSummaryCells } from "../TableWrapper";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in Radiator.Summarizable]: FunctionComponent<{
-    value?: Radiator.Info[key];
-  }>;
-} = {
+const Components: InfoSummaryMapping<Radiator.Info, Radiator.Summarizable> = {
   form_factor: ({ value }) => value,
   material: ({ value }) => value,
 };

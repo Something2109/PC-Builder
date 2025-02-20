@@ -1,15 +1,18 @@
-import { GenericSummaryCells } from "../TableWrapper";
+import { SuffixDisplay } from "@/components/utils/Display";
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import GraphicCard from "@/utils/interface/info/GraphicCard";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in GraphicCard.Summarizable]: FunctionComponent<{
-    value?: GraphicCard.Info[key];
-  }>;
-} = {
-  length: ({ value }) => value,
-  base_frequency: ({ value }) => value,
-  boost_frequency: ({ value }) => value,
+const Components: InfoSummaryMapping<
+  GraphicCard.Info,
+  GraphicCard.Summarizable
+> = {
+  length: ({ value }) => <SuffixDisplay suffix="mm">{value}</SuffixDisplay>,
+  base_frequency: ({ value }) => (
+    <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>
+  ),
+  boost_frequency: ({ value }) => (
+    <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>
+  ),
   minimum_psu: ({ value }) => value,
 };
 

@@ -1,4 +1,4 @@
-import { ArticleSummary } from "@/utils/interface/article/article";
+import { Article } from "@/utils/interface/article/article";
 import { ColumnWrapper } from "./FlexWrapper";
 import Link from "next/link";
 
@@ -12,7 +12,7 @@ function ArticleLink({
   className,
   summary,
   ...rest
-}: Parameters<typeof Link>[0] & { summary: ArticleSummary }) {
+}: Parameters<typeof Link>[0] & { summary: Article.Summary }) {
   let classList = [normal, light, dark];
   if (className) {
     classList.push(className);
@@ -24,7 +24,7 @@ function ArticleLink({
         <img
           src="/images/icons/pc.png"
           alt="thumbnail"
-          className="dark:invert transition ease-in-out duration-500 delay-0"
+          className="dark:invert transition-props"
         />
       </picture>
       <ColumnWrapper className="h-fit">

@@ -1,12 +1,12 @@
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { SuffixDisplay } from "@/components/utils/Display";
 import Pump from "@/utils/interface/info/Pump";
-import { GenericSummaryCells } from "../TableWrapper";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in Pump.Summarizable]: FunctionComponent<{ value?: Pump.Info[key] }>;
-} = {
-  head_pressure: ({ value }) => value,
-  flow_rate: ({ value }) => value,
+const Components: InfoSummaryMapping<Pump.Info, Pump.Summarizable> = {
+  head_pressure: ({ value }) => (
+    <SuffixDisplay suffix="m">{value}</SuffixDisplay>
+  ),
+  flow_rate: ({ value }) => <SuffixDisplay suffix="L/h">{value}</SuffixDisplay>,
   power_connector: ({ value }) => value,
 };
 

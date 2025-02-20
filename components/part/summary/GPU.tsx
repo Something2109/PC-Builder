@@ -1,15 +1,19 @@
-import { GenericSummaryCells } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { SuffixDisplay } from "@/components/utils/Display";
 import GPU from "@/utils/interface/info/GPU";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in GPU.Summarizable]: FunctionComponent<{ value?: GPU.Info[key] }>;
-} = {
+const Components: InfoSummaryMapping<GPU.Info, GPU.Summarizable> = {
   core_count: ({ value }) => value,
-  base_frequency: ({ value }) => value,
-  boost_frequency: ({ value }) => value,
-  memory_size: ({ value }) => value,
-  tdp: ({ value }) => value,
+  base_frequency: ({ value }) => (
+    <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>
+  ),
+  boost_frequency: ({ value }) => (
+    <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>
+  ),
+  memory_size: ({ value }) => (
+    <SuffixDisplay suffix="GB">{value}</SuffixDisplay>
+  ),
+  tdp: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
 };
 
 export default GenericSummaryCells(

@@ -1,44 +1,35 @@
-import { GenericInputTable } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { Input, UnitInput, OptionSelect } from "@/components/utils/Input";
 import Case from "@/utils/interface/info/Case";
 import { FormFactor } from "@/utils/interface/utils";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
+import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: {
-  [key in keyof Case.Info]: FunctionComponent<{ value?: Case.Info[key] }>;
-} = {
-  form_factor: ({ value }) => (
-    <OptionSelect
-      name="form_factor"
-      options={FormFactor.Case.options}
-      defaultValue={value}
-    />
+const Components: InfoInputMapping<Case.Info> = {
+  form_factor: (props) => (
+    <OptionSelect options={FormFactor.Case.options} {...props} />
   ),
-  width: ({ value }) => (
-    <Input type="number" step="0.01" name="width" defaultValue={value} />
+  width: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  length: ({ value }) => (
-    <Input type="number" step="0.01" name="length" defaultValue={value} />
+  length: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  height: ({ value }) => (
-    <Input type="number" step="0.01" name="height" defaultValue={value} />
+  height: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  mainboard_support: ({ value }) => <></>,
-  expansion_slot: ({ value }) => (
-    <Input type="number" name="expansion_slot" defaultValue={value} />
+  mainboard_support: (props) => <></>,
+  expansion_slot: (props) => <Input type="number" {...props} />,
+  max_cooler_height: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  max_cooler_height: ({ value }) => (
-    <Input type="number" name="max_cooler_height" defaultValue={value} />
+  radiator_support: (props) => <></>,
+  fan_support: (props) => <></>,
+  hard_drive_support: (props) => <></>,
+  psu_support: (props) => <></>,
+  max_psu_length: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  radiator_support: ({ value }) => <></>,
-  fan_support: ({ value }) => <></>,
-  hard_drive_support: ({ value }) => <></>,
-  psu_support: ({ value }) => <></>,
-  max_psu_length: ({ value }) => (
-    <Input type="number" name="max_psu_length" defaultValue={value} />
-  ),
-  front_panel_ports: ({ value }) => <></>,
+  front_panel_ports: (props) => <></>,
 };
 
 function submit(formData: FormData) {

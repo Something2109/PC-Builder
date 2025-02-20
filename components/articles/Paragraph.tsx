@@ -1,12 +1,15 @@
 "use client";
 
 import { Button } from "@/components/utils/Button";
-import { ParagraphType } from "@/utils/interface/article/article";
+import { Article } from "@/utils/interface/article/article";
 import { RowWrapper, ColumnWrapper } from "@/components/utils/FlexWrapper";
 import { TextArea } from "@/components/utils/Input";
 import { ContentProps, InputContentProps } from "./utils";
 
-export function Paragraph({ content, prefix }: ContentProps<ParagraphType>) {
+export function Paragraph({
+  content,
+  prefix,
+}: ContentProps<Article.Paragraph>) {
   const paragraph = <p className="text-xl">{content.content}</p>;
   return prefix ? (
     <RowWrapper>
@@ -22,7 +25,7 @@ export function ParagraphInput({
   content,
   prefix,
   updateSelf,
-}: InputContentProps<ParagraphType>) {
+}: InputContentProps<Article.Paragraph>) {
   return (
     <RowWrapper>
       {prefix ? <p>{prefix}</p> : undefined}

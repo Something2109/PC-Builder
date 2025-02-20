@@ -1,20 +1,33 @@
-import { GenericDetailTable } from "../TableWrapper";
+import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
+import { LengthUnits } from "@/utils/extract/Units";
 import AIO from "@/utils/interface/info/AIO";
-import { FunctionComponent } from "react";
 
-const Components: {
-  [key in keyof AIO.Info]: FunctionComponent<{ value: AIO.Info[key] }>;
-} = {
+const Components: InfoDetailMapping<AIO.Info> = {
   form_factor: ({ value }) => value,
   socket: ({ value }) => value,
   cpu_plate: ({ value }) => value,
-  radiator_width: ({ value }) => value,
-  radiator_length: ({ value }) => value,
-  radiator_height: ({ value }) => value,
-  pump_width: ({ value }) => value,
-  pump_length: ({ value }) => value,
-  pump_height: ({ value }) => value,
-  pump_speed: ({ value }) => value,
+  radiator_width: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  radiator_length: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  radiator_height: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  pump_width: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  pump_length: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  pump_height: ({ value }) => (
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
+  ),
+  pump_speed: ({ value }) => (
+    <SuffixDisplay suffix="RPM">{value}</SuffixDisplay>
+  ),
 };
 
 export default GenericDetailTable(Components, AIO.Label);

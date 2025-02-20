@@ -1,6 +1,7 @@
 "use client";
 
 import { TableWrapper, TableRowWrapper } from "../TableWrapper";
+import PartPicture from "../Picture";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
@@ -171,24 +172,17 @@ function PictureInput({
   className?: string;
   defaultValue?: Part.BasicInfo;
 }) {
-  const [image, setImage] = useState<string | null>(
-    defaultValue?.image_url ?? null
+  const [image, setImage] = useState<string | undefined>(
+    defaultValue?.image_url ?? undefined
   );
-  const defaultUrl = `/images/icons/${part}.png`;
 
   return (
     <ColumnWrapper className={className}>
-      <picture className="rounded-lg bg-white aspect-square *:m-auto p-1">
-        <img
-          src={image ?? defaultUrl}
-          alt={part}
-          className="max-w-full max-h-full size-full"
-          onError={({ currentTarget }) => {
-            setImage(null);
-            currentTarget.src = defaultUrl;
-          }}
-        />
-      </picture>
+      <PartPicture
+        part={part}
+        src={image}
+        onError={() => setImage(undefined)}
+      />
       <Input
         type="url"
         name="image_url"

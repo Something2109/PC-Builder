@@ -1,6 +1,6 @@
 import PartPanel from "@/components/part/Panel";
 import { SearchBar } from "@/components/searchbar";
-import PaginationBar from "@/components/pagination";
+import PaginationBar from "@/components/utils/PaginationBar";
 import Part from "@/utils/interface/info/Parts";
 import { notFound } from "next/navigation";
 
@@ -9,10 +9,18 @@ export default async function ListPage({
 }: {
   searchParams: Promise<{ [key: string]: string }>;
 }) {
-  const page = (await searchParams)["page"] ?? "1";
+  const query = await searchParams;
+
+  const queryEntries = Object.entries(query).reduce((acc, [key, value]) => {
+    Array.isArray(value)
+      ? value.forEach((v) => acc.push([key, v]))
+      : acc.push([key, value]);
+    return acc;
+  }, [] as string[][]);
+  const options = new URLSearchParams(queryEntries);
 
   const response = await fetch(
-    `${process.env.BACKEND_HOST}/api/part?page=${page}`
+    `${process.env.BACKEND_HOST}/api/part?${options}`
   );
 
   if (!response) return notFound();
@@ -21,6 +29,9 @@ export default async function ListPage({
     total: number;
     list: Part.BasicInfo[];
   };
+
+  const page = options.get("page") ?? "1";
+  options.delete("page");
 
   return (
     <>

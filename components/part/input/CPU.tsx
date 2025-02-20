@@ -1,44 +1,45 @@
-import { GenericInputTable } from "../TableWrapper";
-import { Input } from "@/components/utils/Input";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { Input, SuffixInput, UnitInput } from "@/components/utils/Input";
+import {
+  FrequencyUnits,
+  MemorySpeedUnit,
+  MemoryUnits,
+} from "@/utils/extract/Units";
 import CPU from "@/utils/interface/info/CPU";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
 
-export const Components: {
-  [key in keyof CPU.Info]: FunctionComponent<{ value?: CPU.Info[key] }>;
-} = {
-  family: ({ value }) => <Input name="family" defaultValue={value} />,
-  socket: ({ value }) => <Input name="socket" defaultValue={value} />,
-  total_cores: ({ value }) => (
-    <Input type="number" name="total_cores" defaultValue={value} />
+export const Components: InfoInputMapping<CPU.Info> = {
+  family: (props) => <Input {...props} />,
+  socket: (props) => <Input {...props} />,
+  total_cores: (props) => (
+    <SuffixInput suffix="Cores" type="number" {...props} />
   ),
-  total_threads: ({ value }) => (
-    <Input type="number" name="total_threads" defaultValue={value} />
+  total_threads: (props) => (
+    <SuffixInput suffix="Threads" type="number" {...props} />
   ),
-  base_frequency: ({ value }) => (
-    <Input type="number" name="base_frequency" defaultValue={value} />
+  base_frequency: (props) => (
+    <UnitInput Unit={FrequencyUnits} defaultUnit="GHz" {...props} />
   ),
-  turbo_frequency: ({ value }) => (
-    <Input type="number" name="turbo_frequency" defaultValue={value} />
+  turbo_frequency: (props) => (
+    <UnitInput Unit={FrequencyUnits} defaultUnit="GHz" {...props} />
   ),
-  cores: ({ value }) => <></>,
-  L2_cache: ({ value }) => (
-    <Input type="number" name="L2_cache" defaultValue={value} />
+  cores: (props) => <></>,
+  L2_cache: (props) => (
+    <UnitInput Unit={MemoryUnits} defaultUnit="MB" {...props} />
   ),
-  L3_cache: ({ value }) => (
-    <Input type="number" name="L3_cache" defaultValue={value} />
+  L3_cache: (props) => (
+    <UnitInput Unit={MemoryUnits} defaultUnit="MB" {...props} />
   ),
-  max_memory: ({ value }) => (
-    <Input type="number" name="max_memory" defaultValue={value} />
+  max_memory: (props) => (
+    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
   ),
-  max_memory_channel: ({ value }) => (
-    <Input type="number" name="max_memory_channel" defaultValue={value} />
+  max_memory_channel: (props) => (
+    <SuffixInput suffix="channel(s)" type="number" {...props} />
   ),
-  max_memory_bandwidth: ({ value }) => (
-    <Input type="number" name="max_memory_bandwidth" defaultValue={value} />
+  max_memory_bandwidth: (props) => (
+    <UnitInput Unit={MemorySpeedUnit} defaultUnit="GB/s" {...props} />
   ),
-  tdp: ({ value }) => <Input type="number" name="tdp" defaultValue={value} />,
-  lithography: ({ value }) => <Input name="lithography" defaultValue={value} />,
+  tdp: (props) => <SuffixInput suffix="W" type="number" {...props} />,
+  lithography: (props) => <Input {...props} />,
 };
 
 function submit(formData: FormData) {

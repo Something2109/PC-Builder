@@ -1,11 +1,9 @@
+import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { SuffixDisplay } from "@/components/utils/Display";
 import PSU from "@/utils/interface/info/PSU";
-import { FunctionComponent } from "react";
-import { GenericSummaryCells } from "../TableWrapper";
 
-const Components: {
-  [key in PSU.Summarizable]: FunctionComponent<{ value?: PSU.Info[key] }>;
-} = {
-  wattage: ({ value }) => value,
+const Components: InfoSummaryMapping<PSU.Info, PSU.Summarizable> = {
+  wattage: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
   efficiency: ({ value }) => value,
   form_factor: ({ value }) => value,
   modular: ({ value }) => value,

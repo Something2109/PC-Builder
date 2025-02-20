@@ -1,6 +1,6 @@
 "use client";
 
-import { ListType } from "@/utils/interface/article/article";
+import { Article } from "@/utils/interface/article/article";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { Button } from "@/components/utils/Button";
 import { TextArea } from "@/components/utils/Input";
@@ -14,7 +14,7 @@ import {
 } from "./utils";
 import { useState } from "react";
 
-export function List({ content }: ContentProps<ListType>) {
+export function List({ content }: ContentProps<Article.List>) {
   return (
     <ul>
       {content.content.map((inner, index) => (
@@ -29,7 +29,7 @@ export function List({ content }: ContentProps<ListType>) {
 export function ListInput({
   content,
   updateSelf,
-}: InputContentProps<ListType>) {
+}: InputContentProps<Article.List>) {
   const [count, setCount] = useState(content.content.length);
 
   return (

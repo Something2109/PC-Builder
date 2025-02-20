@@ -1,61 +1,37 @@
-import { GenericInputTable } from "../TableWrapper";
-import { Input, OptionSelect } from "@/components/utils/Input";
+import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import {
+  Input,
+  SuffixInput,
+  UnitInput,
+  OptionSelect,
+} from "@/components/utils/Input";
 import PSU from "@/utils/interface/info/PSU";
 import { FormFactor } from "@/utils/interface/utils";
-import { Info } from "@/utils/Enum";
-import { FunctionComponent } from "react";
+import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: {
-  [key in keyof PSU.Info]: FunctionComponent<{ value?: PSU.Info[key] }>;
-} = {
-  wattage: ({ value }) => (
-    <Input type="number" name="wattage" defaultValue={value} />
+const Components: InfoInputMapping<PSU.Info> = {
+  wattage: (props) => <SuffixInput suffix="W" type="number" {...props} />,
+  efficiency: (props) => (
+    <OptionSelect options={PSU.Efficiency.options} {...props} />
   ),
-  efficiency: ({ value }) => (
-    <OptionSelect
-      name="efficiency"
-      options={PSU.Efficiency.options}
-      defaultValue={value}
-    />
+  form_factor: (props) => (
+    <OptionSelect options={FormFactor.PSU.options} {...props} />
   ),
-  form_factor: ({ value }) => (
-    <OptionSelect
-      name="form_factor"
-      options={FormFactor.PSU.options}
-      defaultValue={value}
-    />
+  width: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  width: ({ value }) => (
-    <Input type="number" step="0.01" name="width" defaultValue={value} />
+  length: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  length: ({ value }) => (
-    <Input type="number" step="0.01" name="length" defaultValue={value} />
+  height: (props) => (
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  height: ({ value }) => (
-    <Input type="number" step="0.01" name="height" defaultValue={value} />
-  ),
-  modular: ({ value }) => (
-    <OptionSelect
-      name="modular"
-      options={PSU.Modular.options}
-      defaultValue={value}
-    />
-  ),
-  atx_pin: ({ value }) => (
-    <Input type="number" name="atx_pin" defaultValue={value} />
-  ),
-  cpu_pin: ({ value }) => (
-    <Input type="number" name="cpu_pin" defaultValue={value} />
-  ),
-  pcie_pin: ({ value }) => (
-    <Input type="number" name="pcie_pin" defaultValue={value} />
-  ),
-  sata_pin: ({ value }) => (
-    <Input type="number" name="sata_pin" defaultValue={value} />
-  ),
-  peripheral_pin: ({ value }) => (
-    <Input type="number" name="peripheral_pin" defaultValue={value} />
-  ),
+  modular: (props) => <OptionSelect options={PSU.Modular.options} {...props} />,
+  atx_pin: (props) => <Input type="number" {...props} />,
+  cpu_pin: (props) => <Input type="number" {...props} />,
+  pcie_pin: (props) => <Input type="number" {...props} />,
+  sata_pin: (props) => <Input type="number" {...props} />,
+  peripheral_pin: (props) => <Input type="number" {...props} />,
 };
 
 function submit(formData: FormData) {
