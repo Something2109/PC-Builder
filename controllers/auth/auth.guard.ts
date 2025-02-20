@@ -18,7 +18,7 @@ export class LoginAuthorizationGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     // Extract token.
-    const [type, token] = request.headers.authorization?.split(" ") ?? [];
+    const [type, token] = request.cookies["Authorization"]?.split(" ") ?? [];
     if (type !== "Bearer") return true; // No token found.
 
     // Verify token.
