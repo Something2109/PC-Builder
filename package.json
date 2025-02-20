@@ -6,6 +6,7 @@
     "@nestjs/mongoose": "^11.0.1",
     "@nestjs/platform-express": "^10.4.8",
     "@nestjs/sequelize": "^10.0.1",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.5",
     "jsdom": "^25.0.1",
     "mongoose": "^8.10.0",
@@ -25,6 +26,7 @@
     "crawl": "tsc ./crawlers/src/*.ts --outDir ./crawlers/dist"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.8",
     "@types/express": "^5.0.0",
     "@types/jsdom": "^21.1.7",
     "@types/uuid": "^10.0.0",
