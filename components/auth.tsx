@@ -7,9 +7,11 @@ import { User } from "@/utils/interface/user/User";
 import { Roles } from "@/utils/Enum";
 import {
   ActionDispatch,
+  ButtonHTMLAttributes,
   createContext,
   InputHTMLAttributes,
   useActionState,
+  useCallback,
   useContext,
   useLayoutEffect,
   useReducer,
@@ -84,20 +86,38 @@ export function AuthRole({
 }
 
 export function LoginButton() {
-  const User = useContext(AuthContext);
-  const setUser = useContext(AuthChanger);
+  const user = useContext(AuthContext);
   const pathname = usePathname();
 
-  if (pathname === LoginPath) return;
+  if (pathname === LoginPath || user) return;
 
   return (
-    <RedirectButton
-      href={`${LoginPath}?redirect=${pathname}`}
-      onClick={User ? () => setUser!(null) : undefined}
-    >
-      {User ? "Log out" : "Log in"}
+    <RedirectButton href={`${LoginPath}?redirect=${pathname}`}>
+      Log in
     </RedirectButton>
   );
+}
+
+function LogoutButton({ ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
+  const setUser = useContext(AuthChanger);
+  const router = useRouter();
+
+  props.type = "button";
+  props.onClick = useCallback(async () => {
+    try {
+      await axios.post("/api/auth/logout", undefined, {
+        withCredentials: true,
+      });
+      setUser!(null);
+      router.push(LoginPath);
+    } catch (err) {
+      const error = err as AxiosError;
+      console.error(err);
+      alert(error.response?.data);
+    }
+  }, []);
+
+  return <button {...props}>Log Out</button>;
 }
 
 type LoginError = {
