@@ -10,6 +10,9 @@ import { Products, Roles } from "@/utils/Enum";
 import { DetailInfo } from "@/utils/interface";
 import { notFound } from "next/navigation";
 import { AuthRole } from "@/components/auth";
+import { ServerAuthRole } from "@/components/auth-server";
+
+const roles = [Roles.ADMIN];
 
 export default async function PartDetailEditPage({
   params,
@@ -28,27 +31,29 @@ export default async function PartDetailEditPage({
   const SaveLink = `/api/part/${part}/${id}`;
 
   return (
-    <AuthRole roles={[Roles.ADMIN]}>
-      <PartForm path={SaveLink} part={part} defaultValue={data} />
-      <ResponsiveWrapper className="w-full align-top">
-        <ColumnWrapper className="basis-1/2">
-          <h1 className="text-4xl font-bold">Raw</h1>
-          <ObjectTable
-            className="border-2"
-            object={data?.raw ? JSON.parse(data.raw) : undefined}
-          />
-        </ColumnWrapper>
-        <ColumnWrapper className="basis-1/2">
-          {Product.Info[part].map((info) => (
-            <InfoForm
-              key={info}
-              path={SaveLink}
-              info={info}
-              defaultValue={data[info]}
+    <ServerAuthRole roles={roles} redirect={`/part/${part}/${id}/edit`}>
+      <AuthRole roles={roles}>
+        <PartForm path={SaveLink} part={part} defaultValue={data} />
+        <ResponsiveWrapper className="w-full align-top">
+          <ColumnWrapper className="basis-1/2">
+            <h1 className="text-4xl font-bold">Raw</h1>
+            <ObjectTable
+              className="border-2"
+              object={data?.raw ? JSON.parse(data.raw) : undefined}
             />
-          ))}
-        </ColumnWrapper>
-      </ResponsiveWrapper>
-    </AuthRole>
+          </ColumnWrapper>
+          <ColumnWrapper className="basis-1/2">
+            {Product.Info[part].map((info) => (
+              <InfoForm
+                key={info}
+                path={SaveLink}
+                info={info}
+                defaultValue={data[info]}
+              />
+            ))}
+          </ColumnWrapper>
+        </ResponsiveWrapper>
+      </AuthRole>
+    </ServerAuthRole>
   );
 }
