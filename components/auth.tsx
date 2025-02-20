@@ -76,10 +76,11 @@ export function AuthRole({
   const router = useRouter();
   const pathname = usePathname();
 
-  if (!user) {
-    router.push(`${LoginPath}?redirect=${pathname}`);
-    return;
-  }
+  useLayoutEffect(() => {
+    if (!user) router.push(`${LoginPath}?redirect=${pathname}`);
+  });
+
+  if (!user) return;
 
   if (!roles.includes(user.role))
     return <h1>You are not authorized to access this page</h1>;
