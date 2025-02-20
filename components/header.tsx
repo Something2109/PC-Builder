@@ -41,7 +41,7 @@ export default function Header() {
 }
 
 const smallScreen =
-  "sticky z-50 mx-auto top-16 md:top-20 flex flex-row flex-wrap overflow-y-hidden bg-navigation h-fit";
+  "sticky z-10 mx-auto top-16 md:top-20 flex flex-row flex-wrap overflow-y-hidden bg-navigation h-fit";
 const mediumScreen = "md:justify-evenly md:max-h-fit";
 
 function NavigationBar({ toggle }: { toggle: boolean }) {
