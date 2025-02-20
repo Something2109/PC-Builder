@@ -1,5 +1,7 @@
+import { Roles } from "@/utils/Enum";
 import { User } from "@/utils/interface/user/User";
 import { verify } from "jsonwebtoken";
+import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
 export async function verifyToken(): Promise<User.JwtPayload | null> {
@@ -24,4 +26,23 @@ export async function verifyToken(): Promise<User.JwtPayload | null> {
     console.error(err);
     return null;
   }
+}
+
+export async function ServerAuthRole({
+  children,
+  roles,
+  redirect: pathname,
+}: {
+  children: React.ReactNode;
+  roles: Roles[];
+  redirect?: string;
+}) {
+  const user = await verifyToken();
+
+  if (!user) redirect(`/auth/login?redirect=${pathname ?? "/"}`);
+
+  if (!roles.includes(user.role))
+    return <h1>You are not authorized to access this page</h1>;
+
+  return children;
 }
