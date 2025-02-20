@@ -42,13 +42,22 @@ export class AuthController {
     return res;
   }
 
-  private setToken(res: Response, token: string) {
+  @Post("logout")
+  async logOut(@Res() res: Response) {
+    this.setToken(res);
+
+    return res;
+  }
+
+  private setToken(res: Response, token?: string) {
     const expired = new Date();
     expired.setDate(expired.getDate() + 2);
 
     res.setHeader(
       "Set-Cookie",
-      `Authorization=Bearer ${token}; Path=/; Expires=${expired}; SameSite=Strict; Secure; HttpOnly`
+      `Authorization=${
+        token ? `Bearer ${token}` : ""
+      }; Path=/; Expires=${expired}; SameSite=Strict; Secure; HttpOnly`
     );
 
     res.json({ access_token: token });
