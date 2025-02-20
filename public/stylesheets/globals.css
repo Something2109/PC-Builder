@@ -3,6 +3,31 @@
 @tailwind utilities;
 
 @layer components {
+  .button {
+    display: block;
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+    border-width: 2px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .button:hover {
+    border-color: #3b82f6;
+    background-color: #cbd5e1;
+  }
+
+  .button:disabled {
+    background-color: transparent;
+    border-width: 0px;
+  }
+
+  .button:hover:disabled {
+    cursor: auto;
+    background-color: transparent;
+  }
+
   .transition-props {
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
