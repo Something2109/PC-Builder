@@ -88,6 +88,13 @@ export function InfoForm({
             ? `Adding ${label.current} ...`
             : `Add ${label.current} Info`}
         </Button>
+        {error ? (
+          <NotificationBar
+            message={error}
+            remove={() => setError(null)}
+            alert
+          />
+        ) : undefined}
       </form>
     );
   }

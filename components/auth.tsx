@@ -101,6 +101,7 @@ export function LoginButton() {
 }
 
 type LoginError = {
+  message?: string;
   username?: string;
   password?: string;
 };
@@ -135,6 +136,13 @@ export function LoginForm({ pathname }: { pathname?: string }) {
       className="flex flex-col w-1/2 m-auto gap-1"
       action={(form) => formAction(form)}
     >
+      {error.message && (
+        <NotificationBar
+          message={error.message}
+          remove={() => setError({})}
+          alert
+        />
+      )}
       <LoginField
         name="username"
         id="username"
