@@ -4,6 +4,12 @@ enum Topics {
   FORUM = "forum",
 }
 
+enum Roles {
+  ADMIN = "admin",
+  USER = "user",
+  GUEST = "guest",
+}
+
 enum Products {
   CPU = "cpu",
   GPU = "gpu",
@@ -22,7 +28,7 @@ enum Products {
   RADIATOR = "radiator",
 }
 
-enum Info {
+enum Infos {
   CPU = "cpu",
   GPU = "gpu",
   GRAPHIC_CARD = "graphic_card",
@@ -40,4 +46,4 @@ enum Info {
   RADIATOR = "radiator",
 }
 
-export { Topics, Products, Info };
+export { Topics, Roles, Products, Infos };

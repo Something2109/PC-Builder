@@ -1,101 +1,77 @@
-import { Products, Topics } from "@/utils/Enum";
 import {
-  BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
-  ParseEnumPipe,
   Post,
+  Query,
 } from "@nestjs/common";
-import {
-  ContentType,
-  ValidateArticle,
-} from "@/utils/interface/article/article";
+import { Article } from "@/utils/interface/article/article";
+import { Roles } from "@/utils/Enum";
+import { QueryFilterPipe, ArticleFilter } from "./article.pipe";
 import { ArticleService } from "./services/article.service";
-import { ImageService } from "./services/image.service";
+import { ZodValidationPipe } from "controllers/utils/utils.modules";
+import { Role } from "controllers/utils/role/role.decorator";
 
-@Controller("api")
+const ArticleValidator = new ZodValidationPipe(Article.Schema.partial());
+const QueryValidator = new QueryFilterPipe();
+
+@Controller("article")
 export class ArticleController {
-  constructor(
-    private articleService: ArticleService,
-    private imageService: ImageService
-  ) {}
+  constructor(private articleService: ArticleService) {}
 
-  @Get(":topic")
-  async getTopic(@Param("topic", new ParseEnumPipe(Topics)) topic: Topics) {
-    const article = await this.articleService.getSummary({ topic });
+  @Get()
+  async listSummaries(@Query(QueryValidator) criteria: ArticleFilter) {
+    const article = await this.articleService.list(criteria);
 
     return JSON.stringify(article);
   }
 
-  @Get(":topic/:part")
-  async getArticle(
-    @Param("topic", new ParseEnumPipe(Topics)) topic: Topics,
-    @Param("part", new ParseEnumPipe(Products)) part: Products
+  @Post()
+  async createArticle(
+    @Body(ArticleValidator) article: Article.Type,
+    @Query(QueryValidator) criteria: ArticleFilter
   ) {
-    const article = await this.articleService.get(topic, part);
+    const result = await this.articleService.create(article, criteria);
 
-    if (article) {
-      return JSON.stringify(article);
-    }
-
-    throw new NotFoundException(
-      `Cannot find ${topic} article with the part: ${part}`
-    );
+    return JSON.stringify(result);
   }
 
-  @Post(":topic/:part")
+  @Get(":id")
+  async getArticle(@Param("id") id: string) {
+    const result = await this.articleService.get(id);
+
+    if (!result)
+      throw new NotFoundException(`Cannot find article of id: ${id}`);
+
+    return JSON.stringify(result);
+  }
+
+  @Role(Roles.ADMIN, Roles.GUEST)
+  @Post(":id")
   async setArticle(
-    @Param("topic", new ParseEnumPipe(Topics)) topic: Topics,
-    @Param("part", new ParseEnumPipe(Products)) part: Products,
-    @Body() article: any
+    @Param("id") id: string,
+    @Body(ArticleValidator) article: Article.Type,
+    @Query(QueryValidator) criteria: ArticleFilter
   ) {
-    if (!ValidateArticle.isArticle(article)) {
-      throw new BadRequestException("Illegal article type");
-    }
+    const result = await this.articleService.set(article, id, criteria);
 
-    const queue: ContentType[] = [...article.content];
+    if (!result)
+      throw new NotFoundException(`Cannot find article of id: ${id}`);
 
-    while (queue.length > 0) {
-      const content = queue.shift()!;
+    return JSON.stringify(result);
+  }
 
-      if (!ValidateArticle.isContent(content)) {
-        throw new BadRequestException(
-          `Illegal type of article content: ${JSON.stringify(content)}`
-        );
-      }
+  @Role(Roles.ADMIN, Roles.GUEST)
+  @Delete(":id")
+  async deleteArticle(@Param("id") id: string) {
+    const result = await this.articleService.delete(id);
 
-      if (content.type === "image") {
-        if (content.image) {
-          const link = this.imageService.set(
-            content.image,
-            "articles",
-            topic,
-            part
-          );
-          content.src = link ?? "";
-          content.image = undefined;
-        }
+    if (!result)
+      throw new NotFoundException(`Cannot find article of id: ${id}`);
 
-        if (content.initial) {
-          this.imageService.remove(`public/${content.initial}`);
-          delete content.initial;
-        }
-      }
-
-      if (content.type === "section" || content.type === "list") {
-        queue.push(...content.content);
-      }
-    }
-
-    const result = await this.articleService.set(topic, part, article);
-
-    if (result) {
-      return JSON.stringify(result);
-    }
-
-    throw new NotFoundException();
+    return JSON.stringify(result);
   }
 }

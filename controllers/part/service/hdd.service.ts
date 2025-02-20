@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import Part from "@/utils/interface/info/Parts";
 import HDD from "@/utils/interface/product/HDD";
-import { Products, Info } from "@/utils/Enum";
+import { Products, Infos } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.HDD]: DetailInfo[Info.HDD];
+  [Infos.HDD]: DetailInfo[Infos.HDD];
 };
 
 @Injectable()
@@ -19,7 +19,7 @@ class HDDService extends BaseDetailPartService<Detail> {
 
     const parsedParams = HDD.Filter.parse(params);
     const options = new FilterOptionBuilder<
-      NonNullable<FilterOptions[Info.HDD]>
+      NonNullable<FilterOptions[Infos.HDD]>
     >()
       .add("form_factor", parsedParams["form_factor"])
       .add("capacity", parsedParams["capacity"])
@@ -28,7 +28,7 @@ class HDDService extends BaseDetailPartService<Detail> {
       .add("write_speed", parsedParams["write_speed"])
       .add("rotational_speed", parsedParams["rotational_speed"]);
 
-    if (options.build()) result[Info.HDD] = options.build();
+    if (options.build()) result[Infos.HDD] = options.build();
 
     return result;
   }

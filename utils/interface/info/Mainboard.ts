@@ -57,7 +57,6 @@ namespace Mainboard {
     ram_form_factor: FormFactor.RAM,
     ram_interface: InternalConnectors.RAM,
     ram_slot: Primitive.Number,
-    expansion_slots: Primitive.Number,
 
     pcies: PCIeSchema,
 
@@ -81,7 +80,6 @@ namespace Mainboard {
     ram_form_factor: "RAM Form Factor",
     ram_interface: "RAM Interface",
     ram_slot: "RAM Slots",
-    expansion_slots: "Expansion Slot",
 
     pcies: "PCIe Slots",
 

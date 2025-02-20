@@ -84,9 +84,6 @@ class MainboardModel extends Model implements PartDetailTable<Mainboard.Info> {
   @Column(DataType.TINYINT)
   declare ram_slot: number | null;
 
-  @Column(DataType.TINYINT)
-  declare expansion_slots: number | null;
-
   /**
    * Declare the pcie object as a virtual column
    * extracting the {@link pcie_data} assossiated with

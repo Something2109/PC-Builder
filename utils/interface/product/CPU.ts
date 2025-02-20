@@ -1,12 +1,12 @@
 import { FilterOptions, NumberFilterOptions, Primitive } from "../utils";
-import { Info } from "../../Enum";
+import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace CPU {
   export const Label = "CPU";
 
-  export const Primary = [Info.CPU];
-  export const Secondary = [Info.GPU];
+  export const Primary = [Infos.CPU];
+  export const Secondary = [Infos.GPU];
 
   export const Filter = z
     .object({

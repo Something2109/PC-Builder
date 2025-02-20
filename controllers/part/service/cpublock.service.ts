@@ -8,15 +8,12 @@ import { PartInformation } from "@/models/parts/tables/Part";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import Part from "@/utils/interface/info/Parts";
 import CPUBlock from "@/utils/interface/product/CPUBlock";
-import { Products, Info } from "@/utils/Enum";
-import {
-  BaseDetailPartService,
-  SearchOptions,
-} from "../interface/service.interface";
+import { Products, Infos } from "@/utils/Enum";
+import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.CPU_BLOCK]: DetailInfo[Info.CPU_BLOCK];
+  [Infos.CPU_BLOCK]: DetailInfo[Infos.CPU_BLOCK];
 };
 
 @Injectable()
@@ -28,18 +25,18 @@ class CPUBlockService extends BaseDetailPartService<Detail> {
 
     const parsedParams = CPUBlock.Filter.parse(params);
     const options = new FilterOptionBuilder<
-      NonNullable<FilterOptions[Info.CPU_BLOCK]>
+      NonNullable<FilterOptions[Infos.CPU_BLOCK]>
     >()
       .add("socket", parsedParams["socket"])
       .add("plate", parsedParams["plate"]);
 
-    if (options.build()) result[Info.CPU_BLOCK] = options.build();
+    if (options.build()) result[Infos.CPU_BLOCK] = options.build();
 
     return result;
   }
 
-  async filter(options: FilterOptions & SearchOptions): Promise<FilterOptions> {
-    let { part, [Info.CPU_BLOCK]: filter } = options;
+  async filter(options: FilterOptions): Promise<FilterOptions> {
+    let { part, [Infos.CPU_BLOCK]: filter } = options;
     filter = filter ?? {};
 
     if (!filter.socket) {

@@ -1,136 +1,73 @@
-type ContentType = ParagraphType | ImageType | ListType | SectionType;
+import { string, z } from "zod";
+import { Primitive } from "../utils";
 
-type ArticleSummary = {
-  url: string;
-  title: string;
-  author: string;
-  standfirst: string;
-  createdAt: Date;
-};
+namespace Article {
+  export type Content = Paragraph | Image | List | Section;
 
-type ContentContainer = {
-  content: Array<ContentType>;
-};
+  export const ContentArray = z.lazy(() =>
+    z.union([Section, List, Paragraph, Image]).array()
+  );
 
-type ArticleType = {
-  type: "article";
-} & Omit<ArticleSummary, "url"> &
-  ContentContainer;
+  export type Section = {
+    type: "section";
+    title: string;
+    content: Content[];
+  };
 
-type SectionType = {
-  type: "section";
-  title: string;
-} & ContentContainer;
+  export const Section: z.ZodType<Section> = z
+    .object({
+      type: z.literal("section"),
+      title: Primitive.String,
+    })
+    .extend({
+      content: ContentArray,
+    });
 
-type ListType = {
-  type: "list";
-  symbol: string;
-} & ContentContainer;
+  export type List = {
+    type: "list";
+    symbol: string;
+    content: Content[];
+  };
 
-type ImageType = {
-  type: "image";
-  src: string;
-  alt?: string;
-  image?: string;
-  initial?: string;
-  caption: string;
-};
+  export const List: z.ZodType<List> = z
+    .object({
+      type: z.literal("list"),
+      symbol: Primitive.String,
+    })
+    .extend({
+      content: ContentArray,
+    });
 
-type ParagraphType = {
-  type: "paragraph";
-  content: string;
-};
+  export type Image = z.infer<typeof Image>;
 
-export class ValidateArticle {
-  private static isContentContainer(content: any): content is ContentContainer {
-    return (
-      content &&
-      typeof content === "object" &&
-      "content" in content &&
-      Array.isArray(content.content)
-    );
-  }
+  export const Image = z.object({
+    type: z.literal("image"),
+    src: Primitive.String,
+    alt: Primitive.String.optional(),
+    caption: Primitive.String,
+  });
 
-  static isArticle(content: any): content is ArticleType {
-    return (
-      content &&
-      typeof content === "object" &&
-      typeof content.type === "string" &&
-      content.type === "article" &&
-      typeof content.title === "string" &&
-      typeof content.standfirst === "string" &&
-      this.isContentContainer(content)
-    );
-  }
+  export type Paragraph = z.infer<typeof Paragraph>;
 
-  static isContent(content: any): content is ContentType {
-    if (!content || !content.type || typeof content.type !== "string") {
-      return false;
-    }
-    switch (content.type) {
-      case "section":
-        return this.isSection(content);
-      case "list":
-        return this.isList(content);
-      case "paragraph":
-        return this.isParagraph(content);
-      case "image":
-        return this.isImage(content);
-    }
+  export const Paragraph = z.object({
+    type: z.literal("paragraph"),
+    content: Primitive.String,
+  });
 
-    return false;
-  }
+  export const Schema = z.object({
+    id: Primitive.String,
+    title: Primitive.String,
+    author: Primitive.String,
+    standfirst: Primitive.String,
+    createdAt: z.coerce.date(),
+    content: ContentArray,
+  });
 
-  static isSection(content: any): content is SectionType {
-    return (
-      content &&
-      typeof content === "object" &&
-      typeof content.type === "string" &&
-      content.type === "section" &&
-      typeof content.title === "string" &&
-      this.isContentContainer(content)
-    );
-  }
+  export type Type = z.infer<typeof Schema>;
 
-  static isList(content: any): content is SectionType {
-    return (
-      content &&
-      typeof content === "object" &&
-      typeof content.type === "string" &&
-      content.type === "list" &&
-      typeof content.symbol === "string" &&
-      this.isContentContainer(content)
-    );
-  }
+  export const Summary = Schema.omit({ content: true });
 
-  static isParagraph(content: any): content is ParagraphType {
-    return (
-      content &&
-      typeof content === "object" &&
-      typeof content.type === "string" &&
-      content.type === "paragraph" &&
-      typeof content.content === "string"
-    );
-  }
-
-  static isImage(content: any): content is ImageType {
-    return (
-      content &&
-      typeof content === "object" &&
-      typeof content.type === "string" &&
-      content.type === "image" &&
-      typeof content.src === "string" &&
-      typeof content.caption === "string"
-    );
-  }
+  export type Summary = z.infer<typeof Summary>;
 }
 
-export type {
-  ArticleSummary,
-  ArticleType,
-  SectionType,
-  ImageType,
-  ListType,
-  ContentType,
-  ParagraphType,
-};
+export { Article };

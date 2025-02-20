@@ -1,32 +1,25 @@
 import { CreationAttributes, Includeable, ModelStatic, Op } from "sequelize";
 import { Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts/tables/Part";
-import { Info, Products } from "@/utils/Enum";
 import { InfoModels } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
 import Part from "@/utils/interface/info/Parts";
+import { APIMapping } from "@/utils/interface/api";
 import { FilterOptionsType, Primitive } from "@/utils/interface/utils";
 import {
   FilterOptions as Filter,
   DetailInfo as Options,
-  FilterAttributes,
-  ProductInfo,
 } from "@/utils/interface";
+import { Infos, Products } from "@/utils/Enum";
+import { Product } from "@/utils/interface/product";
+import { Information } from "@/utils/interface/info";
 import { ZodSchema } from "zod";
-
-type ListResult<Part> = {
-  total: number;
-  list: Part[];
-};
 
 type SearchOptions = {
   q?: string;
 };
 
-type PageOptions = {
-  page: number;
-  limit: number;
-};
+type PageOptions = APIMapping.PageOptions;
 
 /**
  * A base service class for handling parts data.
@@ -38,9 +31,20 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @param options The filter options to apply.
    * @returns The list of parts that satisfy the filter options.
    */
-  abstract list(
+  async list(
     options: Filter & PageOptions & SearchOptions
-  ): Promise<ListResult<Detail>>;
+  ): Promise<APIMapping.Payload<Detail>> {
+    let { part } = options;
+
+    const FilteredPart = PartInformation.scope([
+      ModelScopes.SUMMARY,
+      { method: [ModelScopes.FILTER, part] },
+    ]);
+
+    const { rows, count } = await this.listFromPart(FilteredPart, options);
+
+    return { total: count, list: rows.map((value) => value.toJSON()) };
+  }
 
   /**
    * Create a new {@link Filter} object that filters
@@ -48,7 +52,21 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @param options The filter options to apply.
    * @returns The created filter object.
    */
-  abstract filter(options: Filter & SearchOptions): Promise<Filter>;
+  async filter(options: Filter & SearchOptions): Promise<Filter> {
+    const FilteredPart = PartInformation.scope({
+      method: [ModelScopes.FILTER, options.part],
+    });
+
+    const result: Filter = {
+      part: await this.filterFromModel(
+        FilteredPart,
+        options.part ?? {},
+        Part.FilterAttributes
+      ),
+    };
+
+    return result;
+  }
 
   /**
    * Create the option to pass into the {@link list} and {@link filter} functions
@@ -60,24 +78,12 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
   options(
     params: Record<string, string | string[]>
   ): Filter & PageOptions & SearchOptions {
-    const result: Filter & PageOptions & SearchOptions = {
-      page: 1,
-      limit: 50,
-    };
+    const result: Filter & PageOptions & SearchOptions =
+      APIMapping.toPageOptions(params);
 
     if (params.q) {
       result.q = Array.isArray(params.q) ? params.q.join("|") : params.q;
     }
-
-    const page = Number(
-      Array.isArray(params.page) ? params.page[0] : params.page
-    );
-    result.page = page > 0 ? page : 1;
-
-    const limit = Number(
-      Array.isArray(params.limit) ? params.limit[0] : params.limit
-    );
-    result.limit = limit > 0 ? limit : 50;
 
     return result;
   }
@@ -155,7 +161,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
     options: PageOptions & SearchOptions,
     ...include: Includeable[]
   ): Promise<{ rows: PartInformation[]; count: number }> {
-    const { page = 1, limit = 50 } = options ?? {};
+    const { page, limit } = options;
     const where = options?.q
       ? { name: { [Op.like]: `%${options.q}%` } }
       : undefined;
@@ -327,14 +333,14 @@ abstract class BaseDetailPartService<
 
   async list(
     options: Filter & PageOptions & SearchOptions
-  ): Promise<ListResult<Detail>> {
+  ): Promise<APIMapping.Payload<Detail>> {
     const { part, ...rest } = options;
 
     const FilteredPart = PartInformation.scope({
       method: [ModelScopes.SUMMARY, { ...part, part: [this.part] }],
     });
 
-    const include: Includeable[] = ProductInfo[this.part].map((info) => ({
+    const include: Includeable[] = Product.Info[this.part].map((info) => ({
       model: InfoModels[info].scope({
         method: [ModelScopes.SUMMARY, rest[info]],
       }),
@@ -353,7 +359,7 @@ abstract class BaseDetailPartService<
   async filter(options: Filter & SearchOptions): Promise<Filter> {
     const part = { ...options.part, part: [this.part] };
 
-    const FilteredInfos = ProductInfo[this.part].map((info) =>
+    const FilteredInfos = Product.Info[this.part].map((info) =>
       InfoModels[info].scope({ method: [ModelScopes.FILTER, options[info]] })
     );
     const FilteredPart = PartInformation.scope({
@@ -370,14 +376,14 @@ abstract class BaseDetailPartService<
     };
 
     const infoPromise = FilteredInfos.map(async (model, index) => {
-      const info = ProductInfo[this.part][index];
+      const info = Product.Info[this.part][index];
 
       let filter: any = null;
       if (options[info] !== null) {
         filter = await this.filterFromModel(
           model,
           (options[info] as any) ?? {},
-          FilterAttributes[info],
+          Information.FilterAttributes[info],
           FilteredPart
         );
       }
@@ -428,7 +434,7 @@ abstract class BaseDetailPartService<
     const part = Part.Schema.partial().parse(options);
     const instance = await super.buildPart(
       { ...part, part: this.part },
-      ...ProductInfo[this.part].map((info) =>
+      ...Product.Info[this.part].map((info) =>
         InfoModels[info].scope(ModelScopes.DETAIL)
       ),
       ...include
@@ -437,7 +443,7 @@ abstract class BaseDetailPartService<
     if (typeof instance === "string") return instance;
 
     await Promise.all(
-      ProductInfo[this.part].map((info) =>
+      Product.Info[this.part].map((info) =>
         this.setDetailModel(instance, options, info)
       )
     );
@@ -451,7 +457,7 @@ abstract class BaseDetailPartService<
   ): Promise<PartInformation | null> {
     const instance = await super.getPart(
       id,
-      ...ProductInfo[this.part].map((info) =>
+      ...Product.Info[this.part].map((info) =>
         InfoModels[info].scope(ModelScopes.DETAIL)
       ),
       ...include
@@ -471,7 +477,7 @@ abstract class BaseDetailPartService<
     const instance = await super.setPart(
       { ...part, part: this.part },
       id,
-      ...ProductInfo[this.part].map((info) =>
+      ...Product.Info[this.part].map((info) =>
         InfoModels[info].scope(ModelScopes.DETAIL)
       ),
       ...include
@@ -480,7 +486,7 @@ abstract class BaseDetailPartService<
     if (!instance || typeof instance === "string") return instance;
 
     await Promise.all(
-      ProductInfo[this.part].map((info) =>
+      Product.Info[this.part].map((info) =>
         this.setDetailModel(instance, options, info)
       )
     );
@@ -492,7 +498,7 @@ abstract class BaseDetailPartService<
     await instance.save();
 
     await Promise.all(
-      ProductInfo[this.part].map((info) => instance[info]?.save())
+      Product.Info[this.part].map((info) => instance[info]?.save())
     );
   }
 
@@ -509,7 +515,7 @@ abstract class BaseDetailPartService<
   protected async setDetailModel(
     instance: PartInformation,
     data: Options,
-    info: Info
+    info: Infos
   ): Promise<void> {
     const options = data[info];
 
@@ -531,9 +537,4 @@ abstract class BaseDetailPartService<
   }
 }
 
-export {
-  BasePartService,
-  BaseDetailPartService,
-  type PageOptions,
-  type SearchOptions,
-};
+export { BasePartService, BaseDetailPartService };

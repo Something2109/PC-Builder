@@ -7,10 +7,13 @@ services:
     ports:
       - 5000:3000
     environment:
-      - DATABASE_HOST=mysql
-      - DATABASE_PORT=3306
-      - DATABASE_NAME=PC_Builder
-      - DATABASE_USERNAME=NestjsApp
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MONGO_HOST=mongo:27017
+      - DATABASE_NAME=${DATABASE_NAME:-PC_Builder}
+      - DATABASE_USERNAME=${DATABASE_USERNAME:-NestjsApp}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:?error}
+      - JWT_SECRET=${JWT_SECRET:?error}
     env_file:
       - .env
     profiles:
@@ -23,12 +26,13 @@ services:
     ports:
       - 5000:3000
     environment:
-      - DATABASE_HOST=mysql
-      - DATABASE_PORT=3306
-      - DATABASE_NAME=PC_Builder
-      - DATABASE_USERNAME=NestjsApp
-    env_file:
-      - .env
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MONGO_HOST=mongo:27017
+      - DATABASE_NAME=${DATABASE_NAME:-PC_Builder}
+      - DATABASE_USERNAME=${DATABASE_USERNAME:-NestjsApp}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:?error}
+      - JWT_SECRET=${JWT_SECRET:?error}
     profiles:
       - development
     develop:

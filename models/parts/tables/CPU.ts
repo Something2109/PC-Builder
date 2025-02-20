@@ -28,20 +28,7 @@ import {
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({
-  modelName: Tables.CPU,
-  validate: {
-    coresValidate() {
-      if (
-        this.base_frequency &&
-        this.turbo_frequency &&
-        this.base_frequency > this.turbo_frequency
-      ) {
-        throw new Error("Base frequency cannot be larger than the turbo");
-      }
-    },
-  },
-})
+@Table({ modelName: Tables.CPU })
 class CPUModel extends Model implements PartDetailTable<CPU.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

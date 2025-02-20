@@ -2,12 +2,12 @@ import { Injectable } from "@nestjs/common";
 import Part from "@/utils/interface/info/Parts";
 import SSDProduct from "@/utils/interface/product/SSD";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
-import { Products, Info } from "@/utils/Enum";
+import { Products, Infos } from "@/utils/Enum";
 import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Info.SSD]: DetailInfo[Info.SSD];
+  [Infos.SSD]: DetailInfo[Infos.SSD];
 };
 
 @Injectable()
@@ -19,7 +19,7 @@ class SSDService extends BaseDetailPartService<Detail> {
 
     const parsedParams = SSDProduct.Filter.parse(params);
     const options = new FilterOptionBuilder<
-      NonNullable<FilterOptions[Info.SSD]>
+      NonNullable<FilterOptions[Infos.SSD]>
     >()
       .add("memory_type", parsedParams["memory_type"])
       .add("form_factor", parsedParams["form_factor"])
@@ -28,7 +28,7 @@ class SSDService extends BaseDetailPartService<Detail> {
       .add("read_speed", parsedParams["read_speed"])
       .add("write_speed", parsedParams["write_speed"]);
 
-    if (options.build()) result[Info.SSD] = options.build();
+    if (options.build()) result[Infos.SSD] = options.build();
 
     return result;
   }

@@ -12,9 +12,10 @@ import {
   BadRequestException,
 } from "@nestjs/common";
 import { PartService } from "./part.service";
-import { Products } from "@/utils/Enum";
+import { Products, Roles } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
+import { Role } from "controllers/utils/role/role.decorator";
 
 const ProductValidator = new ParseEnumPipe(Products, {
   exceptionFactory: () => new NotFoundException("Product's not found"),
@@ -25,7 +26,7 @@ const CreateValidator = new ZodValidationPipe(
 );
 const UpdateValidator = new ZodValidationPipe(DetailInfo.partial());
 
-@Controller("api/part")
+@Controller("part")
 export class PartController {
   constructor(private service: PartService) {}
 
@@ -93,6 +94,7 @@ export class PartController {
     return JSON.stringify(data);
   }
 
+  @Role(Roles.ADMIN)
   @Post(":part")
   async createPart(
     @Param("part", ProductValidator) part: Products,
@@ -127,6 +129,7 @@ export class PartController {
     throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
   }
 
+  @Role(Roles.ADMIN)
   @Post(":part/:id")
   async setPart(
     @Param("part", ProductValidator) part: Products,
@@ -148,6 +151,7 @@ export class PartController {
     throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
   }
 
+  @Role(Roles.ADMIN)
   @Delete(":part/:id")
   async deletePart(
     @Param("part", ProductValidator) part: Products,
