@@ -2,12 +2,11 @@
 
 import {
   ChangeEvent,
-  HTMLInputTypeAttribute,
   InputHTMLAttributes,
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
   useCallback,
-  useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -30,7 +29,7 @@ export function TextArea({
     textarea.current!.style.height = "auto";
     textarea.current!.style.height = textarea.current!.scrollHeight + "px";
   };
-  useEffect(resize, []);
+  useLayoutEffect(resize, []);
 
   return (
     <textarea
