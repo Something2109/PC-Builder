@@ -78,7 +78,7 @@ export class ArticleService {
 
     if (!instance) return null;
 
-    await instance.updateOne({ ...criteria, ...article });
+    await instance.set({ ...criteria, ...article }).save();
 
     return this.toArticleType(instance);
   }
