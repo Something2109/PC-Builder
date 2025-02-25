@@ -1,4 +1,4 @@
-import { EditableArticle } from "@/components/article";
+import { EditableArticle } from "@/components/articles/Form";
 import { Article } from "@/utils/interface/article/article";
 import { AuthRole } from "@/components/auth";
 import { Roles } from "@/utils/Enum";
