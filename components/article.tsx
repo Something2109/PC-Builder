@@ -16,11 +16,20 @@ function ArticleComponent({ article }: { article: Article.Type }) {
   return (
     <article className="flex flex-col gap-2 w-full">
       <h1 className="font-bold text-4xl my-5">{article.title}</h1>
-      <Paragraph content={{ type: "paragraph", content: article.standfirst }} />
+      <Paragraph
+        content={{
+          type: Article.ContentName.Paragraph,
+          content: article.standfirst,
+        }}
+      />
       {article.content.map((content, index) => (
         <ContentRenderer
           content={content}
-          prefix={content.type === "section" ? `${sectionCount++}.` : undefined}
+          prefix={
+            content.type === Article.ContentName.Section
+              ? `${sectionCount++}.`
+              : undefined
+          }
           key={`${index + 1}.${content.type}`}
         />
       ))}
@@ -50,7 +59,11 @@ function EditableArticle({ article }: { article: Article.Type }) {
         <InputRenderer
           key={new Date().getTime() + index}
           content={content}
-          prefix={content.type === "section" ? `${sectionCount++}.` : undefined}
+          prefix={
+            content.type === Article.ContentName.Section
+              ? `${sectionCount++}.`
+              : undefined
+          }
           updateSelf={updateContent(article.content, content, setChange)}
         />
       ))}
