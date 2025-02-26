@@ -2,6 +2,13 @@ import { string, z } from "zod";
 import { Primitive } from "../utils";
 
 namespace Article {
+  export enum ContentName {
+    Paragraph = "paragraph",
+    Image = "image",
+    List = "list",
+    Section = "section",
+  }
+
   export type Content = Paragraph | Image | List | Section;
 
   export const ContentArray = z.lazy(() =>
@@ -9,14 +16,14 @@ namespace Article {
   );
 
   export type Section = {
-    type: "section";
+    type: ContentName.Section;
     title: string;
     content: Content[];
   };
 
   export const Section: z.ZodType<Section> = z
     .object({
-      type: z.literal("section"),
+      type: z.literal(ContentName.Section),
       title: Primitive.String,
     })
     .extend({
@@ -24,14 +31,14 @@ namespace Article {
     });
 
   export type List = {
-    type: "list";
+    type: ContentName.List;
     symbol: string;
     content: Content[];
   };
 
   export const List: z.ZodType<List> = z
     .object({
-      type: z.literal("list"),
+      type: z.literal(ContentName.List),
       symbol: Primitive.String,
     })
     .extend({
@@ -41,7 +48,7 @@ namespace Article {
   export type Image = z.infer<typeof Image>;
 
   export const Image = z.object({
-    type: z.literal("image"),
+    type: z.literal(ContentName.Image),
     src: Primitive.String,
     alt: Primitive.String.optional(),
     caption: Primitive.String,
@@ -50,7 +57,7 @@ namespace Article {
   export type Paragraph = z.infer<typeof Paragraph>;
 
   export const Paragraph = z.object({
-    type: z.literal("paragraph"),
+    type: z.literal(ContentName.Paragraph),
     content: Primitive.String,
   });
 
