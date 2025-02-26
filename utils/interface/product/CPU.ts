@@ -5,8 +5,8 @@ import { z } from "zod";
 export namespace CPU {
   export const Label = "CPU";
 
-  export const Primary = [Infos.CPU];
-  export const Secondary = [Infos.GPU];
+  export const Primary = [Infos.CPU, Infos.GPU];
+  export const Secondary = [];
 
   export const Filter = z
     .object({
