@@ -50,13 +50,13 @@ class RAMModel extends Model implements PartDetailTable<RAM.Info> {
 
   @Column(DataType.STRING)
   get latency(): number[] | undefined {
-    const data = this.getDataValue("latency_json");
+    const data = this.getDataValue("latency");
 
     return data ? JSON.parse(data) : undefined;
   }
 
   set latency(value: number[] | null) {
-    this.setDataValue("latency_json", value ? JSON.stringify(value) : null);
+    this.setDataValue("latency", value ? JSON.stringify(value) : null);
   }
 
   @Column(DataType.TINYINT)
