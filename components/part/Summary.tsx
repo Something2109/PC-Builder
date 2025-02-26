@@ -6,7 +6,7 @@ import { Information } from "@/utils/interface/info";
 import { Product } from "@/utils/interface/product";
 import { SummaryInfo } from "@/utils/interface";
 import Part from "@/utils/interface/info/Parts";
-import { lazy, TableHTMLAttributes } from "react";
+import { lazy, TableHTMLAttributes, useMemo } from "react";
 
 export const SummaryInfoComponent = {
   [Infos.CPU]: lazy(() => import("@/components/part/summary/CPU")),
@@ -37,9 +37,11 @@ export default function SummaryTable({
   data: SummaryInfo[];
   part: Products;
 } & TableHTMLAttributes<HTMLTableElement>) {
+  const TableHeader = useMemo(() => <TableHead part={part} />, [part]);
+
   return (
     <table className="w-full border-separate border-spacing-0" {...rest}>
-      <TableHead part={part} />
+      {TableHeader}
       <TableBody data={data} part={part} />
     </table>
   );
@@ -52,19 +54,28 @@ const tableRow = "*:p-2 lg:table-row *:lg:border-b-2 ";
 const TableHead = ({ part }: { part: Products }) => (
   <thead className={tableHead}>
     <tr className={`hidden ${tableRow}`}>
-      <td>{Part.Label.name}</td>
-      <td>{Part.Label.brand}</td>
-      <td>{Part.Label.series}</td>
+      <td rowSpan={2}>{Part.Label.name}</td>
+      <td rowSpan={2}>{Part.Label.brand}</td>
+      <td rowSpan={2}>{Part.Label.series}</td>
+      {Product.Info[part].map((info: Infos) => (
+        <td
+          colSpan={Information.SummaryAttributes[info].length}
+          key={`Header-${info}`}
+        >
+          {Information.Label[info]}
+        </td>
+      ))}
+    </tr>
+    <tr className={`hidden ${tableRow}`}>
       {Product.Info[part]
         .map((info: Infos) =>
-          Information.SummaryAttributes[info].map(
-            (attr) => Information.AttributeLabels[info][attr]
-          )
+          Information.SummaryAttributes[info].map((attr) => (
+            <td key={`Header-${info}-${attr}`}>
+              {Information.AttributeLabels[info][attr]}
+            </td>
+          ))
         )
-        .flat()
-        .map((attr) => (
-          <td key={`Header-${attr}`}>{attr}</td>
-        ))}
+        .flat()}
     </tr>
   </thead>
 );
