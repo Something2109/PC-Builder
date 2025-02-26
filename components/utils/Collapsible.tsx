@@ -14,7 +14,7 @@ function VerticalCollapsible({
     <ColumnWrapper {...divAttributes}>
       <button
         type="button"
-        className="flex flex-row w-full px-2 border-b-2 justify-between"
+        className="flex flex-row w-full p-2 border-b-2 justify-between"
         onClick={() => setCollapse(!collapse)}
       >
         {header}
