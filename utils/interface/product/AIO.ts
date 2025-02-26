@@ -5,7 +5,12 @@ import { z } from "zod";
 export namespace AIO {
   export const Label = "AIO";
 
-  export const Primary = [Infos.AIO];
+  export const Primary = [
+    Infos.CPU_BLOCK,
+    Infos.FAN,
+    Infos.PUMP,
+    Infos.RADIATOR,
+  ];
   export const Secondary = [];
 
   export const Filter = z
