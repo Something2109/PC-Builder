@@ -134,7 +134,10 @@ class CPUBlockModel extends Model implements PartDetailTable<CPUBlock.Info> {
   async save(options?: SaveOptions<any> | undefined): Promise<this> {
     const result = await super.save(options);
 
-    await Promise.all(this.socket_data?.map((socket) => socket.save(options)));
+    this.socket_data &&
+      (await Promise.all(
+        this.socket_data.map((socket) => socket.save(options))
+      ));
 
     return result;
   }
