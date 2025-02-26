@@ -7,7 +7,7 @@ import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Infos.GRAPHIC_CARD]: DetailInfo[Infos.GRAPHIC_CARD];
+  [key in (typeof GraphicCard.Primary)[number]]: DetailInfo[key];
 };
 
 @Injectable()

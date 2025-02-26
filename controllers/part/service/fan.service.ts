@@ -7,7 +7,7 @@ import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Infos.FAN]: DetailInfo[Infos.FAN];
+  [key in (typeof FanProduct.Primary)[number]]: DetailInfo[key];
 };
 
 @Injectable()

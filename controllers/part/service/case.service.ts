@@ -17,7 +17,7 @@ import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Infos.CASE]: DetailInfo[Infos.CASE];
+  [key in (typeof Case.Primary)[number]]: DetailInfo[key];
 };
 
 @Injectable()

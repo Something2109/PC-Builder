@@ -7,8 +7,7 @@ import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Infos.CPU]: DetailInfo[Infos.CPU];
-  [Infos.GPU]?: DetailInfo[Infos.GPU];
+  [key in (typeof CPU.Primary)[number]]: DetailInfo[key];
 };
 
 @Injectable()

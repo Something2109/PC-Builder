@@ -7,7 +7,7 @@ import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Infos.SSD]: DetailInfo[Infos.SSD];
+  [key in (typeof SSDProduct.Primary)[number]]: DetailInfo[key];
 };
 
 @Injectable()

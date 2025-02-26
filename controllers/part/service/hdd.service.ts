@@ -7,7 +7,7 @@ import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Infos.HDD]: DetailInfo[Infos.HDD];
+  [key in (typeof HDD.Primary)[number]]: DetailInfo[key];
 };
 
 @Injectable()

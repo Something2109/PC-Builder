@@ -13,7 +13,7 @@ import { BaseDetailPartService } from "../interface/service.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
-  [Infos.CPU_BLOCK]: DetailInfo[Infos.CPU_BLOCK];
+  [key in (typeof CPUBlock.Primary)[number]]: DetailInfo[key];
 };
 
 @Injectable()
