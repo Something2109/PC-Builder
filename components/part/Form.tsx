@@ -1,12 +1,12 @@
 "use client";
 
 import { Button } from "@/components/utils/Button";
-import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { Information } from "@/utils/interface/info";
 import { Infos } from "@/utils/Enum";
 import React, { lazy, useActionState, useRef, useState } from "react";
 import { DetailInfo } from "@/utils/interface";
 import { NotificationBar } from "../utils/NotificationBar";
+import { VerticalCollapsible } from "../utils/Collapsible";
 
 const InputComponent = {
   [Infos.CPU]: lazy(() => import("@/components/part/input/CPU")),
@@ -75,9 +75,18 @@ export function InfoForm({
 
   if (!Component) return undefined;
 
-  if (!formValue) {
-    return (
-      <form className="flex flex-col gap-1">
+  return (
+    <form className="flex flex-col gap-1">
+      {formValue ? (
+        <VerticalCollapsible className="sticky top-32">
+          <h1 className="text-4xl font-bold">{label.current}</h1>
+          <Component
+            pending={pending}
+            onSubmit={save}
+            defaultValue={formValue as any}
+          />
+        </VerticalCollapsible>
+      ) : (
         <Button
           type="submit"
           className="w-full"
@@ -88,32 +97,7 @@ export function InfoForm({
             ? `Adding ${label.current} ...`
             : `Add ${label.current} Info`}
         </Button>
-        {error ? (
-          <NotificationBar
-            message={error}
-            remove={() => setError(null)}
-            alert
-          />
-        ) : undefined}
-      </form>
-    );
-  }
-
-  return (
-    <form className="flex flex-col gap-1">
-      <RowWrapper className="sticky top-32 justify-between items-center">
-        <h1 className="text-4xl font-bold">{label.current}</h1>
-        {!pending && (
-          <Button type="submit" formAction={() => save(null)}>
-            Delete
-          </Button>
-        )}
-      </RowWrapper>
-      <Component
-        pending={pending}
-        onSubmit={save}
-        defaultValue={formValue as any}
-      />
+      )}
       {error ? (
         <NotificationBar message={error} remove={() => setError(null)} alert />
       ) : undefined}

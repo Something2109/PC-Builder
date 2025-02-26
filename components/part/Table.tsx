@@ -3,6 +3,7 @@
 import { Information } from "@/utils/interface/info";
 import { Infos } from "@/utils/Enum";
 import { lazy } from "react";
+import { VerticalCollapsible } from "../utils/Collapsible";
 
 export const DetailTableComponent = {
   [Infos.CPU]: lazy(() => import("@/components/part/detail/CPU")),
@@ -36,9 +37,9 @@ export function InfoTable({
   if (!defaultValue || !Component) return undefined;
 
   return (
-    <>
+    <VerticalCollapsible>
       <h1 className="text-4xl font-bold">{Information.Label[info]}</h1>
       <Component key={info} defaultValue={defaultValue} />
-    </>
+    </VerticalCollapsible>
   );
 }
