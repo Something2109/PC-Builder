@@ -6,7 +6,7 @@ import { LengthUnits } from "@/utils/extract/Units";
 
 const Components: InfoInputMapping<Radiator.Info> = {
   form_factor: (props) => (
-    <OptionSelect options={FormFactor.Pump.options} {...props} />
+    <OptionSelect options={FormFactor.Radiator.options} {...props} />
   ),
   width: (props) => (
     <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />

@@ -1,5 +1,11 @@
+import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
-import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
+import {
+  SuffixInput,
+  UnitInput,
+  OptionSelect,
+  Input,
+} from "@/components/utils/Input";
 import { MemoryUnits, TransferSpeedUnit } from "@/utils/extract/Units";
 import RAM from "@/utils/interface/info/RAM";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
@@ -14,7 +20,37 @@ const Components: InfoInputMapping<RAM.Info> = {
   voltage: (props) => (
     <SuffixInput suffix="V" type="number" step={0.01} {...props} />
   ),
-  latency: (props) => <></>,
+  latency: ({ defaultValue, value, ...props }) => (
+    <RowWrapper>
+      <Input
+        {...props}
+        type="number"
+        className="w-1/5"
+        defaultValue={defaultValue ? defaultValue[0] : ""}
+      ></Input>
+      {" - "}
+      <Input
+        {...props}
+        type="number"
+        className="w-1/5"
+        defaultValue={defaultValue ? defaultValue[1] : ""}
+      ></Input>
+      {" - "}
+      <Input
+        {...props}
+        type="number"
+        className="w-1/5"
+        defaultValue={defaultValue ? defaultValue[2] : ""}
+      ></Input>
+      {" - "}
+      <Input
+        {...props}
+        type="number"
+        className="w-1/5"
+        defaultValue={defaultValue ? defaultValue[3] : ""}
+      ></Input>
+    </RowWrapper>
+  ),
   kit: (props) => (
     <SuffixInput suffix="stick(s)" type="number" step={0.01} {...props} />
   ),
@@ -27,7 +63,14 @@ const Components: InfoInputMapping<RAM.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries());
+  const raw = Object.fromEntries(formData.entries()) as Record<
+    string,
+    string | string[]
+  >;
+
+  raw.latency = formData
+    .getAll("latency")
+    .filter((v) => Number(v) > 0) as string[];
 
   return RAM.Schema.partial().parse(raw);
 }
