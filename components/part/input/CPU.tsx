@@ -6,6 +6,10 @@ import {
   MemoryUnits,
 } from "@/utils/extract/Units";
 import CPU from "@/utils/interface/info/CPU";
+import { DetailInfo } from "@/utils/interface";
+import { Infos } from "@/utils/Enum";
+
+const Schema = DetailInfo.shape[Infos.CPU];
 
 export const Components: InfoInputMapping<CPU.Info> = {
   family: (props) => <Input {...props} />,
@@ -43,8 +47,15 @@ export const Components: InfoInputMapping<CPU.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries());
+  const raw = Object.fromEntries(
+    formData
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+  ) as Record<string, string | string[]>;
 
-  return raw;
+  return Schema.parse(raw)!;
 }
 export default GenericInputTable(Components, CPU.Label, submit);

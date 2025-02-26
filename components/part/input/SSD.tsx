@@ -3,6 +3,10 @@ import { UnitInput, OptionSelect } from "@/components/utils/Input";
 import SSD from "@/utils/interface/info/SSD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
+import { DetailInfo } from "@/utils/interface";
+import { Infos } from "@/utils/Enum";
+
+const Schema = DetailInfo.shape[Infos.SSD];
 
 const Components: InfoInputMapping<SSD.Info> = {
   memory_type: (props) => (
@@ -30,9 +34,16 @@ const Components: InfoInputMapping<SSD.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries());
+  const raw = Object.fromEntries(
+    formData
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+  ) as Record<string, string | string[]>;
 
-  return raw;
+  return Schema.parse(raw)!;
 }
 
 export default GenericInputTable(Components, SSD.Label, submit);

@@ -9,6 +9,10 @@ import {
 import { MemoryUnits, TransferSpeedUnit } from "@/utils/extract/Units";
 import RAM from "@/utils/interface/info/RAM";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import { DetailInfo } from "@/utils/interface";
+import { Infos } from "@/utils/Enum";
+
+const Schema = DetailInfo.shape[Infos.RAM];
 
 const Components: InfoInputMapping<RAM.Info> = {
   speed: (props) => (
@@ -63,16 +67,20 @@ const Components: InfoInputMapping<RAM.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries()) as Record<
-    string,
-    string | string[]
-  >;
+  const raw = Object.fromEntries(
+    formData
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+  ) as Record<string, string | string[]>;
 
   raw.latency = formData
     .getAll("latency")
     .filter((v) => Number(v) > 0) as string[];
 
-  return RAM.Schema.partial().parse(raw);
+  return Schema.parse(raw)!;
 }
 
 export default GenericInputTable(Components, RAM.Label, submit);

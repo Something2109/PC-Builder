@@ -3,6 +3,10 @@ import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
 import HDD from "@/utils/interface/info/HDD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
+import { DetailInfo } from "@/utils/interface";
+import { Infos } from "@/utils/Enum";
+
+const Schema = DetailInfo.shape[Infos.HDD];
 
 const Components: InfoInputMapping<HDD.Info> = {
   rotational_speed: (props) => (
@@ -29,9 +33,16 @@ const Components: InfoInputMapping<HDD.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries());
+  const raw = Object.fromEntries(
+    formData
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+  ) as Record<string, string | string[]>;
 
-  return HDD.Schema.partial().parse(raw);
+  return Schema.parse(raw)!;
 }
 
 export default GenericInputTable(Components, HDD.Label, submit);

@@ -8,6 +8,10 @@ import {
 import AIO from "@/utils/interface/info/AIO";
 import { FormFactor, Material } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
+import { DetailInfo } from "@/utils/interface";
+import { Infos } from "@/utils/Enum";
+
+const Schema = DetailInfo.shape[Infos.AIO];
 
 const Components: InfoInputMapping<AIO.Info> = {
   form_factor: (props) => (
@@ -39,8 +43,15 @@ const Components: InfoInputMapping<AIO.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries());
+  const raw = Object.fromEntries(
+    formData
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+  ) as Record<string, string | string[]>;
 
-  return AIO.Schema.partial().parse(raw);
+  return Schema.parse(raw)!;
 }
 export default GenericInputTable(Components, AIO.Label, submit);

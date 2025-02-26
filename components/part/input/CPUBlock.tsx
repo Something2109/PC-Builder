@@ -7,6 +7,10 @@ import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button } from "@/components/utils/Button";
 import { ResponsiveWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { DetailInfo } from "@/utils/interface";
+import { Infos } from "@/utils/Enum";
+
+const Schema = DetailInfo.shape[Infos.CPU_BLOCK];
 
 const Components: InfoInputMapping<CPUBlock.Info> = {
   socket: ({ defaultValue, ...props }) => {
@@ -44,16 +48,20 @@ const Components: InfoInputMapping<CPUBlock.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries()) as Record<
-    string,
-    string | string[]
-  >;
+  const raw = Object.fromEntries(
+    formData
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+  ) as Record<string, string | string[]>;
 
   raw.socket = (formData.getAll("socket") as string[]).filter(
     (val) => val.length > 0
   );
 
-  return CPUBlock.Schema.partial().parse(raw);
+  return Schema.parse(raw)!;
 }
 
 export default GenericInputTable(Components, CPUBlock.Label, submit);

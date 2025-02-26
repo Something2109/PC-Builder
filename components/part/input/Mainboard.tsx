@@ -2,6 +2,10 @@ import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 import { Input, SuffixInput, OptionSelect } from "@/components/utils/Input";
 import Mainboard from "@/utils/interface/info/Mainboard";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import { DetailInfo } from "@/utils/interface";
+import { Infos } from "@/utils/Enum";
+
+const Schema = DetailInfo.shape[Infos.MAIN];
 
 const Components: InfoInputMapping<Mainboard.Info> = {
   form_factor: (props) => (
@@ -28,9 +32,16 @@ const Components: InfoInputMapping<Mainboard.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries());
+  const raw = Object.fromEntries(
+    formData
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+  ) as Record<string, string | string[]>;
 
-  return Mainboard.Schema.partial().parse(raw);
+  return Schema.parse(raw)!;
 }
 
 export default GenericInputTable(Components, Mainboard.Label, submit);

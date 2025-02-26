@@ -3,6 +3,10 @@ import { Input, UnitInput, OptionSelect } from "@/components/utils/Input";
 import Cooler from "@/utils/interface/info/Cooler";
 import { Material } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
+import { DetailInfo } from "@/utils/interface";
+import { Infos } from "@/utils/Enum";
+
+const Schema = DetailInfo.shape[Infos.COOLER];
 
 const Components: InfoInputMapping<Cooler.Info> = {
   socket: (props) => <Input {...props} />,
@@ -21,8 +25,15 @@ const Components: InfoInputMapping<Cooler.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries());
+  const raw = Object.fromEntries(
+    formData
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+  ) as Record<string, string | string[]>;
 
-  return Cooler.Schema.partial().parse(raw);
+  return Schema.parse(raw)!;
 }
 export default GenericInputTable(Components, Cooler.Label, submit);

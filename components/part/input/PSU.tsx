@@ -8,6 +8,10 @@ import {
 import PSU from "@/utils/interface/info/PSU";
 import { FormFactor } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
+import { DetailInfo } from "@/utils/interface";
+import { Infos } from "@/utils/Enum";
+
+const Schema = DetailInfo.shape[Infos.PSU];
 
 const Components: InfoInputMapping<PSU.Info> = {
   wattage: (props) => <SuffixInput suffix="W" type="number" {...props} />,
@@ -35,9 +39,16 @@ const Components: InfoInputMapping<PSU.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries());
+  const raw = Object.fromEntries(
+    formData
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+  ) as Record<string, string | string[]>;
 
-  return PSU.Schema.partial().parse(raw);
+  return Schema.parse(raw)!;
 }
 
 export default GenericInputTable(Components, PSU.Label, submit);

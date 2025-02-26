@@ -2,6 +2,10 @@ import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 import { Input, SuffixInput, UnitInput } from "@/components/utils/Input";
 import GraphicCard from "@/utils/interface/info/GraphicCard";
 import { FrequencyUnits, LengthUnits } from "@/utils/extract/Units";
+import { DetailInfo } from "@/utils/interface";
+import { Infos } from "@/utils/Enum";
+
+const Schema = DetailInfo.shape[Infos.GRAPHIC_CARD];
 
 const Components: InfoInputMapping<GraphicCard.Info> = {
   width: (props) => (
@@ -27,9 +31,16 @@ const Components: InfoInputMapping<GraphicCard.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries());
+  const raw = Object.fromEntries(
+    formData
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+  ) as Record<string, string | string[]>;
 
-  return GraphicCard.Schema.partial().parse(raw);
+  return Schema.parse(raw)!;
 }
 
 export default GenericInputTable(Components, GraphicCard.Label, submit);

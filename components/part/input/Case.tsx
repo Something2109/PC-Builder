@@ -9,6 +9,10 @@ import Case from "@/utils/interface/info/Case";
 import { FormFactor } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
 import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
+import { DetailInfo } from "@/utils/interface";
+import { Infos } from "@/utils/Enum";
+
+const Schema = DetailInfo.shape[Infos.CASE];
 
 const Components: InfoInputMapping<Case.Info> = {
   form_factor: (props) => (
@@ -63,14 +67,18 @@ const Components: InfoInputMapping<Case.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries()) as Record<
-    string,
-    string | string[]
-  >;
+  const raw = Object.fromEntries(
+    formData
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+  ) as Record<string, string | string[]>;
 
   raw.mainboard_support = formData.getAll("mainboard_support") as string[];
   raw.psu_support = formData.getAll("psu_support") as string[];
 
-  return Case.Schema.partial().parse(raw);
+  return Schema.parse(raw)!;
 }
 export default GenericInputTable(Components, Case.Label, submit);

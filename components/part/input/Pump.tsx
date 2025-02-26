@@ -3,6 +3,10 @@ import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
 import Pump from "@/utils/interface/info/Pump";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/extract/Units";
+import { DetailInfo } from "@/utils/interface";
+import { Infos } from "@/utils/Enum";
+
+const Schema = DetailInfo.shape[Infos.PUMP];
 
 const Components: InfoInputMapping<Pump.Info> = {
   form_factor: (props) => (
@@ -45,9 +49,16 @@ const Components: InfoInputMapping<Pump.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(formData.entries());
+  const raw = Object.fromEntries(
+    formData
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+  ) as Record<string, string | string[]>;
 
-  return Pump.Schema.partial().parse(raw);
+  return Schema.parse(raw)!;
 }
 
 export default GenericInputTable(Components, Pump.Label, submit);
