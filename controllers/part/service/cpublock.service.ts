@@ -10,7 +10,6 @@ import Part from "@/utils/interface/info/Parts";
 import CPUBlock from "@/utils/interface/product/CPUBlock";
 import { Products, Infos } from "@/utils/Enum";
 import { BaseDetailPartService } from "../interface/service.interface";
-import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
   [key in (typeof CPUBlock.Primary)[number]]: DetailInfo[key];
@@ -19,21 +18,6 @@ type Detail = Part.BasicInfo & {
 @Injectable()
 class CPUBlockService extends BaseDetailPartService<Detail> {
   readonly part = Products.CPU_BLOCK;
-
-  options(params: Record<string, string | string[]>) {
-    const result = super.options(params);
-
-    const parsedParams = CPUBlock.Filter.parse(params);
-    const options = new FilterOptionBuilder<
-      NonNullable<FilterOptions[Infos.CPU_BLOCK]>
-    >()
-      .add("socket", parsedParams["socket"])
-      .add("plate", parsedParams["plate"]);
-
-    if (options.build()) result[Infos.CPU_BLOCK] = options.build();
-
-    return result;
-  }
 
   async filter(options: FilterOptions): Promise<FilterOptions> {
     let { part, [Infos.CPU_BLOCK]: filter } = options;

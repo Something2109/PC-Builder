@@ -431,37 +431,6 @@ abstract class BaseDetailPartService<
     return builder;
   }
 
-  /**
-   * Extract the {@link key} properties from the {@link params} parameter
-   * and parse it with the {@link schema}. Then save it in the {@link dest} object
-   * using the {@link key} string.
-   * @param params The parameters to extract the key from.
-   * @param schema The schema to validate and parse the key values.
-   * @param dest The destination object to store the parsed values.
-   * @param key The key to extract and parse from the params.
-   */
-  protected parse<Key extends string, Value>(
-    params: Record<string, string | string[]>,
-    schema: ZodSchema<Value>,
-    dest: { [key in Key]?: Value[] },
-    key: Key
-  ) {
-    let option = params[key];
-
-    if (!option) return;
-
-    if (!Array.isArray(option)) option = [option];
-
-    const parsedOption = option
-      .map((val) => schema.safeParse(val))
-      .filter((val) => val.success)
-      .map((val) => val.data);
-
-    if (parsedOption.length > 0) {
-      dest[key] = parsedOption;
-    }
-  }
-
   protected async buildPart(
     options: Options,
     ...include: Includeable[]

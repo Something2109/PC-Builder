@@ -14,7 +14,6 @@ import Part from "@/utils/interface/info/Parts";
 import Case from "@/utils/interface/product/Case";
 import { Products, Infos } from "@/utils/Enum";
 import { BaseDetailPartService } from "../interface/service.interface";
-import { FilterOptionBuilder } from "../interface/filterbuilder";
 
 type Detail = Part.BasicInfo & {
   [key in (typeof Case.Primary)[number]]: DetailInfo[key];
@@ -23,23 +22,6 @@ type Detail = Part.BasicInfo & {
 @Injectable()
 class CaseService extends BaseDetailPartService<Detail> {
   readonly part = Products.CASE;
-
-  options(params: Record<string, string | string[]>) {
-    const result = super.options(params);
-
-    const parsedParams = Case.Filter.parse(params);
-    const options = new FilterOptionBuilder<
-      NonNullable<FilterOptions[Infos.CASE]>
-    >()
-      .add("form_factor", parsedParams["form_factor"])
-      .add("mainboard_support", parsedParams["mainboard_support"])
-      .add("radiator_support", parsedParams["radiator_support"])
-      .add("psu_support", parsedParams["psu_support"]);
-
-    if (options.build()) result[Infos.CASE] = options.build();
-
-    return result;
-  }
 
   async filter(options: FilterOptions): Promise<FilterOptions> {
     let { part, [Infos.CASE]: filter } = options;
