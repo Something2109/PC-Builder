@@ -16,6 +16,11 @@ export namespace Radiator {
     .partial();
 
   export type Filter = z.infer<typeof Filter>;
+
+  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+    form_factor: [Infos.RADIATOR, "form_factor"],
+    material: [Infos.RADIATOR, "material"],
+  };
 }
 
 export default Radiator;

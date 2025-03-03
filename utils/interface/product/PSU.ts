@@ -19,6 +19,13 @@ export namespace PSUProduct {
     .partial();
 
   export type Filter = z.infer<typeof Filter>;
+
+  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+    form_factor: [Infos.PSU, "form_factor"],
+    wattage: [Infos.PSU, "wattage"],
+    efficiency: [Infos.PSU, "efficiency"],
+    modular: [Infos.PSU, "modular"],
+  };
 }
 
 export default PSUProduct;
