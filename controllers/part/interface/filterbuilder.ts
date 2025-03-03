@@ -1,16 +1,22 @@
-export class FilterOptionBuilder<T extends Record<string, any>> {
-  private result: T | null = null;
+import { FilterOptions } from "@/utils/interface";
 
-  add(key: keyof T, value?: T[typeof key]) {
-    if (value) {
-      if (!this.result) this.result = {} as T;
+export class FilterOptionBuilder {
+  private result: {
+    [key in keyof FilterOptions]?: Record<string, string[] | number[]> | null;
+  } = {};
 
-      this.result[key] = value;
+  add(info: keyof FilterOptions, key: string, value?: string[] | number[]) {
+    if (value && value.length > 0) {
+      if (!this.result) this.result = {};
+
+      if (!this.result[info]) this.result[info] = {} as never;
+
+      this.result[info][key] = value;
     }
     return this;
   }
 
   build() {
-    return this.result;
+    return FilterOptions.parse(this.result);
   }
 }
