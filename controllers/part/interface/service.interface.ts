@@ -1,5 +1,6 @@
 import { CreationAttributes, Includeable, ModelStatic, Op } from "sequelize";
 import { Injectable } from "@nestjs/common";
+import { FilterOptionBuilder } from "./filterbuilder";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { InfoModels } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
@@ -78,14 +79,16 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
   options(
     params: Record<string, string | string[]>
   ): Filter & PageOptions & SearchOptions {
-    const result: Filter & PageOptions & SearchOptions =
+    const pageOptions: PageOptions & SearchOptions =
       APIMapping.toPageOptions(params);
 
     if (params.q) {
-      result.q = Array.isArray(params.q) ? params.q.join("|") : params.q;
+      pageOptions.q = Array.isArray(params.q) ? params.q.join("|") : params.q;
     }
 
-    return result;
+    const filter = this.buildFilterOptions(params);
+
+    return { ...filter.build(), ...pageOptions };
   }
 
   /**
@@ -146,6 +149,35 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
     await instance.destroy();
 
     return instance.toJSON();
+  }
+
+  /**
+   * Create the filter option builder and add the attributes
+   * according to the filter mapping
+   * @param params The object of string key and string/string array value.
+   * @returns The filter option builder extracted from the {@link params}.
+   */
+  protected buildFilterOptions(
+    params: Record<string, string | string[]>
+  ): FilterOptionBuilder {
+    const builder = new FilterOptionBuilder();
+
+    for (const key of Part.FilterAttributes) {
+      let option = params[key];
+
+      if (!option) continue;
+
+      if (!Array.isArray(option)) option = [option];
+
+      const parsedOption = option
+        .map((val) => Primitive.String.safeParse(val))
+        .filter((val) => val.success)
+        .map((val) => val.data);
+
+      builder.add("part", key, parsedOption);
+    }
+
+    return builder;
   }
 
   /**
@@ -319,18 +351,6 @@ abstract class BaseDetailPartService<
    */
   abstract part: Products;
 
-  options(params: Record<string, string | string[]>) {
-    const result = super.options(params);
-    result.part = {};
-
-    const options = result.part;
-    this.parse(params, Primitive.String, options, "part");
-    this.parse(params, Primitive.String, options, "brand");
-    this.parse(params, Primitive.String, options, "series");
-
-    return result;
-  }
-
   async list(
     options: Filter & PageOptions & SearchOptions
   ): Promise<APIMapping.Payload<Detail>> {
@@ -394,6 +414,21 @@ abstract class BaseDetailPartService<
     await Promise.all(infoPromise);
 
     return result;
+  }
+
+  protected buildFilterOptions(
+    params: Record<string, string | string[]>
+  ): FilterOptionBuilder {
+    const builder = super.buildFilterOptions(params);
+
+    const parsedParams = Product.FilterOptions[this.part].parse(params);
+
+    for (const name in Product.FilterMapping[this.part]) {
+      const [info, key] = Product.FilterMapping[this.part][name];
+      builder.add(info, key, parsedParams[name]);
+    }
+
+    return builder;
   }
 
   /**
