@@ -57,7 +57,7 @@ function defaultFilter<
 
   const where = Object.entries(options).reduce((acc, [key, entries]) => {
     const { success, data } = NumberFilterOptions.safeParse(entries);
-    acc[key] = success ? { [Op.between]: data } : entries;
+    acc[key] = success && data.length > 0 ? { [Op.between]: data } : entries;
     return acc;
   }, {} as any);
 

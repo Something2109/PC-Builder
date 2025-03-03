@@ -23,6 +23,13 @@ export namespace Pump {
     .partial();
 
   export type Filter = z.infer<typeof Filter>;
+
+  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+    form_factor: [Infos.PUMP, "form_factor"],
+    flow_rate: [Infos.PUMP, "flow_rate"],
+    power_connector: [Infos.PUMP, "power_connector"],
+    control_connector: [Infos.PUMP, "control_connector"],
+  };
 }
 
 export default Pump;

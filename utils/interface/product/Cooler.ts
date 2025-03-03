@@ -16,6 +16,11 @@ export namespace Cooler {
     .partial();
 
   export type Filter = z.infer<typeof Filter>;
+
+  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+    socket: [Infos.CPU_BLOCK, "socket"],
+    cpu_plate: [Infos.CPU_BLOCK, "plate"],
+  };
 }
 
 export default Cooler;
