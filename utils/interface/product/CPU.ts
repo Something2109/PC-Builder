@@ -21,6 +21,16 @@ export namespace CPU {
     .partial();
 
   export type Filter = z.infer<typeof Filter>;
+
+  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+    socket: [Infos.CPU, "socket"],
+    total_cores: [Infos.CPU, "total_cores"],
+    total_threads: [Infos.CPU, "total_threads"],
+    base_frequency: [Infos.CPU, "base_frequency"],
+    turbo_frequency: [Infos.CPU, "turbo_frequency"],
+    L3_cache: [Infos.CPU, "L3_cache"],
+    tdp: [Infos.CPU, "tdp"],
+  };
 }
 
 export default CPU;

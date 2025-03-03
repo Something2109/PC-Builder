@@ -23,6 +23,13 @@ export namespace Mainboard {
     .partial();
 
   export type Filter = z.infer<typeof Filter>;
+
+  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+    socket: [Infos.MAIN, "socket"],
+    form_factor: [Infos.MAIN, "form_factor"],
+    ram_form_factor: [Infos.RAM, "form_factor"],
+    ram_interface: [Infos.RAM, "interface"],
+  };
 }
 
 export default Mainboard;

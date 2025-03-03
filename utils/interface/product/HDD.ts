@@ -25,6 +25,15 @@ export namespace HDD {
     .partial();
 
   export type Filter = z.infer<typeof Filter>;
+
+  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+    form_factor: [Infos.HDD, "form_factor"],
+    capacity: [Infos.HDD, "capacity"],
+    interface: [Infos.HDD, "interface"],
+    read_speed: [Infos.HDD, "read_speed"],
+    write_speed: [Infos.HDD, "write_speed"],
+    rotational_speed: [Infos.HDD, "rotational_speed"],
+  };
 }
 
 export default HDD;

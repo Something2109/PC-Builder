@@ -17,6 +17,11 @@ export namespace FanProduct {
     .partial();
 
   export type Filter = z.infer<typeof Filter>;
+
+  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+    form_factor: [Infos.FAN, "form_factor"],
+    bearing: [Infos.FAN, "bearing"],
+  };
 }
 
 export default FanProduct;
