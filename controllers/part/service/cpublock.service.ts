@@ -14,12 +14,13 @@ import { BaseDetailPartService } from "../interface/service.interface";
 type Detail = Part.BasicInfo & {
   [key in (typeof CPUBlock.Primary)[number]]: DetailInfo[key];
 };
+type Filter = Part.FilterOptions & CPUBlock.Filter;
 
 @Injectable()
-class CPUBlockService extends BaseDetailPartService<Detail> {
+class CPUBlockService extends BaseDetailPartService<Detail, Filter> {
   readonly part = Products.CPU_BLOCK;
 
-  async filter(options: FilterOptions): Promise<FilterOptions> {
+  async filter(options: FilterOptions): Promise<Filter> {
     let { part, [Infos.CPU_BLOCK]: filter } = options;
     filter = filter ?? {};
 

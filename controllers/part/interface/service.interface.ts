@@ -15,10 +15,7 @@ import { ModelScopes } from "@/models/interface";
 import Part from "@/utils/interface/info/Parts";
 import { APIMapping } from "@/utils/interface/api";
 import { FilterOptionsType, Primitive } from "@/utils/interface/utils";
-import {
-  FilterOptions as Filter,
-  DetailInfo as Options,
-} from "@/utils/interface";
+import { FilterOptions, DetailInfo as Options } from "@/utils/interface";
 import { Infos, Products } from "@/utils/Enum";
 import { Product } from "@/utils/interface/product";
 
@@ -32,14 +29,17 @@ type PageOptions = APIMapping.PageOptions;
  * A base service class for handling parts data.
  */
 @Injectable()
-abstract class BasePartService<Detail = Part.BasicInfo> {
+abstract class BasePartService<
+  Detail = Part.BasicInfo,
+  Filter = Part.FilterOptions
+> {
   /**
    * List all parts satisfying the given {@link Filter} options.
    * @param options The filter options to apply.
    * @returns The list of parts that satisfy the filter options.
    */
   async list(
-    options: Filter & PageOptions & SearchOptions
+    options: FilterOptions & PageOptions & SearchOptions
   ): Promise<APIMapping.Payload<Detail>> {
     let { part } = options;
 
@@ -59,7 +59,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @param options The filter options to apply.
    * @returns The created filter object.
    */
-  async filter(options: Filter & SearchOptions): Promise<any> {
+  async filter(options: FilterOptions & SearchOptions): Promise<any> {
     const FilteredPart = PartInformation.scope({
       method: [ModelScopes.FILTER, options.part],
     });
@@ -82,7 +82,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    */
   options(
     params: Record<string, string | string[]>
-  ): Filter & PageOptions & SearchOptions {
+  ): FilterOptions & PageOptions & SearchOptions {
     const pageOptions: PageOptions & SearchOptions =
       APIMapping.toPageOptions(params);
 
@@ -264,7 +264,9 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
     model: ModelStatic<any>,
     attribute: Attributes,
     ...include: IncludeOptions[]
-  ): Promise<FilterOptionsType<Info, Attributes>[typeof attribute]> {
+  ): Promise<
+    NonNullable<FilterOptionsType<Info, Attributes>[typeof attribute]>
+  > {
     include.forEach((val) => (val.attributes = []));
 
     const AttrType = model.getAttributes()[attribute].type;
@@ -273,7 +275,9 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
       ? this.filterNumberAttribute(model, attribute, ...include)
       : this.filterStringAttribute(model, attribute, ...include));
 
-    return result as FilterOptionsType<Info, Attributes>[typeof attribute];
+    return result as NonNullable<
+      FilterOptionsType<Info, Attributes>[typeof attribute]
+    >;
   }
 
   /**
@@ -419,15 +423,16 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
  * @extends BasePartService
  */
 abstract class BaseDetailPartService<
-  Detail extends Part.BasicInfo
-> extends BasePartService<Detail> {
+  Detail extends Part.BasicInfo,
+  Filter = Part.FilterOptions
+> extends BasePartService<Detail, Filter> {
   /**
    * Describe the part type that the service is handling.
    */
   abstract part: Products;
 
   async list(
-    options: Filter & PageOptions & SearchOptions
+    options: FilterOptions & PageOptions & SearchOptions
   ): Promise<APIMapping.Payload<Detail>> {
     const { part, ...rest } = options;
 
@@ -451,7 +456,7 @@ abstract class BaseDetailPartService<
     return { total: count, list: rows.map((value) => value.toJSON()) };
   }
 
-  async filter(options: Filter & SearchOptions): Promise<any> {
+  async filter(options: FilterOptions & SearchOptions): Promise<Filter> {
     const part = { ...options.part, part: [this.part] };
 
     // Create filtered info models of the product infos using scope

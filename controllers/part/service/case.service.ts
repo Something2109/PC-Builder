@@ -18,12 +18,13 @@ import { BaseDetailPartService } from "../interface/service.interface";
 type Detail = Part.BasicInfo & {
   [key in (typeof Case.Primary)[number]]: DetailInfo[key];
 };
+type Filter = Part.FilterOptions & Case.Filter;
 
 @Injectable()
-class CaseService extends BaseDetailPartService<Detail> {
+class CaseService extends BaseDetailPartService<Detail, Filter> {
   readonly part = Products.CASE;
 
-  async filter(options: FilterOptions): Promise<FilterOptions> {
+  async filter(options: FilterOptions): Promise<Filter> {
     let { part, [Infos.CASE]: filter } = options;
     filter = filter ?? {};
 
