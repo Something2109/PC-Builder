@@ -2,6 +2,7 @@ import {
   CreationAttributes,
   DataTypes,
   Includeable,
+  IncludeOptions,
   ModelStatic,
   Op,
   Sequelize,
@@ -233,7 +234,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
     model: ModelStatic<any>,
     initial: FilterOptionsType<Info, Attributes>,
     attributes: Attributes[],
-    ...include: ModelStatic<any>[]
+    ...include: IncludeOptions[]
   ): Promise<FilterOptionsType<Info, Attributes>> {
     const promises = attributes.map(async (attr) => {
       if (initial[attr]) return;
@@ -265,8 +266,10 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
   >(
     model: ModelStatic<any>,
     attribute: Attributes,
-    ...include: ModelStatic<any>[]
+    ...include: IncludeOptions[]
   ): Promise<FilterOptionsType<Info, Attributes>[typeof attribute]> {
+    include.forEach((val) => (val.attributes = []));
+
     const AttrType = model.getAttributes()[attribute].type;
 
     const result = await (AttrType instanceof DataTypes.NUMBER
@@ -287,13 +290,13 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
   protected async filterStringAttribute(
     model: ModelStatic<any>,
     attribute: string,
-    ...include: ModelStatic<any>[]
+    ...include: IncludeOptions[]
   ): Promise<string[]> {
     const query = await model.findAll({
       attributes: [attribute.toString()],
       group: attribute.toString(),
       order: [attribute.toString()],
-      include: include.map((value) => ({ model: value, attributes: [] })),
+      include,
       raw: true,
     });
 
@@ -311,14 +314,14 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
   protected async filterNumberAttribute(
     model: ModelStatic<any>,
     attribute: string,
-    ...include: ModelStatic<any>[]
+    ...include: IncludeOptions[]
   ): Promise<number[]> {
     const query = (await model.findOne({
       attributes: [
         [Sequelize.fn("min", Sequelize.col(attribute as string)), "min"],
         [Sequelize.fn("max", Sequelize.col(attribute as string)), "max"],
       ],
-      include: include.map((value) => ({ model: value, attributes: [] })),
+      include,
       raw: true,
     })) as { min: number; max: number };
 
@@ -466,7 +469,10 @@ abstract class BaseDetailPartService<
         FilteredPart,
         part,
         Part.FilterAttributes,
-        ...FilteredInfos
+        ...Product.Info[this.part].map((info, index) => ({
+          model: FilteredInfos[index],
+          required: Boolean(options[info]),
+        }))
       ),
     };
 
@@ -479,7 +485,7 @@ abstract class BaseDetailPartService<
           model,
           (options[info] as any) ?? {},
           Information.FilterAttributes[info],
-          FilteredPart
+          { model: FilteredPart }
         );
       }
 
