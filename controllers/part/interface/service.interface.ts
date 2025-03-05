@@ -59,8 +59,11 @@ abstract class BasePartService<
    * @param options The filter options to apply.
    * @returns The created filter object.
    */
-  async filter(options: FilterOptions & SearchOptions): Promise<Filter> {
-    const { filter } = await this.filterPart(options);
+  async filter(
+    options: FilterOptions & SearchOptions,
+    attributes?: string[]
+  ): Promise<Filter> {
+    const { filter } = await this.filterPart(options, attributes);
 
     return filter;
   }
@@ -492,55 +495,6 @@ abstract class BaseDetailPartService<
     return { total: count, list: rows.map((value) => value.toJSON()) };
   }
 
-  async filter(options: FilterOptions & SearchOptions): Promise<Filter> {
-    options.part = { ...options.part, part: [this.part] };
-
-    // Create filtered info models of the product infos using scope
-    const FilteredInfos: { [key in Infos]?: ModelStatic<any> } = {};
-    Product.Info[this.part].forEach(
-      (info) =>
-        (FilteredInfos[info] = InfoModels[info].scope({
-          method: [ModelScopes.FILTER, options[info]],
-        }))
-    );
-
-    // Create filter option of the part model and the included info model
-    const { model: FilteredPart, filter } = await this.filterPart(
-      options,
-      undefined,
-      FilteredInfos
-    );
-    const result: Record<string, string[] | number[]> = filter as any;
-
-    // Get each attributes of product filter from each corresponding info model.
-    const infoPromise = Object.keys(Product.FilterMapping[this.part]).map(
-      async (key) => {
-        const [info, attr] = Product.FilterMapping[this.part][key];
-        const infoOptions = (options[info] ?? {}) as Record<
-          string,
-          string[] | number[] | undefined
-        >;
-
-        // Return early if already filtered
-        if (infoOptions && infoOptions[attr]) {
-          result[key] = infoOptions[attr];
-          return;
-        }
-
-        const { [info]: model } = FilteredInfos;
-        if (!model) return;
-
-        result[key] = await this.filterAttribute(model, attr, {
-          model: FilteredPart,
-        });
-      }
-    );
-
-    await Promise.all(infoPromise);
-
-    return result as Filter;
-  }
-
   protected buildFilterOptions(
     params: Record<string, string | string[]>
   ): FilterOptionBuilder {
@@ -554,6 +508,60 @@ abstract class BaseDetailPartService<
     }
 
     return builder;
+  }
+
+  protected async filterPart(
+    options: FilterOptions,
+    attributes?: string[],
+    include?: { [key in Infos]?: ModelStatic<any> }
+  ) {
+    options.part = { ...options.part, part: [this.part] };
+
+    // Create filtered info models of the product infos using scope
+    include = {};
+    Product.Info[this.part].forEach(
+      (info) =>
+        (include[info] = InfoModels[info].scope({
+          method: [ModelScopes.FILTER, options[info]],
+        }))
+    );
+
+    // Create filter option of the part model and the included info model
+    const { model, filter } = await super.filterPart(
+      options,
+      attributes,
+      include
+    );
+    const result: Record<string, string[] | number[]> = filter as any;
+
+    attributes = attributes ?? Object.keys(Product.FilterMapping[this.part]);
+    // Get each attributes of product filter from each corresponding info model.
+    const infoPromise = attributes.map(async (key) => {
+      if (!Product.FilterMapping[this.part][key]) return;
+
+      const [info, attr] = Product.FilterMapping[this.part][key];
+      const infoOptions = (options[info] ?? {}) as Record<
+        string,
+        string[] | number[] | undefined
+      >;
+
+      // Return early if already filtered
+      if (infoOptions && infoOptions[attr]) {
+        result[key] = infoOptions[attr];
+        return;
+      }
+
+      const { [info]: model } = include;
+      if (!model) return;
+
+      result[key] = await this.filterAttribute(model, attr, {
+        model,
+      });
+    });
+
+    await Promise.all(infoPromise);
+
+    return { model, filter: result as Filter };
   }
 
   protected async buildPart(

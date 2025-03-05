@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { ModelCtor } from "sequelize-typescript";
-import { Includeable } from "sequelize";
+import { ModelStatic } from "sequelize";
 import { PartInformation } from "@/models/parts/tables/Part";
 import {
   CaseMainboardSupportModel,
@@ -25,16 +24,22 @@ type Filter = Part.FilterOptions & Case.Filter;
 class CaseService extends BaseDetailPartService<Detail, Filter> {
   readonly part = Products.CASE;
 
-  async filter(options: FilterOptions): Promise<Filter> {
-    let { part, [Infos.CASE]: filter } = options;
-    filter = filter ?? {};
+  protected async filterPart(
+    options: FilterOptions,
+    attributes?: string[],
+    include?: { [key in Infos]?: ModelStatic<any> }
+  ) {
+    options[Infos.CASE] = options[Infos.CASE] ?? {};
+    const filter = options[Infos.CASE] ?? {};
 
     const CasePartInclude = {
       model: CaseModel.scope({ method: [ModelScopes.FILTER, filter] }),
       attributes: [],
       include: [
         {
-          model: PartInformation.scope({ method: [ModelScopes.FILTER, part] }),
+          model: PartInformation.scope({
+            method: [ModelScopes.FILTER, options.part],
+          }),
           attributes: [],
         },
       ],
@@ -61,7 +66,7 @@ class CaseService extends BaseDetailPartService<Detail, Filter> {
         CasePartInclude
       )) as FormFactor.Radiator[];
 
-    return await super.filter({ part, [this.part]: filter });
+    return await super.filterPart(options, attributes, include);
   }
 }
 

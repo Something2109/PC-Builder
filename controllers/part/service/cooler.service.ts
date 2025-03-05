@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { ModelStatic } from "sequelize";
 import { PartInformation } from "@/models/parts/tables/Part";
 import {
   CPUBlockModel,
@@ -20,9 +21,13 @@ type Filter = Part.FilterOptions & Cooler.Filter;
 class CoolerService extends BaseDetailPartService<Detail, Filter> {
   readonly part = Products.COOLER;
 
-  async filter(options: FilterOptions): Promise<Filter> {
-    let { part, [Infos.CPU_BLOCK]: filter } = options;
-    filter = filter ?? {};
+  protected async filterPart(
+    options: FilterOptions,
+    attributes?: string[],
+    include?: { [key in Infos]?: ModelStatic<any> }
+  ) {
+    options[Infos.CPU_BLOCK] = options[Infos.CPU_BLOCK] ?? {};
+    const filter = options[Infos.CPU_BLOCK] ?? {};
 
     if (!filter.socket) {
       const CPUBlockPartInclude = {
@@ -31,7 +36,7 @@ class CoolerService extends BaseDetailPartService<Detail, Filter> {
         include: [
           {
             model: PartInformation.scope({
-              method: [ModelScopes.FILTER, part],
+              method: [ModelScopes.FILTER, options.part],
             }),
             attributes: [],
           },
@@ -45,7 +50,7 @@ class CoolerService extends BaseDetailPartService<Detail, Filter> {
       )) as string[];
     }
 
-    return await super.filter({ part, [this.part]: filter });
+    return await super.filterPart(options, attributes, include);
   }
 }
 
