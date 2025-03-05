@@ -65,6 +65,25 @@ export class PartController {
     return JSON.stringify(filter);
   }
 
+  @Get("filter/:part/:attribute")
+  async getPartFilterAttribute(
+    @Param("part", ProductValidator) part: Products,
+    @Param("attribute") attribute: string,
+    @Query() params: Record<string, string | string[]>,
+    @Body(FilterValidator) body: FilterOptions
+  ) {
+    const service = this.findService(part);
+
+    const options = {
+      ...body,
+      ...service.options(params),
+    };
+
+    const filter = await service.filter(options, [attribute]);
+
+    return JSON.stringify(filter);
+  }
+
   @Get()
   async index(
     @Body(FilterValidator) body: FilterOptions,
