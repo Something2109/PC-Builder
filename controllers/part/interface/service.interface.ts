@@ -59,18 +59,10 @@ abstract class BasePartService<
    * @param options The filter options to apply.
    * @returns The created filter object.
    */
-  async filter(options: FilterOptions & SearchOptions): Promise<any> {
-    const FilteredPart = PartInformation.scope({
-      method: [ModelScopes.FILTER, options.part],
-    });
+  async filter(options: FilterOptions & SearchOptions): Promise<Filter> {
+    const { filter } = await this.filterPart(options);
 
-    const result = await this.filterInfoModel(
-      FilteredPart,
-      options.part ?? {},
-      Part.FilterAttributes
-    );
-
-    return result;
+    return filter;
   }
 
   /**
@@ -330,6 +322,46 @@ abstract class BasePartService<
   }
 
   /**
+   * Create a new {@link Part.FilterOptions} object of the model
+   * from the given {@link FilterOptions} object
+   * by getting each {@link attributes} values from the model
+   * from the {@link model}.
+   * The {@link include} object is the mapping
+   * between {@link Infos} and coresponding {@link Model}.
+   * @param options The initial options to find.
+   * @param attributes The list of attributes to find in model.
+   * @param include The mapping of infos and models.
+   * @returns The created part filter options.
+   */
+  protected async filterPart(
+    options: FilterOptions,
+    attributes?: string[],
+    include?: { [key in Infos]?: ModelStatic<any> }
+  ) {
+    const partAttrs =
+      (attributes?.filter((attr) =>
+        Part.FilterAttributes.includes(attr as Part.Filterables)
+      ) as Part.Filterables[]) ?? Part.FilterAttributes;
+
+    const FilteredPart = PartInformation.scope({
+      method: [ModelScopes.FILTER, options.part],
+    });
+
+    const result = await this.filterInfoModel(
+      FilteredPart,
+      options.part ?? {},
+      partAttrs,
+      ...Object.entries(include ?? {}).map(([info, model]) => ({
+        model,
+        required: Boolean(options[info as Infos]),
+      }))
+    );
+
+    // Create filter option of the part model and the included info model
+    return { model: FilteredPart, filter: result as Filter };
+  }
+
+  /**
    * Create a new part with the given {@link data}.
    * If the part with the given code name already exists,
    * return null.
@@ -457,7 +489,7 @@ abstract class BaseDetailPartService<
   }
 
   async filter(options: FilterOptions & SearchOptions): Promise<Filter> {
-    const part = { ...options.part, part: [this.part] };
+    options.part = { ...options.part, part: [this.part] };
 
     // Create filtered info models of the product infos using scope
     const FilteredInfos: { [key in Infos]?: ModelStatic<any> } = {};
@@ -467,24 +499,19 @@ abstract class BaseDetailPartService<
           method: [ModelScopes.FILTER, options[info]],
         }))
     );
-    const FilteredPart = PartInformation.scope({
-      method: [ModelScopes.FILTER, part],
-    });
 
     // Create filter option of the part model and the included info model
-    const result = (await this.filterInfoModel(
-      FilteredPart,
-      part,
-      Part.FilterAttributes,
-      ...Object.entries(FilteredInfos).map(([info, model]) => ({
-        model,
-        required: Boolean(options[info as Infos]),
-      }))
-    )) as any;
+    const { model: FilteredPart, filter } = await this.filterPart(
+      options,
+      undefined,
+      FilteredInfos
+    );
+    const result: Record<string, string[] | number[]> = filter as any;
 
-    // Filter each property of product filter from each corresponding info model
-    const infoPromise = Object.entries(Product.FilterMapping[this.part]).map(
-      async ([key, [info, attr]]) => {
+    // Get each attributes of product filter from each corresponding info model.
+    const infoPromise = Object.keys(Product.FilterMapping[this.part]).map(
+      async (key) => {
+        const [info, attr] = Product.FilterMapping[this.part][key];
         const infoOptions = (options[info] ?? {}) as Record<
           string,
           string[] | number[] | undefined
@@ -507,7 +534,7 @@ abstract class BaseDetailPartService<
 
     await Promise.all(infoPromise);
 
-    return result;
+    return result as Filter;
   }
 
   protected buildFilterOptions(
