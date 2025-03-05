@@ -38,15 +38,11 @@ class AIOService extends BaseDetailPartService<Detail, Filter> {
         ],
       };
 
-      const result = await CPUBlockSocketModel.findAll({
-        include: CPUBlockPartInclude,
-        attributes: ["socket"],
-        group: ["socket"],
-        order: ["socket"],
-        raw: true,
-      });
-
-      filter.socket = result.map((val) => val.socket);
+      filter.socket = (await this.filterAttribute(
+        CPUBlockSocketModel,
+        "socket",
+        CPUBlockPartInclude
+      )) as string[];
     }
 
     return await super.filter({ part, [Infos.CPU_BLOCK]: filter });

@@ -14,6 +14,7 @@ import Part from "@/utils/interface/info/Parts";
 import Case from "@/utils/interface/product/Case";
 import { Products, Infos } from "@/utils/Enum";
 import { BaseDetailPartService } from "../interface/service.interface";
+import { FormFactor } from "@/utils/interface/utils";
 
 type Detail = Part.BasicInfo & {
   [key in (typeof Case.Primary)[number]]: DetailInfo[key];
@@ -39,48 +40,28 @@ class CaseService extends BaseDetailPartService<Detail, Filter> {
       ],
     };
 
-    filter.mainboard_support = await this.getFormFactorFilter(
-      CaseMainboardSupportModel,
-      CasePartInclude,
-      filter?.mainboard_support
-    );
+    if (!filter.mainboard_support)
+      filter.mainboard_support = (await this.filterAttribute(
+        CaseMainboardSupportModel,
+        "form_factor",
+        CasePartInclude
+      )) as FormFactor.Mainboard[];
 
-    filter.psu_support = await this.getFormFactorFilter(
-      CasePSUSupportModel,
-      CasePartInclude,
-      filter?.psu_support
-    );
+    if (!filter.psu_support)
+      filter.psu_support = (await this.filterAttribute(
+        CasePSUSupportModel,
+        "form_factor",
+        CasePartInclude
+      )) as FormFactor.PSU[];
 
-    filter.radiator_support = await this.getFormFactorFilter(
-      CaseRadiatorSupportModel,
-      CasePartInclude,
-      filter?.radiator_support
-    );
+    if (!filter.radiator_support)
+      filter.radiator_support = (await this.filterAttribute(
+        CaseRadiatorSupportModel,
+        "form_factor",
+        CasePartInclude
+      )) as FormFactor.Radiator[];
 
     return await super.filter({ part, [this.part]: filter });
-  }
-
-  private async getFormFactorFilter<
-    FormFactorModel extends
-      | CaseMainboardSupportModel
-      | CasePSUSupportModel
-      | CaseRadiatorSupportModel
-  >(
-    Model: ModelCtor<FormFactorModel>,
-    IncludeModel: Includeable,
-    defaultValue?: FormFactorModel["form_factor"][]
-  ): Promise<FormFactorModel["form_factor"][]> {
-    if (defaultValue) return defaultValue;
-
-    const result = (await Model.findAll({
-      include: IncludeModel,
-      attributes: ["form_factor"],
-      group: ["form_factor"],
-      order: ["form_factor"],
-      raw: true,
-    })) as unknown as FormFactorModel[];
-
-    return result.map((val) => val.form_factor);
   }
 }
 
