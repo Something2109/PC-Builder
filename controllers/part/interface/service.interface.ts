@@ -225,10 +225,14 @@ abstract class BasePartService<
     attributes: Attributes[],
     ...include: IncludeOptions[]
   ): Promise<FilterOptionsType<Info, Attributes>> {
+    const result: FilterOptionsType<Info, Attributes> = {};
     const promises = attributes.map(async (attr) => {
-      if (initial[attr]) return;
+      if (initial[attr]) {
+        result[attr] = initial[attr];
+        return;
+      }
 
-      initial[attr] = (await this.filterAttribute(
+      result[attr] = (await this.filterAttribute(
         model,
         attr.toString(),
         ...include
@@ -237,7 +241,7 @@ abstract class BasePartService<
 
     await Promise.all(promises);
 
-    return initial;
+    return result;
   }
 
   /**
