@@ -1,4 +1,11 @@
-import { CreationAttributes, Includeable, ModelStatic, Op } from "sequelize";
+import {
+  CreationAttributes,
+  DataTypes,
+  Includeable,
+  ModelStatic,
+  Op,
+  Sequelize,
+} from "sequelize";
 import { Injectable } from "@nestjs/common";
 import { FilterOptionBuilder } from "./filterbuilder";
 import { PartInformation } from "@/models/parts/tables/Part";
@@ -14,7 +21,6 @@ import {
 import { Infos, Products } from "@/utils/Enum";
 import { Product } from "@/utils/interface/product";
 import { Information } from "@/utils/interface/info";
-import { ZodSchema } from "zod";
 
 type SearchOptions = {
   q?: string;
@@ -59,7 +65,7 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
     });
 
     const result: Filter = {
-      part: await this.filterFromModel(
+      part: await this.filterInfoModel(
         FilteredPart,
         options.part ?? {},
         Part.FilterAttributes
@@ -210,44 +216,113 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
   /**
    * Create a new {@link FilterOptionsType} object of the model
    * from the given {@link FilterOptionsType} object
-   * by getting each {@link attribute} values from the model
+   * by getting each {@link attributes} values from the model
    * from the {@link model}. The result value is initial
    * set to the {@link initial} object.
    * The {@link include} list contains the models included in the query.
    * @param model The model to get the values from.
    * @param initial The initial value of the result object.
-   * @param attribute The attributes to get the values from the model.
+   * @param attributes The attributes to get the values from the model.
    * @param include The models to include in the query.
    * @returns The created {@link FilterOptionsType} object.
    */
-  protected async filterFromModel<
+  protected async filterInfoModel<
     Info extends { [key in string]: any },
     Attributes extends keyof Info
   >(
     model: ModelStatic<any>,
     initial: FilterOptionsType<Info, Attributes>,
-    attribute: Attributes[],
+    attributes: Attributes[],
     ...include: ModelStatic<any>[]
   ): Promise<FilterOptionsType<Info, Attributes>> {
-    const result: FilterOptionsType<Info, Attributes> = { ...initial };
+    const promises = attributes.map(async (attr) => {
+      if (initial[attr]) return;
 
-    for (const attr of attribute) {
-      if (result[attr]) {
-        continue;
-      }
+      initial[attr] = (await this.filterAttribute(
+        model,
+        attr.toString(),
+        ...include
+      )) as any;
+    });
 
-      const query = await model.findAll({
-        attributes: [attr.toString()],
-        group: attr.toString(),
-        order: [attr.toString()],
-        include: include.map((value) => ({ model: value, attributes: [] })),
-        raw: true,
-      });
+    await Promise.all(promises);
 
-      result[attr] = query.map((value) => value[attr]).filter((value) => value);
-    }
+    return initial;
+  }
 
-    return result;
+  /**
+   * Create a new filter array of the {@link attribute}.
+   * The result depends on the type of {@link attribute} in the {@link model}.
+   * The {@link include} list contains the models included in the query.
+   * @param model The model to get the values from.
+   * @param attribute The attributes to get the values from the model.
+   * @param include The models to include in the query.
+   * @returns The created filter array.
+   */
+  protected async filterAttribute<
+    Info extends { [key in Attributes]: any },
+    Attributes extends string
+  >(
+    model: ModelStatic<any>,
+    attribute: Attributes,
+    ...include: ModelStatic<any>[]
+  ): Promise<FilterOptionsType<Info, Attributes>[typeof attribute]> {
+    const AttrType = model.getAttributes()[attribute].type;
+
+    const result = await (AttrType instanceof DataTypes.NUMBER
+      ? this.filterNumberAttribute(model, attribute, ...include)
+      : this.filterStringAttribute(model, attribute, ...include));
+
+    return result as FilterOptionsType<Info, Attributes>[typeof attribute];
+  }
+
+  /**
+   * Create a new string filter array of the {@link attribute} in {@link model}.
+   * The {@link include} list contains the models included in the query.
+   * @param model The model to get the values from.
+   * @param attribute The attribute to get the values from the model.
+   * @param include The models to include in the query.
+   * @returns The created string array of the {@link attribute}.
+   */
+  protected async filterStringAttribute(
+    model: ModelStatic<any>,
+    attribute: string,
+    ...include: ModelStatic<any>[]
+  ): Promise<string[]> {
+    const query = await model.findAll({
+      attributes: [attribute.toString()],
+      group: attribute.toString(),
+      order: [attribute.toString()],
+      include: include.map((value) => ({ model: value, attributes: [] })),
+      raw: true,
+    });
+
+    return query.map((value) => value[attribute]).filter((value) => value);
+  }
+
+  /**
+   * Create a new number filter array of the {@link attribute} in {@link model}.
+   * The {@link include} list contains the models included in the query.
+   * @param model The model to get the values from.
+   * @param attribute The attribute to get the values from the model.
+   * @param include The models to include in the query.
+   * @returns The created number array of the {@link attribute}.
+   */
+  protected async filterNumberAttribute(
+    model: ModelStatic<any>,
+    attribute: string,
+    ...include: ModelStatic<any>[]
+  ): Promise<number[]> {
+    const query = (await model.findOne({
+      attributes: [
+        [Sequelize.fn("min", Sequelize.col(attribute as string)), "min"],
+        [Sequelize.fn("max", Sequelize.col(attribute as string)), "max"],
+      ],
+      include: include.map((value) => ({ model: value, attributes: [] })),
+      raw: true,
+    })) as { min: number; max: number };
+
+    return [query.min, query.max];
   }
 
   /**
@@ -387,7 +462,7 @@ abstract class BaseDetailPartService<
     });
 
     const result: Filter = {
-      part: await this.filterFromModel(
+      part: await this.filterInfoModel(
         FilteredPart,
         part,
         Part.FilterAttributes,
@@ -400,7 +475,7 @@ abstract class BaseDetailPartService<
 
       let filter: any = null;
       if (options[info] !== null) {
-        filter = await this.filterFromModel(
+        filter = await this.filterInfoModel(
           model,
           (options[info] as any) ?? {},
           Information.FilterAttributes[info],
