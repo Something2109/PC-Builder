@@ -21,7 +21,6 @@ import {
 } from "@/utils/interface";
 import { Infos, Products } from "@/utils/Enum";
 import { Product } from "@/utils/interface/product";
-import { Information } from "@/utils/interface/info";
 
 type SearchOptions = {
   q?: string;
@@ -60,18 +59,16 @@ abstract class BasePartService<Detail = Part.BasicInfo> {
    * @param options The filter options to apply.
    * @returns The created filter object.
    */
-  async filter(options: Filter & SearchOptions): Promise<Filter> {
+  async filter(options: Filter & SearchOptions): Promise<any> {
     const FilteredPart = PartInformation.scope({
       method: [ModelScopes.FILTER, options.part],
     });
 
-    const result: Filter = {
-      part: await this.filterInfoModel(
-        FilteredPart,
-        options.part ?? {},
-        Part.FilterAttributes
-      ),
-    };
+    const result = await this.filterInfoModel(
+      FilteredPart,
+      options.part ?? {},
+      Part.FilterAttributes
+    );
 
     return result;
   }
@@ -454,43 +451,54 @@ abstract class BaseDetailPartService<
     return { total: count, list: rows.map((value) => value.toJSON()) };
   }
 
-  async filter(options: Filter & SearchOptions): Promise<Filter> {
+  async filter(options: Filter & SearchOptions): Promise<any> {
     const part = { ...options.part, part: [this.part] };
 
-    const FilteredInfos = Product.Info[this.part].map((info) =>
-      InfoModels[info].scope({ method: [ModelScopes.FILTER, options[info]] })
+    // Create filtered info models of the product infos using scope
+    const FilteredInfos: { [key in Infos]?: ModelStatic<any> } = {};
+    Product.Info[this.part].forEach(
+      (info) =>
+        (FilteredInfos[info] = InfoModels[info].scope({
+          method: [ModelScopes.FILTER, options[info]],
+        }))
     );
     const FilteredPart = PartInformation.scope({
       method: [ModelScopes.FILTER, part],
     });
 
-    const result: Filter = {
-      part: await this.filterInfoModel(
-        FilteredPart,
-        part,
-        Part.FilterAttributes,
-        ...Product.Info[this.part].map((info, index) => ({
-          model: FilteredInfos[index],
-          required: Boolean(options[info]),
-        }))
-      ),
-    };
+    // Create filter option of the part model and the included info model
+    const result = (await this.filterInfoModel(
+      FilteredPart,
+      part,
+      Part.FilterAttributes,
+      ...Object.entries(FilteredInfos).map(([info, model]) => ({
+        model,
+        required: Boolean(options[info as Infos]),
+      }))
+    )) as any;
 
-    const infoPromise = FilteredInfos.map(async (model, index) => {
-      const info = Product.Info[this.part][index];
+    // Filter each property of product filter from each corresponding info model
+    const infoPromise = Object.entries(Product.FilterMapping[this.part]).map(
+      async ([key, [info, attr]]) => {
+        const infoOptions = (options[info] ?? {}) as Record<
+          string,
+          string[] | number[] | undefined
+        >;
 
-      let filter: any = null;
-      if (options[info] !== null) {
-        filter = await this.filterInfoModel(
-          model,
-          (options[info] as any) ?? {},
-          Information.FilterAttributes[info],
-          { model: FilteredPart }
-        );
+        // Return early if already filtered
+        if (infoOptions && infoOptions[attr]) {
+          result[key] = infoOptions[attr];
+          return;
+        }
+
+        const { [info]: model } = FilteredInfos;
+        if (!model) return;
+
+        result[key] = await this.filterAttribute(model, attr, {
+          model: FilteredPart,
+        });
       }
-
-      result[info] = filter;
-    });
+    );
 
     await Promise.all(infoPromise);
 
