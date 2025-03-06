@@ -345,24 +345,37 @@ abstract class BasePartService<
     attributes?: string[],
     include?: { [key in Infos]?: ModelStatic<any> }
   ) {
-    const partAttrs =
-      (attributes?.filter((attr) =>
-        Part.FilterAttributes.includes(attr as Part.Filterables)
-      ) as Part.Filterables[]) ?? Part.FilterAttributes;
+    attributes = attributes ?? Part.FilterAttributes;
 
     const FilteredPart = PartInformation.scope({
       method: [ModelScopes.FILTER, options.part],
     });
 
-    const result = await this.filterInfoModel(
-      FilteredPart,
-      options.part ?? {},
-      partAttrs,
-      ...Object.entries(include ?? {}).map(([info, model]) => ({
+    const FilteredInfos = Object.entries(include ?? {}).map(
+      ([info, model]) => ({
         model,
         required: Boolean(options[info as Infos]),
-      }))
+      })
     );
+
+    const result: Record<string, string[] | number[]> = {};
+    const promises = attributes.map(async (attr) => {
+      if (!Part.FilterAttributes.includes(attr as Part.Filterables)) return;
+
+      const initial = options?.part && options.part[attr as Part.Filterables];
+      if (initial) {
+        result[attr] = initial;
+        return;
+      }
+
+      result[attr] = await this.filterAttribute(
+        FilteredPart,
+        attr.toString(),
+        ...FilteredInfos
+      );
+    });
+
+    await Promise.all(promises);
 
     // Create filter option of the part model and the included info model
     return { model: FilteredPart, filter: result as Filter };
@@ -532,36 +545,15 @@ abstract class BaseDetailPartService<
       attributes,
       include
     );
-    const result: Record<string, string[] | number[]> = filter as any;
 
-    attributes = attributes ?? Object.keys(Product.FilterMapping[this.part]);
-    // Get each attributes of product filter from each corresponding info model.
-    const infoPromise = attributes.map(async (key) => {
-      if (!Product.FilterMapping[this.part][key]) return;
+    const productFilter = await this.filterProduct(
+      include,
+      options,
+      attributes,
+      model
+    );
 
-      const [info, attr] = Product.FilterMapping[this.part][key];
-      const infoOptions = (options[info] ?? {}) as Record<
-        string,
-        string[] | number[] | undefined
-      >;
-
-      // Return early if already filtered
-      if (infoOptions && infoOptions[attr]) {
-        result[key] = infoOptions[attr];
-        return;
-      }
-
-      const { [info]: model } = include;
-      if (!model) return;
-
-      result[key] = await this.filterAttribute(model, attr, {
-        model,
-      });
-    });
-
-    await Promise.all(infoPromise);
-
-    return { model, filter: result as Filter };
+    return { model, filter: { ...filter, ...productFilter } as Filter };
   }
 
   protected async buildPart(
@@ -637,6 +629,53 @@ abstract class BaseDetailPartService<
     await Promise.all(
       Product.Info[this.part].map((info) => instance[info]?.save())
     );
+  }
+
+  /**
+   * Create a new filter object of the {@link part}
+   * from the given {@link FilterOptions} object
+   * by getting each {@link attributes} values from the model
+   * from the {@link infosModel} with {@link partModel} included.
+   * @param options The initial options to find.
+   * @param attributes The list of attributes to find in model.
+   * @param include The mapping of infos and models.
+   * @returns The created part filter options.
+   */
+  protected async filterProduct(
+    infosModel: { [key in Infos]?: ModelStatic<any> },
+    options: FilterOptions,
+    attributes?: string[],
+    partModel?: ModelStatic<PartInformation>
+  ) {
+    const result: Record<string, string[] | number[]> = {};
+
+    attributes = attributes ?? Object.keys(Product.FilterMapping[this.part]);
+    const infoPromise = attributes.map(async (key) => {
+      if (!Product.FilterMapping[this.part][key]) return;
+
+      const [info, attr] = Product.FilterMapping[this.part][key];
+      const infoOptions = (options[info] ?? {}) as Record<
+        string,
+        string[] | number[] | undefined
+      >;
+
+      // Return early if already filtered
+      if (infoOptions && infoOptions[attr]) {
+        result[key] = infoOptions[attr];
+        return;
+      }
+
+      const { [info]: model } = infosModel;
+      if (!model) return;
+
+      result[key] = await this.filterAttribute(model, attr, {
+        model: partModel,
+      });
+    });
+
+    await Promise.all(infoPromise);
+
+    return result;
   }
 
   /**
