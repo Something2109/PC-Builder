@@ -10,6 +10,7 @@ import Part from "@/utils/interface/info/Parts";
 import Cooler from "@/utils/interface/product/Cooler";
 import { Products, Infos } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
+import { APIMapping } from "@/utils/interface/api";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
@@ -22,7 +23,7 @@ class CoolerService extends BaseDetailPartService<Detail, Filter> {
   readonly part = Products.COOLER;
 
   protected async filterPart(
-    options: FilterOptions,
+    options: FilterOptions & APIMapping.PageOptions,
     attributes?: string[],
     include?: { [key in Infos]?: ModelStatic<any> }
   ) {
@@ -45,6 +46,7 @@ class CoolerService extends BaseDetailPartService<Detail, Filter> {
 
       filter.socket = (await this.filterAttribute(
         CPUBlockSocketModel,
+        options,
         "socket",
         CPUBlockPartInclude
       )) as string[];

@@ -14,6 +14,7 @@ import Case from "@/utils/interface/product/Case";
 import { Products, Infos } from "@/utils/Enum";
 import { BaseDetailPartService } from "../interface/service.interface";
 import { FormFactor } from "@/utils/interface/utils";
+import { APIMapping } from "@/utils/interface/api";
 
 type Detail = Part.BasicInfo & {
   [key in (typeof Case.Primary)[number]]: DetailInfo[key];
@@ -25,7 +26,7 @@ class CaseService extends BaseDetailPartService<Detail, Filter> {
   readonly part = Products.CASE;
 
   protected async filterPart(
-    options: FilterOptions,
+    options: FilterOptions & APIMapping.PageOptions,
     attributes?: string[],
     include?: { [key in Infos]?: ModelStatic<any> }
   ) {
@@ -48,6 +49,7 @@ class CaseService extends BaseDetailPartService<Detail, Filter> {
     if (!filter.mainboard_support)
       filter.mainboard_support = (await this.filterAttribute(
         CaseMainboardSupportModel,
+        options,
         "form_factor",
         CasePartInclude
       )) as FormFactor.Mainboard[];
@@ -55,6 +57,7 @@ class CaseService extends BaseDetailPartService<Detail, Filter> {
     if (!filter.psu_support)
       filter.psu_support = (await this.filterAttribute(
         CasePSUSupportModel,
+        options,
         "form_factor",
         CasePartInclude
       )) as FormFactor.PSU[];
@@ -62,6 +65,7 @@ class CaseService extends BaseDetailPartService<Detail, Filter> {
     if (!filter.radiator_support)
       filter.radiator_support = (await this.filterAttribute(
         CaseRadiatorSupportModel,
+        options,
         "form_factor",
         CasePartInclude
       )) as FormFactor.Radiator[];

@@ -11,6 +11,7 @@ import AIO from "@/utils/interface/product/AIO";
 import { Infos, Products } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
+import { APIMapping } from "@/utils/interface/api";
 
 type Detail = Part.BasicInfo & {
   [key in (typeof AIO.Primary)[number]]: DetailInfo[key];
@@ -22,7 +23,7 @@ class AIOService extends BaseDetailPartService<Detail, Filter> {
   readonly part = Products.AIO;
 
   protected async filterPart(
-    options: FilterOptions,
+    options: FilterOptions & APIMapping.PageOptions,
     attributes?: string[],
     include?: { [key in Infos]?: ModelStatic<any> }
   ) {
@@ -45,6 +46,7 @@ class AIOService extends BaseDetailPartService<Detail, Filter> {
 
       filter.socket = (await this.filterAttribute(
         CPUBlockSocketModel,
+        options,
         "socket",
         CPUBlockPartInclude
       )) as string[];

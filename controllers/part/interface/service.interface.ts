@@ -60,7 +60,7 @@ abstract class BasePartService<
    * @returns The created filter object.
    */
   async filter(
-    options: FilterOptions & SearchOptions,
+    options: FilterOptions & PageOptions & SearchOptions,
     attributes?: string[]
   ): Promise<Filter> {
     const { filter } = await this.filterPart(options, attributes);
@@ -225,6 +225,7 @@ abstract class BasePartService<
   >(
     model: ModelStatic<any>,
     initial: FilterOptionsType<Info, Attributes>,
+    options: PageOptions,
     attributes: Attributes[],
     ...include: IncludeOptions[]
   ): Promise<FilterOptionsType<Info, Attributes>> {
@@ -237,6 +238,7 @@ abstract class BasePartService<
 
       result[attr] = (await this.filterAttribute(
         model,
+        options,
         attr.toString(),
         ...include
       )) as any;
@@ -261,6 +263,7 @@ abstract class BasePartService<
     Attributes extends string
   >(
     model: ModelStatic<any>,
+    options: PageOptions,
     attribute: Attributes,
     ...include: IncludeOptions[]
   ): Promise<
@@ -272,7 +275,7 @@ abstract class BasePartService<
 
     const result = await (AttrType instanceof DataTypes.NUMBER
       ? this.filterNumberAttribute(model, attribute, ...include)
-      : this.filterStringAttribute(model, attribute, ...include));
+      : this.filterStringAttribute(model, options, attribute, ...include));
 
     return result as NonNullable<
       FilterOptionsType<Info, Attributes>[typeof attribute]
@@ -289,6 +292,7 @@ abstract class BasePartService<
    */
   protected async filterStringAttribute(
     model: ModelStatic<any>,
+    options: PageOptions,
     attribute: string,
     ...include: IncludeOptions[]
   ): Promise<string[]> {
@@ -297,6 +301,8 @@ abstract class BasePartService<
       group: attribute.toString(),
       order: [attribute.toString()],
       include,
+      offset: (options.page - 1) * options.limit,
+      limit: options.limit,
       raw: true,
     });
 
@@ -341,7 +347,7 @@ abstract class BasePartService<
    * @returns The created part filter options.
    */
   protected async filterPart(
-    options: FilterOptions,
+    options: FilterOptions & PageOptions,
     attributes?: string[],
     include?: { [key in Infos]?: ModelStatic<any> }
   ) {
@@ -370,6 +376,7 @@ abstract class BasePartService<
 
       result[attr] = await this.filterAttribute(
         FilteredPart,
+        options,
         attr.toString(),
         ...FilteredInfos
       );
@@ -524,7 +531,7 @@ abstract class BaseDetailPartService<
   }
 
   protected async filterPart(
-    options: FilterOptions,
+    options: FilterOptions & PageOptions,
     attributes?: string[],
     include?: { [key in Infos]?: ModelStatic<any> }
   ) {
@@ -643,7 +650,7 @@ abstract class BaseDetailPartService<
    */
   protected async filterProduct(
     infosModel: { [key in Infos]?: ModelStatic<any> },
-    options: FilterOptions,
+    options: FilterOptions & PageOptions,
     attributes?: string[],
     partModel?: ModelStatic<PartInformation>
   ) {
@@ -668,7 +675,7 @@ abstract class BaseDetailPartService<
       const { [info]: model } = infosModel;
       if (!model) return;
 
-      result[key] = await this.filterAttribute(model, attr, {
+      result[key] = await this.filterAttribute(model, options, attr, {
         model: partModel,
       });
     });
