@@ -86,4 +86,24 @@ export namespace Product {
     [Products.PUMP]: PumpProduct.Filter,
     [Products.RADIATOR]: RadiatorProduct.Filter,
   };
+
+  export const FilterMapping: {
+    [key in Products]: Record<string, [Infos, string]>;
+  } = {
+    [Products.CPU]: CPUProduct.FilterMapping,
+    [Products.GPU]: GPUProduct.FilterMapping,
+    [Products.GRAPHIC_CARD]: GraphicCard.FilterMapping,
+    [Products.MAIN]: Mainboard.FilterMapping,
+    [Products.RAM]: RAMProduct.FilterMapping,
+    [Products.SSD]: SSDProduct.FilterMapping,
+    [Products.HDD]: HDDProduct.FilterMapping,
+    [Products.PSU]: PSUProduct.FilterMapping,
+    [Products.CASE]: CaseProduct.FilterMapping,
+    [Products.COOLER]: CoolerProduct.FilterMapping,
+    [Products.AIO]: AIOProduct.FilterMapping,
+    [Products.FAN]: FanProduct.FilterMapping,
+    [Products.CPU_BLOCK]: CPUBlock.FilterMapping,
+    [Products.PUMP]: PumpProduct.FilterMapping,
+    [Products.RADIATOR]: RadiatorProduct.FilterMapping,
+  };
 }

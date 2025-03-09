@@ -19,6 +19,22 @@ export namespace GPU {
     .partial();
 
   export type Filter = z.infer<typeof Filter>;
+
+  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+    base_frequency: "Base Frequency",
+    boost_frequency: "Boost Frequency",
+    memory_size: "Memory Size",
+    memory_type: "Memory Type",
+    tdp: "Thermal Design Power",
+  };
+
+  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+    base_frequency: [Infos.GPU, "base_frequency"],
+    boost_frequency: [Infos.GPU, "boost_frequency"],
+    memory_size: [Infos.GPU, "memory_size"],
+    memory_type: [Infos.GPU, "memory_type"],
+    tdp: [Infos.GPU, "tdp"],
+  };
 }
 
 export default GPU;

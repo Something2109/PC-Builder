@@ -22,6 +22,18 @@ export namespace RAM {
     .partial();
 
   export type Filter = z.infer<typeof Filter>;
+
+  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+    form_factor: "Form Factor",
+    capacity: "Capacity",
+    interface: "Interface",
+  };
+
+  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+    form_factor: [Infos.RAM, "form_factor"],
+    capacity: [Infos.RAM, "capacity"],
+    interface: [Infos.RAM, "interface"],
+  };
 }
 
 export default RAM;

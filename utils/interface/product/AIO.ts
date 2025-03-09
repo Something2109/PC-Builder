@@ -22,6 +22,18 @@ export namespace AIO {
     .partial();
 
   export type Filter = z.infer<typeof Filter>;
+
+  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+    socket: "Socket",
+    form_factor: "Form Factor",
+    cpu_plate: "CPU Plate",
+  };
+
+  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+    socket: [Infos.CPU_BLOCK, "socket"],
+    form_factor: [Infos.RADIATOR, "form_factor"],
+    cpu_plate: [Infos.CPU_BLOCK, "plate"],
+  };
 }
 
 export default AIO;
