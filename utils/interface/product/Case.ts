@@ -19,6 +19,13 @@ export namespace Case {
 
   export type Filter = z.infer<typeof Filter>;
 
+  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+    form_factor: "Form Factor",
+    mainboard_support: "Mainboard Support",
+    radiator_support: "Radiator Support",
+    psu_support: "PSU Support",
+  };
+
   export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
     form_factor: [Infos.CASE, "form_factor"],
     mainboard_support: [Infos.CASE, "mainboard_support"],

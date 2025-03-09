@@ -17,6 +17,11 @@ export namespace CPUBlock {
 
   export type Filter = z.infer<typeof Filter>;
 
+  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+    socket: "Socket",
+    plate: "Plate",
+  };
+
   export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
     socket: [Infos.CPU_BLOCK, "socket"],
     plate: [Infos.CPU_BLOCK, "plate"],
