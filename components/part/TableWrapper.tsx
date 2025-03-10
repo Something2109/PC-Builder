@@ -36,7 +36,7 @@ export namespace Table {
 }
 
 export type InfoLabel<T extends Record<string, any>> = {
-  [key in keyof T]: string;
+  [key in keyof Required<T>]: string;
 };
 
 export type InfoSummaryMapping<
@@ -78,7 +78,7 @@ export function GenericSummaryCells<
 const tableClass = "w-full border-2";
 
 export type InfoDetailMapping<T extends Record<string, any>> = {
-  [key in keyof T]: FunctionComponent<{ value?: T[key] }>;
+  [key in keyof Required<T>]: FunctionComponent<{ value?: T[key] }>;
 };
 
 export function GenericDetailTable<T extends Record<string, any>>(
@@ -117,7 +117,7 @@ type CustomInputComponent<Value> = FunctionComponent<
 >;
 
 export type InfoInputMapping<T extends Record<string, any>> = {
-  [key in keyof T]: CustomInputComponent<T[key]>;
+  [key in keyof Required<T>]: CustomInputComponent<T[key]>;
 };
 
 export function GenericInputTable<T extends Record<string, any>>(
