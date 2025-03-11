@@ -1,3 +1,5 @@
+"use client";
+
 import { HTMLAttributes, useState } from "react";
 import { ColumnWrapper } from "./FlexWrapper";
 
