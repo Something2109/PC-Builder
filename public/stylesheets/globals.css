@@ -48,4 +48,45 @@
     transition-duration: 500ms;
     transition-delay: 0s;
   }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    pointer-events: none;
+    width: 100%;
+    background: transparent;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    pointer-events: auto;
+    margin-top: -2.5px;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    pointer-events: auto;
+    margin-top: -2.5px;
+  }
+
+  input[type="range"]:focus {
+    outline: none;
+  }
+
+  .bg-range-input::-webkit-slider-thumb {
+    margin-top: -5px;
+  }
+
+  .bg-range-input::-moz-range-thumb {
+    margin-top: -5px;
+  }
+
+  .bg-range-input::-webkit-slider-runnable-track {
+    background: #cbd5e1;
+    border-radius: 3px;
+    height: 50%;
+  }
+
+  .bg-range-input::-moz-range-track {
+    background: #cbd5e1;
+    border-radius: 3px;
+    height: 50%;
+  }
 }
