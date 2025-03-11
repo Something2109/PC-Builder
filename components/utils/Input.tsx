@@ -85,7 +85,7 @@ export function UnitInput<T extends string>({
   Unit: UnitInterface<T>;
   defaultUnit: T;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "type">) {
-  const [submit, setSubmit] = useState<number>(Number(defaultValue ?? 0));
+  const SubmitInput = useRef<HTMLInputElement>(null);
   rest.onChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.currentTarget.value;
@@ -93,9 +93,13 @@ export function UnitInput<T extends string>({
       const result = Unit.parse(value);
       if (result && result[0]) {
         e.currentTarget.value = `${result[0]} ${result[1]}`;
-        setSubmit(Unit.exchange(result[0], result[1], defaultUnit));
+        SubmitInput.current!.value = Unit.exchange(
+          result[0],
+          result[1],
+          defaultUnit
+        ).toString();
       } else {
-        setSubmit(0);
+        SubmitInput.current!.value = "0";
       }
     },
     [Unit]
@@ -103,8 +107,8 @@ export function UnitInput<T extends string>({
 
   return (
     <>
-      <input type="hidden" name={name} value={submit} />
-      <Input defaultValue={`${submit} ${defaultUnit}`} {...rest} />
+      <input type="hidden" ref={SubmitInput} name={name} value={defaultValue} />
+      <Input defaultValue={`${defaultValue} ${defaultUnit}`} {...rest} />
     </>
   );
 }
