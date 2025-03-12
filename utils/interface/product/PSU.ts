@@ -13,7 +13,7 @@ export namespace PSUProduct {
     .object({
       form_factor: FilterOptions(FormFactor.PSU),
       wattage: NumberFilterOptions,
-      efficiency: NumberFilterOptions,
+      efficiency: FilterOptions(PSU.Efficiency),
       modular: FilterOptions(PSU.Modular),
     })
     .partial();
