@@ -13,12 +13,19 @@ export namespace PSUProduct {
     .object({
       form_factor: FilterOptions(FormFactor.PSU),
       wattage: NumberFilterOptions,
-      efficiency: NumberFilterOptions,
+      efficiency: FilterOptions(PSU.Efficiency),
       modular: FilterOptions(PSU.Modular),
     })
     .partial();
 
   export type Filter = z.infer<typeof Filter>;
+
+  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+    form_factor: "Form Factor",
+    wattage: "Wattage",
+    efficiency: "Efficiency",
+    modular: "Modular",
+  };
 
   export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
     form_factor: [Infos.PSU, "form_factor"],

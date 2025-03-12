@@ -22,6 +22,16 @@ export namespace CPU {
 
   export type Filter = z.infer<typeof Filter>;
 
+  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+    socket: "Socket",
+    total_cores: "Total Cores",
+    total_threads: "Total Threads",
+    base_frequency: "Base Frequency",
+    turbo_frequency: "Turbo Frequency",
+    L3_cache: "L3 Cache",
+    tdp: "TDP",
+  };
+
   export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
     socket: [Infos.CPU, "socket"],
     total_cores: [Infos.CPU, "total_cores"],
