@@ -304,6 +304,7 @@ abstract class BasePartService<
       offset: (options.page - 1) * options.limit,
       limit: options.limit,
       raw: true,
+      subQuery: false,
     });
 
     return query.map((value) => value[attribute]).filter((value) => value);
