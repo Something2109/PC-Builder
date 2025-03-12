@@ -166,6 +166,30 @@ export function ChoiceInput({
   );
 }
 
+export function MultipleChoiceInput({
+  className,
+  value,
+  defaultValue,
+  ...props
+}: {
+  value: string[];
+  defaultValue?: string[];
+} & Omit<InputHTMLAttributes<HTMLInputElement>, "defaultValue" | "value">) {
+  return (
+    <RowWrapper className={className}>
+      {value.map((val) => (
+        <ChoiceInput
+          {...props}
+          type="checkbox"
+          key={val}
+          value={val}
+          defaultChecked={defaultValue?.includes(val)}
+        />
+      ))}
+    </RowWrapper>
+  );
+}
+
 export function MinMaxRangeInput({
   name,
   id,
