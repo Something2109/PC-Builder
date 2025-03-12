@@ -34,8 +34,8 @@ export namespace Mainboard {
   export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
     socket: [Infos.MAIN, "socket"],
     form_factor: [Infos.MAIN, "form_factor"],
-    ram_form_factor: [Infos.RAM, "form_factor"],
-    ram_interface: [Infos.RAM, "interface"],
+    ram_form_factor: [Infos.MAIN, "ram_form_factor"],
+    ram_interface: [Infos.MAIN, "ram_interface"],
   };
 }
 
