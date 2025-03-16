@@ -1,0 +1,66 @@
+import {
+  MultipleChoiceInput,
+  UnitMinMaxRangeInput,
+} from "@/components/utils/Input";
+import SSD from "@/utils/interface/product/SSD";
+import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
+import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+
+const Components: FilterMapping<SSD.Filter> = {
+  memory_type: ({ defaultValue, value, ...props }) => (
+    <MultipleChoiceInput
+      className="flex-wrap gap-x-3"
+      defaultValue={defaultValue}
+      value={value}
+      {...props}
+    />
+  ),
+  form_factor: ({ defaultValue, value, ...props }) => (
+    <MultipleChoiceInput
+      className="flex-wrap gap-x-3"
+      defaultValue={defaultValue}
+      value={value}
+      {...props}
+    />
+  ),
+  capacity: ({ value, defaultValue, ...props }) => (
+    <UnitMinMaxRangeInput
+      Unit={MemoryUnits}
+      defaultUnit="GB"
+      step={0.01}
+      min={value[0]}
+      max={value[1]}
+      {...props}
+    />
+  ),
+  interface: ({ defaultValue, value, ...props }) => (
+    <MultipleChoiceInput
+      className="flex-wrap gap-x-3"
+      defaultValue={defaultValue}
+      value={value}
+      {...props}
+    />
+  ),
+  read_speed: ({ value, defaultValue, ...props }) => (
+    <UnitMinMaxRangeInput
+      Unit={MemorySpeedUnit}
+      defaultUnit="MB/s"
+      step={0.01}
+      min={value[0]}
+      max={value[1]}
+      {...props}
+    />
+  ),
+  write_speed: ({ value, defaultValue, ...props }) => (
+    <UnitMinMaxRangeInput
+      Unit={MemorySpeedUnit}
+      defaultUnit="MB/s"
+      step={0.01}
+      min={value[0]}
+      max={value[1]}
+      {...props}
+    />
+  ),
+};
+
+export default GenericFilterBar(Components, SSD.FilterLabels);
