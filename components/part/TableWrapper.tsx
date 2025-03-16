@@ -8,6 +8,8 @@ import {
 } from "react";
 import { RowWrapper } from "../utils/FlexWrapper";
 import { Button } from "../utils/Button";
+import { VerticalCollapsible } from "../utils/Collapsible";
+import { Toggler } from "../utils/Toggle";
 
 export namespace Table {
   const tableRow = "border-b-2 last:border-b-0 *:rounded-sm";
@@ -69,6 +71,58 @@ export function GenericSummaryCells<
               {Component ? <Component value={value} /> : undefined}
             </RowWrapper>
           </td>
+        );
+      })}
+    </>
+  );
+}
+
+type CustomFilterComponent<Value> = FunctionComponent<
+  { value: NonNullable<Value>; defaultValue?: Value } & Omit<
+    InputHTMLAttributes<HTMLInputElement> &
+      SelectHTMLAttributes<HTMLSelectElement>,
+    "defaultValue" | "value"
+  >
+>;
+
+export type FilterMapping<T extends Record<string, any>> = {
+  [key in keyof Required<T>]: CustomFilterComponent<T[key]>;
+};
+
+export function GenericFilterBar<T extends Record<string, string[] | number[]>>(
+  Components: FilterMapping<T>,
+  Labels: InfoLabel<T>
+) {
+  return ({
+    defaultValue,
+    value,
+  }: {
+    defaultValue: URLSearchParams;
+    value?: Partial<T>;
+  }) => (
+    <>
+      {Object.entries(Components).map(([key, Component]) => {
+        if (!value || !value[key]) return;
+
+        return (
+          <Toggler
+            className="w-full"
+            key={`Filter-${key}`}
+            label={`Add ${Labels[key]} Filter`}
+            defaultToggle={defaultValue.getAll(key).length > 0}
+          >
+            <VerticalCollapsible className="w-full">
+              <label htmlFor={key}>{Labels[key]}</label>
+              <Component
+                id={`Filter-${key}`}
+                name={key}
+                title={Labels[key]}
+                placeholder={Labels[key]}
+                value={value[key]}
+                defaultValue={defaultValue.getAll(key)}
+              />
+            </VerticalCollapsible>
+          </Toggler>
         );
       })}
     </>
