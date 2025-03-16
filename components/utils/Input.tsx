@@ -132,9 +132,11 @@ export function OptionSelect({
 }: { options: string[] | number[] } & SelectHTMLAttributes<HTMLSelectElement>) {
   return (
     <Select {...rest}>
-      <option className="text-background" value={""}>
-        None
-      </option>
+      {!Boolean(rest.required) && (
+        <option className="text-background" value={""}>
+          None
+        </option>
+      )}
       {options.map((value) => (
         <option
           className="text-background"
