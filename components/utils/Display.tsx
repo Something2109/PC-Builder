@@ -50,6 +50,7 @@ export function UnitDisplay<T extends string>({
         value={unitName}
         options={display.current}
         disabled={display.current.length === 1}
+        required
       />
     </RowWrapper>
   );

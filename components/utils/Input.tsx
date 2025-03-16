@@ -109,7 +109,7 @@ export function UnitInput<T extends string>({
   return (
     <>
       <input type="hidden" ref={SubmitInput} name={name} value={defaultValue} />
-      <Input defaultValue={`${defaultValue} ${defaultUnit}`} {...rest} />
+      <Input defaultValue={`${defaultValue ?? 0} ${defaultUnit}`} {...rest} />
     </>
   );
 }
