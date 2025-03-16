@@ -1,0 +1,76 @@
+"use client";
+
+import {
+  lazy,
+  FormHTMLAttributes,
+  useRef,
+  LazyExoticComponent,
+  FunctionComponent,
+} from "react";
+import { RowWrapper } from "../utils/FlexWrapper";
+import { Button } from "../utils/Button";
+import { Products } from "@/utils/Enum";
+import { useRouter } from "next/navigation";
+import PartFilter from "./filter/Part";
+
+const FilterComponents: {
+  [key in Products]: LazyExoticComponent<
+    FunctionComponent<{
+      defaultValue: URLSearchParams;
+      value?: Record<string, string[] | number[]>;
+    }>
+  >;
+} = {
+  [Products.CPU]: lazy(() => import("@/components/part/filter/CPU")),
+  [Products.GPU]: lazy(() => import("@/components/part/filter/GPU")),
+  [Products.GRAPHIC_CARD]: lazy(
+    () => import("@/components/part/filter/GraphicCard")
+  ),
+  [Products.MAIN]: lazy(() => import("@/components/part/filter/Mainboard")),
+  [Products.RAM]: lazy(() => import("@/components/part/filter/RAM")),
+  [Products.HDD]: lazy(() => import("@/components/part/filter/HDD")),
+  [Products.PSU]: lazy(() => import("@/components/part/filter/PSU")),
+  [Products.CASE]: lazy(() => import("@/components/part/filter/Case")),
+  [Products.COOLER]: lazy(() => import("@/components/part/filter/Cooler")),
+  [Products.AIO]: lazy(() => import("@/components/part/filter/AIO")),
+  [Products.FAN]: lazy(() => import("@/components/part/filter/Fan")),
+  [Products.SSD]: lazy(() => import("@/components/part/filter/SSD")),
+  [Products.CPU_BLOCK]: lazy(() => import("@/components/part/filter/CPUBlock")),
+  [Products.PUMP]: lazy(() => import("@/components/part/filter/Pump")),
+  [Products.RADIATOR]: lazy(() => import("@/components/part/filter/Radiator")),
+};
+
+export function FilterBar({
+  part,
+  context,
+  filter,
+  className,
+  ...rest
+}: {
+  part: Products;
+  context: URLSearchParams;
+  filter: Record<string, string[] | number[]>;
+} & FormHTMLAttributes<HTMLFormElement>) {
+  const router = useRouter();
+  const options = useRef(new URLSearchParams(context));
+
+  if (!FilterComponents[part]) return;
+
+  const Component = FilterComponents[part];
+
+  return (
+    <form className={`flex flex-col gap-1 ${className}`} {...rest}>
+      <RowWrapper className="flex-wrap justify-between gap-2 mb-10">
+        <PartFilter defaultValue={options.current} value={filter} />
+        <Component defaultValue={options.current} value={filter} />
+      </RowWrapper>
+      <hr />
+      <RowWrapper className="justify-end">
+        <Button type="submit">Filter</Button>
+        <Button type="reset" onClick={() => router.replace(`/part/${part}`)}>
+          Reset
+        </Button>
+      </RowWrapper>
+    </form>
+  );
+}
