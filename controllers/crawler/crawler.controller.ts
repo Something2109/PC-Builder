@@ -21,7 +21,7 @@ export class CrawlerController {
   getAll() {
     const list = this.service.statusAll();
 
-    return JSON.stringify(list);
+    return list;
   }
 
   @Get(":name")

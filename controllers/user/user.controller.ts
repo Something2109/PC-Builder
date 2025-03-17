@@ -34,7 +34,7 @@ export class UserController {
   ) {
     const informations = await this.userService.list(options);
 
-    return JSON.stringify(informations);
+    return informations;
   }
 
   @Post()
@@ -44,7 +44,7 @@ export class UserController {
     if (!user)
       throw new ConflictException(`Username ${payload.username} has been used`);
 
-    return JSON.stringify(user);
+    return user;
   }
 
   @Role(Roles.USER)
@@ -57,7 +57,7 @@ export class UserController {
         `Cannot find the user with the username: ${username}.`
       );
 
-    return JSON.stringify(information);
+    return information;
   }
 
   @Role(Roles.USER)
@@ -73,7 +73,7 @@ export class UserController {
         `Cannot find the user with the username: ${username}.`
       );
 
-    return JSON.stringify(information);
+    return information;
   }
 
   @Role(Roles.USER)
@@ -86,6 +86,6 @@ export class UserController {
         `Cannot find the user with the username: ${username}.`
       );
 
-    return JSON.stringify(information);
+    return information;
   }
 }

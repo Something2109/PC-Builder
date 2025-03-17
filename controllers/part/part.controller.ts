@@ -44,7 +44,7 @@ export class PartController {
 
     const filter = await service.filter(options);
 
-    return JSON.stringify(filter);
+    return filter;
   }
 
   @Get("filter/:part")
@@ -62,7 +62,7 @@ export class PartController {
 
     const filter = await service.filter(options);
 
-    return JSON.stringify(filter);
+    return filter;
   }
 
   @Get("filter/:part/:attribute")
@@ -81,7 +81,7 @@ export class PartController {
 
     const filter = await service.filter(options, [attribute]);
 
-    return JSON.stringify(filter);
+    return filter;
   }
 
   @Get()
@@ -95,7 +95,7 @@ export class PartController {
 
     let data = await service.list(options);
 
-    return JSON.stringify(data);
+    return data;
   }
 
   @Get(":part")
@@ -110,7 +110,7 @@ export class PartController {
 
     let data = await service.list(options);
 
-    return JSON.stringify(data);
+    return data;
   }
 
   @Role(Roles.ADMIN)
@@ -124,7 +124,7 @@ export class PartController {
     const partInfo = await service.create(body);
 
     if (typeof partInfo !== "string") {
-      return JSON.stringify(partInfo);
+      return partInfo;
     }
 
     throw new BadRequestException(
@@ -142,7 +142,7 @@ export class PartController {
     const partInfo = await service.get(id);
 
     if (partInfo) {
-      return JSON.stringify(partInfo);
+      return partInfo;
     }
 
     throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
@@ -165,7 +165,7 @@ export class PartController {
       );
     }
 
-    if (partInfo) return JSON.stringify(partInfo);
+    if (partInfo) return partInfo;
 
     throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
   }
@@ -180,7 +180,7 @@ export class PartController {
 
     const partInfo = await service.delete(id);
 
-    if (partInfo) return JSON.stringify(partInfo);
+    if (partInfo) return partInfo;
 
     throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
   }
