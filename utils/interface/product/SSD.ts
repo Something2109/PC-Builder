@@ -27,7 +27,7 @@ export namespace SSDProduct {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+  export const AttributeLabels: { [key in keyof Required<Filter>]: string } = {
     memory_type: "Memory Type",
     form_factor: "Form Factor",
     capacity: "Capacity",
@@ -36,7 +36,7 @@ export namespace SSDProduct {
     write_speed: "Write Speed",
   };
 
-  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+  export const AttributeMapping: Record<keyof Filter, [Infos, string]> = {
     memory_type: [Infos.SSD, "memory_type"],
     form_factor: [Infos.SSD, "form_factor"],
     capacity: [Infos.SSD, "capacity"],

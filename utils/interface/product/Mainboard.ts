@@ -24,14 +24,14 @@ export namespace Mainboard {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+  export const AttributeLabels: { [key in keyof Required<Filter>]: string } = {
     socket: "Socket",
     form_factor: "Form Factor",
     ram_form_factor: "RAM Form Factor",
     ram_interface: "RAM Interface",
   };
 
-  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+  export const AttributeMapping: Record<keyof Filter, [Infos, string]> = {
     socket: [Infos.MAIN, "socket"],
     form_factor: [Infos.MAIN, "form_factor"],
     ram_form_factor: [Infos.MAIN, "ram_form_factor"],

@@ -20,7 +20,7 @@ export namespace GPU {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+  export const AttributeLabels: { [key in keyof Required<Filter>]: string } = {
     base_frequency: "Base Frequency",
     boost_frequency: "Boost Frequency",
     memory_size: "Memory Size",
@@ -28,7 +28,7 @@ export namespace GPU {
     tdp: "Thermal Design Power",
   };
 
-  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+  export const AttributeMapping: Record<keyof Filter, [Infos, string]> = {
     base_frequency: [Infos.GPU, "base_frequency"],
     boost_frequency: [Infos.GPU, "boost_frequency"],
     memory_size: [Infos.GPU, "memory_size"],

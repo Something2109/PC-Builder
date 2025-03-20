@@ -18,12 +18,12 @@ export namespace FanProduct {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+  export const AttributeLabels: { [key in keyof Required<Filter>]: string } = {
     form_factor: "Form Factor",
     bearing: "Bearing",
   };
 
-  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+  export const AttributeMapping: Record<keyof Filter, [Infos, string]> = {
     form_factor: [Infos.FAN, "form_factor"],
     bearing: [Infos.FAN, "bearing"],
   };

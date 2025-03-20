@@ -87,23 +87,23 @@ export namespace Product {
     [Products.RADIATOR]: RadiatorProduct.Filter,
   };
 
-  export const FilterMapping: {
+  export const AttributeMapping: {
     [key in Products]: Record<string, [Infos, string]>;
   } = {
-    [Products.CPU]: CPUProduct.FilterMapping,
-    [Products.GPU]: GPUProduct.FilterMapping,
-    [Products.GRAPHIC_CARD]: GraphicCard.FilterMapping,
-    [Products.MAIN]: Mainboard.FilterMapping,
-    [Products.RAM]: RAMProduct.FilterMapping,
-    [Products.SSD]: SSDProduct.FilterMapping,
-    [Products.HDD]: HDDProduct.FilterMapping,
-    [Products.PSU]: PSUProduct.FilterMapping,
-    [Products.CASE]: CaseProduct.FilterMapping,
-    [Products.COOLER]: CoolerProduct.FilterMapping,
-    [Products.AIO]: AIOProduct.FilterMapping,
-    [Products.FAN]: FanProduct.FilterMapping,
-    [Products.CPU_BLOCK]: CPUBlock.FilterMapping,
-    [Products.PUMP]: PumpProduct.FilterMapping,
-    [Products.RADIATOR]: RadiatorProduct.FilterMapping,
+    [Products.CPU]: CPUProduct.AttributeMapping,
+    [Products.GPU]: GPUProduct.AttributeMapping,
+    [Products.GRAPHIC_CARD]: GraphicCard.AttributeMapping,
+    [Products.MAIN]: Mainboard.AttributeMapping,
+    [Products.RAM]: RAMProduct.AttributeMapping,
+    [Products.SSD]: SSDProduct.AttributeMapping,
+    [Products.HDD]: HDDProduct.AttributeMapping,
+    [Products.PSU]: PSUProduct.AttributeMapping,
+    [Products.CASE]: CaseProduct.AttributeMapping,
+    [Products.COOLER]: CoolerProduct.AttributeMapping,
+    [Products.AIO]: AIOProduct.AttributeMapping,
+    [Products.FAN]: FanProduct.AttributeMapping,
+    [Products.CPU_BLOCK]: CPUBlock.AttributeMapping,
+    [Products.PUMP]: PumpProduct.AttributeMapping,
+    [Products.RADIATOR]: RadiatorProduct.AttributeMapping,
   };
 }

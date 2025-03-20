@@ -26,7 +26,7 @@ export namespace HDD {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+  export const AttributeLabels: { [key in keyof Required<Filter>]: string } = {
     form_factor: "Form Factor",
     capacity: "Capacity",
     interface: "Interface",
@@ -35,7 +35,7 @@ export namespace HDD {
     rotational_speed: "Rotational Speed",
   };
 
-  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+  export const AttributeMapping: Record<keyof Filter, [Infos, string]> = {
     form_factor: [Infos.HDD, "form_factor"],
     capacity: [Infos.HDD, "capacity"],
     interface: [Infos.HDD, "interface"],

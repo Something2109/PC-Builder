@@ -21,7 +21,7 @@ export namespace GraphicCard {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+  export const AttributeLabels: { [key in keyof Required<Filter>]: string } = {
     length: "Length",
     base_frequency: "Base Frequency",
     boost_frequency: "Boost Frequency",
@@ -30,7 +30,7 @@ export namespace GraphicCard {
     minimum_psu: "Minimum PSU",
   };
 
-  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
+  export const AttributeMapping: Record<keyof Filter, [Infos, string]> = {
     length: [Infos.GRAPHIC_CARD, "length"],
     base_frequency: [Infos.GRAPHIC_CARD, "base_frequency"],
     boost_frequency: [Infos.GRAPHIC_CARD, "boost_frequency"],
