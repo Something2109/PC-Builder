@@ -13,6 +13,16 @@ export namespace AIO {
   ];
   export const Secondary = [];
 
+  export const Summary = z
+    .object({
+      socket: Primitive.String,
+      form_factor: FormFactor.Radiator,
+      cpu_plate: Material.Metal,
+    })
+    .partial();
+
+  export type Summary = z.infer<typeof Summary>;
+
   export const Filter = z
     .object({
       socket: FilterOptions(Primitive.String),
@@ -23,13 +33,17 @@ export namespace AIO {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const AttributeLabels: { [key in keyof Required<Filter>]: string } = {
+  export const AttributeLabels: {
+    [key in keyof Required<Summary & Filter>]: string;
+  } = {
     socket: "Socket",
     form_factor: "Form Factor",
     cpu_plate: "CPU Plate",
   };
 
-  export const AttributeMapping: Record<keyof Filter, [Infos, string]> = {
+  export const AttributeMapping: {
+    [key in keyof Required<Summary & Filter>]: [Infos, string];
+  } = {
     socket: [Infos.CPU_BLOCK, "socket"],
     form_factor: [Infos.RADIATOR, "form_factor"],
     cpu_plate: [Infos.CPU_BLOCK, "plate"],

@@ -3,6 +3,7 @@ import {
   NumberFilterOptions,
   FormFactor,
   InternalConnectors,
+  Primitive,
 } from "../utils";
 import { Infos } from "../../Enum";
 import { z } from "zod";
@@ -12,6 +13,18 @@ export namespace HDD {
 
   export const Primary = [Infos.HDD];
   export const Secondary = [];
+
+  export const Summary = z
+    .object({
+      form_factor: FormFactor.HDD,
+      interface: InternalConnectors.RAM,
+      capacity: Primitive.Number,
+      read_speed: Primitive.Number,
+      write_speed: Primitive.Number,
+    })
+    .partial();
+
+  export type Summary = z.infer<typeof Summary>;
 
   export const Filter = z
     .object({
@@ -26,7 +39,9 @@ export namespace HDD {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const AttributeLabels: { [key in keyof Required<Filter>]: string } = {
+  export const AttributeLabels: {
+    [key in keyof Required<Summary & Filter>]: string;
+  } = {
     form_factor: "Form Factor",
     capacity: "Capacity",
     interface: "Interface",
@@ -35,7 +50,9 @@ export namespace HDD {
     rotational_speed: "Rotational Speed",
   };
 
-  export const AttributeMapping: Record<keyof Filter, [Infos, string]> = {
+  export const AttributeMapping: {
+    [key in keyof Required<Summary & Filter>]: [Infos, string];
+  } = {
     form_factor: [Infos.HDD, "form_factor"],
     capacity: [Infos.HDD, "capacity"],
     interface: [Infos.HDD, "interface"],

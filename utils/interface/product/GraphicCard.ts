@@ -1,4 +1,4 @@
-import { NumberFilterOptions } from "../utils";
+import { NumberFilterOptions, Primitive } from "../utils";
 import { Infos } from "../../Enum";
 import { z } from "zod";
 
@@ -7,6 +7,17 @@ export namespace GraphicCard {
 
   export const Primary = [Infos.GRAPHIC_CARD];
   export const Secondary = [];
+
+  export const Summary = z
+    .object({
+      length: Primitive.Number,
+      base_frequency: Primitive.Number,
+      boost_frequency: Primitive.Number,
+      minimum_psu: Primitive.Number,
+    })
+    .partial();
+
+  export type Summary = z.infer<typeof Summary>;
 
   export const Filter = z
     .object({
@@ -21,7 +32,9 @@ export namespace GraphicCard {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const AttributeLabels: { [key in keyof Required<Filter>]: string } = {
+  export const AttributeLabels: {
+    [key in keyof Required<Summary & Filter>]: string;
+  } = {
     length: "Length",
     base_frequency: "Base Frequency",
     boost_frequency: "Boost Frequency",
@@ -30,7 +43,9 @@ export namespace GraphicCard {
     minimum_psu: "Minimum PSU",
   };
 
-  export const AttributeMapping: Record<keyof Filter, [Infos, string]> = {
+  export const AttributeMapping: {
+    [key in keyof Required<Summary & Filter>]: [Infos, string];
+  } = {
     length: [Infos.GRAPHIC_CARD, "length"],
     base_frequency: [Infos.GRAPHIC_CARD, "base_frequency"],
     boost_frequency: [Infos.GRAPHIC_CARD, "boost_frequency"],

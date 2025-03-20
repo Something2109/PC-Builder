@@ -1,4 +1,5 @@
-import { ZodSchema } from "zod";
+import { ZodObject, ZodSchema } from "zod";
+import { ToSummaryOptions } from "./utils";
 import { Infos, Products } from "../Enum";
 import AIOProduct from "./product/AIO";
 import CaseProduct from "./product/Case";
@@ -61,6 +62,30 @@ export namespace Product {
   };
 
   /**
+   * The product summary options of each {@link Products} type.
+   * Contains the schema of the summary of each product.
+   */
+  export const Summary: {
+    [key in Products]: ZodObject<{ [key in string]: ZodSchema }>;
+  } = {
+    [Products.CPU]: CPUProduct.Summary,
+    [Products.GPU]: GPUProduct.Summary,
+    [Products.GRAPHIC_CARD]: GraphicCard.Summary,
+    [Products.MAIN]: Mainboard.Summary,
+    [Products.RAM]: RAMProduct.Summary,
+    [Products.SSD]: SSDProduct.Summary,
+    [Products.HDD]: HDDProduct.Summary,
+    [Products.PSU]: PSUProduct.Summary,
+    [Products.CASE]: CaseProduct.Summary,
+    [Products.COOLER]: CoolerProduct.Summary,
+    [Products.AIO]: AIOProduct.Summary,
+    [Products.FAN]: FanProduct.Summary,
+    [Products.CPU_BLOCK]: CPUBlock.Summary,
+    [Products.PUMP]: PumpProduct.Summary,
+    [Products.RADIATOR]: RadiatorProduct.Summary,
+  };
+
+  /**
    * The product filter options of each {@link Products} type.
    * Contains the attributes and the schema to verify the corresponsding value.
    * This is used to declare and verify the attributes of the product.
@@ -105,5 +130,70 @@ export namespace Product {
     [Products.CPU_BLOCK]: CPUBlock.AttributeMapping,
     [Products.PUMP]: PumpProduct.AttributeMapping,
     [Products.RADIATOR]: RadiatorProduct.AttributeMapping,
+  };
+
+  export const SummaryAttributeMapping: {
+    [key in Products]: { [key in Infos]?: string[] };
+  } = {
+    [Products.CPU]: ToSummaryOptions(
+      CPUProduct.Summary.keyof().options,
+      CPUProduct.AttributeMapping
+    ),
+    [Products.GPU]: ToSummaryOptions(
+      GPUProduct.Summary.keyof().options,
+      GPUProduct.AttributeMapping
+    ),
+    [Products.GRAPHIC_CARD]: ToSummaryOptions(
+      GraphicCard.Summary.keyof().options,
+      GraphicCard.AttributeMapping
+    ),
+    [Products.MAIN]: ToSummaryOptions(
+      Mainboard.Summary.keyof().options,
+      Mainboard.AttributeMapping
+    ),
+    [Products.RAM]: ToSummaryOptions(
+      RAMProduct.Summary.keyof().options,
+      RAMProduct.AttributeMapping
+    ),
+    [Products.SSD]: ToSummaryOptions(
+      SSDProduct.Summary.keyof().options,
+      SSDProduct.AttributeMapping
+    ),
+    [Products.HDD]: ToSummaryOptions(
+      HDDProduct.Summary.keyof().options,
+      HDDProduct.AttributeMapping
+    ),
+    [Products.PSU]: ToSummaryOptions(
+      PSUProduct.Summary.keyof().options,
+      PSUProduct.AttributeMapping
+    ),
+    [Products.CASE]: ToSummaryOptions(
+      CaseProduct.Summary.keyof().options,
+      CaseProduct.AttributeMapping
+    ),
+    [Products.COOLER]: ToSummaryOptions(
+      CoolerProduct.Summary.keyof().options,
+      CoolerProduct.AttributeMapping
+    ),
+    [Products.AIO]: ToSummaryOptions(
+      AIOProduct.Summary.keyof().options,
+      AIOProduct.AttributeMapping
+    ),
+    [Products.FAN]: ToSummaryOptions(
+      FanProduct.Summary.keyof().options,
+      FanProduct.AttributeMapping
+    ),
+    [Products.CPU_BLOCK]: ToSummaryOptions(
+      CPUBlock.Summary.keyof().options,
+      CPUBlock.AttributeMapping
+    ),
+    [Products.PUMP]: ToSummaryOptions(
+      PumpProduct.Summary.keyof().options,
+      PumpProduct.AttributeMapping
+    ),
+    [Products.RADIATOR]: ToSummaryOptions(
+      RadiatorProduct.Summary.keyof().options,
+      RadiatorProduct.AttributeMapping
+    ),
   };
 }

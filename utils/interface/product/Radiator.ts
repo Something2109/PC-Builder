@@ -15,14 +15,27 @@ export namespace Radiator {
     })
     .partial();
 
+  export const Summary = z
+    .object({
+      form_factor: FormFactor.Radiator,
+      material: Material.Metal,
+    })
+    .partial();
+
+  export type Summary = z.infer<typeof Summary>;
+
   export type Filter = z.infer<typeof Filter>;
 
-  export const AttributeLabels: { [key in keyof Required<Filter>]: string } = {
+  export const AttributeLabels: {
+    [key in keyof Required<Summary & Filter>]: string;
+  } = {
     form_factor: "Form Factor",
     material: "Material",
   };
 
-  export const AttributeMapping: Record<keyof Filter, [Infos, string]> = {
+  export const AttributeMapping: {
+    [key in keyof Required<Summary & Filter>]: [Infos, string];
+  } = {
     form_factor: [Infos.RADIATOR, "form_factor"],
     material: [Infos.RADIATOR, "material"],
   };
