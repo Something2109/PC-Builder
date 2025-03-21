@@ -39,6 +39,26 @@ export namespace Product {
     [Products.RADIATOR]: RadiatorProduct.Label,
   };
 
+  export const AttributeLabels: {
+    [key in Products]: { [key in string]: string };
+  } = {
+    [Products.CPU]: CPUProduct.AttributeLabels,
+    [Products.GPU]: GPUProduct.AttributeLabels,
+    [Products.GRAPHIC_CARD]: GraphicCard.AttributeLabels,
+    [Products.MAIN]: Mainboard.AttributeLabels,
+    [Products.RAM]: RAMProduct.AttributeLabels,
+    [Products.SSD]: SSDProduct.AttributeLabels,
+    [Products.HDD]: HDDProduct.AttributeLabels,
+    [Products.PSU]: PSUProduct.AttributeLabels,
+    [Products.CASE]: CaseProduct.AttributeLabels,
+    [Products.COOLER]: CoolerProduct.AttributeLabels,
+    [Products.AIO]: AIOProduct.AttributeLabels,
+    [Products.FAN]: FanProduct.AttributeLabels,
+    [Products.CPU_BLOCK]: CPUBlock.AttributeLabels,
+    [Products.PUMP]: PumpProduct.AttributeLabels,
+    [Products.RADIATOR]: RadiatorProduct.AttributeLabels,
+  };
+
   /**
    * The mapping from the {@link Products} to the {@link Info} type.
    * Contains all the {@link Info} that a {@link Products} type can have.
