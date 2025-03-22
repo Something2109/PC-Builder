@@ -6,7 +6,7 @@ import {
   defaultFilter,
 } from "../../interface";
 import { PartInformation } from "./Part";
-import { FormFactor } from "@/utils/interface/utils";
+import { FormFactor, Case as Base } from "@/utils/interface/utils";
 import Case from "@/utils/interface/info/Case";
 import {
   BelongsTo,
@@ -229,9 +229,9 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
       acc[side].push(value);
 
       return acc;
-    }, {} as { [key in Case.Side]?: CaseRadiatorSupportModel[] });
+    }, {} as { [key in Base.Side]?: CaseRadiatorSupportModel[] });
 
-    Case.Side.options.forEach((case_side) => {
+    Base.Side.options.forEach((case_side) => {
       if (!data[case_side]) {
         currentSide[case_side]?.map((value) => value.destroy());
         delete currentSide[case_side];
@@ -263,7 +263,7 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   }
 
   private caseSideRadiatorResolver(
-    side: Case.Side,
+    side: Base.Side,
     data: FormFactor.Radiator[],
     current: CaseRadiatorSupportModel[]
   ): CaseRadiatorSupportModel[] {
@@ -343,9 +343,9 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
       acc[side].push(value);
 
       return acc;
-    }, {} as { [key in Case.Side]?: CaseFanSupportModel[] });
+    }, {} as { [key in Base.Side]?: CaseFanSupportModel[] });
 
-    Case.Side.options.forEach((case_side) => {
+    Base.Side.options.forEach((case_side) => {
       if (!data[case_side]) {
         currentSide[case_side]?.map((value) => value.destroy());
         delete currentSide[case_side];
@@ -379,7 +379,7 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   }
 
   private caseSideFanResolver(
-    case_side: Case.Side,
+    case_side: Base.Side,
     data: { [key in FormFactor.Fan]?: number },
     current: CaseFanSupportModel[]
   ): CaseFanSupportModel[] {
@@ -466,9 +466,9 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
       acc[side].push(value);
 
       return acc;
-    }, {} as { [key in Case.HardDrivePlace]?: CaseHardDriveSupportModel[] });
+    }, {} as { [key in Base.HardDrivePlace]?: CaseHardDriveSupportModel[] });
 
-    Case.HardDrivePlace.options.forEach((place) => {
+    Base.HardDrivePlace.options.forEach((place) => {
       if (!data[place]) {
         currentSide[place]?.map((value) => value.destroy());
         delete currentSide[place];
@@ -502,17 +502,17 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
   }
 
   private caseSideHardDriveResolver(
-    place: Case.HardDrivePlace,
-    data: { [key in Case.HardDriveSize]?: number },
+    place: Base.HardDrivePlace,
+    data: { [key in Base.HardDriveFormFactor]?: number },
     current: CaseHardDriveSupportModel[]
   ): CaseHardDriveSupportModel[] {
     const newData = current.reduce((acc, val) => {
       acc[val.form_factor] = val;
       return acc;
-    }, {} as { [key in Case.HardDriveSize]?: CaseHardDriveSupportModel });
+    }, {} as { [key in Base.HardDriveFormFactor]?: CaseHardDriveSupportModel });
 
     Object.entries(data).forEach(([key, count]) => {
-      const form_factor = key as Case.HardDriveSize;
+      const form_factor = key as Base.HardDriveFormFactor;
       if (!newData[form_factor]) {
         newData[form_factor] = CaseHardDriveSupportModel.build({
           id: this.id,
@@ -528,7 +528,7 @@ class CaseModel extends Model implements PartDetailTable<Case.Info> {
         (value) => !Object.keys(data).includes(value as FormFactor.Radiator)
       )
       .forEach((value) => {
-        const form_factor = value as Case.HardDriveSize;
+        const form_factor = value as Base.HardDriveFormFactor;
         newData[form_factor]?.destroy();
         delete newData[form_factor];
       });
@@ -685,8 +685,8 @@ class CaseFanSupportModel extends Model {
   declare case: CaseModel;
 
   @PrimaryKey
-  @Column({ type: DataType.STRING, validate: { isIn: [Case.Side.options] } })
-  declare case_side: Case.Side;
+  @Column({ type: DataType.STRING, validate: { isIn: [Base.Side.options] } })
+  declare case_side: Base.Side;
 
   @PrimaryKey
   @Column({
@@ -714,8 +714,8 @@ class CaseRadiatorSupportModel extends Model {
   declare case: CaseModel;
 
   @PrimaryKey
-  @Column({ type: DataType.STRING, validate: { isIn: [Case.Side.options] } })
-  declare case_side: Case.Side;
+  @Column({ type: DataType.STRING, validate: { isIn: [Base.Side.options] } })
+  declare case_side: Base.Side;
 
   @PrimaryKey
   @Column(DataType.STRING)
@@ -739,16 +739,16 @@ class CaseHardDriveSupportModel extends Model {
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [["Drive Bay", ...Case.Side.options]] },
+    validate: { isIn: [Base.HardDrivePlace.options] },
   })
-  declare place: keyof Case.HardDriveSupport;
+  declare place: Base.HardDrivePlace;
 
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [Case.HardDriveSize.options] },
+    validate: { isIn: [Base.HardDriveFormFactor.options] },
   })
-  declare form_factor: Case.HardDriveSize;
+  declare form_factor: Base.HardDriveFormFactor;
 
   @Column(DataType.TINYINT)
   declare count: number;
