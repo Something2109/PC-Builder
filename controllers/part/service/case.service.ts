@@ -15,9 +15,10 @@ import { Products, Infos } from "@/utils/Enum";
 import { BaseDetailPartService } from "../interface/service.interface";
 import { FormFactor } from "@/utils/interface/utils";
 import { APIMapping } from "@/utils/interface/api";
+import { Mapping } from "@/utils/interface/mapping";
 
 type Detail = Part.BasicInfo & {
-  [key in (typeof Case.Primary)[number]]: DetailInfo[key];
+  [key in (typeof Mapping.Info)[Infos.CASE][number]]: DetailInfo[key];
 };
 type Filter = Part.FilterOptions & Case.Filter;
 

@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import Part from "@/utils/interface/info/Parts";
-import GPU from "@/utils/interface/product/GPU";
+import { Mapping } from "@/utils/interface/mapping";
 import { Products } from "@/utils/Enum";
 import { DetailInfo } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [key in (typeof GPU.Primary)[number]]: DetailInfo[key];
+  [key in (typeof Mapping.Info)[Products.GPU][number]]: DetailInfo[key];
 };
 
 @Injectable()

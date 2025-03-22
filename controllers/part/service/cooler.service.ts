@@ -8,13 +8,14 @@ import {
 import { ModelScopes } from "@/models/interface";
 import Part from "@/utils/interface/info/Parts";
 import Cooler from "@/utils/interface/product/Cooler";
+import { Mapping } from "@/utils/interface/mapping";
 import { Products, Infos } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { APIMapping } from "@/utils/interface/api";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [key in (typeof Cooler.Primary)[number]]: DetailInfo[key];
+  [key in (typeof Mapping.Info)[Infos.COOLER][number]]: DetailInfo[key];
 };
 type Filter = Part.FilterOptions & Cooler.Filter;
 

@@ -12,9 +12,10 @@ import { Infos, Products } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
 import { APIMapping } from "@/utils/interface/api";
+import { Mapping } from "@/utils/interface/mapping";
 
 type Detail = Part.BasicInfo & {
-  [key in (typeof AIO.Primary)[number]]: DetailInfo[key];
+  [key in (typeof Mapping.Info)[Infos.AIO][number]]: DetailInfo[key];
 };
 type Filter = Part.FilterOptions & AIO.Filter;
 

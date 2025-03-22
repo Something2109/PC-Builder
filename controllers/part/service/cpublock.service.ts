@@ -6,6 +6,7 @@ import {
 } from "@/models/parts/tables/CPUBlock";
 import { ModelScopes } from "@/models/interface";
 import { PartInformation } from "@/models/parts/tables/Part";
+import { Mapping } from "@/utils/interface/mapping";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
 import Part from "@/utils/interface/info/Parts";
 import CPUBlock from "@/utils/interface/product/CPUBlock";
@@ -14,7 +15,7 @@ import { APIMapping } from "@/utils/interface/api";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [key in (typeof CPUBlock.Primary)[number]]: DetailInfo[key];
+  [key in (typeof Mapping.Info)[Products.CPU_BLOCK][number]]: DetailInfo[key];
 };
 type Filter = Part.FilterOptions & CPUBlock.Filter;
 

@@ -15,7 +15,7 @@ import { APIMapping } from "@/utils/interface/api";
 import { FilterOptionsType } from "@/utils/interface/utils";
 import { FilterOptions, DetailInfo as Options } from "@/utils/interface";
 import { Infos, Products } from "@/utils/Enum";
-import { Product } from "@/utils/interface/product";
+import { Mapping } from "@/utils/interface/mapping";
 
 type SearchOptions = {
   q?: string;
@@ -479,7 +479,7 @@ abstract class BaseDetailPartService<
 
     // Create filtered info models of the product infos using scope
     include = {};
-    Product.Info[this.part].forEach(
+    Mapping.Info[this.part].forEach(
       (info) =>
         (include[info] = InfoModels[info].scope({
           method: [ModelScopes.FILTER, options[info]],
@@ -510,7 +510,7 @@ abstract class BaseDetailPartService<
     const part = Part.Schema.partial().parse(options);
     const instance = await super.buildPart(
       { ...part, part: this.part },
-      ...Product.Info[this.part].map((info) =>
+      ...Mapping.Info[this.part].map((info) =>
         InfoModels[info].scope(ModelScopes.DETAIL)
       ),
       ...include
@@ -519,7 +519,7 @@ abstract class BaseDetailPartService<
     if (typeof instance === "string") return instance;
 
     await Promise.all(
-      Product.Info[this.part].map((info) =>
+      Mapping.Info[this.part].map((info) =>
         this.setDetailModel(instance, options, info)
       )
     );
@@ -533,7 +533,7 @@ abstract class BaseDetailPartService<
   ): Promise<PartInformation | null> {
     const instance = await super.getPart(
       id,
-      ...Product.Info[this.part].map((info) =>
+      ...Mapping.Info[this.part].map((info) =>
         InfoModels[info].scope(ModelScopes.DETAIL)
       ),
       ...include
@@ -553,7 +553,7 @@ abstract class BaseDetailPartService<
     const instance = await super.setPart(
       { ...part, part: this.part },
       id,
-      ...Product.Info[this.part].map((info) =>
+      ...Mapping.Info[this.part].map((info) =>
         InfoModels[info].scope(ModelScopes.DETAIL)
       ),
       ...include
@@ -562,7 +562,7 @@ abstract class BaseDetailPartService<
     if (!instance || typeof instance === "string") return instance;
 
     await Promise.all(
-      Product.Info[this.part].map((info) =>
+      Mapping.Info[this.part].map((info) =>
         this.setDetailModel(instance, options, info)
       )
     );
@@ -574,7 +574,7 @@ abstract class BaseDetailPartService<
     await instance.save();
 
     await Promise.all(
-      Product.Info[this.part].map((info) => instance[info]?.save())
+      Mapping.Info[this.part].map((info) => instance[info]?.save())
     );
   }
 
@@ -596,11 +596,11 @@ abstract class BaseDetailPartService<
   ) {
     const result: Record<string, string[] | number[]> = {};
 
-    attributes = attributes ?? Object.keys(Product.FilterMapping[this.part]);
+    attributes = attributes ?? Object.keys(Mapping.AttributeMapping[this.part]);
     const infoPromise = attributes.map(async (key) => {
-      if (!Product.FilterMapping[this.part][key]) return;
+      if (!Mapping.AttributeMapping[this.part][key]) return;
 
-      const [info, attr] = Product.FilterMapping[this.part][key];
+      const [info, attr] = Mapping.AttributeMapping[this.part][key];
       const infoOptions = (options[info] ?? {}) as Record<
         string,
         string[] | number[] | undefined
