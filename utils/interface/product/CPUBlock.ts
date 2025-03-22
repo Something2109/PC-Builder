@@ -1,12 +1,17 @@
 import { FilterOptions, Material, Primitive } from "../utils";
-import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace CPUBlock {
   export const Label = "CPU Block";
 
-  export const Primary = [Infos.CPU_BLOCK];
-  export const Secondary = [];
+  export const Summary = z
+    .object({
+      socket: z.array(Primitive.String),
+      plate: Material.Metal,
+    })
+    .partial();
+
+  export type Summary = z.infer<typeof Summary>;
 
   export const Filter = z
     .object({
@@ -17,9 +22,11 @@ export namespace CPUBlock {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
-    socket: [Infos.CPU_BLOCK, "socket"],
-    plate: [Infos.CPU_BLOCK, "plate"],
+  export const AttributeLabels: {
+    [key in keyof Required<Summary & Filter>]: string;
+  } = {
+    socket: "Socket",
+    plate: "Plate",
   };
 }
 
