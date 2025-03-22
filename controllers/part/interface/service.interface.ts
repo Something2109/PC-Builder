@@ -10,7 +10,6 @@ import {
 import { Injectable } from "@nestjs/common";
 import { FilterOptionBuilder } from "./filterbuilder";
 import { PartInformation } from "@/models/parts/tables/Part";
-import { InfoModels } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
 import Part from "@/utils/interface/info/Parts";
 import { APIMapping } from "@/utils/interface/api";
@@ -44,7 +43,7 @@ abstract class BasePartService<
     let { part } = options;
 
     const FilteredPart = PartInformation.scope([
-      ModelScopes.SUMMARY,
+      { method: [ModelScopes.SUMMARY, Part.SummaryAttributes] },
       { method: [ModelScopes.FILTER, part] },
     ]);
 
@@ -496,14 +495,21 @@ abstract class BaseDetailPartService<
   ): Promise<APIMapping.Payload<Detail>> {
     const { part, ...rest } = options;
 
-    const FilteredPart = PartInformation.scope({
-      method: [ModelScopes.SUMMARY, { ...part, part: [this.part] }],
-    });
+    const FilteredPart = PartInformation.scope([
+      { method: [ModelScopes.SUMMARY, Part.SummaryAttributes] },
+      { method: [ModelScopes.FILTER, { ...part, part: [this.part] }] },
+    ]);
 
-    const include: Includeable[] = Product.Info[this.part].map((info) => ({
-      model: InfoModels[info].scope({
-        method: [ModelScopes.SUMMARY, rest[info]],
-      }),
+    const include: Includeable[] = Mapping.Info[this.part].map((info) => ({
+      model: InfoModels[info].scope([
+        {
+          method: [
+            ModelScopes.SUMMARY,
+            Mapping.SummaryAttributeMapping[this.part][info],
+          ],
+        },
+        { method: [ModelScopes.FILTER, rest[info]] },
+      ]),
       required: Boolean(rest[info]),
     }));
 
