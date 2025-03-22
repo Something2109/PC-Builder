@@ -59,4 +59,4 @@ const Components: FilterMapping<HDD.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, HDD.FilterLabels);
+export default GenericFilterBar(Components, HDD.AttributeLabels);

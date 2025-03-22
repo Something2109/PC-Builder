@@ -37,4 +37,4 @@ const Components: FilterMapping<Case.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, Case.FilterLabels);
+export default GenericFilterBar(Components, Case.AttributeLabels);

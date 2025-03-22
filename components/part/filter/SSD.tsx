@@ -63,4 +63,4 @@ const Components: FilterMapping<SSD.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, SSD.FilterLabels);
+export default GenericFilterBar(Components, SSD.AttributeLabels);

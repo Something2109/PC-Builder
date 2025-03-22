@@ -21,4 +21,4 @@ const Components: FilterMapping<Radiator.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, Radiator.FilterLabels);
+export default GenericFilterBar(Components, Radiator.AttributeLabels);

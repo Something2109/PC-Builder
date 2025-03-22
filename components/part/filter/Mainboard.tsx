@@ -37,4 +37,4 @@ const Components: FilterMapping<Mainboard.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, Mainboard.FilterLabels);
+export default GenericFilterBar(Components, Mainboard.AttributeLabels);

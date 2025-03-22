@@ -21,4 +21,4 @@ const Components: FilterMapping<Fan.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, Fan.FilterLabels);
+export default GenericFilterBar(Components, Fan.AttributeLabels);

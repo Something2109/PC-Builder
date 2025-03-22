@@ -62,4 +62,4 @@ const Components: FilterMapping<GraphicCard.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, GraphicCard.FilterLabels);
+export default GenericFilterBar(Components, GraphicCard.AttributeLabels);

@@ -35,4 +35,4 @@ const Components: FilterMapping<PSU.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, PSU.FilterLabels);
+export default GenericFilterBar(Components, PSU.AttributeLabels);

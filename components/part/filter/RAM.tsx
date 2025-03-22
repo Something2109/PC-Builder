@@ -35,4 +35,4 @@ const Components: FilterMapping<RAM.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, RAM.FilterLabels);
+export default GenericFilterBar(Components, RAM.AttributeLabels);

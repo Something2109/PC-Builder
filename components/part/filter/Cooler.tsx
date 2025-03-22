@@ -21,4 +21,4 @@ const Components: FilterMapping<Cooler.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, Cooler.FilterLabels);
+export default GenericFilterBar(Components, Cooler.AttributeLabels);

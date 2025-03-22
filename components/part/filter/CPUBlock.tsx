@@ -21,4 +21,4 @@ const Components: FilterMapping<CPUBlock.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, CPUBlock.FilterLabels);
+export default GenericFilterBar(Components, CPUBlock.AttributeLabels);

@@ -35,4 +35,4 @@ const Components: FilterMapping<Pump.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, Pump.FilterLabels);
+export default GenericFilterBar(Components, Pump.AttributeLabels);

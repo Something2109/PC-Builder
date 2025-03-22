@@ -58,4 +58,4 @@ const Components: FilterMapping<CPU.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, CPU.FilterLabels);
+export default GenericFilterBar(Components, CPU.AttributeLabels);

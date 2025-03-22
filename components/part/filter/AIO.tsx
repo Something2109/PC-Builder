@@ -29,4 +29,4 @@ const Components: FilterMapping<AIO.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, AIO.FilterLabels);
+export default GenericFilterBar(Components, AIO.AttributeLabels);

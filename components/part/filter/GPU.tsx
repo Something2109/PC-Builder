@@ -51,4 +51,4 @@ const Components: FilterMapping<GPU.Filter> = {
   ),
 };
 
-export default GenericFilterBar(Components, GPU.FilterLabels);
+export default GenericFilterBar(Components, GPU.AttributeLabels);
