@@ -1,5 +1,5 @@
-import { ZodSchema } from "zod";
-import { Infos, Products } from "../Enum";
+import { ZodObject, ZodSchema } from "zod";
+import { Products } from "../Enum";
 import AIOProduct from "./product/AIO";
 import CaseProduct from "./product/Case";
 import CoolerProduct from "./product/Cooler";
@@ -38,26 +38,48 @@ export namespace Product {
     [Products.RADIATOR]: RadiatorProduct.Label,
   };
 
+  export const AttributeLabels: {
+    [key in Products]: { [key in string]: string };
+  } = {
+    [Products.CPU]: CPUProduct.AttributeLabels,
+    [Products.GPU]: GPUProduct.AttributeLabels,
+    [Products.GRAPHIC_CARD]: GraphicCard.AttributeLabels,
+    [Products.MAIN]: Mainboard.AttributeLabels,
+    [Products.RAM]: RAMProduct.AttributeLabels,
+    [Products.SSD]: SSDProduct.AttributeLabels,
+    [Products.HDD]: HDDProduct.AttributeLabels,
+    [Products.PSU]: PSUProduct.AttributeLabels,
+    [Products.CASE]: CaseProduct.AttributeLabels,
+    [Products.COOLER]: CoolerProduct.AttributeLabels,
+    [Products.AIO]: AIOProduct.AttributeLabels,
+    [Products.FAN]: FanProduct.AttributeLabels,
+    [Products.CPU_BLOCK]: CPUBlock.AttributeLabels,
+    [Products.PUMP]: PumpProduct.AttributeLabels,
+    [Products.RADIATOR]: RadiatorProduct.AttributeLabels,
+  };
+
   /**
-   * The mapping from the {@link Products} to the {@link Info} type.
-   * Contains all the {@link Info} that a {@link Products} type can have.
+   * The product summary options of each {@link Products} type.
+   * Contains the schema of the summary of each product.
    */
-  export const Info: { [key in Products]: Infos[] } = {
-    [Products.CPU]: CPUProduct.Primary,
-    [Products.GPU]: GPUProduct.Primary,
-    [Products.GRAPHIC_CARD]: GraphicCard.Primary,
-    [Products.MAIN]: Mainboard.Primary,
-    [Products.RAM]: RAMProduct.Primary,
-    [Products.SSD]: SSDProduct.Primary,
-    [Products.HDD]: HDDProduct.Primary,
-    [Products.PSU]: PSUProduct.Primary,
-    [Products.CASE]: CaseProduct.Primary,
-    [Products.COOLER]: CoolerProduct.Primary,
-    [Products.AIO]: AIOProduct.Primary,
-    [Products.FAN]: FanProduct.Primary,
-    [Products.CPU_BLOCK]: CPUBlock.Primary,
-    [Products.PUMP]: PumpProduct.Primary,
-    [Products.RADIATOR]: RadiatorProduct.Primary,
+  export const Summary: {
+    [key in Products]: ZodObject<{ [key in string]: ZodSchema }>;
+  } = {
+    [Products.CPU]: CPUProduct.Summary,
+    [Products.GPU]: GPUProduct.Summary,
+    [Products.GRAPHIC_CARD]: GraphicCard.Summary,
+    [Products.MAIN]: Mainboard.Summary,
+    [Products.RAM]: RAMProduct.Summary,
+    [Products.SSD]: SSDProduct.Summary,
+    [Products.HDD]: HDDProduct.Summary,
+    [Products.PSU]: PSUProduct.Summary,
+    [Products.CASE]: CaseProduct.Summary,
+    [Products.COOLER]: CoolerProduct.Summary,
+    [Products.AIO]: AIOProduct.Summary,
+    [Products.FAN]: FanProduct.Summary,
+    [Products.CPU_BLOCK]: CPUBlock.Summary,
+    [Products.PUMP]: PumpProduct.Summary,
+    [Products.RADIATOR]: RadiatorProduct.Summary,
   };
 
   /**
@@ -85,25 +107,5 @@ export namespace Product {
     [Products.CPU_BLOCK]: CPUBlock.Filter,
     [Products.PUMP]: PumpProduct.Filter,
     [Products.RADIATOR]: RadiatorProduct.Filter,
-  };
-
-  export const FilterMapping: {
-    [key in Products]: Record<string, [Infos, string]>;
-  } = {
-    [Products.CPU]: CPUProduct.FilterMapping,
-    [Products.GPU]: GPUProduct.FilterMapping,
-    [Products.GRAPHIC_CARD]: GraphicCard.FilterMapping,
-    [Products.MAIN]: Mainboard.FilterMapping,
-    [Products.RAM]: RAMProduct.FilterMapping,
-    [Products.SSD]: SSDProduct.FilterMapping,
-    [Products.HDD]: HDDProduct.FilterMapping,
-    [Products.PSU]: PSUProduct.FilterMapping,
-    [Products.CASE]: CaseProduct.FilterMapping,
-    [Products.COOLER]: CoolerProduct.FilterMapping,
-    [Products.AIO]: AIOProduct.FilterMapping,
-    [Products.FAN]: FanProduct.FilterMapping,
-    [Products.CPU_BLOCK]: CPUBlock.FilterMapping,
-    [Products.PUMP]: PumpProduct.FilterMapping,
-    [Products.RADIATOR]: RadiatorProduct.FilterMapping,
   };
 }

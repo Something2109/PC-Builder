@@ -35,15 +35,14 @@ import { PumpModel } from "./Pump";
 import { RadiatorModel } from "./Radiator";
 import { Includeable } from "sequelize";
 
+type InfoModelMapping = {
+  [key in Infos]: Model | Model[] | null;
+};
+
 @DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: (
-    options: Part.FilterOptions,
-    ...include: Includeable[]
-  ) => ({
-    attributes: ["id", ...Part.SummaryAttributes],
-    where: defaultFilter(options),
-    include,
+  [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
+    attributes: attributes?.length ? ["id", ...attributes] : [],
   }),
   [ModelScopes.FILTER]: (
     options: Part.FilterOptions,
@@ -52,7 +51,10 @@ import { Includeable } from "sequelize";
   [ModelScopes.DETAIL]: { attributes: { exclude: ["createdAt", "updatedAt"] } },
 }))
 @Table({ modelName: Tables.PART })
-class PartInformation extends Model implements Part.BasicInfo {
+class PartInformation
+  extends Model
+  implements Part.BasicInfo, InfoModelMapping
+{
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

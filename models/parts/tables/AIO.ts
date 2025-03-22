@@ -20,9 +20,8 @@ import { PartInformation } from "./Part";
 import { FormFactor, Material } from "@/utils/interface/utils";
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: (options: AIO.FilterOptions) => ({
-    attributes: ["id", ...AIO.SummaryAttributes],
-    where: defaultFilter(options),
+  [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
+    attributes: attributes?.length ? ["id", ...attributes] : [],
   }),
   [ModelScopes.FILTER]: (options: AIO.FilterOptions) => ({
     where: defaultFilter(options),

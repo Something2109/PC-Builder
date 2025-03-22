@@ -1,36 +1,30 @@
-import { FormFactor, FilterOptions, ExternalPorts, Primitive } from "../utils";
+import {
+  FormFactor,
+  FilterOptions,
+  ExternalPorts,
+  Primitive,
+  Case as CasePlace,
+} from "../utils";
 import { z } from "zod";
 
 export namespace Case {
-  export const Side = z.enum(["top", "bottom", "front", "rear", "side"]);
-
-  export type Side = z.infer<typeof Side>;
-
   export const RadiatorSupportSchema = z.record(
-    Side,
+    CasePlace.Side,
     z.array(FormFactor.Radiator)
   );
 
   export type RadiatorSupport = z.infer<typeof RadiatorSupportSchema>;
 
   export const FanSupportSchema = z.record(
-    Side,
+    CasePlace.Side,
     z.record(FormFactor.Fan, Primitive.Number)
   );
 
   export type FanSupport = z.infer<typeof FanSupportSchema>;
 
-  export const HardDrivePlace = z.enum([...Case.Side.options, "Drive Bay"]);
-
-  export type HardDrivePlace = z.infer<typeof HardDrivePlace>;
-
-  export const HardDriveSize = z.enum(["2.5", "3.5"]);
-
-  export type HardDriveSize = z.infer<typeof HardDriveSize>;
-
   export const HardDriveSupportSchema = z.record(
-    HardDrivePlace,
-    z.record(HardDriveSize, Primitive.Number)
+    CasePlace.HardDrivePlace,
+    z.record(CasePlace.HardDriveFormFactor, Primitive.Number)
   );
 
   export type HardDriveSupport = z.infer<typeof HardDriveSupportSchema>;

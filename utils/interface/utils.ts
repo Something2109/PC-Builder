@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Infos } from "../Enum";
 
 namespace Primitive {
   export const String = z.string();
@@ -447,6 +448,27 @@ namespace Material {
   export type Plastic = z.infer<typeof Plastic>;
 }
 
+namespace Case {
+  export const Side = z.enum(["top", "bottom", "front", "rear", "side"]);
+
+  export type Side = z.infer<typeof Side>;
+
+  export const HardDrivePlace = z.enum([
+    "top",
+    "bottom",
+    "front",
+    "rear",
+    "side",
+    "drive_bay",
+  ]);
+
+  export type HardDrivePlace = z.infer<typeof HardDrivePlace>;
+
+  export const HardDriveFormFactor = z.enum(["2.5", "3.5"]);
+
+  export type HardDriveFormFactor = z.infer<typeof HardDriveFormFactor>;
+}
+
 type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
   [key in Attributes]?: NonNullable<Required<Info>[key]> extends number
     ? number[]
@@ -478,6 +500,7 @@ export {
   InternalConnectors,
   ExternalPorts,
   Material,
+  Case,
   NumberFilterOptions,
   FilterOptions,
 };

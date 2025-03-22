@@ -31,9 +31,8 @@ import {
 import { SaveOptions } from "sequelize";
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: (options: Mainboard.FilterOptions) => ({
-    attributes: ["id", ...Mainboard.SummaryAttributes],
-    where: defaultFilter(options),
+  [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
+    attributes: attributes?.length ? ["id", ...attributes] : [],
   }),
   [ModelScopes.FILTER]: (options: Mainboard.FilterOptions) => ({
     where: defaultFilter(options),
