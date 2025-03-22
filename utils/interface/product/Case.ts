@@ -1,17 +1,8 @@
-import {
-  FilterOptions,
-  FormFactor,
-  Case as CasePlace,
-  Primitive,
-} from "../utils";
-import { Infos } from "../../Enum";
+import { FilterOptions, FormFactor, Case as CasePlace } from "../utils";
 import { z } from "zod";
 
 export namespace Case {
   export const Label = "Case";
-
-  export const Primary = [Infos.CASE];
-  export const Secondary = [];
 
   export const Summary = z
     .object({
@@ -42,15 +33,6 @@ export namespace Case {
     mainboard_support: "Mainboard Support",
     radiator_support: "Radiator Support",
     psu_support: "PSU Support",
-  };
-
-  export const AttributeMapping: {
-    [key in keyof Required<Summary & Filter>]: [Infos, string];
-  } = {
-    form_factor: [Infos.CASE, "form_factor"],
-    mainboard_support: [Infos.CASE, "mainboard_support"],
-    radiator_support: [Infos.CASE, "radiator_support"],
-    psu_support: [Infos.CASE, "psu_support"],
   };
 }
 

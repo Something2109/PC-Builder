@@ -1,13 +1,9 @@
 import { FilterOptions, FormFactor, Primitive } from "../utils";
-import { Infos } from "../../Enum";
-import { z } from "zod";
 import Fan from "../info/Fan";
+import { z } from "zod";
 
 export namespace FanProduct {
   export const Label = "Fan";
-
-  export const Primary = [Infos.FAN];
-  export const Secondary = [];
 
   export const Summary = z
     .object({
@@ -34,14 +30,6 @@ export namespace FanProduct {
     form_factor: "Form Factor",
     bearing: "Bearing",
     speed: "Speed",
-  };
-
-  export const AttributeMapping: {
-    [key in keyof Required<Summary & Filter>]: [Infos, string];
-  } = {
-    form_factor: [Infos.FAN, "form_factor"],
-    bearing: [Infos.FAN, "bearing"],
-    speed: [Infos.FAN, "speed"],
   };
 }
 

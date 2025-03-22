@@ -5,14 +5,10 @@ import {
   InternalConnectors,
   Primitive,
 } from "../utils";
-import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace HDD {
   export const Label = "HDD";
-
-  export const Primary = [Infos.HDD];
-  export const Secondary = [];
 
   export const Summary = z
     .object({
@@ -48,17 +44,6 @@ export namespace HDD {
     read_speed: "Read Speed",
     write_speed: "Write Speed",
     rotational_speed: "Rotational Speed",
-  };
-
-  export const AttributeMapping: {
-    [key in keyof Required<Summary & Filter>]: [Infos, string];
-  } = {
-    form_factor: [Infos.HDD, "form_factor"],
-    capacity: [Infos.HDD, "capacity"],
-    interface: [Infos.HDD, "interface"],
-    read_speed: [Infos.HDD, "read_speed"],
-    write_speed: [Infos.HDD, "write_speed"],
-    rotational_speed: [Infos.HDD, "rotational_speed"],
   };
 }
 

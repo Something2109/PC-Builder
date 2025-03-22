@@ -5,14 +5,10 @@ import {
   InternalConnectors,
   Primitive,
 } from "../utils";
-import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace Pump {
   export const Label = "Pump";
-
-  export const Primary = [Infos.PUMP];
-  export const Secondary = [];
 
   export const Summary = z
     .object({
@@ -44,16 +40,6 @@ export namespace Pump {
     flow_rate: "Flow Rate",
     power_connector: "Power Connector",
     control_connector: "Control Connector",
-  };
-
-  export const AttributeMapping: {
-    [key in keyof Required<Summary & Filter>]: [Infos, string];
-  } = {
-    form_factor: [Infos.PUMP, "form_factor"],
-    head_pressure: [Infos.PUMP, "head_pressure"],
-    flow_rate: [Infos.PUMP, "flow_rate"],
-    power_connector: [Infos.PUMP, "power_connector"],
-    control_connector: [Infos.PUMP, "control_connector"],
   };
 }
 

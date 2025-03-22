@@ -1,12 +1,8 @@
 import { FilterOptions, FormFactor, Material } from "../utils";
-import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace Radiator {
   export const Label = "Radiator";
-
-  export const Primary = [Infos.RADIATOR];
-  export const Secondary = [];
 
   export const Filter = z
     .object({
@@ -31,13 +27,6 @@ export namespace Radiator {
   } = {
     form_factor: "Form Factor",
     material: "Material",
-  };
-
-  export const AttributeMapping: {
-    [key in keyof Required<Summary & Filter>]: [Infos, string];
-  } = {
-    form_factor: [Infos.RADIATOR, "form_factor"],
-    material: [Infos.RADIATOR, "material"],
   };
 }
 

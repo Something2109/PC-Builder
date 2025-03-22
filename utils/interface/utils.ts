@@ -477,20 +477,6 @@ type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
     : string[];
 };
 
-const ToSummaryOptions = (
-  keys: string[],
-  mapping: Record<string, [Infos, string]>
-) => {
-  return keys.reduce((acc, val) => {
-    const [info, key] = mapping[val];
-
-    if (!acc[info]) acc[info] = [];
-
-    acc[info].push(key);
-    return acc;
-  }, {} as { [key in Infos]?: string[] });
-};
-
 const FilterOptions = <T extends z.ZodType>(zodType: T) =>
   z.preprocess((arg) => {
     return (Array.isArray(arg) ? arg : [arg])
@@ -516,7 +502,6 @@ export {
   Material,
   Case,
   NumberFilterOptions,
-  ToSummaryOptions,
   FilterOptions,
 };
 

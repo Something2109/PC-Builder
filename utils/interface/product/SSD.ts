@@ -5,15 +5,11 @@ import {
   InternalConnectors,
   Primitive,
 } from "../utils";
-import { Infos } from "../../Enum";
-import { z } from "zod";
 import SSD from "../info/SSD";
+import { z } from "zod";
 
 export namespace SSDProduct {
   export const Label = "SSD";
-
-  export const Primary = [Infos.SSD];
-  export const Secondary = [];
 
   export const Summary = z
     .object({
@@ -49,17 +45,6 @@ export namespace SSDProduct {
     interface: "Interface",
     read_speed: "Read Speed",
     write_speed: "Write Speed",
-  };
-
-  export const AttributeMapping: {
-    [key in keyof Required<Summary & Filter>]: [Infos, string];
-  } = {
-    memory_type: [Infos.SSD, "memory_type"],
-    form_factor: [Infos.SSD, "form_factor"],
-    capacity: [Infos.SSD, "capacity"],
-    interface: [Infos.SSD, "interface"],
-    read_speed: [Infos.SSD, "read_speed"],
-    write_speed: [Infos.SSD, "write_speed"],
   };
 }
 

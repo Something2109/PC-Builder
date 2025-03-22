@@ -5,14 +5,10 @@ import {
   Primitive,
 } from "../utils";
 import PSU from "../info/PSU";
-import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace PSUProduct {
   export const Label = "PSU";
-
-  export const Primary = [Infos.PSU];
-  export const Secondary = [];
 
   export const Summary = z
     .object({
@@ -43,15 +39,6 @@ export namespace PSUProduct {
     wattage: "Wattage",
     efficiency: "Efficiency",
     modular: "Modular",
-  };
-
-  export const AttributeMapping: {
-    [key in keyof Required<Summary & Filter>]: [Infos, string];
-  } = {
-    form_factor: [Infos.PSU, "form_factor"],
-    wattage: [Infos.PSU, "wattage"],
-    efficiency: [Infos.PSU, "efficiency"],
-    modular: [Infos.PSU, "modular"],
   };
 }
 

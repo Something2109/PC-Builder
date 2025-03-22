@@ -1,12 +1,8 @@
 import { NumberFilterOptions, Primitive } from "../utils";
-import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace GraphicCard {
   export const Label = "Graphic Card";
-
-  export const Primary = [Infos.GRAPHIC_CARD];
-  export const Secondary = [];
 
   export const Summary = z
     .object({
@@ -41,17 +37,6 @@ export namespace GraphicCard {
     width: "Width",
     height: "Height",
     minimum_psu: "Minimum PSU",
-  };
-
-  export const AttributeMapping: {
-    [key in keyof Required<Summary & Filter>]: [Infos, string];
-  } = {
-    length: [Infos.GRAPHIC_CARD, "length"],
-    base_frequency: [Infos.GRAPHIC_CARD, "base_frequency"],
-    boost_frequency: [Infos.GRAPHIC_CARD, "boost_frequency"],
-    width: [Infos.GRAPHIC_CARD, "width"],
-    height: [Infos.GRAPHIC_CARD, "height"],
-    minimum_psu: [Infos.GRAPHIC_CARD, "minimum_psu"],
   };
 }
 

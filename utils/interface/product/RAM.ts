@@ -5,14 +5,10 @@ import {
   InternalConnectors,
   Primitive,
 } from "../utils";
-import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace RAM {
   export const Label = "RAM";
-
-  export const Primary = [Infos.RAM];
-  export const Secondary = [];
 
   export const Summary = z
     .object({
@@ -42,15 +38,6 @@ export namespace RAM {
     form_factor: "Form Factor",
     capacity: "Capacity",
     interface: "Interface",
-  };
-
-  export const AttributeMapping: {
-    [key in keyof Required<Summary & Filter>]: [Infos, string];
-  } = {
-    speed: [Infos.RAM, "speed"],
-    form_factor: [Infos.RAM, "form_factor"],
-    capacity: [Infos.RAM, "capacity"],
-    interface: [Infos.RAM, "interface"],
   };
 }
 

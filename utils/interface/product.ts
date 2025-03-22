@@ -1,6 +1,5 @@
 import { ZodObject, ZodSchema } from "zod";
-import { ToSummaryOptions } from "./utils";
-import { Infos, Products } from "../Enum";
+import { Products } from "../Enum";
 import AIOProduct from "./product/AIO";
 import CaseProduct from "./product/Case";
 import CoolerProduct from "./product/Cooler";
@@ -60,28 +59,6 @@ export namespace Product {
   };
 
   /**
-   * The mapping from the {@link Products} to the {@link Info} type.
-   * Contains all the {@link Info} that a {@link Products} type can have.
-   */
-  export const Info: { [key in Products]: Infos[] } = {
-    [Products.CPU]: CPUProduct.Primary,
-    [Products.GPU]: GPUProduct.Primary,
-    [Products.GRAPHIC_CARD]: GraphicCard.Primary,
-    [Products.MAIN]: Mainboard.Primary,
-    [Products.RAM]: RAMProduct.Primary,
-    [Products.SSD]: SSDProduct.Primary,
-    [Products.HDD]: HDDProduct.Primary,
-    [Products.PSU]: PSUProduct.Primary,
-    [Products.CASE]: CaseProduct.Primary,
-    [Products.COOLER]: CoolerProduct.Primary,
-    [Products.AIO]: AIOProduct.Primary,
-    [Products.FAN]: FanProduct.Primary,
-    [Products.CPU_BLOCK]: CPUBlock.Primary,
-    [Products.PUMP]: PumpProduct.Primary,
-    [Products.RADIATOR]: RadiatorProduct.Primary,
-  };
-
-  /**
    * The product summary options of each {@link Products} type.
    * Contains the schema of the summary of each product.
    */
@@ -130,90 +107,5 @@ export namespace Product {
     [Products.CPU_BLOCK]: CPUBlock.Filter,
     [Products.PUMP]: PumpProduct.Filter,
     [Products.RADIATOR]: RadiatorProduct.Filter,
-  };
-
-  export const AttributeMapping: {
-    [key in Products]: Record<string, [Infos, string]>;
-  } = {
-    [Products.CPU]: CPUProduct.AttributeMapping,
-    [Products.GPU]: GPUProduct.AttributeMapping,
-    [Products.GRAPHIC_CARD]: GraphicCard.AttributeMapping,
-    [Products.MAIN]: Mainboard.AttributeMapping,
-    [Products.RAM]: RAMProduct.AttributeMapping,
-    [Products.SSD]: SSDProduct.AttributeMapping,
-    [Products.HDD]: HDDProduct.AttributeMapping,
-    [Products.PSU]: PSUProduct.AttributeMapping,
-    [Products.CASE]: CaseProduct.AttributeMapping,
-    [Products.COOLER]: CoolerProduct.AttributeMapping,
-    [Products.AIO]: AIOProduct.AttributeMapping,
-    [Products.FAN]: FanProduct.AttributeMapping,
-    [Products.CPU_BLOCK]: CPUBlock.AttributeMapping,
-    [Products.PUMP]: PumpProduct.AttributeMapping,
-    [Products.RADIATOR]: RadiatorProduct.AttributeMapping,
-  };
-
-  export const SummaryAttributeMapping: {
-    [key in Products]: { [key in Infos]?: string[] };
-  } = {
-    [Products.CPU]: ToSummaryOptions(
-      CPUProduct.Summary.keyof().options,
-      CPUProduct.AttributeMapping
-    ),
-    [Products.GPU]: ToSummaryOptions(
-      GPUProduct.Summary.keyof().options,
-      GPUProduct.AttributeMapping
-    ),
-    [Products.GRAPHIC_CARD]: ToSummaryOptions(
-      GraphicCard.Summary.keyof().options,
-      GraphicCard.AttributeMapping
-    ),
-    [Products.MAIN]: ToSummaryOptions(
-      Mainboard.Summary.keyof().options,
-      Mainboard.AttributeMapping
-    ),
-    [Products.RAM]: ToSummaryOptions(
-      RAMProduct.Summary.keyof().options,
-      RAMProduct.AttributeMapping
-    ),
-    [Products.SSD]: ToSummaryOptions(
-      SSDProduct.Summary.keyof().options,
-      SSDProduct.AttributeMapping
-    ),
-    [Products.HDD]: ToSummaryOptions(
-      HDDProduct.Summary.keyof().options,
-      HDDProduct.AttributeMapping
-    ),
-    [Products.PSU]: ToSummaryOptions(
-      PSUProduct.Summary.keyof().options,
-      PSUProduct.AttributeMapping
-    ),
-    [Products.CASE]: ToSummaryOptions(
-      CaseProduct.Summary.keyof().options,
-      CaseProduct.AttributeMapping
-    ),
-    [Products.COOLER]: ToSummaryOptions(
-      CoolerProduct.Summary.keyof().options,
-      CoolerProduct.AttributeMapping
-    ),
-    [Products.AIO]: ToSummaryOptions(
-      AIOProduct.Summary.keyof().options,
-      AIOProduct.AttributeMapping
-    ),
-    [Products.FAN]: ToSummaryOptions(
-      FanProduct.Summary.keyof().options,
-      FanProduct.AttributeMapping
-    ),
-    [Products.CPU_BLOCK]: ToSummaryOptions(
-      CPUBlock.Summary.keyof().options,
-      CPUBlock.AttributeMapping
-    ),
-    [Products.PUMP]: ToSummaryOptions(
-      PumpProduct.Summary.keyof().options,
-      PumpProduct.AttributeMapping
-    ),
-    [Products.RADIATOR]: ToSummaryOptions(
-      RadiatorProduct.Summary.keyof().options,
-      RadiatorProduct.AttributeMapping
-    ),
   };
 }

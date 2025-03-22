@@ -1,17 +1,8 @@
 import { FilterOptions, FormFactor, Material, Primitive } from "../utils";
-import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace AIO {
   export const Label = "AIO";
-
-  export const Primary = [
-    Infos.CPU_BLOCK,
-    Infos.FAN,
-    Infos.PUMP,
-    Infos.RADIATOR,
-  ];
-  export const Secondary = [];
 
   export const Summary = z
     .object({
@@ -39,14 +30,6 @@ export namespace AIO {
     socket: "Socket",
     form_factor: "Form Factor",
     cpu_plate: "CPU Plate",
-  };
-
-  export const AttributeMapping: {
-    [key in keyof Required<Summary & Filter>]: [Infos, string];
-  } = {
-    socket: [Infos.CPU_BLOCK, "socket"],
-    form_factor: [Infos.RADIATOR, "form_factor"],
-    cpu_plate: [Infos.CPU_BLOCK, "plate"],
   };
 }
 
