@@ -56,9 +56,8 @@ function createFilterOptions(options?: Case.FilterOptions): FindOptions {
 }
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: (options?: Case.FilterOptions) => ({
-    attributes: ["id", ...Case.SummaryAttributes],
-    ...createFilterOptions(options),
+  [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
+    attributes: attributes?.length ? ["id", ...attributes] : [],
   }),
   [ModelScopes.FILTER]: (options?: Case.FilterOptions) => {
     const { where, include } = createFilterOptions(options);

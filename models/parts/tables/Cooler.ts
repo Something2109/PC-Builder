@@ -20,9 +20,8 @@ import {
 } from "sequelize-typescript";
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: (options: Cooler.FilterOptions) => ({
-    attributes: ["id", ...Cooler.SummaryAttributes],
-    where: defaultFilter(options),
+  [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
+    attributes: attributes?.length ? ["id", ...attributes] : [],
   }),
   [ModelScopes.FILTER]: (options: Cooler.FilterOptions) => ({
     where: defaultFilter(options),

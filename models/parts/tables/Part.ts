@@ -41,13 +41,8 @@ type InfoModelMapping = {
 
 @DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: (
-    options: Part.FilterOptions,
-    ...include: Includeable[]
-  ) => ({
-    attributes: ["id", ...Part.SummaryAttributes],
-    where: defaultFilter(options),
-    include,
+  [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
+    attributes: attributes?.length ? ["id", ...attributes] : [],
   }),
   [ModelScopes.FILTER]: (
     options: Part.FilterOptions,

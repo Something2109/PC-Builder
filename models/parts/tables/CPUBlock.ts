@@ -37,9 +37,8 @@ function createFilterOptions(options?: CPUBlock.FilterOptions): FindOptions {
 }
 
 @Scopes(() => ({
-  [ModelScopes.SUMMARY]: (options: CPUBlock.FilterOptions) => ({
-    attributes: ["id", ...CPUBlock.SummaryAttributes],
-    ...createFilterOptions(options),
+  [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
+    attributes: attributes?.length ? ["id", ...attributes] : [],
   }),
   [ModelScopes.FILTER]: (options: CPUBlock.FilterOptions) => {
     const { where, include } = createFilterOptions(options);
