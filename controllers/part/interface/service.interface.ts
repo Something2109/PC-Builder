@@ -8,12 +8,11 @@ import {
   Sequelize,
 } from "sequelize";
 import { Injectable } from "@nestjs/common";
-import { FilterOptionBuilder } from "./filterbuilder";
 import { PartInformation } from "@/models/parts/tables/Part";
 import { ModelScopes } from "@/models/interface";
 import Part from "@/utils/interface/info/Parts";
 import { APIMapping } from "@/utils/interface/api";
-import { FilterOptionsType, Primitive } from "@/utils/interface/utils";
+import { FilterOptionsType } from "@/utils/interface/utils";
 import { FilterOptions, DetailInfo as Options } from "@/utils/interface";
 import { Infos, Products } from "@/utils/Enum";
 import { Product } from "@/utils/interface/product";
@@ -65,28 +64,6 @@ abstract class BasePartService<
     const { filter } = await this.filterPart(options, attributes);
 
     return filter;
-  }
-
-  /**
-   * Create the option to pass into the {@link list} and {@link filter} functions
-   * from an object of string or string array value
-   * (the object parsed from the {@link URLSearchParams} using Nest Query decorator).
-   * @param params The object of string key and string/string array value.
-   * @returns The option parsed from the {@link params}.
-   */
-  options(
-    params: Record<string, string | string[]>
-  ): FilterOptions & PageOptions & SearchOptions {
-    const pageOptions: PageOptions & SearchOptions =
-      APIMapping.toPageOptions(params);
-
-    if (params.q) {
-      pageOptions.q = Array.isArray(params.q) ? params.q.join("|") : params.q;
-    }
-
-    const filter = this.buildFilterOptions(params);
-
-    return { ...filter.build(), ...pageOptions };
   }
 
   /**
@@ -147,35 +124,6 @@ abstract class BasePartService<
     await instance.destroy();
 
     return instance.toJSON();
-  }
-
-  /**
-   * Create the filter option builder and add the attributes
-   * according to the filter mapping
-   * @param params The object of string key and string/string array value.
-   * @returns The filter option builder extracted from the {@link params}.
-   */
-  protected buildFilterOptions(
-    params: Record<string, string | string[]>
-  ): FilterOptionBuilder {
-    const builder = new FilterOptionBuilder();
-
-    for (const key of Part.FilterAttributes) {
-      let option = params[key];
-
-      if (!option) continue;
-
-      if (!Array.isArray(option)) option = [option];
-
-      const parsedOption = option
-        .map((val) => Primitive.String.safeParse(val))
-        .filter((val) => val.success)
-        .map((val) => val.data);
-
-      builder.add("part", key, parsedOption);
-    }
-
-    return builder;
   }
 
   /**
@@ -520,21 +468,6 @@ abstract class BaseDetailPartService<
     );
 
     return { total: count, list: rows.map((value) => value.toJSON()) };
-  }
-
-  protected buildFilterOptions(
-    params: Record<string, string | string[]>
-  ): FilterOptionBuilder {
-    const builder = super.buildFilterOptions(params);
-
-    const parsedParams = Product.FilterOptions[this.part].parse(params);
-
-    for (const name in Product.FilterMapping[this.part]) {
-      const [info, key] = Product.FilterMapping[this.part][name];
-      builder.add(info, key, parsedParams[name]);
-    }
-
-    return builder;
   }
 
   protected async filterPart(

@@ -17,6 +17,7 @@ import { FanService } from "./service/fan.service";
 import { CPUBlockService } from "./service/cpublock.service";
 import { PumpService } from "./service/pump.service";
 import { RadiatorService } from "./service/radiator.service";
+import { ProductParser } from "./parser.service";
 
 const Service = {
   provide: PartService,
@@ -46,6 +47,7 @@ const Service = {
   controllers: [PartController],
   providers: [
     Service,
+    ProductParser,
     CPUService,
     GPUService,
     GraphicCardService,

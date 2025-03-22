@@ -11,6 +11,7 @@ import {
   ParseEnumPipe,
   BadRequestException,
 } from "@nestjs/common";
+import { ProductParser } from "./parser.service";
 import { PartService } from "./part.service";
 import { Products, Roles } from "@/utils/Enum";
 import { DetailInfo, FilterOptions } from "@/utils/interface";
@@ -28,7 +29,7 @@ const UpdateValidator = new ZodValidationPipe(DetailInfo.partial());
 
 @Controller("part")
 export class PartController {
-  constructor(private service: PartService) {}
+  constructor(private service: PartService, private parser: ProductParser) {}
 
   @Get("filter")
   async getDefaultFilter(
@@ -37,10 +38,7 @@ export class PartController {
   ) {
     const service = this.service;
 
-    const options = {
-      ...body,
-      ...service.options(params),
-    };
+    const options = { ...body, ...this.parser.options(params) };
 
     const filter = await service.filter(options);
 
@@ -55,10 +53,7 @@ export class PartController {
   ) {
     const service = this.findService(part);
 
-    const options = {
-      ...body,
-      ...service.options(params),
-    };
+    const options = { ...body, ...this.parser.options(params, part) };
 
     const filter = await service.filter(options);
 
@@ -74,10 +69,7 @@ export class PartController {
   ) {
     const service = this.findService(part);
 
-    const options = {
-      ...body,
-      ...service.options(params),
-    };
+    const options = { ...body, ...this.parser.options(params, part) };
 
     const filter = await service.filter(options, [attribute]);
 
@@ -91,11 +83,14 @@ export class PartController {
   ) {
     const service = this.service;
 
-    const options = { ...body, ...service.options(params) };
+    const options = { ...body, ...this.parser.options(params) };
 
     let data = await service.list(options);
 
-    return data;
+    return {
+      list: data.list.map((part) => this.parser.summary(part)),
+      total: data.total,
+    };
   }
 
   @Get(":part")
@@ -106,11 +101,14 @@ export class PartController {
   ) {
     const service = this.findService(part);
 
-    const options = { ...body, ...service.options(params) };
+    const options = { ...body, ...this.parser.options(params, part) };
 
     let data = await service.list(options);
 
-    return data;
+    return {
+      list: data.list.map((data) => this.parser.summary(data, part)),
+      total: data.total,
+    };
   }
 
   @Role(Roles.ADMIN)
