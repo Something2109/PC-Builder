@@ -449,7 +449,7 @@ abstract class BaseDetailPartService<
     ]);
 
     const include: Includeable[] = Mapping.Info[this.part].map((info) => ({
-      model: InfoModels[info].scope([
+      model: PartInformation.associations[info].target.scope([
         {
           method: [
             ModelScopes.SUMMARY,
@@ -481,7 +481,7 @@ abstract class BaseDetailPartService<
     include = {};
     Mapping.Info[this.part].forEach(
       (info) =>
-        (include[info] = InfoModels[info].scope({
+        (include[info] = PartInformation.associations[info].target.scope({
           method: [ModelScopes.FILTER, options[info]],
         }))
     );
@@ -511,7 +511,7 @@ abstract class BaseDetailPartService<
     const instance = await super.buildPart(
       { ...part, part: this.part },
       ...Mapping.Info[this.part].map((info) =>
-        InfoModels[info].scope(ModelScopes.DETAIL)
+        PartInformation.associations[info].target.scope(ModelScopes.DETAIL)
       ),
       ...include
     );
@@ -534,7 +534,7 @@ abstract class BaseDetailPartService<
     const instance = await super.getPart(
       id,
       ...Mapping.Info[this.part].map((info) =>
-        InfoModels[info].scope(ModelScopes.DETAIL)
+        PartInformation.associations[info].target.scope(ModelScopes.DETAIL)
       ),
       ...include
     );
@@ -554,7 +554,7 @@ abstract class BaseDetailPartService<
       { ...part, part: this.part },
       id,
       ...Mapping.Info[this.part].map((info) =>
-        InfoModels[info].scope(ModelScopes.DETAIL)
+        PartInformation.associations[info].target.scope(ModelScopes.DETAIL)
       ),
       ...include
     );
@@ -650,7 +650,7 @@ abstract class BaseDetailPartService<
 
     if (options) {
       if (!instance[info]) {
-        instance[info] = InfoModels[info].build({
+        instance[info] = PartInformation.associations[info].target.build({
           id: instance.id,
         }) as never;
         instance.dataValues[info] = instance[info];
