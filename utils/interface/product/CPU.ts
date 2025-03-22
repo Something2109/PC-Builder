@@ -1,12 +1,21 @@
 import { FilterOptions, NumberFilterOptions, Primitive } from "../utils";
-import { Infos } from "../../Enum";
 import { z } from "zod";
 
 export namespace CPU {
   export const Label = "CPU";
 
-  export const Primary = [Infos.CPU, Infos.GPU];
-  export const Secondary = [];
+  export const Summary = z
+    .object({
+      socket: Primitive.String,
+      total_cores: Primitive.Number,
+      total_threads: Primitive.Number,
+      base_frequency: Primitive.Number,
+      turbo_frequency: Primitive.Number,
+      tdp: Primitive.Number,
+    })
+    .partial();
+
+  export type Summary = z.infer<typeof Summary>;
 
   export const Filter = z
     .object({
@@ -22,7 +31,9 @@ export namespace CPU {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const FilterLabels: { [key in keyof Required<Filter>]: string } = {
+  export const AttributeLabels: {
+    [key in keyof Required<Summary & Filter>]: string;
+  } = {
     socket: "Socket",
     total_cores: "Total Cores",
     total_threads: "Total Threads",
@@ -30,16 +41,6 @@ export namespace CPU {
     turbo_frequency: "Turbo Frequency",
     L3_cache: "L3 Cache",
     tdp: "TDP",
-  };
-
-  export const FilterMapping: Record<keyof Filter, [Infos, string]> = {
-    socket: [Infos.CPU, "socket"],
-    total_cores: [Infos.CPU, "total_cores"],
-    total_threads: [Infos.CPU, "total_threads"],
-    base_frequency: [Infos.CPU, "base_frequency"],
-    turbo_frequency: [Infos.CPU, "turbo_frequency"],
-    L3_cache: [Infos.CPU, "L3_cache"],
-    tdp: [Infos.CPU, "tdp"],
   };
 }
 

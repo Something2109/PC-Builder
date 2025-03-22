@@ -63,48 +63,4 @@ export namespace Information {
     [Infos.PUMP]: Pump.Label,
     [Infos.RADIATOR]: Radiator.Label,
   };
-
-  /**
-   * The summary attribute list of the information.
-   * Contains the attributes that are considered as the notable attributes of each {@link Infos} type.
-   */
-  export const SummaryAttributes: Record<Infos, string[]> = {
-    [Infos.CPU]: CPU.SummaryAttributes,
-    [Infos.GPU]: GPU.SummaryAttributes,
-    [Infos.GRAPHIC_CARD]: GraphicCard.SummaryAttributes,
-    [Infos.MAIN]: Mainboard.SummaryAttributes,
-    [Infos.RAM]: RAM.SummaryAttributes,
-    [Infos.SSD]: SSD.SummaryAttributes,
-    [Infos.HDD]: HDD.SummaryAttributes,
-    [Infos.PSU]: PSU.SummaryAttributes,
-    [Infos.CASE]: Case.SummaryAttributes,
-    [Infos.FAN]: Fan.SummaryAttributes,
-    [Infos.COOLER]: Cooler.SummaryAttributes,
-    [Infos.AIO]: AIO.SummaryAttributes,
-    [Infos.CPU_BLOCK]: CPUBlock.SummaryAttributes,
-    [Infos.PUMP]: Pump.SummaryAttributes,
-    [Infos.RADIATOR]: Radiator.SummaryAttributes,
-  };
-
-  /**
-   * The filter attribute list of the information.
-   * Contains the attributes that can be used as filter in each {@link Infos} type.
-   */
-  export const FilterAttributes: Record<Infos, string[]> = {
-    [Infos.CPU]: CPU.FilterAttributes,
-    [Infos.GPU]: GPU.FilterAttributes,
-    [Infos.GRAPHIC_CARD]: GraphicCard.FilterAttributes,
-    [Infos.MAIN]: Mainboard.FilterAttributes,
-    [Infos.RAM]: RAM.FilterAttributes,
-    [Infos.SSD]: SSD.FilterAttributes,
-    [Infos.HDD]: HDD.FilterAttributes,
-    [Infos.PSU]: PSU.FilterAttributes,
-    [Infos.CASE]: Case.FilterAttributes,
-    [Infos.FAN]: Fan.FilterAttributes,
-    [Infos.COOLER]: Cooler.FilterAttributes,
-    [Infos.AIO]: AIO.FilterAttributes,
-    [Infos.CPU_BLOCK]: CPUBlock.FilterAttributes,
-    [Infos.PUMP]: Pump.FilterAttributes,
-    [Infos.RADIATOR]: Radiator.FilterAttributes,
-  };
 }
