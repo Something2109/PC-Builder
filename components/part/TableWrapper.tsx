@@ -41,20 +41,14 @@ export type InfoLabel<T extends Record<string, any>> = {
   [key in keyof Required<T>]: string;
 };
 
-export type InfoSummaryMapping<
-  T extends Record<string, any>,
-  Attrs extends keyof T
-> = {
-  [key in Attrs]: FunctionComponent<{ value?: T[key] }>;
+export type InfoSummaryMapping<T extends Record<string, any>> = {
+  [key in keyof Required<T>]: FunctionComponent<{ value?: T[key] }>;
 };
 
-export function GenericSummaryCells<
-  T extends Record<Attrs, any>,
-  Attrs extends string
->(
-  Components: InfoSummaryMapping<T, Attrs>,
+export function GenericSummaryCells<T extends Record<string, any>>(
+  Components: InfoSummaryMapping<T>,
   Labels: InfoLabel<T>,
-  Attributes: Attrs[]
+  Attributes: string[]
 ) {
   return ({ defaultValue }: { defaultValue?: Partial<T> }) => (
     <>

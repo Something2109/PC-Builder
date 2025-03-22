@@ -1,7 +1,7 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
-import Case from "@/utils/interface/info/Case";
+import Case from "@/utils/interface/product/Case";
 
-const Components: InfoSummaryMapping<Case.Info, Case.Summarizable> = {
+const Components: InfoSummaryMapping<Case.Summary> = {
   form_factor: ({ value }) => value,
   mainboard_support: ({ value }) => value?.join(", "),
   radiator_support: ({ value }) =>
@@ -16,6 +16,6 @@ const Components: InfoSummaryMapping<Case.Info, Case.Summarizable> = {
 
 export default GenericSummaryCells(
   Components,
-  Case.Label,
-  Case.SummaryAttributes
+  Case.AttributeLabels,
+  Case.Summary.keyof().options
 );

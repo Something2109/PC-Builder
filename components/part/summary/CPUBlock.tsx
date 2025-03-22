@@ -1,7 +1,7 @@
-import CPUBlock from "@/utils/interface/info/CPUBlock";
+import CPUBlock from "@/utils/interface/product/CPUBlock";
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 
-const Components: InfoSummaryMapping<CPUBlock.Info, CPUBlock.Summarizable> = {
+const Components: InfoSummaryMapping<CPUBlock.Summary> = {
   socket: ({ value }) => {
     const sockets = value?.join(", ");
 
@@ -14,6 +14,6 @@ const Components: InfoSummaryMapping<CPUBlock.Info, CPUBlock.Summarizable> = {
 
 export default GenericSummaryCells(
   Components,
-  CPUBlock.Label,
-  CPUBlock.SummaryAttributes
+  CPUBlock.AttributeLabels,
+  CPUBlock.Summary.keyof().options
 );

@@ -1,8 +1,8 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import { SuffixDisplay } from "@/components/utils/Display";
-import GPU from "@/utils/interface/info/GPU";
+import GPU from "@/utils/interface/product/GPU";
 
-const Components: InfoSummaryMapping<GPU.Info, GPU.Summarizable> = {
+const Components: InfoSummaryMapping<GPU.Summary> = {
   core_count: ({ value }) => value,
   base_frequency: ({ value }) => (
     <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>
@@ -18,6 +18,6 @@ const Components: InfoSummaryMapping<GPU.Info, GPU.Summarizable> = {
 
 export default GenericSummaryCells(
   Components,
-  GPU.Label,
-  GPU.SummaryAttributes
+  GPU.AttributeLabels,
+  GPU.Summary.keyof().options
 );

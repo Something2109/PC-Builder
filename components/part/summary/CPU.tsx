@@ -1,8 +1,8 @@
-import CPU from "@/utils/interface/info/CPU";
+import CPU from "@/utils/interface/product/CPU";
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import { SuffixDisplay } from "@/components/utils/Display";
 
-const Components: InfoSummaryMapping<CPU.Info, CPU.Summarizable> = {
+const Components: InfoSummaryMapping<CPU.Summary> = {
   socket: ({ value }) => value,
   total_cores: ({ value }) => value,
   total_threads: ({ value }) => value,
@@ -12,10 +12,11 @@ const Components: InfoSummaryMapping<CPU.Info, CPU.Summarizable> = {
   turbo_frequency: ({ value }) => (
     <SuffixDisplay suffix="GHz">{value}</SuffixDisplay>
   ),
+  tdp: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
 };
 
 export default GenericSummaryCells(
   Components,
-  CPU.Label,
-  CPU.SummaryAttributes
+  CPU.AttributeLabels,
+  CPU.Summary.keyof().options
 );

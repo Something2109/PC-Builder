@@ -1,8 +1,9 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import { SuffixDisplay } from "@/components/utils/Display";
-import SSD from "@/utils/interface/info/SSD";
+import SSD from "@/utils/interface/product/SSD";
 
-const Components: InfoSummaryMapping<SSD.Info, SSD.Summarizable> = {
+const Components: InfoSummaryMapping<SSD.Summary> = {
+  capacity: ({ value }) => <SuffixDisplay suffix="GB">{value}</SuffixDisplay>,
   read_speed: ({ value }) => (
     <SuffixDisplay suffix="MB/s">{value}</SuffixDisplay>
   ),
@@ -15,6 +16,6 @@ const Components: InfoSummaryMapping<SSD.Info, SSD.Summarizable> = {
 
 export default GenericSummaryCells(
   Components,
-  SSD.Label,
-  SSD.SummaryAttributes
+  SSD.AttributeLabels,
+  SSD.Summary.keyof().options
 );

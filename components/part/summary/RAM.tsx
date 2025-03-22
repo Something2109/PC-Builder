@@ -1,8 +1,8 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import { SuffixDisplay } from "@/components/utils/Display";
-import RAM from "@/utils/interface/info/RAM";
+import RAM from "@/utils/interface/product/RAM";
 
-const Components: InfoSummaryMapping<RAM.Info, RAM.Summarizable> = {
+const Components: InfoSummaryMapping<RAM.Summary> = {
   speed: ({ value }) => <SuffixDisplay suffix="MT/s">{value}</SuffixDisplay>,
   capacity: ({ value }) => <SuffixDisplay suffix="GB">{value}</SuffixDisplay>,
   form_factor: ({ value }) => value,
@@ -11,6 +11,6 @@ const Components: InfoSummaryMapping<RAM.Info, RAM.Summarizable> = {
 
 export default GenericSummaryCells(
   Components,
-  RAM.Label,
-  RAM.SummaryAttributes
+  RAM.AttributeLabels,
+  RAM.Summary.keyof().options
 );
