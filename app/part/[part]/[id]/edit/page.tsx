@@ -5,7 +5,7 @@ import {
   ResponsiveWrapper,
 } from "@/components/utils/FlexWrapper";
 import { ObjectTable } from "@/components/utils/ObjectTable";
-import { Product } from "@/utils/interface/product";
+import { Mapping } from "@/utils/interface/mapping";
 import { Products, Roles } from "@/utils/Enum";
 import { DetailInfo } from "@/utils/interface";
 import { notFound } from "next/navigation";
@@ -43,7 +43,7 @@ export default async function PartDetailEditPage({
             />
           </ColumnWrapper>
           <ColumnWrapper className="basis-1/2">
-            {Product.Info[part].map((info) => (
+            {Mapping.Info[part].map((info) => (
               <InfoForm
                 key={info}
                 path={SaveLink}

@@ -1,4 +1,4 @@
-import { DetailTableComponent, InfoTable } from "@/components/part/Table";
+import { InfoTable } from "@/components/part/Table";
 import { PartTable } from "@/components/part/detail/Part";
 import {
   ColumnWrapper,
@@ -8,7 +8,7 @@ import { ObjectTable } from "@/components/utils/ObjectTable";
 import { Products } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 import React from "react";
-import { Product } from "@/utils/interface/product";
+import { Mapping } from "@/utils/interface/mapping";
 import { DetailInfo } from "@/utils/interface";
 
 export default async function PartDetailPage({
@@ -38,7 +38,7 @@ export default async function PartDetailPage({
           />
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
-          {Product.Info[part].map((info) => (
+          {Mapping.Info[part].map((info) => (
             <InfoTable key={info} info={info} defaultValue={data[info]} />
           ))}
         </ColumnWrapper>
