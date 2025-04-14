@@ -21,7 +21,6 @@ import { Role } from "controllers/utils/role/role.decorator";
 const ProductValidator = new ParseEnumPipe(Products, {
   exceptionFactory: () => new NotFoundException("Product's not found"),
 });
-const FilterValidator = new ZodValidationPipe(FilterOptions);
 const CreateValidator = new ZodValidationPipe(
   DetailInfo.omit({ id: true, part: true })
 );
@@ -32,13 +31,10 @@ export class PartController {
   constructor(private service: PartService, private parser: ProductParser) {}
 
   @Get("filter")
-  async getDefaultFilter(
-    @Query() params: Record<string, string | string[]>,
-    @Body(FilterValidator) body: FilterOptions
-  ) {
+  async getDefaultFilter(@Query() params: Record<string, string | string[]>) {
     const service = this.service;
 
-    const options = { ...body, ...this.parser.options(params) };
+    const options = this.parser.options(params);
 
     const filter = await service.filter(options);
 
@@ -48,12 +44,11 @@ export class PartController {
   @Get("filter/:part")
   async getPartFilter(
     @Param("part", ProductValidator) part: Products,
-    @Query() params: Record<string, string | string[]>,
-    @Body(FilterValidator) body: FilterOptions
+    @Query() params: Record<string, string | string[]>
   ) {
     const service = this.findService(part);
 
-    const options = { ...body, ...this.parser.options(params, part) };
+    const options = this.parser.options(params, part);
 
     const filter = await service.filter(options);
 
@@ -64,12 +59,11 @@ export class PartController {
   async getPartFilterAttribute(
     @Param("part", ProductValidator) part: Products,
     @Param("attribute") attribute: string,
-    @Query() params: Record<string, string | string[]>,
-    @Body(FilterValidator) body: FilterOptions
+    @Query() params: Record<string, string | string[]>
   ) {
     const service = this.findService(part);
 
-    const options = { ...body, ...this.parser.options(params, part) };
+    const options = this.parser.options(params, part);
 
     const filter = await service.filter(options, [attribute]);
 
@@ -77,13 +71,10 @@ export class PartController {
   }
 
   @Get()
-  async index(
-    @Body(FilterValidator) body: FilterOptions,
-    @Query() params: Record<string, string | string[]>
-  ) {
+  async index(@Query() params: Record<string, string | string[]>) {
     const service = this.service;
 
-    const options = { ...body, ...this.parser.options(params) };
+    const options = this.parser.options(params);
 
     let data = await service.list(options);
 
@@ -96,12 +87,11 @@ export class PartController {
   @Get(":part")
   async partList(
     @Param("part", ProductValidator) part: Products,
-    @Query() params: Record<string, string | string[]>,
-    @Body(FilterValidator) body: FilterOptions
+    @Query() params: Record<string, string | string[]>
   ) {
     const service = this.findService(part);
 
-    const options = { ...body, ...this.parser.options(params, part) };
+    const options = this.parser.options(params, part);
 
     let data = await service.list(options);
 

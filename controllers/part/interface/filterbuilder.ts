@@ -17,6 +17,6 @@ export class FilterOptionBuilder {
   }
 
   build() {
-    return FilterOptions.parse(this.result);
+    return this.result;
   }
 }
