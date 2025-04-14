@@ -63,4 +63,27 @@ export namespace Information {
     [Infos.PUMP]: Pump.Label,
     [Infos.RADIATOR]: Radiator.Label,
   };
+
+  /**
+   * The detail information of a specific product.
+   * Contains the most detailed information of the product from each {@link Infos} type.
+   * This is a generic type used in all the {@link Products} type.
+   */
+  export const Detail = {
+    [Infos.CPU]: CPU.Schema.partial().nullish(),
+    [Infos.GPU]: GPU.Schema.partial().nullish(),
+    [Infos.GRAPHIC_CARD]: GraphicCard.Schema.partial().nullish(),
+    [Infos.MAIN]: Mainboard.Schema.partial().nullish(),
+    [Infos.RAM]: RAM.Schema.partial().nullish(),
+    [Infos.SSD]: SSD.Schema.partial().nullish(),
+    [Infos.HDD]: HDD.Schema.partial().nullish(),
+    [Infos.PSU]: PSU.Schema.partial().nullish(),
+    [Infos.CASE]: Case.Schema.partial().nullish(),
+    [Infos.FAN]: Fan.Schema.partial().nullish(),
+    [Infos.COOLER]: Cooler.Schema.partial().nullish(),
+    [Infos.AIO]: AIO.Schema.partial().nullish(),
+    [Infos.CPU_BLOCK]: CPUBlock.Schema.partial().nullish(),
+    [Infos.PUMP]: Pump.Schema.partial().nullish(),
+    [Infos.RADIATOR]: Radiator.Schema.partial().nullish(),
+  };
 }
