@@ -2,20 +2,17 @@ import { InternalConnectors, Primitive } from "../utils";
 import { z } from "zod";
 
 namespace MainboardStorageConnector {
-  export const Schema = z.record(
-    InternalConnectors.Storage.Schema,
-    Primitive.Number
-  );
+  export const Schema = z.object({
+    form_factor: InternalConnectors.Storage.Schema,
+    count: Primitive.Number,
+  });
 
   export type Info = z.infer<typeof Schema>;
 
-  export const Label: { [key in keyof Info]: string } = [
-    ...InternalConnectors.Storage.SSD.options,
-    ...InternalConnectors.Storage.HDD.options,
-  ].reduce((acc, val) => {
-    acc[val] = val;
-    return acc;
-  }, {} as { [key in keyof Info]: string });
+  export const Label: { [key in keyof Info]: string } = {
+    form_factor: "Form Factor",
+    count: "Count",
+  };
 }
 
 export default MainboardStorageConnector;

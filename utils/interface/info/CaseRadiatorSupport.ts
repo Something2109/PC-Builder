@@ -2,16 +2,16 @@ import { Case, FormFactor } from "../utils";
 import { z } from "zod";
 
 export namespace CaseRadiatorSupport {
-  export const Schema = z.record(Case.Side, z.array(FormFactor.Radiator));
+  export const Schema = z.object({
+    case_side: Case.Side,
+    form_factor: FormFactor.Radiator,
+  });
 
   export type Info = z.infer<typeof Schema>;
 
   export const Label: { [key in keyof Info]: string } = {
-    top: "Top",
-    bottom: "Bottom",
-    front: "Front",
-    rear: "Rear",
-    side: "Side",
+    case_side: "Case Side",
+    form_factor: "Radiator Support",
   };
 }
 

@@ -6,8 +6,8 @@ export namespace CPUCoreConfig {
     name: Primitive.String,
     count: Primitive.Number,
 
-    base_frequency: Primitive.Number,
-    turbo_frequency: Primitive.Number,
+    base_frequency: Primitive.Number.nullable(),
+    turbo_frequency: Primitive.Number.nullable(),
   });
 
   export type Info = z.infer<typeof Schema>;

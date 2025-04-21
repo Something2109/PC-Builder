@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export namespace CasePSUSupport {
   export const Schema = z.object({
-    psu_support: z.array(FormFactor.Mainboard),
+    psu_support: FormFactor.PSU,
   });
 
   export type Info = z.infer<typeof Schema>;
