@@ -43,10 +43,10 @@ class CPUSpecModel extends Model implements PartDetailTable<CPUSpec.Info> {
   @Column(DataType.STRING)
   declare socket: string | null;
 
-  @Column(DataType.TINYINT)
+  @Column(DataType.INTEGER)
   declare total_cores: number | null;
 
-  @Column(DataType.TINYINT)
+  @Column(DataType.INTEGER)
   declare total_threads: number | null;
 
   @Column(DataType.STRING)

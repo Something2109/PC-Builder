@@ -107,9 +107,6 @@ class PartInformation
   @Column({ type: DataType.STRING, validate: { isUrl: true } })
   declare image_url?: string;
 
-  @Column({ type: DataType.TEXT })
-  declare raw?: string;
-
   @HasOne(() => CPUSpecModel)
   declare [Infos.CPU_SPEC]: CPUSpecModel | null;
 

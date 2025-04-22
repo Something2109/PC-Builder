@@ -49,7 +49,7 @@ class ProcessorMemoryModel
   })
   declare type: InternalConnectors.RAM | null;
 
-  @Column(DataType.INTEGER)
+  @Column(DataType.FLOAT)
   declare capacity: number | null;
 
   @Column(DataType.TINYINT)
