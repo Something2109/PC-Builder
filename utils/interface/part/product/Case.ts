@@ -8,7 +8,7 @@ export namespace Case {
     .object({
       form_factor: FormFactor.Case,
       mainboard_support: z.array(FormFactor.Mainboard),
-      radiator_support: z.record(CasePlace.Side, z.array(FormFactor.Radiator)),
+      radiator_support: z.array(FormFactor.Radiator),
       psu_support: z.array(FormFactor.PSU),
     })
     .partial();
