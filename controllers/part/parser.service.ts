@@ -28,7 +28,11 @@ class ProductParser {
       Product.Summary[part].keyof().options.forEach((key) => {
         const [info, attr] = Mapping.AttributeMapping[part][key];
 
-        summary[key] = data[info] && (data[info] as any)[attr];
+        if (data[info]) {
+          summary[key] = Array.isArray(data[info])
+            ? data[info].map((item) => item[attr])
+            : (data[info] as any)[attr];
+        }
       });
     }
 

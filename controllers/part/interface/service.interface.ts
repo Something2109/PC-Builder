@@ -575,7 +575,13 @@ abstract class BaseDetailPartService<
     await instance.save();
 
     await Promise.all(
-      Mapping.Info[this.part].map((info) => instance[info]?.save())
+      Mapping.Info[this.part]
+        .map((info) =>
+          Array.isArray(instance[info])
+            ? instance[info].map((value) => value.save())
+            : [instance[info]?.save()]
+        )
+        .flat()
     );
   }
 
@@ -644,19 +650,23 @@ abstract class BaseDetailPartService<
     const options = data[info];
 
     if (options === null && instance[info]) {
-      await instance[info].destroy();
+      await Promise.all(
+        Array.isArray(instance[info])
+          ? instance[info].map((value) => value.destroy())
+          : [instance[info].destroy()]
+      );
       instance[info] = null as any;
       instance.dataValues[info] = null;
     }
 
     if (options) {
-      if (!instance[info]) {
-        instance[info] = PartInformation.associations[info].target.build({
-          id: instance.id,
-        }) as never;
-        instance.dataValues[info] = instance[info];
-      }
-      instance[info].set(options);
+      // if (!instance[info]) {
+      //   instance[info] = PartInformation.associations[info].target.build({
+      //     id: instance.id,
+      //   }) as never;
+      //   instance.dataValues[info] = instance[info];
+      // }
+      // instance[info].set(options);
     }
   }
 }
