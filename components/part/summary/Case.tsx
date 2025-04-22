@@ -4,13 +4,7 @@ import Case from "@/utils/interface/part/product/Case";
 const Components: InfoSummaryMapping<Case.Summary> = {
   form_factor: ({ value }) => value,
   mainboard_support: ({ value }) => value?.join(", "),
-  radiator_support: ({ value }) =>
-    [
-      ...Object.values(value ?? {}).reduce((acc, val) => {
-        val.forEach((type) => acc.add(type));
-        return acc;
-      }, new Set()),
-    ].join(", "),
+  radiator_support: ({ value }) => value?.join(", "),
   psu_support: ({ value }) => value?.join(", "),
 };
 

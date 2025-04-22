@@ -3,7 +3,7 @@ import AIO from "@/utils/interface/part/product/AIO";
 
 const Components: InfoSummaryMapping<AIO.Summary> = {
   form_factor: ({ value }) => value,
-  socket: ({ value }) => value,
+  socket: ({ value }) => value?.join(", "),
   cpu_plate: ({ value }) => value,
 };
 
