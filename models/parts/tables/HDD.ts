@@ -5,8 +5,8 @@ import {
   ModelScopes,
   defaultFilter,
 } from "../../interface";
-import { PartInformation } from "./Part";
-import HDD from "@/utils/interface/info/HDD";
+import { PartInformation } from "..";
+import HDD from "@/utils/interface/part/info/HDD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,
