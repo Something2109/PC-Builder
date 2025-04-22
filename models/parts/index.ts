@@ -11,6 +11,7 @@ import {
   DataType,
   Default,
   DefaultScope,
+  HasMany,
   HasOne,
   Model,
   PrimaryKey,
@@ -18,22 +19,37 @@ import {
   Table,
   Unique,
 } from "sequelize-typescript";
-import { CPUModel } from "./tables/CPU";
-import { GPUModel } from "./tables/GPU";
-import { GraphicCardModel } from "./tables/GraphicCard";
-import { MainboardModel } from "./tables/Mainboard";
-import { RAMModel } from "./tables/RAM";
-import { SSDModel } from "./tables/SSD";
-import { HDDModel } from "./tables/HDD";
-import { PSUModel } from "./tables/PSU";
-import { CaseModel } from "./tables/Case";
-import { CoolerModel } from "./tables/Cooler";
-import { AIOModel } from "./tables/AIO";
-import { FanModel } from "./tables/Fan";
-import { CPUBlockModel } from "./tables/CPUBlock";
-import { PumpModel } from "./tables/Pump";
-import { RadiatorModel } from "./tables/Radiator";
 import { Includeable } from "sequelize";
+import { CaseSpecModel } from "./info/CaseSpec";
+import { CaseFanSupportModel } from "./info/CaseFanSupport";
+import { CaseRadiatorSupportModel } from "./info/CaseRadiatorSupport";
+import { CaseHardDriveSupportModel } from "./info/CaseHardDriveSupport";
+import { CaseMainboardSupportModel } from "./info/CaseMainboardSupport";
+import { CasePSUSupportModel } from "./info/CasePSUSupport";
+import { FanSpecModel } from "./info/FanSpec";
+import { CPUSpecModel } from "./info/CPUSpec";
+import { CPUPerformanceModel } from "./info/CPUPerformance";
+import { CPUCoreConfigModel } from "./info/CPUCoreConfig";
+import { GPUSpecModel } from "./info/GPUSpec";
+import { GPUPerformanceModel } from "./info/GPUPerformance";
+import { GPUFeatureModel } from "./info/GPUFeature";
+import { ProcessorCacheModel } from "./info/ProcessorCache";
+import { ProcessorMemoryModel } from "./info/ProcessorMemorySpec";
+import { GraphicCardSpecModel } from "./info/GraphicCardSpec";
+import { MainboardSpecModel } from "./info/MainboardSpec";
+import { MainboardPCIeModel } from "./info/MainboardPCIe";
+import { MainboardStorageConnectorModel } from "./info/MainboardStorageConnector";
+import { MainboardUSBConnectorModel } from "./info/MainboardUSBConnector";
+import { RAMSpecModel } from "./info/RAMSpec";
+import { SSDSpecModel } from "./info/SSDSpec";
+import { HDDSpecModel } from "./info/HDDSpec";
+import { StoragePerformanceModel } from "./info/StoragePerformance";
+import { StorageCacheModel } from "./info/StorageCache";
+import { PSUSpecModel } from "./info/PSUSpec";
+import { CPUBlockSpecModel } from "./info/CPUBlockSpec";
+import { PumpSpecModel } from "./info/PumpSpec";
+import { RadiatorSpecModel } from "./info/RadiatorSpec";
+import { CPUBlockSocketModel } from "./info/CPUBlockSocketSupport";
 
 type InfoModelMapping = {
   [key in Infos]: Model | Model[] | null;
@@ -94,50 +110,95 @@ class PartInformation
   @Column({ type: DataType.TEXT })
   declare raw?: string;
 
-  @HasOne(() => CPUModel)
-  declare [Infos.CPU]: CPUModel;
+  @HasOne(() => CPUSpecModel)
+  declare [Infos.CPU_SPEC]: CPUSpecModel | null;
 
-  @HasOne(() => GPUModel)
-  declare [Infos.GPU]: GPUModel;
+  @HasOne(() => CPUPerformanceModel)
+  declare [Infos.CPU_PERF]: CPUPerformanceModel | null;
 
-  @HasOne(() => GraphicCardModel)
-  declare [Infos.GRAPHIC_CARD]: GraphicCardModel;
+  @HasMany(() => CPUCoreConfigModel)
+  declare [Infos.CPU_CORES]: CPUCoreConfigModel[];
 
-  @HasOne(() => MainboardModel)
-  declare [Infos.MAIN]: MainboardModel;
+  @HasOne(() => GPUSpecModel)
+  declare [Infos.GPU_SPEC]: GPUSpecModel | null;
 
-  @HasOne(() => RAMModel)
-  declare [Infos.RAM]: RAMModel;
+  @HasOne(() => GPUPerformanceModel)
+  declare [Infos.GPU_PERF]: GPUPerformanceModel | null;
 
-  @HasOne(() => SSDModel)
-  declare [Infos.SSD]: SSDModel;
+  @HasOne(() => GPUFeatureModel)
+  declare [Infos.GPU_FEAT]: GPUFeatureModel | null;
 
-  @HasOne(() => HDDModel)
-  declare [Infos.HDD]: HDDModel;
+  @HasOne(() => ProcessorCacheModel)
+  declare [Infos.PROCESSOR_CACHE]: ProcessorCacheModel | null;
 
-  @HasOne(() => PSUModel)
-  declare [Infos.PSU]: PSUModel;
+  @HasOne(() => ProcessorMemoryModel)
+  declare [Infos.PROCESSOR_MEMORY]: ProcessorMemoryModel | null;
 
-  @HasOne(() => CaseModel)
-  declare [Infos.CASE]: CaseModel;
+  @HasOne(() => GraphicCardSpecModel)
+  declare [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpecModel | null;
 
-  @HasOne(() => CoolerModel)
-  declare [Infos.COOLER]: CoolerModel;
+  @HasOne(() => MainboardSpecModel)
+  declare [Infos.MAIN_SPEC]: MainboardSpecModel | null;
 
-  @HasOne(() => AIOModel)
-  declare [Infos.AIO]: AIOModel;
+  @HasMany(() => MainboardPCIeModel)
+  declare [Infos.MAIN_PCIE]: MainboardPCIeModel[];
 
-  @HasOne(() => FanModel)
-  declare [Infos.FAN]: FanModel;
+  @HasMany(() => MainboardStorageConnectorModel)
+  declare [Infos.MAIN_STORAGE]: MainboardStorageConnectorModel[];
 
-  @HasOne(() => CPUBlockModel)
-  declare [Infos.CPU_BLOCK]: CPUBlockModel;
+  @HasMany(() => MainboardUSBConnectorModel)
+  declare [Infos.MAIN_USB]: MainboardUSBConnectorModel[];
 
-  @HasOne(() => PumpModel)
-  declare [Infos.PUMP]: PumpModel;
+  @HasOne(() => RAMSpecModel)
+  declare [Infos.RAM_SPEC]: RAMSpecModel | null;
 
-  @HasOne(() => RadiatorModel)
-  declare [Infos.RADIATOR]: RadiatorModel;
+  @HasOne(() => SSDSpecModel)
+  declare [Infos.SSD_SPEC]: SSDSpecModel | null;
+
+  @HasOne(() => HDDSpecModel)
+  declare [Infos.HDD_SPEC]: HDDSpecModel | null;
+
+  @HasOne(() => StoragePerformanceModel)
+  declare [Infos.STORAGE_PERF]: StoragePerformanceModel | null;
+
+  @HasOne(() => StorageCacheModel)
+  declare [Infos.STORAGE_CACHE]: StorageCacheModel | null;
+
+  @HasOne(() => PSUSpecModel)
+  declare [Infos.PSU_SPEC]: PSUSpecModel | null;
+
+  @HasOne(() => CaseSpecModel)
+  declare [Infos.CASE_SPEC]: CaseSpecModel | null;
+
+  @HasMany(() => CaseFanSupportModel)
+  declare [Infos.CASE_FAN]: CaseFanSupportModel[];
+
+  @HasMany(() => CaseMainboardSupportModel)
+  declare [Infos.CASE_MAIN]: CaseMainboardSupportModel[];
+
+  @HasMany(() => CaseHardDriveSupportModel)
+  declare [Infos.CASE_HARD_DRIVE]: CaseHardDriveSupportModel[];
+
+  @HasMany(() => CaseRadiatorSupportModel)
+  declare [Infos.CASE_RADIATOR]: CaseRadiatorSupportModel[];
+
+  @HasMany(() => CasePSUSupportModel)
+  declare [Infos.CASE_PSU]: CasePSUSupportModel[];
+
+  @HasOne(() => FanSpecModel)
+  declare [Infos.FAN_SPEC]: FanSpecModel | null;
+
+  @HasOne(() => CPUBlockSpecModel)
+  declare [Infos.CPU_BLOCK_SPEC]: CPUBlockSpecModel;
+
+  @HasMany(() => CPUBlockSocketModel)
+  declare [Infos.CPU_BLOCK_SOCKET]: CPUBlockSocketModel[];
+
+  @HasOne(() => PumpSpecModel)
+  declare [Infos.PUMP_SPEC]: PumpSpecModel;
+
+  @HasOne(() => RadiatorSpecModel)
+  declare [Infos.RADIATOR_SPEC]: RadiatorSpecModel;
 }
 
 export { PartInformation };
