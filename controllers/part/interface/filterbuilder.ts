@@ -1,11 +1,11 @@
-import { FilterOptions } from "@/utils/interface";
+import Part from "@/utils/interface/part";
 
 export class FilterOptionBuilder {
   private result: {
-    [key in keyof FilterOptions]?: Record<string, string[] | number[]> | null;
+    [key in keyof Part.Filter]?: Record<string, string[] | number[]> | null;
   } = {};
 
-  add(info: keyof FilterOptions, key: string, value?: string[] | number[]) {
+  add(info: keyof Part.Filter, key: string, value?: string[] | number[]) {
     if (value && value.length > 0) {
       if (!this.result) this.result = {};
 
@@ -17,6 +17,6 @@ export class FilterOptionBuilder {
   }
 
   build() {
-    return this.result;
+    return this.result as Part.Filter;
   }
 }

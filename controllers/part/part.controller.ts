@@ -14,7 +14,7 @@ import {
 import { ProductParser } from "./parser.service";
 import { PartService } from "./part.service";
 import { Products, Roles } from "@/utils/Enum";
-import { DetailInfo, FilterOptions } from "@/utils/interface";
+import Part from "@/utils/interface/part";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { Role } from "controllers/utils/role/role.decorator";
 
@@ -22,9 +22,9 @@ const ProductValidator = new ParseEnumPipe(Products, {
   exceptionFactory: () => new NotFoundException("Product's not found"),
 });
 const CreateValidator = new ZodValidationPipe(
-  DetailInfo.omit({ id: true, part: true })
+  Part.Detail.omit({ id: true, part: true })
 );
-const UpdateValidator = new ZodValidationPipe(DetailInfo.partial());
+const UpdateValidator = new ZodValidationPipe(Part.Detail.partial());
 
 @Controller("part")
 export class PartController {
@@ -105,7 +105,7 @@ export class PartController {
   @Post(":part")
   async createPart(
     @Param("part", ProductValidator) part: Products,
-    @Body(CreateValidator) body: DetailInfo
+    @Body(CreateValidator) body: Part.Detail
   ) {
     const service = this.findService(part);
 
@@ -141,7 +141,7 @@ export class PartController {
   async setPart(
     @Param("part", ProductValidator) part: Products,
     @Param("id", ParseUUIDPipe) id: string,
-    @Body(UpdateValidator) body: DetailInfo
+    @Body(UpdateValidator) body: Part.Detail
   ) {
     const service = this.findService(part);
 

@@ -1,30 +1,28 @@
 import { Injectable } from "@nestjs/common";
 import { ModelStatic } from "sequelize";
-import { PartInformation } from "@/models/parts/tables/Part";
+import { PartInformation } from "@/models/parts";
 import {
   CPUBlockModel,
   CPUBlockSocketModel,
 } from "@/models/parts/tables/CPUBlock";
 import { ModelScopes } from "@/models/interface";
-import Part from "@/utils/interface/info/Parts";
-import Cooler from "@/utils/interface/product/Cooler";
-import { Mapping } from "@/utils/interface/mapping";
+import Part, { Mapping } from "@/utils/interface/part";
+import Cooler from "@/utils/interface/part/product/Cooler";
 import { Products, Infos } from "@/utils/Enum";
-import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { APIMapping } from "@/utils/interface/api";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [key in (typeof Mapping.Info)[Infos.COOLER][number]]: DetailInfo[key];
+  [key in (typeof Mapping.Info)[Infos.COOLER][number]]: Part.Detail[key];
 };
-type Filter = Part.FilterOptions & Cooler.Filter;
+type Filter = Part.Filter & Cooler.Filter;
 
 @Injectable()
 class CoolerService extends BaseDetailPartService<Detail, Filter> {
   readonly part = Products.COOLER;
 
   protected async filterPart(
-    options: FilterOptions & APIMapping.PageOptions,
+    options: Part.Filter & APIMapping.PageOptions,
     attributes?: string[],
     include?: { [key in Infos]?: ModelStatic<any> }
   ) {

@@ -8,14 +8,12 @@ import {
   Sequelize,
 } from "sequelize";
 import { Injectable } from "@nestjs/common";
-import { PartInformation } from "@/models/parts/tables/Part";
+import { PartInformation } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
-import Part from "@/utils/interface/info/Parts";
+import Part, { Mapping } from "@/utils/interface/part";
 import { APIMapping } from "@/utils/interface/api";
 import { FilterOptionsType } from "@/utils/interface/utils";
-import { FilterOptions, DetailInfo as Options } from "@/utils/interface";
 import { Infos, Products } from "@/utils/Enum";
-import { Mapping } from "@/utils/interface/mapping";
 
 type SearchOptions = {
   q?: string;
@@ -23,14 +21,15 @@ type SearchOptions = {
 
 type PageOptions = APIMapping.PageOptions;
 
+type FilterOptions = Part.Filter;
+
+type Options = Part.Detail;
+
 /**
  * A base service class for handling parts data.
  */
 @Injectable()
-abstract class BasePartService<
-  Detail = Part.BasicInfo,
-  Filter = Part.FilterOptions
-> {
+abstract class BasePartService<Detail = Part.BasicInfo, Filter = Part.Filter> {
   /**
    * List all parts satisfying the given {@link Filter} options.
    * @param options The filter options to apply.
@@ -42,7 +41,7 @@ abstract class BasePartService<
     let { part } = options;
 
     const FilteredPart = PartInformation.scope([
-      { method: [ModelScopes.SUMMARY, Part.SummaryAttributes] },
+      { method: [ModelScopes.SUMMARY, Part.BasicSummaryAttributes] },
       { method: [ModelScopes.FILTER, part] },
     ]);
 
@@ -283,7 +282,7 @@ abstract class BasePartService<
   }
 
   /**
-   * Create a new {@link Part.FilterOptions} object of the model
+   * Create a new {@link Part.Filter} object of the model
    * from the given {@link FilterOptions} object
    * by getting each {@link attributes} values from the model
    * from the {@link model}.
@@ -299,7 +298,7 @@ abstract class BasePartService<
     attributes?: string[],
     include?: { [key in Infos]?: ModelStatic<any> }
   ) {
-    attributes = attributes ?? Part.FilterAttributes;
+    attributes = attributes ?? Part.BasicFilterAttributes;
 
     const FilteredPart = PartInformation.scope({
       method: [ModelScopes.FILTER, options.part],
@@ -314,9 +313,11 @@ abstract class BasePartService<
 
     const result: Record<string, string[] | number[]> = {};
     const promises = attributes.map(async (attr) => {
-      if (!Part.FilterAttributes.includes(attr as Part.Filterables)) return;
+      const attribute = attr as (typeof Part.BasicFilterAttributes)[number];
 
-      const initial = options?.part && options.part[attr as Part.Filterables];
+      if (!Part.BasicFilterAttributes.includes(attribute)) return;
+
+      const initial = options?.part && options.part[attribute];
       if (initial) {
         result[attr] = initial;
         return;
@@ -431,7 +432,7 @@ abstract class BasePartService<
  */
 abstract class BaseDetailPartService<
   Detail extends Part.BasicInfo,
-  Filter = Part.FilterOptions
+  Filter = Part.Filter
 > extends BasePartService<Detail, Filter> {
   /**
    * Describe the part type that the service is handling.
@@ -444,7 +445,7 @@ abstract class BaseDetailPartService<
     const { part, ...rest } = options;
 
     const FilteredPart = PartInformation.scope([
-      { method: [ModelScopes.SUMMARY, Part.SummaryAttributes] },
+      { method: [ModelScopes.SUMMARY, Part.BasicSummaryAttributes] },
       { method: [ModelScopes.FILTER, { ...part, part: [this.part] }] },
     ]);
 
@@ -507,7 +508,7 @@ abstract class BaseDetailPartService<
     options: Options,
     ...include: Includeable[]
   ): Promise<PartInformation | string> {
-    const part = Part.Schema.partial().parse(options);
+    const part = Part.BasicInfo.partial().parse(options);
     const instance = await super.buildPart(
       { ...part, part: this.part },
       ...Mapping.Info[this.part].map((info) =>
@@ -549,7 +550,7 @@ abstract class BaseDetailPartService<
     id: string,
     ...include: Includeable[]
   ): Promise<PartInformation | string | null> {
-    const part = Part.Schema.partial().parse(options);
+    const part = Part.BasicInfo.partial().parse(options);
     const instance = await super.setPart(
       { ...part, part: this.part },
       id,

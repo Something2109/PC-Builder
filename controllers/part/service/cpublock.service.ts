@@ -5,26 +5,24 @@ import {
   CPUBlockSocketModel,
 } from "@/models/parts/tables/CPUBlock";
 import { ModelScopes } from "@/models/interface";
-import { PartInformation } from "@/models/parts/tables/Part";
-import { Mapping } from "@/utils/interface/mapping";
-import { DetailInfo, FilterOptions } from "@/utils/interface";
-import Part from "@/utils/interface/info/Parts";
-import CPUBlock from "@/utils/interface/product/CPUBlock";
+import { PartInformation } from "@/models/parts";
+import Part, { Mapping } from "@/utils/interface/part";
+import CPUBlock from "@/utils/interface/part/product/CPUBlock";
 import { Products, Infos } from "@/utils/Enum";
 import { APIMapping } from "@/utils/interface/api";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [key in (typeof Mapping.Info)[Products.CPU_BLOCK][number]]: DetailInfo[key];
+  [key in (typeof Mapping.Info)[Products.CPU_BLOCK][number]]: Part.Detail[key];
 };
-type Filter = Part.FilterOptions & CPUBlock.Filter;
+type Filter = Part.Filter & CPUBlock.Filter;
 
 @Injectable()
 class CPUBlockService extends BaseDetailPartService<Detail, Filter> {
   readonly part = Products.CPU_BLOCK;
 
   protected async filterPart(
-    options: FilterOptions & APIMapping.PageOptions,
+    options: Part.Filter & APIMapping.PageOptions,
     attributes?: string[],
     include?: { [key in Infos]?: ModelStatic<any> }
   ) {

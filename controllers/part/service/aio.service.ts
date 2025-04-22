@@ -1,30 +1,28 @@
 import { Injectable } from "@nestjs/common";
 import { ModelStatic } from "sequelize";
-import { PartInformation } from "@/models/parts/tables/Part";
+import { PartInformation } from "@/models/parts";
 import {
   CPUBlockModel,
   CPUBlockSocketModel,
 } from "@/models/parts/tables/CPUBlock";
 import { ModelScopes } from "@/models/interface";
-import Part from "@/utils/interface/info/Parts";
-import AIO from "@/utils/interface/product/AIO";
+import Part, { Mapping } from "@/utils/interface/part";
+import AIO from "@/utils/interface/part/product/AIO";
 import { Infos, Products } from "@/utils/Enum";
-import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { BaseDetailPartService } from "../interface/service.interface";
 import { APIMapping } from "@/utils/interface/api";
-import { Mapping } from "@/utils/interface/mapping";
 
 type Detail = Part.BasicInfo & {
-  [key in (typeof Mapping.Info)[Infos.AIO][number]]: DetailInfo[key];
+  [key in (typeof Mapping.Info)[Infos.AIO][number]]: Part.Detail[key];
 };
-type Filter = Part.FilterOptions & AIO.Filter;
+type Filter = Part.Filter & AIO.Filter;
 
 @Injectable()
 class AIOService extends BaseDetailPartService<Detail, Filter> {
   readonly part = Products.AIO;
 
   protected async filterPart(
-    options: FilterOptions & APIMapping.PageOptions,
+    options: Part.Filter & APIMapping.PageOptions,
     attributes?: string[],
     include?: { [key in Infos]?: ModelStatic<any> }
   ) {

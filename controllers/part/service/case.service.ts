@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ModelStatic } from "sequelize";
-import { PartInformation } from "@/models/parts/tables/Part";
+import { PartInformation } from "@/models/parts";
 import {
   CaseMainboardSupportModel,
   CaseModel,
@@ -8,26 +8,24 @@ import {
   CaseRadiatorSupportModel,
 } from "@/models/parts/tables/Case";
 import { ModelScopes } from "@/models/interface";
-import { DetailInfo, FilterOptions } from "@/utils/interface";
-import Part from "@/utils/interface/info/Parts";
-import Case from "@/utils/interface/product/Case";
+import Part, { Mapping } from "@/utils/interface/part";
+import Case from "@/utils/interface/part/product/Case";
 import { Products, Infos } from "@/utils/Enum";
 import { BaseDetailPartService } from "../interface/service.interface";
 import { FormFactor } from "@/utils/interface/utils";
 import { APIMapping } from "@/utils/interface/api";
-import { Mapping } from "@/utils/interface/mapping";
 
 type Detail = Part.BasicInfo & {
-  [key in (typeof Mapping.Info)[Infos.CASE][number]]: DetailInfo[key];
+  [key in (typeof Mapping.Info)[Infos.CASE][number]]: Part.Detail[key];
 };
-type Filter = Part.FilterOptions & Case.Filter;
+type Filter = Part.Filter & Case.Filter;
 
 @Injectable()
 class CaseService extends BaseDetailPartService<Detail, Filter> {
   readonly part = Products.CASE;
 
   protected async filterPart(
-    options: FilterOptions & APIMapping.PageOptions,
+    options: Part.Filter & APIMapping.PageOptions,
     attributes?: string[],
     include?: { [key in Infos]?: ModelStatic<any> }
   ) {

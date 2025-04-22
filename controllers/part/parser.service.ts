@@ -1,10 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import Part from "@/utils/interface/info/Parts";
-import { Product } from "@/utils/interface/product";
-import { Mapping } from "@/utils/interface/mapping";
+import Part, { Product, Mapping } from "@/utils/interface/part";
 import { APIMapping } from "@/utils/interface/api";
 import { Primitive } from "@/utils/interface/utils";
-import { DetailInfo, FilterOptions } from "@/utils/interface";
 import { Products } from "@/utils/Enum";
 import { FilterOptionBuilder } from "./interface/filterbuilder";
 
@@ -22,10 +19,10 @@ class ProductParser {
    * @param part The product type to parse.
    * @returns The summary of the info.
    */
-  summary(data: DetailInfo, part?: Products): Part.Summary {
+  summary(data: Part.Detail, part?: Products): Part.Summary<Products> {
     const summary: Record<string, any> = {};
 
-    Part.SummaryAttributes.forEach((key) => (summary[key] = data[key]));
+    Part.BasicSummaryAttributes.forEach((key) => (summary[key] = data[key]));
 
     if (part) {
       Product.Summary[part].keyof().options.forEach((key) => {
@@ -35,7 +32,7 @@ class ProductParser {
       });
     }
 
-    return summary as Part.Summary;
+    return summary as Part.Summary<Products>;
   }
 
   /**
@@ -48,7 +45,7 @@ class ProductParser {
   options(
     params: Record<string, string | string[]>,
     part?: Products
-  ): FilterOptions & PageOptions & SearchOptions {
+  ): Part.Filter & PageOptions & SearchOptions {
     const pageOptions: PageOptions & SearchOptions =
       APIMapping.toPageOptions(params);
 
@@ -73,7 +70,7 @@ class ProductParser {
   ): FilterOptionBuilder {
     const builder = new FilterOptionBuilder();
 
-    for (const key of Part.FilterAttributes) {
+    for (const key of Part.BasicFilterAttributes) {
       let option = params[key];
 
       if (!option) continue;
