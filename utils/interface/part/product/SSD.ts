@@ -5,7 +5,7 @@ import {
   InternalConnectors,
   Primitive,
 } from "../../utils";
-import SSD from "../info/SSD";
+import SSD from "../info/SSDSpec";
 import { z } from "zod";
 
 export namespace SSDProduct {

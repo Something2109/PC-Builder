@@ -3,33 +3,36 @@ import { ArticleModel } from "./articles/article";
 import { UserModel } from "./user/User";
 import { RetailProduct } from "./sellers/SellerProduct";
 import { PartInformation } from "./parts";
-import { CPUModel } from "./parts/tables/CPU";
-import { GPUModel } from "./parts/tables/GPU";
-import { GraphicCardModel } from "./parts/tables/GraphicCard";
-import {
-  MainboardModel,
-  MainboardPCIeModel,
-  MainboardStorageConnectorModel,
-  MainboardUSBConnectorModel,
-} from "./parts/tables/Mainboard";
-import { RAMModel } from "./parts/tables/RAM";
-import { SSDModel } from "./parts/tables/SSD";
-import { HDDModel } from "./parts/tables/HDD";
-import { PSUModel } from "./parts/tables/PSU";
-import {
-  CaseModel,
-  CaseMainboardSupportModel,
-  CaseRadiatorSupportModel,
-  CaseFanSupportModel,
-  CaseHardDriveSupportModel,
-  CasePSUSupportModel,
-} from "./parts/tables/Case";
-import { CoolerModel } from "./parts/tables/Cooler";
-import { AIOModel } from "./parts/tables/AIO";
-import { FanModel } from "./parts/tables/Fan";
-import { CPUBlockModel, CPUBlockSocketModel } from "./parts/tables/CPUBlock";
-import { PumpModel } from "./parts/tables/Pump";
-import { RadiatorModel } from "./parts/tables/Radiator";
+import { CaseSpecModel } from "./parts/info/CaseSpec";
+import { CaseFanSupportModel } from "./parts/info/CaseFanSupport";
+import { CaseRadiatorSupportModel } from "./parts/info/CaseRadiatorSupport";
+import { CaseHardDriveSupportModel } from "./parts/info/CaseHardDriveSupport";
+import { CaseMainboardSupportModel } from "./parts/info/CaseMainboardSupport";
+import { CasePSUSupportModel } from "./parts/info/CasePSUSupport";
+import { FanSpecModel } from "./parts/info/FanSpec";
+import { CPUSpecModel } from "./parts/info/CPUSpec";
+import { CPUPerformanceModel } from "./parts/info/CPUPerformance";
+import { CPUCoreConfigModel } from "./parts/info/CPUCoreConfig";
+import { GPUSpecModel } from "./parts/info/GPUSpec";
+import { GPUPerformanceModel } from "./parts/info/GPUPerformance";
+import { GPUFeatureModel } from "./parts/info/GPUFeature";
+import { ProcessorCacheModel } from "./parts/info/ProcessorCache";
+import { ProcessorMemoryModel } from "./parts/info/ProcessorMemorySpec";
+import { GraphicCardSpecModel } from "./parts/info/GraphicCardSpec";
+import { MainboardSpecModel } from "./parts/info/MainboardSpec";
+import { MainboardPCIeModel } from "./parts/info/MainboardPCIe";
+import { MainboardStorageConnectorModel } from "./parts/info/MainboardStorageConnector";
+import { MainboardUSBConnectorModel } from "./parts/info/MainboardUSBConnector";
+import { RAMSpecModel } from "./parts/info/RAMSpec";
+import { SSDSpecModel } from "./parts/info/SSDSpec";
+import { HDDSpecModel } from "./parts/info/HDDSpec";
+import { StoragePerformanceModel } from "./parts/info/StoragePerformance";
+import { StorageCacheModel } from "./parts/info/StorageCache";
+import { PSUSpecModel } from "./parts/info/PSUSpec";
+import { CPUBlockSpecModel } from "./parts/info/CPUBlockSpec";
+import { PumpSpecModel } from "./parts/info/PumpSpec";
+import { RadiatorSpecModel } from "./parts/info/RadiatorSpec";
+import { CPUBlockSocketModel } from "./parts/info/CPUBlockSocketSupport";
 
 export const ConnectionOptions: SequelizeOptions = {
   models: [
@@ -37,30 +40,36 @@ export const ConnectionOptions: SequelizeOptions = {
     UserModel,
     RetailProduct,
     PartInformation,
-    CPUModel,
-    GPUModel,
-    GraphicCardModel,
-    MainboardModel,
-    RAMModel,
-    SSDModel,
-    HDDModel,
-    PSUModel,
-    CaseModel,
-    CoolerModel,
-    AIOModel,
-    FanModel,
-    CPUBlockModel,
-    PumpModel,
-    RadiatorModel,
+    CPUSpecModel,
+    CPUPerformanceModel,
+    CPUCoreConfigModel,
+    GPUSpecModel,
+    GPUPerformanceModel,
+    GPUFeatureModel,
+    ProcessorCacheModel,
+    ProcessorMemoryModel,
+    GraphicCardSpecModel,
+    MainboardSpecModel,
     MainboardPCIeModel,
     MainboardStorageConnectorModel,
     MainboardUSBConnectorModel,
-    CaseMainboardSupportModel,
-    CaseRadiatorSupportModel,
+    RAMSpecModel,
+    SSDSpecModel,
+    HDDSpecModel,
+    StoragePerformanceModel,
+    StorageCacheModel,
+    PSUSpecModel,
+    CaseSpecModel,
     CaseFanSupportModel,
+    CaseMainboardSupportModel,
     CaseHardDriveSupportModel,
+    CaseRadiatorSupportModel,
     CasePSUSupportModel,
+    FanSpecModel,
+    CPUBlockSpecModel,
     CPUBlockSocketModel,
+    PumpSpecModel,
+    RadiatorSpecModel,
   ],
   define: {
     freezeTableName: true,
