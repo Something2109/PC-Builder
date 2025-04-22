@@ -4,7 +4,7 @@ import {
   Tables,
   defaultFilter,
 } from "@/models/interface";
-import Part from "@/utils/interface/info/Parts";
+import Part from "@/utils/interface/part";
 import { Products, Infos } from "@/utils/Enum";
 import {
   Column,
@@ -18,21 +18,21 @@ import {
   Table,
   Unique,
 } from "sequelize-typescript";
-import { CPUModel } from "./CPU";
-import { GPUModel } from "./GPU";
-import { GraphicCardModel } from "./GraphicCard";
-import { MainboardModel } from "./Mainboard";
-import { RAMModel } from "./RAM";
-import { SSDModel } from "./SSD";
-import { HDDModel } from "./HDD";
-import { PSUModel } from "./PSU";
-import { CaseModel } from "./Case";
-import { CoolerModel } from "./Cooler";
-import { AIOModel } from "./AIO";
-import { FanModel } from "./Fan";
-import { CPUBlockModel } from "./CPUBlock";
-import { PumpModel } from "./Pump";
-import { RadiatorModel } from "./Radiator";
+import { CPUModel } from "./tables/CPU";
+import { GPUModel } from "./tables/GPU";
+import { GraphicCardModel } from "./tables/GraphicCard";
+import { MainboardModel } from "./tables/Mainboard";
+import { RAMModel } from "./tables/RAM";
+import { SSDModel } from "./tables/SSD";
+import { HDDModel } from "./tables/HDD";
+import { PSUModel } from "./tables/PSU";
+import { CaseModel } from "./tables/Case";
+import { CoolerModel } from "./tables/Cooler";
+import { AIOModel } from "./tables/AIO";
+import { FanModel } from "./tables/Fan";
+import { CPUBlockModel } from "./tables/CPUBlock";
+import { PumpModel } from "./tables/Pump";
+import { RadiatorModel } from "./tables/Radiator";
 import { Includeable } from "sequelize";
 
 type InfoModelMapping = {
@@ -45,9 +45,12 @@ type InfoModelMapping = {
     attributes: attributes?.length ? ["id", ...attributes] : [],
   }),
   [ModelScopes.FILTER]: (
-    options: Part.FilterOptions,
+    options: Part.Filter["part"],
     ...include: Includeable[]
-  ) => ({ where: defaultFilter(options), include }),
+  ) => ({
+    where: defaultFilter(options),
+    include,
+  }),
   [ModelScopes.DETAIL]: { attributes: { exclude: ["createdAt", "updatedAt"] } },
 }))
 @Table({ modelName: Tables.PART })
