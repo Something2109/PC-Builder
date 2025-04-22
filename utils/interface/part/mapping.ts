@@ -86,7 +86,7 @@ export namespace Mapping {
       total_threads: [Infos.CPU_SPEC, "total_threads"],
       L3_cache: [Infos.PROCESSOR_CACHE, "L3_cache"],
       base_frequency: [Infos.CPU_PERF, "base_frequency"],
-      turbo_frequency: [Infos.CPU_PERF, "boost_frequency"],
+      turbo_frequency: [Infos.CPU_PERF, "turbo_frequency"],
       tdp: [Infos.CPU_PERF, "tdp"],
     },
     [Products.GPU]: {
@@ -94,7 +94,7 @@ export namespace Mapping {
       base_frequency: [Infos.GPU_PERF, "base_frequency"],
       boost_frequency: [Infos.GPU_PERF, "boost_frequency"],
       tdp: [Infos.GPU_PERF, "tdp"],
-      memory_size: [Infos.PROCESSOR_MEMORY, "memory_size"],
+      memory_size: [Infos.PROCESSOR_MEMORY, "capacity"],
       memory_type: [Infos.PROCESSOR_MEMORY, "memory_type"],
     },
     [Products.GRAPHIC_CARD]: {
@@ -103,7 +103,7 @@ export namespace Mapping {
       length: [Infos.GRAPHIC_CARD_SPEC, "length"],
       base_frequency: [Infos.GPU_PERF, "base_frequency"],
       boost_frequency: [Infos.GPU_PERF, "boost_frequency"],
-      minimum_psu: [Infos.GPU_PERF, "minimum_psu"],
+      minimum_psu: [Infos.GRAPHIC_CARD_SPEC, "minimum_psu"],
     },
     [Products.MAIN]: {
       socket: [Infos.MAIN_SPEC, "socket"],
@@ -141,8 +141,8 @@ export namespace Mapping {
     },
     [Products.CASE]: {
       form_factor: [Infos.CASE_SPEC, "form_factor"],
-      mainboard_support: [Infos.CASE_MAIN, "mainboard_support"],
-      radiator_support: [Infos.CASE_RADIATOR, "radiator_support"],
+      mainboard_support: [Infos.CASE_MAIN, "form_factor"],
+      radiator_support: [Infos.CASE_RADIATOR, "form_factor"],
       psu_support: [Infos.CASE_PSU, "psu_support"],
     },
     [Products.COOLER]: {
