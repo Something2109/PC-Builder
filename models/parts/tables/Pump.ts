@@ -5,8 +5,8 @@ import {
   ModelScopes,
   defaultFilter,
 } from "../../interface";
-import { PartInformation } from "./Part";
-import Pump from "@/utils/interface/info/Pump";
+import { PartInformation } from "..";
+import Pump from "@/utils/interface/part/info/Pump";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,

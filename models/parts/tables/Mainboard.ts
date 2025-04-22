@@ -5,8 +5,8 @@ import {
   ModelScopes,
   defaultFilter,
 } from "../../interface";
-import { PartInformation } from "./Part";
-import Mainboard from "@/utils/interface/info/Mainboard";
+import { PartInformation } from "..";
+import Mainboard from "@/utils/interface/part/info/Mainboard";
 import {
   ExternalPorts,
   InternalConnectors,

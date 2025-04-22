@@ -10,7 +10,7 @@ import {
   Table,
 } from "sequelize-typescript";
 import { FindOptions, IncludeOptions, SaveOptions } from "sequelize";
-import CPUBlock from "@/utils/interface/info/CPUBlock";
+import CPUBlock from "@/utils/interface/part/info/CPUBlock";
 import {
   PartDetailTable,
   PartDefaultScope,
@@ -20,7 +20,7 @@ import {
 } from "../../interface";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { Material } from "@/utils/interface/utils";
-import { PartInformation } from "./Part";
+import { PartInformation } from "..";
 
 function createFilterOptions(options?: CPUBlock.FilterOptions): FindOptions {
   const { socket, ...where } = options ?? {};

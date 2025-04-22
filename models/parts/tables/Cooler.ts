@@ -5,8 +5,8 @@ import {
   ModelScopes,
   defaultFilter,
 } from "../../interface";
-import { PartInformation } from "./Part";
-import Cooler from "@/utils/interface/info/Cooler";
+import { PartInformation } from "..";
+import Cooler from "@/utils/interface/part/info/Cooler";
 import { Material } from "@/utils/interface/utils";
 import {
   BelongsTo,

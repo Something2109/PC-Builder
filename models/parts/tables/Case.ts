@@ -5,9 +5,9 @@ import {
   ModelScopes,
   defaultFilter,
 } from "../../interface";
-import { PartInformation } from "./Part";
+import { PartInformation } from "..";
 import { FormFactor, Case as Base } from "@/utils/interface/utils";
-import Case from "@/utils/interface/info/Case";
+import Case from "@/utils/interface/part/info/Case";
 import {
   BelongsTo,
   Column,

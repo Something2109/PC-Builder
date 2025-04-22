@@ -5,8 +5,8 @@ import {
   Tables,
   defaultFilter,
 } from "../../interface";
-import { PartInformation } from "./Part";
-import Fan from "@/utils/interface/info/Fan";
+import { PartInformation } from "..";
+import Fan from "@/utils/interface/part/info/Fan";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,

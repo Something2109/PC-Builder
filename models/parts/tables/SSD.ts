@@ -5,8 +5,8 @@ import {
   ModelScopes,
   defaultFilter,
 } from "../../interface";
-import { PartInformation } from "./Part";
-import SSD from "@/utils/interface/info/SSD";
+import { PartInformation } from "..";
+import SSD from "@/utils/interface/part/info/SSD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,

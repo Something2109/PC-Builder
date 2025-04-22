@@ -5,8 +5,8 @@ import {
   ModelScopes,
   defaultFilter,
 } from "../../interface";
-import { PartInformation } from "./Part";
-import RAM from "@/utils/interface/info/RAM";
+import { PartInformation } from "..";
+import RAM from "@/utils/interface/part/info/RAM";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import {
   BelongsTo,

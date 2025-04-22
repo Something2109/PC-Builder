@@ -5,8 +5,8 @@ import {
   ModelScopes,
   defaultFilter,
 } from "../../interface";
-import { PartInformation } from "./Part";
-import CPU from "@/utils/interface/info/CPU";
+import { PartInformation } from "..";
+import CPU from "@/utils/interface/part/info/CPU";
 import {
   BelongsTo,
   Column,

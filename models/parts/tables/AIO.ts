@@ -8,7 +8,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import AIO from "@/utils/interface/info/AIO";
+import AIO from "@/utils/interface/part/info/AIO";
 import {
   PartDetailTable,
   PartDefaultScope,
@@ -16,7 +16,7 @@ import {
   ModelScopes,
   defaultFilter,
 } from "../../interface";
-import { PartInformation } from "./Part";
+import { PartInformation } from "..";
 import { FormFactor, Material } from "@/utils/interface/utils";
 
 @Scopes(() => ({

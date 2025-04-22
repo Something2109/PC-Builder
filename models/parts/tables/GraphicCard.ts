@@ -6,9 +6,9 @@ import {
   defaultFilter,
 } from "../../interface";
 import { GPUModel } from "./GPU";
-import { PartInformation } from "./Part";
-import GraphicCard from "@/utils/interface/info/GraphicCard";
-import GPU from "@/utils/interface/info/GPU";
+import { PartInformation } from "..";
+import GraphicCard from "@/utils/interface/part/info/GraphicCard";
+import GPU from "@/utils/interface/part/info/GPU";
 import {
   BelongsTo,
   Column,

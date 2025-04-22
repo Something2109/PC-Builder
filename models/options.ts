@@ -2,7 +2,7 @@ import { SequelizeOptions } from "sequelize-typescript";
 import { ArticleModel } from "./articles/article";
 import { UserModel } from "./user/User";
 import { RetailProduct } from "./sellers/SellerProduct";
-import { PartInformation } from "./parts/tables/Part";
+import { PartInformation } from "./parts";
 import { CPUModel } from "./parts/tables/CPU";
 import { GPUModel } from "./parts/tables/GPU";
 import { GraphicCardModel } from "./parts/tables/GraphicCard";
