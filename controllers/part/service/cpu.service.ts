@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { Infos, Products } from "@/utils/Enum";
+import { Products } from "@/utils/Enum";
 import Part, { Mapping } from "@/utils/interface/part";
 import { BaseDetailPartService } from "../interface/service.interface";
 
 type Detail = Part.BasicInfo & {
-  [key in (typeof Mapping.Info)[Infos.CPU][number]]: Part.Detail[key];
+  [key in (typeof Mapping.Info)[Products.CPU][number]]: Part.Detail[key];
 };
 
 @Injectable()
