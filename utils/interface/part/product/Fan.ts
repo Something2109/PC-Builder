@@ -1,5 +1,5 @@
 import { FilterOptions, FormFactor, Primitive } from "../../utils";
-import Fan from "../info/Fan";
+import Fan from "../info/FanSpec";
 import { z } from "zod";
 
 export namespace FanProduct {

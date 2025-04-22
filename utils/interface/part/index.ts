@@ -1,4 +1,4 @@
-import { Infos, Products } from "@/utils/Enum";
+import { Infos, Products } from "../../Enum";
 import { FilterOptions, Primitive } from "../utils";
 import { z } from "zod";
 import { Product } from "./product";

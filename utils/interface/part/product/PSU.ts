@@ -4,7 +4,7 @@ import {
   FormFactor,
   Primitive,
 } from "../../utils";
-import PSU from "../info/PSU";
+import PSU from "../info/PSUSpec";
 import { z } from "zod";
 
 export namespace PSUProduct {

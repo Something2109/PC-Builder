@@ -7,14 +7,7 @@ import {
 } from "../../utils";
 import { z } from "zod";
 
-namespace Mainboard {
-  export const PCIeSchema = z.record(
-    InternalConnectors.PCIe.Controller,
-    z.record(InternalConnectors.PCIe.Schema, Primitive.Number)
-  );
-
-  export type PCIe = z.infer<typeof PCIeSchema>;
-
+namespace MainboardSpec {
   export const PowerConnectorSchema = z.record(
     InternalConnectors.Power.Mainboard,
     Primitive.Number
@@ -22,24 +15,12 @@ namespace Mainboard {
 
   export type PowerConnector = z.infer<typeof PowerConnectorSchema>;
 
-  export const StorageConnectorSchema = z.record(
-    InternalConnectors.Storage.Schema,
-    Primitive.Number
-  );
-
   export const FanConnectorSchema = z.record(
     InternalConnectors.Fan.Schema,
     Primitive.Number
   );
 
-  export type StorageConnector = z.infer<typeof StorageConnectorSchema>;
-
-  export const USBConnectorSchema = z.record(
-    ExternalPorts.USB.Schema,
-    Primitive.Number
-  );
-
-  export type USBConnector = z.infer<typeof USBConnectorSchema>;
+  export type FanConnector = z.infer<typeof FanConnectorSchema>;
 
   export const BackPanelPortSchema = z.record(
     ExternalPorts.Schema,
@@ -58,12 +39,8 @@ namespace Mainboard {
     ram_interface: InternalConnectors.RAM,
     ram_slot: Primitive.Number,
 
-    pcies: PCIeSchema,
-
     power_connectors: PowerConnectorSchema,
     fan_connectors: FanConnectorSchema,
-    storage_connectors: StorageConnectorSchema,
-    usb_connectors: USBConnectorSchema,
     miscelanous_connectors: z.record(Primitive.String, Primitive.Number),
 
     back_panel_ports: BackPanelPortSchema,
@@ -81,12 +58,8 @@ namespace Mainboard {
     ram_interface: "RAM Interface",
     ram_slot: "RAM Slots",
 
-    pcies: "PCIe Slots",
-
     power_connectors: "Power Connectors",
     fan_connectors: "Fan Connectors",
-    storage_connectors: "Storage Connectors",
-    usb_connectors: "USB Connectors",
     miscelanous_connectors: "Misc Connectors",
 
     back_panel_ports: "Back Panel Ports",
@@ -127,4 +100,4 @@ namespace Mainboard {
   export type FilterOptions = z.infer<typeof FilterOptionSchema>;
 }
 
-export default Mainboard;
+export default MainboardSpec;
