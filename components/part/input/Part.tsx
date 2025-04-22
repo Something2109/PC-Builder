@@ -7,7 +7,7 @@ import {
   ResponsiveWrapper,
 } from "@/components/utils/FlexWrapper";
 import { Input } from "@/components/utils/Input";
-import Part from "@/utils/interface/info/Parts";
+import Part from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
 import { useState, TableHTMLAttributes, useActionState } from "react";
 import { NotificationBar } from "@/components/utils/NotificationBar";

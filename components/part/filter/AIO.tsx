@@ -1,5 +1,5 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
-import AIO from "@/utils/interface/product/AIO";
+import AIO from "@/utils/interface/part/product/AIO";
 import { GenericFilterBar, FilterMapping } from "../TableWrapper";
 
 const Components: FilterMapping<AIO.Filter> = {

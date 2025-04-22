@@ -1,5 +1,5 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
-import Case from "@/utils/interface/product/Case";
+import Case from "@/utils/interface/part/product/Case";
 
 const Components: InfoSummaryMapping<Case.Summary> = {
   form_factor: ({ value }) => value,

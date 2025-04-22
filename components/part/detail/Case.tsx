@@ -1,6 +1,6 @@
 import { Table, GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { UnitDisplay } from "@/components/utils/Display";
-import Case from "@/utils/interface/info/Case";
+import Case from "@/utils/interface/part/info/Case";
 import { LengthUnits } from "@/utils/extract/Units";
 
 const Components: InfoDetailMapping<Case.Info> = {

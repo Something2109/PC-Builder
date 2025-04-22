@@ -5,13 +5,13 @@ import {
   OptionSelect,
   SuffixInput,
 } from "@/components/utils/Input";
-import Fan from "@/utils/interface/info/Fan";
+import Part from "@/utils/interface/part";
+import Fan from "@/utils/interface/part/info/Fan";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
-import { DetailInfo } from "@/utils/interface";
 import { Infos } from "@/utils/Enum";
 
-const Schema = DetailInfo.shape[Infos.FAN];
+const Schema = Part.Detail.shape[Infos.FAN];
 
 const Components: InfoInputMapping<Fan.Info> = {
   form_factor: (props) => (

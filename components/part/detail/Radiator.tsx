@@ -1,6 +1,6 @@
 import { UnitDisplay } from "@/components/utils/Display";
 import { LengthUnits } from "@/utils/extract/Units";
-import Radiator from "@/utils/interface/info/Radiator";
+import Radiator from "@/utils/interface/part/info/Radiator";
 import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 
 const Components: InfoDetailMapping<Radiator.Info> = {

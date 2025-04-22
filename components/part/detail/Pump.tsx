@@ -1,4 +1,4 @@
-import Pump from "@/utils/interface/info/Pump";
+import Pump from "@/utils/interface/part/info/Pump";
 import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/extract/Units";

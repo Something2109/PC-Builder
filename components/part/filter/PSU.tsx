@@ -2,7 +2,7 @@ import {
   MultipleChoiceInput,
   MinMaxRangeInput,
 } from "@/components/utils/Input";
-import PSU from "@/utils/interface/product/PSU";
+import PSU from "@/utils/interface/part/product/PSU";
 import { GenericFilterBar, FilterMapping } from "../TableWrapper";
 
 const Components: FilterMapping<PSU.Filter> = {

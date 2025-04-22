@@ -1,4 +1,4 @@
-import Part from "@/utils/interface/info/Parts";
+import Part from "@/utils/interface/part";
 import { TableHTMLAttributes } from "react";
 import { TableRowWrapper, TableWrapper } from "../TableWrapper";
 import {

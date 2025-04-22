@@ -5,13 +5,13 @@ import {
   OptionSelect,
   SuffixInput,
 } from "@/components/utils/Input";
-import AIO from "@/utils/interface/info/AIO";
+import Part from "@/utils/interface/part";
+import AIO from "@/utils/interface/part/info/AIO";
 import { FormFactor, Material } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
-import { DetailInfo } from "@/utils/interface";
 import { Infos } from "@/utils/Enum";
 
-const Schema = DetailInfo.shape[Infos.AIO];
+const Schema = Part.Detail.shape[Infos.AIO];
 
 const Components: InfoInputMapping<AIO.Info> = {
   form_factor: (props) => (

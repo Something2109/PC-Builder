@@ -1,11 +1,11 @@
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 import { Input, SuffixInput, OptionSelect } from "@/components/utils/Input";
-import Mainboard from "@/utils/interface/info/Mainboard";
+import Part from "@/utils/interface/part";
+import Mainboard from "@/utils/interface/part/info/Mainboard";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { DetailInfo } from "@/utils/interface";
 import { Infos } from "@/utils/Enum";
 
-const Schema = DetailInfo.shape[Infos.MAIN];
+const Schema = Part.Detail.shape[Infos.MAIN];
 
 const Components: InfoInputMapping<Mainboard.Info> = {
   form_factor: (props) => (

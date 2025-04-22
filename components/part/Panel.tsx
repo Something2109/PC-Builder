@@ -1,5 +1,4 @@
-import Part from "@/utils/interface/info/Parts";
-import { Product } from "@/utils/interface/product";
+import Part, { Product } from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
 import { RedirectButton } from "../utils/Button";
 import PartPicture from "./Picture";

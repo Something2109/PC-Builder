@@ -1,5 +1,5 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
-import AIO from "@/utils/interface/product/AIO";
+import AIO from "@/utils/interface/part/product/AIO";
 
 const Components: InfoSummaryMapping<AIO.Summary> = {
   form_factor: ({ value }) => value,

@@ -1,11 +1,11 @@
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 import { Input, SuffixInput, UnitInput } from "@/components/utils/Input";
-import GPU from "@/utils/interface/info/GPU";
+import Part from "@/utils/interface/part";
+import GPU from "@/utils/interface/part/info/GPU";
 import { MemoryUnits, FrequencyUnits } from "@/utils/extract/Units";
-import { DetailInfo } from "@/utils/interface";
 import { Infos } from "@/utils/Enum";
 
-const Schema = DetailInfo.shape[Infos.GPU];
+const Schema = Part.Detail.shape[Infos.GPU];
 
 const Components: InfoInputMapping<GPU.Info> = {
   family: (props) => <Input {...props} />,

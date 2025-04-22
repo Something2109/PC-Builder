@@ -1,6 +1,6 @@
 "use client";
 
-import Part from "@/utils/interface/info/Parts";
+import Part from "@/utils/interface/part";
 import { useRouter } from "next/navigation";
 import { ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { ColumnWrapper, RowWrapper } from "./utils/FlexWrapper";

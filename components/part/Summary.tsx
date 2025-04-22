@@ -2,8 +2,7 @@
 
 import { PartSummaryCells } from "./summary/Part";
 import { Products } from "@/utils/Enum";
-import { Product } from "@/utils/interface/product";
-import Part from "@/utils/interface/info/Parts";
+import Part, { Product } from "@/utils/interface/part";
 import { lazy, TableHTMLAttributes, useMemo } from "react";
 
 export const SummaryInfoComponent = {

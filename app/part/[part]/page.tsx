@@ -4,7 +4,7 @@ import { RedirectButton } from "@/components/utils/Button";
 import PaginationBar from "@/components/utils/PaginationBar";
 import { FilterBar } from "@/components/part/Filter";
 import { ToggleButton } from "@/components/utils/Toggle";
-import { Product } from "@/utils/interface/product";
+import { Product } from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 

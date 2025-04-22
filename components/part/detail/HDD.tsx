@@ -1,6 +1,6 @@
 import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
-import HDD from "@/utils/interface/info/HDD";
+import HDD from "@/utils/interface/part/info/HDD";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
 
 const Components: InfoDetailMapping<HDD.Info> = {

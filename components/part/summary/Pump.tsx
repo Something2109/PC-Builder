@@ -1,6 +1,6 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import { SuffixDisplay } from "@/components/utils/Display";
-import Pump from "@/utils/interface/product/Pump";
+import Pump from "@/utils/interface/part/product/Pump";
 
 const Components: InfoSummaryMapping<Pump.Summary> = {
   form_factor: ({ value }) => value,

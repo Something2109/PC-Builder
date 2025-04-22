@@ -1,12 +1,14 @@
 "use client";
 
 import { Button } from "@/components/utils/Button";
-import { Information } from "@/utils/interface/info";
+import { Information } from "@/utils/interface/part";
 import { Infos } from "@/utils/Enum";
 import React, { lazy, useActionState, useRef, useState } from "react";
-import { DetailInfo } from "@/utils/interface";
+import Part from "@/utils/interface/part";
 import { NotificationBar } from "../utils/NotificationBar";
 import { VerticalCollapsible } from "../utils/Collapsible";
+
+type DetailInfo = Part.Detail;
 
 const InputComponent = {
   [Infos.CPU]: lazy(() => import("@/components/part/input/CPU")),

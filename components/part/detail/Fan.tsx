@@ -1,6 +1,6 @@
 import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
-import Fan from "@/utils/interface/info/Fan";
+import Fan from "@/utils/interface/part/info/Fan";
 import { LengthUnits } from "@/utils/extract/Units";
 
 const Components: InfoDetailMapping<Fan.Info> = {

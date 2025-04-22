@@ -1,6 +1,6 @@
 import { SuffixDisplay } from "@/components/utils/Display";
 import { Table, GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
-import Mainboard from "@/utils/interface/info/Mainboard";
+import Mainboard from "@/utils/interface/part/info/Mainboard";
 import { InternalConnectors } from "@/utils/interface/utils";
 
 const Components: InfoDetailMapping<Mainboard.Info> = {

@@ -1,6 +1,6 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import { SuffixDisplay } from "@/components/utils/Display";
-import PSU from "@/utils/interface/product/PSU";
+import PSU from "@/utils/interface/part/product/PSU";
 
 const Components: InfoSummaryMapping<PSU.Summary> = {
   wattage: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,

@@ -2,7 +2,7 @@ import {
   MinMaxRangeInput,
   UnitMinMaxRangeInput,
 } from "@/components/utils/Input";
-import GraphicCard from "@/utils/interface/product/GraphicCard";
+import GraphicCard from "@/utils/interface/part/product/GraphicCard";
 import { FrequencyUnits, LengthUnits } from "@/utils/extract/Units";
 import { GenericFilterBar, FilterMapping } from "../TableWrapper";
 

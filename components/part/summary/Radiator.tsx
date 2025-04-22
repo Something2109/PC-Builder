@@ -1,5 +1,5 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
-import Radiator from "@/utils/interface/product/Radiator";
+import Radiator from "@/utils/interface/part/product/Radiator";
 
 const Components: InfoSummaryMapping<Radiator.Summary> = {
   form_factor: ({ value }) => value,

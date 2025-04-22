@@ -1,6 +1,6 @@
 import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { UnitDisplay, SuffixDisplay } from "@/components/utils/Display";
-import GPU from "@/utils/interface/info/GPU";
+import GPU from "@/utils/interface/part/info/GPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/extract/Units";
 
 const Components: InfoDetailMapping<GPU.Info> = {

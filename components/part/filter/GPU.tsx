@@ -3,7 +3,7 @@ import {
   MultipleChoiceInput,
   UnitMinMaxRangeInput,
 } from "@/components/utils/Input";
-import GPU from "@/utils/interface/product/GPU";
+import GPU from "@/utils/interface/part/product/GPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/extract/Units";
 import { GenericFilterBar, FilterMapping } from "../TableWrapper";
 

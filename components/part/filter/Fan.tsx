@@ -1,5 +1,5 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
-import Fan from "@/utils/interface/product/Fan";
+import Fan from "@/utils/interface/part/product/Fan";
 import { GenericFilterBar, FilterMapping } from "../TableWrapper";
 
 const Components: FilterMapping<Fan.Filter> = {

@@ -3,7 +3,7 @@ import {
   MinMaxRangeInput,
   UnitMinMaxRangeInput,
 } from "@/components/utils/Input";
-import CPU from "@/utils/interface/product/CPU";
+import CPU from "@/utils/interface/part/product/CPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/extract/Units";
 import { GenericFilterBar, FilterMapping } from "../TableWrapper";
 

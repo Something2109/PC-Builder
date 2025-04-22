@@ -2,7 +2,7 @@ import {
   MultipleChoiceInput,
   UnitMinMaxRangeInput,
 } from "@/components/utils/Input";
-import RAM from "@/utils/interface/product/RAM";
+import RAM from "@/utils/interface/part/product/RAM";
 import { MemoryUnits } from "@/utils/extract/Units";
 import { GenericFilterBar, FilterMapping } from "../TableWrapper";
 

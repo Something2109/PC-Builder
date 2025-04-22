@@ -3,7 +3,7 @@ import {
   MinMaxRangeInput,
   UnitMinMaxRangeInput,
 } from "@/components/utils/Input";
-import HDD from "@/utils/interface/product/HDD";
+import HDD from "@/utils/interface/part/product/HDD";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
 import { GenericFilterBar, FilterMapping } from "../TableWrapper";
 

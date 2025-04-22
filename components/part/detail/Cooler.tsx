@@ -1,6 +1,6 @@
 import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { UnitDisplay } from "@/components/utils/Display";
-import Cooler from "@/utils/interface/info/Cooler";
+import Cooler from "@/utils/interface/part/info/Cooler";
 import { LengthUnits } from "@/utils/extract/Units";
 
 const Components: InfoDetailMapping<Cooler.Info> = {

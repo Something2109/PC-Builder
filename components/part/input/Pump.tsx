@@ -1,12 +1,12 @@
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
-import Pump from "@/utils/interface/info/Pump";
+import Part from "@/utils/interface/part";
+import Pump from "@/utils/interface/part/info/Pump";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/extract/Units";
-import { DetailInfo } from "@/utils/interface";
 import { Infos } from "@/utils/Enum";
 
-const Schema = DetailInfo.shape[Infos.PUMP];
+const Schema = Part.Detail.shape[Infos.PUMP];
 
 const Components: InfoInputMapping<Pump.Info> = {
   form_factor: (props) => (

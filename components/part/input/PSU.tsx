@@ -5,13 +5,13 @@ import {
   UnitInput,
   OptionSelect,
 } from "@/components/utils/Input";
-import PSU from "@/utils/interface/info/PSU";
+import Part from "@/utils/interface/part";
+import PSU from "@/utils/interface/part/info/PSU";
 import { FormFactor } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
-import { DetailInfo } from "@/utils/interface";
 import { Infos } from "@/utils/Enum";
 
-const Schema = DetailInfo.shape[Infos.PSU];
+const Schema = Part.Detail.shape[Infos.PSU];
 
 const Components: InfoInputMapping<PSU.Info> = {
   wattage: (props) => <SuffixInput suffix="W" type="number" {...props} />,

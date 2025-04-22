@@ -1,4 +1,4 @@
-import CPU from "@/utils/interface/info/CPU";
+import CPU from "@/utils/interface/part/info/CPU";
 import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { UnitDisplay, SuffixDisplay } from "@/components/utils/Display";
 import {

@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import CPUBlock from "@/utils/interface/info/CPUBlock";
+import Part from "@/utils/interface/part";
+import CPUBlock from "@/utils/interface/part/info/CPUBlock";
 import { InternalConnectors, Material } from "@/utils/interface/utils";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button } from "@/components/utils/Button";
 import { ResponsiveWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
-import { DetailInfo } from "@/utils/interface";
 import { Infos } from "@/utils/Enum";
 
-const Schema = DetailInfo.shape[Infos.CPU_BLOCK];
+const Schema = Part.Detail.shape[Infos.CPU_BLOCK];
 
 const Components: InfoInputMapping<CPUBlock.Info> = {
   socket: ({ defaultValue, ...props }) => {

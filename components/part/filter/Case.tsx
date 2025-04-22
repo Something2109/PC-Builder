@@ -1,5 +1,5 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
-import Case from "@/utils/interface/product/Case";
+import Case from "@/utils/interface/part/product/Case";
 import { GenericFilterBar, FilterMapping } from "../TableWrapper";
 
 const Components: FilterMapping<Case.Filter> = {

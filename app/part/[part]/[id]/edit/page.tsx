@@ -5,9 +5,8 @@ import {
   ResponsiveWrapper,
 } from "@/components/utils/FlexWrapper";
 import { ObjectTable } from "@/components/utils/ObjectTable";
-import { Mapping } from "@/utils/interface/mapping";
+import Part, { Mapping } from "@/utils/interface/part";
 import { Products, Roles } from "@/utils/Enum";
-import { DetailInfo } from "@/utils/interface";
 import { notFound } from "next/navigation";
 import { AuthRole } from "@/components/auth";
 import { ServerAuthRole } from "@/components/auth-server";
@@ -27,7 +26,7 @@ export default async function PartDetailEditPage({
 
   if (!response.ok) return notFound();
 
-  const data = (await response.json()) as DetailInfo;
+  const data = (await response.json()) as Part.Detail;
   const SaveLink = `/api/part/${part}/${id}`;
 
   return (
@@ -39,7 +38,7 @@ export default async function PartDetailEditPage({
             <h1 className="text-4xl font-bold">Raw</h1>
             <ObjectTable
               className="border-2"
-              object={data?.raw ? JSON.parse(data.raw) : undefined}
+              object={JSON.parse((data as any).raw ?? "{}")}
             />
           </ColumnWrapper>
           <ColumnWrapper className="basis-1/2">

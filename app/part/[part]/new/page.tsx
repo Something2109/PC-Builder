@@ -7,7 +7,7 @@ import {
   ResponsiveWrapper,
 } from "@/components/utils/FlexWrapper";
 import { Products, Roles } from "@/utils/Enum";
-import { Mapping } from "@/utils/interface/mapping";
+import { Mapping } from "@/utils/interface/part";
 
 const roles = [Roles.ADMIN];
 

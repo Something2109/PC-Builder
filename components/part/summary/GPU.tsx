@@ -1,6 +1,6 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import { SuffixDisplay } from "@/components/utils/Display";
-import GPU from "@/utils/interface/product/GPU";
+import GPU from "@/utils/interface/part/product/GPU";
 
 const Components: InfoSummaryMapping<GPU.Summary> = {
   core_count: ({ value }) => value,

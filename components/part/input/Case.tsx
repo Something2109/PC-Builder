@@ -5,14 +5,14 @@ import {
   OptionSelect,
   ChoiceInput,
 } from "@/components/utils/Input";
-import Case from "@/utils/interface/info/Case";
+import Part from "@/utils/interface/part";
+import Case from "@/utils/interface/part/info/Case";
 import { FormFactor } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
 import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
-import { DetailInfo } from "@/utils/interface";
 import { Infos } from "@/utils/Enum";
 
-const Schema = DetailInfo.shape[Infos.CASE];
+const Schema = Part.Detail.shape[Infos.CASE];
 
 const Components: InfoInputMapping<Case.Info> = {
   form_factor: (props) => (

@@ -1,12 +1,12 @@
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 import { UnitInput, OptionSelect } from "@/components/utils/Input";
-import SSD from "@/utils/interface/info/SSD";
+import Part from "@/utils/interface/part";
+import SSD from "@/utils/interface/part/info/SSD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
-import { DetailInfo } from "@/utils/interface";
 import { Infos } from "@/utils/Enum";
 
-const Schema = DetailInfo.shape[Infos.SSD];
+const Schema = Part.Detail.shape[Infos.SSD];
 
 const Components: InfoInputMapping<SSD.Info> = {
   memory_type: (props) => (

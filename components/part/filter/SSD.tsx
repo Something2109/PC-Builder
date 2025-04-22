@@ -2,7 +2,7 @@ import {
   MultipleChoiceInput,
   UnitMinMaxRangeInput,
 } from "@/components/utils/Input";
-import SSD from "@/utils/interface/product/SSD";
+import SSD from "@/utils/interface/part/product/SSD";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
 import { GenericFilterBar, FilterMapping } from "../TableWrapper";
 

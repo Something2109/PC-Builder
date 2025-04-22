@@ -1,6 +1,6 @@
 import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { UnitDisplay } from "@/components/utils/Display";
-import SSD from "@/utils/interface/info/SSD";
+import SSD from "@/utils/interface/part/info/SSD";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
 import { FunctionComponent } from "react";
 

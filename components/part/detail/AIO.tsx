@@ -1,7 +1,7 @@
 import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import { LengthUnits } from "@/utils/extract/Units";
-import AIO from "@/utils/interface/info/AIO";
+import AIO from "@/utils/interface/part/info/AIO";
 
 const Components: InfoDetailMapping<AIO.Info> = {
   form_factor: ({ value }) => value,

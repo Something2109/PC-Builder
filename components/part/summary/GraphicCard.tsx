@@ -1,6 +1,6 @@
 import { SuffixDisplay } from "@/components/utils/Display";
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
-import GraphicCard from "@/utils/interface/product/GraphicCard";
+import GraphicCard from "@/utils/interface/part/product/GraphicCard";
 
 const Components: InfoSummaryMapping<GraphicCard.Summary> = {
   length: ({ value }) => <SuffixDisplay suffix="mm">{value}</SuffixDisplay>,

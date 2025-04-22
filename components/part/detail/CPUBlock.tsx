@@ -1,4 +1,4 @@
-import CPUBlock from "@/utils/interface/info/CPUBlock";
+import CPUBlock from "@/utils/interface/part/info/CPUBlock";
 import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 
 const Components: InfoDetailMapping<CPUBlock.Info> = {

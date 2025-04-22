@@ -7,12 +7,12 @@ import {
   Input,
 } from "@/components/utils/Input";
 import { MemoryUnits, TransferSpeedUnit } from "@/utils/extract/Units";
-import RAM from "@/utils/interface/info/RAM";
+import Part from "@/utils/interface/part";
+import RAM from "@/utils/interface/part/info/RAM";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { DetailInfo } from "@/utils/interface";
 import { Infos } from "@/utils/Enum";
 
-const Schema = DetailInfo.shape[Infos.RAM];
+const Schema = Part.Detail.shape[Infos.RAM];
 
 const Components: InfoInputMapping<RAM.Info> = {
   speed: (props) => (

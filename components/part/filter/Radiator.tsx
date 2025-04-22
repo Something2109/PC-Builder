@@ -1,5 +1,5 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
-import Radiator from "@/utils/interface/product/Radiator";
+import Radiator from "@/utils/interface/part/product/Radiator";
 import { GenericFilterBar, FilterMapping } from "../TableWrapper";
 
 const Components: FilterMapping<Radiator.Filter> = {

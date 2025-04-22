@@ -1,6 +1,6 @@
 import { SuffixDisplay } from "@/components/utils/Display";
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
-import Cooler from "@/utils/interface/product/Cooler";
+import Cooler from "@/utils/interface/part/product/Cooler";
 
 const Components: InfoSummaryMapping<Cooler.Summary> = {
   socket: ({ value }) => value,

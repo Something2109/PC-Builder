@@ -1,6 +1,6 @@
 "use client";
 
-import { Information } from "@/utils/interface/info";
+import { Information } from "@/utils/interface/part";
 import { Infos } from "@/utils/Enum";
 import { lazy } from "react";
 import { VerticalCollapsible } from "../utils/Collapsible";

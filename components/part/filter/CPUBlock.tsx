@@ -1,5 +1,5 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
-import CPUBlock from "@/utils/interface/product/CPUBlock";
+import CPUBlock from "@/utils/interface/part/product/CPUBlock";
 import { GenericFilterBar, FilterMapping } from "../TableWrapper";
 
 const Components: FilterMapping<CPUBlock.Filter> = {

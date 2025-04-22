@@ -1,5 +1,5 @@
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
-import PSU from "@/utils/interface/info/PSU";
+import PSU from "@/utils/interface/part/info/PSU";
 import { LengthUnits } from "@/utils/extract/Units";
 import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
 

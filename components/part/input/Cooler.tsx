@@ -1,12 +1,12 @@
 import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
 import { Input, UnitInput, OptionSelect } from "@/components/utils/Input";
-import Cooler from "@/utils/interface/info/Cooler";
+import Part from "@/utils/interface/part";
+import Cooler from "@/utils/interface/part/info/Cooler";
 import { Material } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
-import { DetailInfo } from "@/utils/interface";
 import { Infos } from "@/utils/Enum";
 
-const Schema = DetailInfo.shape[Infos.COOLER];
+const Schema = Part.Detail.shape[Infos.COOLER];
 
 const Components: InfoInputMapping<Cooler.Info> = {
   socket: (props) => <Input {...props} />,

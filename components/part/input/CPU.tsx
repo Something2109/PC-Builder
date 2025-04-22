@@ -5,7 +5,8 @@ import {
   MemorySpeedUnit,
   MemoryUnits,
 } from "@/utils/extract/Units";
-import CPU from "@/utils/interface/info/CPU";
+import Part from "@/utils/interface/part";
+import CPU from "@/utils/interface/part/info/CPU";
 import { DetailInfo } from "@/utils/interface";
 import { Infos } from "@/utils/Enum";
 
