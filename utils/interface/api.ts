@@ -1,4 +1,5 @@
 import { ZodIssue } from "zod";
+import { User } from "./user/User";
 
 /**
  * The error namespace mapping the zod error of an object.
@@ -7,6 +8,16 @@ import { ZodIssue } from "zod";
 export namespace APIMapping {
   const DEFAULT_PAGE = 1;
   const DEFAULT_ITEM_LIMIT = 50;
+
+  export enum Tokens {
+    ACCESS = "access",
+    REFRESH = "refresh",
+  }
+
+  export type Session = {
+    type: Tokens;
+    sub: User.JwtPayload;
+  };
 
   /**
    * The page option interface.
