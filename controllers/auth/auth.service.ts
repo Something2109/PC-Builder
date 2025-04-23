@@ -26,7 +26,7 @@ export class AuthService {
       this.jwtService.signAsync({ sub: user, type: API.Tokens.ACCESS }),
       this.jwtService.signAsync(
         { sub: user, type: API.Tokens.REFRESH },
-        { expiresIn: "1m" }
+        { expiresIn: "30 days" }
       ),
     ]);
 
