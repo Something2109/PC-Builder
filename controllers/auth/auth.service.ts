@@ -13,7 +13,7 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async signUp(username: string, password: string): Promise<any> {
+  async signUp(username: string, password: string) {
     const user = await this.userService.create({ username, password });
 
     if (!user)
@@ -22,12 +22,17 @@ export class AuthService {
     return await this.logIn(username, password);
   }
 
-  async logIn(username: string, password: string): Promise<any> {
-    const payload = await this.userService.verify({ username, password });
-    if (!payload) {
-      throw new UnauthorizedException();
-    }
+  async logIn(username: string, password: string) {
+    const user = await this.userService.verify({ username, password });
 
-    return await this.jwtService.signAsync(payload);
+    const [access_token, refresh_token] = await Promise.all([
+      this.jwtService.signAsync({ sub: user, type: "access" }),
+      this.jwtService.signAsync(
+        { sub: user, type: "refresh" },
+        { expiresIn: "1m" }
+      ),
+    ]);
+
+    return { access_token, refresh_token };
   }
 }

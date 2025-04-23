@@ -1,4 +1,11 @@
-import { Body, Controller, Post, UseGuards, Res } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  Res,
+  HttpCode,
+} from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginAuthorizationGuard } from "./auth.guard";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
@@ -17,27 +24,33 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body(SignUpValidator) payload: User.LogInOptions
   ) {
-    const access_token = await this.authService.signUp(
+    const tokens = await this.authService.signUp(
       payload.username,
       payload.password
     );
 
-    this.setToken(res, access_token);
+    this.setToken(res, tokens.access_token);
+
+    res.json(tokens);
   }
 
+  @HttpCode(200)
   @Post("login")
   async logIn(
     @Res({ passthrough: true }) res: Response,
     @Body(SignUpValidator) payload: User.LogInOptions
   ) {
-    const access_token = await this.authService.logIn(
+    const tokens = await this.authService.logIn(
       payload.username,
       payload.password
     );
 
-    this.setToken(res, access_token);
+    this.setToken(res, tokens.access_token);
+
+    res.json(tokens);
   }
 
+  @HttpCode(200)
   @Post("logout")
   async logOut(@Res({ passthrough: true }) res: Response) {
     this.setToken(res);
@@ -53,7 +66,5 @@ export class AuthController {
       secure: true,
       httpOnly: true,
     });
-
-    res.json({ access_token: token });
   }
 }
