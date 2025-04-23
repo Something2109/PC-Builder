@@ -1,10 +1,10 @@
+import { User } from "@/utils/interface/user/User";
 import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
   Injectable,
 } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
 
 /**
  * Inspect if the user has logged in or not.
@@ -12,27 +12,13 @@ import { JwtService } from "@nestjs/jwt";
  */
 @Injectable()
 export class LoginAuthorizationGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
-
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    const user = request.user as User.JwtPayload;
 
-    // Extract token.
-    const [type, token] = request.cookies["Authorization"]?.split(" ") ?? [];
-    if (type !== "Bearer") return true; // No token found.
+    if (user && !request.path.includes("logout"))
+      throw new ForbiddenException(`You have logged in as ${user.username}`);
 
-    // Verify token.
-    let username;
-    try {
-      const payload = await this.jwtService.verifyAsync(token);
-      username = payload.username;
-
-      if (request.path.includes("logout")) return true;
-    } catch {
-      return true;
-    }
-
-    // The user has valid token.
-    throw new ForbiddenException(`You have logged in as ${username}`);
+    return true;
   }
 }
