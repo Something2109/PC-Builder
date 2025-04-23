@@ -16,7 +16,7 @@ import { UserFilterPipe } from "./user.pipe";
 import { Role } from "controllers/utils/role/role.decorator";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { User } from "@/utils/interface/user/User";
-import { APIMapping } from "@/utils/interface/api";
+import { API } from "@/utils/interface/api";
 import { Roles } from "@/utils/Enum";
 
 const SignUpValidator = new ZodValidationPipe(User.LogInOptions);
@@ -30,7 +30,7 @@ export class UserController {
   @Role(Roles.ADMIN)
   @Get()
   async listUser(
-    @Query(UserFilterPipe) options: APIMapping.PageOptions & User.FilterOptions
+    @Query(UserFilterPipe) options: API.PageOptions & User.FilterOptions
   ) {
     const informations = await this.userService.list(options);
 

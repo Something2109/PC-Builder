@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Roles } from "@/utils/Enum";
-import { User } from "@/utils/interface/user/User";
+import { API } from "@/utils/interface/api";
 
 /**
  * The global guard used by the application.
@@ -30,10 +30,10 @@ export class AuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const path = request.path.split("/")[1];
-    const session = request.session as { type: string; sub: User.JwtPayload };
+    const session = request.session as API.Session | undefined;
 
     // Check if no user login or the user is using refresh token to access other path except auth path.
-    if (!session || (session.type !== "access" && path !== "auth"))
+    if (!session || (session.type !== API.Tokens.ACCESS && path !== "auth"))
       throw new UnauthorizedException("You must log in to do this action!");
 
     if (!requiredRoles.includes(session.sub.role))

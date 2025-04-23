@@ -1,8 +1,5 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from "@nestjs/common";
+import { API } from "@/utils/interface/api";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "controllers/user/user.service";
 
@@ -26,9 +23,9 @@ export class AuthService {
     const user = await this.userService.verify({ username, password });
 
     const [access_token, refresh_token] = await Promise.all([
-      this.jwtService.signAsync({ sub: user, type: "access" }),
+      this.jwtService.signAsync({ sub: user, type: API.Tokens.ACCESS }),
       this.jwtService.signAsync(
-        { sub: user, type: "refresh" },
+        { sub: user, type: API.Tokens.REFRESH },
         { expiresIn: "1m" }
       ),
     ]);

@@ -1,3 +1,4 @@
+import { API } from "@/utils/interface/api";
 import { User } from "@/utils/interface/user/User";
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -17,7 +18,7 @@ export class SessionExtractionMiddleware implements NestMiddleware {
       // Verify token.
       try {
         const payload = await this.jwtService.verifyAsync(token);
-        req.session = payload; // Save the session type (access or refresh) to the request object.
+        req.session = payload as API.Session; // Save the session type (access or refresh) to the request object.
       } catch {}
     }
 

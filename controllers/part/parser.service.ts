@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import Part, { Product, Mapping } from "@/utils/interface/part";
-import { APIMapping } from "@/utils/interface/api";
+import { API } from "@/utils/interface/api";
 import { Primitive } from "@/utils/interface/utils";
 import { Products } from "@/utils/Enum";
 import { FilterOptionBuilder } from "./interface/filterbuilder";
@@ -9,7 +9,7 @@ type SearchOptions = {
   q?: string;
 };
 
-type PageOptions = APIMapping.PageOptions;
+type PageOptions = API.PageOptions;
 
 @Injectable()
 class ProductParser {
@@ -50,8 +50,7 @@ class ProductParser {
     params: Record<string, string | string[]>,
     part?: Products
   ): Part.Filter & PageOptions & SearchOptions {
-    const pageOptions: PageOptions & SearchOptions =
-      APIMapping.toPageOptions(params);
+    const pageOptions: PageOptions & SearchOptions = API.toPageOptions(params);
 
     if (params.q) {
       pageOptions.q = Array.isArray(params.q) ? params.q.join("|") : params.q;

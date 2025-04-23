@@ -1,5 +1,5 @@
 import { UserModel, UserModelScope } from "@/models/user/User";
-import { APIMapping } from "@/utils/interface/api";
+import { API } from "@/utils/interface/api";
 import { User } from "@/utils/interface/user/User";
 import {
   Injectable,
@@ -56,9 +56,7 @@ export class UserService {
     page,
     limit,
     ...options
-  }: User.FilterOptions & APIMapping.PageOptions): Promise<
-    User.Information[] | null
-  > {
+  }: User.FilterOptions & API.PageOptions): Promise<User.Information[] | null> {
     const userList = await UserModel.scope(UserModelScope.SUMMARY).findAll({
       where: options,
       offset: (page - 1) * limit,

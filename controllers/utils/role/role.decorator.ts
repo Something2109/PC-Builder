@@ -3,7 +3,8 @@ import {
   ExecutionContext,
   SetMetadata,
 } from "@nestjs/common";
-import { User as User } from "@/utils/interface/user/User";
+import { User } from "@/utils/interface/user/User";
+import { API } from "@/utils/interface/api";
 import { Roles } from "@/utils/Enum";
 
 /**
@@ -40,7 +41,7 @@ export const AuthUser = createParamDecorator(
 );
 
 export const AuthSession = createParamDecorator(
-  (_: string | undefined, ctx: ExecutionContext): string | undefined => {
+  (_: string | undefined, ctx: ExecutionContext): API.Tokens | undefined => {
     const request = ctx.switchToHttp().getRequest();
     return request.session.type;
   }

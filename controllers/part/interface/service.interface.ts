@@ -11,7 +11,7 @@ import { Injectable } from "@nestjs/common";
 import { PartInformation } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
 import Part, { Mapping } from "@/utils/interface/part";
-import { APIMapping } from "@/utils/interface/api";
+import { API } from "@/utils/interface/api";
 import { FilterOptionsType } from "@/utils/interface/utils";
 import { Infos, Products } from "@/utils/Enum";
 
@@ -19,7 +19,7 @@ type SearchOptions = {
   q?: string;
 };
 
-type PageOptions = APIMapping.PageOptions;
+type PageOptions = API.PageOptions;
 
 type FilterOptions = Part.Filter;
 
@@ -37,7 +37,7 @@ abstract class BasePartService<Detail = Part.BasicInfo, Filter = Part.Filter> {
    */
   async list(
     options: FilterOptions & PageOptions & SearchOptions
-  ): Promise<APIMapping.Payload<Detail>> {
+  ): Promise<API.Payload<Detail>> {
     let { part } = options;
 
     const FilteredPart = PartInformation.scope([
@@ -441,7 +441,7 @@ abstract class BaseDetailPartService<
 
   async list(
     options: FilterOptions & PageOptions & SearchOptions
-  ): Promise<APIMapping.Payload<Detail>> {
+  ): Promise<API.Payload<Detail>> {
     const { part, ...rest } = options;
 
     const FilteredPart = PartInformation.scope([
