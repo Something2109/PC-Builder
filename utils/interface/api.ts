@@ -5,7 +5,7 @@ import { User } from "./user/User";
  * The error namespace mapping the zod error of an object.
  * Define the error message type based on the object structure.
  */
-export namespace APIMapping {
+export namespace API {
   const DEFAULT_PAGE = 1;
   const DEFAULT_ITEM_LIMIT = 50;
 
