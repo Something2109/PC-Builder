@@ -38,3 +38,10 @@ export const AuthUser = createParamDecorator(
     return user[key];
   }
 );
+
+export const AuthSession = createParamDecorator(
+  (_: string | undefined, ctx: ExecutionContext): string | undefined => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.session;
+  }
+);
