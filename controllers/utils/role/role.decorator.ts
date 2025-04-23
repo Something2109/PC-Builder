@@ -32,7 +32,7 @@ export const AuthUser = createParamDecorator(
     ctx: ExecutionContext
   ): (typeof key extends undefined ? User.JwtPayload : string) | undefined => {
     const request = ctx.switchToHttp().getRequest();
-    const user = request.user;
+    const user = request.session?.sub;
 
     if (!key || !user) return user;
     return user[key];
@@ -42,6 +42,6 @@ export const AuthUser = createParamDecorator(
 export const AuthSession = createParamDecorator(
   (_: string | undefined, ctx: ExecutionContext): string | undefined => {
     const request = ctx.switchToHttp().getRequest();
-    return request.session;
+    return request.session.type;
   }
 );

@@ -16,21 +16,22 @@ export class LoginAuthorizationGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const user = request.user as User.JwtPayload;
-    const session = request.session as string | undefined;
+    const session = request.session as
+      | { type: string; sub: User.JwtPayload }
+      | undefined;
 
     // If the session is the same as the required state.
-    if (session === this.loginState) return true;
+    if (session?.type === this.loginState) return true;
 
     // Treat refresh token as no login.
-    if (session === "refresh" && !this.loginState) return true;
+    if (session?.type === "refresh" && !this.loginState) return true;
 
     // Default message for no login.
     let message = "You must log in to do this action!";
 
     // If the user is required for not logged in.
     if (session && !this.loginState) {
-      message = `You have logged in as ${user.username}`;
+      message = `You have logged in as ${session.sub.username}`;
     }
 
     // If the user is required to use the refresh token.

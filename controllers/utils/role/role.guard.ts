@@ -29,15 +29,14 @@ export class AuthGuard implements CanActivate {
     if (!requiredRoles) return true; // No role required.
 
     const request = context.switchToHttp().getRequest();
-    const user = request.user as User.JwtPayload;
     const path = request.path.split("/")[1];
-    const session = request.session as string;
+    const session = request.session as { type: string; sub: User.JwtPayload };
 
     // Check if no user login or the user is using refresh token to access other path except auth path.
-    if (!user || (session !== "access" && path !== "auth"))
+    if (!session || (session.type !== "access" && path !== "auth"))
       throw new UnauthorizedException("You must log in to do this action!");
 
-    if (!requiredRoles.includes(user.role))
+    if (!requiredRoles.includes(session.sub.role))
       throw new UnauthorizedException(
         "You are not authorized to do this action!"
       );
