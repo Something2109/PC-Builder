@@ -14,11 +14,11 @@ import { Response } from "express";
 
 const SignUpValidator = new ZodValidationPipe(User.LogInOptions);
 
-@UseGuards(LoginAuthorizationGuard)
 @Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @UseGuards(new LoginAuthorizationGuard())
   @Post("signup")
   async signUp(
     @Res({ passthrough: true }) res: Response,
@@ -34,6 +34,7 @@ export class AuthController {
     res.json(tokens);
   }
 
+  @UseGuards(new LoginAuthorizationGuard())
   @HttpCode(200)
   @Post("login")
   async logIn(
@@ -50,6 +51,7 @@ export class AuthController {
     res.json(tokens);
   }
 
+  @UseGuards(new LoginAuthorizationGuard("access"))
   @HttpCode(200)
   @Post("logout")
   async logOut(@Res({ passthrough: true }) res: Response) {
