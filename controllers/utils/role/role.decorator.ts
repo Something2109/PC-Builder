@@ -43,6 +43,6 @@ export const AuthUser = createParamDecorator(
 export const AuthSession = createParamDecorator(
   (_: string | undefined, ctx: ExecutionContext): API.Tokens | undefined => {
     const request = ctx.switchToHttp().getRequest();
-    return request.session.type;
+    return request.session;
   }
 );

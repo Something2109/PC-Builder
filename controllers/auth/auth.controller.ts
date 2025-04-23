@@ -12,6 +12,7 @@ import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { User } from "@/utils/interface/user/User";
 import { API } from "@/utils/interface/api";
 import { Response } from "express";
+import { AuthUser } from "controllers/utils/role/role.decorator";
 
 const SignUpValidator = new ZodValidationPipe(User.LogInOptions);
 
@@ -46,6 +47,20 @@ export class AuthController {
       payload.username,
       payload.password
     );
+
+    this.setToken(res, tokens.access_token);
+
+    res.json(tokens);
+  }
+
+  @UseGuards(new LoginAuthorizationGuard(API.Tokens.REFRESH))
+  @HttpCode(200)
+  @Post("refresh")
+  async refreshToken(
+    @AuthUser() user: User.JwtPayload,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const tokens = await this.authService.signTokens(user);
 
     this.setToken(res, tokens.access_token);
 
