@@ -1,12 +1,23 @@
 import { ZodIssue } from "zod";
+import { User } from "./user/User";
 
 /**
  * The error namespace mapping the zod error of an object.
  * Define the error message type based on the object structure.
  */
-export namespace APIMapping {
+export namespace API {
   const DEFAULT_PAGE = 1;
   const DEFAULT_ITEM_LIMIT = 50;
+
+  export enum Tokens {
+    ACCESS = "access",
+    REFRESH = "refresh",
+  }
+
+  export type Session = {
+    type: Tokens;
+    sub: User.JwtPayload;
+  };
 
   /**
    * The page option interface.
