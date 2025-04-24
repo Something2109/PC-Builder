@@ -1,6 +1,5 @@
 "use client";
 
-import { RedirectButton } from "./utils/Button";
 import { User } from "@/utils/interface/user/User";
 import { Roles } from "@/utils/Enum";
 import {
@@ -116,6 +115,27 @@ export function useLoginAction(pathname?: string) {
   );
 
   return [state, formAction, pending, error, setError] as const;
+}
+
+export function useRefreshToken(pathname?: string | null) {
+  const [_, setUser] = useContext(AuthContext);
+  const router = useRouter();
+  pathname = pathname ?? "/";
+
+  return async () => {
+    const token = localStorage.getItem(AUTH_KEY);
+
+    try {
+      const response = await axios.post("/api/auth/refresh", undefined, {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(response.data.refresh_token);
+      router.push(pathname);
+    } catch (err) {
+      router.push(`${LoginPath}?redirect=${pathname}`);
+    }
+  };
 }
 
 export function useLogoutAction() {
