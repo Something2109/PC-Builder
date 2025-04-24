@@ -5,6 +5,7 @@ import {
   UseGuards,
   Res,
   HttpCode,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginAuthorizationGuard } from "./auth.guard";
@@ -53,13 +54,15 @@ export class AuthController {
     res.json(tokens);
   }
 
-  @UseGuards(new LoginAuthorizationGuard(API.Tokens.REFRESH))
   @HttpCode(200)
   @Post("refresh")
   async refreshToken(
-    @AuthUser() user: User.JwtPayload,
-    @Res({ passthrough: true }) res: Response
+    @Res({ passthrough: true }) res: Response,
+    @AuthUser() user?: User.JwtPayload
   ) {
+    if (!user)
+      throw new UnauthorizedException("You must log in to do this action!");
+
     const tokens = await this.authService.signTokens(user);
 
     this.setToken(res, tokens.access_token);
