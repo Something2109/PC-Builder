@@ -24,9 +24,14 @@ import axios, { AxiosError } from "axios";
 
 const AUTH_KEY = "Authorization";
 const LoginPath = "/auth/login";
-const AuthChanger = createContext<ActionDispatch<[string | null]>>(() => {});
+const AuthContext = createContext<
+  [User.JwtPayload | null, ActionDispatch<[string | null]>]
+>([null, () => {}]);
 
-export const AuthContext = createContext<User.JwtPayload | null>(null);
+export function useAuth() {
+  const [user, _] = useContext(AuthContext);
+  return user;
+}
 
 function decodeToken(token: string | null) {
   const payload = decode(token ?? "") as JwtPayload | null;
@@ -59,11 +64,7 @@ export function AuthWrapper({ children }: { children: React.ReactNode }) {
     () => decodeToken(localStorage?.getItem(AUTH_KEY) ?? "")
   );
 
-  return (
-    <AuthContext value={user}>
-      <AuthChanger value={setUser}>{children}</AuthChanger>
-    </AuthContext>
-  );
+  return <AuthContext value={[user, setUser]}>{children}</AuthContext>;
 }
 
 export function AuthRole({
@@ -73,7 +74,7 @@ export function AuthRole({
   roles: Roles[];
   children: React.ReactNode;
 }) {
-  const user = useContext(AuthContext);
+  const [user] = useContext(AuthContext);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -103,7 +104,7 @@ export function LoginButton() {
 }
 
 export function UserPanel() {
-  const user = useContext(AuthContext);
+  const [user] = useContext(AuthContext);
   const [display, setDisplay] = useState(false);
 
   if (!user) return;
@@ -128,7 +129,7 @@ export function UserPanel() {
 }
 
 function LogoutButton({ ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
-  const setUser = useContext(AuthChanger);
+  const [_, setUser] = useContext(AuthContext);
   const router = useRouter();
 
   props.type = "button";
@@ -157,7 +158,7 @@ type LoginError = {
 
 export function LoginForm({ pathname }: { pathname?: string }) {
   const router = useRouter();
-  const setUser = useContext(AuthChanger);
+  const [_, setUser] = useContext(AuthContext);
   const [error, setError] = useState<LoginError>({});
   const [state, formAction, pending] = useActionState(
     async (_: any, form: FormData) => {
