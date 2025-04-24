@@ -21,7 +21,9 @@ export async function verifyToken(): Promise<User.JwtPayload | null> {
   if (bearer !== "Bearer") return null;
 
   try {
-    return verify(token, process.env.JWT_SECRET!) as User.JwtPayload;
+    const payload = verify(token, process.env.JWT_SECRET!) as any;
+
+    return payload?.sub as User.JwtPayload;
   } catch (err) {
     console.error(err);
     return null;
@@ -39,7 +41,7 @@ export async function ServerAuthRole({
 }) {
   const user = await verifyToken();
 
-  if (!user) redirect(`/auth/login?redirect=${pathname ?? "/"}`);
+  if (!user) redirect(`/auth/refresh?redirect=${pathname ?? "/"}`);
 
   if (!roles.includes(user.role))
     return <h1>You are not authorized to access this page</h1>;
