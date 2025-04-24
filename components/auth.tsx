@@ -1,18 +1,12 @@
 "use client";
 
-import { Input } from "./utils/Input";
-import { Button, RedirectButton } from "./utils/Button";
-import { NotificationBar } from "./utils/NotificationBar";
-import { ColumnWrapper } from "./utils/FlexWrapper";
+import { RedirectButton } from "./utils/Button";
 import { User } from "@/utils/interface/user/User";
 import { Roles } from "@/utils/Enum";
 import {
   ActionDispatch,
-  ButtonHTMLAttributes,
   createContext,
-  InputHTMLAttributes,
   useActionState,
-  useCallback,
   useContext,
   useLayoutEffect,
   useReducer,
@@ -28,11 +22,6 @@ const AuthContext = createContext<
   [User.JwtPayload | null, ActionDispatch<[string | null]>]
 >([null, () => {}]);
 
-export function useAuth() {
-  const [user, _] = useContext(AuthContext);
-  return user;
-}
-
 function decodeToken(token: string | null) {
   const payload = decode(token ?? "") as JwtPayload | null;
 
@@ -47,6 +36,11 @@ function decodeToken(token: string | null) {
   }
 
   return payload.sub as any as User.JwtPayload;
+}
+
+export function useAuth() {
+  const [user, _] = useContext(AuthContext);
+  return user;
 }
 
 export function AuthWrapper({ children }: { children: React.ReactNode }) {
@@ -90,73 +84,13 @@ export function AuthRole({
   return children;
 }
 
-export function LoginButton() {
-  const user = useContext(AuthContext);
-  const pathname = usePathname();
-
-  if (pathname === LoginPath || user) return;
-
-  return (
-    <RedirectButton href={`${LoginPath}?redirect=${pathname}`}>
-      Log in
-    </RedirectButton>
-  );
-}
-
-export function UserPanel() {
-  const [user] = useContext(AuthContext);
-  const [display, setDisplay] = useState(false);
-
-  if (!user) return;
-
-  return (
-    <div className="relative text-center">
-      <Button
-        className="w-28 border-2 py-1"
-        onClick={() => setDisplay(!display)}
-      >
-        {user.username}
-      </Button>
-      <ColumnWrapper
-        className={`absolute transition-nav h-fit overflow-y-hidden ${
-          display ? "max-h-20" : "max-h-0"
-        }  z-5 top-9 w-28 rounded bg-blue-400`}
-      >
-        <LogoutButton className="px-2 py-1 border-0 rounded hover:bg-line dark:hover:text-background" />
-      </ColumnWrapper>
-    </div>
-  );
-}
-
-function LogoutButton({ ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
-  const [_, setUser] = useContext(AuthContext);
-  const router = useRouter();
-
-  props.type = "button";
-  props.onClick = useCallback(async () => {
-    try {
-      await axios.post("/api/auth/logout", undefined, {
-        withCredentials: true,
-      });
-      setUser(null);
-      router.push(LoginPath);
-    } catch (err) {
-      const error = err as AxiosError;
-      console.error(err);
-      alert(error.response?.data);
-    }
-  }, []);
-
-  return <button {...props}>Log Out</button>;
-}
-
 type LoginError = {
   message?: string;
   username?: string;
   password?: string;
 };
 
-export function LoginForm({ pathname }: { pathname?: string }) {
+export function useLoginAction(pathname?: string) {
   const router = useRouter();
   const [_, setUser] = useContext(AuthContext);
   const [error, setError] = useState<LoginError>({});
@@ -181,80 +115,24 @@ export function LoginForm({ pathname }: { pathname?: string }) {
     {}
   );
 
-  return (
-    <form
-      className="flex flex-col w-1/2 m-auto gap-1"
-      action={(form) => formAction(form)}
-    >
-      {error.message && (
-        <NotificationBar
-          message={error.message}
-          remove={() => setError({})}
-          alert
-        />
-      )}
-      <LoginField
-        name="username"
-        id="username"
-        minLength={8}
-        defaultValue={state.username}
-        required
-      >
-        Username:
-      </LoginField>
-      {error.username && (
-        <NotificationBar
-          message={error.username}
-          remove={() => setError({})}
-          alert
-        />
-      )}
-      <LoginField
-        type="password"
-        name="password"
-        id="password"
-        minLength={8}
-        defaultValue={state.password}
-        required
-      >
-        Password:
-      </LoginField>
-      {error.password && (
-        <NotificationBar
-          message={error.password}
-          remove={() => setError({})}
-          alert
-        />
-      )}
-      <Button type="submit" disabled={pending}>
-        {pending ? "Logging in..." : "Log in"}
-      </Button>
-    </form>
-  );
+  return [state, formAction, pending, error, setError] as const;
 }
 
-const InputClass = "border-2 rounded-xl px-2 py-1 text-medium";
+export function useLogoutAction() {
+  const [_, setUser] = useContext(AuthContext);
+  const router = useRouter();
 
-function LoginField({
-  className,
-  children,
-  name,
-  id,
-  ...rest
-}: {
-  children: string;
-} & InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <>
-      <label htmlFor={id} className="font-bold">
-        {children}
-      </label>
-      <Input
-        name={name}
-        id={id}
-        className={className ? className.concat(" ", InputClass) : InputClass}
-        {...rest}
-      />
-    </>
-  );
+  return async () => {
+    try {
+      await axios.post("/api/auth/logout", undefined, {
+        withCredentials: true,
+      });
+      setUser(null);
+      router.push(LoginPath);
+    } catch (err) {
+      const error = err as AxiosError;
+      console.error(err);
+      alert(error.response?.data);
+    }
+  };
 }

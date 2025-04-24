@@ -1,5 +1,5 @@
 import { verifyToken } from "@/components/auth-server";
-import { LoginForm } from "@/components/auth";
+import { LoginForm } from "@/components/auth/LoginForm";
 import { redirect } from "next/navigation";
 
 export default async function LoginPage({
