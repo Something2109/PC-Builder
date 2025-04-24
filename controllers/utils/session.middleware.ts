@@ -13,7 +13,9 @@ export class SessionExtractionMiddleware implements NestMiddleware {
     _: Response,
     next: NextFunction
   ) {
-    const [type, token] = req.cookies["Authorization"]?.split(" ") ?? [];
+    const authString = req.headers.authorization ?? req.cookies.Authorization;
+
+    const [type, token] = authString?.split(" ") ?? [];
     if (type === "Bearer") {
       // Verify token.
       try {
