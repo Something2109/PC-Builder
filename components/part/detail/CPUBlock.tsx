@@ -1,6 +1,5 @@
 import CPUBlock from "@/utils/interface/part/info/CPUBlock";
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<CPUBlock.Info> = {
   socket: ({ value }) => value?.join(", "),
@@ -8,4 +7,4 @@ const Components: InfoComponentObject<CPUBlock.Info> = {
   rgb: ({ value }) => value,
 };
 
-export default GenericDetailTable(Components, CPUBlock.Label);
+export default InfoComponent(Components, CPUBlock.Label, { strict: true });

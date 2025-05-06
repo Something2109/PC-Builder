@@ -1,5 +1,4 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import GraphicCard from "@/utils/interface/part/info/GraphicCard";
 import { LengthUnits, FrequencyUnits } from "@/utils/extract/Units";
@@ -33,4 +32,4 @@ const Components: InfoComponentObject<GraphicCard.Info> = {
   gpu: ({ value }) => <></>,
 };
 
-export default GenericDetailTable(Components, GraphicCard.Label);
+export default InfoComponent(Components, GraphicCard.Label, { strict: true });

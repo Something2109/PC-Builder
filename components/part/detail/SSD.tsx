@@ -1,9 +1,7 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { UnitDisplay } from "@/components/utils/Display";
 import SSD from "@/utils/interface/part/info/SSD";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
-import { FunctionComponent } from "react";
 
 const Components: InfoComponentObject<SSD.Info> = {
   memory_type: ({ value }) => value,
@@ -34,4 +32,4 @@ const Components: InfoComponentObject<SSD.Info> = {
   interface: ({ value }) => value,
 };
 
-export default GenericDetailTable(Components, SSD.Label);
+export default InfoComponent(Components, SSD.Label, { strict: true });

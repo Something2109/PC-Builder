@@ -1,5 +1,4 @@
-import { Table, InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { Table, InfoComponent, InfoComponentObject } from "../utils/Table";
 import { UnitDisplay } from "@/components/utils/Display";
 import Case from "@/utils/interface/part/info/Case";
 import { LengthUnits } from "@/utils/extract/Units";
@@ -70,4 +69,4 @@ export function CaseSideTableRow({
   );
 }
 
-export default GenericDetailTable(Components, Case.Label);
+export default InfoComponent(Components, Case.Label, { strict: true });

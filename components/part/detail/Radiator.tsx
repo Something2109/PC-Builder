@@ -1,8 +1,7 @@
 import { UnitDisplay } from "@/components/utils/Display";
 import { LengthUnits } from "@/utils/extract/Units";
 import Radiator from "@/utils/interface/part/info/Radiator";
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<Radiator.Info> = {
   form_factor: ({ value }) => value,
@@ -19,4 +18,4 @@ const Components: InfoComponentObject<Radiator.Info> = {
   material: ({ value }) => value,
 };
 
-export default GenericDetailTable(Components, Radiator.Label);
+export default InfoComponent(Components, Radiator.Label, { strict: true });

@@ -1,6 +1,5 @@
 import Pump from "@/utils/interface/part/info/Pump";
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/extract/Units";
 
@@ -32,4 +31,4 @@ const Components: InfoComponentObject<Pump.Info> = {
   rgb: ({ value }) => value,
 };
 
-export default GenericDetailTable(Components, Pump.Label);
+export default InfoComponent(Components, Pump.Label, { strict: true });

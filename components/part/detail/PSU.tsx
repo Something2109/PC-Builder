@@ -1,8 +1,7 @@
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import PSU from "@/utils/interface/part/info/PSU";
 import { LengthUnits } from "@/utils/extract/Units";
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<PSU.Info> = {
   wattage: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
@@ -25,4 +24,4 @@ const Components: InfoComponentObject<PSU.Info> = {
   peripheral_pin: ({ value }) => value,
 };
 
-export default GenericDetailTable(Components, PSU.Label);
+export default InfoComponent(Components, PSU.Label, { strict: true });

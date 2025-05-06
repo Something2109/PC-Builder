@@ -1,6 +1,5 @@
 import CPU from "@/utils/interface/part/info/CPU";
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { UnitDisplay, SuffixDisplay } from "@/components/utils/Display";
 import {
   FrequencyUnits,
@@ -48,4 +47,4 @@ const Components: InfoComponentObject<CPU.Info> = {
   lithography: ({ value }) => value,
 };
 
-export default GenericDetailTable(Components, CPU.Label);
+export default InfoComponent(Components, CPU.Label, { strict: true });

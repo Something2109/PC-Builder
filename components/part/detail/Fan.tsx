@@ -1,5 +1,4 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import Fan from "@/utils/interface/part/info/Fan";
 import { LengthUnits } from "@/utils/extract/Units";
@@ -28,4 +27,4 @@ const Components: InfoComponentObject<Fan.Info> = {
   rgb: ({ value }) => value,
 };
 
-export default GenericDetailTable(Components, Fan.Label);
+export default InfoComponent(Components, Fan.Label, { strict: true });

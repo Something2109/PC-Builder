@@ -1,5 +1,4 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { UnitDisplay, SuffixDisplay } from "@/components/utils/Display";
 import GPU from "@/utils/interface/part/info/GPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/extract/Units";
@@ -24,4 +23,4 @@ const Components: InfoComponentObject<GPU.Info> = {
   features: ({ value }) => value?.toString(),
 };
 
-export default GenericDetailTable(Components, GPU.Label);
+export default InfoComponent(Components, GPU.Label, { strict: true });

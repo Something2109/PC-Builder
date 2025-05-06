@@ -1,5 +1,4 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import HDD from "@/utils/interface/part/info/HDD";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
@@ -32,4 +31,4 @@ const Components: InfoComponentObject<HDD.Info> = {
   interface: ({ value }) => value,
 };
 
-export default GenericDetailTable(Components, HDD.Label);
+export default InfoComponent(Components, HDD.Label, { strict: true });

@@ -1,5 +1,4 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import { LengthUnits } from "@/utils/extract/Units";
 import AIO from "@/utils/interface/part/info/AIO";
@@ -31,4 +30,4 @@ const Components: InfoComponentObject<AIO.Info> = {
   ),
 };
 
-export default GenericDetailTable(Components, AIO.Label);
+export default InfoComponent(Components, AIO.Label, { strict: true });

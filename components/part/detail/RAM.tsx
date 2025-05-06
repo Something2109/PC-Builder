@@ -1,6 +1,5 @@
 import RAM from "@/utils/interface/part/info/RAM";
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import { MemoryUnits, TransferSpeedUnit } from "@/utils/extract/Units";
 
@@ -22,4 +21,4 @@ const Components: InfoComponentObject<RAM.Info> = {
   interface: ({ value }) => value,
 };
 
-export default GenericDetailTable(Components, RAM.Label);
+export default InfoComponent(Components, RAM.Label, { strict: true });

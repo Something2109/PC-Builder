@@ -1,5 +1,4 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { UnitDisplay } from "@/components/utils/Display";
 import Cooler from "@/utils/interface/part/info/Cooler";
 import { LengthUnits } from "@/utils/extract/Units";
@@ -18,4 +17,4 @@ const Components: InfoComponentObject<Cooler.Info> = {
   ),
 };
 
-export default GenericDetailTable(Components, Cooler.Label);
+export default InfoComponent(Components, Cooler.Label, { strict: true });

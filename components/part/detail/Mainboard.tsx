@@ -1,6 +1,5 @@
 import { SuffixDisplay } from "@/components/utils/Display";
-import { Table, InfoComponentObject } from "../utils/Table";
-import { GenericDetailTable } from "../TableWrapper";
+import { Table, InfoComponent, InfoComponentObject } from "../utils/Table";
 import Mainboard from "@/utils/interface/part/info/Mainboard";
 import { InternalConnectors } from "@/utils/interface/utils";
 
@@ -73,4 +72,4 @@ function PCIeTableRow({ defaultValue }: { defaultValue?: Mainboard.PCIe }) {
   );
 }
 
-export default GenericDetailTable(Components, Mainboard.Label);
+export default InfoComponent(Components, Mainboard.Label, { strict: true });

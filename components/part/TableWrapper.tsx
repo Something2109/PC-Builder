@@ -92,19 +92,6 @@ export function GenericFilterBar<T extends Record<string, string[] | number[]>>(
   );
 }
 
-export function GenericDetailTable<T extends Record<string, any>>(
-  Components: InfoComponentObject<T>,
-  Labels: InfoLabel<T>
-) {
-  const DetailComponent = InfoComponent(Components, Labels, { strict: true });
-
-  return (
-    props: {
-      defaultValue?: Partial<T>;
-    } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">
-  ) => <DetailComponent {...props} />;
-}
-
 export function GenericInputTable<T extends Record<string, any>>(
   Components: InfoComponentObject<T>,
   Labels: InfoLabel<T>,
