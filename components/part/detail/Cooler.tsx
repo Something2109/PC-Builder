@@ -1,9 +1,10 @@
-import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 import { UnitDisplay } from "@/components/utils/Display";
 import Cooler from "@/utils/interface/part/info/Cooler";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoDetailMapping<Cooler.Info> = {
+const Components: InfoComponentObject<Cooler.Info> = {
   socket: ({ value }) => value,
   cpu_plate: ({ value }) => value,
   width: ({ value }) => (

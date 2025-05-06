@@ -1,10 +1,11 @@
-import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 import { UnitDisplay } from "@/components/utils/Display";
 import SSD from "@/utils/interface/part/info/SSD";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
 import { FunctionComponent } from "react";
 
-const Components: InfoDetailMapping<SSD.Info> = {
+const Components: InfoComponentObject<SSD.Info> = {
   memory_type: ({ value }) => value,
   read_speed: ({ value }) => (
     <UnitDisplay

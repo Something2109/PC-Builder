@@ -1,9 +1,10 @@
-import { Table, GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { Table, InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 import { UnitDisplay } from "@/components/utils/Display";
 import Case from "@/utils/interface/part/info/Case";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoDetailMapping<Case.Info> = {
+const Components: InfoComponentObject<Case.Info> = {
   form_factor: ({ value }) => value,
   width: ({ value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />

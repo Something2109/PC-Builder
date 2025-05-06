@@ -1,9 +1,10 @@
-import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import HDD from "@/utils/interface/part/info/HDD";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
 
-const Components: InfoDetailMapping<HDD.Info> = {
+const Components: InfoComponentObject<HDD.Info> = {
   rotational_speed: ({ value }) => (
     <SuffixDisplay suffix="RPM">{value}</SuffixDisplay>
   ),

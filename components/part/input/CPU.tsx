@@ -1,4 +1,5 @@
-import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericInputTable } from "../TableWrapper";
 import { Input, SuffixInput, UnitInput } from "@/components/utils/Input";
 import {
   FrequencyUnits,
@@ -12,7 +13,7 @@ import { Infos } from "@/utils/Enum";
 
 const Schema = DetailInfo.shape[Infos.CPU];
 
-export const Components: InfoInputMapping<CPU.Info> = {
+export const Components: InfoComponentObject<CPU.Info> = {
   family: (props) => <Input {...props} />,
   socket: (props) => <Input {...props} />,
   total_cores: (props) => (

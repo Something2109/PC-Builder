@@ -1,4 +1,5 @@
-import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericInputTable } from "../TableWrapper";
 import {
   Input,
   SuffixInput,
@@ -13,7 +14,7 @@ import { Infos } from "@/utils/Enum";
 
 const Schema = Part.Detail.shape[Infos.PSU];
 
-const Components: InfoInputMapping<PSU.Info> = {
+const Components: InfoComponentObject<PSU.Info> = {
   wattage: (props) => <SuffixInput suffix="W" type="number" {...props} />,
   efficiency: (props) => (
     <OptionSelect options={PSU.Efficiency.options} {...props} />

@@ -7,12 +7,13 @@ import { InternalConnectors, Material } from "@/utils/interface/utils";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button } from "@/components/utils/Button";
 import { ResponsiveWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
-import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericInputTable } from "../TableWrapper";
 import { Infos } from "@/utils/Enum";
 
 const Schema = Part.Detail.shape[Infos.CPU_BLOCK];
 
-const Components: InfoInputMapping<CPUBlock.Info> = {
+const Components: InfoComponentObject<CPUBlock.Info> = {
   socket: ({ defaultValue, ...props }) => {
     const [value, setValue] = useState<string[]>(defaultValue ?? []);
 

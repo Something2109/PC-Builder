@@ -1,5 +1,6 @@
 import { RowWrapper } from "@/components/utils/FlexWrapper";
-import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericInputTable } from "../TableWrapper";
 import {
   SuffixInput,
   UnitInput,
@@ -14,7 +15,7 @@ import { Infos } from "@/utils/Enum";
 
 const Schema = Part.Detail.shape[Infos.RAM];
 
-const Components: InfoInputMapping<RAM.Info> = {
+const Components: InfoComponentObject<RAM.Info> = {
   speed: (props) => (
     <UnitInput Unit={TransferSpeedUnit} defaultUnit="mm" {...props} />
   ),

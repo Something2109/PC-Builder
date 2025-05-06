@@ -1,9 +1,10 @@
-import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import Fan from "@/utils/interface/part/info/Fan";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoDetailMapping<Fan.Info> = {
+const Components: InfoComponentObject<Fan.Info> = {
   form_factor: ({ value }) => value,
   width: ({ value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />

@@ -1,7 +1,8 @@
 import CPUBlock from "@/utils/interface/part/info/CPUBlock";
-import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 
-const Components: InfoDetailMapping<CPUBlock.Info> = {
+const Components: InfoComponentObject<CPUBlock.Info> = {
   socket: ({ value }) => value?.join(", "),
   plate: ({ value }) => value,
   rgb: ({ value }) => value,

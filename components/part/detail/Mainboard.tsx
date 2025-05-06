@@ -1,9 +1,10 @@
 import { SuffixDisplay } from "@/components/utils/Display";
-import { Table, GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { Table, InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 import Mainboard from "@/utils/interface/part/info/Mainboard";
 import { InternalConnectors } from "@/utils/interface/utils";
 
-const Components: InfoDetailMapping<Mainboard.Info> = {
+const Components: InfoComponentObject<Mainboard.Info> = {
   form_factor: ({ value }) => value,
   socket: ({ value }) => value,
   chipset: ({ value }) => value,

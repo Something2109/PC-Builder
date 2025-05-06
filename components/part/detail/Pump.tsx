@@ -1,9 +1,10 @@
 import Pump from "@/utils/interface/part/info/Pump";
-import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/extract/Units";
 
-const Components: InfoDetailMapping<Pump.Info> = {
+const Components: InfoComponentObject<Pump.Info> = {
   form_factor: ({ value }) => value,
   width: ({ value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />

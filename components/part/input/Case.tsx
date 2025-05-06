@@ -1,4 +1,5 @@
-import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericInputTable } from "../TableWrapper";
 import {
   Input,
   UnitInput,
@@ -14,7 +15,7 @@ import { Infos } from "@/utils/Enum";
 
 const Schema = Part.Detail.shape[Infos.CASE];
 
-const Components: InfoInputMapping<Case.Info> = {
+const Components: InfoComponentObject<Case.Info> = {
   form_factor: (props) => (
     <OptionSelect options={FormFactor.Case.options} {...props} />
   ),

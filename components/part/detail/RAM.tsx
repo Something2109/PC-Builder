@@ -1,9 +1,10 @@
 import RAM from "@/utils/interface/part/info/RAM";
-import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import { MemoryUnits, TransferSpeedUnit } from "@/utils/extract/Units";
 
-const Components: InfoDetailMapping<RAM.Info> = {
+const Components: InfoComponentObject<RAM.Info> = {
   speed: ({ value }) => (
     <UnitDisplay
       Unit={TransferSpeedUnit}

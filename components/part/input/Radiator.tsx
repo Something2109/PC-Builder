@@ -1,4 +1,5 @@
-import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericInputTable } from "../TableWrapper";
 import { Input, UnitInput, OptionSelect } from "@/components/utils/Input";
 import Part from "@/utils/interface/part";
 import Radiator from "@/utils/interface/part/info/Radiator";
@@ -8,7 +9,7 @@ import { Infos } from "@/utils/Enum";
 
 const Schema = Part.Detail.shape[Infos.RADIATOR];
 
-const Components: InfoInputMapping<Radiator.Info> = {
+const Components: InfoComponentObject<Radiator.Info> = {
   form_factor: (props) => (
     <OptionSelect options={FormFactor.Radiator.options} {...props} />
   ),

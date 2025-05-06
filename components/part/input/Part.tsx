@@ -1,6 +1,6 @@
 "use client";
 
-import { TableWrapper, TableRowWrapper } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import PartPicture from "../Picture";
 import {
   ColumnWrapper,
@@ -13,6 +13,27 @@ import { useState, TableHTMLAttributes, useActionState } from "react";
 import { NotificationBar } from "@/components/utils/NotificationBar";
 import { Button } from "@/components/utils/Button";
 import { useRouter } from "next/navigation";
+
+const Components: InfoComponentObject<
+  Omit<Part.BasicInfo, "id" | "part" | "name" | "image_url">
+> = {
+  code_name: (props) => <Input {...props} />,
+  brand: (props) => <Input {...props} />,
+  series: (props) => <Input {...props} />,
+  url: ({ defaultValue, value, ...props }) => (
+    <Input defaultValue={defaultValue ?? undefined} {...props} required />
+  ),
+  launch_date: ({ defaultValue, value, ...props }) => (
+    <Input
+      defaultValue={new Date(defaultValue ?? new Date())
+        .toISOString()
+        .slice(0, 10)}
+      {...props}
+    />
+  ),
+};
+
+const PartInput = InfoComponent(Components, Part.Label);
 
 export default function PartForm({
   path,
@@ -38,7 +59,7 @@ export default function PartForm({
       if (!raw.url) raw.url = undefined;
       if (!raw.image_url) raw.image_url = undefined;
 
-      const data = Part.Schema.omit({ id: true, part: true }).parse(raw);
+      const data = Part.BasicInfo.omit({ id: true, part: true }).parse(raw);
       RequestPayload.method = "POST";
       RequestPayload.headers = { "Content-Type": "application/json" };
       RequestPayload.body = JSON.stringify(data);
@@ -68,8 +89,7 @@ export default function PartForm({
     return newData;
   }, defaultValue);
 
-  let { name, code_name, url, brand, series, launch_date } = formValue ?? {};
-  launch_date = new Date(launch_date ?? new Date());
+  let { name } = formValue ?? {};
 
   return (
     <form action={save}>
@@ -88,56 +108,7 @@ export default function PartForm({
             defaultValue={name}
             required
           />
-          <TableWrapper>
-            <TableRowWrapper>
-              <label htmlFor="code_name">{Part.Label.code_name}</label>
-              <Input
-                name="code_name"
-                id="code_name"
-                placeholder={Part.Label.code_name}
-                defaultValue={code_name}
-              />
-            </TableRowWrapper>
-            <TableRowWrapper>
-              <label htmlFor="brand">{Part.Label.brand}</label>
-              <Input
-                name="brand"
-                id="brand"
-                placeholder={Part.Label.brand}
-                defaultValue={brand}
-              />
-            </TableRowWrapper>
-            <TableRowWrapper>
-              <label htmlFor="series">{Part.Label.series}</label>
-              <Input
-                name="series"
-                id="series"
-                placeholder={Part.Label.series}
-                defaultValue={series}
-              />
-            </TableRowWrapper>
-            <TableRowWrapper>
-              <label htmlFor="launch_date">{Part.Label.launch_date}</label>
-              <Input
-                type="date"
-                name="launch_date"
-                id="launch_date"
-                placeholder={Part.Label.launch_date}
-                defaultValue={launch_date.toISOString().slice(0, 10)}
-              />
-            </TableRowWrapper>
-            <TableRowWrapper>
-              <label htmlFor="url">{Part.Label.url}</label>
-              <Input
-                type="url"
-                name="url"
-                id="url"
-                placeholder={Part.Label.url}
-                defaultValue={url ?? undefined}
-                required
-              />
-            </TableRowWrapper>
-          </TableWrapper>
+          <PartInput defaultValue={defaultValue} />
           <Button type="submit" className="w-full" disabled={pending}>
             {pending ? "Saving..." : "Save"}
           </Button>

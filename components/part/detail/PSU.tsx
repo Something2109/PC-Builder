@@ -1,9 +1,10 @@
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import PSU from "@/utils/interface/part/info/PSU";
 import { LengthUnits } from "@/utils/extract/Units";
-import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 
-const Components: InfoDetailMapping<PSU.Info> = {
+const Components: InfoComponentObject<PSU.Info> = {
   wattage: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
   efficiency: ({ value }) => value,
   form_factor: ({ value }) => value,

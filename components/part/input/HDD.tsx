@@ -1,4 +1,5 @@
-import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericInputTable } from "../TableWrapper";
 import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
 import Part from "@/utils/interface/part";
 import HDD from "@/utils/interface/part/info/HDD";
@@ -8,7 +9,7 @@ import { Infos } from "@/utils/Enum";
 
 const Schema = Part.Detail.shape[Infos.HDD];
 
-const Components: InfoInputMapping<HDD.Info> = {
+const Components: InfoComponentObject<HDD.Info> = {
   rotational_speed: (props) => (
     <SuffixInput suffix="RPM" type="number" {...props} />
   ),

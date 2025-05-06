@@ -1,9 +1,10 @@
-import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 import { UnitDisplay, SuffixDisplay } from "@/components/utils/Display";
 import GPU from "@/utils/interface/part/info/GPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/extract/Units";
 
-const Components: InfoDetailMapping<GPU.Info> = {
+const Components: InfoComponentObject<GPU.Info> = {
   family: ({ value }) => value,
   core_count: ({ value }) => value,
   execution_unit: ({ value }) => value,

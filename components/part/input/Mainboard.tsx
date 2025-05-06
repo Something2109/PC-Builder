@@ -1,4 +1,5 @@
-import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericInputTable } from "../TableWrapper";
 import { Input, SuffixInput, OptionSelect } from "@/components/utils/Input";
 import Part from "@/utils/interface/part";
 import Mainboard from "@/utils/interface/part/info/Mainboard";
@@ -7,7 +8,7 @@ import { Infos } from "@/utils/Enum";
 
 const Schema = Part.Detail.shape[Infos.MAIN];
 
-const Components: InfoInputMapping<Mainboard.Info> = {
+const Components: InfoComponentObject<Mainboard.Info> = {
   form_factor: (props) => (
     <OptionSelect options={FormFactor.Mainboard.options} {...props} />
   ),

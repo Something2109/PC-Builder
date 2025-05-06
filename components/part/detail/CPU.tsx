@@ -1,5 +1,6 @@
 import CPU from "@/utils/interface/part/info/CPU";
-import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 import { UnitDisplay, SuffixDisplay } from "@/components/utils/Display";
 import {
   FrequencyUnits,
@@ -7,7 +8,7 @@ import {
   MemoryUnits,
 } from "@/utils/extract/Units";
 
-const Components: InfoDetailMapping<CPU.Info> = {
+const Components: InfoComponentObject<CPU.Info> = {
   family: ({ value }) => value,
   socket: ({ value }) => value,
   total_cores: ({ value }) => (

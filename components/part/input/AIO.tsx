@@ -1,4 +1,5 @@
-import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericInputTable } from "../TableWrapper";
 import {
   Input,
   UnitInput,
@@ -13,7 +14,7 @@ import { Infos } from "@/utils/Enum";
 
 const Schema = Part.Detail.shape[Infos.AIO];
 
-const Components: InfoInputMapping<AIO.Info> = {
+const Components: InfoComponentObject<AIO.Info> = {
   form_factor: (props) => (
     <OptionSelect options={FormFactor.Radiator.options} {...props} />
   ),

@@ -1,4 +1,5 @@
-import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericInputTable } from "../TableWrapper";
 import { Input, SuffixInput, UnitInput } from "@/components/utils/Input";
 import Part from "@/utils/interface/part";
 import GraphicCard from "@/utils/interface/part/info/GraphicCard";
@@ -7,7 +8,7 @@ import { Infos } from "@/utils/Enum";
 
 const Schema = Part.Detail.shape[Infos.GRAPHIC_CARD];
 
-const Components: InfoInputMapping<GraphicCard.Info> = {
+const Components: InfoComponentObject<GraphicCard.Info> = {
   width: (props) => (
     <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),

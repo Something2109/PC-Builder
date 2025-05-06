@@ -1,9 +1,10 @@
 import { UnitDisplay } from "@/components/utils/Display";
 import { LengthUnits } from "@/utils/extract/Units";
 import Radiator from "@/utils/interface/part/info/Radiator";
-import { GenericDetailTable, InfoDetailMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericDetailTable } from "../TableWrapper";
 
-const Components: InfoDetailMapping<Radiator.Info> = {
+const Components: InfoComponentObject<Radiator.Info> = {
   form_factor: ({ value }) => value,
   width: ({ value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />

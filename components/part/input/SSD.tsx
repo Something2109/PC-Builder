@@ -1,4 +1,5 @@
-import { GenericInputTable, InfoInputMapping } from "../TableWrapper";
+import { InfoComponentObject } from "../utils/Table";
+import { GenericInputTable } from "../TableWrapper";
 import { UnitInput, OptionSelect } from "@/components/utils/Input";
 import Part from "@/utils/interface/part";
 import SSD from "@/utils/interface/part/info/SSD";
@@ -8,7 +9,7 @@ import { Infos } from "@/utils/Enum";
 
 const Schema = Part.Detail.shape[Infos.SSD];
 
-const Components: InfoInputMapping<SSD.Info> = {
+const Components: InfoComponentObject<SSD.Info> = {
   memory_type: (props) => (
     <OptionSelect options={SSD.MemoryCell.options} {...props} />
   ),

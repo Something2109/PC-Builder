@@ -1,6 +1,6 @@
 import Part from "@/utils/interface/part";
 import { TableHTMLAttributes } from "react";
-import { TableRowWrapper, TableWrapper } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
@@ -8,14 +8,26 @@ import {
 import PartPicture from "../Picture";
 import { RedirectButton } from "@/components/utils/Button";
 
+const Components: InfoComponentObject<
+  Omit<Part.BasicInfo, "id" | "part" | "name" | "image_url">
+> = {
+  code_name: ({ value }) => value,
+  brand: ({ value }) => value,
+  series: ({ value }) => value,
+  url: ({ value }) => value,
+  launch_date: ({ value }) =>
+    new Date(value ?? new Date()).toISOString().slice(0, 10),
+};
+
+const PartInfo = InfoComponent(Components, Part.Label);
+
 export function PartTable({
   defaultValue,
   ...rest
 }: {
   defaultValue: Part.BasicInfo;
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  let { id, part, url, launch_date } = defaultValue;
-  launch_date = new Date(launch_date ?? new Date());
+  let { id, part, url } = defaultValue;
 
   return (
     <ResponsiveWrapper className="w-full">
@@ -26,15 +38,7 @@ export function PartTable({
       />
       <ColumnWrapper className="w-full lg:w-2/3 p-5">
         <h1 className="text-4xl font-bold">{defaultValue.name}</h1>
-        <TableWrapper {...rest}>
-          <TableRowWrapper>Code Name {defaultValue.code_name}</TableRowWrapper>
-          <TableRowWrapper>Brand {defaultValue.brand}</TableRowWrapper>
-          <TableRowWrapper>Series {defaultValue.series}</TableRowWrapper>
-          <TableRowWrapper>
-            Launch Date {launch_date.toISOString().slice(0, 10)}
-          </TableRowWrapper>
-          <TableRowWrapper>Brand URL {url}</TableRowWrapper>
-        </TableWrapper>
+        <PartInfo defaultValue={defaultValue} />
         {url ? (
           <RedirectButton href={url} target="_blank">
             To brand page
