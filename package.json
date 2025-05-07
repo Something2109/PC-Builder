@@ -3,18 +3,14 @@
     "axios": "^1.7.9",
     "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.11.0",
     "next": "^15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "sequelize": "^6.37.3",
-    "sequelize-typescript": "^2.1.6",
-    "uuid": "^10.0.0",
     "zod": "^3.23.8"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
     "start": "next start",
     "lint": "next lint",
     "crawl": "tsc ./crawlers/src/*.ts --outDir ./crawlers/dist"
