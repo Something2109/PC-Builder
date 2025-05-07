@@ -47,7 +47,7 @@ export default async function PartDetailEditPage({
                 key={info}
                 path={SaveLink}
                 info={info}
-                defaultValue={data[info]}
+                defaultValue={data}
               />
             ))}
           </ColumnWrapper>
