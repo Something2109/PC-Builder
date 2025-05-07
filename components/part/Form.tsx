@@ -3,12 +3,11 @@
 import { Button } from "@/components/utils/Button";
 import { Information } from "@/utils/interface/part";
 import { Infos } from "@/utils/Enum";
-import React, { lazy, useActionState, useRef, useState } from "react";
+import React, { lazy, useRef } from "react";
 import Part from "@/utils/interface/part";
 import { NotificationBar } from "../utils/NotificationBar";
 import { VerticalCollapsible } from "../utils/Collapsible";
-
-type DetailInfo = Part.Detail;
+import { useInfoAction } from "./utils/Form";
 
 const InputComponent = {
   [Infos.CPU]: lazy(() => import("@/components/part/input/CPU")),
@@ -37,41 +36,14 @@ export function InfoForm({
 }: {
   path: string;
   info: Infos;
-  defaultValue?: Partial<DetailInfo[typeof info]>;
+  defaultValue: Part.Detail;
 }) {
   const label = useRef(Information.Label[info]);
-  const [error, setError] = useState<string | null>(null);
-  const [formValue, save, pending] = useActionState<
-    Partial<DetailInfo[typeof info]>,
-    Partial<DetailInfo[typeof info]>
-  >(async (prev, data) => {
-    const operation = prev ? (data ? "save" : "delete") : "add";
-
-    setError(null);
-    if (
-      !confirm(`Are you sure you want to ${operation} ${label.current} info?`)
-    )
-      return prev;
-
-    const body = JSON.stringify({ [info]: data });
-
-    const response = await fetch(path, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body,
-    });
-
-    if (!response.ok) {
-      setError((await response.json()).message);
-      return prev;
-    } else {
-      alert(`Successfully ${operation} ${label.current} info.`);
-    }
-
-    const newData = (await response.json()) as DetailInfo;
-
-    return newData[info];
-  }, defaultValue);
+  const [formValue, save, pending, error, setError] = useInfoAction(
+    path,
+    info,
+    defaultValue
+  );
 
   const Component = InputComponent[info];
 

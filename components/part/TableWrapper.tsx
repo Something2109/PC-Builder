@@ -2,13 +2,11 @@ import {
   FunctionComponent,
   InputHTMLAttributes,
   SelectHTMLAttributes,
-  TableHTMLAttributes,
 } from "react";
 import { RowWrapper } from "../utils/FlexWrapper";
-import { Button } from "../utils/Button";
 import { VerticalCollapsible } from "../utils/Collapsible";
 import { Toggler } from "../utils/Toggle";
-import { InfoComponent, InfoLabel, InfoComponentObject } from "./utils/Table";
+import { InfoLabel } from "./utils/Table";
 
 export type InfoSummaryMapping<T extends Record<string, any>> = {
   [key in keyof Required<T>]: FunctionComponent<{ value?: T[key] }>;
@@ -90,45 +88,4 @@ export function GenericFilterBar<T extends Record<string, string[] | number[]>>(
       })}
     </>
   );
-}
-
-export function GenericInputTable<T extends Record<string, any>>(
-  Components: InfoComponentObject<T>,
-  Labels: InfoLabel<T>,
-  transform: (data: FormData) => Partial<T>
-) {
-  const InputComponent = InfoComponent(Components, Labels);
-
-  return ({
-    pending,
-    onSubmit,
-    ...props
-  }: {
-    pending: boolean;
-    onSubmit: (data: Partial<T> | null) => void;
-    defaultValue?: Partial<T>;
-  } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => {
-    return (
-      <>
-        <InputComponent {...props} />
-        {pending ? (
-          <p className="button border-0">Saving...</p>
-        ) : (
-          <RowWrapper>
-            <Button type="submit" formAction={() => onSubmit(null)}>
-              Delete
-            </Button>
-            <Button
-              type="submit"
-              formAction={(formData: FormData) => onSubmit(transform(formData))}
-              className="w-full"
-              disabled={pending}
-            >
-              Save
-            </Button>
-          </RowWrapper>
-        )}
-      </>
-    );
-  };
 }

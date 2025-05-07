@@ -61,7 +61,7 @@ export function InfoComponent<T extends Record<string, any>>(
     className,
     ...rest
   }: {
-    defaultValue?: Partial<T>;
+    defaultValue?: Partial<T> | null;
   } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => (
     <table
       className={className ? className.concat(" ", tableClass) : tableClass}
