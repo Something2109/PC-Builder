@@ -1,18 +1,14 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericInputTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericInputField } from "../utils/Form";
 import {
   Input,
   SuffixInput,
   UnitInput,
   OptionSelect,
 } from "@/components/utils/Input";
-import Part from "@/utils/interface/part";
 import PSU from "@/utils/interface/part/info/PSU";
 import { FormFactor } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
-import { Infos } from "@/utils/Enum";
-
-const Schema = Part.Detail.shape[Infos.PSU];
 
 const Components: InfoComponentObject<PSU.Info> = {
   wattage: (props) => <SuffixInput suffix="W" type="number" {...props} />,
@@ -49,7 +45,7 @@ function submit(formData: FormData) {
       ])
   ) as Record<string, string | string[]>;
 
-  return Schema.parse(raw)!;
+  return PSU.Schema.parse(raw)!;
 }
 
-export default GenericInputTable(Components, PSU.Label, submit);
+export default GenericInputField(InfoComponent(Components, PSU.Label), submit);

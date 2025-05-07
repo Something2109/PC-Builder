@@ -1,18 +1,14 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericInputTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericInputField } from "../utils/Form";
 import {
   Input,
   UnitInput,
   OptionSelect,
   SuffixInput,
 } from "@/components/utils/Input";
-import Part from "@/utils/interface/part";
 import AIO from "@/utils/interface/part/info/AIO";
 import { FormFactor, Material } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
-import { Infos } from "@/utils/Enum";
-
-const Schema = Part.Detail.shape[Infos.AIO];
 
 const Components: InfoComponentObject<AIO.Info> = {
   form_factor: (props) => (
@@ -53,6 +49,7 @@ function submit(formData: FormData) {
       ])
   ) as Record<string, string | string[]>;
 
-  return Schema.parse(raw)!;
+  return AIO.Schema.parse(raw)!;
 }
-export default GenericInputTable(Components, AIO.Label, submit);
+
+export default GenericInputField(InfoComponent(Components, AIO.Label), submit);

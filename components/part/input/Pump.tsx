@@ -1,13 +1,9 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericInputTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericInputField } from "../utils/Form";
 import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
-import Part from "@/utils/interface/part";
 import Pump from "@/utils/interface/part/info/Pump";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/extract/Units";
-import { Infos } from "@/utils/Enum";
-
-const Schema = Part.Detail.shape[Infos.PUMP];
 
 const Components: InfoComponentObject<Pump.Info> = {
   form_factor: (props) => (
@@ -59,7 +55,7 @@ function submit(formData: FormData) {
       ])
   ) as Record<string, string | string[]>;
 
-  return Schema.parse(raw)!;
+  return Pump.Schema.parse(raw)!;
 }
 
-export default GenericInputTable(Components, Pump.Label, submit);
+export default GenericInputField(InfoComponent(Components, Pump.Label), submit);

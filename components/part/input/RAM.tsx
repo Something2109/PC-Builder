@@ -1,6 +1,6 @@
 import { RowWrapper } from "@/components/utils/FlexWrapper";
-import { InfoComponentObject } from "../utils/Table";
-import { GenericInputTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericInputField } from "../utils/Form";
 import {
   SuffixInput,
   UnitInput,
@@ -8,12 +8,8 @@ import {
   Input,
 } from "@/components/utils/Input";
 import { MemoryUnits, TransferSpeedUnit } from "@/utils/extract/Units";
-import Part from "@/utils/interface/part";
 import RAM from "@/utils/interface/part/info/RAM";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { Infos } from "@/utils/Enum";
-
-const Schema = Part.Detail.shape[Infos.RAM];
 
 const Components: InfoComponentObject<RAM.Info> = {
   speed: (props) => (
@@ -81,7 +77,7 @@ function submit(formData: FormData) {
     .getAll("latency")
     .filter((v) => Number(v) > 0) as string[];
 
-  return Schema.parse(raw)!;
+  return RAM.Schema.parse(raw)!;
 }
 
-export default GenericInputTable(Components, RAM.Label, submit);
+export default GenericInputField(InfoComponent(Components, RAM.Label), submit);

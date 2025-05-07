@@ -1,12 +1,8 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericInputTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericInputField } from "../utils/Form";
 import { Input, SuffixInput, UnitInput } from "@/components/utils/Input";
-import Part from "@/utils/interface/part";
 import GPU from "@/utils/interface/part/info/GPU";
 import { MemoryUnits, FrequencyUnits } from "@/utils/extract/Units";
-import { Infos } from "@/utils/Enum";
-
-const Schema = Part.Detail.shape[Infos.GPU];
 
 const Components: InfoComponentObject<GPU.Info> = {
   family: (props) => <Input {...props} />,
@@ -38,7 +34,7 @@ function submit(formData: FormData) {
       ])
   ) as Record<string, string | string[]>;
 
-  return Schema.parse(raw)!;
+  return GPU.Schema.parse(raw)!;
 }
 
-export default GenericInputTable(Components, GPU.Label, submit);
+export default GenericInputField(InfoComponent(Components, GPU.Label), submit);

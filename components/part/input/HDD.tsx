@@ -1,13 +1,9 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericInputTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericInputField } from "../utils/Form";
 import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
-import Part from "@/utils/interface/part";
 import HDD from "@/utils/interface/part/info/HDD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
-import { Infos } from "@/utils/Enum";
-
-const Schema = Part.Detail.shape[Infos.HDD];
 
 const Components: InfoComponentObject<HDD.Info> = {
   rotational_speed: (props) => (
@@ -43,7 +39,7 @@ function submit(formData: FormData) {
       ])
   ) as Record<string, string | string[]>;
 
-  return Schema.parse(raw)!;
+  return HDD.Schema.parse(raw)!;
 }
 
-export default GenericInputTable(Components, HDD.Label, submit);
+export default GenericInputField(InfoComponent(Components, HDD.Label), submit);

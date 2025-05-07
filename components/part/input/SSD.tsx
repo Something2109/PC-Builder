@@ -1,13 +1,9 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericInputTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericInputField } from "../utils/Form";
 import { UnitInput, OptionSelect } from "@/components/utils/Input";
-import Part from "@/utils/interface/part";
 import SSD from "@/utils/interface/part/info/SSD";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
-import { Infos } from "@/utils/Enum";
-
-const Schema = Part.Detail.shape[Infos.SSD];
 
 const Components: InfoComponentObject<SSD.Info> = {
   memory_type: (props) => (
@@ -44,7 +40,7 @@ function submit(formData: FormData) {
       ])
   ) as Record<string, string | string[]>;
 
-  return Schema.parse(raw)!;
+  return SSD.Schema.parse(raw)!;
 }
 
-export default GenericInputTable(Components, SSD.Label, submit);
+export default GenericInputField(InfoComponent(Components, SSD.Label), submit);

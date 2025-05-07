@@ -1,17 +1,12 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericInputTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericInputField } from "../utils/Form";
 import { Input, SuffixInput, UnitInput } from "@/components/utils/Input";
 import {
   FrequencyUnits,
   MemorySpeedUnit,
   MemoryUnits,
 } from "@/utils/extract/Units";
-import Part from "@/utils/interface/part";
 import CPU from "@/utils/interface/part/info/CPU";
-import { DetailInfo } from "@/utils/interface";
-import { Infos } from "@/utils/Enum";
-
-const Schema = DetailInfo.shape[Infos.CPU];
 
 export const Components: InfoComponentObject<CPU.Info> = {
   family: (props) => <Input {...props} />,
@@ -58,6 +53,7 @@ function submit(formData: FormData) {
       ])
   ) as Record<string, string | string[]>;
 
-  return Schema.parse(raw)!;
+  return CPU.Schema.parse(raw)!;
 }
-export default GenericInputTable(Components, CPU.Label, submit);
+
+export default GenericInputField(InfoComponent(Components, CPU.Label), submit);

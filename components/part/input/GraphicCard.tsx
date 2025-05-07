@@ -1,12 +1,8 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericInputTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericInputField } from "../utils/Form";
 import { Input, SuffixInput, UnitInput } from "@/components/utils/Input";
-import Part from "@/utils/interface/part";
 import GraphicCard from "@/utils/interface/part/info/GraphicCard";
 import { FrequencyUnits, LengthUnits } from "@/utils/extract/Units";
-import { Infos } from "@/utils/Enum";
-
-const Schema = Part.Detail.shape[Infos.GRAPHIC_CARD];
 
 const Components: InfoComponentObject<GraphicCard.Info> = {
   width: (props) => (
@@ -41,7 +37,10 @@ function submit(formData: FormData) {
       ])
   ) as Record<string, string | string[]>;
 
-  return Schema.parse(raw)!;
+  return GraphicCard.Schema.parse(raw)!;
 }
 
-export default GenericInputTable(Components, GraphicCard.Label, submit);
+export default GenericInputField(
+  InfoComponent(Components, GraphicCard.Label),
+  submit
+);

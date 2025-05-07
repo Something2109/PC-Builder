@@ -1,17 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import Part from "@/utils/interface/part";
 import CPUBlock from "@/utils/interface/part/info/CPUBlock";
 import { InternalConnectors, Material } from "@/utils/interface/utils";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button } from "@/components/utils/Button";
 import { ResponsiveWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
-import { InfoComponentObject } from "../utils/Table";
-import { GenericInputTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericInputField } from "../utils/Form";
 import { Infos } from "@/utils/Enum";
-
-const Schema = Part.Detail.shape[Infos.CPU_BLOCK];
 
 const Components: InfoComponentObject<CPUBlock.Info> = {
   socket: ({ defaultValue, ...props }) => {
@@ -62,7 +59,10 @@ function submit(formData: FormData) {
     (val) => val.length > 0
   );
 
-  return Schema.parse(raw)!;
+  return CPUBlock.Schema.parse(raw)!;
 }
 
-export default GenericInputTable(Components, CPUBlock.Label, submit);
+export default GenericInputField(
+  InfoComponent(Components, CPUBlock.Label),
+  submit
+);

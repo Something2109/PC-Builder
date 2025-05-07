@@ -1,12 +1,8 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericInputTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericInputField } from "../utils/Form";
 import { Input, SuffixInput, OptionSelect } from "@/components/utils/Input";
-import Part from "@/utils/interface/part";
 import Mainboard from "@/utils/interface/part/info/Mainboard";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { Infos } from "@/utils/Enum";
-
-const Schema = Part.Detail.shape[Infos.MAIN];
 
 const Components: InfoComponentObject<Mainboard.Info> = {
   form_factor: (props) => (
@@ -42,7 +38,10 @@ function submit(formData: FormData) {
       ])
   ) as Record<string, string | string[]>;
 
-  return Schema.parse(raw)!;
+  return Mainboard.Schema.parse(raw)!;
 }
 
-export default GenericInputTable(Components, Mainboard.Label, submit);
+export default GenericInputField(
+  InfoComponent(Components, Mainboard.Label),
+  submit
+);

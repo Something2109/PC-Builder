@@ -1,19 +1,15 @@
-import { InfoComponentObject } from "../utils/Table";
-import { GenericInputTable } from "../TableWrapper";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericInputField } from "../utils/Form";
 import {
   Input,
   UnitInput,
   OptionSelect,
   ChoiceInput,
 } from "@/components/utils/Input";
-import Part from "@/utils/interface/part";
 import Case from "@/utils/interface/part/info/Case";
 import { FormFactor } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
 import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
-import { Infos } from "@/utils/Enum";
-
-const Schema = Part.Detail.shape[Infos.CASE];
 
 const Components: InfoComponentObject<Case.Info> = {
   form_factor: (props) => (
@@ -80,6 +76,7 @@ function submit(formData: FormData) {
   raw.mainboard_support = formData.getAll("mainboard_support") as string[];
   raw.psu_support = formData.getAll("psu_support") as string[];
 
-  return Schema.parse(raw)!;
+  return Case.Schema.parse(raw)!;
 }
-export default GenericInputTable(Components, Case.Label, submit);
+
+export default GenericInputField(InfoComponent(Components, Case.Label), submit);
