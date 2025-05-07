@@ -4,35 +4,35 @@ import Case from "@/utils/interface/part/info/Case";
 import { LengthUnits } from "@/utils/extract/Units";
 
 const Components: InfoComponentObject<Case.Info> = {
-  form_factor: ({ value }) => value,
-  width: ({ value }) => (
+  form_factor: ({ defaultValue: value }) => value,
+  width: ({ defaultValue: value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
-  length: ({ value }) => (
+  length: ({ defaultValue: value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
-  height: ({ value }) => (
+  height: ({ defaultValue: value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
-  mainboard_support: ({ value }) => value?.join(", "),
-  expansion_slot: ({ value }) => value,
-  max_cooler_height: ({ value }) => (
+  mainboard_support: ({ defaultValue: value }) => value?.join(", "),
+  expansion_slot: ({ defaultValue: value }) => value,
+  max_cooler_height: ({ defaultValue: value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
-  radiator_support: ({ value }) => (
+  radiator_support: ({ defaultValue: value }) => (
     <CaseSideTableRow label={"Radiator Support"} defaultValue={value} />
   ),
-  fan_support: ({ value }) => (
+  fan_support: ({ defaultValue: value }) => (
     <CaseSideTableRow label={"Fan Support"} defaultValue={value} />
   ),
-  hard_drive_support: ({ value }) => (
+  hard_drive_support: ({ defaultValue: value }) => (
     <CaseSideTableRow label={"Hard Drive Support"} defaultValue={value} />
   ),
-  psu_support: ({ value }) => value?.join(", "),
-  max_psu_length: ({ value }) => (
+  psu_support: ({ defaultValue: value }) => value?.join(", "),
+  max_psu_length: ({ defaultValue: value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
-  front_panel_ports: ({ value }) =>
+  front_panel_ports: ({ defaultValue: value }) =>
     Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
@@ -51,7 +51,7 @@ export function CaseSideTableRow({
     <table className="w-full">
       <tbody>
         {Object.entries(defaultValue).map(([key, value], index, arr) => {
-          const tableValues = Array.isArray({ value })
+          const tableValues = Array.isArray({ defaultValue: value })
             ? value.join(", ")
             : Object.entries(value)
                 .map(([key, value]) => `${value} * ${key}`)

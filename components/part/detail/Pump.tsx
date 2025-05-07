@@ -4,31 +4,35 @@ import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/extract/Units";
 
 const Components: InfoComponentObject<Pump.Info> = {
-  form_factor: ({ value }) => value,
-  width: ({ value }) => (
+  form_factor: ({ defaultValue: value }) => value,
+  width: ({ defaultValue: value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
-  length: ({ value }) => (
+  length: ({ defaultValue: value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
-  height: ({ value }) => (
+  height: ({ defaultValue: value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
-  voltage: ({ value }) => <SuffixDisplay suffix="V">{value}</SuffixDisplay>,
-  wattage: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
-  head_pressure: ({ value }) => (
+  voltage: ({ defaultValue: value }) => (
+    <SuffixDisplay suffix="V">{value}</SuffixDisplay>
+  ),
+  wattage: ({ defaultValue: value }) => (
+    <SuffixDisplay suffix="W">{value}</SuffixDisplay>
+  ),
+  head_pressure: ({ defaultValue: value }) => (
     <SuffixDisplay suffix="m">{value}</SuffixDisplay>
   ),
-  flow_rate: ({ value }) => (
+  flow_rate: ({ defaultValue: value }) => (
     <UnitDisplay
       Unit={VolumeSpeedUnit}
       defaultUnit="L/h"
       defaultValue={value}
     />
   ),
-  power_connector: ({ value }) => value,
-  control_connector: ({ value }) => value,
-  rgb: ({ value }) => value,
+  power_connector: ({ defaultValue: value }) => value,
+  control_connector: ({ defaultValue: value }) => value,
+  rgb: ({ defaultValue: value }) => value,
 };
 
 export default InfoComponent(Components, Pump.Label, { strict: true });

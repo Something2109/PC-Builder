@@ -4,15 +4,15 @@ import Cooler from "@/utils/interface/part/info/Cooler";
 import { LengthUnits } from "@/utils/extract/Units";
 
 const Components: InfoComponentObject<Cooler.Info> = {
-  socket: ({ value }) => value,
-  cpu_plate: ({ value }) => value,
-  width: ({ value }) => (
+  socket: ({ defaultValue: value }) => value,
+  cpu_plate: ({ defaultValue: value }) => value,
+  width: ({ defaultValue: value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
-  length: ({ value }) => (
+  length: ({ defaultValue: value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
-  height: ({ value }) => (
+  height: ({ defaultValue: value }) => (
     <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={value} />
   ),
 };

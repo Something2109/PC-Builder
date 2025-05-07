@@ -4,36 +4,36 @@ import Mainboard from "@/utils/interface/part/info/Mainboard";
 import { InternalConnectors } from "@/utils/interface/utils";
 
 const Components: InfoComponentObject<Mainboard.Info> = {
-  form_factor: ({ value }) => value,
-  socket: ({ value }) => value,
-  chipset: ({ value }) => value,
-  ram_form_factor: ({ value }) => value,
-  ram_interface: ({ value }) => value,
-  ram_slot: ({ value }) => (
+  form_factor: ({ defaultValue: value }) => value,
+  socket: ({ defaultValue: value }) => value,
+  chipset: ({ defaultValue: value }) => value,
+  ram_form_factor: ({ defaultValue: value }) => value,
+  ram_interface: ({ defaultValue: value }) => value,
+  ram_slot: ({ defaultValue: value }) => (
     <SuffixDisplay suffix="slot(s)">{value}</SuffixDisplay>
   ),
-  pcies: ({ value }) => <PCIeTableRow defaultValue={value} />,
-  power_connectors: ({ value }) =>
+  pcies: ({ defaultValue: value }) => <PCIeTableRow defaultValue={value} />,
+  power_connectors: ({ defaultValue: value }) =>
     Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
-  fan_connectors: ({ value }) =>
+  fan_connectors: ({ defaultValue: value }) =>
     Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
-  storage_connectors: ({ value }) =>
+  storage_connectors: ({ defaultValue: value }) =>
     Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
-  usb_connectors: ({ value }) =>
+  usb_connectors: ({ defaultValue: value }) =>
     Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
-  miscelanous_connectors: ({ value }) =>
+  miscelanous_connectors: ({ defaultValue: value }) =>
     Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),
-  back_panel_ports: ({ value }) =>
+  back_panel_ports: ({ defaultValue: value }) =>
     Object.entries(value ?? {})
       .map(([key, count]) => `${count} * ${key}`)
       .join(", "),

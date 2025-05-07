@@ -11,11 +11,11 @@ import { RedirectButton } from "@/components/utils/Button";
 const Components: InfoComponentObject<
   Omit<Part.BasicInfo, "id" | "part" | "name" | "image_url">
 > = {
-  code_name: ({ value }) => value,
-  brand: ({ value }) => value,
-  series: ({ value }) => value,
-  url: ({ value }) => value,
-  launch_date: ({ value }) =>
+  code_name: ({ defaultValue: value }) => value,
+  brand: ({ defaultValue: value }) => value,
+  series: ({ defaultValue: value }) => value,
+  url: ({ defaultValue: value }) => value,
+  launch_date: ({ defaultValue: value }) =>
     new Date(value ?? new Date()).toISOString().slice(0, 10),
 };
 

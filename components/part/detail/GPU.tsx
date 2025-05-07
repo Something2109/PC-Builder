@@ -4,23 +4,25 @@ import GPU from "@/utils/interface/part/info/GPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/extract/Units";
 
 const Components: InfoComponentObject<GPU.Info> = {
-  family: ({ value }) => value,
-  core_count: ({ value }) => value,
-  execution_unit: ({ value }) => value,
-  base_frequency: ({ value }) => (
+  family: ({ defaultValue: value }) => value,
+  core_count: ({ defaultValue: value }) => value,
+  execution_unit: ({ defaultValue: value }) => value,
+  base_frequency: ({ defaultValue: value }) => (
     <UnitDisplay Unit={FrequencyUnits} defaultUnit="MHz" defaultValue={value} />
   ),
-  boost_frequency: ({ value }) => (
+  boost_frequency: ({ defaultValue: value }) => (
     <UnitDisplay Unit={FrequencyUnits} defaultUnit="MHz" defaultValue={value} />
   ),
-  extra_cores: ({ value }) => value?.toString(),
-  memory_size: ({ value }) => (
+  extra_cores: ({ defaultValue: value }) => value?.toString(),
+  memory_size: ({ defaultValue: value }) => (
     <UnitDisplay Unit={MemoryUnits} defaultUnit="GB" defaultValue={value} />
   ),
-  memory_type: ({ value }) => value?.toString(),
-  memory_bus: ({ value }) => value,
-  tdp: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
-  features: ({ value }) => value?.toString(),
+  memory_type: ({ defaultValue: value }) => value?.toString(),
+  memory_bus: ({ defaultValue: value }) => value,
+  tdp: ({ defaultValue: value }) => (
+    <SuffixDisplay suffix="W">{value}</SuffixDisplay>
+  ),
+  features: ({ defaultValue: value }) => value?.toString(),
 };
 
 export default InfoComponent(Components, GPU.Label, { strict: true });
