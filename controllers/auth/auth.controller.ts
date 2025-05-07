@@ -11,7 +11,6 @@ import { AuthService } from "./auth.service";
 import { LoginAuthorizationGuard } from "./auth.guard";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { User } from "@/utils/interface/user/User";
-import { API } from "@/utils/interface/api";
 import { Response } from "express";
 import { AuthUser } from "controllers/utils/role/role.decorator";
 
@@ -70,7 +69,6 @@ export class AuthController {
     res.json(tokens);
   }
 
-  @UseGuards(new LoginAuthorizationGuard(API.Tokens.ACCESS))
   @HttpCode(200)
   @Post("logout")
   async logOut(@Res({ passthrough: true }) res: Response) {
