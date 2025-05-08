@@ -51,7 +51,7 @@ export function useAuth() {
 export function AuthWrapper({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useReducer(
     (_: User.JwtPayload | null, curr: string | null) => {
-      const userInfo = decodeToken(curr ?? "");
+      const userInfo = decodeToken(curr);
 
       curr && userInfo
         ? localStorage.setItem(AUTH_KEY, curr)
@@ -59,9 +59,10 @@ export function AuthWrapper({ children }: { children: React.ReactNode }) {
 
       return userInfo;
     },
-    null,
-    () => decodeToken(localStorage?.getItem(AUTH_KEY) ?? "")
+    null
   );
+
+  useLayoutEffect(() => setUser(localStorage?.getItem(AUTH_KEY)), []);
 
   return <AuthContext value={[user, setUser]}>{children}</AuthContext>;
 }
