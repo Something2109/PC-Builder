@@ -11,9 +11,12 @@ import {
   useReducer,
   useState,
 } from "react";
-import { decode, JwtPayload } from "jsonwebtoken";
+import { JwtPayload } from "jsonwebtoken";
+import { createDecoder } from "fast-jwt";
 import { usePathname, useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
+
+const decode = createDecoder();
 
 const AUTH_KEY = "Authorization";
 const LoginPath = "/auth/login";
@@ -22,7 +25,10 @@ const AuthContext = createContext<
 >([null, () => {}]);
 
 function decodeToken(token: string | null) {
-  const payload = decode(token ?? "") as JwtPayload | null;
+  let payload: JwtPayload | null = null;
+  try {
+    payload = decode(token ?? "");
+  } catch (err) {}
 
   if (!payload) return null;
 

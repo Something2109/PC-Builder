@@ -2,7 +2,7 @@
   "dependencies": {
     "axios": "^1.7.9",
     "dotenv": "^16.4.5",
-    "jsonwebtoken": "^9.0.2",
+    "fast-jwt": "^6.0.1",
     "next": "^15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -16,6 +16,7 @@
     "crawl": "tsc ./crawlers/src/*.ts --outDir ./crawlers/dist"
   },
   "devDependencies": {
+    "@types/node": "^22.15.16",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/react": "^19.0.8",
     "@types/uuid": "^10.0.0",
