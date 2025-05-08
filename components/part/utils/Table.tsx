@@ -8,9 +8,20 @@ import {
 } from "react";
 
 export namespace Table {
+  const tableClass = "w-full border-2";
   const tableRow = "border-b-2 last:border-b-0 *:rounded-sm";
   const tableCell =
     "border-r-2 last:border-r-0 first:font-bold p-2 [&:has(table)]:p-0";
+
+  export const Component = ({
+    className,
+    ...rest
+  }: HTMLAttributes<HTMLTableElement>) => (
+    <table
+      className={className ? className.concat(" ", tableClass) : tableClass}
+      {...rest}
+    />
+  );
 
   export const Row = ({
     className,
@@ -32,8 +43,6 @@ export namespace Table {
     />
   );
 }
-
-const tableClass = "w-full border-2";
 
 type InfoAttributeComponent<Value> = FunctionComponent<
   { value?: NonNullable<Value>; defaultValue?: Value } & Omit<
@@ -63,10 +72,7 @@ export function InfoComponent<T extends Record<string, any>>(
   }: {
     defaultValue?: Partial<T> | null;
   } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => (
-    <table
-      className={className ? className.concat(" ", tableClass) : tableClass}
-      {...rest}
-    >
+    <Table.Component>
       <tbody>
         {Object.entries(ComponentObject).map(([key, Component]) => {
           const value = defaultValue ? defaultValue[key] : undefined;
@@ -88,6 +94,6 @@ export function InfoComponent<T extends Record<string, any>>(
           );
         })}
       </tbody>
-    </table>
+    </Table.Component>
   );
 }
