@@ -54,9 +54,9 @@ export function useInfoAction(
   return [formValue, save, pending, error, setError] as const;
 }
 
-export function GenericInputField<T extends Record<string, any>>(
-  InputComponent: FunctionComponent<{ defaultValue?: Partial<T> | null }>,
-  transform: (data: FormData) => Partial<T>
+export function GenericInputField<T>(
+  InputComponent: FunctionComponent<{ defaultValue?: T | null }>,
+  transform: (data: FormData) => T
 ) {
   return ({
     pending,
@@ -64,8 +64,8 @@ export function GenericInputField<T extends Record<string, any>>(
     ...props
   }: {
     pending: boolean;
-    onSubmit: (data: Partial<T> | null) => void;
-    defaultValue?: Partial<T>;
+    onSubmit: (data: T | null) => void;
+    defaultValue?: T;
   } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => {
     return (
       <>
