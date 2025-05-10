@@ -87,6 +87,7 @@ export function UnitInput<T extends string>({
   defaultUnit: T;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "type">) {
   const SubmitInput = useRef<HTMLInputElement>(null);
+  defaultValue = defaultValue ?? 0;
   rest.onChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.currentTarget.value;
@@ -109,7 +110,7 @@ export function UnitInput<T extends string>({
   return (
     <>
       <input type="hidden" ref={SubmitInput} name={name} value={defaultValue} />
-      <Input defaultValue={`${defaultValue ?? 0} ${defaultUnit}`} {...rest} />
+      <Input defaultValue={`${defaultValue} ${defaultUnit}`} {...rest} />
     </>
   );
 }
