@@ -2,6 +2,7 @@
 
 import {
   ChangeEvent,
+  DetailedHTMLProps,
   InputHTMLAttributes,
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
@@ -43,12 +44,12 @@ export function TextArea({
   );
 }
 
-export function Input({
-  className,
-  type,
-  defaultValue,
-  ...rest
-}: InputHTMLAttributes<HTMLInputElement>) {
+type InputProps = DetailedHTMLProps<
+  InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+>;
+
+export function Input({ className, type, defaultValue, ...rest }: InputProps) {
   const classList = [defaultStyle, "px-1"];
   if (className) {
     classList.push(className);
@@ -67,7 +68,7 @@ export function Input({
 export function SuffixInput({
   suffix,
   ...rest
-}: { suffix: string } & InputHTMLAttributes<HTMLInputElement>) {
+}: { suffix: string } & InputProps) {
   return (
     <RowWrapper className="items-baseline">
       <Input {...rest} />
@@ -85,7 +86,7 @@ export function UnitInput<T extends string>({
 }: {
   Unit: UnitInterface<T>;
   defaultUnit: T;
-} & Omit<InputHTMLAttributes<HTMLInputElement>, "type">) {
+} & Omit<InputProps, "type">) {
   const SubmitInput = useRef<HTMLInputElement>(null);
   defaultValue = defaultValue ?? 0;
   rest.onChange = useCallback(
@@ -115,10 +116,12 @@ export function UnitInput<T extends string>({
   );
 }
 
-export function Select({
-  className,
-  ...rest
-}: SelectHTMLAttributes<HTMLSelectElement>) {
+type SelectProps = DetailedHTMLProps<
+  SelectHTMLAttributes<HTMLSelectElement>,
+  HTMLSelectElement
+>;
+
+export function Select({ className, ...rest }: SelectProps) {
   const classList = [defaultStyle];
   if (className) {
     classList.push(className);
@@ -130,7 +133,7 @@ export function Select({
 export function OptionSelect({
   options,
   ...rest
-}: { options: string[] | number[] } & SelectHTMLAttributes<HTMLSelectElement>) {
+}: { options: string[] | number[] } & SelectProps) {
   return (
     <Select {...rest}>
       {!Boolean(rest.required) && (
@@ -141,7 +144,7 @@ export function OptionSelect({
       {options.map((value) => (
         <option
           className="text-background"
-          key={`${rest.name ?? new Date().getTime()}-${value}`}
+          key={`options-${rest.name ?? new Date().getTime()}-${value}`}
           value={value}
         >
           {value}
@@ -158,7 +161,7 @@ export function ChoiceInput({
   ...rest
 }: {
   type: "checkbox" | "radio";
-} & InputHTMLAttributes<HTMLInputElement>) {
+} & InputProps) {
   const id = `choice-${type}-${name}-${value}`;
 
   return (
