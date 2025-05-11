@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Infos } from "../Enum";
 
 namespace Primitive {
   export const String = z.string();
@@ -107,7 +106,7 @@ namespace InternalConnectors {
   export type Power = Power.Mainboard | Power.GraphicCard | Power.Miscellanous;
 
   export namespace PCIe {
-    export const Controller = z.enum(["cpu", "chipset"]);
+    export const Controller = z.enum(["CPU", "Chipset"]);
 
     export type Controller = z.infer<typeof Controller>;
 
@@ -142,6 +141,10 @@ namespace InternalConnectors {
     export const HDD = z.enum(["SATA", "SAS", "PATA"]);
 
     export type HDD = z.infer<typeof HDD>;
+
+    export const Options = [
+      ...new Set([...SSD.options, ...HDD.options]).values(),
+    ];
 
     export const Schema = z.union([SSD, HDD]);
   }
@@ -449,17 +452,17 @@ namespace Material {
 }
 
 namespace Case {
-  export const Side = z.enum(["top", "bottom", "front", "rear", "side"]);
+  export const Side = z.enum(["Top", "Bottom", "Front", "Rear", "Side"]);
 
   export type Side = z.infer<typeof Side>;
 
   export const HardDrivePlace = z.enum([
-    "top",
-    "bottom",
-    "front",
-    "rear",
-    "side",
-    "drive_bay",
+    "Top",
+    "Bottom",
+    "Front",
+    "Rear",
+    "Side",
+    "Drive Bay",
   ]);
 
   export type HardDrivePlace = z.infer<typeof HardDrivePlace>;
