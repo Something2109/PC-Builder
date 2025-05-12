@@ -1,10 +1,4 @@
-import {
-  FormFactor,
-  FilterOptions,
-  InternalConnectors,
-  NumberFilterOptions,
-  Primitive,
-} from "../../utils";
+import { FormFactor, InternalConnectors, Primitive } from "../../utils";
 import { z } from "zod";
 
 export namespace PumpSpec {
