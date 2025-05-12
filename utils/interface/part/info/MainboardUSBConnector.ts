@@ -3,8 +3,8 @@ import { z } from "zod";
 
 namespace MainboardUSBConnector {
   export const Schema = z.object({
-    generation: ExternalPorts.USB.Generation,
-    connector: ExternalPorts.USB.Connector,
+    generation: ExternalPorts.Peripheral.USB.Generation,
+    connector: ExternalPorts.Peripheral.USB.Connector,
     count: Primitive.Number,
   });
 

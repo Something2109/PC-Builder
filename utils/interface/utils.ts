@@ -217,42 +217,14 @@ type InternalConnectors =
 
 namespace ExternalPorts {
   export const Type = z.enum([
-    "USB",
-    "PS/2",
     "LAN Ethernet",
+    "Peripheral",
     "Display",
     "Audio",
     "Button",
   ]);
 
   export type Type = z.infer<typeof Type>;
-
-  export namespace USB {
-    export const Generation = z.enum(["1.0", "2.0", "3.0", "3.1", "3.2", "4"]);
-
-    export type Generation = z.infer<typeof Generation>;
-
-    export const Connector = z.enum([
-      "Type-A",
-      "Type-B",
-      "Micro-A",
-      "Micro-AB",
-      "Micro-B",
-      "Type-C",
-    ]);
-
-    export type Connector = z.infer<typeof Connector>;
-
-    export const Regex = new RegExp(
-      `USB (${Generation.options.join("|")}) (${Connector.options.join("|")})`
-    );
-
-    export const Schema = z.custom<`USB ${USB.Generation} ${USB.Connector}`>(
-      (val) => (typeof val === "string" ? Regex.test(val) : false)
-    );
-  }
-
-  export type USB = z.infer<typeof USB.Schema>;
 
   export namespace Ethernet {
     export const Speed = z.enum(["10/100", "1G", "2.5G", "5G", "10G"]);
@@ -277,19 +249,63 @@ namespace ExternalPorts {
 
   export type Ethernet = z.infer<typeof Ethernet.Schema>;
 
-  export namespace PS2 {
-    export const Port = z.enum(["Keyboard", "Mouse", "Dual"]);
+  export namespace Peripheral {
+    export const Type = z.enum(["USB", "PS/2"]);
 
-    export type Port = z.infer<typeof Port>;
+    export type Type = z.infer<typeof Type>;
 
-    export const Regex = new RegExp(`${Port.options.join("|")} PS/2`);
+    export namespace USB {
+      export const Generation = z.enum([
+        "1.0",
+        "2.0",
+        "3.0",
+        "3.1",
+        "3.2",
+        "4",
+      ]);
 
-    export const Schema = z.custom<`${PS2.Port} PS/2`>((val) =>
-      typeof val === "string" ? Regex.test(val) : false
-    );
+      export type Generation = z.infer<typeof Generation>;
+
+      export const Connector = z.enum([
+        "Type-A",
+        "Type-B",
+        "Micro-A",
+        "Micro-AB",
+        "Micro-B",
+        "Type-C",
+      ]);
+
+      export type Connector = z.infer<typeof Connector>;
+
+      export const Regex = new RegExp(
+        `USB (${Generation.options.join("|")}) (${Connector.options.join("|")})`
+      );
+
+      export const Schema = z.custom<`USB ${USB.Generation} ${USB.Connector}`>(
+        (val) => (typeof val === "string" ? Regex.test(val) : false)
+      );
+    }
+
+    export type USB = z.infer<typeof USB.Schema>;
+
+    export namespace PS2 {
+      export const Port = z.enum(["Keyboard", "Mouse", "Dual"]);
+
+      export type Port = z.infer<typeof Port>;
+
+      export const Regex = new RegExp(`${Port.options.join("|")} PS/2`);
+
+      export const Schema = z.custom<`${PS2.Port} PS/2`>((val) =>
+        typeof val === "string" ? Regex.test(val) : false
+      );
+    }
+
+    export type PS2 = z.infer<typeof PS2.Schema>;
+
+    export const Schema = z.union([USB.Schema, PS2.Schema]);
   }
 
-  export type PS2 = z.infer<typeof PS2.Schema>;
+  export type Peripheral = Peripheral.USB | Peripheral.PS2;
 
   export namespace Display {
     export const Type = z.enum(["HDMI", "DisplayPort", "DVI", "VGA"]);
@@ -450,9 +466,8 @@ namespace ExternalPorts {
 
   export const Schema = z.union([
     Button,
-    USB.Schema,
-    PS2.Schema,
     Ethernet.Schema,
+    Peripheral.Schema,
     Display.Schema,
     Audio.Schema,
   ]);
@@ -460,9 +475,8 @@ namespace ExternalPorts {
 
 type ExternalPorts =
   | ExternalPorts.Button
-  | ExternalPorts.USB
-  | ExternalPorts.PS2
   | ExternalPorts.Ethernet
+  | ExternalPorts.Peripheral
   | ExternalPorts.Display
   | ExternalPorts.Audio;
 

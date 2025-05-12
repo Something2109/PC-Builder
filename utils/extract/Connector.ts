@@ -132,25 +132,30 @@ export class PCIeExchanger {
 }
 
 type USBInfo = {
-  generation: ExternalPorts.USB.Generation;
-  connector: ExternalPorts.USB.Connector;
+  generation: ExternalPorts.Peripheral.USB.Generation;
+  connector: ExternalPorts.Peripheral.USB.Connector;
 };
 
 export class USBExchanger {
-  static toString({ generation, connector }: USBInfo): ExternalPorts.USB {
+  static toString({
+    generation,
+    connector,
+  }: USBInfo): ExternalPorts.Peripheral.USB {
     return `USB ${generation} ${connector}`;
   }
 
   static toObject(value: string): USBInfo {
-    const [_, generation, connector] = value.match(ExternalPorts.USB.Regex)!;
+    const [_, generation, connector] = value.match(
+      ExternalPorts.Peripheral.USB.Regex
+    )!;
 
     if (!generation || !connector) {
       throw new Error("Invalid USB string");
     }
 
     return {
-      generation: generation as ExternalPorts.USB.Generation,
-      connector: connector as ExternalPorts.USB.Connector,
+      generation: generation as ExternalPorts.Peripheral.USB.Generation,
+      connector: connector as ExternalPorts.Peripheral.USB.Connector,
     };
   }
 }
