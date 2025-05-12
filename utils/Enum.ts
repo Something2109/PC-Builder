@@ -38,6 +38,7 @@ enum Infos {
   PROCESSOR_CACHE = "processor_cache",
   PROCESSOR_MEMORY = "processor_memory",
   GRAPHIC_CARD_SPEC = "graphic_card_spec",
+  GRAPHIC_CARD_PORT = "graphic_card_external_port",
   MAIN_SPEC = "mainboard_spec",
   MAIN_PCIE = "mainboard_pcie",
   MAIN_STORAGE = "mainboard_storage",
@@ -59,6 +60,7 @@ enum Infos {
   CPU_BLOCK_SOCKET = "cpu_block_socket",
   PUMP_SPEC = "pump_spec",
   RADIATOR_SPEC = "radiator_spec",
+  EXTERNAL_PORTS = "external_ports",
 }
 
 export { Topics, Roles, Products, Infos };

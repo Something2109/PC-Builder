@@ -27,12 +27,17 @@ export namespace Mapping {
       Infos.PROCESSOR_CACHE,
       Infos.PROCESSOR_MEMORY,
     ],
-    [Products.GRAPHIC_CARD]: [Infos.GRAPHIC_CARD_SPEC, Infos.GPU_PERF],
+    [Products.GRAPHIC_CARD]: [
+      Infos.GRAPHIC_CARD_SPEC,
+      Infos.GPU_PERF,
+      Infos.GRAPHIC_CARD_PORT,
+    ],
     [Products.MAIN]: [
       Infos.MAIN_SPEC,
       Infos.MAIN_PCIE,
       Infos.MAIN_STORAGE,
       Infos.MAIN_USB,
+      Infos.EXTERNAL_PORTS,
     ],
     [Products.RAM]: [Infos.RAM_SPEC],
     [Products.SSD]: [Infos.SSD_SPEC, Infos.STORAGE_PERF, Infos.STORAGE_CACHE],
@@ -45,6 +50,7 @@ export namespace Mapping {
       Infos.CASE_HARD_DRIVE,
       Infos.CASE_RADIATOR,
       Infos.CASE_PSU,
+      Infos.EXTERNAL_PORTS,
     ],
     [Products.COOLER]: [
       Infos.CPU_BLOCK_SPEC,
