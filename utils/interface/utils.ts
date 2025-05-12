@@ -216,6 +216,17 @@ type InternalConnectors =
   | InternalConnectors.Miscellanous;
 
 namespace ExternalPorts {
+  export const Type = z.enum([
+    "USB",
+    "PS/2",
+    "LAN Ethernet",
+    "Display",
+    "Audio",
+    "Button",
+  ]);
+
+  export type Type = z.infer<typeof Type>;
+
   export namespace USB {
     export const Generation = z.enum(["1.0", "2.0", "3.0", "3.1", "3.2", "4"]);
 
@@ -281,6 +292,10 @@ namespace ExternalPorts {
   export type PS2 = z.infer<typeof PS2.Schema>;
 
   export namespace Display {
+    export const Type = z.enum(["HDMI", "DisplayPort", "DVI", "VGA"]);
+
+    export type Type = z.infer<typeof Type>;
+
     export namespace HDMI {
       export const Version = z.enum([
         "1.0",
@@ -375,6 +390,10 @@ namespace ExternalPorts {
     | Display.VGA;
 
   export namespace Audio {
+    export const Type = z.enum(["HD Audio", "SPDIF"]);
+
+    export type Type = z.infer<typeof Type>;
+
     export namespace HDAudio {
       export const Port = z.enum([
         "Line-Out/Mic-In",
