@@ -10,7 +10,6 @@ import {
 } from "sequelize-typescript";
 import MainboardSpec from "@/utils/interface/part/info/MainboardSpec";
 import { InternalConnectors, FormFactor } from "@/utils/interface/utils";
-import { PowerConnectorExchanger } from "@/utils/extract/Connector";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
 import {
@@ -70,55 +69,6 @@ class MainboardSpecModel
 
   @Column(DataType.TINYINT)
   declare ram_slot: number | null;
-
-  /**
-   * Declare the power connector object as a virtual column
-   * extracting the data from the {@link main_power_connectors},
-   * {@link cpu_power_connectors}, {@link pcie_power_connectors} columns
-   * and converting it to a {@link Mainboard.PowerConnector} object.
-   */
-
-  @Column(DataType.VIRTUAL)
-  get power_connectors(): MainboardSpec.PowerConnector | undefined {
-    const main = this.getDataValue("main_power_connectors");
-    const cpu = this.getDataValue("cpu_power_connectors");
-    const pcie = this.getDataValue("pcie_power_connectors");
-
-    return PowerConnectorExchanger.toObject({ main, cpu, pcie }) ?? undefined;
-  }
-
-  set power_connectors(value: MainboardSpec.PowerConnector | null) {
-    const { main, cpu, pcie } = PowerConnectorExchanger.toNumber(value);
-
-    this.setDataValue("main_power_connectors", main);
-    this.setDataValue("cpu_power_connectors", cpu);
-    this.setDataValue("pcie_power_connectors", pcie);
-  }
-
-  @Column({ type: DataType.TINYINT, get: () => undefined })
-  declare main_power_connectors: number | null;
-
-  @Column({ type: DataType.TINYINT, get: () => undefined })
-  declare cpu_power_connectors: number | null;
-
-  @Column({ type: DataType.TINYINT, get: () => undefined })
-  declare pcie_power_connectors: number | null;
-
-  /**
-   * Declare the fan connector object saving the data as a JSON string
-   * in the {@link fan_connectors} column.
-   */
-
-  @Column(DataType.TEXT)
-  get fan_connectors(): Record<string, number> | undefined {
-    const data = this.getDataValue("fan_connectors");
-
-    return data ? JSON.parse(data) : undefined;
-  }
-
-  set fan_connectors(value: Record<string, number> | null) {
-    this.setDataValue("fan_connectors", value ? JSON.stringify(value) : null);
-  }
 
   /**
    * Declare the miscelanous connector object saving the data as a JSON string
