@@ -116,6 +116,9 @@ namespace InternalConnectors {
 
     export const Regex = new RegExp(`PCIe (\\d\\.?\\d?) (${Width})`);
 
+    export const toString = (version: number, width: Width) =>
+      `PCIe ${version} ${width}` as PCIe;
+
     export const Schema = z.custom<`PCIe ${number} ${PCIe.Width}`>((val) =>
       typeof val === "string" ? Regex.test(val) : false
     );
@@ -175,6 +178,9 @@ namespace InternalConnectors {
         "|"
       )}) Fan Connector`
     );
+
+    export const toString = (connector: Connector, type: Type) =>
+      `${connector} ${type} Fan Connector` as Fan;
 
     export const Schema =
       z.custom<`${Fan.Connector} ${Fan.Type} Fan Connector`>((val) =>
@@ -241,6 +247,9 @@ namespace ExternalPorts {
       )}) LAN Ethernet`
     );
 
+    export const toString = (speed: Speed, inter: Interface) =>
+      `${speed} ${inter} LAN Ethernet` as Ethernet;
+
     export const Schema =
       z.custom<`${Ethernet.Speed} ${Ethernet.Interface} LAN Ethernet`>((val) =>
         typeof val === "string" ? Regex.test(val) : false
@@ -281,6 +290,9 @@ namespace ExternalPorts {
         `USB (${Generation.options.join("|")}) (${Connector.options.join("|")})`
       );
 
+      export const toString = (generation: Generation, connector: Connector) =>
+        `USB ${generation} ${connector}` as USB;
+
       export const Schema = z.custom<`USB ${USB.Generation} ${USB.Connector}`>(
         (val) => (typeof val === "string" ? Regex.test(val) : false)
       );
@@ -294,6 +306,8 @@ namespace ExternalPorts {
       export type Port = z.infer<typeof Port>;
 
       export const Regex = new RegExp(`${Port.options.join("|")} PS/2`);
+
+      export const toString = (port: Port) => `${port} PS/2` as PS2;
 
       export const Schema = z.custom<`${PS2.Port} PS/2`>((val) =>
         typeof val === "string" ? Regex.test(val) : false
@@ -347,6 +361,9 @@ namespace ExternalPorts {
         `HDMI (${Version.options.join("|")}) (${Connector.options.join("|")})`
       );
 
+      export const toString = (version: Version, connector: Connector) =>
+        `HDMI ${version} ${connector}` as HDMI;
+
       export const Schema = z.custom<`HDMI ${HDMI.Version} ${HDMI.Connector}`>(
         (val) => (typeof val === "string" ? Regex.test(val) : false)
       );
@@ -374,6 +391,9 @@ namespace ExternalPorts {
       export const Regex = new RegExp(
         `DisplayPort (${Version.options.join("|")})`
       );
+
+      export const toString = (version: Version) =>
+        `DisplayPort ${version}` as DisplayPort;
 
       export const Schema = z.custom<`DisplayPort ${DisplayPort.Version}`>(
         (val) => (typeof val === "string" ? Regex.test(val) : false)
@@ -427,6 +447,9 @@ namespace ExternalPorts {
         `(${Port.options.join("|")}) HD Audio Port`
       );
 
+      export const toString = (port: Port) =>
+        `${port} HD Audio Port` as HDAudio;
+
       export const Schema = z.custom<`${HDAudio.Port} HD Audio Port`>((val) =>
         typeof val === "string" ? Regex.test(val) : false
       );
@@ -442,6 +465,8 @@ namespace ExternalPorts {
       export const Regex = new RegExp(
         `(${Interface.options.join("|")}) S/PDIF`
       );
+
+      export const toString = (inter: Interface) => `${inter} S/PDIF` as SPDIF;
 
       export const Schema = z.custom<`${SPDIF.Interface} S/PDIF`>((val) =>
         typeof val === "string" ? Regex.test(val) : false
