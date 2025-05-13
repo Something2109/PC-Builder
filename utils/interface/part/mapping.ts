@@ -34,15 +34,17 @@ export namespace Mapping {
     ],
     [Products.MAIN]: [
       Infos.MAIN_SPEC,
+      Infos.MAIN_POWER,
       Infos.MAIN_PCIE,
       Infos.MAIN_STORAGE,
       Infos.MAIN_USB,
+      Infos.MAIN_FAN,
       Infos.EXTERNAL_PORTS,
     ],
     [Products.RAM]: [Infos.RAM_SPEC],
     [Products.SSD]: [Infos.SSD_SPEC, Infos.STORAGE_PERF, Infos.STORAGE_CACHE],
     [Products.HDD]: [Infos.HDD_SPEC, Infos.STORAGE_PERF, Infos.STORAGE_CACHE],
-    [Products.PSU]: [Infos.PSU_SPEC],
+    [Products.PSU]: [Infos.PSU_SPEC, Infos.PSU_CONNECTOR],
     [Products.CASE]: [
       Infos.CASE_SPEC,
       Infos.CASE_MAIN,
