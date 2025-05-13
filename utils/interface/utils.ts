@@ -223,7 +223,7 @@ type InternalConnectors =
 
 namespace ExternalPorts {
   export const Type = z.enum([
-    "LAN Ethernet",
+    "Network",
     "Peripheral",
     "Display",
     "Audio",
@@ -232,31 +232,41 @@ namespace ExternalPorts {
 
   export type Type = z.infer<typeof Type>;
 
-  export namespace Ethernet {
-    export const Speed = z.enum(["10/100", "1G", "2.5G", "5G", "10G"]);
+  export namespace Network {
+    export const Type = z.enum(["LAN Ethernet"]);
 
-    export type Speed = z.infer<typeof Speed>;
+    export type Type = z.infer<typeof Type>;
 
-    export const Interface = z.enum(["RJ45", "SFP", "SFP+", "QSFP", "QSFP+"]);
+    export namespace Ethernet {
+      export const Speed = z.enum(["10/100", "1G", "2.5G", "5G", "10G"]);
 
-    export type Interface = z.infer<typeof Interface>;
+      export type Speed = z.infer<typeof Speed>;
 
-    export const Regex = new RegExp(
-      `(${Speed.options.join("|")}) (${Interface.options.join(
-        "|"
-      )}) LAN Ethernet`
-    );
+      export const Interface = z.enum(["RJ45", "SFP", "SFP+", "QSFP", "QSFP+"]);
 
-    export const toString = (speed: Speed, inter: Interface) =>
-      `${speed} ${inter} LAN Ethernet` as Ethernet;
+      export type Interface = z.infer<typeof Interface>;
 
-    export const Schema =
-      z.custom<`${Ethernet.Speed} ${Ethernet.Interface} LAN Ethernet`>((val) =>
-        typeof val === "string" ? Regex.test(val) : false
+      export const Regex = new RegExp(
+        `(${Speed.options.join("|")}) (${Interface.options.join(
+          "|"
+        )}) LAN Ethernet`
       );
+
+      export const toString = (speed: Speed, inter: Interface) =>
+        `${speed} ${inter} LAN Ethernet` as Ethernet;
+
+      export const Schema =
+        z.custom<`${Ethernet.Speed} ${Ethernet.Interface} LAN Ethernet`>(
+          (val) => (typeof val === "string" ? Regex.test(val) : false)
+        );
+    }
+
+    export type Ethernet = z.infer<typeof Ethernet.Schema>;
+
+    export const Schema = Ethernet.Schema;
   }
 
-  export type Ethernet = z.infer<typeof Ethernet.Schema>;
+  export type Network = Network.Ethernet;
 
   export namespace Peripheral {
     export const Type = z.enum(["USB", "PS/2"]);
@@ -491,7 +501,7 @@ namespace ExternalPorts {
 
   export const Schema = z.union([
     Button,
-    Ethernet.Schema,
+    Network.Schema,
     Peripheral.Schema,
     Display.Schema,
     Audio.Schema,
@@ -500,7 +510,7 @@ namespace ExternalPorts {
 
 type ExternalPorts =
   | ExternalPorts.Button
-  | ExternalPorts.Ethernet
+  | ExternalPorts.Network
   | ExternalPorts.Peripheral
   | ExternalPorts.Display
   | ExternalPorts.Audio;
