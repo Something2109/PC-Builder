@@ -19,6 +19,7 @@ import { GPUFeatureModel } from "./parts/info/GPUFeature";
 import { ProcessorCacheModel } from "./parts/info/ProcessorCache";
 import { ProcessorMemoryModel } from "./parts/info/ProcessorMemorySpec";
 import { GraphicCardSpecModel } from "./parts/info/GraphicCardSpec";
+import { GraphicCardPortModel } from "./parts/info/GraphicCardPort";
 import { MainboardSpecModel } from "./parts/info/MainboardSpec";
 import { MainboardPCIeModel } from "./parts/info/MainboardPCIe";
 import { MainboardStorageConnectorModel } from "./parts/info/MainboardStorageConnector";
@@ -33,6 +34,7 @@ import { CPUBlockSpecModel } from "./parts/info/CPUBlockSpec";
 import { PumpSpecModel } from "./parts/info/PumpSpec";
 import { RadiatorSpecModel } from "./parts/info/RadiatorSpec";
 import { CPUBlockSocketModel } from "./parts/info/CPUBlockSocketSupport";
+import { PartExternalPortModel } from "./parts/info/PartExternalPorts";
 
 export const ConnectionOptions: SequelizeOptions = {
   models: [
@@ -49,6 +51,7 @@ export const ConnectionOptions: SequelizeOptions = {
     ProcessorCacheModel,
     ProcessorMemoryModel,
     GraphicCardSpecModel,
+    GraphicCardPortModel,
     MainboardSpecModel,
     MainboardPCIeModel,
     MainboardStorageConnectorModel,
@@ -70,6 +73,7 @@ export const ConnectionOptions: SequelizeOptions = {
     CPUBlockSocketModel,
     PumpSpecModel,
     RadiatorSpecModel,
+    PartExternalPortModel,
   ],
   define: {
     freezeTableName: true,
