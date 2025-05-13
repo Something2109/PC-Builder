@@ -227,7 +227,7 @@ namespace ExternalPorts {
     "Peripheral",
     "Display",
     "Audio",
-    "Button",
+    "Interaction",
   ]);
 
   export type Type = z.infer<typeof Type>;
@@ -490,30 +490,40 @@ namespace ExternalPorts {
 
   export type Audio = Audio.HDAudio | Audio.SPDIF;
 
-  export const Button = z.enum([
-    "Power Button",
-    "Reset Button",
-    "Clear CMOS Button",
-    "Flash BIOS Button",
-  ]);
+  export namespace Interaction {
+    export const Type = z.enum(["Button"]);
 
-  export type Button = z.infer<typeof Button>;
+    export type Type = z.infer<typeof Type>;
+
+    export const Button = z.enum([
+      "Power Button",
+      "Reset Button",
+      "Clear CMOS Button",
+      "Flash BIOS Button",
+    ]);
+
+    export type Button = z.infer<typeof Button>;
+
+    export const Schema = Button;
+  }
+
+  export type Interaction = Interaction.Button;
 
   export const Schema = z.union([
-    Button,
     Network.Schema,
     Peripheral.Schema,
     Display.Schema,
     Audio.Schema,
+    Interaction.Schema,
   ]);
 }
 
 type ExternalPorts =
-  | ExternalPorts.Button
   | ExternalPorts.Network
   | ExternalPorts.Peripheral
   | ExternalPorts.Display
-  | ExternalPorts.Audio;
+  | ExternalPorts.Audio
+  | ExternalPorts.Interaction;
 
 namespace Material {
   export const Metal = z.enum([
