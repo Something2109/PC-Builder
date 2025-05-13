@@ -36,6 +36,7 @@ import { GPUFeatureModel } from "./info/GPUFeature";
 import { ProcessorCacheModel } from "./info/ProcessorCache";
 import { ProcessorMemoryModel } from "./info/ProcessorMemorySpec";
 import { GraphicCardSpecModel } from "./info/GraphicCardSpec";
+import { GraphicCardPortModel } from "./info/GraphicCardPort";
 import { MainboardSpecModel } from "./info/MainboardSpec";
 import { MainboardPCIeModel } from "./info/MainboardPCIe";
 import { MainboardStorageConnectorModel } from "./info/MainboardStorageConnector";
@@ -50,6 +51,7 @@ import { CPUBlockSpecModel } from "./info/CPUBlockSpec";
 import { PumpSpecModel } from "./info/PumpSpec";
 import { RadiatorSpecModel } from "./info/RadiatorSpec";
 import { CPUBlockSocketModel } from "./info/CPUBlockSocketSupport";
+import { PartExternalPortModel } from "./info/PartExternalPorts";
 
 type InfoModelMapping = {
   [key in Infos]: Model | Model[] | null;
@@ -128,11 +130,14 @@ class PartInformation
   @HasOne(() => ProcessorCacheModel)
   declare [Infos.PROCESSOR_CACHE]: ProcessorCacheModel | null;
 
-  @HasOne(() => ProcessorMemoryModel)
-  declare [Infos.PROCESSOR_MEMORY]: ProcessorMemoryModel | null;
+  @HasMany(() => ProcessorMemoryModel)
+  declare [Infos.PROCESSOR_MEMORY]: ProcessorMemoryModel[];
 
   @HasOne(() => GraphicCardSpecModel)
   declare [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpecModel | null;
+
+  @HasMany(() => GraphicCardPortModel)
+  declare [Infos.GRAPHIC_CARD_PORT]: GraphicCardPortModel[];
 
   @HasOne(() => MainboardSpecModel)
   declare [Infos.MAIN_SPEC]: MainboardSpecModel | null;
@@ -196,6 +201,9 @@ class PartInformation
 
   @HasOne(() => RadiatorSpecModel)
   declare [Infos.RADIATOR_SPEC]: RadiatorSpecModel;
+
+  @HasMany(() => PartExternalPortModel)
+  declare [Infos.EXTERNAL_PORTS]: PartExternalPortModel[];
 }
 
 export { PartInformation };
