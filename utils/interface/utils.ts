@@ -100,6 +100,14 @@ namespace InternalConnectors {
 
     export type Miscellanous = z.infer<typeof Miscellanous>;
 
+    export const Options = [
+      ...new Set([
+        ...Mainboard.options,
+        ...GraphicCard.options,
+        ...Miscellanous.options,
+      ]).values(),
+    ];
+
     export const Schema = z.union([Mainboard, GraphicCard, Miscellanous]);
   }
 
