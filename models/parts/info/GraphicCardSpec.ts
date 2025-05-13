@@ -68,17 +68,6 @@ class GraphicCardSpecModel
 
     this.setDataValue("power_connector", pcie);
   }
-
-  @Column(DataType.TEXT)
-  get port(): GraphicCardSpec.Port | undefined {
-    let data: string = this.getDataValue("port");
-
-    return data ? JSON.parse(data) : undefined;
-  }
-
-  set port(value: GraphicCardSpec.Port | null) {
-    this.setDataValue("port", value ? JSON.stringify(value) : null);
-  }
 }
 
 export { GraphicCardSpecModel };

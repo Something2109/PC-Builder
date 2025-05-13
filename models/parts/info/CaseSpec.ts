@@ -61,20 +61,6 @@ class CaseSpecModel extends Model implements PartDetailTable<CaseSpec.Info> {
 
   @Column(DataType.FLOAT)
   declare max_psu_length: number | null;
-
-  @Column(DataType.TEXT)
-  get front_panel_ports(): CaseSpec.FrontPanelPort | undefined {
-    const data = this.getDataValue("front_panel_ports");
-
-    return data ? JSON.parse(data) : undefined;
-  }
-
-  set front_panel_ports(value: CaseSpec.FrontPanelPort | null) {
-    this.setDataValue(
-      "front_panel_ports",
-      value ? JSON.stringify(value) : null
-    );
-  }
 }
 
 export { CaseSpecModel };

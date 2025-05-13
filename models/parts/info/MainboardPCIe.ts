@@ -51,8 +51,11 @@ class MainboardPCIeModel extends Model implements MainboardPCIe.Info {
   declare version: number;
 
   @PrimaryKey
-  @Column(DataType.TINYINT)
-  declare width: number;
+  @Column({
+    type: DataType.STRING,
+    validate: { isIn: [InternalConnectors.PCIe.Width.options] },
+  })
+  declare width: InternalConnectors.PCIe.Width;
 
   @Column(DataType.TINYINT)
   declare count: number;

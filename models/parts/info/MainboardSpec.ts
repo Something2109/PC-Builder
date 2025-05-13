@@ -138,22 +138,6 @@ class MainboardSpecModel
       value ? JSON.stringify(value) : null
     );
   }
-
-  /**
-   * Declare the io port object saving the data as a JSON string
-   * in the {@link io_ports} column.
-   */
-
-  @Column(DataType.TEXT)
-  get back_panel_ports(): {} | undefined {
-    const data = this.getDataValue("back_panel_ports");
-
-    return data ? JSON.parse(data) : undefined;
-  }
-
-  set back_panel_ports(value: {} | null) {
-    this.setDataValue("back_panel_ports", value ? JSON.stringify(value) : null);
-  }
 }
 
 export { MainboardSpecModel };

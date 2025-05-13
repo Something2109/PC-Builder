@@ -46,12 +46,7 @@ class MainboardStorageConnectorModel
   @Column({
     type: DataType.STRING,
     validate: {
-      isIn: [
-        [
-          ...InternalConnectors.Storage.HDD.options,
-          ...InternalConnectors.Storage.SSD.options,
-        ],
-      ],
+      isIn: [InternalConnectors.Storage.Options],
     },
   })
   declare form_factor: InternalConnectors.Storage;
