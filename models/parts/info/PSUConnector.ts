@@ -8,7 +8,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import MainboardPCIe from "@/utils/interface/part/info/MainboardPCIe";
+import PSUConnector from "@/utils/interface/part/info/PSUConnector";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
@@ -29,8 +29,8 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
     ...PartDefaultScope,
   },
 }))
-@Table({ modelName: Infos.MAIN_PCIE })
-class MainboardPCIeModel extends Model implements MainboardPCIe.Info {
+@Table({ modelName: Infos.PSU_CONNECTOR })
+class PSUConnectorModel extends Model implements PSUConnector.Info {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -42,23 +42,12 @@ class MainboardPCIeModel extends Model implements MainboardPCIe.Info {
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [InternalConnectors.PCIe.Controller.options] },
+    validate: { isIn: [InternalConnectors.Power.Options] },
   })
-  declare controller: InternalConnectors.PCIe.Controller;
-
-  @PrimaryKey
-  @Column(DataType.TINYINT)
-  declare version: number;
-
-  @PrimaryKey
-  @Column({
-    type: DataType.STRING,
-    validate: { isIn: [InternalConnectors.PCIe.Width.options] },
-  })
-  declare width: InternalConnectors.PCIe.Width;
+  declare type: InternalConnectors.Power;
 
   @Column(DataType.TINYINT)
   declare count: number;
 }
 
-export { MainboardPCIeModel };
+export { PSUConnectorModel };

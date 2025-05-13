@@ -19,20 +19,25 @@ import { GPUFeatureModel } from "./parts/info/GPUFeature";
 import { ProcessorCacheModel } from "./parts/info/ProcessorCache";
 import { ProcessorMemoryModel } from "./parts/info/ProcessorMemorySpec";
 import { GraphicCardSpecModel } from "./parts/info/GraphicCardSpec";
+import { GraphicCardPortModel } from "./parts/info/GraphicCardPort";
 import { MainboardSpecModel } from "./parts/info/MainboardSpec";
+import { MainboardPowerConnectorModel } from "./parts/info/MainboardPowerConnector";
 import { MainboardPCIeModel } from "./parts/info/MainboardPCIe";
 import { MainboardStorageConnectorModel } from "./parts/info/MainboardStorageConnector";
 import { MainboardUSBConnectorModel } from "./parts/info/MainboardUSBConnector";
+import { MainboardFanConnectorModel } from "./parts/info/MainboardFanConnector";
 import { RAMSpecModel } from "./parts/info/RAMSpec";
 import { SSDSpecModel } from "./parts/info/SSDSpec";
 import { HDDSpecModel } from "./parts/info/HDDSpec";
 import { StoragePerformanceModel } from "./parts/info/StoragePerformance";
 import { StorageCacheModel } from "./parts/info/StorageCache";
 import { PSUSpecModel } from "./parts/info/PSUSpec";
+import { PSUConnectorModel } from "./parts/info/PSUConnector";
 import { CPUBlockSpecModel } from "./parts/info/CPUBlockSpec";
 import { PumpSpecModel } from "./parts/info/PumpSpec";
 import { RadiatorSpecModel } from "./parts/info/RadiatorSpec";
 import { CPUBlockSocketModel } from "./parts/info/CPUBlockSocketSupport";
+import { PartExternalPortModel } from "./parts/info/PartExternalPorts";
 
 export const ConnectionOptions: SequelizeOptions = {
   models: [
@@ -49,16 +54,20 @@ export const ConnectionOptions: SequelizeOptions = {
     ProcessorCacheModel,
     ProcessorMemoryModel,
     GraphicCardSpecModel,
+    GraphicCardPortModel,
     MainboardSpecModel,
+    MainboardPowerConnectorModel,
     MainboardPCIeModel,
     MainboardStorageConnectorModel,
     MainboardUSBConnectorModel,
+    MainboardFanConnectorModel,
     RAMSpecModel,
     SSDSpecModel,
     HDDSpecModel,
     StoragePerformanceModel,
     StorageCacheModel,
     PSUSpecModel,
+    PSUConnectorModel,
     CaseSpecModel,
     CaseFanSupportModel,
     CaseMainboardSupportModel,
@@ -70,6 +79,7 @@ export const ConnectionOptions: SequelizeOptions = {
     CPUBlockSocketModel,
     PumpSpecModel,
     RadiatorSpecModel,
+    PartExternalPortModel,
   ],
   define: {
     freezeTableName: true,

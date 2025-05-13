@@ -45,16 +45,16 @@ class MainboardUSBConnectorModel
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [ExternalPorts.USB.Generation.options] },
+    validate: { isIn: [ExternalPorts.Peripheral.USB.Generation.options] },
   })
-  declare generation: ExternalPorts.USB.Generation;
+  declare generation: ExternalPorts.Peripheral.USB.Generation;
 
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [ExternalPorts.USB.Connector.options] },
+    validate: { isIn: [ExternalPorts.Peripheral.USB.Connector.options] },
   })
-  declare connector: ExternalPorts.USB.Connector;
+  declare connector: ExternalPorts.Peripheral.USB.Connector;
 
   @Column(DataType.TINYINT)
   declare count: number;

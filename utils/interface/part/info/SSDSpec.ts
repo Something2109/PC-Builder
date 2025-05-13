@@ -1,10 +1,4 @@
-import {
-  FormFactor,
-  FilterOptions,
-  NumberFilterOptions,
-  InternalConnectors,
-  Primitive,
-} from "../../utils";
+import { FormFactor, InternalConnectors, Primitive } from "../../utils";
 import { z } from "zod";
 
 namespace SSDSpec {

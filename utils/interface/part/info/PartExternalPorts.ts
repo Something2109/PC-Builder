@@ -1,20 +1,20 @@
 import { ExternalPorts, Primitive } from "../../utils";
 import { z } from "zod";
 
-namespace MainboardUSBConnector {
+export namespace PartExternalPorts {
   export const Schema = z.object({
-    generation: ExternalPorts.Peripheral.USB.Generation,
-    connector: ExternalPorts.Peripheral.USB.Connector,
+    type: ExternalPorts.Type,
+    name: ExternalPorts.Schema,
     count: Primitive.Number,
   });
 
   export type Info = z.infer<typeof Schema>;
 
   export const Label: { [key in keyof Info]: string } = {
-    generation: "Generation",
-    connector: "Connector",
+    type: "Type",
+    name: "Name",
     count: "Count",
   };
 }
 
-export default MainboardUSBConnector;
+export default PartExternalPorts;

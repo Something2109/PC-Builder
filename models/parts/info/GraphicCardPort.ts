@@ -8,8 +8,8 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import MainboardPCIe from "@/utils/interface/part/info/MainboardPCIe";
-import { InternalConnectors } from "@/utils/interface/utils";
+import GraphicCardPort from "@/utils/interface/part/info/GraphicCardPort";
+import { ExternalPorts } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
@@ -29,8 +29,8 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
     ...PartDefaultScope,
   },
 }))
-@Table({ modelName: Infos.MAIN_PCIE })
-class MainboardPCIeModel extends Model implements MainboardPCIe.Info {
+@Table({ modelName: Infos.GRAPHIC_CARD_PORT })
+class GraphicCardPortModel extends Model implements GraphicCardPort.Info {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -42,23 +42,16 @@ class MainboardPCIeModel extends Model implements MainboardPCIe.Info {
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [InternalConnectors.PCIe.Controller.options] },
+    validate: { isIn: [ExternalPorts.Display.Type.options] },
   })
-  declare controller: InternalConnectors.PCIe.Controller;
+  declare type: ExternalPorts.Display.Type;
 
   @PrimaryKey
-  @Column(DataType.TINYINT)
-  declare version: number;
-
-  @PrimaryKey
-  @Column({
-    type: DataType.STRING,
-    validate: { isIn: [InternalConnectors.PCIe.Width.options] },
-  })
-  declare width: InternalConnectors.PCIe.Width;
+  @Column(DataType.STRING)
+  declare name: ExternalPorts.Display;
 
   @Column(DataType.TINYINT)
   declare count: number;
 }
 
-export { MainboardPCIeModel };
+export { GraphicCardPortModel };

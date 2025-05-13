@@ -38,16 +38,20 @@ enum Infos {
   PROCESSOR_CACHE = "processor_cache",
   PROCESSOR_MEMORY = "processor_memory",
   GRAPHIC_CARD_SPEC = "graphic_card_spec",
+  GRAPHIC_CARD_PORT = "graphic_card_external_port",
   MAIN_SPEC = "mainboard_spec",
+  MAIN_POWER = "mainboard_power",
   MAIN_PCIE = "mainboard_pcie",
   MAIN_STORAGE = "mainboard_storage",
   MAIN_USB = "mainboard_usb",
+  MAIN_FAN = "mainboard_fan",
   RAM_SPEC = "ram_spec",
   SSD_SPEC = "ssd_spec",
   HDD_SPEC = "hdd_spec",
   STORAGE_PERF = "storage_performance",
   STORAGE_CACHE = "storage_cache",
   PSU_SPEC = "psu_spec",
+  PSU_CONNECTOR = "psu_connector",
   CASE_SPEC = "case_spec",
   CASE_MAIN = "case_mainboard_support",
   CASE_FAN = "case_fan_support",
@@ -59,6 +63,7 @@ enum Infos {
   CPU_BLOCK_SOCKET = "cpu_block_socket",
   PUMP_SPEC = "pump_spec",
   RADIATOR_SPEC = "radiator_spec",
+  EXTERNAL_PORTS = "external_ports",
 }
 
 export { Topics, Roles, Products, Infos };

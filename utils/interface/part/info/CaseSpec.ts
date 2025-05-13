@@ -2,13 +2,6 @@ import { FormFactor, ExternalPorts, Primitive } from "../../utils";
 import { z } from "zod";
 
 export namespace CaseSpec {
-  export const FrontPanelPortSchema = z.record(
-    ExternalPorts.Schema,
-    Primitive.Number
-  );
-
-  export type FrontPanelPort = z.infer<typeof FrontPanelPortSchema>;
-
   export const Schema = z.object({
     form_factor: FormFactor.Case,
 
@@ -20,8 +13,6 @@ export namespace CaseSpec {
 
     max_cooler_height: Primitive.Number,
     max_psu_length: Primitive.Number,
-
-    front_panel_ports: FrontPanelPortSchema,
   });
 
   export type Info = z.infer<typeof Schema>;
@@ -37,8 +28,6 @@ export namespace CaseSpec {
 
     max_cooler_height: "Max Cooler Height",
     max_psu_length: "Max PSU Length",
-
-    front_panel_ports: "Front Panel Ports",
   };
 }
 

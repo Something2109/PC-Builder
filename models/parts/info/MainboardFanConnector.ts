@@ -8,7 +8,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import MainboardPCIe from "@/utils/interface/part/info/MainboardPCIe";
+import MainboardFanConnector from "@/utils/interface/part/info/MainboardFanConnector";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
@@ -29,8 +29,11 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
     ...PartDefaultScope,
   },
 }))
-@Table({ modelName: Infos.MAIN_PCIE })
-class MainboardPCIeModel extends Model implements MainboardPCIe.Info {
+@Table({ modelName: Infos.MAIN_FAN })
+class MainboardFanConnectorModel
+  extends Model
+  implements MainboardFanConnector.Info
+{
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -42,23 +45,19 @@ class MainboardPCIeModel extends Model implements MainboardPCIe.Info {
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [InternalConnectors.PCIe.Controller.options] },
+    validate: { isIn: [InternalConnectors.Fan.Type.options] },
   })
-  declare controller: InternalConnectors.PCIe.Controller;
-
-  @PrimaryKey
-  @Column(DataType.TINYINT)
-  declare version: number;
+  declare type: InternalConnectors.Fan.Type;
 
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [InternalConnectors.PCIe.Width.options] },
+    validate: { isIn: [InternalConnectors.Fan.Connector.options] },
   })
-  declare width: InternalConnectors.PCIe.Width;
+  declare connector: InternalConnectors.Fan.Connector;
 
   @Column(DataType.TINYINT)
   declare count: number;
 }
 
-export { MainboardPCIeModel };
+export { MainboardFanConnectorModel };

@@ -1,22 +1,18 @@
 import { InternalConnectors, Primitive } from "../../utils";
 import { z } from "zod";
 
-namespace MainboardPCIe {
+namespace PSUConnector {
   export const Schema = z.object({
-    controller: InternalConnectors.PCIe.Controller,
-    version: Primitive.Number,
-    width: InternalConnectors.PCIe.Width,
+    type: InternalConnectors.Power.Schema,
     count: Primitive.Number,
   });
 
   export type Info = z.infer<typeof Schema>;
 
   export const Label: { [key in keyof Info]: string } = {
-    controller: "Controller",
-    version: "Version",
-    width: "Lane Width",
+    type: "Type",
     count: "Count",
   };
 }
 
-export default MainboardPCIe;
+export default PSUConnector;

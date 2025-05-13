@@ -16,20 +16,25 @@ import GPUFeature from "./info/GPUFeature";
 import GPUPerformance from "./info/GPUPerformance";
 import GPUSpec from "./info/GPUSpec";
 import GraphicCardSpec from "./info/GraphicCardSpec";
+import GraphicCardPort from "./info/GraphicCardPort";
 import HDDSpec from "./info/HDDSpec";
-import MainboardPCIe from "./info/MainboardPCIe";
 import MainboardSpec from "./info/MainboardSpec";
+import MainboardPowerConnector from "./info/MainboardPowerConnector";
+import MainboardPCIe from "./info/MainboardPCIe";
 import MainboardStorageConnector from "./info/MainboardStorageConnector";
 import MainboardUSBConnector from "./info/MainboardUSBConnector";
 import ProcessorCache from "./info/ProcessorCache";
 import ProcessorMemory from "./info/ProcessorMemorySpec";
 import PSUSpec from "./info/PSUSpec";
+import PSUConnector from "./info/PSUConnector";
 import PumpSpec from "./info/PumpSpec";
 import RadiatorSpec from "./info/RadiatorSpec";
 import RAMSpec from "./info/RAMSpec";
 import SSDSpec from "./info/SSDSpec";
 import StorageCache from "./info/StorageCache";
 import StoragePerformance from "./info/StoragePerformance";
+import PartExternalPorts from "./info/PartExternalPorts";
+import MainboardFanConnector from "./info/MainboardFanConnector";
 
 /**
  * DECLARE THE {@link Infos} RELATED MAPPING OBJECTS
@@ -50,16 +55,20 @@ export namespace Information {
     [Infos.PROCESSOR_CACHE]: "Processor Cache",
     [Infos.PROCESSOR_MEMORY]: "Processor Memory",
     [Infos.GRAPHIC_CARD_SPEC]: "Graphic Card Specs",
+    [Infos.GRAPHIC_CARD_PORT]: "Display External Ports",
     [Infos.MAIN_SPEC]: "Mainboard Specs",
+    [Infos.MAIN_POWER]: "Mainboard Power Connectors",
     [Infos.MAIN_PCIE]: "Mainboard PCIe",
     [Infos.MAIN_STORAGE]: "Mainboard Storage",
     [Infos.MAIN_USB]: "Mainboard USB",
+    [Infos.MAIN_FAN]: "Mainboard Fan Connectors",
     [Infos.RAM_SPEC]: "RAM Specs",
     [Infos.SSD_SPEC]: "SSD Specs",
     [Infos.HDD_SPEC]: "HDD Specs",
     [Infos.STORAGE_PERF]: "Storage Performance",
     [Infos.STORAGE_CACHE]: "Storage Cache",
     [Infos.PSU_SPEC]: "PSU Specs",
+    [Infos.PSU_CONNECTOR]: "PSU Power Connector",
     [Infos.CASE_SPEC]: "Case Specs",
     [Infos.CASE_MAIN]: "Case Mainboard Support",
     [Infos.CASE_FAN]: "Case Fan Support",
@@ -71,6 +80,7 @@ export namespace Information {
     [Infos.CPU_BLOCK_SOCKET]: "CPU Block Socket Support",
     [Infos.PUMP_SPEC]: "Pump Specs",
     [Infos.RADIATOR_SPEC]: "Radiator Specs",
+    [Infos.EXTERNAL_PORTS]: "External Ports",
   };
 
   /**
@@ -87,16 +97,20 @@ export namespace Information {
     [Infos.PROCESSOR_CACHE]: ProcessorCache.Label,
     [Infos.PROCESSOR_MEMORY]: ProcessorMemory.Label,
     [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Label,
+    [Infos.GRAPHIC_CARD_PORT]: GraphicCardPort.Label,
     [Infos.MAIN_SPEC]: MainboardSpec.Label,
+    [Infos.MAIN_POWER]: MainboardPowerConnector.Label,
     [Infos.MAIN_PCIE]: MainboardPCIe.Label,
     [Infos.MAIN_STORAGE]: MainboardStorageConnector.Label,
     [Infos.MAIN_USB]: MainboardUSBConnector.Label,
+    [Infos.MAIN_FAN]: MainboardFanConnector.Label,
     [Infos.RAM_SPEC]: RAMSpec.Label,
     [Infos.SSD_SPEC]: SSDSpec.Label,
     [Infos.HDD_SPEC]: HDDSpec.Label,
     [Infos.STORAGE_PERF]: StoragePerformance.Label,
     [Infos.STORAGE_CACHE]: StorageCache.Label,
     [Infos.PSU_SPEC]: PSUSpec.Label,
+    [Infos.PSU_CONNECTOR]: PSUConnector.Label,
     [Infos.CASE_SPEC]: CaseSpec.Label,
     [Infos.CASE_MAIN]: CaseMainboardSupport.Label,
     [Infos.CASE_FAN]: CaseFanSupport.Label,
@@ -108,6 +122,7 @@ export namespace Information {
     [Infos.CPU_BLOCK_SOCKET]: CPUBlockSocketSupport.Label,
     [Infos.PUMP_SPEC]: PumpSpec.Label,
     [Infos.RADIATOR_SPEC]: RadiatorSpec.Label,
+    [Infos.EXTERNAL_PORTS]: PartExternalPorts.Label,
   };
 
   /**
@@ -118,23 +133,27 @@ export namespace Information {
   export const Detail = {
     [Infos.CPU_SPEC]: CPUSpec.Schema.partial().nullish(),
     [Infos.CPU_PERF]: CPUPerformance.Schema.partial().nullish(),
-    [Infos.CPU_CORES]: z.array(CPUCoreConfig.Schema),
+    [Infos.CPU_CORES]: z.array(CPUCoreConfig.Schema.partial()),
     [Infos.GPU_SPEC]: GPUSpec.Schema.partial().nullish(),
     [Infos.GPU_PERF]: GPUPerformance.Schema.partial().nullish(),
     [Infos.GPU_FEAT]: GPUFeature.Schema.partial().nullish(),
     [Infos.PROCESSOR_CACHE]: ProcessorCache.Schema.partial().nullish(),
-    [Infos.PROCESSOR_MEMORY]: ProcessorMemory.Schema.partial().nullish(),
+    [Infos.PROCESSOR_MEMORY]: z.array(ProcessorMemory.Schema.partial()),
     [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Schema.partial().nullish(),
+    [Infos.GRAPHIC_CARD_PORT]: z.array(GraphicCardPort.Schema),
     [Infos.MAIN_SPEC]: MainboardSpec.Schema.partial().nullish(),
+    [Infos.MAIN_POWER]: z.array(MainboardPowerConnector.Schema),
     [Infos.MAIN_PCIE]: z.array(MainboardPCIe.Schema),
     [Infos.MAIN_STORAGE]: z.array(MainboardStorageConnector.Schema),
     [Infos.MAIN_USB]: z.array(MainboardUSBConnector.Schema),
+    [Infos.MAIN_FAN]: z.array(MainboardFanConnector.Schema),
     [Infos.RAM_SPEC]: RAMSpec.Schema.partial().nullish(),
     [Infos.SSD_SPEC]: SSDSpec.Schema.partial().nullish(),
     [Infos.HDD_SPEC]: HDDSpec.Schema.partial().nullish(),
     [Infos.STORAGE_PERF]: StoragePerformance.Schema.partial().nullish(),
     [Infos.STORAGE_CACHE]: StorageCache.Schema.partial().nullish(),
     [Infos.PSU_SPEC]: PSUSpec.Schema.partial().nullish(),
+    [Infos.PSU_CONNECTOR]: z.array(PSUConnector.Schema),
     [Infos.CASE_SPEC]: CaseSpec.Schema.partial().nullish(),
     [Infos.CASE_MAIN]: z.array(CaseMainboardSupport.Schema),
     [Infos.CASE_FAN]: z.array(CaseFanSupport.Schema),
@@ -146,5 +165,6 @@ export namespace Information {
     [Infos.CPU_BLOCK_SOCKET]: z.array(CPUBlockSocketSupport.Schema),
     [Infos.PUMP_SPEC]: PumpSpec.Schema.partial().nullish(),
     [Infos.RADIATOR_SPEC]: RadiatorSpec.Schema.partial().nullish(),
+    [Infos.EXTERNAL_PORTS]: z.array(PartExternalPorts.Schema),
   };
 }

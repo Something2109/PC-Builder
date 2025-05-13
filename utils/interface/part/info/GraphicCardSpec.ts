@@ -2,20 +2,6 @@ import { ExternalPorts, InternalConnectors, Primitive } from "../../utils";
 import { z } from "zod";
 
 namespace GraphicCardSpec {
-  export const PowerConnectorSchema = z.record(
-    InternalConnectors.Power.GraphicCard,
-    Primitive.Number
-  );
-
-  export type PowerConnectorType = z.infer<typeof PowerConnectorSchema>;
-
-  export const PortSchema = z.record(
-    ExternalPorts.Display.Schema,
-    Primitive.Number
-  );
-
-  export type Port = z.infer<typeof PortSchema>;
-
   export const Schema = z.object({
     width: Primitive.Number,
     length: Primitive.Number,
@@ -23,8 +9,9 @@ namespace GraphicCardSpec {
 
     pcie: Primitive.Number,
     minimum_psu: Primitive.Number,
-    power_connector: PowerConnectorSchema,
-    port: PortSchema,
+
+    power_connector: InternalConnectors.Power.GraphicCard,
+    power_connector_count: Primitive.Number,
   });
 
   export type Info = z.infer<typeof Schema>;
@@ -36,8 +23,9 @@ namespace GraphicCardSpec {
 
     pcie: "PCIe Version",
     minimum_psu: "Minimum PSU Wattage",
+
     power_connector: "Power Connector",
-    port: "Port",
+    power_connector_count: "Power Connector Count",
   };
 }
 
