@@ -1,4 +1,4 @@
-import { FilterOptions, NumberFilterOptions, Primitive } from "../../utils";
+import { Primitive } from "../../utils";
 import { z } from "zod";
 
 namespace GPUPerformance {

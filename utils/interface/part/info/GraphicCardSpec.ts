@@ -24,7 +24,6 @@ namespace GraphicCardSpec {
     pcie: Primitive.Number,
     minimum_psu: Primitive.Number,
     power_connector: PowerConnectorSchema,
-    port: PortSchema,
   });
 
   export type Info = z.infer<typeof Schema>;
@@ -37,7 +36,6 @@ namespace GraphicCardSpec {
     pcie: "PCIe Version",
     minimum_psu: "Minimum PSU Wattage",
     power_connector: "Power Connector",
-    port: "Port",
   };
 }
 

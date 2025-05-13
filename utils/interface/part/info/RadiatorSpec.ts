@@ -1,4 +1,4 @@
-import { FormFactor, Material, FilterOptions, Primitive } from "../../utils";
+import { FormFactor, Material, Primitive } from "../../utils";
 import { z } from "zod";
 
 export namespace RadiatorSpec {
