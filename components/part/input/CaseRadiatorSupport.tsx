@@ -1,0 +1,73 @@
+import { GenericInputField } from "../utils/Form";
+import { Table } from "../utils/Table";
+import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
+import { ChoiceInput } from "@/components/utils/Input";
+import CaseRadiatorSupport from "@/utils/interface/part/info/CaseRadiatorSupport";
+import { Case, FormFactor } from "@/utils/interface/utils";
+import { useRef } from "react";
+
+type CaseSideFanObject = { [side in Case.Side]?: FormFactor.Radiator[] };
+
+function Component({
+  defaultValue,
+}: {
+  defaultValue?: CaseRadiatorSupport.Info[] | null;
+}) {
+  const defaultValueObj = useRef(
+    defaultValue?.reduce<CaseSideFanObject>(
+      (acc: CaseSideFanObject, curr: CaseRadiatorSupport.Info) => {
+        const side = curr.case_side;
+        if (!acc[side]) acc[side] = [];
+
+        acc[side].push(curr.form_factor);
+
+        return acc;
+      },
+      {}
+    ) ?? {}
+  );
+
+  return (
+    <Table.Component>
+      <thead>
+        <Table.Row>
+          <Table.Cell>{CaseRadiatorSupport.Label.case_side}</Table.Cell>
+          <Table.Cell>{CaseRadiatorSupport.Label.form_factor}</Table.Cell>
+        </Table.Row>
+      </thead>
+      <tbody>
+        {Case.Side.options.map((side) => (
+          <Table.Row key={`rad-${side}`}>
+            <Table.Cell>{side}</Table.Cell>
+            <Table.Cell key={`rad-${side}`}>
+              <ResponsiveWrapper className="flex-wrap gap-x-3 justify-between">
+                {FormFactor.Radiator.options.map((val) => (
+                  <ChoiceInput
+                    type="checkbox"
+                    key={`rad-${side}-${val}`}
+                    name={side}
+                    value={val}
+                    defaultChecked={defaultValueObj.current[side]?.includes(
+                      val
+                    )}
+                  />
+                ))}
+              </ResponsiveWrapper>
+            </Table.Cell>
+          </Table.Row>
+        ))}
+      </tbody>
+    </Table.Component>
+  );
+}
+
+function submit(formData: FormData) {
+  return formData
+    .entries()
+    .map(([case_side, form_factor]) =>
+      CaseRadiatorSupport.Schema.parse({ case_side, form_factor })
+    )
+    .toArray();
+}
+
+export default GenericInputField(Component, submit);
