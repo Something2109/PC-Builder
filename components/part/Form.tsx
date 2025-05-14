@@ -7,7 +7,7 @@ import React, { lazy, useRef } from "react";
 import Part from "@/utils/interface/part";
 import { NotificationBar } from "../utils/NotificationBar";
 import { VerticalCollapsible } from "../utils/Collapsible";
-import { useInfoAction } from "./utils/Form";
+import { useInfoAction } from "./utils/Hook";
 
 const InputComponent = {
   [Infos.CPU]: lazy(() => import("@/components/part/input/CPU")),
