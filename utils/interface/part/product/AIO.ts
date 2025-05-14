@@ -6,7 +6,7 @@ export namespace AIO {
 
   export const Summary = z
     .object({
-      socket: Primitive.String,
+      socket: z.array(Primitive.String),
       form_factor: FormFactor.Radiator,
       cpu_plate: Material.Metal,
     })
