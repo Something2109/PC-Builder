@@ -1,32 +1,102 @@
 "use client";
 
-import { Button } from "@/components/utils/Button";
-import { Information } from "@/utils/interface/part";
-import { Infos } from "@/utils/Enum";
-import React, { lazy, useRef } from "react";
-import Part from "@/utils/interface/part";
+import { useInfoAction } from "./utils/Hook";
 import { NotificationBar } from "../utils/NotificationBar";
 import { VerticalCollapsible } from "../utils/Collapsible";
-import { useInfoAction } from "./utils/Hook";
+import { Button } from "@/components/utils/Button";
+import { Information } from "@/utils/interface/part";
+import Part from "@/utils/interface/part";
+import { Infos } from "@/utils/Enum";
+import { lazy, LazyExoticComponent, useRef } from "react";
 
-const InputComponent = {
-  [Infos.CPU]: lazy(() => import("@/components/part/input/CPU")),
-  [Infos.GPU]: lazy(() => import("@/components/part/input/GPU")),
-  [Infos.GRAPHIC_CARD]: lazy(
-    () => import("@/components/part/input/GraphicCard")
+const InputComponent: {
+  [key in Infos]: LazyExoticComponent<React.FC<any>>;
+} = {
+  [Infos.CPU_SPEC]: lazy(() => import("@/components/part/input/CPUSpec")),
+  [Infos.CPU_PERF]: lazy(
+    () => import("@/components/part/input/CPUPerformance")
   ),
-  [Infos.MAIN]: lazy(() => import("@/components/part/input/Mainboard")),
-  [Infos.RAM]: lazy(() => import("@/components/part/input/RAM")),
-  [Infos.HDD]: lazy(() => import("@/components/part/input/HDD")),
-  [Infos.PSU]: lazy(() => import("@/components/part/input/PSU")),
-  [Infos.CASE]: lazy(() => import("@/components/part/input/Case")),
-  [Infos.COOLER]: lazy(() => import("@/components/part/input/Cooler")),
-  [Infos.AIO]: lazy(() => import("@/components/part/input/AIO")),
-  [Infos.FAN]: lazy(() => import("@/components/part/input/Fan")),
-  [Infos.SSD]: lazy(() => import("@/components/part/input/SSD")),
-  [Infos.CPU_BLOCK]: lazy(() => import("@/components/part/input/CPUBlock")),
-  [Infos.PUMP]: lazy(() => import("@/components/part/input/Pump")),
-  [Infos.RADIATOR]: lazy(() => import("@/components/part/input/Radiator")),
+  [Infos.CPU_CORES]: lazy(
+    () => import("@/components/part/input/CPUCoreConfig")
+  ),
+  [Infos.GPU_SPEC]: lazy(() => import("@/components/part/input/GPUSpec")),
+  [Infos.GPU_PERF]: lazy(
+    () => import("@/components/part/input/GPUPerformance")
+  ),
+  [Infos.GPU_FEAT]: lazy(() => import("@/components/part/input/GPUFeature")),
+  [Infos.PROCESSOR_CACHE]: lazy(
+    () => import("@/components/part/input/ProcessorCache")
+  ),
+  [Infos.PROCESSOR_MEMORY]: lazy(
+    () => import("@/components/part/input/ProcessorMemorySpec")
+  ),
+  [Infos.GRAPHIC_CARD_SPEC]: lazy(
+    () => import("@/components/part/input/GraphicCardSpec")
+  ),
+  [Infos.GRAPHIC_CARD_PORT]: lazy(
+    () => import("@/components/part/input/GraphicCardPort")
+  ),
+  [Infos.MAIN_SPEC]: lazy(
+    () => import("@/components/part/input/MainboardSpec")
+  ),
+  [Infos.MAIN_POWER]: lazy(
+    () => import("@/components/part/input/MainboardPowerConnector")
+  ),
+  [Infos.MAIN_PCIE]: lazy(
+    () => import("@/components/part/input/MainboardPCIe")
+  ),
+  [Infos.MAIN_STORAGE]: lazy(
+    () => import("@/components/part/input/MainboardStorageConnector")
+  ),
+  [Infos.MAIN_USB]: lazy(
+    () => import("@/components/part/input/MainboardUSBConnector")
+  ),
+  [Infos.MAIN_FAN]: lazy(
+    () => import("@/components/part/input/MainboardFanConnector")
+  ),
+  [Infos.RAM_SPEC]: lazy(() => import("@/components/part/input/RAMSpec")),
+  [Infos.SSD_SPEC]: lazy(() => import("@/components/part/input/SSDSpec")),
+  [Infos.HDD_SPEC]: lazy(() => import("@/components/part/input/HDDSpec")),
+  [Infos.STORAGE_PERF]: lazy(
+    () => import("@/components/part/input/StoragePerformance")
+  ),
+  [Infos.STORAGE_CACHE]: lazy(
+    () => import("@/components/part/input/StorageCache")
+  ),
+  [Infos.PSU_SPEC]: lazy(() => import("@/components/part/input/PSUSpec")),
+  [Infos.PSU_CONNECTOR]: lazy(
+    () => import("@/components/part/input/PSUConnector")
+  ),
+  [Infos.CASE_SPEC]: lazy(() => import("@/components/part/input/CaseSpec")),
+  [Infos.CASE_MAIN]: lazy(
+    () => import("@/components/part/input/CaseMainboardSupport")
+  ),
+  [Infos.CASE_FAN]: lazy(
+    () => import("@/components/part/input/CaseFanSupport")
+  ),
+  [Infos.CASE_HARD_DRIVE]: lazy(
+    () => import("@/components/part/input/CaseHardDriveSupport")
+  ),
+  [Infos.CASE_RADIATOR]: lazy(
+    () => import("@/components/part/input/CaseRadiatorSupport")
+  ),
+  [Infos.CASE_PSU]: lazy(
+    () => import("@/components/part/input/CasePSUSupport")
+  ),
+  [Infos.FAN_SPEC]: lazy(() => import("@/components/part/input/FanSpec")),
+  [Infos.CPU_BLOCK_SPEC]: lazy(
+    () => import("@/components/part/input/CPUBlockSpec")
+  ),
+  [Infos.CPU_BLOCK_SOCKET]: lazy(
+    () => import("@/components/part/input/CPUBlockSocketSupport")
+  ),
+  [Infos.PUMP_SPEC]: lazy(() => import("@/components/part/input/PumpSpec")),
+  [Infos.RADIATOR_SPEC]: lazy(
+    () => import("@/components/part/input/RadiatorSpec")
+  ),
+  [Infos.EXTERNAL_PORTS]: lazy(
+    () => import("@/components/part/input/PartExternalPorts")
+  ),
 };
 
 export function InfoForm({
