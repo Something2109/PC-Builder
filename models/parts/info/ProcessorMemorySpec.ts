@@ -43,6 +43,7 @@ class ProcessorMemoryModel
   @BelongsTo(() => PartInformation)
   declare part: PartInformation;
 
+  @PrimaryKey
   @Column({
     type: DataType.STRING,
     validate: { isIn: [InternalConnectors.RAM.options] },
