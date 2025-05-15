@@ -39,6 +39,33 @@ class ProductParser {
     return summary as Part.Summary<Products>;
   }
 
+  filter(options: Part.Filter, part?: Products, ...attributes: string[]) {
+    const filter: Record<string, any> = {};
+
+    const basicOptions = options.part;
+    if (basicOptions) {
+      Part.BasicFilterAttributes.forEach((key) => {
+        if (attributes.length === 0 || attributes.includes(key))
+          filter[key] = basicOptions[key];
+      });
+    }
+
+    if (part) {
+      if (attributes.length === 0)
+        attributes = Object.keys(Mapping.AttributeMapping[part]);
+
+      attributes.forEach((attr) => {
+        if (!Mapping.AttributeMapping[part][attr]) return;
+
+        const [info, val] = Mapping.AttributeMapping[part][attr];
+
+        if (options[info]) filter[attr] = options[info][val];
+      });
+    }
+
+    return filter;
+  }
+
   /**
    * Create the option to pass into the {@link list} and {@link filter} functions
    * from an object of string or string array value
