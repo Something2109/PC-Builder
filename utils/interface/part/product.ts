@@ -90,7 +90,7 @@ export namespace Product {
    * and the mapping between the two should be defined in more specific implementation.
    */
   export const FilterOptions: {
-    [key in Products]: ZodSchema;
+    [key in Products]: ZodObject<{ [key in string]: ZodSchema }>;
   } = {
     [Products.CPU]: CPUProduct.Filter,
     [Products.GPU]: GPUProduct.Filter,
