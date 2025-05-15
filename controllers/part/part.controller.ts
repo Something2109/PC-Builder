@@ -32,11 +32,9 @@ export class PartController {
 
   @Get("filter")
   async getDefaultFilter(@Query() params: Record<string, string | string[]>) {
-    const service = this.service;
-
     const options = this.parser.options(params);
 
-    const filter = await service.filter(options);
+    const filter = await this.service.filter(options);
 
     return filter;
   }
@@ -46,13 +44,11 @@ export class PartController {
     @Param("part", ProductValidator) part: Products,
     @Query() params: Record<string, string | string[]>
   ) {
-    const service = this.findService(part);
-
     const options = this.parser.options(params, part);
 
-    const filter = await service.filter(options);
+    const filter = await this.service.filter(options, part);
 
-    return filter;
+    return this.parser.filter(filter, part);
   }
 
   @Get("filter/:part/:attribute")
@@ -61,22 +57,18 @@ export class PartController {
     @Param("attribute") attribute: string,
     @Query() params: Record<string, string | string[]>
   ) {
-    const service = this.findService(part);
-
     const options = this.parser.options(params, part);
 
-    const filter = await service.filter(options, [attribute]);
+    const filter = await this.service.filter(options, part, attribute);
 
-    return filter;
+    return this.parser.filter(filter, part);
   }
 
   @Get()
   async index(@Query() params: Record<string, string | string[]>) {
-    const service = this.service;
-
     const options = this.parser.options(params);
 
-    let data = await service.list(options);
+    let data = await this.service.list(options);
 
     return {
       list: data.list.map((part) => this.parser.summary(part)),
@@ -89,11 +81,9 @@ export class PartController {
     @Param("part", ProductValidator) part: Products,
     @Query() params: Record<string, string | string[]>
   ) {
-    const service = this.findService(part);
-
     const options = this.parser.options(params, part);
 
-    let data = await service.list(options);
+    let data = await this.service.list(options, part);
 
     return {
       list: data.list.map((data) => this.parser.summary(data, part)),
@@ -107,9 +97,7 @@ export class PartController {
     @Param("part", ProductValidator) part: Products,
     @Body(CreateValidator) body: Part.Detail
   ) {
-    const service = this.findService(part);
-
-    const partInfo = await service.create(body);
+    const partInfo = await this.service.create(part, body);
 
     if (typeof partInfo !== "string") {
       return partInfo;
@@ -125,13 +113,9 @@ export class PartController {
     @Param("part", ProductValidator) part: Products,
     @Param("id", ParseUUIDPipe) id: string
   ) {
-    const service = this.findService(part);
+    const partInfo = await this.service.get(id, part);
 
-    const partInfo = await service.get(id);
-
-    if (partInfo) {
-      return partInfo;
-    }
+    if (partInfo) return partInfo;
 
     throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
   }
@@ -143,9 +127,7 @@ export class PartController {
     @Param("id", ParseUUIDPipe) id: string,
     @Body(UpdateValidator) body: Part.Detail
   ) {
-    const service = this.findService(part);
-
-    const partInfo = await service.set(body, id);
+    const partInfo = await this.service.set(id, part, body);
 
     if (typeof partInfo === "string") {
       throw new BadRequestException(
@@ -164,16 +146,10 @@ export class PartController {
     @Param("part", ProductValidator) part: Products,
     @Param("id", ParseUUIDPipe) id: string
   ) {
-    const service = this.findService(part);
-
-    const partInfo = await service.delete(id);
+    const partInfo = await this.service.delete(id, part);
 
     if (partInfo) return partInfo;
 
     throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
-  }
-
-  private findService(part: Products) {
-    return this.service.PartService[part] ?? this.service;
   }
 }
