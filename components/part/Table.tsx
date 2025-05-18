@@ -15,16 +15,15 @@ export const DetailTableComponent: {
   [Infos.CPU_CORES]: lazy(
     () => import("@/components/part/detail/CPUCoreConfig")
   ),
+  [Infos.CPU_MEMORY]: lazy(() => import("@/components/part/detail/CPUMemory")),
   [Infos.GPU_SPEC]: lazy(() => import("@/components/part/detail/GPUSpec")),
   [Infos.GPU_PERF]: lazy(
     () => import("@/components/part/detail/GPUPerformance")
   ),
   [Infos.GPU_FEAT]: lazy(() => import("@/components/part/detail/GPUFeature")),
+  [Infos.GPU_MEMORY]: lazy(() => import("@/components/part/detail/CPUMemory")),
   [Infos.PROCESSOR_CACHE]: lazy(
     () => import("@/components/part/detail/ProcessorCache")
-  ),
-  [Infos.PROCESSOR_MEMORY]: lazy(
-    () => import("@/components/part/detail/ProcessorMemorySpec")
   ),
   [Infos.GRAPHIC_CARD_SPEC]: lazy(
     () => import("@/components/part/detail/GraphicCardSpec")

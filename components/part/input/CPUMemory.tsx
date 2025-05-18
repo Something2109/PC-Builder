@@ -4,22 +4,22 @@ import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button } from "@/components/utils/Button";
-import ProcessorMemorySpec from "@/utils/interface/part/info/ProcessorMemorySpec";
+import CPUMemory from "@/utils/interface/part/info/CPUMemory";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { useRef } from "react";
 
 function Component({
   defaultValue,
 }: {
-  defaultValue?: ProcessorMemorySpec.Info[] | null;
+  defaultValue?: CPUMemory.Info[] | null;
 }) {
   const [formFactors, addConnector, deleteConnector, existConnector] =
     useObjectSet(
       (type: InternalConnectors.RAM | "") => ({
         type,
+        speed: 0,
         capacity: 0,
         channel_count: 0,
-        bus: 0,
         bandwidth: 0,
       }),
       (info) => info.type,
@@ -30,11 +30,11 @@ function Component({
     <Table.Component>
       <thead>
         <Table.Row>
-          <Table.Cell>{ProcessorMemorySpec.Label.type}</Table.Cell>
-          <Table.Cell>{ProcessorMemorySpec.Label.capacity}</Table.Cell>
-          <Table.Cell>{ProcessorMemorySpec.Label.channel_count}</Table.Cell>
-          <Table.Cell>{ProcessorMemorySpec.Label.bus}</Table.Cell>
-          <Table.Cell>{ProcessorMemorySpec.Label.bandwidth}</Table.Cell>
+          <Table.Cell>{CPUMemory.Label.type}</Table.Cell>
+          <Table.Cell>{CPUMemory.Label.speed}</Table.Cell>
+          <Table.Cell>{CPUMemory.Label.capacity}</Table.Cell>
+          <Table.Cell>{CPUMemory.Label.channel_count}</Table.Cell>
+          <Table.Cell>{CPUMemory.Label.bandwidth}</Table.Cell>
         </Table.Row>
       </thead>
       <tbody>
@@ -42,6 +42,14 @@ function Component({
           <Table.Row key={`memory-${type}`}>
             <Table.Cell>
               <label>{type}</label>
+            </Table.Cell>
+            <Table.Cell>
+              <Input
+                type="number"
+                name={`${type}-bus`}
+                defaultValue={value.speed}
+                onChange={(e) => (value.speed = Number(e.target.value))}
+              />
             </Table.Cell>
             <Table.Cell>
               <Input
@@ -57,14 +65,6 @@ function Component({
                 name={`${type}-channel_count`}
                 defaultValue={value.channel_count}
                 onChange={(e) => (value.channel_count = Number(e.target.value))}
-              />
-            </Table.Cell>
-            <Table.Cell>
-              <Input
-                type="number"
-                name={`${type}-bus`}
-                defaultValue={value.bus}
-                onChange={(e) => (value.bus = Number(e.target.value))}
               />
             </Table.Cell>
             <Table.Cell className="relative">
@@ -130,9 +130,7 @@ function submit(formData: FormData) {
     return acc;
   }, {} as MappingFormdata);
 
-  return Object.values(raw).map(
-    (val) => ProcessorMemorySpec.Schema.parse(val)!
-  );
+  return Object.values(raw).map((val) => CPUMemory.Schema.parse(val)!);
 }
 
 export default GenericInputField(Component, submit);

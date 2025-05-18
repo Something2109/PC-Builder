@@ -19,16 +19,15 @@ const InputComponent: {
   [Infos.CPU_CORES]: lazy(
     () => import("@/components/part/input/CPUCoreConfig")
   ),
+  [Infos.CPU_MEMORY]: lazy(() => import("@/components/part/input/CPUMemory")),
   [Infos.GPU_SPEC]: lazy(() => import("@/components/part/input/GPUSpec")),
   [Infos.GPU_PERF]: lazy(
     () => import("@/components/part/input/GPUPerformance")
   ),
+  [Infos.GPU_MEMORY]: lazy(() => import("@/components/part/input/GPUMemory")),
   [Infos.GPU_FEAT]: lazy(() => import("@/components/part/input/GPUFeature")),
   [Infos.PROCESSOR_CACHE]: lazy(
     () => import("@/components/part/input/ProcessorCache")
-  ),
-  [Infos.PROCESSOR_MEMORY]: lazy(
-    () => import("@/components/part/input/ProcessorMemorySpec")
   ),
   [Infos.GRAPHIC_CARD_SPEC]: lazy(
     () => import("@/components/part/input/GraphicCardSpec")
