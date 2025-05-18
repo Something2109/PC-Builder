@@ -146,6 +146,21 @@ namespace InternalConnectors {
 
   export type RAM = z.infer<typeof RAM>;
 
+  export const SGRAM = z.enum([
+    "DDR SGRAM",
+    "GDDR2",
+    "GDDR3",
+    "GDDR4",
+    "GDDR5",
+    "GDDR5X",
+    "GDDR6",
+    "GDDR6X",
+    "GDDR6W",
+    "GDDR7",
+  ]);
+
+  export type SGRAM = z.infer<typeof SGRAM>;
+
   export namespace Storage {
     export const SSD = z.enum(["SATA", "U.2", "mSATA", "M.2 PCIe"]);
 
