@@ -48,9 +48,6 @@ class SSDSpecModel extends Model implements PartDetailTable<SSDSpec.Info> {
   declare capacity: number | null;
 
   @Column(DataType.INTEGER)
-  declare cache: number | null;
-
-  @Column(DataType.INTEGER)
   declare tbw: number | null;
 
   @Column({
