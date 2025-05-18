@@ -10,9 +10,11 @@ import CPUBlockSocketSupport from "./info/CPUBlockSocketSupport";
 import CPUBlockSpec from "./info/CPUBlockSpec";
 import CPUCoreConfig from "./info/CPUCoreConfig";
 import CPUPerformance from "./info/CPUPerformance";
+import CPUMemory from "./info/CPUMemory";
 import CPUSpec from "./info/CPUSpec";
 import FanSpec from "./info/FanSpec";
 import GPUFeature from "./info/GPUFeature";
+import GPUMemory from "./info/GPUMemory";
 import GPUPerformance from "./info/GPUPerformance";
 import GPUSpec from "./info/GPUSpec";
 import GraphicCardSpec from "./info/GraphicCardSpec";
@@ -24,7 +26,6 @@ import MainboardPCIe from "./info/MainboardPCIe";
 import MainboardStorageConnector from "./info/MainboardStorageConnector";
 import MainboardUSBConnector from "./info/MainboardUSBConnector";
 import ProcessorCache from "./info/ProcessorCache";
-import ProcessorMemory from "./info/ProcessorMemorySpec";
 import PSUSpec from "./info/PSUSpec";
 import PSUConnector from "./info/PSUConnector";
 import PumpSpec from "./info/PumpSpec";
@@ -49,11 +50,12 @@ export namespace Information {
     [Infos.CPU_SPEC]: "CPU Specs",
     [Infos.CPU_PERF]: "CPU Performance",
     [Infos.CPU_CORES]: "CPU Core Spec",
+    [Infos.CPU_MEMORY]: "Processor Memory",
     [Infos.GPU_SPEC]: "GPU Specs",
     [Infos.GPU_PERF]: "GPU Performance",
+    [Infos.GPU_MEMORY]: "Graphic Card Memory",
     [Infos.GPU_FEAT]: "GPU Features",
     [Infos.PROCESSOR_CACHE]: "Processor Cache",
-    [Infos.PROCESSOR_MEMORY]: "Processor Memory",
     [Infos.GRAPHIC_CARD_SPEC]: "Graphic Card Specs",
     [Infos.GRAPHIC_CARD_PORT]: "Display External Ports",
     [Infos.MAIN_SPEC]: "Mainboard Specs",
@@ -91,11 +93,12 @@ export namespace Information {
     [Infos.CPU_SPEC]: CPUSpec.Label,
     [Infos.CPU_PERF]: CPUPerformance.Label,
     [Infos.CPU_CORES]: CPUCoreConfig.Label,
+    [Infos.CPU_MEMORY]: CPUMemory.Label,
     [Infos.GPU_SPEC]: GPUSpec.Label,
     [Infos.GPU_PERF]: GPUPerformance.Label,
+    [Infos.GPU_MEMORY]: GPUMemory.Label,
     [Infos.GPU_FEAT]: GPUFeature.Label,
     [Infos.PROCESSOR_CACHE]: ProcessorCache.Label,
-    [Infos.PROCESSOR_MEMORY]: ProcessorMemory.Label,
     [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Label,
     [Infos.GRAPHIC_CARD_PORT]: GraphicCardPort.Label,
     [Infos.MAIN_SPEC]: MainboardSpec.Label,
@@ -134,11 +137,12 @@ export namespace Information {
     [Infos.CPU_SPEC]: CPUSpec.Schema.partial().nullish(),
     [Infos.CPU_PERF]: CPUPerformance.Schema.partial().nullish(),
     [Infos.CPU_CORES]: z.array(CPUCoreConfig.Schema.partial()),
+    [Infos.CPU_MEMORY]: z.array(CPUMemory.Schema.partial()),
     [Infos.GPU_SPEC]: GPUSpec.Schema.partial().nullish(),
     [Infos.GPU_PERF]: GPUPerformance.Schema.partial().nullish(),
+    [Infos.GPU_MEMORY]: GPUMemory.Schema.partial().nullish(),
     [Infos.GPU_FEAT]: GPUFeature.Schema.partial().nullish(),
     [Infos.PROCESSOR_CACHE]: ProcessorCache.Schema.partial().nullish(),
-    [Infos.PROCESSOR_MEMORY]: z.array(ProcessorMemory.Schema.partial()),
     [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Schema.partial().nullish(),
     [Infos.GRAPHIC_CARD_PORT]: z.array(GraphicCardPort.Schema),
     [Infos.MAIN_SPEC]: MainboardSpec.Schema.partial().nullish(),
