@@ -9,7 +9,6 @@ namespace SSDSpec {
   export const Schema = z.object({
     memory_type: MemoryCell,
     capacity: Primitive.Number,
-    cache: Primitive.Number,
     tbw: Primitive.Number,
 
     form_factor: FormFactor.SSD,
@@ -21,7 +20,6 @@ namespace SSDSpec {
   export const Label: { [key in keyof Info]: string } = {
     memory_type: "Memory Cell",
     capacity: "Capacity",
-    cache: "Cache",
     tbw: "TBW",
 
     form_factor: "Form Factor",

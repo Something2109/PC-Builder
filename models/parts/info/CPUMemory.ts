@@ -8,8 +8,8 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import SSDSpec from "@/utils/interface/part/info/SSDSpec";
-import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import CPUMemory from "@/utils/interface/part/info/CPUMemory";
+import { InternalConnectors } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
 import {
@@ -26,10 +26,12 @@ import {
   [ModelScopes.FILTER]: (options?: Record<string, string[] | number[]>) => ({
     where: defaultFilter(options),
   }),
-  [ModelScopes.DETAIL]: PartDefaultScope,
+  [ModelScopes.DETAIL]: {
+    ...PartDefaultScope,
+  },
 }))
-@Table({ modelName: Infos.SSD_SPEC })
-class SSDSpecModel extends Model implements PartDetailTable<SSDSpec.Info> {
+@Table({ modelName: Infos.CPU_MEMORY })
+class CPUMemoryModel extends Model implements PartDetailTable<CPUMemory.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -38,29 +40,24 @@ class SSDSpecModel extends Model implements PartDetailTable<SSDSpec.Info> {
   @BelongsTo(() => PartInformation)
   declare part: PartInformation;
 
+  @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [SSDSpec.MemoryCell.options] },
+    validate: { isIn: [InternalConnectors.RAM.options] },
   })
-  declare memory_type: SSDSpec.MemoryCell | null;
+  declare type: InternalConnectors.RAM | null;
 
   @Column(DataType.INTEGER)
+  declare speed: number | null;
+
+  @Column(DataType.FLOAT)
   declare capacity: number | null;
 
-  @Column(DataType.INTEGER)
-  declare tbw: number | null;
+  @Column(DataType.TINYINT)
+  declare channel_count: number | null;
 
-  @Column({
-    type: DataType.STRING,
-    validate: { isIn: [FormFactor.SSD.options] },
-  })
-  declare form_factor: FormFactor.SSD | null;
-
-  @Column({
-    type: DataType.STRING,
-    validate: { isIn: [InternalConnectors.Storage.SSD.options] },
-  })
-  declare interface: InternalConnectors.Storage.SSD | null;
+  @Column(DataType.FLOAT)
+  declare bandwidth: number | null;
 }
 
-export { SSDSpecModel };
+export { CPUMemoryModel };
