@@ -8,7 +8,7 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import ProcessorMemory from "@/utils/interface/part/info/ProcessorMemorySpec";
+import GPUMemory from "@/utils/interface/part/info/GPUMemory";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
@@ -30,11 +30,8 @@ import {
     ...PartDefaultScope,
   },
 }))
-@Table({ modelName: Infos.PROCESSOR_MEMORY })
-class ProcessorMemoryModel
-  extends Model
-  implements PartDetailTable<ProcessorMemory.Info>
-{
+@Table({ modelName: Infos.GPU_MEMORY })
+class GPUMemoryModel extends Model implements PartDetailTable<GPUMemory.Info> {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -46,21 +43,21 @@ class ProcessorMemoryModel
   @PrimaryKey
   @Column({
     type: DataType.STRING,
-    validate: { isIn: [InternalConnectors.RAM.options] },
+    validate: { isIn: [InternalConnectors.SGRAM.options] },
   })
-  declare type: InternalConnectors.RAM | null;
+  declare type: InternalConnectors.SGRAM | null;
+
+  @Column(DataType.INTEGER)
+  declare speed: number | null;
 
   @Column(DataType.FLOAT)
   declare capacity: number | null;
-
-  @Column(DataType.TINYINT)
-  declare channel_count: number | null;
 
   @Column(DataType.FLOAT)
   declare bandwidth: number | null;
 
   @Column(DataType.INTEGER)
-  declare bus: number | null;
+  declare bus_width: number | null;
 }
 
-export { ProcessorMemoryModel };
+export { GPUMemoryModel };

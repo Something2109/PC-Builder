@@ -29,12 +29,13 @@ import { CasePSUSupportModel } from "./info/CasePSUSupport";
 import { FanSpecModel } from "./info/FanSpec";
 import { CPUSpecModel } from "./info/CPUSpec";
 import { CPUPerformanceModel } from "./info/CPUPerformance";
+import { CPUMemoryModel } from "./info/CPUMemory";
 import { CPUCoreConfigModel } from "./info/CPUCoreConfig";
 import { GPUSpecModel } from "./info/GPUSpec";
 import { GPUPerformanceModel } from "./info/GPUPerformance";
+import { GPUMemoryModel } from "./info/GPUMemory";
 import { GPUFeatureModel } from "./info/GPUFeature";
 import { ProcessorCacheModel } from "./info/ProcessorCache";
-import { ProcessorMemoryModel } from "./info/ProcessorMemorySpec";
 import { GraphicCardSpecModel } from "./info/GraphicCardSpec";
 import { GraphicCardPortModel } from "./info/GraphicCardPort";
 import { MainboardSpecModel } from "./info/MainboardSpec";
@@ -121,20 +122,23 @@ class PartInformation
   @HasMany(() => CPUCoreConfigModel)
   declare [Infos.CPU_CORES]: CPUCoreConfigModel[];
 
+  @HasMany(() => CPUMemoryModel)
+  declare [Infos.CPU_MEMORY]: CPUMemoryModel[];
+
   @HasOne(() => GPUSpecModel)
   declare [Infos.GPU_SPEC]: GPUSpecModel | null;
 
   @HasOne(() => GPUPerformanceModel)
   declare [Infos.GPU_PERF]: GPUPerformanceModel | null;
 
+  @HasOne(() => GPUMemoryModel)
+  declare [Infos.GPU_MEMORY]: GPUMemoryModel | null;
+
   @HasOne(() => GPUFeatureModel)
   declare [Infos.GPU_FEAT]: GPUFeatureModel | null;
 
   @HasOne(() => ProcessorCacheModel)
   declare [Infos.PROCESSOR_CACHE]: ProcessorCacheModel | null;
-
-  @HasMany(() => ProcessorMemoryModel)
-  declare [Infos.PROCESSOR_MEMORY]: ProcessorMemoryModel[];
 
   @HasOne(() => GraphicCardSpecModel)
   declare [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpecModel | null;

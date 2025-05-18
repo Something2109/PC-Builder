@@ -13,11 +13,12 @@ import { FanSpecModel } from "./parts/info/FanSpec";
 import { CPUSpecModel } from "./parts/info/CPUSpec";
 import { CPUPerformanceModel } from "./parts/info/CPUPerformance";
 import { CPUCoreConfigModel } from "./parts/info/CPUCoreConfig";
+import { CPUMemoryModel } from "./parts/info/CPUMemory";
 import { GPUSpecModel } from "./parts/info/GPUSpec";
 import { GPUPerformanceModel } from "./parts/info/GPUPerformance";
+import { GPUMemoryModel } from "./parts/info/GPUMemory";
 import { GPUFeatureModel } from "./parts/info/GPUFeature";
 import { ProcessorCacheModel } from "./parts/info/ProcessorCache";
-import { ProcessorMemoryModel } from "./parts/info/ProcessorMemorySpec";
 import { GraphicCardSpecModel } from "./parts/info/GraphicCardSpec";
 import { GraphicCardPortModel } from "./parts/info/GraphicCardPort";
 import { MainboardSpecModel } from "./parts/info/MainboardSpec";
@@ -47,12 +48,13 @@ export const ConnectionOptions: SequelizeOptions = {
     PartInformation,
     CPUSpecModel,
     CPUPerformanceModel,
+    CPUMemoryModel,
     CPUCoreConfigModel,
     GPUSpecModel,
     GPUPerformanceModel,
+    GPUMemoryModel,
     GPUFeatureModel,
     ProcessorCacheModel,
-    ProcessorMemoryModel,
     GraphicCardSpecModel,
     GraphicCardPortModel,
     MainboardSpecModel,
