@@ -29,6 +29,14 @@ export namespace API {
   };
 
   /**
+   * The search option interface.
+   * Provide the option for searching.
+   */
+  export type SearchOptions = {
+    q?: string;
+  };
+
+  /**
    * Extract the page options from the query parameters.
    * @param query The query to extract options from.
    * @returns The page options.
