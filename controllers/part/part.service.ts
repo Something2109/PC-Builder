@@ -26,7 +26,10 @@ class PartService {
     private readonly CRUDService: DatabaseCRUDInterface
   ) {}
 
-  async list(options: Part.Filter & API.PageOptions, product?: Products) {
+  async list(
+    options: Part.Filter & API.PageOptions & API.SearchOptions,
+    product?: Products
+  ) {
     if (product) options.part = { ...options.part, part: [product] };
 
     const infoMapping = product
@@ -40,7 +43,7 @@ class PartService {
   }
 
   async filter(
-    options: Part.Filter & API.PageOptions,
+    options: Part.Filter & API.PageOptions & API.SearchOptions,
     product?: Products,
     ...attributes: string[]
   ) {

@@ -14,5 +14,6 @@ import { ProductParser } from "./parser.service";
     { provide: LIST_INTERFACE, useClass: SequelizeListService },
     { provide: CRUD_INTERFACE, useClass: SequelizeCRUDService },
   ],
+  exports: [PartService],
 })
 export class PartModule {}

@@ -1,10 +1,6 @@
 import Part from "@/utils/interface/part";
 import { API } from "@/utils/interface/api";
-import { Infos, Products } from "@/utils/Enum";
-
-type SearchOptions = {
-  q?: string;
-};
+import { Infos } from "@/utils/Enum";
 
 export const LIST_INTERFACE = "DatabaseListInterface";
 export const CRUD_INTERFACE = "DatabaseCRUDInterface";
@@ -15,12 +11,12 @@ export type FilterAttributeMapping = {
 
 export interface DatabaseListInterface {
   list(
-    options: Part.Filter & API.PageOptions & SearchOptions,
+    options: Part.Filter & API.PageOptions & API.SearchOptions,
     attrs?: { [key in Infos]?: string[] }
   ): Promise<API.Payload<Part.Detail>>;
 
   filter(
-    options: API.PageOptions,
+    options: API.PageOptions & API.SearchOptions,
     attrs: FilterAttributeMapping
   ): Promise<Part.Filter>;
 }

@@ -8,16 +8,20 @@ import Part, { Mapping } from "@/utils/interface/part";
 import { API } from "@/utils/interface/api";
 import { Infos } from "@/utils/Enum";
 import { Injectable } from "@nestjs/common";
-import { col, DataTypes, fn, IncludeOptions, ModelStatic } from "sequelize";
-
-type SearchOptions = {
-  q?: string;
-};
+import {
+  col,
+  DataTypes,
+  Filterable,
+  fn,
+  IncludeOptions,
+  ModelStatic,
+  Op,
+} from "sequelize";
 
 @Injectable()
 class SequelizeListService implements DatabaseListInterface {
   async list(
-    options: Part.Filter & API.PageOptions & SearchOptions,
+    options: Part.Filter & API.PageOptions & API.SearchOptions,
     attrs?: { [key in Infos]?: string[] }
   ) {
     const Context = new SequelizeContext(options, attrs);
@@ -26,7 +30,7 @@ class SequelizeListService implements DatabaseListInterface {
   }
 
   async filter(
-    options: Part.Filter & API.PageOptions & SearchOptions,
+    options: Part.Filter & API.PageOptions & API.SearchOptions,
     attrs: FilterAttributeMapping
   ): Promise<Part.Filter> {
     const { part, ...infos } = attrs;
@@ -78,18 +82,25 @@ type InfoModelContext = {
 class SequelizeContext {
   private readonly PartModel: ModelStatic<PartInformation>;
   private readonly InfoModels: InfoModelContext;
-  private readonly pageOptions: API.PageOptions & SearchOptions;
+  private readonly pageOptions: { limit: number; offset: number };
+  private readonly searchOptions: Filterable;
 
   constructor(
-    options: Part.Filter & API.PageOptions & SearchOptions,
+    options: Part.Filter & API.PageOptions & API.SearchOptions,
     attrs?: { [key in Infos]?: string[] }
   ) {
     this.PartModel = PartInformation.scope({
       method: [ModelScopes.FILTER, options.part],
     });
-    this.pageOptions = options;
-    this.InfoModels = {};
 
+    const where = options.q ? { [Op.like]: `%${options.q}%` } : undefined;
+    this.searchOptions = { where };
+    this.pageOptions = {
+      offset: (options.page - 1) * options.limit,
+      limit: options.limit,
+    };
+
+    this.InfoModels = {};
     if (attrs) {
       Object.entries(attrs).forEach(([key, value]) => {
         const info = key as Infos;
@@ -116,9 +127,9 @@ class SequelizeContext {
       : [];
 
     const { count, rows } = await this.PartModel.findAndCountAll({
+      ...this.searchOptions,
+      ...this.pageOptions,
       attributes: ["id", ...Part.BasicSummaryAttributes],
-      limit: this.pageOptions.limit,
-      offset: (this.pageOptions.page - 1) * this.pageOptions.limit,
       include,
       distinct: true, // prevent multiple id row count if the query returns more than 1 row for an id.
     });
@@ -171,12 +182,12 @@ class SequelizeContext {
     ...include: IncludeOptions[]
   ): Promise<string[]> {
     const query = await model.findAll({
+      ...this.searchOptions,
+      ...this.pageOptions,
       attributes: [attribute.toString()],
       group: attribute.toString(),
       order: [attribute.toString()],
       include,
-      offset: (this.pageOptions.page - 1) * this.pageOptions.limit,
-      limit: this.pageOptions.limit,
       raw: true,
       subQuery: false,
     });
@@ -198,6 +209,8 @@ class SequelizeContext {
     ...include: IncludeOptions[]
   ): Promise<number[]> {
     const query = (await model.findOne({
+      ...this.searchOptions,
+      ...this.pageOptions,
       attributes: [
         [fn("min", col(attribute as string)), "min"],
         [fn("max", col(attribute as string)), "max"],

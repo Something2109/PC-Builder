@@ -5,12 +5,6 @@ import { Primitive } from "@/utils/interface/utils";
 import { Products } from "@/utils/Enum";
 import { FilterOptionBuilder } from "./interface/filterbuilder";
 
-type SearchOptions = {
-  q?: string;
-};
-
-type PageOptions = API.PageOptions;
-
 @Injectable()
 class ProductParser {
   /**
@@ -76,8 +70,9 @@ class ProductParser {
   options(
     params: Record<string, string | string[]>,
     part?: Products
-  ): Part.Filter & PageOptions & SearchOptions {
-    const pageOptions: PageOptions & SearchOptions = API.toPageOptions(params);
+  ): Part.Filter & API.PageOptions & API.SearchOptions {
+    const pageOptions: API.PageOptions & API.SearchOptions =
+      API.toPageOptions(params);
 
     if (params.q) {
       pageOptions.q = Array.isArray(params.q) ? params.q.join("|") : params.q;
