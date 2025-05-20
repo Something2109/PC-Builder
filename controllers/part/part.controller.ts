@@ -9,10 +9,13 @@ import {
   ParseUUIDPipe,
   Delete,
   ParseEnumPipe,
-  BadRequestException,
+  Inject,
+  InternalServerErrorException,
 } from "@nestjs/common";
-import { ProductParser } from "./parser.service";
-import { PartService } from "./part.service";
+import {
+  PART_INTERFACE,
+  PartServiceInterface,
+} from "./interface/part.interface";
 import { Products, Roles } from "@/utils/Enum";
 import Part from "@/utils/interface/part";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
@@ -28,15 +31,14 @@ const UpdateValidator = new ZodValidationPipe(Part.Detail.partial());
 
 @Controller("part")
 export class PartController {
-  constructor(private service: PartService, private parser: ProductParser) {}
+  constructor(
+    @Inject(PART_INTERFACE)
+    private service: PartServiceInterface
+  ) {}
 
   @Get("filter")
   async getDefaultFilter(@Query() params: Record<string, string | string[]>) {
-    const options = this.parser.options(params);
-
-    const filter = await this.service.filter(options);
-
-    return filter;
+    return await this.service.filter(params);
   }
 
   @Get("filter/:part")
@@ -44,11 +46,7 @@ export class PartController {
     @Param("part", ProductValidator) part: Products,
     @Query() params: Record<string, string | string[]>
   ) {
-    const options = this.parser.options(params, part);
-
-    const filter = await this.service.filter(options, part);
-
-    return this.parser.filter(filter, part);
+    return await this.service.filter(params, part);
   }
 
   @Get("filter/:part/:attribute")
@@ -57,23 +55,12 @@ export class PartController {
     @Param("attribute") attribute: string,
     @Query() params: Record<string, string | string[]>
   ) {
-    const options = this.parser.options(params, part);
-
-    const filter = await this.service.filter(options, part, attribute);
-
-    return this.parser.filter(filter, part);
+    return await this.service.filter(params, part, attribute);
   }
 
   @Get()
   async index(@Query() params: Record<string, string | string[]>) {
-    const options = this.parser.options(params);
-
-    let data = await this.service.list(options);
-
-    return {
-      list: data.list.map((part) => this.parser.summary(part)),
-      total: data.total,
-    };
+    return await this.service.list(params);
   }
 
   @Get(":part")
@@ -81,14 +68,7 @@ export class PartController {
     @Param("part", ProductValidator) part: Products,
     @Query() params: Record<string, string | string[]>
   ) {
-    const options = this.parser.options(params, part);
-
-    let data = await this.service.list(options, part);
-
-    return {
-      list: data.list.map((data) => this.parser.summary(data, part)),
-      total: data.total,
-    };
+    return await this.service.list(params, part);
   }
 
   @Role(Roles.ADMIN)
@@ -103,9 +83,7 @@ export class PartController {
       return partInfo;
     }
 
-    throw new BadRequestException(
-      `The part's code name ${body.code_name} is already exists in part with the id: ${partInfo}`
-    );
+    throw new InternalServerErrorException("Failed to create new product.");
   }
 
   @Get(":part/:id")
@@ -128,12 +106,6 @@ export class PartController {
     @Body(UpdateValidator) body: Part.Detail
   ) {
     const partInfo = await this.service.set(id, part, body);
-
-    if (typeof partInfo === "string") {
-      throw new BadRequestException(
-        `The part's code name ${body.code_name} is already exists in part with the id: ${partInfo}`
-      );
-    }
 
     if (partInfo) return partInfo;
 
