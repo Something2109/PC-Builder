@@ -42,6 +42,47 @@ import MainboardFanConnector from "./info/MainboardFanConnector";
  * TO BE USED IN MANY DYNAMIC MAPPING OF THE PROJECT
  */
 export namespace Information {
+  export const Schema = z.object({
+    [Infos.CPU_SPEC]: CPUSpec.Schema,
+    [Infos.CPU_PERF]: CPUPerformance.Schema,
+    [Infos.CPU_CORES]: CPUCoreConfig.Schema,
+    [Infos.CPU_MEMORY]: CPUMemory.Schema,
+    [Infos.GPU_SPEC]: GPUSpec.Schema,
+    [Infos.GPU_PERF]: GPUPerformance.Schema,
+    [Infos.GPU_MEMORY]: GPUMemory.Schema,
+    [Infos.GPU_FEAT]: GPUFeature.Schema,
+    [Infos.PROCESSOR_CACHE]: ProcessorCache.Schema,
+    [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Schema,
+    [Infos.GRAPHIC_CARD_PORT]: GraphicCardPort.Schema,
+    [Infos.MAIN_SPEC]: MainboardSpec.Schema,
+    [Infos.MAIN_POWER]: MainboardPowerConnector.Schema,
+    [Infos.MAIN_PCIE]: MainboardPCIe.Schema,
+    [Infos.MAIN_STORAGE]: MainboardStorageConnector.Schema,
+    [Infos.MAIN_USB]: MainboardUSBConnector.Schema,
+    [Infos.MAIN_FAN]: MainboardFanConnector.Schema,
+    [Infos.RAM_SPEC]: RAMSpec.Schema,
+    [Infos.SSD_SPEC]: SSDSpec.Schema,
+    [Infos.HDD_SPEC]: HDDSpec.Schema,
+    [Infos.STORAGE_PERF]: StoragePerformance.Schema,
+    [Infos.STORAGE_CACHE]: StorageCache.Schema,
+    [Infos.PSU_SPEC]: PSUSpec.Schema,
+    [Infos.PSU_CONNECTOR]: PSUConnector.Schema,
+    [Infos.CASE_SPEC]: CaseSpec.Schema,
+    [Infos.CASE_MAIN]: CaseMainboardSupport.Schema,
+    [Infos.CASE_FAN]: CaseFanSupport.Schema,
+    [Infos.CASE_HARD_DRIVE]: CaseHardDriveSupport.Schema,
+    [Infos.CASE_RADIATOR]: CaseRadiatorSupport.Schema,
+    [Infos.CASE_PSU]: CasePSUSupport.Schema,
+    [Infos.FAN_SPEC]: FanSpec.Schema,
+    [Infos.CPU_BLOCK_SPEC]: CPUBlockSpec.Schema,
+    [Infos.CPU_BLOCK_SOCKET]: CPUBlockSocketSupport.Schema,
+    [Infos.PUMP_SPEC]: PumpSpec.Schema,
+    [Infos.RADIATOR_SPEC]: RadiatorSpec.Schema,
+    [Infos.EXTERNAL_PORTS]: PartExternalPorts.Schema,
+  });
+
+  export type Info = z.infer<typeof Schema>;
+
   /**
    * The label list of the information.
    * Contains the label corresponding to each {@link Infos} type.
