@@ -1,19 +1,20 @@
 import { Module } from "@nestjs/common";
 import { CRUD_INTERFACE, LIST_INTERFACE } from "./interface/database.service";
+import { PARSE_INTERFACE, PART_INTERFACE } from "./interface/part.interface";
+import { ParseService } from "./service/Parser.service";
 import { SequelizeCRUDService } from "./service/SequelizeCRUD.service";
 import { SequelizeListService } from "./service/SequelizeList.service";
 import { PartController } from "./part.controller";
 import { PartService } from "./part.service";
-import { ProductParser } from "./parser.service";
 
 @Module({
   controllers: [PartController],
   providers: [
-    ProductParser,
-    PartService,
+    { provide: PART_INTERFACE, useClass: PartService },
+    { provide: PARSE_INTERFACE, useClass: ParseService },
     { provide: LIST_INTERFACE, useClass: SequelizeListService },
     { provide: CRUD_INTERFACE, useClass: SequelizeCRUDService },
   ],
-  exports: [PartService],
+  exports: [PART_INTERFACE],
 })
 export class PartModule {}
