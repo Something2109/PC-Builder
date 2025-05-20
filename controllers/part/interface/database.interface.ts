@@ -17,7 +17,7 @@ export const CRUD_INTERFACE = "DatabaseCRUDInterface";
  * - `part`: Array of basic filter attributes for a part.
  * - Additional keys are optional and correspond to `Infos` enum values, each mapping to an array of strings.
  */
-export type FilterAttributeMapping = {
+export type ModelAttributeList = {
   part: (typeof Part.BasicFilterAttributes)[number][];
 } & { [key in Infos]?: string[] };
 
@@ -44,7 +44,7 @@ export interface DatabaseListInterface {
    */
   filter(
     options: API.PageOptions & API.SearchOptions,
-    attrs: FilterAttributeMapping
+    attrs: ModelAttributeList
   ): Promise<Part.Filter>;
 }
 

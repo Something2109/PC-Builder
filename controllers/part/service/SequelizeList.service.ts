@@ -1,6 +1,6 @@
 import {
   DatabaseListInterface,
-  FilterAttributeMapping,
+  ModelAttributeList,
 } from "../interface/database.interface";
 import { PartInformation } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
@@ -31,7 +31,7 @@ class SequelizeListService implements DatabaseListInterface {
 
   async filter(
     options: Part.Filter & API.PageOptions & API.SearchOptions,
-    attrs: FilterAttributeMapping
+    attrs: ModelAttributeList
   ): Promise<Part.Filter> {
     const { part, ...infos } = attrs;
     const Context = new SequelizeContext(options, infos);

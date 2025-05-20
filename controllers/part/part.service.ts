@@ -9,7 +9,7 @@ import {
   LIST_INTERFACE,
   DatabaseCRUDInterface,
   DatabaseListInterface,
-  FilterAttributeMapping,
+  ModelAttributeList,
 } from "./interface/database.interface";
 import {
   PARSE_INTERFACE,
@@ -61,7 +61,7 @@ class PartService implements PartServiceInterface {
 
     if (product) options.part = { ...options.part, part: [product] };
 
-    const infoMapping: FilterAttributeMapping = {
+    const infoMapping: ModelAttributeList = {
       part:
         attributes.length === 0
           ? Part.BasicFilterAttributes
