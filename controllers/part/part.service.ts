@@ -11,25 +11,30 @@ import {
   DatabaseListInterface,
   FilterAttributeMapping,
 } from "./interface/database.service";
+import {
+  PARSE_INTERFACE,
+  ParseServiceInterface,
+  PartServiceInterface,
+} from "./interface/part.interface";
 import Part, { Mapping } from "@/utils/interface/part";
-import { API } from "@/utils/interface/api";
 import { Infos, Products } from "@/utils/Enum";
 
 @Injectable()
-class PartService {
+class PartService implements PartServiceInterface {
   private readonly logger: Logger = new Logger(PartService.name);
 
   constructor(
+    @Inject(PARSE_INTERFACE)
+    private readonly parseService: ParseServiceInterface,
     @Inject(LIST_INTERFACE)
     private readonly ListService: DatabaseListInterface,
     @Inject(CRUD_INTERFACE)
     private readonly CRUDService: DatabaseCRUDInterface
   ) {}
 
-  async list(
-    options: Part.Filter & API.PageOptions & API.SearchOptions,
-    product?: Products
-  ) {
+  async list(params: Record<string, string | string[]>, product?: Products) {
+    const options = this.parseService.options(params, product);
+
     if (product) options.part = { ...options.part, part: [product] };
 
     const infoMapping = product
@@ -39,14 +44,21 @@ class PartService {
         }, {} as { [key in Infos]?: string[] })
       : undefined;
 
-    return await this.ListService.list(options, infoMapping);
+    let data = await this.ListService.list(options, infoMapping);
+
+    return {
+      list: data.list.map((part) => this.parseService.summary(part)),
+      total: data.total,
+    };
   }
 
   async filter(
-    options: Part.Filter & API.PageOptions & API.SearchOptions,
+    params: Record<string, string | string[]>,
     product?: Products,
     ...attributes: string[]
   ) {
+    const options = this.parseService.options(params, product);
+
     if (product) options.part = { ...options.part, part: [product] };
 
     const infoMapping: FilterAttributeMapping = {
