@@ -3,16 +3,11 @@ import Part, { Product, Mapping } from "@/utils/interface/part";
 import { API } from "@/utils/interface/api";
 import { Primitive } from "@/utils/interface/utils";
 import { Products } from "@/utils/Enum";
-import { FilterOptionBuilder } from "./interface/filterbuilder";
+import { FilterOptionBuilder } from "../interface/filterbuilder";
+import { ParseServiceInterface } from "../interface/part.interface";
 
 @Injectable()
-class ProductParser {
-  /**
-   * Parse the summary info parameter to the product summary info type.
-   * @param data The info to parse.
-   * @param part The product type to parse.
-   * @returns The summary of the info.
-   */
+class ParseService implements ParseServiceInterface {
   summary(data: Part.Detail, part?: Products): Part.Summary<Products> {
     const summary: Record<string, any> = {};
 
@@ -34,13 +29,13 @@ class ProductParser {
   }
 
   filter(options: Part.Filter, part?: Products, ...attributes: string[]) {
-    const filter: Record<string, any> = {};
+    const filter: Record<string, string[] | number[]> = {};
 
     const basicOptions = options.part;
     if (basicOptions) {
       Part.BasicFilterAttributes.forEach((key) => {
         if (attributes.length === 0 || attributes.includes(key))
-          filter[key] = basicOptions[key];
+          filter[key] = basicOptions[key]!;
       });
     }
 
@@ -60,13 +55,6 @@ class ProductParser {
     return filter;
   }
 
-  /**
-   * Create the option to pass into the {@link list} and {@link filter} functions
-   * from an object of string or string array value
-   * (the object parsed from the {@link URLSearchParams} using Nest Query decorator).
-   * @param params The object of string key and string/string array value.
-   * @returns The option parsed from the {@link params}.
-   */
   options(
     params: Record<string, string | string[]>,
     part?: Products
@@ -123,4 +111,4 @@ class ProductParser {
   }
 }
 
-export { ProductParser };
+export { ParseService };
