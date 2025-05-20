@@ -1,7 +1,7 @@
 import {
   DatabaseListInterface,
   FilterAttributeMapping,
-} from "../interface/database.service";
+} from "../interface/database.interface";
 import { PartInformation } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
 import Part, { Mapping } from "@/utils/interface/part";

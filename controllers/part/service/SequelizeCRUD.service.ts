@@ -1,4 +1,4 @@
-import { DatabaseCRUDInterface } from "../interface/database.service";
+import { DatabaseCRUDInterface } from "../interface/database.interface";
 import { PartInformation } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
 import Part from "@/utils/interface/part";

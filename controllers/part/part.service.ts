@@ -10,7 +10,7 @@ import {
   DatabaseCRUDInterface,
   DatabaseListInterface,
   FilterAttributeMapping,
-} from "./interface/database.service";
+} from "./interface/database.interface";
 import {
   PARSE_INTERFACE,
   ParseServiceInterface,
