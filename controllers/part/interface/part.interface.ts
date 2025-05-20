@@ -1,3 +1,4 @@
+import { ModelAttributeList } from "./database.interface";
 import Part from "@/utils/interface/part";
 import { API } from "@/utils/interface/api";
 import { Products } from "@/utils/Enum";
@@ -50,6 +51,15 @@ export interface ParseServiceInterface {
     params: Record<string, string | string[]>,
     part?: Products
   ): Part.Filter & API.PageOptions & API.SearchOptions;
+
+  /**
+   * Maps a list of attribute names to their corresponding model attribute definitions.
+   *
+   * @param attributes - The list of attribute names to map.
+   * @param part - (Optional) The product type for which to map attributes.
+   * @returns The list of model attribute definitions.
+   */
+  attributes(attributes: string[], part?: Products): ModelAttributeList;
 }
 
 /**

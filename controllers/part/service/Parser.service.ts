@@ -2,9 +2,10 @@ import { Injectable } from "@nestjs/common";
 import Part, { Product, Mapping } from "@/utils/interface/part";
 import { API } from "@/utils/interface/api";
 import { Primitive } from "@/utils/interface/utils";
-import { Products } from "@/utils/Enum";
+import { Infos, Products } from "@/utils/Enum";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 import { ParseServiceInterface } from "../interface/part.interface";
+import { ModelAttributeList } from "../interface/database.interface";
 
 @Injectable()
 class ParseService implements ParseServiceInterface {
@@ -15,7 +16,7 @@ class ParseService implements ParseServiceInterface {
 
     if (part) {
       Product.Summary[part].keyof().options.forEach((key) => {
-        const [info, attr] = Mapping.AttributeMapping[part][key];
+        const [info, attr] = Mapping.ProductToInfo[part][key];
 
         if (data[info]) {
           summary[key] = Array.isArray(data[info])
@@ -41,12 +42,12 @@ class ParseService implements ParseServiceInterface {
 
     if (part) {
       if (attributes.length === 0)
-        attributes = Object.keys(Mapping.AttributeMapping[part]);
+        attributes = Object.keys(Mapping.ProductToInfo[part]);
 
       attributes.forEach((attr) => {
-        if (!Mapping.AttributeMapping[part][attr]) return;
+        if (!Mapping.ProductToInfo[part][attr]) return;
 
-        const [info, val] = Mapping.AttributeMapping[part][attr];
+        const [info, val] = Mapping.ProductToInfo[part][attr];
 
         if (options[info]) filter[attr] = options[info][val];
       });
@@ -69,6 +70,38 @@ class ParseService implements ParseServiceInterface {
     const filter = this.buildFilterOptions(params, part);
 
     return { ...filter.build(), ...pageOptions };
+  }
+
+  attributes(attributes: string[], product?: Products) {
+    const infoMapping: ModelAttributeList = {
+      part:
+        attributes.length === 0
+          ? Part.BasicFilterAttributes
+          : Part.BasicFilterAttributes.filter((attr) =>
+              attributes.includes(attr)
+            ),
+    };
+
+    if (product) {
+      const entries =
+        attributes.length === 0
+          ? Object.values(Mapping.ProductToInfo[product])
+          : attributes.map((attr) => Mapping.ProductToInfo[product][attr]);
+
+      entries.forEach((entry) => {
+        if (!entry) return;
+        const [info, attr] = entry as [Infos, string];
+
+        if (!infoMapping[info]) infoMapping[info] = [];
+        infoMapping[info].push(attr);
+      });
+
+      Mapping.Info[product].forEach((info) => {
+        if (!infoMapping[info]) infoMapping[info] = [];
+      });
+    }
+
+    return infoMapping;
   }
 
   /**
@@ -101,8 +134,8 @@ class ParseService implements ParseServiceInterface {
     if (part) {
       const parsedParams = Product.FilterOptions[part].parse(params);
 
-      for (const name in Mapping.AttributeMapping[part]) {
-        const [info, key] = Mapping.AttributeMapping[part][name];
+      for (const name in Mapping.ProductToInfo[part]) {
+        const [info, key] = Mapping.ProductToInfo[part][name];
         builder.add(info, key, parsedParams[name]);
       }
     }

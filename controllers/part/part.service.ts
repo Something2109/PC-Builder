@@ -9,7 +9,6 @@ import {
   LIST_INTERFACE,
   DatabaseCRUDInterface,
   DatabaseListInterface,
-  ModelAttributeList,
 } from "./interface/database.interface";
 import {
   PARSE_INTERFACE,
@@ -58,36 +57,9 @@ class PartService implements PartServiceInterface {
     ...attributes: string[]
   ) {
     const options = this.parseService.options(params, product);
+    const infoMapping = this.parseService.attributes(attributes, product);
 
     if (product) options.part = { ...options.part, part: [product] };
-
-    const infoMapping: ModelAttributeList = {
-      part:
-        attributes.length === 0
-          ? Part.BasicFilterAttributes
-          : Part.BasicFilterAttributes.filter((attr) =>
-              attributes.includes(attr)
-            ),
-    };
-
-    if (product) {
-      const entries =
-        attributes.length === 0
-          ? Object.values(Mapping.AttributeMapping[product])
-          : attributes.map((attr) => Mapping.AttributeMapping[product][attr]);
-
-      entries.forEach((entry) => {
-        if (!entry) return;
-        const [info, attr] = entry as [Infos, string];
-
-        if (!infoMapping[info]) infoMapping[info] = [];
-        infoMapping[info].push(attr);
-      });
-
-      Mapping.Info[product].forEach((info) => {
-        if (!infoMapping[info]) infoMapping[info] = [];
-      });
-    }
 
     return await this.ListService.filter(options, infoMapping);
   }
