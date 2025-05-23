@@ -34,4 +34,4 @@ export class ZodValidationPipe implements PipeTransform {
   providers: [ZodValidationPipe],
   exports: [ZodValidationPipe],
 })
-export class PartModule {}
+export class UtilModule {}
