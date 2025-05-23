@@ -37,10 +37,7 @@ class PartService implements PartServiceInterface {
     if (product) options.part = { ...options.part, part: [product] };
 
     const infoMapping = product
-      ? Mapping.Info[product].reduce((acc, info) => {
-          acc[info] = Mapping.SummaryAttributeMapping[product][info] ?? [];
-          return acc;
-        }, {} as { [key in Infos]?: string[] })
+      ? Mapping.SummaryAttributeMapping[product]
       : undefined;
 
     let data = await this.ListService.list(options, infoMapping);
