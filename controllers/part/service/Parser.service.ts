@@ -116,7 +116,7 @@ class ParseService implements ParseServiceInterface {
   ): FilterOptionBuilder {
     const builder = new FilterOptionBuilder();
 
-    for (const key of Part.BasicFilterAttributes) {
+    for (const key of Part.BasicAttributes.options) {
       let option = params[key];
 
       if (!option) continue;

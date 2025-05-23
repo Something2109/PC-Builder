@@ -13,12 +13,12 @@ export const LIST_INTERFACE = "DatabaseListInterface";
 export const CRUD_INTERFACE = "DatabaseCRUDInterface";
 
 /**
- * Mapping type for filter attributes.
- * - `part`: Array of basic filter attributes for a part.
+ * Mapping type for attributes.
+ * - `part`: Array of basic attributes for a part.
  * - Additional keys are optional and correspond to `Infos` enum values, each mapping to an array of strings.
  */
 export type ModelAttributeList = {
-  part: (typeof Part.BasicFilterAttributes)[number][];
+  part: Part.BasicAttributes[];
 } & { [key in Infos]?: string[] };
 
 /**
