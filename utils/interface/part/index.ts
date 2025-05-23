@@ -46,15 +46,30 @@ namespace Part {
 
   const BasicFilterSchema = z
     .object({
+      id: FilterOptions(Primitive.String),
       part: FilterOptions(Primitive.String),
+      name: FilterOptions(Primitive.String),
+      code_name: FilterOptions(Primitive.String),
       brand: FilterOptions(Primitive.String),
       series: FilterOptions(Primitive.String),
+
+      launch_date: FilterOptions(Primitive.String),
+      url: FilterOptions(Primitive.String),
+      image_url: FilterOptions(Primitive.String),
     })
     .partial();
 
+  export const BasicAttributes = BasicInfo.keyof();
+
+  export type BasicAttributes = z.infer<typeof BasicAttributes>;
+
   export const BasicSummaryAttributes = BasicSummarySchema.keyof().options;
 
-  export const BasicFilterAttributes = BasicFilterSchema.keyof().options;
+  export const BasicFilterAttributes = BasicFilterSchema.pick({
+    part: true,
+    brand: true,
+    series: true,
+  }).keyof().options;
 
   export type Summary<product extends Products | undefined = undefined> =
     product extends Products
