@@ -105,8 +105,8 @@ class BuildService {
     productInfoMapping: { [prod in Products]?: { [info in Infos]?: string[] } },
     transform?: (data: Part.Detail, product: Products) => T
   ): Promise<{ [key in Products]?: T | T[] }> {
-    const promises = await Promise.all(
-      Object.entries(productInfoMapping).map(async ([key, infoMapping]) => {
+    const promises = Object.entries(productInfoMapping).map(
+      async ([key, infoMapping]) => {
         const product = key as Products;
 
         if (!build[product]) return undefined; // Check if the product is in the build
@@ -133,14 +133,14 @@ class BuildService {
           : transformed[0];
 
         return [product, result];
-      })
+      }
     );
 
     const result = await Promise.all(promises);
 
     const buildDetails = Object.fromEntries(
       result.filter((val) => val !== undefined)
-    ) as Partial<Build.Details>;
+    );
 
     return buildDetails as { [key in Products]?: T | T[] };
   }
