@@ -15,6 +15,6 @@ import { PartService } from "./part.service";
     { provide: LIST_INTERFACE, useClass: SequelizeListService },
     { provide: CRUD_INTERFACE, useClass: SequelizeCRUDService },
   ],
-  exports: [PART_INTERFACE],
+  exports: [LIST_INTERFACE, PARSE_INTERFACE],
 })
 export class PartModule {}
