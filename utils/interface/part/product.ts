@@ -58,6 +58,24 @@ export namespace Product {
     [Products.RADIATOR]: RadiatorProduct.AttributeLabels,
   };
 
+  export type Attribute = {
+    [Products.CPU]: CPUProduct.Attribute;
+    [Products.GPU]: GPUProduct.Attribute;
+    [Products.GRAPHIC_CARD]: GraphicCard.Attribute;
+    [Products.MAIN]: Mainboard.Attribute;
+    [Products.RAM]: RAMProduct.Attribute;
+    [Products.SSD]: SSDProduct.Attribute;
+    [Products.HDD]: HDDProduct.Attribute;
+    [Products.PSU]: PSUProduct.Attribute;
+    [Products.CASE]: CaseProduct.Attribute;
+    [Products.COOLER]: CoolerProduct.Attribute;
+    [Products.AIO]: AIOProduct.Attribute;
+    [Products.FAN]: FanProduct.Attribute;
+    [Products.CPU_BLOCK]: CPUBlock.Attribute;
+    [Products.PUMP]: PumpProduct.Attribute;
+    [Products.RADIATOR]: RadiatorProduct.Attribute;
+  };
+
   /**
    * The product summary options of each {@link Products} type.
    * Contains the schema of the summary of each product.

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { Information } from "./info";
 import { Product } from "./product";
 import { Infos, Products } from "../../Enum";
 
@@ -75,6 +75,142 @@ export namespace Mapping {
     [Products.RADIATOR]: [Infos.RADIATOR_SPEC],
   } as const;
 
+  export const InfoToProduct: {
+    [product in Products]: {
+      [info in (typeof Info)[product][number]]?: {
+        [attr in keyof Information.Info[info]]?: Product.Attribute[product];
+      };
+    };
+  } = {
+    [Products.CPU]: {
+      [Infos.CPU_SPEC]: {
+        socket: "socket",
+        total_cores: "total_cores",
+        total_threads: "total_threads",
+      },
+      [Infos.CPU_PERF]: {
+        base_frequency: "base_frequency",
+        turbo_frequency: "turbo_frequency",
+        tdp: "tdp",
+      },
+      [Infos.PROCESSOR_CACHE]: { L3_cache: "L3_cache" },
+    },
+    [Products.GPU]: {
+      [Infos.GPU_SPEC]: { core_count: "core_count" },
+      [Infos.GPU_PERF]: {
+        base_frequency: "base_frequency",
+        boost_frequency: "boost_frequency",
+        tdp: "tdp",
+      },
+      [Infos.GPU_MEMORY]: {
+        capacity: "memory_size",
+        type: "memory_type",
+      },
+    },
+    [Products.GRAPHIC_CARD]: {
+      [Infos.GRAPHIC_CARD_SPEC]: {
+        width: "width",
+        height: "height",
+        length: "length",
+        minimum_psu: "minimum_psu",
+      },
+      [Infos.GPU_PERF]: {
+        base_frequency: "base_frequency",
+        boost_frequency: "boost_frequency",
+      },
+    },
+    [Products.MAIN]: {
+      [Infos.MAIN_SPEC]: {
+        socket: "socket",
+        form_factor: "form_factor",
+        ram_form_factor: "ram_form_factor",
+        ram_interface: "ram_interface",
+      },
+    },
+    [Products.RAM]: {
+      [Infos.RAM_SPEC]: {
+        speed: "speed",
+        form_factor: "form_factor",
+        capacity: "capacity",
+        interface: "interface",
+      },
+    },
+    [Products.SSD]: {
+      [Infos.SSD_SPEC]: {
+        memory_type: "memory_type",
+        capacity: "capacity",
+        form_factor: "form_factor",
+        interface: "interface",
+      },
+      [Infos.STORAGE_PERF]: {
+        read_speed: "read_speed",
+        write_speed: "write_speed",
+      },
+    },
+    [Products.HDD]: {
+      [Infos.HDD_SPEC]: {
+        form_factor: "form_factor",
+        capacity: "capacity",
+        interface: "interface",
+        rotational_speed: "rotational_speed",
+      },
+      [Infos.STORAGE_PERF]: {
+        read_speed: "read_speed",
+        write_speed: "write_speed",
+      },
+    },
+    [Products.PSU]: {
+      [Infos.PSU_SPEC]: {
+        form_factor: "form_factor",
+        wattage: "wattage",
+        efficiency: "efficiency",
+        modular: "modular",
+      },
+    },
+    [Products.CASE]: {
+      [Infos.CASE_SPEC]: { form_factor: "form_factor" },
+      [Infos.CASE_MAIN]: { form_factor: "mainboard_support" },
+      [Infos.CASE_RADIATOR]: { form_factor: "radiator_support" },
+      [Infos.CASE_PSU]: { psu_support: "psu_support" },
+    },
+    [Products.COOLER]: {
+      [Infos.CPU_BLOCK_SOCKET]: { socket: "socket" },
+      [Infos.CPU_BLOCK_SPEC]: { plate: "cpu_plate" },
+      [Infos.RADIATOR_SPEC]: { height: "height" },
+    },
+    [Products.AIO]: {
+      [Infos.CPU_BLOCK_SOCKET]: { socket: "socket" },
+      [Infos.RADIATOR_SPEC]: { form_factor: "form_factor" },
+      [Infos.CPU_BLOCK_SPEC]: { plate: "cpu_plate" },
+    },
+    [Products.FAN]: {
+      [Infos.FAN_SPEC]: {
+        form_factor: "form_factor",
+        bearing: "bearing",
+        speed: "speed",
+      },
+    },
+    [Products.CPU_BLOCK]: {
+      [Infos.CPU_BLOCK_SOCKET]: { socket: "socket" },
+      [Infos.CPU_BLOCK_SPEC]: { plate: "plate" },
+    },
+    [Products.PUMP]: {
+      [Infos.PUMP_SPEC]: {
+        form_factor: "form_factor",
+        head_pressure: "head_pressure",
+        flow_rate: "flow_rate",
+        power_connector: "power_connector",
+        control_connector: "control_connector",
+      },
+    },
+    [Products.RADIATOR]: {
+      [Infos.RADIATOR_SPEC]: {
+        form_factor: "form_factor",
+        material: "material",
+      },
+    },
+  };
+
   /**
    * The attribute mapping from the {@link Product} namespace
    * to the {@link Info} namespace.
@@ -82,110 +218,25 @@ export namespace Mapping {
    * of {@link Infos} and the attribute key corresponding
    * to the {@link Info} namespace.
    */
-  export const AttributeMapping: {
-    [key in Products]: Record<
-      keyof z.infer<
-        (typeof Product.FilterOptions | typeof Product.Summary)[key]
-      >,
-      [(typeof Info)[key][number], string]
-    >;
-  } = {
-    [Products.CPU]: {
-      socket: [Infos.CPU_SPEC, "socket"],
-      total_cores: [Infos.CPU_SPEC, "total_cores"],
-      total_threads: [Infos.CPU_SPEC, "total_threads"],
-      L3_cache: [Infos.PROCESSOR_CACHE, "L3_cache"],
-      base_frequency: [Infos.CPU_PERF, "base_frequency"],
-      turbo_frequency: [Infos.CPU_PERF, "turbo_frequency"],
-      tdp: [Infos.CPU_PERF, "tdp"],
+  export const ProductToInfo = Object.entries(InfoToProduct).reduce(
+    (productAcc, [productKey, infoObject]) => {
+      const product = productKey as Products;
+
+      Object.entries<Record<string, string>>(infoObject).forEach(
+        ([infoKey, fields]) => {
+          const info = infoKey as Infos;
+
+          productAcc[product] ??= {};
+          Object.entries(fields).forEach(([infoField, productField]) => {
+            productAcc[product][productField] = [info, infoField];
+          });
+        }
+      );
+
+      return productAcc;
     },
-    [Products.GPU]: {
-      core_count: [Infos.GPU_SPEC, "core_count"],
-      base_frequency: [Infos.GPU_PERF, "base_frequency"],
-      boost_frequency: [Infos.GPU_PERF, "boost_frequency"],
-      tdp: [Infos.GPU_PERF, "tdp"],
-      memory_size: [Infos.GPU_MEMORY, "capacity"],
-      memory_type: [Infos.GPU_MEMORY, "memory_type"],
-    },
-    [Products.GRAPHIC_CARD]: {
-      width: [Infos.GRAPHIC_CARD_SPEC, "width"],
-      height: [Infos.GRAPHIC_CARD_SPEC, "height"],
-      length: [Infos.GRAPHIC_CARD_SPEC, "length"],
-      base_frequency: [Infos.GPU_PERF, "base_frequency"],
-      boost_frequency: [Infos.GPU_PERF, "boost_frequency"],
-      minimum_psu: [Infos.GRAPHIC_CARD_SPEC, "minimum_psu"],
-    },
-    [Products.MAIN]: {
-      socket: [Infos.MAIN_SPEC, "socket"],
-      form_factor: [Infos.MAIN_SPEC, "form_factor"],
-      ram_form_factor: [Infos.MAIN_SPEC, "ram_form_factor"],
-      ram_interface: [Infos.MAIN_SPEC, "ram_interface"],
-    },
-    [Products.RAM]: {
-      speed: [Infos.RAM_SPEC, "speed"],
-      form_factor: [Infos.RAM_SPEC, "form_factor"],
-      capacity: [Infos.RAM_SPEC, "capacity"],
-      interface: [Infos.RAM_SPEC, "interface"],
-    },
-    [Products.SSD]: {
-      memory_type: [Infos.SSD_SPEC, "memory_type"],
-      capacity: [Infos.SSD_SPEC, "capacity"],
-      form_factor: [Infos.SSD_SPEC, "form_factor"],
-      interface: [Infos.SSD_SPEC, "interface"],
-      read_speed: [Infos.STORAGE_PERF, "read_speed"],
-      write_speed: [Infos.STORAGE_PERF, "write_speed"],
-    },
-    [Products.HDD]: {
-      form_factor: [Infos.HDD_SPEC, "form_factor"],
-      capacity: [Infos.HDD_SPEC, "capacity"],
-      interface: [Infos.HDD_SPEC, "interface"],
-      rotational_speed: [Infos.HDD_SPEC, "rotational_speed"],
-      read_speed: [Infos.STORAGE_PERF, "read_speed"],
-      write_speed: [Infos.STORAGE_PERF, "write_speed"],
-    },
-    [Products.PSU]: {
-      form_factor: [Infos.PSU_SPEC, "form_factor"],
-      wattage: [Infos.PSU_SPEC, "wattage"],
-      efficiency: [Infos.PSU_SPEC, "efficiency"],
-      modular: [Infos.PSU_SPEC, "modular"],
-    },
-    [Products.CASE]: {
-      form_factor: [Infos.CASE_SPEC, "form_factor"],
-      mainboard_support: [Infos.CASE_MAIN, "form_factor"],
-      radiator_support: [Infos.CASE_RADIATOR, "form_factor"],
-      psu_support: [Infos.CASE_PSU, "psu_support"],
-    },
-    [Products.COOLER]: {
-      socket: [Infos.CPU_BLOCK_SOCKET, "socket"],
-      cpu_plate: [Infos.CPU_BLOCK_SPEC, "plate"],
-      height: [Infos.RADIATOR_SPEC, "height"],
-    },
-    [Products.AIO]: {
-      socket: [Infos.CPU_BLOCK_SOCKET, "socket"],
-      form_factor: [Infos.RADIATOR_SPEC, "form_factor"],
-      cpu_plate: [Infos.CPU_BLOCK_SPEC, "plate"],
-    },
-    [Products.FAN]: {
-      form_factor: [Infos.FAN_SPEC, "form_factor"],
-      bearing: [Infos.FAN_SPEC, "bearing"],
-      speed: [Infos.FAN_SPEC, "speed"],
-    },
-    [Products.CPU_BLOCK]: {
-      socket: [Infos.CPU_BLOCK_SOCKET, "socket"],
-      plate: [Infos.CPU_BLOCK_SPEC, "plate"],
-    },
-    [Products.PUMP]: {
-      form_factor: [Infos.PUMP_SPEC, "form_factor"],
-      head_pressure: [Infos.PUMP_SPEC, "head_pressure"],
-      flow_rate: [Infos.PUMP_SPEC, "flow_rate"],
-      power_connector: [Infos.PUMP_SPEC, "power_connector"],
-      control_connector: [Infos.PUMP_SPEC, "control_connector"],
-    },
-    [Products.RADIATOR]: {
-      form_factor: [Infos.RADIATOR_SPEC, "form_factor"],
-      material: [Infos.RADIATOR_SPEC, "material"],
-    },
-  };
+    {} as { [key in Products]: Record<string, [Infos, string]> }
+  );
 
   /**
    * The summary attribute mapping from the {@link Products} to the {@link Infos} type.
@@ -197,7 +248,7 @@ export namespace Mapping {
       const productAttrs = Product.Summary[product].keyof().options;
 
       mapping[key] = productAttrs.reduce((productMapping, attr) => {
-        const [info, key] = AttributeMapping[product][attr];
+        const [info, key] = ProductToInfo[product][attr];
 
         if (!productMapping[info]) productMapping[info] = [];
 

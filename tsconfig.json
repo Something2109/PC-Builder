@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "paths": {
+      "@/utils/*": ["./utils/*"]
+    },
     "baseUrl": ".",
     "outDir": "./dist",
     "paths": {
