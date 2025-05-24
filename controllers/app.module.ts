@@ -13,6 +13,7 @@ import { PartModule } from "./part/part.module";
 import { UserModule } from "./user/user.module";
 import { AuthGuard } from "./utils/role/role.guard";
 import { SessionExtractionMiddleware } from "./utils/session.middleware";
+import { BuildModule } from "./build/build.module";
 
 // Initiate the environment variables.
 const Config = ConfigModule.forRoot();
@@ -76,6 +77,7 @@ const Mongo = MongooseModule.forRoot(
     AuthModule,
     CrawlerModule,
     PartModule,
+    BuildModule,
     UserModule,
   ],
   providers: [
