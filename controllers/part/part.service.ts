@@ -34,17 +34,15 @@ class PartService implements PartServiceInterface {
   async list(params: Record<string, string | string[]>, product?: Products) {
     const options = this.parseService.options(params, product);
 
-    if (product) options.part = { ...options.part, part: [product] };
-
     const infoMapping = product
       ? Mapping.SummaryAttributeMapping[product]
       : undefined;
 
-    let data = await this.ListService.list(options, infoMapping);
+    const { list, total } = await this.ListService.list(options, infoMapping);
 
     return {
-      list: data.list.map((part) => this.parseService.summary(part)),
-      total: data.total,
+      list: list.map((part) => this.parseService.summary(part)),
+      total,
     };
   }
 

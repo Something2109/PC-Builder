@@ -119,6 +119,11 @@ class ParseService implements ParseServiceInterface {
     for (const key of Part.BasicAttributes.options) {
       let option = params[key];
 
+      if (key === "part" && part) {
+        builder.add("part", key, [part]);
+        continue;
+      }
+
       if (!option) continue;
 
       if (!Array.isArray(option)) option = [option];
