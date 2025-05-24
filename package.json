@@ -9,10 +9,7 @@
     "zod": "^3.23.8"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "build": "tsc && tsc-alias",
     "crawl": "tsc ./crawlers/src/*.ts --outDir ./crawlers/dist"
   },
   "devDependencies": {
@@ -20,6 +17,7 @@
     "@types/uuid": "^10.0.0",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.5",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.5.4"
   }
 }
