@@ -1,6 +1,9 @@
+import CPUMainboardSocketRule from "./rule/socket/CPUMainboardSocketRule";
+import MainboardAIOSocketRule from "./rule/socket/MainboardAIOSocketRule";
+import MainboardCPUBlockSocketRule from "./rule/socket/MainboardCPUBlockSocketRule";
+import MainboardCoolerSocketRule from "./rule/socket/MainboardCoolerSocketRule";
 import CaseMainboardRule from "./rule/CaseMainboardRule";
 import CasePSURule from "./rule/CasePSURule";
-import CPUSocketRule from "./rule/CPUSocketRule";
 import PCIeRule from "./rule/PCIeRule";
 import RAMRule from "./rule/RAMRule";
 import {
@@ -49,9 +52,12 @@ namespace Build {
    * Each rule enforces compatibility between different PC components.
    */
   export const Rules: PCBuildRule<BuildAttributeMapping>[] = [
+    CPUMainboardSocketRule,
+    MainboardAIOSocketRule,
+    MainboardCPUBlockSocketRule,
+    MainboardCoolerSocketRule,
     CaseMainboardRule,
     CasePSURule,
-    CPUSocketRule,
     PCIeRule,
     RAMRule,
   ];
