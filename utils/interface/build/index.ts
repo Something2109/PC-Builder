@@ -1,18 +1,20 @@
+import CPUMainboardSocketRule from "./rule/socket/CPUMainboardSocketRule";
+import MainboardAIOSocketRule from "./rule/socket/MainboardAIOSocketRule";
+import MainboardCPUBlockSocketRule from "./rule/socket/MainboardCPUBlockSocketRule";
+import MainboardCoolerSocketRule from "./rule/socket/MainboardCoolerSocketRule";
 import CaseMainboardRule from "./rule/CaseMainboardRule";
 import CasePSURule from "./rule/CasePSURule";
-import CPUSocketRule from "./rule/CPUSocketRule";
 import PCIeRule from "./rule/PCIeRule";
 import RAMRule from "./rule/RAMRule";
 import {
   BuildAttributeMapping,
   BuildFilterAttributes,
-  BuildPartDetails,
   BuildPartList,
   BuildPartSchema,
   BuildValidateAttributes,
   PCBuildRule,
 } from "./utils";
-import { Information } from "../part";
+import Part, { Information } from "../part";
 import { Infos, Products } from "@/utils/Enum";
 
 /**
@@ -27,7 +29,13 @@ namespace Build {
 
   export type List = BuildPartList;
 
-  export type Details = BuildPartDetails;
+  export type Details<T = Part.Detail> = {
+    [key in keyof Required<BuildPartList>]?: Required<BuildPartList>[key] extends string[]
+      ? T[]
+      : Required<BuildPartList>[key] extends string
+      ? T
+      : never;
+  };
 
   export type AttributeMapping = BuildAttributeMapping;
 
@@ -44,9 +52,12 @@ namespace Build {
    * Each rule enforces compatibility between different PC components.
    */
   export const Rules: PCBuildRule<BuildAttributeMapping>[] = [
+    CPUMainboardSocketRule,
+    MainboardAIOSocketRule,
+    MainboardCPUBlockSocketRule,
+    MainboardCoolerSocketRule,
     CaseMainboardRule,
     CasePSURule,
-    CPUSocketRule,
     PCIeRule,
     RAMRule,
   ];
@@ -62,13 +73,10 @@ namespace Build {
    * ]
    */
   export const ProductRules = Rules.reduce((acc, rule) => {
-    const products = Object.values(rule.attributes).map(
-      (v) => v[0]
-    ) as Products[];
-    products.forEach((product) => {
-      if (!acc[product]) {
-        acc[product] = [];
-      }
+    Object.values(rule.attributes).forEach((v) => {
+      const [product] = v;
+
+      if (!acc[product]) acc[product] = [];
       acc[product].push(rule);
     });
 
@@ -86,11 +94,7 @@ namespace Build {
    */
   export const ProductValidateAttributes = Rules.reduce((acc, rule) => {
     Object.values(rule.attributes).forEach((v) => {
-      const [filterProduct, info, attr] = v as [
-        Products,
-        Infos,
-        string | undefined
-      ];
+      const [filterProduct, info, attr] = v;
 
       if (!acc[filterProduct]) acc[filterProduct] = {};
 
@@ -124,14 +128,13 @@ namespace Build {
    * }
    */
   export const RelevantProductFilterAttributes = Object.fromEntries(
-    Object.entries(ProductRules).map(([product, rules]) => {
+    Object.entries(ProductRules).map(([key, rules]) => {
+      const product = key as Products;
+
       const productInfoMapping = rules.reduce((acc, rule) => {
         Object.values(rule.attributes).forEach((v) => {
-          const [filterProduct, info, attr] = v as [
-            Products,
-            Infos,
-            string | undefined
-          ];
+          const [filterProduct, info, attr] = v;
+
           if (filterProduct === product) return;
 
           if (!acc[filterProduct]) acc[filterProduct] = {};
@@ -148,10 +151,7 @@ namespace Build {
         return acc;
       }, {} as { [key in Products]?: { [info in Infos]?: string[] } });
 
-      return [product, productInfoMapping] as [
-        Products,
-        typeof productInfoMapping
-      ];
+      return [product, productInfoMapping];
     })
   ) as {
     [key in Products]?: { [key in Products]?: { [info in Infos]?: string[] } };

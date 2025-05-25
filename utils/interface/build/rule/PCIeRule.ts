@@ -7,20 +7,17 @@ const attributes = {
 } as const;
 
 const PCIeRule: PCBuildRule<typeof attributes> = {
+  name: "PCIe Compatibility Rule",
+
   attributes,
 
   validate(build) {
     const { graphic_card_pcie, mainboard_pcie } = build;
 
-    if (!mainboard_pcie || !graphic_card_pcie) return false;
+    if (!mainboard_pcie || !graphic_card_pcie)
+      return "Not enough information to validate PCIe compatibility.";
 
-    for (const pcie of mainboard_pcie) {
-      if (pcie.width !== "x16") continue;
-
-      if (pcie.count === 0) continue;
-    }
-
-    return false;
+    return;
   },
 
   filter(build) {

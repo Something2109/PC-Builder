@@ -7,14 +7,22 @@ const attributes = {
 } as const;
 
 const CaseMainboardRule: PCBuildRule<typeof attributes> = {
+  name: "Case Mainboard Compatibility Rule",
+
   attributes,
 
   validate(build) {
     const { mainboard_form_factor, case_main_support } = build;
 
-    if (!mainboard_form_factor || !case_main_support) return false;
+    if (!mainboard_form_factor || !case_main_support) {
+      return "Not enough information to validate mainboard form factor compatibility.";
+    }
 
-    return case_main_support.includes(mainboard_form_factor);
+    if (!case_main_support.includes(mainboard_form_factor)) {
+      return `The case does not support the mainboard ${mainboard_form_factor} form factor.`;
+    }
+
+    return;
   },
 
   filter(build) {
