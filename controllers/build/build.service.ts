@@ -60,6 +60,18 @@ class BuildService {
     );
 
     const rules = Build.Rules.map((rule) => {
+      const hasProducts = Object.values(rule.attributes).reduce(
+        (acc, [product]) => {
+          if (Array.isArray(buildList[product])) {
+            return acc && buildList[product].length > 0;
+          }
+          return acc && Boolean(buildList[product]);
+        },
+        true
+      );
+
+      if (!hasProducts) return;
+
       const validateObject = this.getValidateAttributes(rule, buildDetails);
       const isValid = rule.validate(validateObject);
 
@@ -70,7 +82,7 @@ class BuildService {
       };
     });
 
-    return rules;
+    return rules.filter((rule) => rule);
   }
 
   /**
