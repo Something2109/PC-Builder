@@ -23,8 +23,8 @@ export function UnitDisplay<T extends string>({
 }: {
   defaultValue?: number;
   Unit: UnitInterface<T>;
-  defaultUnit: T;
-  displayUnit?: T[];
+  defaultUnit: NoInfer<T>;
+  displayUnit?: NoInfer<T>[];
 }) {
   if (!defaultValue) return undefined;
 

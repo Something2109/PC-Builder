@@ -85,7 +85,7 @@ export function UnitInput<T extends string>({
   ...rest
 }: {
   Unit: UnitInterface<T>;
-  defaultUnit: T;
+  defaultUnit: NoInfer<T>;
 } & Omit<InputProps, "type">) {
   const SubmitInput = useRef<HTMLInputElement>(null);
   defaultValue = defaultValue ?? 0;
@@ -286,7 +286,7 @@ export function UnitMinMaxRangeInput<T extends string>({
   ...props
 }: {
   Unit: UnitInterface<T>;
-  defaultUnit: T;
+  defaultUnit: NoInfer<T>;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "type">) {
   const minInput = useRef<HTMLInputElement>(null);
   const maxInput = useRef<HTMLInputElement>(null);
