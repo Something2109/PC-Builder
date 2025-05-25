@@ -20,14 +20,12 @@ class BuildService {
     private partDatabase: DatabaseListInterface
   ) {}
 
-  async getPartDetails(
-    options: Partial<Build.List>
-  ): Promise<Partial<Build.Details>> {
-    return (await this.getBuildPartList(
+  async getPartDetails(options: Partial<Build.List>) {
+    return await this.getBuildDetail(
       options,
       Mapping.SummaryAttributeMapping,
       this.parseService.summary
-    )) as Partial<Build.Details>;
+    );
   }
 
   async getSuitablePart(
@@ -35,27 +33,12 @@ class BuildService {
     buildList: Partial<Build.List>,
     params: Record<string, string | string[]>
   ) {
-    const buildDetails = (await this.getBuildPartList(
+    const buildDetails = await this.getBuildDetail(
       buildList,
       Build.RelevantProductFilterAttributes[product] ?? {}
-    )) as Partial<Build.Details>;
+    );
 
-    const buildOptions = Build.ProductRules[product]?.reduce((acc, rule) => {
-      const validateObject = this.getRuleValidateAttributes(rule, buildDetails);
-      const filter = rule.filter(validateObject);
-
-      Object.entries(rule.attributes).forEach(([key, value]) => {
-        const [filterProduct, info, attr] = value;
-
-        if (filterProduct !== product) return;
-
-        if (!filter[key]) return;
-
-        acc[info] = attr ? { ...acc[info], [attr]: filter[key] } : filter[key];
-      });
-
-      return acc;
-    }, {} as Part.Filter);
+    const buildOptions = this.getFilterFromBuild(product, buildDetails);
 
     const options = this.parseService.options(params, product);
 
@@ -71,13 +54,13 @@ class BuildService {
   }
 
   async validate(buildList: Partial<Build.List>) {
-    const buildDetails = (await this.getBuildPartList(
+    const buildDetails = await this.getBuildDetail(
       buildList,
       Build.ProductValidateAttributes
-    )) as Partial<Build.Details>;
+    );
 
     const rules = Build.Rules.map((rule) => {
-      const validateObject = this.getRuleValidateAttributes(rule, buildDetails);
+      const validateObject = this.getValidateAttributes(rule, buildDetails);
       const isValid = rule.validate(validateObject);
 
       return {
@@ -100,11 +83,11 @@ class BuildService {
    * @param transform - Optional transformation function for part details.
    * @returns A promise that resolves to an object containing part details.
    */
-  protected async getBuildPartList<T = Part.Detail>(
+  protected async getBuildDetail<T = Part.Detail>(
     build: Partial<Build.List>,
     productInfoMapping: { [prod in Products]?: { [info in Infos]?: string[] } },
     transform?: (data: Part.Detail, product: Products) => T
-  ): Promise<{ [key in Products]?: T | T[] }> {
+  ): Promise<Partial<Build.Details<T>>> {
     const promises = Object.entries(productInfoMapping).map(
       async ([key, infoMapping]) => {
         const product = key as Products;
@@ -142,7 +125,40 @@ class BuildService {
       result.filter((val) => val !== undefined)
     );
 
-    return buildDetails as { [key in Products]?: T | T[] };
+    return buildDetails as Partial<Build.Details<T>>;
+  }
+
+  /**
+   * Get the filter from the build details for a specific product.
+   * This method extracts the relevant information from the build
+   * based on the product's rules and returns a filter object.
+   *
+   * @param product - The product to filter by.
+   * @param buildDetails - The build details to extract the filter from.
+   * @returns The filter object for the specified product.
+   */
+  protected getFilterFromBuild(
+    product: Products,
+    buildDetails: Partial<Build.Details>
+  ): Part.Filter {
+    const buildOptions = Build.ProductRules[product]?.reduce((acc, rule) => {
+      const validateObject = this.getValidateAttributes(rule, buildDetails);
+      const filter = rule.filter(validateObject);
+
+      Object.entries(rule.attributes).forEach(([key, value]) => {
+        const [filterProduct, info, attr] = value;
+
+        if (filterProduct !== product) return;
+
+        if (!filter[key]) return;
+
+        acc[info] = attr ? { ...acc[info], [attr]: filter[key] } : filter[key];
+      });
+
+      return acc;
+    }, {} as Part.Filter);
+
+    return buildOptions ?? {};
   }
 
   /**
@@ -154,7 +170,7 @@ class BuildService {
    * @param build - The build details to validate.
    * @returns The validation object for the rule.
    */
-  protected getRuleValidateAttributes<T extends Build.AttributeMapping>(
+  protected getValidateAttributes<T extends Build.AttributeMapping>(
     rule: Build.Rule<T>,
     build: Partial<Build.Details>
   ) {
