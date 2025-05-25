@@ -67,13 +67,10 @@ namespace Build {
    * ]
    */
   export const ProductRules = Rules.reduce((acc, rule) => {
-    const products = Object.values(rule.attributes).map(
-      (v) => v[0]
-    ) as Products[];
-    products.forEach((product) => {
-      if (!acc[product]) {
-        acc[product] = [];
-      }
+    Object.values(rule.attributes).forEach((v) => {
+      const [product] = v;
+
+      if (!acc[product]) acc[product] = [];
       acc[product].push(rule);
     });
 
@@ -91,11 +88,7 @@ namespace Build {
    */
   export const ProductValidateAttributes = Rules.reduce((acc, rule) => {
     Object.values(rule.attributes).forEach((v) => {
-      const [filterProduct, info, attr] = v as [
-        Products,
-        Infos,
-        string | undefined
-      ];
+      const [filterProduct, info, attr] = v;
 
       if (!acc[filterProduct]) acc[filterProduct] = {};
 
@@ -129,14 +122,13 @@ namespace Build {
    * }
    */
   export const RelevantProductFilterAttributes = Object.fromEntries(
-    Object.entries(ProductRules).map(([product, rules]) => {
+    Object.entries(ProductRules).map(([key, rules]) => {
+      const product = key as Products;
+
       const productInfoMapping = rules.reduce((acc, rule) => {
         Object.values(rule.attributes).forEach((v) => {
-          const [filterProduct, info, attr] = v as [
-            Products,
-            Infos,
-            string | undefined
-          ];
+          const [filterProduct, info, attr] = v;
+
           if (filterProduct === product) return;
 
           if (!acc[filterProduct]) acc[filterProduct] = {};
@@ -153,10 +145,7 @@ namespace Build {
         return acc;
       }, {} as { [key in Products]?: { [info in Infos]?: string[] } });
 
-      return [product, productInfoMapping] as [
-        Products,
-        typeof productInfoMapping
-      ];
+      return [product, productInfoMapping];
     })
   ) as {
     [key in Products]?: { [key in Products]?: { [info in Infos]?: string[] } };

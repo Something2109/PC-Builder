@@ -10,6 +10,8 @@ const attributes = {
 } as const;
 
 const CPUSocketRule: PCBuildRule<typeof attributes> = {
+  name: "CPU Socket Compatibility Rule",
+
   attributes,
 
   validate: (build) => {
@@ -23,9 +25,19 @@ const CPUSocketRule: PCBuildRule<typeof attributes> = {
 
     const socketList = cpu_block_socket ?? cooler_socket ?? aio_socket;
 
-    if (!cpu_socket || !mainboard_socket || !socketList) return false;
+    if (!cpu_socket || !mainboard_socket || !socketList) {
+      return "Not enough information to validate CPU socket compatibility.";
+    }
 
-    return cpu_socket === mainboard_socket && socketList.includes(cpu_socket);
+    if (cpu_socket !== mainboard_socket) {
+      return `The CPU ${cpu_socket} socket does not match the mainboard socket.`;
+    }
+
+    if (!socketList.includes(cpu_socket)) {
+      return `The CPU ${cpu_socket} socket is not compatible with the CPU block or cooler.`;
+    }
+
+    return;
   },
 
   filter(build) {
