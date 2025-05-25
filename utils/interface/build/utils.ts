@@ -71,9 +71,11 @@ type BuildFilterAttributes<T extends BuildAttributeMapping> = {
 };
 
 interface PCBuildRule<T extends BuildAttributeMapping> {
+  name: string;
+
   attributes: T;
 
-  validate(build: BuildValidateAttributes<T>): boolean;
+  validate(build: BuildValidateAttributes<T>): string | undefined;
 
   filter(build: BuildValidateAttributes<T>): BuildFilterAttributes<T>;
 }
