@@ -6,13 +6,12 @@ import RAMRule from "./rule/RAMRule";
 import {
   BuildAttributeMapping,
   BuildFilterAttributes,
-  BuildPartDetails,
   BuildPartList,
   BuildPartSchema,
   BuildValidateAttributes,
   PCBuildRule,
 } from "./utils";
-import { Information } from "../part";
+import Part, { Information } from "../part";
 import { Infos, Products } from "@/utils/Enum";
 
 /**
@@ -27,7 +26,13 @@ namespace Build {
 
   export type List = BuildPartList;
 
-  export type Details = BuildPartDetails;
+  export type Details<T = Part.Detail> = {
+    [key in keyof Required<BuildPartList>]?: Required<BuildPartList>[key] extends string[]
+      ? T[]
+      : Required<BuildPartList>[key] extends string
+      ? T
+      : never;
+  };
 
   export type AttributeMapping = BuildAttributeMapping;
 
