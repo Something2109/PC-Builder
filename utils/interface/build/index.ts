@@ -1,5 +1,6 @@
 import ProductCompatibleRule from "./rule/generic/ProductCompatibleRule";
 import CPUMainboardSocketRule from "./rule/socket/CPUMainboardSocketRule";
+import GPURule from "./rule/GPURule";
 import MainboardAIOSocketRule from "./rule/socket/MainboardAIOSocketRule";
 import MainboardCPUBlockSocketRule from "./rule/socket/MainboardCPUBlockSocketRule";
 import MainboardCoolerSocketRule from "./rule/socket/MainboardCoolerSocketRule";
@@ -21,6 +22,7 @@ import { Infos, Products } from "@/utils/Enum";
 
 const ProductRuleList: ProductRule<BuildAttributeMapping>[] = [
   CPUMainboardSocketRule,
+  GPURule,
   MainboardAIOSocketRule,
   MainboardCPUBlockSocketRule,
   MainboardCoolerSocketRule,
