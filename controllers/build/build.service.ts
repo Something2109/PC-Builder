@@ -58,6 +58,12 @@ class BuildService {
   }
 
   async validate(buildList: Partial<Build.List>) {
+    const genericResult = Build.Rule.Generic.map((rule) => {
+      const result = rule.validate(buildList);
+
+      return result.length > 0 && { name: rule.name, result };
+    });
+
     const buildDetails = await this.getBuildDetail(
       buildList,
       Build.Product.ValidateAttributes
@@ -87,6 +93,7 @@ class BuildService {
     });
 
     return {
+      generic: genericResult.filter((val) => val),
       product: rules.filter((rule) => rule),
     };
   }
