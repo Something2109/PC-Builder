@@ -22,9 +22,9 @@ export namespace CPUBlock {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const AttributeLabels: {
-    [key in keyof Required<Summary & Filter>]: string;
-  } = {
+  export type Attribute = keyof Required<Summary & Filter>;
+
+  export const AttributeLabels: { [key in Attribute]: string } = {
     socket: "Socket",
     plate: "Plate",
   };

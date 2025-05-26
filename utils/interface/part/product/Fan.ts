@@ -24,9 +24,9 @@ export namespace FanProduct {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const AttributeLabels: {
-    [key in keyof Required<Summary & Filter>]: string;
-  } = {
+  export type Attribute = keyof Required<Summary & Filter>;
+
+  export const AttributeLabels: { [key in Attribute]: string } = {
     form_factor: "Form Factor",
     bearing: "Bearing",
     speed: "Speed",

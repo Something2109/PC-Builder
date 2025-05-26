@@ -36,9 +36,9 @@ export namespace SSDProduct {
 
   export type Filter = z.infer<typeof Filter>;
 
-  export const AttributeLabels: {
-    [key in keyof Required<Summary & Filter>]: string;
-  } = {
+  export type Attribute = keyof Required<Summary & Filter>;
+
+  export const AttributeLabels: { [key in Attribute]: string } = {
     memory_type: "Memory Type",
     form_factor: "Form Factor",
     capacity: "Capacity",
