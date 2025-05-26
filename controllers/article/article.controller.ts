@@ -26,7 +26,7 @@ export class ArticleController {
   async listSummaries(@Query(QueryValidator) criteria: ArticleFilter) {
     const article = await this.articleService.list(criteria);
 
-    return JSON.stringify(article);
+    return article;
   }
 
   @Post()
@@ -36,7 +36,7 @@ export class ArticleController {
   ) {
     const result = await this.articleService.create(article, criteria);
 
-    return JSON.stringify(result);
+    return result;
   }
 
   @Get(":id")
@@ -46,7 +46,7 @@ export class ArticleController {
     if (!result)
       throw new NotFoundException(`Cannot find article of id: ${id}`);
 
-    return JSON.stringify(result);
+    return result;
   }
 
   @Role(Roles.ADMIN, Roles.GUEST)
@@ -61,7 +61,7 @@ export class ArticleController {
     if (!result)
       throw new NotFoundException(`Cannot find article of id: ${id}`);
 
-    return JSON.stringify(result);
+    return result;
   }
 
   @Role(Roles.ADMIN, Roles.GUEST)
@@ -72,6 +72,6 @@ export class ArticleController {
     if (!result)
       throw new NotFoundException(`Cannot find article of id: ${id}`);
 
-    return JSON.stringify(result);
+    return result;
   }
 }

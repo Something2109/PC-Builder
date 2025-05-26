@@ -16,7 +16,7 @@ import { UserFilterPipe } from "./user.pipe";
 import { Role } from "controllers/utils/role/role.decorator";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { User } from "@/utils/interface/user/User";
-import { APIMapping } from "@/utils/interface/api";
+import { API } from "@/utils/interface/api";
 import { Roles } from "@/utils/Enum";
 
 const SignUpValidator = new ZodValidationPipe(User.LogInOptions);
@@ -30,11 +30,11 @@ export class UserController {
   @Role(Roles.ADMIN)
   @Get()
   async listUser(
-    @Query(UserFilterPipe) options: APIMapping.PageOptions & User.FilterOptions
+    @Query(UserFilterPipe) options: API.PageOptions & User.FilterOptions
   ) {
     const informations = await this.userService.list(options);
 
-    return JSON.stringify(informations);
+    return informations;
   }
 
   @Post()
@@ -44,7 +44,7 @@ export class UserController {
     if (!user)
       throw new ConflictException(`Username ${payload.username} has been used`);
 
-    return JSON.stringify(user);
+    return user;
   }
 
   @Role(Roles.USER)
@@ -57,7 +57,7 @@ export class UserController {
         `Cannot find the user with the username: ${username}.`
       );
 
-    return JSON.stringify(information);
+    return information;
   }
 
   @Role(Roles.USER)
@@ -73,7 +73,7 @@ export class UserController {
         `Cannot find the user with the username: ${username}.`
       );
 
-    return JSON.stringify(information);
+    return information;
   }
 
   @Role(Roles.USER)
@@ -86,6 +86,6 @@ export class UserController {
         `Cannot find the user with the username: ${username}.`
       );
 
-    return JSON.stringify(information);
+    return information;
   }
 }

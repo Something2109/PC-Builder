@@ -1,4 +1,4 @@
-import { Module, Logger } from "@nestjs/common";
+import { Module, Logger, MiddlewareConsumer } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
 import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
@@ -12,6 +12,11 @@ import { CrawlerModule } from "./crawler/crawler.module";
 import { PartModule } from "./part/part.module";
 import { UserModule } from "./user/user.module";
 import { AuthGuard } from "./utils/role/role.guard";
+import { SessionExtractionMiddleware } from "./utils/session.middleware";
+import { BuildModule } from "./build/build.module";
+
+// Initiate the environment variables.
+const Config = ConfigModule.forRoot();
 
 // Initiate the JWT resolver module.
 const Jwt = JwtModule.register({
@@ -64,7 +69,7 @@ const Mongo = MongooseModule.forRoot(
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    Config,
     Jwt,
     Sequelize,
     Mongo,
@@ -72,6 +77,7 @@ const Mongo = MongooseModule.forRoot(
     AuthModule,
     CrawlerModule,
     PartModule,
+    BuildModule,
     UserModule,
   ],
   providers: [
@@ -81,4 +87,8 @@ const Mongo = MongooseModule.forRoot(
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(SessionExtractionMiddleware).forRoutes("*");
+  }
+}

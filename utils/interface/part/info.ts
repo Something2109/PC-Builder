@@ -1,0 +1,215 @@
+import { z } from "zod";
+import { Infos } from "../../Enum";
+import CaseFanSupport from "./info/CaseFanSupport";
+import CaseHardDriveSupport from "./info/CaseHardDriveSupport";
+import CaseMainboardSupport from "./info/CaseMainboardSupport";
+import CasePSUSupport from "./info/CasePSUSupport";
+import CaseRadiatorSupport from "./info/CaseRadiatorSupport";
+import CaseSpec from "./info/CaseSpec";
+import CPUBlockSocketSupport from "./info/CPUBlockSocketSupport";
+import CPUBlockSpec from "./info/CPUBlockSpec";
+import CPUCoreConfig from "./info/CPUCoreConfig";
+import CPUPerformance from "./info/CPUPerformance";
+import CPUMemory from "./info/CPUMemory";
+import CPUSpec from "./info/CPUSpec";
+import FanSpec from "./info/FanSpec";
+import GPUFeature from "./info/GPUFeature";
+import GPUMemory from "./info/GPUMemory";
+import GPUPerformance from "./info/GPUPerformance";
+import GPUSpec from "./info/GPUSpec";
+import GraphicCardSpec from "./info/GraphicCardSpec";
+import GraphicCardPort from "./info/GraphicCardPort";
+import HDDSpec from "./info/HDDSpec";
+import MainboardSpec from "./info/MainboardSpec";
+import MainboardPowerConnector from "./info/MainboardPowerConnector";
+import MainboardPCIe from "./info/MainboardPCIe";
+import MainboardStorageConnector from "./info/MainboardStorageConnector";
+import MainboardUSBConnector from "./info/MainboardUSBConnector";
+import ProcessorCache from "./info/ProcessorCache";
+import PSUSpec from "./info/PSUSpec";
+import PSUConnector from "./info/PSUConnector";
+import PumpSpec from "./info/PumpSpec";
+import RadiatorSpec from "./info/RadiatorSpec";
+import RAMSpec from "./info/RAMSpec";
+import SSDSpec from "./info/SSDSpec";
+import StorageCache from "./info/StorageCache";
+import StoragePerformance from "./info/StoragePerformance";
+import PartExternalPorts from "./info/PartExternalPorts";
+import MainboardFanConnector from "./info/MainboardFanConnector";
+
+/**
+ * DECLARE THE {@link Infos} RELATED MAPPING OBJECTS
+ * TO BE USED IN MANY DYNAMIC MAPPING OF THE PROJECT
+ */
+export namespace Information {
+  export const Schema = z.object({
+    [Infos.CPU_SPEC]: CPUSpec.Schema,
+    [Infos.CPU_PERF]: CPUPerformance.Schema,
+    [Infos.CPU_CORES]: CPUCoreConfig.Schema,
+    [Infos.CPU_MEMORY]: CPUMemory.Schema,
+    [Infos.GPU_SPEC]: GPUSpec.Schema,
+    [Infos.GPU_PERF]: GPUPerformance.Schema,
+    [Infos.GPU_MEMORY]: GPUMemory.Schema,
+    [Infos.GPU_FEAT]: GPUFeature.Schema,
+    [Infos.PROCESSOR_CACHE]: ProcessorCache.Schema,
+    [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Schema,
+    [Infos.GRAPHIC_CARD_PORT]: GraphicCardPort.Schema,
+    [Infos.MAIN_SPEC]: MainboardSpec.Schema,
+    [Infos.MAIN_POWER]: MainboardPowerConnector.Schema,
+    [Infos.MAIN_PCIE]: MainboardPCIe.Schema,
+    [Infos.MAIN_STORAGE]: MainboardStorageConnector.Schema,
+    [Infos.MAIN_USB]: MainboardUSBConnector.Schema,
+    [Infos.MAIN_FAN]: MainboardFanConnector.Schema,
+    [Infos.RAM_SPEC]: RAMSpec.Schema,
+    [Infos.SSD_SPEC]: SSDSpec.Schema,
+    [Infos.HDD_SPEC]: HDDSpec.Schema,
+    [Infos.STORAGE_PERF]: StoragePerformance.Schema,
+    [Infos.STORAGE_CACHE]: StorageCache.Schema,
+    [Infos.PSU_SPEC]: PSUSpec.Schema,
+    [Infos.PSU_CONNECTOR]: PSUConnector.Schema,
+    [Infos.CASE_SPEC]: CaseSpec.Schema,
+    [Infos.CASE_MAIN]: CaseMainboardSupport.Schema,
+    [Infos.CASE_FAN]: CaseFanSupport.Schema,
+    [Infos.CASE_HARD_DRIVE]: CaseHardDriveSupport.Schema,
+    [Infos.CASE_RADIATOR]: CaseRadiatorSupport.Schema,
+    [Infos.CASE_PSU]: CasePSUSupport.Schema,
+    [Infos.FAN_SPEC]: FanSpec.Schema,
+    [Infos.CPU_BLOCK_SPEC]: CPUBlockSpec.Schema,
+    [Infos.CPU_BLOCK_SOCKET]: CPUBlockSocketSupport.Schema,
+    [Infos.PUMP_SPEC]: PumpSpec.Schema,
+    [Infos.RADIATOR_SPEC]: RadiatorSpec.Schema,
+    [Infos.EXTERNAL_PORTS]: PartExternalPorts.Schema,
+  });
+
+  export type Info = z.infer<typeof Schema>;
+
+  /**
+   * The label list of the information.
+   * Contains the label corresponding to each {@link Infos} type.
+   */
+  export const Label: Record<Infos, string> = {
+    [Infos.CPU_SPEC]: "CPU Specs",
+    [Infos.CPU_PERF]: "CPU Performance",
+    [Infos.CPU_CORES]: "CPU Core Spec",
+    [Infos.CPU_MEMORY]: "Processor Memory",
+    [Infos.GPU_SPEC]: "GPU Specs",
+    [Infos.GPU_PERF]: "GPU Performance",
+    [Infos.GPU_MEMORY]: "Graphic Card Memory",
+    [Infos.GPU_FEAT]: "GPU Features",
+    [Infos.PROCESSOR_CACHE]: "Processor Cache",
+    [Infos.GRAPHIC_CARD_SPEC]: "Graphic Card Specs",
+    [Infos.GRAPHIC_CARD_PORT]: "Display External Ports",
+    [Infos.MAIN_SPEC]: "Mainboard Specs",
+    [Infos.MAIN_POWER]: "Mainboard Power Connectors",
+    [Infos.MAIN_PCIE]: "Mainboard PCIe",
+    [Infos.MAIN_STORAGE]: "Mainboard Storage",
+    [Infos.MAIN_USB]: "Mainboard USB",
+    [Infos.MAIN_FAN]: "Mainboard Fan Connectors",
+    [Infos.RAM_SPEC]: "RAM Specs",
+    [Infos.SSD_SPEC]: "SSD Specs",
+    [Infos.HDD_SPEC]: "HDD Specs",
+    [Infos.STORAGE_PERF]: "Storage Performance",
+    [Infos.STORAGE_CACHE]: "Storage Cache",
+    [Infos.PSU_SPEC]: "PSU Specs",
+    [Infos.PSU_CONNECTOR]: "PSU Power Connector",
+    [Infos.CASE_SPEC]: "Case Specs",
+    [Infos.CASE_MAIN]: "Case Mainboard Support",
+    [Infos.CASE_FAN]: "Case Fan Support",
+    [Infos.CASE_HARD_DRIVE]: "Case Hard Drive Support",
+    [Infos.CASE_RADIATOR]: "Case Radiator Support",
+    [Infos.CASE_PSU]: "Case PSU Support",
+    [Infos.FAN_SPEC]: "Fan Specs",
+    [Infos.CPU_BLOCK_SPEC]: "CPU Block Specs",
+    [Infos.CPU_BLOCK_SOCKET]: "CPU Block Socket Support",
+    [Infos.PUMP_SPEC]: "Pump Specs",
+    [Infos.RADIATOR_SPEC]: "Radiator Specs",
+    [Infos.EXTERNAL_PORTS]: "External Ports",
+  };
+
+  /**
+   * The attribute label list of the information.
+   * Contains the label corresponding to each attribute in each {@link Infos} type.
+   */
+  export const AttributeLabels: Record<Infos, Record<string, string>> = {
+    [Infos.CPU_SPEC]: CPUSpec.Label,
+    [Infos.CPU_PERF]: CPUPerformance.Label,
+    [Infos.CPU_CORES]: CPUCoreConfig.Label,
+    [Infos.CPU_MEMORY]: CPUMemory.Label,
+    [Infos.GPU_SPEC]: GPUSpec.Label,
+    [Infos.GPU_PERF]: GPUPerformance.Label,
+    [Infos.GPU_MEMORY]: GPUMemory.Label,
+    [Infos.GPU_FEAT]: GPUFeature.Label,
+    [Infos.PROCESSOR_CACHE]: ProcessorCache.Label,
+    [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Label,
+    [Infos.GRAPHIC_CARD_PORT]: GraphicCardPort.Label,
+    [Infos.MAIN_SPEC]: MainboardSpec.Label,
+    [Infos.MAIN_POWER]: MainboardPowerConnector.Label,
+    [Infos.MAIN_PCIE]: MainboardPCIe.Label,
+    [Infos.MAIN_STORAGE]: MainboardStorageConnector.Label,
+    [Infos.MAIN_USB]: MainboardUSBConnector.Label,
+    [Infos.MAIN_FAN]: MainboardFanConnector.Label,
+    [Infos.RAM_SPEC]: RAMSpec.Label,
+    [Infos.SSD_SPEC]: SSDSpec.Label,
+    [Infos.HDD_SPEC]: HDDSpec.Label,
+    [Infos.STORAGE_PERF]: StoragePerformance.Label,
+    [Infos.STORAGE_CACHE]: StorageCache.Label,
+    [Infos.PSU_SPEC]: PSUSpec.Label,
+    [Infos.PSU_CONNECTOR]: PSUConnector.Label,
+    [Infos.CASE_SPEC]: CaseSpec.Label,
+    [Infos.CASE_MAIN]: CaseMainboardSupport.Label,
+    [Infos.CASE_FAN]: CaseFanSupport.Label,
+    [Infos.CASE_HARD_DRIVE]: CaseHardDriveSupport.Label,
+    [Infos.CASE_RADIATOR]: CaseRadiatorSupport.Label,
+    [Infos.CASE_PSU]: CasePSUSupport.Label,
+    [Infos.FAN_SPEC]: FanSpec.Label,
+    [Infos.CPU_BLOCK_SPEC]: CPUBlockSpec.Label,
+    [Infos.CPU_BLOCK_SOCKET]: CPUBlockSocketSupport.Label,
+    [Infos.PUMP_SPEC]: PumpSpec.Label,
+    [Infos.RADIATOR_SPEC]: RadiatorSpec.Label,
+    [Infos.EXTERNAL_PORTS]: PartExternalPorts.Label,
+  };
+
+  /**
+   * The detail information of a specific product.
+   * Contains the most detailed information of the product from each {@link Infos} type.
+   * This is a generic type used in all the {@link Products} type.
+   */
+  export const Detail = {
+    [Infos.CPU_SPEC]: CPUSpec.Schema.partial().nullish(),
+    [Infos.CPU_PERF]: CPUPerformance.Schema.partial().nullish(),
+    [Infos.CPU_CORES]: z.array(CPUCoreConfig.Schema.partial()),
+    [Infos.CPU_MEMORY]: z.array(CPUMemory.Schema.partial()),
+    [Infos.GPU_SPEC]: GPUSpec.Schema.partial().nullish(),
+    [Infos.GPU_PERF]: GPUPerformance.Schema.partial().nullish(),
+    [Infos.GPU_MEMORY]: GPUMemory.Schema.partial().nullish(),
+    [Infos.GPU_FEAT]: GPUFeature.Schema.partial().nullish(),
+    [Infos.PROCESSOR_CACHE]: ProcessorCache.Schema.partial().nullish(),
+    [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Schema.partial().nullish(),
+    [Infos.GRAPHIC_CARD_PORT]: z.array(GraphicCardPort.Schema),
+    [Infos.MAIN_SPEC]: MainboardSpec.Schema.partial().nullish(),
+    [Infos.MAIN_POWER]: z.array(MainboardPowerConnector.Schema),
+    [Infos.MAIN_PCIE]: z.array(MainboardPCIe.Schema),
+    [Infos.MAIN_STORAGE]: z.array(MainboardStorageConnector.Schema),
+    [Infos.MAIN_USB]: z.array(MainboardUSBConnector.Schema),
+    [Infos.MAIN_FAN]: z.array(MainboardFanConnector.Schema),
+    [Infos.RAM_SPEC]: RAMSpec.Schema.partial().nullish(),
+    [Infos.SSD_SPEC]: SSDSpec.Schema.partial().nullish(),
+    [Infos.HDD_SPEC]: HDDSpec.Schema.partial().nullish(),
+    [Infos.STORAGE_PERF]: StoragePerformance.Schema.partial().nullish(),
+    [Infos.STORAGE_CACHE]: StorageCache.Schema.partial().nullish(),
+    [Infos.PSU_SPEC]: PSUSpec.Schema.partial().nullish(),
+    [Infos.PSU_CONNECTOR]: z.array(PSUConnector.Schema),
+    [Infos.CASE_SPEC]: CaseSpec.Schema.partial().nullish(),
+    [Infos.CASE_MAIN]: z.array(CaseMainboardSupport.Schema),
+    [Infos.CASE_FAN]: z.array(CaseFanSupport.Schema),
+    [Infos.CASE_HARD_DRIVE]: z.array(CaseHardDriveSupport.Schema),
+    [Infos.CASE_RADIATOR]: z.array(CaseRadiatorSupport.Schema),
+    [Infos.CASE_PSU]: z.array(CasePSUSupport.Schema),
+    [Infos.FAN_SPEC]: FanSpec.Schema.partial().nullish(),
+    [Infos.CPU_BLOCK_SPEC]: CPUBlockSpec.Schema.partial().nullish(),
+    [Infos.CPU_BLOCK_SOCKET]: z.array(CPUBlockSocketSupport.Schema),
+    [Infos.PUMP_SPEC]: PumpSpec.Schema.partial().nullish(),
+    [Infos.RADIATOR_SPEC]: RadiatorSpec.Schema.partial().nullish(),
+    [Infos.EXTERNAL_PORTS]: z.array(PartExternalPorts.Schema),
+  };
+}

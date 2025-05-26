@@ -6,8 +6,8 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { JwtService } from "@nestjs/jwt";
 import { Roles } from "@/utils/Enum";
+import { API } from "@/utils/interface/api";
 
 /**
  * The global guard used by the application.
@@ -18,7 +18,7 @@ import { Roles } from "@/utils/Enum";
  */
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private reflector: Reflector, private jwtService: JwtService) {}
+  constructor(private reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // Extract the role required by the context (controller and handler function).
@@ -29,19 +29,18 @@ export class AuthGuard implements CanActivate {
     if (!requiredRoles) return true; // No role required.
 
     const request = context.switchToHttp().getRequest();
+    const path = request.path.split("/")[1];
+    const session = request.session as API.Session | undefined;
 
-    // Extract token.
-    const [type, token] = request.cookies["Authorization"]?.split(" ") ?? [];
-    if (type !== "Bearer")
+    // Check if no user login or the user is using refresh token to access other path except auth path.
+    if (!session || (session.type !== API.Tokens.ACCESS && path !== "auth"))
       throw new UnauthorizedException("You must log in to do this action!");
 
-    // Verify token.
-    try {
-      const payload = await this.jwtService.verifyAsync(token);
-      request["user"] = payload;
-    } catch {
-      throw new UnauthorizedException();
-    }
+    if (!requiredRoles.includes(session.sub.role))
+      throw new UnauthorizedException(
+        "You are not authorized to do this action!"
+      );
+
     return true;
   }
 }

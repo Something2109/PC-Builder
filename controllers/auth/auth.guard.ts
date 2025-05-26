@@ -1,10 +1,10 @@
+import { API } from "@/utils/interface/api";
 import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
   Injectable,
 } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
 
 /**
  * Inspect if the user has logged in or not.
@@ -12,27 +12,31 @@ import { JwtService } from "@nestjs/jwt";
  */
 @Injectable()
 export class LoginAuthorizationGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  constructor(private loginToken?: API.Tokens) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    const session = request.session as API.Session | undefined;
 
-    // Extract token.
-    const [type, token] = request.cookies["Authorization"]?.split(" ") ?? [];
-    if (type !== "Bearer") return true; // No token found.
+    // If the session is the same as the required state.
+    if (session?.type === this.loginToken) return true;
 
-    // Verify token.
-    let username;
-    try {
-      const payload = await this.jwtService.verifyAsync(token);
-      username = payload.username;
+    // Treat refresh token as no login.
+    if (session?.type === API.Tokens.REFRESH && !this.loginToken) return true;
 
-      if (request.path.includes("logout")) return true;
-    } catch {
-      return true;
+    // Default message for no login.
+    let message = "You must log in to do this action!";
+
+    // If the user is required for not logged in.
+    if (session && !this.loginToken) {
+      message = `You have logged in as ${session.sub.username}`;
     }
 
-    // The user has valid token.
-    throw new ForbiddenException(`You have logged in as ${username}`);
+    // If the user is required to use the refresh token.
+    if (session && this.loginToken === API.Tokens.REFRESH) {
+      message = "You must use the refresh token to do this action!";
+    }
+
+    throw new ForbiddenException(message);
   }
 }

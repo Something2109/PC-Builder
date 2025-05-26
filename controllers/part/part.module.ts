@@ -1,66 +1,20 @@
 import { Module } from "@nestjs/common";
+import { CRUD_INTERFACE, LIST_INTERFACE } from "./interface/database.interface";
+import { PARSE_INTERFACE, PART_INTERFACE } from "./interface/part.interface";
+import { ParseService } from "./service/Parser.service";
+import { SequelizeCRUDService } from "./service/SequelizeCRUD.service";
+import { SequelizeListService } from "./service/SequelizeList.service";
 import { PartController } from "./part.controller";
 import { PartService } from "./part.service";
-import { BaseDetailPartService } from "./interface/service.interface";
-import { CPUService } from "./service/cpu.service";
-import { GPUService } from "./service/gpu.service";
-import { GraphicCardService } from "./service/graphic_card.service";
-import { MainboardService } from "./service/mainboard.service";
-import { RAMService } from "./service/ram.service";
-import { SSDService } from "./service/ssd.service";
-import { HDDService } from "./service/hdd.service";
-import { PSUService } from "./service/psu.service";
-import { CaseService } from "./service/case.service";
-import { CoolerService } from "./service/cooler.service";
-import { AIOService } from "./service/aio.service";
-import { FanService } from "./service/fan.service";
-import { CPUBlockService } from "./service/cpublock.service";
-import { PumpService } from "./service/pump.service";
-import { RadiatorService } from "./service/radiator.service";
-
-const Service = {
-  provide: PartService,
-  useFactory: (...service: BaseDetailPartService<any>[]) => {
-    return new PartService(...service);
-  },
-  inject: [
-    CPUService,
-    GPUService,
-    GraphicCardService,
-    MainboardService,
-    RAMService,
-    SSDService,
-    HDDService,
-    PSUService,
-    CaseService,
-    CoolerService,
-    AIOService,
-    FanService,
-    CPUBlockService,
-    PumpService,
-    RadiatorService,
-  ],
-};
 
 @Module({
   controllers: [PartController],
   providers: [
-    Service,
-    CPUService,
-    GPUService,
-    GraphicCardService,
-    MainboardService,
-    RAMService,
-    SSDService,
-    HDDService,
-    PSUService,
-    CaseService,
-    CoolerService,
-    AIOService,
-    FanService,
-    CPUBlockService,
-    PumpService,
-    RadiatorService,
+    { provide: PART_INTERFACE, useClass: PartService },
+    { provide: PARSE_INTERFACE, useClass: ParseService },
+    { provide: LIST_INTERFACE, useClass: SequelizeListService },
+    { provide: CRUD_INTERFACE, useClass: SequelizeCRUDService },
   ],
+  exports: [LIST_INTERFACE, PARSE_INTERFACE],
 })
 export class PartModule {}
