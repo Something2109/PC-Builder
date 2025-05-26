@@ -1,4 +1,4 @@
-import { PCBuildRule } from "../utils";
+import { ProductRule } from "../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -9,7 +9,7 @@ const attributes = {
   rams: [Products.RAM, Infos.RAM_SPEC],
 } as const;
 
-const RAMRule: PCBuildRule<typeof attributes> = {
+const RAMRule: ProductRule<typeof attributes> = {
   name: "RAM Compatibility Rule",
 
   attributes,
