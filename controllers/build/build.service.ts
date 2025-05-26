@@ -9,7 +9,11 @@ import {
 import Build from "@/utils/interface/build";
 import Part, { Information, Mapping } from "@/utils/interface/part";
 import { Infos, Products } from "@/utils/Enum";
-import { Inject, Injectable } from "@nestjs/common";
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from "@nestjs/common";
 
 @Injectable()
 class BuildService {
@@ -106,28 +110,22 @@ class BuildService {
 
         if (!build[product]) return undefined; // Check if the product is in the build
 
-        const ids: string[] = Array.isArray(build[product])
-          ? build[product]
-          : [build[product]]; // Ensure list is an array
-
-        if (ids.length === 0) return undefined; // Check if the list is empty
-
-        const { list } = await this.partDatabase.list(
-          { part: { id: ids }, page: 1, limit: ids.length },
+        const list = await this.fetchProductDetails(
+          build[product],
           infoMapping
         ); // Fetch the part details from the database
 
-        // Transform the part details if a transform function is provided
-        const transformed = transform
-          ? list.map((item) => transform(item, product))
-          : list;
+        if (!list) return undefined; // Check if the list is valid
 
-        // If the product is an array, return the entire list; otherwise, return the first item
-        const result = Array.isArray(build[product])
-          ? transformed
-          : transformed[0];
+        if (transform) {
+          const result = Array.isArray(list)
+            ? list.map((item) => transform(item, product))
+            : transform(list, product); // Transform the part details if a transform function is provided
 
-        return [product, result];
+          return [product, result];
+        }
+
+        return [product, list];
       }
     );
 
@@ -138,6 +136,40 @@ class BuildService {
     );
 
     return buildDetails as Partial<Build.Details<T>>;
+  }
+
+  /**
+   * Fetch product details from the database.
+   * This method retrieves the part details based on the provided IDs
+   * and attributes, returning either a single detail or an array of details.
+   *
+   * @param fetchIds - The IDs of the products to fetch details for.
+   * @param attributes - The attributes to retrieve for each product.
+   * @returns A promise that resolves to the part details.
+   */
+  protected async fetchProductDetails(
+    fetchIds: Readonly<string | string[]>,
+    attributes: { [key in Infos]?: string[] }
+  ): Promise<Part.Detail | Part.Detail[] | undefined> {
+    const ids: string[] = Array.isArray(fetchIds) ? fetchIds : [fetchIds]; // Ensure list is an array
+
+    if (ids.length === 0) return undefined; // Check if the list is empty
+
+    try {
+      const { list } = await this.partDatabase.list(
+        { part: { id: ids }, page: 1, limit: ids.length },
+        attributes
+      ); // Fetch the part details from the database
+
+      if (!list || list.length === 0) return undefined; // Check if the list is valid
+
+      return Array.isArray(fetchIds) ? list : list[0]; // Return the list or the first item based on fetchIds type
+    } catch (err) {
+      const error = err as Error;
+      throw new InternalServerErrorException(
+        `Failed to fetch product details: ${error.message}`
+      );
+    }
   }
 
   /**
@@ -228,19 +260,16 @@ class BuildService {
   protected parseDetail(detail: Part.Detail, info: Infos, attr?: string) {
     let result = detail[info];
 
-    if (result && attr) {
-      const attribute = attr as keyof Information.Info[Infos];
+    if (!result) return undefined;
 
+    if (attr) {
+      const attribute = attr as keyof Information.Info[Infos];
       result = Array.isArray(result)
-        ? result.map((val) => val[attribute]).filter((val) => val) // If info is an array, map over it
-        : result[attribute]; // If info is an object, return the specific attribute
+        ? result.map((val) => val[attribute]).filter((val) => val)
+        : result[attribute];
     }
 
-    if (!attr) return undefined;
-
-    if (!Array.isArray(result)) return result; // If the result is not an array, return it
-
-    return result.length > 0 ? result : undefined; // If the result is an array, return it if it has values
+    return Array.isArray(result) && result.length === 0 ? undefined : result;
   }
 }
 
