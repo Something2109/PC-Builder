@@ -39,7 +39,7 @@ class BuildService {
   ) {
     const buildDetails = await this.getBuildDetail(
       buildList,
-      Build.RelevantProductFilterAttributes[product] ?? {}
+      Build.Product.RelevantFilterAttributes[product] ?? {}
     );
 
     const buildOptions = this.getFilterFromBuild(product, buildDetails);
@@ -60,10 +60,10 @@ class BuildService {
   async validate(buildList: Partial<Build.List>) {
     const buildDetails = await this.getBuildDetail(
       buildList,
-      Build.ProductValidateAttributes
+      Build.Product.ValidateAttributes
     );
 
-    const rules = Build.Rules.map((rule) => {
+    const rules = Build.Rule.Product.map((rule) => {
       const hasProducts = Object.values(rule.attributes).reduce(
         (acc, [product]) => {
           if (Array.isArray(buildList[product])) {
@@ -76,17 +76,19 @@ class BuildService {
 
       if (!hasProducts) return;
 
-      const validateObject = this.getValidateAttributes(rule, buildDetails);
-      const isValid = rule.validate(validateObject);
+      const extracted = this.getValidateAttributes(rule, buildDetails);
+      const result = rule.validate(extracted);
 
       return {
-        rule,
-        isValid,
-        validateObject,
+        rule: rule.name,
+        result,
+        extracted,
       };
     });
 
-    return rules.filter((rule) => rule);
+    return {
+      product: rules.filter((rule) => rule),
+    };
   }
 
   /**
@@ -185,7 +187,7 @@ class BuildService {
     product: Products,
     buildDetails: Partial<Build.Details>
   ): Part.Filter {
-    const buildOptions = Build.ProductRules[product]?.reduce((acc, rule) => {
+    const buildOptions = Build.Product.Rule[product]?.reduce((acc, rule) => {
       const validateObject = this.getValidateAttributes(rule, buildDetails);
       const filter = rule.filter(validateObject);
 
