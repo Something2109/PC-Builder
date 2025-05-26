@@ -25,14 +25,6 @@ const BuildPartSchema = z
 
 type BuildPartList = z.infer<typeof BuildPartSchema>;
 
-type BuildPartDetails = {
-  [key in keyof Required<BuildPartList>]: Required<BuildPartList>[key] extends string[]
-    ? Part.Detail[]
-    : Required<BuildPartList>[key] extends string
-    ? Part.Detail
-    : never;
-};
-
 type InfoTuple<P extends Products, I extends Infos> = [P, I] | readonly [P, I];
 
 type ExtractedInfoType<I extends Infos> = NonNullable<Part.Detail[I]>;
@@ -51,11 +43,11 @@ type ExtractedAttributeType<
   : undefined;
 
 type ValidateValue<T> = T extends InfoTuple<infer P, infer I>
-  ? BuildPartDetails[P] extends Part.Detail[]
+  ? Required<BuildPartList>[P] extends string[]
     ? ExtractedInfoType<I>[]
     : ExtractedInfoType<I>
   : T extends AttributeTuple<infer P, infer I, infer A>
-  ? BuildPartDetails[P] extends Part.Detail[]
+  ? Required<BuildPartList>[P] extends string[]
     ? ExtractedAttributeType<I, A>[]
     : ExtractedAttributeType<I, A>
   : undefined;
@@ -78,18 +70,26 @@ type BuildFilterAttributes<T extends BuildAttributeMapping> = {
     : undefined;
 };
 
-interface PCBuildRule<T extends BuildAttributeMapping> {
+interface GenericRule {
+  name: string;
+
+  validate(build: BuildPartList): string[];
+}
+
+interface ProductRule<T extends BuildAttributeMapping> {
+  name: string;
+
   attributes: T;
 
-  validate(build: BuildValidateAttributes<T>): boolean;
+  validate(build: BuildValidateAttributes<T>): string | undefined;
 
   filter(build: BuildValidateAttributes<T>): BuildFilterAttributes<T>;
 }
 
 export type {
-  PCBuildRule,
+  GenericRule,
+  ProductRule,
   BuildPartList,
-  BuildPartDetails,
   BuildAttributeMapping,
   BuildFilterAttributes,
   BuildValidateAttributes,

@@ -1,19 +1,36 @@
+import ProductCompatibleRule from "./rule/generic/ProductCompatibleRule";
+import CPUMainboardSocketRule from "./rule/socket/CPUMainboardSocketRule";
+import GPURule from "./rule/GPURule";
+import MainboardAIOSocketRule from "./rule/socket/MainboardAIOSocketRule";
+import MainboardCPUBlockSocketRule from "./rule/socket/MainboardCPUBlockSocketRule";
+import MainboardCoolerSocketRule from "./rule/socket/MainboardCoolerSocketRule";
 import CaseMainboardRule from "./rule/CaseMainboardRule";
 import CasePSURule from "./rule/CasePSURule";
-import CPUSocketRule from "./rule/CPUSocketRule";
 import PCIeRule from "./rule/PCIeRule";
 import RAMRule from "./rule/RAMRule";
 import {
   BuildAttributeMapping,
   BuildFilterAttributes,
-  BuildPartDetails,
   BuildPartList,
   BuildPartSchema,
   BuildValidateAttributes,
-  PCBuildRule,
+  GenericRule,
+  ProductRule,
 } from "./utils";
-import { Information } from "../part";
+import Part, { Information } from "../part";
 import { Infos, Products } from "@/utils/Enum";
+
+const ProductRuleList: ProductRule<BuildAttributeMapping>[] = [
+  CPUMainboardSocketRule,
+  GPURule,
+  MainboardAIOSocketRule,
+  MainboardCPUBlockSocketRule,
+  MainboardCoolerSocketRule,
+  CaseMainboardRule,
+  CasePSURule,
+  PCIeRule,
+  RAMRule,
+];
 
 /**
  * The `Build` namespace provides utilities and rules for validating PC build configurations.
@@ -21,13 +38,18 @@ import { Infos, Products } from "@/utils/Enum";
  * @namespace Build
  */
 
-/// <reference path="./utils.ts" />
 namespace Build {
   export const Schema = BuildPartSchema;
 
   export type List = BuildPartList;
 
-  export type Details = BuildPartDetails;
+  export type Details<T = Part.Detail> = {
+    [key in keyof Required<BuildPartList>]?: Required<BuildPartList>[key] extends string[]
+      ? T[]
+      : Required<BuildPartList>[key] extends string
+      ? T
+      : never;
+  };
 
   export type AttributeMapping = BuildAttributeMapping;
 
@@ -37,125 +59,116 @@ namespace Build {
   export type FilterAttributes<T extends AttributeMapping> =
     BuildFilterAttributes<T>;
 
-  export type Rule<T extends AttributeMapping> = PCBuildRule<T>;
+  export type Rule<T extends AttributeMapping> = ProductRule<T>;
 
-  /**
-   * An array of all PC build validation rules.
-   * Each rule enforces compatibility between different PC components.
-   */
-  export const Rules: PCBuildRule<BuildAttributeMapping>[] = [
-    CaseMainboardRule,
-    CasePSURule,
-    CPUSocketRule,
-    PCIeRule,
-    RAMRule,
-  ];
+  export namespace Rule {
+    export const Generic: GenericRule[] = [ProductCompatibleRule];
 
-  /**
-   * A mapping from each product type to the list of validation rules that apply to it.
-   *
-   * @example
-   * ProductRules[Products.Mainboard] = [
-   *   CaseMainboardRule,
-   *   CPUSocketRule,
-   *   PCIeRule,...
-   * ]
-   */
-  export const ProductRules = Rules.reduce((acc, rule) => {
-    const products = Object.values(rule.attributes).map(
-      (v) => v[0]
-    ) as Products[];
-    products.forEach((product) => {
-      if (!acc[product]) {
-        acc[product] = [];
-      }
-      acc[product].push(rule);
-    });
+    /**
+     * An array of all PC build validation rules.
+     * Each rule enforces compatibility between different PC components.
+     */
+    export const Product = ProductRuleList;
+  }
 
-    return acc;
-  }, {} as { [key in Products]?: PCBuildRule<BuildAttributeMapping>[] });
+  export namespace Product {
+    /**
+     * A mapping from each product type to the list of validation rules that apply to it.
+     *
+     * @example
+     * ProductRules[Products.Mainboard] = [
+     *   CaseMainboardRule,
+     *   CPUSocketRule,
+     *   PCIeRule,...
+     * ]
+     */
+    export const Rule = ProductRuleList.reduce((acc, rule) => {
+      Object.values(rule.attributes).forEach((v) => {
+        const [product] = v;
 
-  /**
-   * A mapping of each product type to the information filters
-   * of relevant products required for validation.
-   * For each product, it maps to an object describing
-   * the information (by `Infos`) and attributes of relevant products
-   * that are relevant for filtering.
-   * This is used to filter the product list based on the selected build
-   * and prevent unnecessary information be queried.
-   */
-  export const ProductValidateAttributes = Rules.reduce((acc, rule) => {
-    Object.values(rule.attributes).forEach((v) => {
-      const [filterProduct, info, attr] = v as [
-        Products,
-        Infos,
-        string | undefined
-      ];
+        if (!acc[product]) acc[product] = [];
+        acc[product].push(rule);
+      });
 
-      if (!acc[filterProduct]) acc[filterProduct] = {};
+      return acc;
+    }, {} as { [key in Products]?: ProductRule<BuildAttributeMapping>[] });
 
-      if (!attr)
-        acc[filterProduct][info] =
-          Information.Schema.shape[info].keyof().options;
+    /**
+     * A mapping of each product type to the information filters
+     * of relevant products required for validation.
+     * For each product, it maps to an object describing
+     * the information (by `Infos`) and attributes of relevant products
+     * that are relevant for filtering.
+     * This is used to filter the product list based on the selected build
+     * and prevent unnecessary information be queried.
+     */
+    export const ValidateAttributes = ProductRuleList.reduce((acc, rule) => {
+      Object.values(rule.attributes).forEach((v) => {
+        const [filterProduct, info, attr] = v;
 
-      if (!acc[filterProduct][info]) acc[filterProduct][info] = [];
+        if (!acc[filterProduct]) acc[filterProduct] = {};
 
-      if (attr && !acc[filterProduct][info].includes(attr))
-        acc[filterProduct][info].push(attr);
-    });
-    return acc;
-  }, {} as { [key in Products]?: { [info in Infos]?: string[] } });
+        if (!attr)
+          acc[filterProduct][info] =
+            Information.Schema.shape[info].keyof().options;
 
-  /**
-   * A mapping of each product type to the information filters
-   * of relevant products required for validation.
-   * For each product, it maps to an object describing
-   * the information (by `Infos`) and attributes of relevant products
-   * that are relevant for filtering.
-   * This is used to filter the product list based on the selected build
-   * and prevent unnecessary information be queried.
-   *
-   * @example
-   * ProductFilterAttributes[Products.CPU] = {
-   *   // Mainboard has the socket attribute in main spec info that are relevant for filtering CPU.
-   *   [Products.MAIN]: { [Infos.MAIN_SPEC]: ['socket'] },
-   *   // CPU block has the socket attribute in cpu block socket info that are relevant for filtering CPU.
-   *   [Products.CPU_BLOCK]: { [Infos.CPU_BLOCK_SOCKET]: ['socket'] },
-   * }
-   */
-  export const RelevantProductFilterAttributes = Object.fromEntries(
-    Object.entries(ProductRules).map(([product, rules]) => {
-      const productInfoMapping = rules.reduce((acc, rule) => {
-        Object.values(rule.attributes).forEach((v) => {
-          const [filterProduct, info, attr] = v as [
-            Products,
-            Infos,
-            string | undefined
-          ];
-          if (filterProduct === product) return;
+        if (!acc[filterProduct][info]) acc[filterProduct][info] = [];
 
-          if (!acc[filterProduct]) acc[filterProduct] = {};
+        if (attr && !acc[filterProduct][info].includes(attr))
+          acc[filterProduct][info].push(attr);
+      });
+      return acc;
+    }, {} as { [key in Products]?: { [info in Infos]?: string[] } });
 
-          if (!attr)
-            acc[filterProduct][info] =
-              Information.Schema.shape[info].keyof().options;
+    /**
+     * A mapping of each product type to the information filters
+     * of relevant products required for validation.
+     * For each product, it maps to an object describing
+     * the information (by `Infos`) and attributes of relevant products
+     * that are relevant for filtering.
+     * This is used to filter the product list based on the selected build
+     * and prevent unnecessary information be queried.
+     *
+     * @example
+     * ProductFilterAttributes[Products.CPU] = {
+     *   // Mainboard has the socket attribute in main spec info that are relevant for filtering CPU.
+     *   [Products.MAIN]: { [Infos.MAIN_SPEC]: ['socket'] },
+     *   // CPU block has the socket attribute in cpu block socket info that are relevant for filtering CPU.
+     *   [Products.CPU_BLOCK]: { [Infos.CPU_BLOCK_SOCKET]: ['socket'] },
+     * }
+     */
+    export const RelevantFilterAttributes = Object.fromEntries(
+      Object.entries(Rule).map(([key, rules]) => {
+        const product = key as Products;
 
-          if (!acc[filterProduct][info]) acc[filterProduct][info] = [];
+        const productInfoMapping = rules.reduce((acc, rule) => {
+          Object.values(rule.attributes).forEach((v) => {
+            const [filterProduct, info, attr] = v;
 
-          if (attr && !acc[filterProduct][info].includes(attr))
-            acc[filterProduct][info].push(attr);
-        });
-        return acc;
-      }, {} as { [key in Products]?: { [info in Infos]?: string[] } });
+            if (filterProduct === product) return;
 
-      return [product, productInfoMapping] as [
-        Products,
-        typeof productInfoMapping
-      ];
-    })
-  ) as {
-    [key in Products]?: { [key in Products]?: { [info in Infos]?: string[] } };
-  };
+            if (!acc[filterProduct]) acc[filterProduct] = {};
+
+            if (!attr)
+              acc[filterProduct][info] =
+                Information.Schema.shape[info].keyof().options;
+
+            if (!acc[filterProduct][info]) acc[filterProduct][info] = [];
+
+            if (attr && !acc[filterProduct][info].includes(attr))
+              acc[filterProduct][info].push(attr);
+          });
+          return acc;
+        }, {} as { [key in Products]?: { [info in Infos]?: string[] } });
+
+        return [product, productInfoMapping];
+      })
+    ) as {
+      [key in Products]?: {
+        [key in Products]?: { [info in Infos]?: string[] };
+      };
+    };
+  }
 }
 
 export default Build;

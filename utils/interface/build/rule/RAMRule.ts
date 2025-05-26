@@ -1,81 +1,99 @@
-import { PCBuildRule } from "../utils";
+import { ProductRule } from "../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
-  main_board: [Products.MAIN, Infos.MAIN_SPEC],
-  ram: [Products.RAM, Infos.RAM_SPEC],
+  main_board_interface: [Products.MAIN, Infos.MAIN_SPEC, "ram_interface"],
+  main_board_form_factor: [Products.MAIN, Infos.MAIN_SPEC, "ram_form_factor"],
+  main_board_slot: [Products.MAIN, Infos.MAIN_SPEC, "ram_slot"],
+
+  rams: [Products.RAM, Infos.RAM_SPEC],
 } as const;
 
-const RAMRule: PCBuildRule<typeof attributes> = {
+const RAMRule: ProductRule<typeof attributes> = {
+  name: "RAM Compatibility Rule",
+
   attributes,
 
   validate(build) {
-    const validation: string[] = [];
-
-    const { main_board, ram } = build;
+    const {
+      main_board_interface,
+      main_board_form_factor,
+      main_board_slot,
+      rams,
+    } = build;
 
     if (
-      !main_board ||
-      !main_board.ram_form_factor ||
-      !main_board.ram_interface ||
-      !main_board.ram_slot
+      !main_board_interface ||
+      !main_board_form_factor ||
+      !main_board_slot ||
+      !rams ||
+      rams.length === 0
     )
-      return false;
+      return "Not enough information to validate RAM compatibility.";
 
-    if (!ram) return false;
+    const incompatibleformFactor = rams.filter(
+      (val) => val.form_factor !== main_board_form_factor
+    );
+    if (incompatibleformFactor.length > 0)
+      return `The RAM ${incompatibleformFactor.join(
+        ", "
+      )} form factor does not match the mainboard ${main_board_form_factor} form factor.`;
 
-    let ramStick = 0;
-    for (const ramSet of ram) {
-      if (!ramSet.form_factor || !ramSet.interface || !ramSet.kit) return false;
+    const incompatibleInterface = rams.filter(
+      (val) => val.interface !== main_board_interface
+    );
+    if (incompatibleInterface.length > 0)
+      return `The RAM ${incompatibleInterface.join(
+        ", "
+      )} interface does not match the mainboard ${main_board_interface} interface.`;
 
-      if (
-        !(
-          ramSet.form_factor === main_board.ram_form_factor &&
-          ramSet.interface === main_board.ram_interface
-        )
-      )
-        return false;
-
-      ramStick += ramSet.kit;
-    }
-
-    return ramStick <= main_board.ram_slot;
+    const totalRAMKits = rams.reduce((acc, curr) => acc + (curr?.kit ?? 0), 0);
+    if (totalRAMKits > main_board_slot)
+      return `The total RAM stick(s): ${totalRAMKits} exceed the mainboard's ${main_board_slot} RAM slot capacity.`;
   },
 
   filter(build) {
-    const { main_board, ram } = build;
+    const {
+      main_board_interface,
+      main_board_form_factor,
+      main_board_slot,
+      rams,
+    } = build;
     const result: ReturnType<typeof this.filter> = {};
 
-    if (main_board) {
-      result.ram = {};
-
-      if (main_board.ram_form_factor)
-        result.ram.form_factor = [main_board.ram_form_factor];
-
-      if (main_board.ram_interface)
-        result.ram.interface = [main_board.ram_interface];
-
-      if (main_board.ram_slot && Number(main_board.ram_slot) > 0)
-        result.ram.kit = [main_board.ram_slot];
+    if (main_board_interface) {
+      result.rams = { ...result.rams, interface: [main_board_interface] };
     }
 
-    if (ram && ram.length > 0) {
-      result.main_board = {};
+    if (main_board_form_factor) {
+      result.rams = { ...result.rams, form_factor: [main_board_form_factor] };
+    }
 
-      const ram_form_factor = ram
-        .map((val) => val.form_factor)
-        .filter((val) => val) as string[];
-      if (ram_form_factor.length > 0)
-        result.main_board.ram_form_factor = ram_form_factor;
+    if (main_board_slot) {
+      const vacantSlots =
+        rams?.reduce((acc, curr) => acc - (curr?.kit ?? 0), main_board_slot) ??
+        main_board_slot;
 
-      const ram_interface = ram
-        .map((val) => val.interface)
-        .filter((val) => val) as string[];
-      if (ram_interface.length > 0)
-        result.main_board.ram_interface = ram_interface;
+      if (vacantSlots > 0) {
+        result.rams = { ...result.rams, kit: [main_board_slot] };
+      }
+    }
 
-      const ram_slot = ram.reduce((acc, val) => acc + (val.kit ?? 0), 0);
-      if (ram_slot > 0) result.main_board.ram_slot = [ram_slot];
+    if (rams && rams.length > 0) {
+      const ram_form_factors = rams
+        .map((ram) => ram.form_factor)
+        .filter((val) => val !== undefined);
+      if (ram_form_factors.length > 0)
+        result.main_board_form_factor = ram_form_factors;
+
+      const ram_interfaces = rams
+        .map((ram) => ram.interface)
+        .filter((val) => val !== undefined);
+      if (ram_interfaces.length > 0)
+        result.main_board_interface = ram_interfaces;
+
+      const ram_kits = rams.reduce((acc, ram) => acc + (ram?.kit ?? 0), 0);
+      if (ram_kits > 0) result.main_board_slot = [ram_kits];
     }
 
     return result;

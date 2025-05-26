@@ -1,4 +1,4 @@
-import { PCBuildRule } from "../utils";
+import { ProductRule } from "../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -6,21 +6,18 @@ const attributes = {
   mainboard_pcie: [Products.MAIN, Infos.MAIN_PCIE],
 } as const;
 
-const PCIeRule: PCBuildRule<typeof attributes> = {
+const PCIeRule: ProductRule<typeof attributes> = {
+  name: "PCIe Compatibility Rule",
+
   attributes,
 
   validate(build) {
     const { graphic_card_pcie, mainboard_pcie } = build;
 
-    if (!mainboard_pcie || !graphic_card_pcie) return false;
+    if (!mainboard_pcie || !graphic_card_pcie)
+      return "Not enough information to validate PCIe compatibility.";
 
-    for (const pcie of mainboard_pcie) {
-      if (pcie.width !== "x16") continue;
-
-      if (pcie.count === 0) continue;
-    }
-
-    return false;
+    return;
   },
 
   filter(build) {

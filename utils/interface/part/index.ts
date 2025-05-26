@@ -9,7 +9,7 @@ namespace Part {
   export const BasicInfo = z.object({
     id: Primitive.String,
 
-    part: Primitive.String,
+    part: z.nativeEnum(Products),
     name: Primitive.String,
     code_name: Primitive.String,
     brand: Primitive.String,
@@ -22,7 +22,7 @@ namespace Part {
 
   export type BasicInfo = z.infer<typeof BasicInfo>;
 
-  export const Label: { [key in keyof BasicInfo]: string } = {
+  export const Label: { [key in Required<keyof BasicInfo>]: string } = {
     id: "ID",
     part: "Product Type",
     name: "Name",
