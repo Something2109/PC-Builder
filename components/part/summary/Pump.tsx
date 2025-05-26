@@ -1,8 +1,9 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
 import { SuffixDisplay } from "@/components/utils/Display";
-import Pump from "@/utils/interface/info/Pump";
+import Pump from "@/utils/interface/part/product/Pump";
 
-const Components: InfoSummaryMapping<Pump.Info, Pump.Summarizable> = {
+const Components: InfoSummaryMapping<Pump.Summary> = {
+  form_factor: ({ value }) => value,
   head_pressure: ({ value }) => (
     <SuffixDisplay suffix="m">{value}</SuffixDisplay>
   ),
@@ -12,6 +13,6 @@ const Components: InfoSummaryMapping<Pump.Info, Pump.Summarizable> = {
 
 export default GenericSummaryCells(
   Components,
-  Pump.Label,
-  Pump.SummaryAttributes
+  Pump.AttributeLabels,
+  Pump.Summary.keyof().options
 );

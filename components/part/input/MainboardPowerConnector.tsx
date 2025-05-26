@@ -1,0 +1,99 @@
+import { DeleteButton } from "../utils/Button";
+import { useObjectSet } from "../utils/Hook";
+import { GenericInputField } from "../utils/Form";
+import { Table } from "../utils/Table";
+import { Input, OptionSelect } from "@/components/utils/Input";
+import { Button } from "@/components/utils/Button";
+import MainboardPowerConnector from "@/utils/interface/part/info/MainboardPowerConnector";
+import { InternalConnectors } from "@/utils/interface/utils";
+import { useRef } from "react";
+
+function Component({
+  defaultValue,
+}: {
+  defaultValue?: MainboardPowerConnector.Info[] | null;
+}) {
+  const [formFactors, addConnector, deleteConnector, existConnector] =
+    useObjectSet(
+      (type: InternalConnectors.Power.Mainboard) => ({ type, count: 0 }),
+      (info: MainboardPowerConnector.Info) => info.type,
+      defaultValue
+    );
+
+  return (
+    <Table.Component>
+      <thead>
+        <Table.Row>
+          <Table.Cell>{MainboardPowerConnector.Label.type}</Table.Cell>
+          <Table.Cell>{MainboardPowerConnector.Label.count}</Table.Cell>
+        </Table.Row>
+      </thead>
+      <tbody>
+        {formFactors.map(([key, value]) => (
+          <Table.Row key={`power-${key}`}>
+            <Table.Cell>
+              <label>{value.type}</label>
+            </Table.Cell>
+            <Table.Cell className="relative">
+              <Input
+                type="number"
+                name={value.type}
+                defaultValue={value.count}
+                onChange={(e) => (value.count = Number(e.target.value))}
+              />
+              <DeleteButton onClick={() => deleteConnector(value)} />
+            </Table.Cell>
+          </Table.Row>
+        ))}
+        <AddRow exist={existConnector} add={addConnector} />
+      </tbody>
+    </Table.Component>
+  );
+}
+
+function AddRow({
+  exist,
+  add,
+}: {
+  exist: (name: InternalConnectors.Power.Mainboard) => boolean;
+  add: (value: InternalConnectors.Power.Mainboard) => void;
+}) {
+  const ConnectorInput = useRef<HTMLSelectElement>(null);
+  const onAdd = () => {
+    const form_factor = ConnectorInput.current!
+      .value as InternalConnectors.Power.Mainboard;
+
+    add(form_factor);
+  };
+
+  const options = InternalConnectors.Power.Mainboard.options.filter(
+    (val) => !exist(val)
+  );
+
+  return (
+    options.length > 0 && (
+      <Table.Row>
+        <Table.Cell>
+          <OptionSelect ref={ConnectorInput} options={options} required />
+        </Table.Cell>
+        <Table.Cell>
+          <Button type="button" className="w-full p-0 border-0" onClick={onAdd}>
+            Add
+          </Button>
+        </Table.Cell>
+      </Table.Row>
+    )
+  );
+}
+
+function submit(formData: FormData) {
+  return formData
+    .entries()
+    .map(([type, count]) =>
+      MainboardPowerConnector.Schema.parse({ type, count })
+    )
+    .filter((val) => val.count > 0)
+    .toArray();
+}
+
+export default GenericInputField(Component, submit);

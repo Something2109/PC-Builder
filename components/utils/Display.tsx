@@ -23,8 +23,8 @@ export function UnitDisplay<T extends string>({
 }: {
   defaultValue?: number;
   Unit: UnitInterface<T>;
-  defaultUnit: T;
-  displayUnit?: T[];
+  defaultUnit: NoInfer<T>;
+  displayUnit?: NoInfer<T>[];
 }) {
   if (!defaultValue) return undefined;
 
@@ -50,6 +50,7 @@ export function UnitDisplay<T extends string>({
         value={unitName}
         options={display.current}
         disabled={display.current.length === 1}
+        required
       />
     </RowWrapper>
   );

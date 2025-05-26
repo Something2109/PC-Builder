@@ -1,4 +1,4 @@
-import { DetailTableComponent, InfoTable } from "@/components/part/Table";
+import { InfoTable } from "@/components/part/Table";
 import { PartTable } from "@/components/part/detail/Part";
 import {
   ColumnWrapper,
@@ -8,8 +8,7 @@ import { ObjectTable } from "@/components/utils/ObjectTable";
 import { Products } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 import React from "react";
-import { Product } from "@/utils/interface/product";
-import { DetailInfo } from "@/utils/interface";
+import Part, { Mapping } from "@/utils/interface/part";
 
 export default async function PartDetailPage({
   params,
@@ -24,7 +23,7 @@ export default async function PartDetailPage({
 
   if (!response.ok) return notFound();
 
-  const data = (await response.json()) as DetailInfo;
+  const data = (await response.json()) as Part.Detail;
 
   return (
     <>
@@ -34,11 +33,11 @@ export default async function PartDetailPage({
           <h1 className="text-4xl font-bold">Raw</h1>
           <ObjectTable
             className="border-2"
-            object={data.raw ? JSON.parse(data.raw) : undefined}
+            object={JSON.parse((data as any).raw ?? "{}")}
           />
         </ColumnWrapper>
         <ColumnWrapper className="basis-1/2">
-          {Product.Info[part].map((info) => (
+          {Mapping.Info[part].map((info) => (
             <InfoTable key={info} info={info} defaultValue={data[info]} />
           ))}
         </ColumnWrapper>

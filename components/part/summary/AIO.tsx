@@ -1,14 +1,14 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
-import AIO from "@/utils/interface/info/AIO";
+import AIO from "@/utils/interface/part/product/AIO";
 
-const Components: InfoSummaryMapping<AIO.Info, AIO.Summarizable> = {
+const Components: InfoSummaryMapping<AIO.Summary> = {
   form_factor: ({ value }) => value,
-  socket: ({ value }) => value,
+  socket: ({ value }) => value?.join(", "),
   cpu_plate: ({ value }) => value,
 };
 
 export default GenericSummaryCells(
   Components,
-  AIO.Label,
-  AIO.SummaryAttributes
+  AIO.AttributeLabels,
+  AIO.Summary.keyof().options
 );

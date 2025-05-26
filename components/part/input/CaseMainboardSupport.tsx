@@ -1,0 +1,55 @@
+import { GenericInputField } from "../utils/Form";
+import { Table } from "../utils/Table";
+import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
+import { ChoiceInput } from "@/components/utils/Input";
+import CaseMainboardSupport from "@/utils/interface/part/info/CaseMainboardSupport";
+import { FormFactor } from "@/utils/interface/utils";
+import { useRef } from "react";
+
+function Component({
+  defaultValue,
+}: {
+  defaultValue?: CaseMainboardSupport.Info[] | null;
+}) {
+  const defaultValueObj = useRef(
+    defaultValue?.map((val) => val.form_factor) ?? []
+  );
+
+  return (
+    <Table.Component>
+      <thead>
+        <Table.Row>
+          <Table.Cell>{CaseMainboardSupport.Label.form_factor}</Table.Cell>
+        </Table.Row>
+      </thead>
+      <tbody>
+        <Table.Row>
+          <Table.Cell>
+            <ResponsiveWrapper className="flex-wrap gap-x-3 justify-between">
+              {FormFactor.Mainboard.options.map((val) => (
+                <ChoiceInput
+                  type="checkbox"
+                  key={`mainboard-${val}`}
+                  name={"form_factor"}
+                  value={val}
+                  defaultChecked={defaultValueObj.current.includes(val)}
+                />
+              ))}
+            </ResponsiveWrapper>
+          </Table.Cell>
+        </Table.Row>
+      </tbody>
+    </Table.Component>
+  );
+}
+
+function submit(formData: FormData) {
+  return formData
+    .entries()
+    .map(([key, form_factor]) =>
+      CaseMainboardSupport.Schema.parse({ form_factor })
+    )
+    .toArray();
+}
+
+export default GenericInputField(Component, submit);

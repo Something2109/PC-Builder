@@ -1,0 +1,75 @@
+import { DeleteButton } from "../utils/Button";
+import { useObjectSet } from "../utils/Hook";
+import { GenericInputField } from "../utils/Form";
+import { Table } from "../utils/Table";
+import { Input, OptionSelect } from "@/components/utils/Input";
+import PSUConnector from "@/utils/interface/part/info/PSUConnector";
+import { InternalConnectors } from "@/utils/interface/utils";
+
+function Component({
+  defaultValue,
+}: {
+  defaultValue?: PSUConnector.Info[] | null;
+}) {
+  const [formFactors, addConnector, deleteConnector, existConnector] =
+    useObjectSet(
+      (type: InternalConnectors.Power | "") => ({ type, count: 0 }),
+      (info) => info.type,
+      defaultValue
+    );
+
+  return (
+    <Table.Component>
+      <thead>
+        <Table.Row>
+          <Table.Cell>{PSUConnector.Label.type}</Table.Cell>
+          <Table.Cell>{PSUConnector.Label.count}</Table.Cell>
+        </Table.Row>
+      </thead>
+      <tbody>
+        {formFactors.map(([type, value]) => (
+          <Table.Row key={`connector-${type}`}>
+            <Table.Cell>
+              <label>{type}</label>
+            </Table.Cell>
+            <Table.Cell className="relative">
+              <Input
+                type="number"
+                name={type}
+                defaultValue={value.count}
+                onChange={(e) => (value.count = Number(e.target.value))}
+              />
+              <DeleteButton onClick={() => deleteConnector(value)} />
+            </Table.Cell>
+          </Table.Row>
+        ))}
+        <Table.Row>
+          <Table.Cell colSpan={2}>
+            <label htmlFor="form_factor">Add: </label>
+            <OptionSelect
+              id="form_factor"
+              options={InternalConnectors.Power.Mainboard.options.filter(
+                (val) => !existConnector(val)
+              )}
+              onChange={(e) =>
+                addConnector(e.target.value as InternalConnectors.Power)
+              }
+            />
+          </Table.Cell>
+        </Table.Row>
+      </tbody>
+    </Table.Component>
+  );
+}
+
+function submit(formData: FormData) {
+  return formData
+    .entries()
+    .map(([form_factor, count]) =>
+      PSUConnector.Schema.parse({ form_factor, count })
+    )
+    .filter((val) => val.count > 0)
+    .toArray();
+}
+
+export default GenericInputField(Component, submit);

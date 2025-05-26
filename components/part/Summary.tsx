@@ -1,31 +1,30 @@
 "use client";
 
 import { PartSummaryCells } from "./summary/Part";
-import { Infos, Products } from "@/utils/Enum";
-import { Information } from "@/utils/interface/info";
-import { Product } from "@/utils/interface/product";
-import { SummaryInfo } from "@/utils/interface";
-import Part from "@/utils/interface/info/Parts";
-import { lazy, TableHTMLAttributes } from "react";
+import { Products } from "@/utils/Enum";
+import Part, { Product } from "@/utils/interface/part";
+import { lazy, TableHTMLAttributes, useMemo } from "react";
 
 export const SummaryInfoComponent = {
-  [Infos.CPU]: lazy(() => import("@/components/part/summary/CPU")),
-  [Infos.GPU]: lazy(() => import("@/components/part/summary/GPU")),
-  [Infos.GRAPHIC_CARD]: lazy(
+  [Products.CPU]: lazy(() => import("@/components/part/summary/CPU")),
+  [Products.GPU]: lazy(() => import("@/components/part/summary/GPU")),
+  [Products.GRAPHIC_CARD]: lazy(
     () => import("@/components/part/summary/GraphicCard")
   ),
-  [Infos.MAIN]: lazy(() => import("@/components/part/summary/Mainboard")),
-  [Infos.RAM]: lazy(() => import("@/components/part/summary/RAM")),
-  [Infos.HDD]: lazy(() => import("@/components/part/summary/HDD")),
-  [Infos.PSU]: lazy(() => import("@/components/part/summary/PSU")),
-  [Infos.CASE]: lazy(() => import("@/components/part/summary/Case")),
-  [Infos.COOLER]: lazy(() => import("@/components/part/summary/Cooler")),
-  [Infos.AIO]: lazy(() => import("@/components/part/summary/AIO")),
-  [Infos.FAN]: lazy(() => import("@/components/part/summary/Fan")),
-  [Infos.SSD]: lazy(() => import("@/components/part/summary/SSD")),
-  [Infos.CPU_BLOCK]: lazy(() => import("@/components/part/summary/CPUBlock")),
-  [Infos.PUMP]: lazy(() => import("@/components/part/summary/Pump")),
-  [Infos.RADIATOR]: lazy(() => import("@/components/part/summary/Radiator")),
+  [Products.MAIN]: lazy(() => import("@/components/part/summary/Mainboard")),
+  [Products.RAM]: lazy(() => import("@/components/part/summary/RAM")),
+  [Products.HDD]: lazy(() => import("@/components/part/summary/HDD")),
+  [Products.PSU]: lazy(() => import("@/components/part/summary/PSU")),
+  [Products.CASE]: lazy(() => import("@/components/part/summary/Case")),
+  [Products.COOLER]: lazy(() => import("@/components/part/summary/Cooler")),
+  [Products.AIO]: lazy(() => import("@/components/part/summary/AIO")),
+  [Products.FAN]: lazy(() => import("@/components/part/summary/Fan")),
+  [Products.SSD]: lazy(() => import("@/components/part/summary/SSD")),
+  [Products.CPU_BLOCK]: lazy(
+    () => import("@/components/part/summary/CPUBlock")
+  ),
+  [Products.PUMP]: lazy(() => import("@/components/part/summary/Pump")),
+  [Products.RADIATOR]: lazy(() => import("@/components/part/summary/Radiator")),
 };
 
 export default function SummaryTable({
@@ -34,12 +33,14 @@ export default function SummaryTable({
   part,
   ...rest
 }: {
-  data: SummaryInfo[];
+  data: Part.Summary[];
   part: Products;
 } & TableHTMLAttributes<HTMLTableElement>) {
+  const TableHeader = useMemo(() => <TableHead part={part} />, [part]);
+
   return (
     <table className="w-full border-separate border-spacing-0" {...rest}>
-      <TableHead part={part} />
+      {TableHeader}
       <TableBody data={data} part={part} />
     </table>
   );
@@ -55,39 +56,33 @@ const TableHead = ({ part }: { part: Products }) => (
       <td>{Part.Label.name}</td>
       <td>{Part.Label.brand}</td>
       <td>{Part.Label.series}</td>
-      {Product.Info[part]
-        .map((info: Infos) =>
-          Information.SummaryAttributes[info].map(
-            (attr) => Information.AttributeLabels[info][attr]
-          )
-        )
-        .flat()
-        .map((attr) => (
-          <td key={`Header-${attr}`}>{attr}</td>
-        ))}
+      {Product.Summary[part].keyof().options.map((attr) => (
+        <td key={`Header-${attr}`}>{Product.AttributeLabels[part][attr]}</td>
+      ))}
     </tr>
   </thead>
 );
 
-const TableBody = ({ data, part }: { data: SummaryInfo[]; part: Products }) => (
-  <tbody>
-    {data.map((product) => (
-      <tr
-        key={product.id}
-        className={`grid grid-cols-2 border-b-2 ${tableRow} hover:rounded-lg hover:bg-line hover:dark:text-background`}
-      >
-        <PartSummaryCells defaultValue={product} />
-        {Product.Info[part].map((info) => {
-          const Component = SummaryInfoComponent[info];
+const TableBody = ({
+  data,
+  part,
+}: {
+  data: Part.Summary[];
+  part: Products;
+}) => {
+  const Component = SummaryInfoComponent[part];
 
-          return (
-            <Component
-              key={`${product.id}-${info}`}
-              defaultValue={product[info] as any}
-            />
-          );
-        })}
-      </tr>
-    ))}
-  </tbody>
-);
+  return (
+    <tbody>
+      {data.map((product) => (
+        <tr
+          key={product.id}
+          className={`grid grid-cols-2 border-b-2 ${tableRow} hover:rounded-lg hover:bg-line hover:dark:text-background`}
+        >
+          <PartSummaryCells defaultValue={product} />
+          <Component key={`${product.id}`} defaultValue={product as any} />
+        </tr>
+      ))}
+    </tbody>
+  );
+};

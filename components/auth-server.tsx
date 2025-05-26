@@ -1,8 +1,10 @@
 import { Roles } from "@/utils/Enum";
 import { User } from "@/utils/interface/user/User";
-import { verify } from "jsonwebtoken";
+import { createVerifier } from "fast-jwt";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+
+const verify = createVerifier({ key: process.env.JWT_SECRET! });
 
 export async function verifyToken(): Promise<User.JwtPayload | null> {
   const cookie = await cookies();
@@ -21,7 +23,9 @@ export async function verifyToken(): Promise<User.JwtPayload | null> {
   if (bearer !== "Bearer") return null;
 
   try {
-    return verify(token, process.env.JWT_SECRET!) as User.JwtPayload;
+    const payload = verify(token);
+
+    return payload?.sub as User.JwtPayload;
   } catch (err) {
     console.error(err);
     return null;
@@ -39,7 +43,7 @@ export async function ServerAuthRole({
 }) {
   const user = await verifyToken();
 
-  if (!user) redirect(`/auth/login?redirect=${pathname ?? "/"}`);
+  if (!user) redirect(`/auth/refresh?redirect=${pathname ?? "/"}`);
 
   if (!roles.includes(user.role))
     return <h1>You are not authorized to access this page</h1>;

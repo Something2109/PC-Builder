@@ -1,4 +1,4 @@
-import { ArticleComponent } from "@/components/article";
+import { ArticleComponent } from "@/components/articles/Article";
 import { RedirectButton } from "@/components/utils/Button";
 import { Article } from "@/utils/interface/article/article";
 import { notFound } from "next/navigation";

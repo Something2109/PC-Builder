@@ -1,14 +1,10 @@
-import {
-  ColumnWrapper,
-  ResponsiveWrapper,
-  RowWrapper,
-} from "@/components/utils/FlexWrapper";
+import { ColumnWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
 import SummaryTable from "@/components/part/Summary";
 import { RedirectButton } from "@/components/utils/Button";
 import PaginationBar from "@/components/utils/PaginationBar";
-import { FilterBar } from "@/components/filterbar";
-import Part from "@/utils/interface/info/Parts";
-import { Product } from "@/utils/interface/product";
+import { FilterBar } from "@/components/part/Filter";
+import { ToggleButton } from "@/components/utils/Toggle";
+import { Product } from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 
@@ -30,40 +26,48 @@ export default async function PartListPage({
   }, [] as string[][]);
   const options = new URLSearchParams(queryEntries);
 
-  const response = await fetch(
-    `${process.env.BACKEND_HOST}/api/part/${part}?${options}`
-  );
+  const response = await Promise.all([
+    fetch(`${process.env.BACKEND_HOST}/api/part/${part}?${options}`),
+    fetch(`${process.env.BACKEND_HOST}/api/part/filter/${part}?${options}`),
+  ]);
 
-  if (!response) return notFound();
+  if (!response[0].ok) return notFound();
 
-  const data = (await response.json()) as {
-    total: number;
-    list: Part.BasicInfo[];
-  };
+  const [data, filter] = await Promise.all([
+    response[0].json(),
+    response[1].json(),
+  ]);
 
   const page = options.get("page") ?? "1";
   options.delete("page");
 
   return (
-    <ResponsiveWrapper className="w-full">
-      <ColumnWrapper className="hidden lg:block lg:w-1/5">
-        <FilterBar context={options} part={part} />
-      </ColumnWrapper>
-      <ColumnWrapper className="lg:w-4/5">
-        <RowWrapper className="justify-between place-items-center">
+    <ColumnWrapper className="w-full">
+      <ColumnWrapper>
+        <RowWrapper className="flex-wrap justify-between place-items-center">
           <h1
             className="text-xl font-bold"
             id="list"
           >{`${data.total} ${Product.Label[part]}`}</h1>
-          <RedirectButton href={`/part/${part}/new`}>New</RedirectButton>
+          {response[1].ok && (
+            <ToggleButton label="Filter">
+              <FilterBar
+                className="w-full border-2 border-line rounded-xl p-2"
+                context={options}
+                filter={filter}
+                part={part}
+              />
+            </ToggleButton>
+          )}
         </RowWrapper>
         <SummaryTable part={part} data={data.list} />
+        <RedirectButton href={`/part/${part}/new`}>New</RedirectButton>
         <PaginationBar
           path={`/part/${part}?${options}`}
           current={Number(page)}
           total={Math.ceil(data.total / Number(process.env.PageSize))}
         />
       </ColumnWrapper>
-    </ResponsiveWrapper>
+    </ColumnWrapper>
   );
 }

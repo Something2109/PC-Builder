@@ -1,10 +1,11 @@
 "use client";
+
 import Link from "next/link";
 import { RowWrapper } from "./utils/FlexWrapper";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { UserPanel } from "./auth/UserPanel";
 import { DarkModeButton } from "./body";
-import { LoginButton, UserPanel } from "./auth";
 
 export default function Header() {
   const [navbar, setNavbar] = useState(false);
@@ -26,7 +27,6 @@ export default function Header() {
         <RowWrapper className="m-10 items-center">
           <DarkModeButton />
           <UserPanel />
-          <LoginButton />
           <button
             type="button"
             className="md:hidden"

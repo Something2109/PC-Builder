@@ -11,38 +11,32 @@ export type ContentProps<T extends Article.Content> = {
   prefix?: string;
 };
 
+const DisplayComponent = {
+  [Article.ContentName.Paragraph]: Paragraph,
+  [Article.ContentName.Image]: Picture,
+  [Article.ContentName.List]: List,
+  [Article.ContentName.Section]: Section,
+};
+
 export function ContentRenderer(props: ContentProps<Article.Content>) {
-  switch (props.content.type) {
-    case "paragraph":
-      return <Paragraph {...(props as ContentProps<Article.Paragraph>)} />;
-    case "image":
-      return <Picture {...(props as ContentProps<Article.Image>)} />;
-    case "list":
-      return <List {...(props as ContentProps<Article.List>)} />;
-    case "section":
-      return <Section {...(props as ContentProps<Article.Section>)} />;
-  }
+  const Component = DisplayComponent[props.content.type];
+  return <Component {...(props as any)} />;
 }
 
 export type InputContentProps<T extends Article.Content> = {
   updateSelf: ReturnType<typeof updateContent<any>>;
 } & ContentProps<T>;
 
+const InputComponent = {
+  [Article.ContentName.Paragraph]: ParagraphInput,
+  [Article.ContentName.Image]: PictureInput,
+  [Article.ContentName.List]: ListInput,
+  [Article.ContentName.Section]: SectionInput,
+};
+
 export function InputRenderer(props: InputContentProps<Article.Content>) {
-  switch (props.content.type) {
-    case "paragraph":
-      return (
-        <ParagraphInput {...(props as InputContentProps<Article.Paragraph>)} />
-      );
-    case "section":
-      return (
-        <SectionInput {...(props as InputContentProps<Article.Section>)} />
-      );
-    case "image":
-      return <PictureInput {...(props as InputContentProps<Article.Image>)} />;
-    case "list":
-      return <ListInput {...(props as InputContentProps<Article.List>)} />;
-  }
+  const Component = InputComponent[props.content.type];
+  return <Component {...(props as any)} />;
 }
 
 export function AddRow({
@@ -60,16 +54,32 @@ export function AddRow({
 
   return (
     <RowWrapper className="justify-center">
-      <Button onClick={() => add({ type: "section", title: "", content: [] })}>
+      <Button
+        onClick={() =>
+          add({ type: Article.ContentName.Section, title: "", content: [] })
+        }
+      >
         Add Section
       </Button>
-      <Button onClick={() => add({ type: "paragraph", content: "" })}>
+      <Button
+        onClick={() =>
+          add({ type: Article.ContentName.Paragraph, content: "" })
+        }
+      >
         Add Paragraph
       </Button>
-      <Button onClick={() => add({ type: "image", src: "", caption: "" })}>
+      <Button
+        onClick={() =>
+          add({ type: Article.ContentName.Image, src: "", caption: "" })
+        }
+      >
         Add Picture
       </Button>
-      <Button onClick={() => add({ type: "list", symbol: "*", content: [] })}>
+      <Button
+        onClick={() =>
+          add({ type: Article.ContentName.List, symbol: "*", content: [] })
+        }
+      >
         Add List
       </Button>
     </RowWrapper>
