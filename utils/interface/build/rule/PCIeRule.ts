@@ -1,4 +1,4 @@
-import { PCBuildRule } from "../utils";
+import { ProductRule } from "../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -6,7 +6,7 @@ const attributes = {
   mainboard_pcie: [Products.MAIN, Infos.MAIN_PCIE],
 } as const;
 
-const PCIeRule: PCBuildRule<typeof attributes> = {
+const PCIeRule: ProductRule<typeof attributes> = {
   name: "PCIe Compatibility Rule",
 
   attributes,

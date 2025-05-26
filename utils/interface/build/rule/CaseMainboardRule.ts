@@ -1,4 +1,4 @@
-import { PCBuildRule } from "../utils";
+import { ProductRule } from "../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -6,7 +6,7 @@ const attributes = {
   case_main_support: [Products.CASE, Infos.CASE_MAIN, "form_factor"],
 } as const;
 
-const CaseMainboardRule: PCBuildRule<typeof attributes> = {
+const CaseMainboardRule: ProductRule<typeof attributes> = {
   name: "Case Mainboard Compatibility Rule",
 
   attributes,

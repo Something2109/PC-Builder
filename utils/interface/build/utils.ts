@@ -70,7 +70,7 @@ type BuildFilterAttributes<T extends BuildAttributeMapping> = {
     : undefined;
 };
 
-interface PCBuildRule<T extends BuildAttributeMapping> {
+interface ProductRule<T extends BuildAttributeMapping> {
   name: string;
 
   attributes: T;
@@ -81,7 +81,7 @@ interface PCBuildRule<T extends BuildAttributeMapping> {
 }
 
 export type {
-  PCBuildRule,
+  ProductRule,
   BuildPartList,
   BuildAttributeMapping,
   BuildFilterAttributes,

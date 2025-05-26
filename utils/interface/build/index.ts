@@ -12,7 +12,7 @@ import {
   BuildPartList,
   BuildPartSchema,
   BuildValidateAttributes,
-  PCBuildRule,
+  ProductRule,
 } from "./utils";
 import Part, { Information } from "../part";
 import { Infos, Products } from "@/utils/Enum";
@@ -45,13 +45,13 @@ namespace Build {
   export type FilterAttributes<T extends AttributeMapping> =
     BuildFilterAttributes<T>;
 
-  export type Rule<T extends AttributeMapping> = PCBuildRule<T>;
+  export type Rule<T extends AttributeMapping> = ProductRule<T>;
 
   /**
    * An array of all PC build validation rules.
    * Each rule enforces compatibility between different PC components.
    */
-  export const Rules: PCBuildRule<BuildAttributeMapping>[] = [
+  export const Rules: ProductRule<BuildAttributeMapping>[] = [
     CPUMainboardSocketRule,
     MainboardAIOSocketRule,
     MainboardCPUBlockSocketRule,
@@ -81,7 +81,7 @@ namespace Build {
     });
 
     return acc;
-  }, {} as { [key in Products]?: PCBuildRule<BuildAttributeMapping>[] });
+  }, {} as { [key in Products]?: ProductRule<BuildAttributeMapping>[] });
 
   /**
    * A mapping of each product type to the information filters
