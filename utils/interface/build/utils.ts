@@ -70,6 +70,12 @@ type BuildFilterAttributes<T extends BuildAttributeMapping> = {
     : undefined;
 };
 
+interface GenericRule {
+  name: string;
+
+  validate(build: BuildPartList): string[];
+}
+
 interface ProductRule<T extends BuildAttributeMapping> {
   name: string;
 
@@ -81,6 +87,7 @@ interface ProductRule<T extends BuildAttributeMapping> {
 }
 
 export type {
+  GenericRule,
   ProductRule,
   BuildPartList,
   BuildAttributeMapping,
