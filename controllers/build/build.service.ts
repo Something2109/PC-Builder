@@ -69,32 +69,30 @@ class BuildService {
       Build.Product.ValidateAttributes
     );
 
-    const rules = Build.Rule.Product.map((rule) => {
-      const hasProducts = Object.values(rule.attributes).reduce(
-        (acc, [product]) => {
-          if (Array.isArray(buildList[product])) {
-            return acc && buildList[product].length > 0;
-          }
-          return acc && Boolean(buildList[product]);
-        },
-        true
-      );
+    const result = Build.Rule.Product.reduce(
+      (acc, rule) => {
+        const errors = this.validateRule(rule, buildDetails);
 
-      if (!hasProducts) return;
+        if (!errors) return acc;
 
-      const extracted = this.getValidateAttributes(rule, buildDetails);
-      const result = rule.validate(extracted);
+        if (typeof errors === "string") {
+          acc.rules[rule.name] = errors;
+          return acc;
+        }
 
-      return {
-        rule: rule.name,
-        result,
-        extracted,
-      };
-    });
+        Object.entries(errors).forEach(([id, error]) => {
+          if (!acc.products[id]) acc.products[id] = {};
+          acc.products[id][rule.name] = error;
+        });
+
+        return acc;
+      },
+      { rules: {}, products: {} } as Omit<Build.Result, "generic">
+    );
 
     return {
       generic: genericResult.filter((val) => val),
-      product: rules.filter((rule) => rule),
+      ...result,
     };
   }
 
@@ -215,6 +213,40 @@ class BuildService {
   }
 
   /**
+   * Validate a specific rule against the build details.
+   * This method checks if the build contains the necessary products
+   * and validates the attributes based on the rule.
+   * If the validation fails, it returns an error message.
+   * @param rule - The rule to validate against.
+   * @param build - The build details to validate.
+   * @returns A string error message if validation fails, otherwise undefined.
+   */
+  protected validateRule<T extends Build.Rule.Mapping>(
+    rule: Build.Rule<T>,
+    build: Partial<Build.Details>
+  ) {
+    const hasProducts = Object.values(rule.attributes).reduce(
+      (acc, [product]) => {
+        if (Array.isArray(build[product])) {
+          return acc && build[product].length > 0;
+        }
+        return acc && Boolean(build[product]);
+      },
+      true
+    );
+
+    if (!hasProducts) return;
+
+    const attributes = this.getValidateAttributes(rule, build);
+    const validateResult = rule.validate(attributes);
+
+    if (!validateResult || typeof validateResult === "string")
+      return validateResult;
+
+    return this.parseValidateResult(rule, build, validateResult);
+  }
+
+  /**
    * Get the validation object for a specific rule and build.
    * This method extracts the relevant information from the build
    * based on the rule's validation object.
@@ -223,7 +255,7 @@ class BuildService {
    * @param build - The build details to validate.
    * @returns The validation object for the rule.
    */
-  protected getValidateAttributes<T extends Build.AttributeMapping>(
+  protected getValidateAttributes<T extends Build.Rule.Mapping>(
     rule: Build.Rule<T>,
     build: Partial<Build.Details>
   ) {
@@ -253,7 +285,7 @@ class BuildService {
       {} as { [key in keyof T]: any }
     );
 
-    return filter as Build.ValidateAttributes<T>;
+    return filter as Build.Rule.Attributes<T>;
   }
 
   /**
@@ -279,6 +311,46 @@ class BuildService {
     }
 
     return result;
+  }
+
+  /**
+   * Parse the validation result for a specific rule and build.
+   * This method processes the validation result and maps it to the build details.
+   *
+   * @param rule - The rule to parse the validation result for.
+   * @param build - The build details to parse the validation result against.
+   * @param result - The validation result to parse.
+   * @returns A record mapping product IDs to their respective validation errors.
+   */
+  protected parseValidateResult<T extends Build.Rule.Mapping>(
+    rule: Build.Rule<T>,
+    build: Partial<Build.Details>,
+    result: Build.Rule.Result<T>
+  ) {
+    const parsed: Record<string, string[]> = {};
+
+    Object.entries(result).forEach(([key, value]) => {
+      const validateAttr = key as keyof T;
+      const [product] = rule.attributes[validateAttr];
+
+      if (!Array.isArray(value) && !Array.isArray(build[product])) {
+        const id = build[product]!.id;
+        if (!parsed[id]) parsed[id] = [];
+        parsed[id] = [...parsed[id], value];
+        return;
+      }
+
+      value.forEach((error: string[] | string | undefined, index: number) => {
+        if (!error || !Array.isArray(build[product])) return undefined;
+        const id = build[product][index].id;
+        if (!parsed[id]) parsed[id] = [];
+        parsed[id] = Array.isArray(error)
+          ? [...parsed[id], ...error]
+          : [...parsed[id], error];
+      });
+    });
+
+    return parsed;
   }
 }
 
