@@ -3,7 +3,7 @@ import {
   MinMaxRangeInput,
 } from "@/components/utils/Input";
 import PSU from "@/utils/interface/part/product/PSU";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<PSU.Filter> = {
   form_factor: ({ defaultValue, value, ...props }) => (

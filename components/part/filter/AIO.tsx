@@ -1,6 +1,6 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
 import AIO from "@/utils/interface/part/product/AIO";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<AIO.Filter> = {
   socket: ({ defaultValue, value, ...props }) => (

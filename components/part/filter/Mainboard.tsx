@@ -1,6 +1,6 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
 import Mainboard from "@/utils/interface/part/product/Mainboard";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<Mainboard.Filter> = {
   socket: ({ defaultValue, value, ...props }) => (

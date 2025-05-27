@@ -1,6 +1,6 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
 import Fan from "@/utils/interface/part/product/Fan";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<Fan.Filter> = {
   form_factor: ({ defaultValue, value, ...props }) => (

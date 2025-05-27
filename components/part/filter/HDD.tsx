@@ -5,7 +5,7 @@ import {
 } from "@/components/utils/Input";
 import HDD from "@/utils/interface/part/product/HDD";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<HDD.Filter> = {
   form_factor: ({ defaultValue, value, ...props }) => (

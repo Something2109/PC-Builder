@@ -5,7 +5,7 @@ import {
 } from "@/components/utils/Input";
 import CPU from "@/utils/interface/part/product/CPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/extract/Units";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<CPU.Filter> = {
   socket: ({ defaultValue, value, ...props }) => (

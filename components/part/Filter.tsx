@@ -16,8 +16,8 @@ import PartFilter from "./filter/Part";
 const FilterComponents: {
   [key in Products]: LazyExoticComponent<
     FunctionComponent<{
-      defaultValue: URLSearchParams;
-      value?: Record<string, string[] | number[]>;
+      product: Products;
+      context: URLSearchParams;
     }>
   >;
 } = {
@@ -43,13 +43,11 @@ const FilterComponents: {
 export function FilterBar({
   part,
   context,
-  filter,
   className,
   ...rest
 }: {
   part: Products;
   context: URLSearchParams;
-  filter: Record<string, string[] | number[]>;
 } & FormHTMLAttributes<HTMLFormElement>) {
   const router = useRouter();
   const options = useRef(new URLSearchParams(context));
@@ -61,8 +59,8 @@ export function FilterBar({
   return (
     <form className={`flex flex-col gap-1 ${className}`} {...rest}>
       <RowWrapper className="flex-wrap justify-between gap-2 mb-10">
-        <PartFilter defaultValue={options.current} value={filter} />
-        <Component defaultValue={options.current} value={filter} />
+        <PartFilter product={part} context={options.current} />
+        <Component product={part} context={options.current} />
       </RowWrapper>
       <hr />
       <RowWrapper className="justify-end">

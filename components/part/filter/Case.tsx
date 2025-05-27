@@ -1,6 +1,6 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
 import Case from "@/utils/interface/part/product/Case";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<Case.Filter> = {
   form_factor: ({ defaultValue, value, ...props }) => (
