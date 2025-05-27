@@ -82,6 +82,23 @@ type BuildAttributeValue<
   ? Attribute.Validate<I, A>
   : undefined;
 
+type BuildValidateResult<T extends BuildAttributeMapping> = {
+  -readonly [key in keyof T]?: T[key] extends Info.Tuple<infer P, infer _>
+    ? BuildListInferValue<P, Info.Result>
+    : T[key] extends Attribute.Tuple<infer P, infer _, infer __>
+    ? BuildListInferValue<P, Attribute.Result>
+    : undefined;
+};
+
+type BuildResultValue<
+  T extends BuildAttributeMapping,
+  A extends keyof T
+> = T[A] extends Info.Tuple<infer P, infer _>
+  ? Info.Result
+  : T[A] extends Attribute.Tuple<infer P, infer _, infer __>
+  ? Attribute.Result
+  : undefined;
+
 type BuildFilterAttributes<T extends BuildAttributeMapping> = {
   -readonly [key in keyof T]?: T[key] extends Info.Tuple<infer _, infer I>
     ? Info.Filter<I>
@@ -110,7 +127,9 @@ interface ProductRule<T extends BuildAttributeMapping> {
 
   attributes: T;
 
-  validate(build: Readonly<BuildValidateAttributes<T>>): string | undefined;
+  validate(
+    build: Readonly<BuildValidateAttributes<T>>
+  ): BuildValidateResult<T> | string | undefined;
 
   filter(build: Readonly<BuildValidateAttributes<T>>): BuildFilterAttributes<T>;
 }
@@ -122,6 +141,8 @@ export type {
   BuildAttributeMapping,
   BuildAttributeValue,
   BuildValidateAttributes,
+  BuildValidateResult,
+  BuildResultValue,
   BuildFilterAttributes,
   BuildFilterValue,
 };

@@ -10,6 +10,7 @@ import PCIeRule from "./rule/PCIeRule";
 import RAMRule from "./rule/RAMRule";
 import {
   BuildAttributeMapping,
+  BuildValidateResult,
   BuildFilterAttributes,
   BuildPartList,
   BuildPartSchema,
@@ -55,6 +56,9 @@ namespace Build {
 
   export type ValidateAttributes<T extends AttributeMapping> =
     BuildValidateAttributes<T>;
+
+  export type ValidateResult<T extends AttributeMapping> =
+    BuildValidateResult<T>;
 
   export type FilterAttributes<T extends AttributeMapping> =
     BuildFilterAttributes<T>;
