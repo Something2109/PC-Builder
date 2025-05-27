@@ -52,21 +52,18 @@ namespace Build {
       : never;
   };
 
-  export type AttributeMapping = BuildAttributeMapping;
-
-  export type ValidateAttributes<T extends AttributeMapping> =
-    BuildValidateAttributes<T>;
-
-  export type ValidateResult<T extends AttributeMapping> =
-    BuildValidateResult<T>;
-
-  export type FilterAttributes<T extends AttributeMapping> =
-    BuildFilterAttributes<T>;
-
-  export type Rule<T extends AttributeMapping> = ProductRule<T>;
+  export type Rule<T extends BuildAttributeMapping> = ProductRule<T>;
 
   export namespace Rule {
     export const Generic: GenericRule[] = [ProductCompatibleRule];
+
+    export type Mapping = BuildAttributeMapping;
+
+    export type Attributes<T extends Mapping> = BuildValidateAttributes<T>;
+
+    export type Result<T extends Mapping> = BuildValidateResult<T>;
+
+    export type Filter<T extends Mapping> = BuildFilterAttributes<T>;
 
     /**
      * An array of all PC build validation rules.
