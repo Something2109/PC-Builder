@@ -52,6 +52,12 @@ namespace Build {
       : never;
   };
 
+  export type Result = {
+    generic: string[];
+    rules: { [name in string]: string };
+    products: { [id in string]: { [name in string]: string[] } };
+  };
+
   export type Rule<T extends BuildAttributeMapping> = ProductRule<T>;
 
   export namespace Rule {
