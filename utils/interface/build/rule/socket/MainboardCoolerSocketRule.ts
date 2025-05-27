@@ -11,12 +11,19 @@ const MainboardCoolerSocketRule: ProductRule<typeof attributes> = {
 
   attributes,
 
-  validate: (build) => {
+  validate(build) {
+    const result: ReturnType<typeof this.validate> = {};
     const { mainboard_socket, cooler_socket } = build;
 
-    if (!mainboard_socket || !cooler_socket) {
-      return "Not enough information to validate CPU socket compatibility.";
+    if (!mainboard_socket) {
+      result.mainboard_socket = "Mainboard socket is not specified.";
     }
+
+    if (cooler_socket.length === 0) {
+      result.cooler_socket = "Cooler socket is not specified.";
+    }
+
+    if (!mainboard_socket || cooler_socket.length === 0) return result;
 
     if (!cooler_socket.includes(mainboard_socket)) {
       return `The mainboard ${mainboard_socket} socket is not compatible with the cooler.`;
