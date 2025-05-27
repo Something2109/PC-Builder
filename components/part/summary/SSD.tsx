@@ -1,4 +1,4 @@
-import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import { SuffixDisplay } from "@/components/utils/Display";
 import SSD from "@/utils/interface/part/product/SSD";
 

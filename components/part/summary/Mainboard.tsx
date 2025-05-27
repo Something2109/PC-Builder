@@ -1,4 +1,4 @@
-import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import Mainboard from "@/utils/interface/part/product/Mainboard";
 
 const Components: InfoSummaryMapping<Mainboard.Summary> = {

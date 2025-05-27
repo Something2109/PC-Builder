@@ -1,5 +1,5 @@
 import { SuffixDisplay } from "@/components/utils/Display";
-import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import Cooler from "@/utils/interface/part/product/Cooler";
 
 const Components: InfoSummaryMapping<Cooler.Summary> = {

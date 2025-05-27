@@ -1,4 +1,4 @@
-import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import Radiator from "@/utils/interface/part/product/Radiator";
 
 const Components: InfoSummaryMapping<Radiator.Summary> = {

@@ -1,4 +1,4 @@
-import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import AIO from "@/utils/interface/part/product/AIO";
 
 const Components: InfoSummaryMapping<AIO.Summary> = {
