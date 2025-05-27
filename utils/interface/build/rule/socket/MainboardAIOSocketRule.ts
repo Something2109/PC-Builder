@@ -34,7 +34,9 @@ const MainboardAIOSocketRule: ProductRule<typeof attributes> = {
     }
 
     if (aio_socket && aio_socket.length > 0) {
-      result.mainboard_socket = aio_socket;
+      result.mainboard_socket = aio_socket.filter(
+        (socket) => socket !== undefined
+      );
     }
 
     return result;

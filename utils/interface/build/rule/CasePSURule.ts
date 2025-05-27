@@ -51,7 +51,9 @@ const CasePSURule: ProductRule<typeof attributes> = {
     }
 
     if (case_psu_support && case_psu_support.length > 0) {
-      result.psu_form_factor = case_psu_support;
+      result.psu_form_factor = case_psu_support.filter(
+        (formFactor) => formFactor !== undefined
+      );
     }
 
     if (case_psu_length) {

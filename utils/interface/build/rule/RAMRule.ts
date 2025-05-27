@@ -32,7 +32,7 @@ const RAMRule: ProductRule<typeof attributes> = {
       return "Not enough information to validate RAM compatibility.";
 
     const incompatibleformFactor = rams.filter(
-      (val) => val.form_factor !== main_board_form_factor
+      (val) => !val || val.form_factor !== main_board_form_factor
     );
     if (incompatibleformFactor.length > 0)
       return `The RAM ${incompatibleformFactor.join(
@@ -40,7 +40,7 @@ const RAMRule: ProductRule<typeof attributes> = {
       )} form factor does not match the mainboard ${main_board_form_factor} form factor.`;
 
     const incompatibleInterface = rams.filter(
-      (val) => val.interface !== main_board_interface
+      (val) => !val || val.interface !== main_board_interface
     );
     if (incompatibleInterface.length > 0)
       return `The RAM ${incompatibleInterface.join(
@@ -81,16 +81,20 @@ const RAMRule: ProductRule<typeof attributes> = {
 
     if (rams && rams.length > 0) {
       const ram_form_factors = rams
-        .map((ram) => ram.form_factor)
+        .map((ram) => ram && ram.form_factor)
         .filter((val) => val !== undefined);
       if (ram_form_factors.length > 0)
-        result.main_board_form_factor = ram_form_factors;
+        result.main_board_form_factor = ram_form_factors.filter(
+          (val) => val !== undefined
+        );
 
       const ram_interfaces = rams
-        .map((ram) => ram.interface)
+        .map((ram) => ram && ram.interface)
         .filter((val) => val !== undefined);
       if (ram_interfaces.length > 0)
-        result.main_board_interface = ram_interfaces;
+        result.main_board_interface = ram_interfaces.filter(
+          (val) => val !== undefined
+        );
 
       const ram_kits = rams.reduce((acc, ram) => acc + (ram?.kit ?? 0), 0);
       if (ram_kits > 0) result.main_board_slot = [ram_kits];

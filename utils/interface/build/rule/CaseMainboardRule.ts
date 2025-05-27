@@ -34,7 +34,9 @@ const CaseMainboardRule: ProductRule<typeof attributes> = {
     }
 
     if (case_main_support && case_main_support.length > 0) {
-      result.mainboard_form_factor = case_main_support;
+      result.mainboard_form_factor = case_main_support.filter(
+        (formFactor) => formFactor !== undefined
+      );
     }
 
     return result;

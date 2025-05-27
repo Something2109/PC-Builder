@@ -34,7 +34,9 @@ const MainboardCoolerSocketRule: ProductRule<typeof attributes> = {
     }
 
     if (cooler_socket && cooler_socket.length > 0) {
-      result.mainboard_socket = cooler_socket;
+      result.mainboard_socket = cooler_socket.filter(
+        (socket) => socket !== undefined
+      );
     }
 
     return result;
