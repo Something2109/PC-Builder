@@ -40,7 +40,6 @@ class GPUMemoryModel extends Model implements PartDetailTable<GPUMemory.Info> {
   @BelongsTo(() => PartInformation)
   declare part: PartInformation;
 
-  @PrimaryKey
   @Column({
     type: DataType.STRING,
     validate: { isIn: [InternalConnectors.SGRAM.options] },
