@@ -236,9 +236,9 @@ class BuildService {
 
         let parsedInfo: any = undefined; // Initialize parsedInfo
         if (Array.isArray(build[product])) {
-          parsedInfo = build[product]
-            .map((detail) => this.parseDetail(detail, info, attr))
-            .filter((val) => val); // If the product is an array, map over it
+          parsedInfo = build[product].map((detail) =>
+            this.parseDetail(detail, info, attr)
+          ); // If the product is an array, map over it
 
           if (parsedInfo.length === 0) return acc; // Check if the parsed info is valid
         } else {
@@ -274,11 +274,11 @@ class BuildService {
     if (attr) {
       const attribute = attr as keyof Information.Info[Infos];
       result = Array.isArray(result)
-        ? result.map((val) => val[attribute]).filter((val) => val)
+        ? result.map((val) => val[attribute])
         : result[attribute];
     }
 
-    return Array.isArray(result) && result.length === 0 ? undefined : result;
+    return result;
   }
 }
 
