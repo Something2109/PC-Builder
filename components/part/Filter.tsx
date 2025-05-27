@@ -50,17 +50,17 @@ export function FilterBar({
   context: URLSearchParams;
 } & FormHTMLAttributes<HTMLFormElement>) {
   const router = useRouter();
-  const options = useRef(new URLSearchParams(context));
 
   if (!FilterComponents[part]) return;
 
   const Component = FilterComponents[part];
+  const options = new URLSearchParams(context);
 
   return (
     <form className={`flex flex-col gap-1 ${className}`} {...rest}>
       <RowWrapper className="flex-wrap justify-between gap-2 mb-10">
-        <PartFilter product={part} context={options.current} />
-        <Component product={part} context={options.current} />
+        <PartFilter product={part} context={options} />
+        <Component product={part} context={options} />
       </RowWrapper>
       <hr />
       <RowWrapper className="justify-end">
