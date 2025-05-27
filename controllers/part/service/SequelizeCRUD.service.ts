@@ -46,7 +46,11 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
     await instance.save();
 
-    if (infos) infos.map((info) => this.setInfo(id, info, data[info]));
+    if (infos) {
+      await Promise.all(
+        infos.map((info) => this.setInfo(id, info, data[info]))
+      );
+    }
 
     return await this.get(id, infos);
   }
@@ -60,7 +64,11 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
     instance = await instance.save();
 
-    if (infos) infos.map((info) => this.setInfo(instance.id, info, data[info]));
+    if (infos) {
+      await Promise.all(
+        infos.map((info) => this.setInfo(instance.id, info, data[info]))
+      );
+    }
 
     return (await this.get(instance.id, infos)) as Part.Detail;
   }
