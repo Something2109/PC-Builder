@@ -12,11 +12,18 @@ const CaseMainboardRule: ProductRule<typeof attributes> = {
   attributes,
 
   validate(build) {
+    const result: ReturnType<typeof this.validate> = {};
     const { mainboard_form_factor, case_main_support } = build;
 
-    if (!mainboard_form_factor || !case_main_support) {
-      return "Not enough information to validate mainboard form factor compatibility.";
+    if (!mainboard_form_factor) {
+      result.mainboard_form_factor = "Mainboard form factor is not specified.";
     }
+
+    if (case_main_support.length === 0) {
+      result.case_main_support = "Case Mainboard form factor is not specified.";
+    }
+
+    if (!mainboard_form_factor || case_main_support.length === 0) return result;
 
     if (!case_main_support.includes(mainboard_form_factor)) {
       return `The case does not support the mainboard ${mainboard_form_factor} form factor.`;
@@ -34,7 +41,9 @@ const CaseMainboardRule: ProductRule<typeof attributes> = {
     }
 
     if (case_main_support && case_main_support.length > 0) {
-      result.mainboard_form_factor = case_main_support;
+      result.mainboard_form_factor = case_main_support.filter(
+        (formFactor) => formFactor !== undefined
+      );
     }
 
     return result;
