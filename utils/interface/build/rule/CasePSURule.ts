@@ -15,22 +15,41 @@ const CasePSURule: ProductRule<typeof attributes> = {
   attributes,
 
   validate(build) {
+    const result: ReturnType<typeof this.validate> = {};
     const { psu_form_factor, psu_length, case_psu_support, case_psu_length } =
       build;
 
-    if (
-      !psu_form_factor ||
-      !psu_length ||
-      !case_psu_support ||
-      !case_psu_length
-    )
-      return "Not enough information to validate PSU compatibility.";
+    if (!psu_form_factor) {
+      result.psu_form_factor = "PSU form factor is not specified.";
+    }
 
-    if (!case_psu_support?.includes(psu_form_factor)) {
+    if (case_psu_support.length === 0) {
+      result.case_psu_support = "Case PSU support is not specified.";
+    }
+
+    if (!psu_length) {
+      result.psu_length = "PSU length is not specified.";
+    }
+
+    if (!case_psu_length) {
+      result.case_psu_length = "Case PSU length support is not specified.";
+    }
+
+    if (
+      (!psu_form_factor || case_psu_support.length === 0) &&
+      (!psu_length || !case_psu_length)
+    )
+      return result;
+
+    if (
+      psu_form_factor &&
+      case_psu_support.length === 0 &&
+      !case_psu_support.includes(psu_form_factor)
+    ) {
       return `The case does not support the PSU ${psu_form_factor} form factor.`;
     }
 
-    if (case_psu_length < psu_length) {
+    if (psu_length && case_psu_length && case_psu_length < psu_length) {
       return `The PSU length exceeds the case's PSU length support (${case_psu_length}mm < ${psu_length}mm).`;
     }
 
@@ -51,7 +70,9 @@ const CasePSURule: ProductRule<typeof attributes> = {
     }
 
     if (case_psu_support && case_psu_support.length > 0) {
-      result.psu_form_factor = case_psu_support;
+      result.psu_form_factor = case_psu_support.filter(
+        (formFactor) => formFactor !== undefined
+      );
     }
 
     if (case_psu_length) {

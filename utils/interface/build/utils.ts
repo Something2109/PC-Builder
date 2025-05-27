@@ -3,6 +3,35 @@ import { Primitive } from "../utils";
 import { Infos, Products } from "@/utils/Enum";
 import { z } from "zod";
 
+namespace Info {
+  export type Tuple<P extends Products, I extends Infos> =
+    | [P, I]
+    | readonly [P, I];
+
+  export type Validate<I extends Infos> = Part.Infer.InfoType<I>;
+
+  export type Result = string[] | string | undefined;
+
+  export type Filter<I extends Infos> = {
+    [key in keyof Information.Info[I]]?: string[] | number[];
+  };
+}
+
+namespace Attribute {
+  export type Tuple<P extends Products, I extends Infos, A extends string> =
+    | [P, I, A]
+    | readonly [P, I, A];
+
+  export type Validate<
+    I extends Infos,
+    A extends string
+  > = Part.Infer.AttributeType<I, A>;
+
+  export type Result = string | undefined;
+
+  export type Filter = string[] | number[];
+}
+
 const BuildPartSchema = z
   .object({
     [Products.CPU]: Primitive.String,
@@ -25,50 +54,67 @@ const BuildPartSchema = z
 
 type BuildPartList = z.infer<typeof BuildPartSchema>;
 
-type InfoTuple<P extends Products, I extends Infos> = [P, I] | readonly [P, I];
-
-type ExtractedInfoType<I extends Infos> = NonNullable<Part.Detail[I]>;
-
-type AttributeTuple<P extends Products, I extends Infos, A extends string> =
-  | [P, I, A]
-  | readonly [P, I, A];
-
-type ExtractedAttributeType<
-  I extends Infos,
-  A extends string
-> = A extends keyof Information.Info[I]
-  ? NonNullable<Part.Detail[I]> extends Information.Info[I][]
-    ? Information.Info[I][A][]
-    : Information.Info[I][A]
-  : undefined;
-
-type ValidateValue<T> = T extends InfoTuple<infer P, infer I>
-  ? Required<BuildPartList>[P] extends string[]
-    ? ExtractedInfoType<I>[]
-    : ExtractedInfoType<I>
-  : T extends AttributeTuple<infer P, infer I, infer A>
-  ? Required<BuildPartList>[P] extends string[]
-    ? ExtractedAttributeType<I, A>[]
-    : ExtractedAttributeType<I, A>
-  : undefined;
+type BuildListInferValue<
+  P extends Products,
+  V
+> = Required<BuildPartList>[P] extends string[] ? V[] : V;
 
 type BuildAttributeMapping = {
   [key in string]:
-    | InfoTuple<Products, Infos>
-    | AttributeTuple<Products, Infos, string>;
+    | Info.Tuple<Products, Infos>
+    | Attribute.Tuple<Products, Infos, string>;
 };
 
 type BuildValidateAttributes<T extends BuildAttributeMapping> = {
-  [key in keyof T]?: ValidateValue<T[key]>;
-};
-
-type BuildFilterAttributes<T extends BuildAttributeMapping> = {
-  -readonly [key in keyof T]?: T[key] extends InfoTuple<infer P, infer I>
-    ? { [key in keyof Information.Info[I]]?: string[] | number[] }
-    : T[key] extends AttributeTuple<infer P, infer I, infer A>
-    ? string[] | number[]
+  -readonly [key in keyof T]: T[key] extends Info.Tuple<infer P, infer I>
+    ? BuildListInferValue<P, Info.Validate<I>>
+    : T[key] extends Attribute.Tuple<infer P, infer I, infer A>
+    ? BuildListInferValue<P, Attribute.Validate<I, A>>
     : undefined;
 };
+
+type BuildAttributeValue<
+  T extends BuildAttributeMapping,
+  A extends keyof T
+> = T[A] extends Info.Tuple<infer _, infer I>
+  ? Info.Validate<I>
+  : T[A] extends Attribute.Tuple<infer _, infer I, infer A>
+  ? Attribute.Validate<I, A>
+  : undefined;
+
+type BuildValidateResult<T extends BuildAttributeMapping> = {
+  -readonly [key in keyof T]?: T[key] extends Info.Tuple<infer P, infer _>
+    ? BuildListInferValue<P, Info.Result>
+    : T[key] extends Attribute.Tuple<infer P, infer _, infer __>
+    ? BuildListInferValue<P, Attribute.Result>
+    : undefined;
+};
+
+type BuildResultValue<
+  T extends BuildAttributeMapping,
+  A extends keyof T
+> = T[A] extends Info.Tuple<infer P, infer _>
+  ? Info.Result
+  : T[A] extends Attribute.Tuple<infer P, infer _, infer __>
+  ? Attribute.Result
+  : undefined;
+
+type BuildFilterAttributes<T extends BuildAttributeMapping> = {
+  -readonly [key in keyof T]?: T[key] extends Info.Tuple<infer _, infer I>
+    ? Info.Filter<I>
+    : T[key] extends Attribute.Tuple<infer _, infer __, infer ___>
+    ? Attribute.Filter
+    : undefined;
+};
+
+type BuildFilterValue<
+  T extends BuildAttributeMapping,
+  A extends keyof T
+> = T[A] extends Info.Tuple<infer _, infer I>
+  ? Info.Filter<I>
+  : T[A] extends Attribute.Tuple<infer _, infer __, infer ___>
+  ? Attribute.Filter
+  : undefined;
 
 interface GenericRule {
   name: string;
@@ -81,9 +127,11 @@ interface ProductRule<T extends BuildAttributeMapping> {
 
   attributes: T;
 
-  validate(build: BuildValidateAttributes<T>): string | undefined;
+  validate(
+    build: Readonly<BuildValidateAttributes<T>>
+  ): BuildValidateResult<T> | string | undefined;
 
-  filter(build: BuildValidateAttributes<T>): BuildFilterAttributes<T>;
+  filter(build: Readonly<BuildValidateAttributes<T>>): BuildFilterAttributes<T>;
 }
 
 export type {
@@ -91,8 +139,12 @@ export type {
   ProductRule,
   BuildPartList,
   BuildAttributeMapping,
-  BuildFilterAttributes,
+  BuildAttributeValue,
   BuildValidateAttributes,
+  BuildValidateResult,
+  BuildResultValue,
+  BuildFilterAttributes,
+  BuildFilterValue,
 };
 
 export { BuildPartSchema };

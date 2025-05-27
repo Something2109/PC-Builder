@@ -32,8 +32,8 @@ const PCIeRule: ProductRule<typeof attributes> = {
 
     if (mainboard_pcie && mainboard_pcie.length > 0) {
       const version = mainboard_pcie
-        .filter((val) => val.width === "x16" && val?.count > 0)
-        .map((val) => val.version);
+        .filter((val) => val && val.width === "x16" && val?.count > 0)
+        .map((val) => val!.version);
 
       result.graphic_card_pcie = [version[version.length - 1]];
     }
