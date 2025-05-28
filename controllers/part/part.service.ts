@@ -16,7 +16,7 @@ import {
   PartServiceInterface,
 } from "./interface/part.interface";
 import Part, { Mapping } from "@/utils/interface/part";
-import { Infos, Products } from "@/utils/Enum";
+import { Products } from "@/utils/Enum";
 
 @Injectable()
 class PartService implements PartServiceInterface {
@@ -56,7 +56,9 @@ class PartService implements PartServiceInterface {
 
     if (product) options.part = { ...options.part, part: [product] };
 
-    return await this.ListService.filter(options, infoMapping);
+    const result = await this.ListService.filter(options, infoMapping);
+
+    return this.parseService.filter(result, product, ...attributes);
   }
 
   async create(product: Products, data: Part.Detail) {

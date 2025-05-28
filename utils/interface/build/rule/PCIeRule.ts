@@ -1,4 +1,4 @@
-import { PCBuildRule } from "../utils";
+import { ProductRule } from "../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -6,7 +6,7 @@ const attributes = {
   mainboard_pcie: [Products.MAIN, Infos.MAIN_PCIE],
 } as const;
 
-const PCIeRule: PCBuildRule<typeof attributes> = {
+const PCIeRule: ProductRule<typeof attributes> = {
   name: "PCIe Compatibility Rule",
 
   attributes,
@@ -32,8 +32,8 @@ const PCIeRule: PCBuildRule<typeof attributes> = {
 
     if (mainboard_pcie && mainboard_pcie.length > 0) {
       const version = mainboard_pcie
-        .filter((val) => val.width === "x16" && val?.count > 0)
-        .map((val) => val.version);
+        .filter((val) => val && val.width === "x16" && val?.count > 0)
+        .map((val) => val!.version);
 
       result.graphic_card_pcie = [version[version.length - 1]];
     }

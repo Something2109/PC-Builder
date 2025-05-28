@@ -1,4 +1,4 @@
-import { PCBuildRule } from "../../utils";
+import { ProductRule } from "../../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -6,17 +6,24 @@ const attributes = {
   aio_socket: [Products.AIO, Infos.CPU_BLOCK_SOCKET, "socket"],
 } as const;
 
-const MainboardAIOSocketRule: PCBuildRule<typeof attributes> = {
+const MainboardAIOSocketRule: ProductRule<typeof attributes> = {
   name: "Mainboard AIO Socket Compatibility Rule",
 
   attributes,
 
-  validate: (build) => {
+  validate(build) {
+    const result: ReturnType<typeof this.validate> = {};
     const { mainboard_socket, aio_socket } = build;
 
-    if (!mainboard_socket || !aio_socket) {
-      return "Not enough information to validate mainboard and AIO socket compatibility.";
+    if (!mainboard_socket) {
+      result.mainboard_socket = "Mainboard socket is not specified.";
     }
+
+    if (aio_socket.length === 0) {
+      result.aio_socket = "AIO socket is not specified.";
+    }
+
+    if (!mainboard_socket || aio_socket.length === 0) return result;
 
     if (!aio_socket.includes(mainboard_socket)) {
       return `The mainboard ${mainboard_socket} socket is not compatible with the AIO.`;
@@ -34,7 +41,9 @@ const MainboardAIOSocketRule: PCBuildRule<typeof attributes> = {
     }
 
     if (aio_socket && aio_socket.length > 0) {
-      result.mainboard_socket = aio_socket;
+      result.mainboard_socket = aio_socket.filter(
+        (socket) => socket !== undefined
+      );
     }
 
     return result;
