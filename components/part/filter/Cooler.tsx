@@ -1,6 +1,6 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
 import Cooler from "@/utils/interface/part/product/Cooler";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<Cooler.Filter> = {
   socket: ({ defaultValue, value, ...props }) => (

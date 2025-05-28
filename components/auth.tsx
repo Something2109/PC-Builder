@@ -138,9 +138,9 @@ export function useRefreshToken(pathname?: string | null) {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(response.data.refresh_token);
-      router.push(pathname);
+      router.replace(pathname);
     } catch (err) {
-      router.push(`${LoginPath}?redirect=${pathname}`);
+      router.replace(`${LoginPath}?redirect=${pathname}`);
     }
   };
 }

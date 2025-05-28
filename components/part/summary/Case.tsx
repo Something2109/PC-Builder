@@ -1,4 +1,4 @@
-import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import Case from "@/utils/interface/part/product/Case";
 
 const Components: InfoSummaryMapping<Case.Summary> = {

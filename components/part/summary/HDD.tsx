@@ -1,5 +1,5 @@
 import { SuffixDisplay } from "@/components/utils/Display";
-import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import HDD from "@/utils/interface/part/product/HDD";
 
 const Components: InfoSummaryMapping<HDD.Summary> = {

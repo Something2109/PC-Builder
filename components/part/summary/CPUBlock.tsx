@@ -1,5 +1,5 @@
 import CPUBlock from "@/utils/interface/part/product/CPUBlock";
-import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 
 const Components: InfoSummaryMapping<CPUBlock.Summary> = {
   socket: ({ value }) => {

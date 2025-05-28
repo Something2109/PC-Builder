@@ -3,7 +3,7 @@ import {
   MinMaxRangeInput,
 } from "@/components/utils/Input";
 import Pump from "@/utils/interface/part/product/Pump";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<Pump.Filter> = {
   form_factor: ({ defaultValue, value, ...props }) => (

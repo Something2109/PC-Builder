@@ -26,17 +26,12 @@ export default async function PartListPage({
   }, [] as string[][]);
   const options = new URLSearchParams(queryEntries);
 
-  const response = await Promise.all([
-    fetch(`${process.env.BACKEND_HOST}/api/part/${part}?${options}`),
-    fetch(`${process.env.BACKEND_HOST}/api/part/filter/${part}?${options}`),
-  ]);
+  const response = await fetch(
+    `${process.env.BACKEND_HOST}/api/part/${part}?${options}`
+  );
+  if (!response.ok) return notFound();
 
-  if (!response[0].ok) return notFound();
-
-  const [data, filter] = await Promise.all([
-    response[0].json(),
-    response[1].json(),
-  ]);
+  const data = await response.json();
 
   const page = options.get("page") ?? "1";
   options.delete("page");
@@ -49,16 +44,13 @@ export default async function PartListPage({
             className="text-xl font-bold"
             id="list"
           >{`${data.total} ${Product.Label[part]}`}</h1>
-          {response[1].ok && (
-            <ToggleButton label="Filter">
-              <FilterBar
-                className="w-full border-2 border-line rounded-xl p-2"
-                context={options}
-                filter={filter}
-                part={part}
-              />
-            </ToggleButton>
-          )}
+          <ToggleButton label="Filter">
+            <FilterBar
+              className="w-full border-2 border-line rounded-xl p-2"
+              part={part}
+              context={options}
+            />
+          </ToggleButton>
         </RowWrapper>
         <SummaryTable part={part} data={data.list} />
         <RedirectButton href={`/part/${part}/new`}>New</RedirectButton>

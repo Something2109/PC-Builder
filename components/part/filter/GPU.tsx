@@ -5,7 +5,7 @@ import {
 } from "@/components/utils/Input";
 import GPU from "@/utils/interface/part/product/GPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/extract/Units";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<GPU.Filter> = {
   base_frequency: ({ value, defaultValue, ...props }) => (

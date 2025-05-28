@@ -1,6 +1,6 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
 import CPUBlock from "@/utils/interface/part/product/CPUBlock";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<CPUBlock.Filter> = {
   socket: ({ defaultValue, value, ...props }) => (

@@ -9,7 +9,8 @@ import {
 
 export namespace Table {
   const tableClass = "w-full border-2";
-  const tableRow = "border-b-2 last:border-b-0 *:rounded-sm";
+  const tableRow =
+    "border-b-2 only:last:border-b-2 last:border-b-0 *:rounded-sm";
   const tableCell =
     "border-r-2 last:border-r-0 first:font-bold p-2 [&:has(table)]:p-0";
 

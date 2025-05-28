@@ -4,7 +4,7 @@ import {
 } from "@/components/utils/Input";
 import RAM from "@/utils/interface/part/product/RAM";
 import { MemoryUnits } from "@/utils/extract/Units";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<RAM.Filter> = {
   form_factor: ({ defaultValue, value, ...props }) => (

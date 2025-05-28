@@ -1,5 +1,5 @@
 import CPU from "@/utils/interface/part/product/CPU";
-import { GenericSummaryCells, InfoSummaryMapping } from "../TableWrapper";
+import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import { SuffixDisplay } from "@/components/utils/Display";
 
 const Components: InfoSummaryMapping<CPU.Summary> = {

@@ -1,6 +1,6 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
 import Radiator from "@/utils/interface/part/product/Radiator";
-import { GenericFilterBar, FilterMapping } from "../TableWrapper";
+import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<Radiator.Filter> = {
   form_factor: ({ defaultValue, value, ...props }) => (
