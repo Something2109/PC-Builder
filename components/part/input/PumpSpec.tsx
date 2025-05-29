@@ -1,5 +1,5 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { GenericInputField } from "../utils/Form";
+import { defaultParse, GenericInputField } from "../utils/Form";
 import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
 import PumpSpec from "@/utils/interface/part/info/PumpSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
@@ -46,16 +46,7 @@ const Components: InfoComponentObject<PumpSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(
-    formData
-      .entries()
-      .map(([key, value]) => [
-        key,
-        value === "" || Number(value) === 0 ? undefined : value,
-      ])
-  ) as Record<string, string | string[]>;
-
-  return PumpSpec.Schema.parse(raw)!;
+  return PumpSpec.Schema.partial().parse(defaultParse(formData))!;
 }
 
 export default GenericInputField(

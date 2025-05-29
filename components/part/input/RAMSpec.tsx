@@ -1,6 +1,6 @@
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { GenericInputField } from "../utils/Form";
+import { defaultParse, GenericInputField } from "../utils/Form";
 import {
   SuffixInput,
   UnitInput,
@@ -13,7 +13,7 @@ import { MemoryUnits, TransferSpeedUnit } from "@/utils/extract/Units";
 
 const Components: InfoComponentObject<RAMSpec.Info> = {
   speed: (props) => (
-    <UnitInput Unit={TransferSpeedUnit} defaultUnit="mm" {...props} />
+    <UnitInput Unit={TransferSpeedUnit} defaultUnit="MT/s" {...props} />
   ),
   capacity: (props) => (
     <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
@@ -64,20 +64,13 @@ const Components: InfoComponentObject<RAMSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(
-    formData
-      .entries()
-      .map(([key, value]) => [
-        key,
-        value === "" || Number(value) === 0 ? undefined : value,
-      ])
-  ) as Record<string, string | string[]>;
+  const raw = defaultParse(formData);
 
   raw.latency = formData
     .getAll("latency")
     .filter((v) => Number(v) > 0) as string[];
 
-  return RAMSpec.Schema.parse(raw)!;
+  return RAMSpec.Schema.partial().parse(raw)!;
 }
 
 export default GenericInputField(

@@ -1,5 +1,5 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { GenericInputField } from "../utils/Form";
+import { defaultParse, GenericInputField } from "../utils/Form";
 import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
 import HDDSpec from "@/utils/interface/part/info/HDDSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
@@ -21,16 +21,7 @@ const Components: InfoComponentObject<HDDSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(
-    formData
-      .entries()
-      .map(([key, value]) => [
-        key,
-        value === "" || Number(value) === 0 ? undefined : value,
-      ])
-  ) as Record<string, string | string[]>;
-
-  return HDDSpec.Schema.parse(raw)!;
+  return HDDSpec.Schema.partial().parse(defaultParse(formData))!;
 }
 
 export default GenericInputField(

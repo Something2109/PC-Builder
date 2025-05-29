@@ -1,5 +1,5 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { GenericInputField } from "../utils/Form";
+import { defaultParse, GenericInputField } from "../utils/Form";
 import { Input, UnitInput, OptionSelect } from "@/components/utils/Input";
 import CaseSpec from "@/utils/interface/part/info/CaseSpec";
 import { FormFactor } from "@/utils/interface/utils";
@@ -28,16 +28,7 @@ const Components: InfoComponentObject<CaseSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(
-    formData
-      .entries()
-      .map(([key, value]) => [
-        key,
-        value === "" || Number(value) === 0 ? undefined : value,
-      ])
-  ) as Record<string, string | string[]>;
-
-  return CaseSpec.Schema.parse(raw)!;
+  return CaseSpec.Schema.partial().parse(defaultParse(formData))!;
 }
 
 export default GenericInputField(

@@ -1,5 +1,5 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { GenericInputField } from "../utils/Form";
+import { defaultParse, GenericInputField } from "../utils/Form";
 import { OptionSelect } from "@/components/utils/Input";
 import CPUBlockSpec from "@/utils/interface/part/info/CPUBlockSpec";
 import { InternalConnectors, Material } from "@/utils/interface/utils";
@@ -14,16 +14,7 @@ const Components: InfoComponentObject<CPUBlockSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(
-    formData
-      .entries()
-      .map(([key, value]) => [
-        key,
-        value === "" || Number(value) === 0 ? undefined : value,
-      ])
-  ) as Record<string, string | string[]>;
-
-  return CPUBlockSpec.Schema.parse(raw)!;
+  return CPUBlockSpec.Schema.partial().parse(defaultParse(formData))!;
 }
 
 export default GenericInputField(

@@ -1,5 +1,5 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { GenericInputField } from "../utils/Form";
+import { defaultParse, GenericInputField } from "../utils/Form";
 import {
   Input,
   OptionSelect,
@@ -32,16 +32,7 @@ const Components: InfoComponentObject<GraphicCardSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(
-    formData
-      .entries()
-      .map(([key, value]) => [
-        key,
-        value === "" || Number(value) === 0 ? undefined : value,
-      ])
-  ) as Record<string, string | string[]>;
-
-  return GraphicCardSpec.Schema.parse(raw)!;
+  return GraphicCardSpec.Schema.partial().parse(defaultParse(formData))!;
 }
 
 export default GenericInputField(
