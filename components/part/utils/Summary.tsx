@@ -11,23 +11,25 @@ export function GenericSummaryCells<T extends Record<string, any>>(
   Labels: InfoLabel<T>,
   Attributes: string[]
 ) {
-  return ({ defaultValue }: { defaultValue?: Partial<T> }) => (
-    <>
-      {Attributes.map((attr, index) => {
-        const Component = Components[attr] as FunctionComponent<{
-          value?: T[typeof attr];
-        }>;
-        const value = defaultValue ? defaultValue[attr] : undefined;
+  return ({ defaultValue }: { defaultValue?: Partial<T> }) => {
+    if (!defaultValue)
+      return Attributes.map((attr) => (
+        <td key={`Header-${attr}`}>{Labels[attr]}</td>
+      ));
 
-        return (
-          <td key={new Date().getTime() + index}>
+    return Attributes.map((attr) => {
+      const Component = Components[attr];
+
+      return (
+        <td key={`Row-${defaultValue.id}-${attr}`}>
+          {Components[attr] && defaultValue[attr] && (
             <RowWrapper>
               <p className="lg:hidden">{Labels[attr]}:</p>
-              {Component ? <Component value={value} /> : undefined}
+              <Component value={defaultValue[attr]} />
             </RowWrapper>
-          </td>
-        );
-      })}
-    </>
-  );
+          )}
+        </td>
+      );
+    });
+  };
 }

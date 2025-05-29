@@ -6,8 +6,18 @@ import PartPicture from "../Picture";
 export function PartSummaryCells({
   defaultValue,
 }: {
-  defaultValue: Part.Summary;
+  defaultValue?: Part.Summary;
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
+  if (!defaultValue) {
+    return (
+      <>
+        <td>{Part.Label.name}</td>
+        <td>{Part.Label.brand}</td>
+        <td>{Part.Label.series}</td>
+      </>
+    );
+  }
+
   let { id, name, part, image_url, brand, series } = defaultValue;
 
   return (
