@@ -62,7 +62,7 @@ class BuildDetailBuilder {
     if (index > -1) {
       this.details[product].splice(index, 1);
 
-      if (this.details[product]) delete this.details[product];
+      if (this.details[product].length === 0) delete this.details[product];
 
       return summary;
     }
@@ -149,4 +149,4 @@ function useBuildContext() {
   return useContext(BuildPartContext);
 }
 
-export { useBuildDetails, BuildProvider, useBuildContext };
+export { BuildProvider, useBuildContext };
