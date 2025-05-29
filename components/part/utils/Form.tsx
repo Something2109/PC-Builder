@@ -41,3 +41,15 @@ export function GenericInputField<T>(
     );
   };
 }
+
+export function defaultParse(data: FormData) {
+  return Object.fromEntries(
+    data
+      .entries()
+      .map(([key, value]) => [
+        key,
+        value === "" || Number(value) === 0 ? undefined : value,
+      ])
+      .filter(([, value]) => value)
+  ) as Record<string, string | string[]>;
+}
