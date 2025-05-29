@@ -1,5 +1,7 @@
 import { Table } from "../utils/Table";
+import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import CPUCoreConfig from "@/utils/interface/part/info/CPUCoreConfig";
+import { FrequencyUnits } from "@/utils/extract/Units";
 
 export default ({ defaultValue }: { defaultValue: CPUCoreConfig.Info[] }) => (
   <Table.Component>
@@ -15,9 +17,23 @@ export default ({ defaultValue }: { defaultValue: CPUCoreConfig.Info[] }) => (
       {defaultValue.map((val) => (
         <Table.Row key={`core-${val.name}`}>
           <Table.Cell>{val.name}</Table.Cell>
-          <Table.Cell>{val.count}</Table.Cell>
-          <Table.Cell>{val.base_frequency}</Table.Cell>
-          <Table.Cell>{val.turbo_frequency}</Table.Cell>
+          <Table.Cell>
+            <SuffixDisplay suffix="core(s)">{val.count}</SuffixDisplay>
+          </Table.Cell>
+          <Table.Cell>
+            <UnitDisplay
+              Unit={FrequencyUnits}
+              defaultUnit="GHz"
+              defaultValue={val.base_frequency}
+            />
+          </Table.Cell>
+          <Table.Cell>
+            <UnitDisplay
+              Unit={FrequencyUnits}
+              defaultUnit="GHz"
+              defaultValue={val.turbo_frequency}
+            />
+          </Table.Cell>
         </Table.Row>
       ))}
     </tbody>
