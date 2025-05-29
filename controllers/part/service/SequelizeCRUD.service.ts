@@ -155,7 +155,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     // resolve the data based on the old value
     const newInstances = dataArr.map((value) => {
       const key = this.hashByAttributes({ id, ...value }, primaryKeys);
-      console.log(info, key);
+
       // if no old data existed
       if (!oldInstances[key])
         return this.InfoModels[info].build({ id, ...value });
@@ -165,7 +165,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
       delete oldInstances[key];
 
-      infoInstance.set(data);
+      infoInstance.set(value);
 
       return infoInstance;
     });
