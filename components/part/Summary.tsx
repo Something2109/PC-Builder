@@ -1,9 +1,10 @@
 "use client";
 
 import { PartSummaryCells } from "./summary/Part";
+import { SummaryTable as Table } from "./utils/Summary";
+import Part from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
-import Part, { Product } from "@/utils/interface/part";
-import { lazy, TableHTMLAttributes, useMemo } from "react";
+import { ComponentType, lazy, TableHTMLAttributes } from "react";
 
 export const SummaryInfoComponent = {
   [Products.CPU]: lazy(() => import("@/components/part/summary/CPU")),
@@ -28,61 +29,39 @@ export const SummaryInfoComponent = {
 };
 
 export default function SummaryTable({
-  data,
-  className,
   part,
+  data,
+  Cells = [],
+  className,
   ...rest
 }: {
-  data: Part.Summary[];
   part: Products;
+  data: Part.Summary<typeof part>[];
+  Cells?: ComponentType<{ defaultValue?: Part.Summary<typeof part> }>[];
 } & TableHTMLAttributes<HTMLTableElement>) {
-  const TableHeader = useMemo(() => <TableHead part={part} />, [part]);
+  const Components = [PartSummaryCells, SummaryInfoComponent[part], ...Cells];
 
   return (
-    <table className="w-full border-separate border-spacing-0" {...rest}>
-      {TableHeader}
-      <TableBody data={data} part={part} />
-    </table>
+    <Table.Component {...rest}>
+      <Table.Head>
+        <Table.Row>
+          {Components.map((Component, index) => (
+            <Component key={`Header-${Component.name}-${index}`} />
+          ))}
+        </Table.Row>
+      </Table.Head>
+      <tbody>
+        {data.map((product, index) => (
+          <Table.Row key={`Row-${index}`}>
+            {Components.map((Component) => (
+              <Component
+                key={`Row-${Component.name}-${index}`}
+                defaultValue={product}
+              />
+            ))}
+          </Table.Row>
+        ))}
+      </tbody>
+    </Table.Component>
   );
 }
-
-const tableHead =
-  "font-bold sticky top-32 bg-white dark:bg-background transition-bg";
-const tableRow = "*:p-2 lg:table-row *:lg:border-b-2 ";
-
-const TableHead = ({ part }: { part: Products }) => (
-  <thead className={tableHead}>
-    <tr className={`hidden ${tableRow}`}>
-      <td>{Part.Label.name}</td>
-      <td>{Part.Label.brand}</td>
-      <td>{Part.Label.series}</td>
-      {Product.Summary[part].keyof().options.map((attr) => (
-        <td key={`Header-${attr}`}>{Product.AttributeLabels[part][attr]}</td>
-      ))}
-    </tr>
-  </thead>
-);
-
-const TableBody = ({
-  data,
-  part,
-}: {
-  data: Part.Summary[];
-  part: Products;
-}) => {
-  const Component = SummaryInfoComponent[part];
-
-  return (
-    <tbody>
-      {data.map((product) => (
-        <tr
-          key={product.id}
-          className={`grid grid-cols-2 border-b-2 ${tableRow} hover:rounded-lg hover:bg-line hover:dark:text-background`}
-        >
-          <PartSummaryCells defaultValue={product} />
-          <Component key={`${product.id}`} defaultValue={product as any} />
-        </tr>
-      ))}
-    </tbody>
-  );
-};
