@@ -41,7 +41,7 @@ class PartService implements PartServiceInterface {
     const { list, total } = await this.ListService.list(options, infoMapping);
 
     return {
-      list: list.map((part) => this.parseService.summary(part)),
+      list: list.map((part) => this.parseService.summary(part, product)),
       total,
     };
   }
