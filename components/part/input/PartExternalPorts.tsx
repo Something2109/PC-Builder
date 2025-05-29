@@ -3,11 +3,10 @@ import { useObjectSet } from "../utils/Hook";
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
 import { Input, OptionSelect } from "@/components/utils/Input";
-import { Button } from "@/components/utils/Button";
+import { Button, DeleteButton } from "@/components/utils/Button";
 import PartExternalPorts from "@/utils/interface/part/info/PartExternalPorts";
 import { ExternalPorts } from "@/utils/interface/utils";
 import { useRef, useState } from "react";
-import { DeleteButton } from "../utils/Button";
 
 function Component({
   defaultValue,

@@ -1,8 +1,8 @@
-import { DeleteButton } from "../utils/Button";
 import { useObjectSet } from "../utils/Hook";
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
 import { Input, OptionSelect } from "@/components/utils/Input";
+import { DeleteButton } from "@/components/utils/Button";
 import PSUConnector from "@/utils/interface/part/info/PSUConnector";
 import { InternalConnectors } from "@/utils/interface/utils";
 

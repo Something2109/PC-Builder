@@ -1,10 +1,9 @@
-import { DeleteButton } from "../utils/Button";
 import { useObjectSet } from "../utils/Hook";
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
 import useDebounce from "@/components/utils/Debounce";
 import { Input } from "@/components/utils/Input";
-import { Button } from "@/components/utils/Button";
+import { Button, DeleteButton } from "@/components/utils/Button";
 import CPUBlockSocketSupport from "@/utils/interface/part/info/CPUBlockSocketSupport";
 
 function Component({
