@@ -1,15 +1,15 @@
 "use client";
 
-import { useBuildContext } from "./hook/BuildDetail";
-import { useValidateAction } from "./hook/Validation";
+import { useBuildContext } from "./hook/BuildContext";
+import { useValidation } from "./hook/Validation";
 import { Button } from "../utils/Button";
 
 export default function BuildValidateForm() {
   const { list } = useBuildContext();
-  const [state, setState, pending] = useValidateAction();
+  const { validate, pending } = useValidation();
 
   return (
-    <form action={() => setState(list)} className="space-y-4">
+    <form action={() => validate(list)} className="space-y-4">
       {pending ? (
         "Validating..."
       ) : (

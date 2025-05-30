@@ -1,19 +1,33 @@
 "use client";
 
-import { useProductSelect } from "./hook/ProductSelect";
-import useProductLoad from "./hook/ProductLoad";
+import { useProductType } from "./hook/ProductType";
+import useProductSummary from "./hook/ProductSummary";
+import { useBuildContext } from "./hook/BuildContext";
 import SummaryTable from "../part/Summary";
 import { FilterBar } from "../part/Filter";
 import { ColumnWrapper, RowWrapper } from "../utils/FlexWrapper";
 import { ToggleButton } from "../utils/Toggle";
+import { Button } from "../utils/Button";
 import PaginationBar from "../utils/PaginationBar";
-import { Product } from "@/utils/interface/part";
+import Part, { Product } from "@/utils/interface/part";
 
 export default function BuildProductSummary() {
-  const { product, params, page, setParams, setPage } = useProductSelect();
-  const data = useProductLoad();
+  const { productType: product } = useProductType();
+  const { details, add } = useBuildContext();
+  const { data, params, page, setParams, setPage } = useProductSummary();
 
   if (!data) return "Loading";
+
+  const AddButton = ({ defaultValue }: { defaultValue?: Part.Summary }) => {
+    if (!defaultValue) return <td></td>;
+
+    const addable = !details[product] || Array.isArray(details[product]);
+    return (
+      <td>
+        {addable && <Button onClick={() => add(defaultValue)}>Add</Button>}
+      </td>
+    );
+  };
 
   return (
     <ColumnWrapper>
@@ -31,7 +45,7 @@ export default function BuildProductSummary() {
           />
         </ToggleButton>
       </RowWrapper>
-      <SummaryTable part={product} data={data.list} />
+      <SummaryTable part={product} data={data.list} Cells={[AddButton]} />
       <PaginationBar
         path={setPage}
         current={page}
