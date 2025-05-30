@@ -48,7 +48,7 @@ function Component({
             <Table.Cell>
               <Input
                 name={`${key}___connector`}
-                value={value.generation}
+                value={value.connector}
                 readOnly
               />
             </Table.Cell>
