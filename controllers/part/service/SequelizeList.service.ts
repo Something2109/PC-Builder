@@ -93,7 +93,9 @@ class SequelizeContext {
       method: [ModelScopes.FILTER, options.part],
     });
 
-    const where = options.q ? { [Op.like]: `%${options.q}%` } : undefined;
+    const where = options.q
+      ? { name: { [Op.like]: `%${options.q}%` } }
+      : undefined;
     this.searchOptions = { where };
     this.pageOptions = {
       offset: (options.page - 1) * options.limit,
