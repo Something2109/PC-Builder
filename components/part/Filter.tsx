@@ -3,12 +3,12 @@
 import {
   lazy,
   FormHTMLAttributes,
-  useRef,
   LazyExoticComponent,
   FunctionComponent,
 } from "react";
 import { RowWrapper } from "../utils/FlexWrapper";
 import { Button } from "../utils/Button";
+import { Input } from "../utils/Input";
 import { Products } from "@/utils/Enum";
 import { useRouter } from "next/navigation";
 import PartFilter from "./filter/Part";
@@ -59,6 +59,14 @@ export function FilterBar({
   return (
     <form className={`flex flex-col gap-1 ${className}`} {...rest}>
       <RowWrapper className="flex-wrap justify-between gap-2 mb-10">
+        <RowWrapper className="w-full px-4 py-1 rounded-2xl border-2">
+          <Input
+            className="focus:outline-none bg-transparent"
+            name="q"
+            defaultValue={options.get("q") || ""}
+            placeholder="Search"
+          />
+        </RowWrapper>
         <PartFilter product={part} context={options} />
         <Component product={part} context={options} />
       </RowWrapper>
