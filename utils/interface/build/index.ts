@@ -53,7 +53,7 @@ namespace Build {
   };
 
   export type Result = {
-    generic: string[];
+    generic: { [name in string]: string[] };
     rules: { [name in string]: string };
     products: { [id in string]: { [name in string]: string[] } };
   };
