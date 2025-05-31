@@ -1,6 +1,6 @@
 "use client";
 
-import { VerticalCollapsible } from "../utils/Collapsible";
+import { ColumnWrapper } from "../utils/FlexWrapper";
 import { Information } from "@/utils/interface/part";
 import { Infos } from "@/utils/Enum";
 import { lazy, LazyExoticComponent } from "react";
@@ -111,9 +111,9 @@ export function InfoTable({
     return undefined;
 
   return (
-    <VerticalCollapsible>
+    <ColumnWrapper className="text-wrap">
       <h1 className="text-4xl font-bold">{Information.Label[info]}</h1>
       <Component key={info} defaultValue={defaultValue} />
-    </VerticalCollapsible>
+    </ColumnWrapper>
   );
 }
