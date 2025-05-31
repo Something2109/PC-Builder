@@ -1,7 +1,7 @@
-import { useProductType } from "./ProductType";
 import { useBuildContext } from "./BuildContext";
 import Part from "@/utils/interface/part";
 import { API } from "@/utils/interface/api";
+import { Products } from "@/utils/Enum";
 import { useEffect, useState, useReducer } from "react";
 
 type ProductLoad = {
@@ -12,9 +12,8 @@ type ProductLoad = {
   setPage: (num: number) => void;
 };
 
-function useProductSummary(): ProductLoad {
+function useProductSummary(product: Products): ProductLoad {
   const { list } = useBuildContext();
-  const { productType } = useProductType();
 
   const [data, setData] = useState<API.Payload<Part.Summary> | null>(null);
   const [page, setPage] = useState(1);
@@ -30,10 +29,10 @@ function useProductSummary(): ProductLoad {
   useEffect(() => {
     setParams(new FormData());
     setPage(1);
-  }, [productType]);
+  }, [product]);
 
   useEffect(() => {
-    fetch(`/api/build/${productType}?${params.toString()}&page=${page}`, {
+    fetch(`/api/build/${product}?${params.toString()}&page=${page}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(list),
@@ -43,7 +42,7 @@ function useProductSummary(): ProductLoad {
         window.scroll({ top: 0, behavior: "smooth" });
       }
     });
-  }, [productType, params, page]);
+  }, [product, params, page]);
 
   return { data, params, page, setParams, setPage };
 }
