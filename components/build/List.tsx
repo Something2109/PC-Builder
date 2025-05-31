@@ -1,10 +1,10 @@
 "use client";
 
 import { useBuildContext } from "./hook/BuildContext";
+import { useValidation } from "./hook/Validation";
 import { DeleteButton, RedirectButton } from "../utils/Button";
 import Part, { Product } from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
-import { useValidation } from "./hook/Validation";
 
 const ProductRenderOrder = [
   Products.CPU,
@@ -49,9 +49,9 @@ function ProductTypeComponent({ product }: { product: Products }) {
         {!details || details.length === 0 ? (
           <li>No product selected</li>
         ) : (
-          details.map((detail) => (
+          details.map((detail, index) => (
             <ProductDetailComponent
-              key={detail.name}
+              key={`${detail.name}-${index}`}
               details={detail}
               errors={productErrors[detail.id]}
               remove={removeProduct}
