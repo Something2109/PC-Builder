@@ -1,8 +1,7 @@
 "use client";
 
 import { useBuildContext } from "./hook/BuildContext";
-import { useProductType } from "./hook/ProductType";
-import { DeleteButton } from "../utils/Button";
+import { DeleteButton, RedirectButton } from "../utils/Button";
 import Part, { Product } from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
 import { useValidation } from "./hook/Validation";
@@ -36,24 +35,17 @@ export default function BuildProductList() {
 
 function ProductTypeComponent({ product }: { product: Products }) {
   const { details: context, remove: removeProduct } = useBuildContext();
-  const { productType, setProductType } = useProductType();
   const { products: productErrors } = useValidation();
 
   let details = context[product];
   if (!Array.isArray(details) && details) details = [details];
 
+  const addable = !context[product] || Array.isArray(context[product]);
+
   return (
-    <div
-      key={product}
-      className={`w-full space-y-2 px-4 py-1 rounded-lg ${
-        productType === product
-          ? "border-0"
-          : "border-2 cursor-pointer hover:border-blue-500 dark:hover:bg-blue-500"
-      }`}
-      onClick={() => setProductType(product)}
-    >
+    <div className="w-full space-y-2 px-4 py-1 rounded-lg border-2">
       <h2 className="text-lg font-semibold">{Product.Label[product]}</h2>
-      <ul>
+      <ul className="*:mt-2">
         {!details || details.length === 0 ? (
           <li>No product selected</li>
         ) : (
@@ -62,9 +54,14 @@ function ProductTypeComponent({ product }: { product: Products }) {
               key={detail.name}
               details={detail}
               errors={productErrors[detail.id]}
-              remove={productType ? removeProduct : undefined}
+              remove={removeProduct}
             />
           ))
+        )}
+        {addable && (
+          <li>
+            <RedirectButton href={`/build/${product}`}>Add</RedirectButton>
+          </li>
         )}
       </ul>
     </div>
