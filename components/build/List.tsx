@@ -2,9 +2,10 @@
 
 import { useBuildContext } from "./hook/BuildContext";
 import { useValidation } from "./hook/Validation";
-import { DeleteButton, RedirectButton } from "../utils/Button";
+import { Button, DeleteButton, RedirectButton } from "../utils/Button";
 import Part, { Product } from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
+import SummaryTable from "../part/Summary";
 
 const ProductRenderOrder = [
   Products.CPU,
@@ -42,21 +43,30 @@ function ProductTypeComponent({ product }: { product: Products }) {
 
   const addable = !context[product] || Array.isArray(context[product]);
 
+  const RemoveButtonCell = ({
+    defaultValue,
+  }: {
+    defaultValue?: Part.Summary;
+  }) => (
+    <td className="relative">
+      {defaultValue && (
+        <Button onClick={() => removeProduct(defaultValue)}>Remove</Button>
+      )}
+    </td>
+  );
+
   return (
     <div className="w-full space-y-2 px-4 py-1 rounded-lg border-2">
-      <h2 className="text-lg font-semibold">{Product.Label[product]}</h2>
+      <h1 className="text-xl font-bold">{`${Product.Label[product]}`}</h1>
       <ul className="*:mt-2">
         {!details || details.length === 0 ? (
           <li>No product selected</li>
         ) : (
-          details.map((detail, index) => (
-            <ProductDetailComponent
-              key={`${detail.name}-${index}`}
-              details={detail}
-              errors={productErrors[detail.id]}
-              remove={removeProduct}
-            />
-          ))
+          <SummaryTable
+            part={product}
+            data={details}
+            Cells={[RemoveButtonCell]}
+          />
         )}
         {addable && (
           <li>
@@ -65,29 +75,5 @@ function ProductTypeComponent({ product }: { product: Products }) {
         )}
       </ul>
     </div>
-  );
-}
-
-function ProductDetailComponent({
-  details,
-  remove,
-  errors,
-}: {
-  details: Part.Summary;
-  errors?: { [key: string]: string[] };
-  remove?: (details: Part.Summary) => void;
-}) {
-  return (
-    <li key={details.name} className="relative">
-      {details.name}
-      {remove && <DeleteButton onClick={() => remove(details)} />}
-      {errors && (
-        <ul>
-          {Object.entries(errors).map(([name, values]) => (
-            <li>{`name: ${values.join(", ")}`}</li>
-          ))}
-        </ul>
-      )}
-    </li>
   );
 }
