@@ -39,6 +39,19 @@ interface UnitInterface<Units extends string> {
    * @returns The numnber value corresponding to the {@link dest} unit.
    */
   exchange(num: number, src: Units, dest: Units): number;
+
+  /**
+   * Exchange the {@link num} based on its value corresponding
+   * to a ${@link threshold} number.
+   * If the {@link num} value is greater than the {@link threshold},
+   * lower down the unit value of it.
+   *
+   * @param num The number to exchange.
+   * @param src The unit name of the {@link num}.
+   * @param threshold The max value the result should be.
+   * @returns The tuple of result value and its unit.
+   */
+  adaptiveExchange(num: number, src: Units, threshold: number): [number, Units];
 }
 
 /**
@@ -93,6 +106,29 @@ class Unit<Units extends string> implements UnitInterface<Units> {
 
   exchange(num: number, src: Units, dest: Units) {
     return num * this.ratio(src, dest);
+  }
+
+  adaptiveExchange(
+    num: number,
+    src: Units,
+    threshold: number = this.Step,
+    min: number = 0
+  ): [number, Units] {
+    if (num <= threshold && num >= 0) return [num, src];
+
+    let current = this.Order.indexOf(src);
+
+    while (num > threshold || num < min) {
+      const nextIndex = num > threshold ? current + 1 : current - 1;
+
+      if (nextIndex === -1 || nextIndex === this.Order.length) break;
+
+      num = this.exchange(num, src, this.Order[nextIndex]);
+      src = this.Order[nextIndex];
+      current = nextIndex;
+    }
+
+    return [num, src];
   }
 
   /**
