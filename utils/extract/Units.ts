@@ -156,6 +156,35 @@ type DerivedUnitName<
 > = `${Unit1}/${Unit2}`;
 
 /**
+ * Create the ratio object of the derived unit from the 2 unit objects.
+ * Cautious: order does matter.
+ *
+ * @param unit1 The first unit.
+ * @param unit2 The second unit.
+ * @returns The record of derived unit names and number ratio.
+ */
+function ratioFromUnits<Unit1 extends string, Unit2 extends string>(
+  unit1: UnitInterface<Unit1>,
+  unit2: UnitInterface<Unit2>
+): Record<DerivedUnitName<Unit1, Unit2>, number> {
+  const Unit1Order = unit1.list();
+  const Unit2Order = unit2.list();
+
+  const BaseUnit1 = Unit1Order[0];
+  const BaseUnit2 = Unit2Order[Unit2Order.length - 1];
+
+  const ratio = Unit1Order.reduce((acc, curr1) => {
+    Unit2Order.forEach((curr2) => {
+      const unit = `${curr1}/${curr2}` as DerivedUnitName<Unit1, Unit2>;
+      acc[unit] = unit1.ratio(curr1, BaseUnit1) / unit2.ratio(curr2, BaseUnit2);
+    });
+    return acc;
+  }, {} as Record<DerivedUnitName<Unit1, Unit2>, number>);
+
+  return ratio;
+}
+
+/**
  * The generic derived unit class.
  * Use in parsing and exchanging unit value in the project.
  * Created by passing two units to the constructor.
