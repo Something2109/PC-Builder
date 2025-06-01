@@ -306,13 +306,13 @@ const TimeUnits = new Unit({
 
 const TransferUnits = new Unit(["T", "KT", "MT", "GT"], 1000);
 
-const MemorySpeedUnit = new DerivedUnit(MemoryUnits, TimeUnits);
+const MemorySpeedUnit = new Unit(ratioFromUnits(MemoryUnits, TimeUnits));
 
-const LengthSpeedUnit = new DerivedUnit(LengthUnits, TimeUnits);
+const LengthSpeedUnit = new Unit(ratioFromUnits(LengthUnits, TimeUnits));
 
-const VolumeSpeedUnit = new DerivedUnit(VolumeUnits, TimeUnits);
+const VolumeSpeedUnit = new Unit(ratioFromUnits(VolumeUnits, TimeUnits));
 
-const TransferSpeedUnit = new DerivedUnit(TransferUnits, TimeUnits);
+const TransferSpeedUnit = new Unit(ratioFromUnits(TransferUnits, TimeUnits));
 
 export {
   type UnitInterface,
