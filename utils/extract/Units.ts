@@ -49,16 +49,18 @@ interface UnitInterface<Units extends string> {
  */
 class Unit<Units extends string> implements UnitInterface<Units> {
   private readonly Exchanger: Record<Units, number>;
+  private readonly Order: Units[];
+  private readonly Step: number;
   private readonly Regexp: RegExp;
 
   constructor(ratio: Units[] | Record<Units, number>, step = 1) {
-    ratio = Array.isArray(ratio)
-      ? ratio.reduce((acc, curr, index) => {
-          acc[curr] = Math.pow(step, index);
-          return acc;
-        }, {} as Record<Units, number>)
-      : ratio;
-    this.Exchanger = ratio;
+    const [Exchanger, Order, Step] = Array.isArray(ratio)
+      ? this.attributeFromArray(ratio, step)
+      : this.attributeFromObject(ratio);
+
+    this.Exchanger = Exchanger;
+    this.Order = Order;
+    this.Step = Step;
 
     const NumberRegex = "-?\\d+\\.?\\d*|-?\\d*\\.?\\d+";
     const UnitRegex = Object.keys(ratio).join("|");
@@ -68,7 +70,7 @@ class Unit<Units extends string> implements UnitInterface<Units> {
   }
 
   list() {
-    return Object.keys(this.Exchanger) as Units[];
+    return this.Order;
   }
 
   parse(str: string): [number | null, Units] | null {
@@ -105,6 +107,46 @@ class Unit<Units extends string> implements UnitInterface<Units> {
     const [_, __, num, unit] = result;
 
     return [num ? Number(num) : null, unit as Units];
+  }
+
+  /**
+   * Create the required attributes of the unit class
+   * based on the given list of ordered units
+   * and the step value of adjacent unit.
+   * @param units The ordered unit list.
+   * @param step The step between each pair of adjacent unit.
+   * @returns The required attributes.
+   */
+  private attributeFromArray(units: Units[], step: number) {
+    const exchanger = units.reduce((acc, curr, index) => {
+      acc[curr] = Math.pow(step, index);
+      return acc;
+    }, {} as Record<Units, number>);
+
+    return [exchanger, units, step] as const;
+  }
+
+  /**
+   * Create the required attributes of the unit class
+   * based on the given record of unit key and its relative values.
+   * @param ratio The record of unit name and value.
+   * @returns The required attributes.
+   */
+  private attributeFromObject(ratio: Record<Units, number>) {
+    const exchanger = ratio;
+
+    const order = Object.keys(exchanger).sort(
+      (a, b) => exchanger[a as Units] - exchanger[b as Units]
+    ) as Units[];
+
+    const step = Object.values<number>(ratio)
+      .sort((a, b) => a - b)
+      .reduce((prev, curr, index, arr) => {
+        const newRatio = index > 0 ? curr / arr[index - 1] : 1;
+        return newRatio > prev ? newRatio : prev;
+      }, 1);
+
+    return [exchanger, order, step] as const;
   }
 }
 
