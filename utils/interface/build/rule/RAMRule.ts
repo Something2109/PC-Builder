@@ -1,4 +1,4 @@
-import { BuildAttributeValue, BuildResultValue, ProductRule } from "../utils";
+import { BuildAttributeValue, BuildResultValue, AttributeRule } from "../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -39,7 +39,7 @@ function RAMValidate(
   return result;
 }
 
-const RAMRule: ProductRule<typeof attributes> = {
+const RAMRule: AttributeRule<typeof attributes> = {
   name: "RAM Compatibility Rule",
 
   attributes,
