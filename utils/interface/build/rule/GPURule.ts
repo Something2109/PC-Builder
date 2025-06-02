@@ -1,4 +1,4 @@
-import { ProductRule } from "../utils";
+import { AttributeRule } from "../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -6,7 +6,7 @@ const attributes = {
   graphic_card_gpu: [Products.GRAPHIC_CARD, Infos.GPU_SPEC, "family"],
 } as const;
 
-const GPURule: ProductRule<typeof attributes> = {
+const GPURule: AttributeRule<typeof attributes> = {
   name: "Case PSU Compatibility Rule",
 
   attributes,
