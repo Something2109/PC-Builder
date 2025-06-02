@@ -1,9 +1,8 @@
-import { DeleteButton } from "../utils/Button";
 import { useObjectSet } from "../utils/Hook";
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
 import { Input, OptionSelect } from "@/components/utils/Input";
-import { Button } from "@/components/utils/Button";
+import { Button, DeleteButton } from "@/components/utils/Button";
 import MainboardPowerConnector from "@/utils/interface/part/info/MainboardPowerConnector";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { useRef } from "react";

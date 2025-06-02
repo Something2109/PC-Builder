@@ -1,6 +1,6 @@
 "use client";
 
-import { VerticalCollapsible } from "../utils/Collapsible";
+import { ColumnWrapper } from "../utils/FlexWrapper";
 import { Information } from "@/utils/interface/part";
 import { Infos } from "@/utils/Enum";
 import { lazy, LazyExoticComponent } from "react";
@@ -21,7 +21,7 @@ export const DetailTableComponent: {
     () => import("@/components/part/detail/GPUPerformance")
   ),
   [Infos.GPU_FEAT]: lazy(() => import("@/components/part/detail/GPUFeature")),
-  [Infos.GPU_MEMORY]: lazy(() => import("@/components/part/detail/CPUMemory")),
+  [Infos.GPU_MEMORY]: lazy(() => import("@/components/part/detail/GPUMemory")),
   [Infos.PROCESSOR_CACHE]: lazy(
     () => import("@/components/part/detail/ProcessorCache")
   ),
@@ -111,9 +111,9 @@ export function InfoTable({
     return undefined;
 
   return (
-    <VerticalCollapsible>
+    <ColumnWrapper className="text-wrap">
       <h1 className="text-4xl font-bold">{Information.Label[info]}</h1>
       <Component key={info} defaultValue={defaultValue} />
-    </VerticalCollapsible>
+    </ColumnWrapper>
   );
 }

@@ -11,9 +11,7 @@ function Component({
 }: {
   defaultValue?: CaseMainboardSupport.Info[] | null;
 }) {
-  const defaultValueObj = useRef(
-    defaultValue?.map((val) => val.form_factor) ?? []
-  );
+  const defaultValueObj = defaultValue?.map((val) => val.form_factor) ?? [];
 
   return (
     <Table.Component>
@@ -32,7 +30,7 @@ function Component({
                   key={`mainboard-${val}`}
                   name={"form_factor"}
                   value={val}
-                  defaultChecked={defaultValueObj.current.includes(val)}
+                  defaultChecked={defaultValueObj.includes(val)}
                 />
               ))}
             </ResponsiveWrapper>

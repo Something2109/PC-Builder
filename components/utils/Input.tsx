@@ -89,6 +89,8 @@ export function UnitInput<T extends string>({
 } & Omit<InputProps, "type">) {
   const SubmitInput = useRef<HTMLInputElement>(null);
   defaultValue = defaultValue ?? 0;
+
+  const defaultOnchange = rest.onChange;
   rest.onChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.currentTarget.value;
@@ -104,6 +106,11 @@ export function UnitInput<T extends string>({
       } else {
         SubmitInput.current!.value = "0";
       }
+
+      e.currentTarget = SubmitInput.current!;
+      e.target = SubmitInput.current!;
+
+      defaultOnchange?.call(defaultOnchange, e);
     },
     [Unit]
   );

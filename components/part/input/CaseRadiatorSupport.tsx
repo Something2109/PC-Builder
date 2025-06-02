@@ -13,7 +13,7 @@ function Component({
 }: {
   defaultValue?: CaseRadiatorSupport.Info[] | null;
 }) {
-  const defaultValueObj = useRef(
+  const defaultValueObj =
     defaultValue?.reduce<CaseSideFanObject>(
       (acc: CaseSideFanObject, curr: CaseRadiatorSupport.Info) => {
         const side = curr.case_side;
@@ -24,8 +24,7 @@ function Component({
         return acc;
       },
       {}
-    ) ?? {}
-  );
+    ) ?? {};
 
   return (
     <Table.Component>
@@ -47,9 +46,7 @@ function Component({
                     key={`rad-${side}-${val}`}
                     name={side}
                     value={val}
-                    defaultChecked={defaultValueObj.current[side]?.includes(
-                      val
-                    )}
+                    defaultChecked={defaultValueObj[side]?.includes(val)}
                   />
                 ))}
               </ResponsiveWrapper>

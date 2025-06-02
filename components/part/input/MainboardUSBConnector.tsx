@@ -1,9 +1,8 @@
 import { GenericInputField } from "../utils/Form";
 import { useObjectSet } from "../utils/Hook";
-import { DeleteButton } from "../utils/Button";
 import { Table } from "../utils/Table";
 import { Input, OptionSelect } from "@/components/utils/Input";
-import { Button } from "@/components/utils/Button";
+import { Button, DeleteButton } from "@/components/utils/Button";
 import MainboardUSBConnector from "@/utils/interface/part/info/MainboardUSBConnector";
 import { ExternalPorts } from "@/utils/interface/utils";
 import { useRef } from "react";
@@ -49,7 +48,7 @@ function Component({
             <Table.Cell>
               <Input
                 name={`${key}___connector`}
-                value={value.generation}
+                value={value.connector}
                 readOnly
               />
             </Table.Cell>

@@ -1,10 +1,6 @@
 import { InfoTable } from "@/components/part/Table";
 import { PartTable } from "@/components/part/detail/Part";
-import {
-  ColumnWrapper,
-  ResponsiveWrapper,
-} from "@/components/utils/FlexWrapper";
-import { ObjectTable } from "@/components/utils/ObjectTable";
+import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
 import { Products } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -28,19 +24,10 @@ export default async function PartDetailPage({
   return (
     <>
       <PartTable className="border-2" defaultValue={data} />
-      <ResponsiveWrapper className="w-full align-top">
-        <ColumnWrapper className="basis-1/2">
-          <h1 className="text-4xl font-bold">Raw</h1>
-          <ObjectTable
-            className="border-2"
-            object={JSON.parse((data as any).raw ?? "{}")}
-          />
-        </ColumnWrapper>
-        <ColumnWrapper className="basis-1/2">
-          {Mapping.Info[part].map((info) => (
-            <InfoTable key={info} info={info} defaultValue={data[info]} />
-          ))}
-        </ColumnWrapper>
+      <ResponsiveWrapper className="w-full align-top flex-wrap">
+        {Mapping.Info[part].map((info) => (
+          <InfoTable key={info} info={info} defaultValue={data[info]} />
+        ))}
       </ResponsiveWrapper>
     </>
   );

@@ -1,5 +1,5 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { GenericInputField } from "../utils/Form";
+import { defaultParse, GenericInputField } from "../utils/Form";
 import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
 import PSUSpec from "@/utils/interface/part/info/PSUSpec";
 import { FormFactor } from "@/utils/interface/utils";
@@ -28,16 +28,7 @@ const Components: InfoComponentObject<PSUSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(
-    formData
-      .entries()
-      .map(([key, value]) => [
-        key,
-        value === "" || Number(value) === 0 ? undefined : value,
-      ])
-  ) as Record<string, string | string[]>;
-
-  return PSUSpec.Schema.parse(raw)!;
+  return PSUSpec.Schema.partial().parse(defaultParse(formData))!;
 }
 
 export default GenericInputField(

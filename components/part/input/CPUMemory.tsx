@@ -1,12 +1,21 @@
-import { DeleteButton } from "../utils/Button";
 import { useObjectSet } from "../utils/Hook";
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
-import { Input, OptionSelect } from "@/components/utils/Input";
-import { Button } from "@/components/utils/Button";
+import {
+  Input,
+  OptionSelect,
+  SuffixInput,
+  UnitInput,
+} from "@/components/utils/Input";
+import { Button, DeleteButton } from "@/components/utils/Button";
 import CPUMemory from "@/utils/interface/part/info/CPUMemory";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { useRef } from "react";
+import {
+  MemorySpeedUnit,
+  MemoryUnits,
+  TransferSpeedUnit,
+} from "@/utils/extract/Units";
 
 function Component({
   defaultValue,
@@ -44,32 +53,36 @@ function Component({
               <label>{type}</label>
             </Table.Cell>
             <Table.Cell>
-              <Input
-                type="number"
-                name={`${type}-bus`}
+              <UnitInput
+                name={`${type}-speed`}
+                Unit={TransferSpeedUnit}
+                defaultUnit="MT/s"
                 defaultValue={value.speed}
                 onChange={(e) => (value.speed = Number(e.target.value))}
               />
             </Table.Cell>
             <Table.Cell>
-              <Input
-                type="number"
+              <UnitInput
                 name={`${type}-capacity`}
+                Unit={MemoryUnits}
+                defaultUnit="GB"
                 defaultValue={value.capacity}
                 onChange={(e) => (value.capacity = Number(e.target.value))}
               />
             </Table.Cell>
             <Table.Cell>
-              <Input
+              <SuffixInput
                 type="number"
                 name={`${type}-channel_count`}
+                suffix="channel(s)"
                 defaultValue={value.channel_count}
                 onChange={(e) => (value.channel_count = Number(e.target.value))}
               />
             </Table.Cell>
             <Table.Cell className="relative">
-              <Input
-                type="number"
+              <UnitInput
+                Unit={MemorySpeedUnit}
+                defaultUnit="GB/s"
                 name={`${type}-bandwidth`}
                 defaultValue={value.bandwidth}
                 onChange={(e) => (value.bandwidth = Number(e.target.value))}
@@ -129,7 +142,7 @@ function submit(formData: FormData) {
 
     return acc;
   }, {} as MappingFormdata);
-
+  console.log(raw);
   return Object.values(raw).map((val) => CPUMemory.Schema.parse(val)!);
 }
 

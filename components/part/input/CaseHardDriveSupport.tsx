@@ -1,8 +1,7 @@
-import { DeleteButton } from "../utils/Button";
 import { useObjectSet } from "../utils/Hook";
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
-import { Button } from "@/components/utils/Button";
+import { Button, DeleteButton } from "@/components/utils/Button";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import CaseHardDriveSupport from "@/utils/interface/part/info/CaseHardDriveSupport";
 import { Case } from "@/utils/interface/utils";

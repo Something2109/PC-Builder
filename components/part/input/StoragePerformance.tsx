@@ -1,5 +1,5 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { GenericInputField } from "../utils/Form";
+import { defaultParse, GenericInputField } from "../utils/Form";
 import { UnitInput } from "@/components/utils/Input";
 import StoragePerformance from "@/utils/interface/part/info/StoragePerformance";
 import { MemorySpeedUnit } from "@/utils/extract/Units";
@@ -14,16 +14,7 @@ const Components: InfoComponentObject<StoragePerformance.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(
-    formData
-      .entries()
-      .map(([key, value]) => [
-        key,
-        value === "" || Number(value) === 0 ? undefined : value,
-      ])
-  ) as Record<string, string | string[]>;
-
-  return StoragePerformance.Schema.parse(raw)!;
+  return StoragePerformance.Schema.partial().parse(defaultParse(formData))!;
 }
 
 export default GenericInputField(

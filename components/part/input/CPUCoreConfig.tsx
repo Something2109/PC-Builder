@@ -1,9 +1,8 @@
-import { DeleteButton } from "../utils/Button";
 import { useObjectSet } from "../utils/Hook";
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
 import { Input, UnitInput } from "@/components/utils/Input";
-import { Button } from "@/components/utils/Button";
+import { Button, DeleteButton } from "@/components/utils/Button";
 import useDebounce from "@/components/utils/Debounce";
 import CPUCoreConfig from "@/utils/interface/part/info/CPUCoreConfig";
 import { FrequencyUnits } from "@/utils/extract/Units";

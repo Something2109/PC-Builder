@@ -21,7 +21,7 @@ export function UnitDisplay<T extends string>({
   defaultUnit,
   displayUnit,
 }: {
-  defaultValue?: number;
+  defaultValue?: number | null;
   Unit: UnitInterface<T>;
   defaultUnit: NoInfer<T>;
   displayUnit?: NoInfer<T>[];

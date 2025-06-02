@@ -1,5 +1,5 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { GenericInputField } from "../utils/Form";
+import { defaultParse, GenericInputField } from "../utils/Form";
 import { Input, UnitInput, OptionSelect } from "@/components/utils/Input";
 import RadiatorSpec from "@/utils/interface/part/info/RadiatorSpec";
 import { FormFactor, Material } from "@/utils/interface/utils";
@@ -25,16 +25,7 @@ const Components: InfoComponentObject<RadiatorSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(
-    formData
-      .entries()
-      .map(([key, value]) => [
-        key,
-        value === "" || Number(value) === 0 ? undefined : value,
-      ])
-  ) as Record<string, string | string[]>;
-
-  return RadiatorSpec.Schema.parse(raw)!;
+  return RadiatorSpec.Schema.partial().parse(defaultParse(formData))!;
 }
 
 export default GenericInputField(

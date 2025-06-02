@@ -80,6 +80,7 @@ const PeripheralInputFields: Record<
           ref={ConnectorInput}
           options={ExternalPorts.Peripheral.USB.Connector.options}
           defaultValue={ExternalPorts.Peripheral.USB.Connector.options[0]}
+          onChange={onChange}
           required
         />
         <Input type="hidden" ref={ref} value={defaultValue} />

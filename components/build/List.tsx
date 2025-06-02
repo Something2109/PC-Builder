@@ -1,10 +1,11 @@
 "use client";
 
-import { useBuildContext } from "./hook/BuildDetail";
-import { useProductSelect } from "./hook/ProductSelect";
-import { Button } from "../utils/Button";
-import { Product } from "@/utils/interface/part";
+import { useBuildContext } from "./hook/BuildContext";
+import { useValidation } from "./hook/Validation";
+import { Button, DeleteButton, RedirectButton } from "../utils/Button";
+import Part, { Product } from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
+import SummaryTable from "../part/Summary";
 
 const ProductRenderOrder = [
   Products.CPU,
@@ -24,39 +25,55 @@ const ProductRenderOrder = [
 ];
 
 export default function BuildProductList() {
-  const { details: context } = useBuildContext();
-  const { product: selected, setProduct } = useProductSelect();
-
   return (
     <>
-      {ProductRenderOrder.map((product) => {
-        const details = context[product];
-        return (
-          <Button
-            key={product}
-            className="space-y-2 border-2 px-4 w-full text-left rounded-lg"
-            onClick={() => setProduct(product)}
-            disabled={selected === product}
-          >
-            <h2 className="text-lg font-semibold">{Product.Label[product]}</h2>
-            {Array.isArray(details) ? (
-              details.length > 0 ? (
-                <ul>
-                  {details.map((detail) => (
-                    <li key={detail.name}>{detail.name}</li>
-                  ))}
-                </ul>
-              ) : (
-                "No product selected"
-              )
-            ) : details ? (
-              details.name
-            ) : (
-              "No product selected"
-            )}
-          </Button>
-        );
-      })}
+      {ProductRenderOrder.map((product) => (
+        <ProductTypeComponent key={product} product={product} />
+      ))}
     </>
+  );
+}
+
+function ProductTypeComponent({ product }: { product: Products }) {
+  const { details: context, remove: removeProduct } = useBuildContext();
+  const { products: productErrors } = useValidation();
+
+  let details = context[product];
+  if (!Array.isArray(details) && details) details = [details];
+
+  const addable = !context[product] || Array.isArray(context[product]);
+
+  const RemoveButtonCell = ({
+    defaultValue,
+  }: {
+    defaultValue?: Part.Summary;
+  }) => (
+    <td className="relative">
+      {defaultValue && (
+        <Button onClick={() => removeProduct(defaultValue)}>Remove</Button>
+      )}
+    </td>
+  );
+
+  return (
+    <div className="w-full space-y-2 px-4 py-1 rounded-lg border-2">
+      <h1 className="text-xl font-bold">{`${Product.Label[product]}`}</h1>
+      <ul className="*:mt-2">
+        {!details || details.length === 0 ? (
+          <li>No product selected</li>
+        ) : (
+          <SummaryTable
+            part={product}
+            data={details}
+            Cells={[RemoveButtonCell]}
+          />
+        )}
+        {addable && (
+          <li>
+            <RedirectButton href={`/build/${product}`}>Add</RedirectButton>
+          </li>
+        )}
+      </ul>
+    </div>
   );
 }

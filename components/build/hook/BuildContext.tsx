@@ -3,14 +3,7 @@
 import Build from "@/utils/interface/build";
 import Part from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
-import {
-  createContext,
-  useActionState,
-  useContext,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useContext, useReducer, useRef } from "react";
 
 type DetailMapping<T = Part.Detail> = {
   [key in Products]?: T[];
@@ -62,7 +55,7 @@ class BuildDetailBuilder {
     if (index > -1) {
       this.details[product].splice(index, 1);
 
-      if (this.details[product]) delete this.details[product];
+      if (this.details[product].length === 0) delete this.details[product];
 
       return summary;
     }
@@ -149,4 +142,4 @@ function useBuildContext() {
   return useContext(BuildPartContext);
 }
 
-export { useBuildDetails, BuildProvider, useBuildContext };
+export { BuildProvider, useBuildContext };

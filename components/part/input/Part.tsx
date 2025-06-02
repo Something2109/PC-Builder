@@ -11,7 +11,7 @@ import Part from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
 import { useState, TableHTMLAttributes, useActionState } from "react";
 import { NotificationBar } from "@/components/utils/NotificationBar";
-import { Button } from "@/components/utils/Button";
+import { Button, RedirectButton } from "@/components/utils/Button";
 import { useRouter } from "next/navigation";
 
 const Components: InfoComponentObject<
@@ -109,6 +109,11 @@ export default function PartForm({
             required
           />
           <PartInput defaultValue={defaultValue} />
+          {defaultValue?.url && (
+            <RedirectButton href={defaultValue?.url} target="_blank">
+              To brand page
+            </RedirectButton>
+          )}
           <Button type="submit" className="w-full" disabled={pending}>
             {pending ? "Saving..." : "Save"}
           </Button>
@@ -121,13 +126,13 @@ export default function PartForm({
               Delete
             </Button>
           )}
-          {error ? (
+          {error && (
             <NotificationBar
               message={error}
               remove={() => setError(null)}
               alert
             />
-          ) : undefined}
+          )}
         </ColumnWrapper>
       </ResponsiveWrapper>
     </form>

@@ -119,7 +119,7 @@ export function InfoForm({
   if (!Component) return undefined;
 
   return (
-    <form className="flex flex-col gap-1">
+    <form className="flex flex-col gap-1 w-full">
       {formValue ? (
         <VerticalCollapsible className="sticky top-32">
           <h1 className="text-4xl font-bold">{label.current}</h1>

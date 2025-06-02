@@ -33,24 +33,15 @@ export default async function PartDetailEditPage({
     <ServerAuthRole roles={roles} redirect={`/part/${part}/${id}/edit`}>
       <AuthRole roles={roles}>
         <PartForm path={SaveLink} part={part} defaultValue={data} />
-        <ResponsiveWrapper className="w-full align-top">
-          <ColumnWrapper className="basis-1/2">
-            <h1 className="text-4xl font-bold">Raw</h1>
-            <ObjectTable
-              className="border-2"
-              object={JSON.parse((data as any).raw ?? "{}")}
+        <ResponsiveWrapper className="w-full align-top flex-wrap">
+          {Mapping.Info[part].map((info) => (
+            <InfoForm
+              key={info}
+              path={SaveLink}
+              info={info}
+              defaultValue={data}
             />
-          </ColumnWrapper>
-          <ColumnWrapper className="basis-1/2">
-            {Mapping.Info[part].map((info) => (
-              <InfoForm
-                key={info}
-                path={SaveLink}
-                info={info}
-                defaultValue={data}
-              />
-            ))}
-          </ColumnWrapper>
+          ))}
         </ResponsiveWrapper>
       </AuthRole>
     </ServerAuthRole>

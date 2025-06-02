@@ -1,5 +1,5 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { GenericInputField } from "../utils/Form";
+import { defaultParse, GenericInputField } from "../utils/Form";
 import { UnitInput, OptionSelect } from "@/components/utils/Input";
 import SSDSpec from "@/utils/interface/part/info/SSDSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
@@ -12,9 +12,6 @@ const Components: InfoComponentObject<SSDSpec.Info> = {
   capacity: (props) => (
     <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
   ),
-  cache: (props) => (
-    <UnitInput Unit={MemoryUnits} defaultUnit="MB" {...props} />
-  ),
   tbw: (props) => <UnitInput Unit={MemoryUnits} defaultUnit="TB" {...props} />,
   form_factor: (props) => (
     <OptionSelect options={FormFactor.SSD.options} {...props} />
@@ -25,16 +22,7 @@ const Components: InfoComponentObject<SSDSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  const raw = Object.fromEntries(
-    formData
-      .entries()
-      .map(([key, value]) => [
-        key,
-        value === "" || Number(value) === 0 ? undefined : value,
-      ])
-  ) as Record<string, string | string[]>;
-
-  return SSDSpec.Schema.parse(raw)!;
+  return SSDSpec.Schema.partial().parse(defaultParse(formData))!;
 }
 
 export default GenericInputField(
