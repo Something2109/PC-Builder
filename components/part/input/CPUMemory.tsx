@@ -1,12 +1,7 @@
-import { useObjectSet } from "../utils/Hook";
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
-import {
-  Input,
-  OptionSelect,
-  SuffixInput,
-  UnitInput,
-} from "@/components/utils/Input";
+import { useObjectSet } from "@/components/hook/part/ObjectSet";
+import { OptionSelect, SuffixInput, UnitInput } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import CPUMemory from "@/utils/interface/part/info/CPUMemory";
 import { InternalConnectors } from "@/utils/interface/utils";

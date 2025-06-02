@@ -1,6 +1,6 @@
-import { useObjectSet } from "../utils/Hook";
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { DeleteButton } from "@/components/utils/Button";
 import PSUConnector from "@/utils/interface/part/info/PSUConnector";

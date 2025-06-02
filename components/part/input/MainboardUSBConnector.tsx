@@ -1,6 +1,6 @@
 import { GenericInputField } from "../utils/Form";
-import { useObjectSet } from "../utils/Hook";
 import { Table } from "../utils/Table";
+import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import MainboardUSBConnector from "@/utils/interface/part/info/MainboardUSBConnector";

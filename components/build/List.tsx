@@ -1,11 +1,11 @@
 "use client";
 
-import { useBuildContext } from "./hook/BuildContext";
-import { useValidation } from "./hook/Validation";
-import { Button, DeleteButton, RedirectButton } from "../utils/Button";
+import { useBuildContext } from "@/components/hook/build/BuildContext";
+import { useValidation } from "@/components/hook/build/Validation";
+import SummaryTable from "@/components/part/Summary";
+import { Button, RedirectButton } from "@/components/utils/Button";
 import Part, { Product } from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
-import SummaryTable from "../part/Summary";
 
 const ProductRenderOrder = [
   Products.CPU,

@@ -1,8 +1,8 @@
 "use client";
 
-import { VerticalCollapsible } from "../utils/Collapsible";
-import { ColumnWrapper } from "../utils/FlexWrapper";
-import { useValidation } from "./hook/Validation";
+import { useValidation } from "@/components/hook/build/Validation";
+import { VerticalCollapsible } from "@/components/utils/Collapsible";
+import { ColumnWrapper } from "@/components/utils/FlexWrapper";
 
 export default function BuildResultList() {
   const { rules } = useValidation();

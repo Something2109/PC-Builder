@@ -1,11 +1,11 @@
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import MainboardPCIe from "@/utils/interface/part/info/MainboardPCIe";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { useRef } from "react";
-import { useObjectSet } from "../utils/Hook";
 
 function Component({
   defaultValue,
