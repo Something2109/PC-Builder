@@ -76,7 +76,7 @@ class Unit<Units extends string> implements UnitInterface<Units> {
     this.Step = Step;
 
     const NumberRegex = "-?\\d+\\.?\\d*|-?\\d*\\.?\\d+";
-    const UnitRegex = Object.keys(ratio).join("|");
+    const UnitRegex = Order.join("|");
     this.Regexp = new RegExp(
       `(^|\\W)(${NumberRegex})?[ _-]*(${UnitRegex})(\\W|$)`
     );

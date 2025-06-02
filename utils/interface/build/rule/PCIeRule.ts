@@ -35,7 +35,7 @@ const PCIeRule: AttributeRule<typeof attributes> = {
         .filter((val) => val && val.width === "x16" && val?.count > 0)
         .map((val) => val!.version);
 
-      result.graphic_card_pcie = [version[version.length - 1]];
+      result.graphic_card_pcie = [0, version[version.length - 1]];
     }
 
     return result;
