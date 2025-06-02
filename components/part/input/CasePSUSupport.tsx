@@ -11,9 +11,7 @@ function Component({
 }: {
   defaultValue?: CasePSUSupport.Info[] | null;
 }) {
-  const defaultValueObj = useRef(
-    defaultValue?.map((val) => val.psu_support) ?? []
-  );
+  const defaultValueObj = defaultValue?.map((val) => val.psu_support) ?? [];
 
   return (
     <Table.Component>
@@ -32,7 +30,7 @@ function Component({
                   key={`psu-${val}`}
                   name={"psu_support"}
                   value={val}
-                  defaultChecked={defaultValueObj.current.includes(val)}
+                  defaultChecked={defaultValueObj.includes(val)}
                 />
               ))}
             </ResponsiveWrapper>
