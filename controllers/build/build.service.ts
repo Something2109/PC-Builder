@@ -58,18 +58,14 @@ class BuildService {
   }
 
   async validate(buildList: Partial<Build.List>) {
-    const genericResult = Build.Rule.Generic.map((rule) => {
-      const result = rule.validate(buildList);
-
-      return result.length > 0 && { name: rule.name, result };
-    });
-
     const buildDetails = await this.getBuildDetail(
       buildList,
       Build.Product.ValidateAttributes
     );
 
-    const result = Build.Rule.Product.reduce(
+    const genericResult = Build.Rule.Product.validate(buildDetails);
+
+    const result = Build.Rule.Attribute.reduce(
       (acc, rule) => {
         const errors = this.validateRule(rule, buildDetails);
 
@@ -81,17 +77,17 @@ class BuildService {
         }
 
         Object.entries(errors).forEach(([id, error]) => {
-          if (!acc.products[id]) acc.products[id] = {};
-          acc.products[id][rule.name] = error;
+          if (!acc.attributes[id]) acc.attributes[id] = {};
+          acc.attributes[id][rule.name] = error;
         });
 
         return acc;
       },
-      { rules: {}, products: {} } as Omit<Build.Result, "generic">
+      { rules: {}, attributes: {} } as Omit<Build.Result, "products">
     );
 
     return {
-      generic: genericResult.filter((val) => val),
+      products: genericResult,
       ...result,
     };
   }
@@ -111,30 +107,29 @@ class BuildService {
     productInfoMapping: { [prod in Products]?: { [info in Infos]?: string[] } },
     transform?: (data: Part.Detail, product: Products) => T
   ): Promise<Partial<Build.Details<T>>> {
-    const promises = Object.entries(productInfoMapping).map(
-      async ([key, infoMapping]) => {
-        const product = key as Products;
+    const promises = Object.values(Products).map(async (key) => {
+      const product = key as Products;
 
-        if (!build[product]) return undefined; // Check if the product is in the build
+      if (!build[product]) return undefined; // Check if the product is in the build
 
-        const list = await this.fetchProductDetails(
-          build[product],
-          infoMapping
-        ); // Fetch the part details from the database
+      const list = await this.fetchProductDetails(
+        product,
+        build[product],
+        productInfoMapping[product]
+      ); // Fetch the part details from the database
 
-        if (!list) return undefined; // Check if the list is valid
+      if (!list) return undefined; // Check if the list is valid
 
-        if (transform) {
-          const result = Array.isArray(list)
-            ? list.map((item) => transform(item, product))
-            : transform(list, product); // Transform the part details if a transform function is provided
+      if (transform) {
+        const result = Array.isArray(list)
+          ? list.map((item) => transform(item, product))
+          : transform(list, product); // Transform the part details if a transform function is provided
 
-          return [product, result];
-        }
-
-        return [product, list];
+        return [product, result];
       }
-    );
+
+      return [product, list];
+    });
 
     const result = await Promise.all(promises);
 
@@ -155,18 +150,21 @@ class BuildService {
    * @returns A promise that resolves to the part details.
    */
   protected async fetchProductDetails(
+    product: Products,
     fetchIds: Readonly<string | string[]>,
-    attributes: { [key in Infos]?: string[] }
+    attributes?: { [key in Infos]?: string[] }
   ): Promise<Part.Detail | Part.Detail[] | undefined> {
     const ids: string[] = Array.isArray(fetchIds) ? fetchIds : [fetchIds]; // Ensure list is an array
 
     if (ids.length === 0) return undefined; // Check if the list is empty
 
     try {
-      const { list } = await this.partDatabase.list(
+      const { list: raw } = await this.partDatabase.list(
         { part: { id: ids }, page: 1, limit: ids.length },
         attributes
       ); // Fetch the part details from the database
+
+      const list = raw.filter((item) => item.part === product);
 
       if (!list || list.length === 0) return undefined; // Check if the list is valid
 

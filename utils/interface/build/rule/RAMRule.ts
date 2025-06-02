@@ -1,4 +1,4 @@
-import { BuildAttributeValue, BuildResultValue, ProductRule } from "../utils";
+import { BuildAttributeValue, BuildResultValue, AttributeRule } from "../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -39,7 +39,7 @@ function RAMValidate(
   return result;
 }
 
-const RAMRule: ProductRule<typeof attributes> = {
+const RAMRule: AttributeRule<typeof attributes> = {
   name: "RAM Compatibility Rule",
 
   attributes,
@@ -110,7 +110,7 @@ const RAMRule: ProductRule<typeof attributes> = {
         main_board_slot;
 
       if (vacantSlots > 0) {
-        result.rams = { ...result.rams, kit: [main_board_slot] };
+        result.rams = { ...result.rams, kit: [0, main_board_slot] };
       }
     }
 
@@ -132,7 +132,7 @@ const RAMRule: ProductRule<typeof attributes> = {
         );
 
       const ram_kits = rams.reduce((acc, ram) => acc + (ram?.kit ?? 0), 0);
-      if (ram_kits > 0) result.main_board_slot = [ram_kits];
+      if (ram_kits > 0) result.main_board_slot = [0, ram_kits];
     }
 
     return result;

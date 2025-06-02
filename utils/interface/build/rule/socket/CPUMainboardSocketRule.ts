@@ -1,4 +1,4 @@
-import { ProductRule } from "../../utils";
+import { AttributeRule } from "../../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -6,7 +6,7 @@ const attributes = {
   mainboard_socket: [Products.MAIN, Infos.MAIN_SPEC, "socket"],
 } as const;
 
-const CPUMainboardSocketRule: ProductRule<typeof attributes> = {
+const CPUMainboardSocketRule: AttributeRule<typeof attributes> = {
   name: "CPU Mainboard Socket Compatibility Rule",
 
   attributes,

@@ -1,4 +1,4 @@
-import { ProductRule } from "../utils";
+import { AttributeRule } from "../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -9,7 +9,7 @@ const attributes = {
   case_psu_length: [Products.CASE, Infos.CASE_SPEC, "max_psu_length"],
 } as const;
 
-const CasePSURule: ProductRule<typeof attributes> = {
+const CasePSURule: AttributeRule<typeof attributes> = {
   name: "Case PSU Compatibility Rule",
 
   attributes,
@@ -62,7 +62,7 @@ const CasePSURule: ProductRule<typeof attributes> = {
     const result: ReturnType<typeof this.filter> = {};
 
     if (psu_length) {
-      result.case_psu_length = [psu_length];
+      result.case_psu_length = [psu_length, Number.MAX_VALUE];
     }
 
     if (psu_form_factor) {
@@ -76,7 +76,7 @@ const CasePSURule: ProductRule<typeof attributes> = {
     }
 
     if (case_psu_length) {
-      result.psu_length = [case_psu_length];
+      result.psu_length = [0, case_psu_length];
     }
 
     return result;
