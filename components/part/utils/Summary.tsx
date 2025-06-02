@@ -5,7 +5,7 @@ import { InfoLabel } from "./Table";
 export namespace SummaryTable {
   const tableClass = "w-full border-separate border-spacing-0";
   const tableHeader =
-    "hidden lg:table-header-group font-bold sticky top-32 bg-white dark:bg-background transition-bg";
+    "hidden z-100 lg:table-header-group font-bold sticky top-32 bg-white dark:bg-background transition-bg";
   const tableRow =
     "grid grid-cols-2 border-b-2 *:p-2 lg:table-row *:lg:border-b-2";
 
