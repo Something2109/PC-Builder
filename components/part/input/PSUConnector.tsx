@@ -48,7 +48,7 @@ function Component({
             <label htmlFor="form_factor">Add: </label>
             <OptionSelect
               id="form_factor"
-              options={InternalConnectors.Power.Mainboard.options.filter(
+              options={InternalConnectors.Power.Options.filter(
                 (val) => !existConnector(val)
               )}
               onChange={(e) =>
@@ -65,9 +65,7 @@ function Component({
 function submit(formData: FormData) {
   return formData
     .entries()
-    .map(([form_factor, count]) =>
-      PSUConnector.Schema.parse({ form_factor, count })
-    )
+    .map(([type, count]) => PSUConnector.Schema.parse({ type, count }))
     .filter((val) => val.count > 0)
     .toArray();
 }

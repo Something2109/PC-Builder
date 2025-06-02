@@ -21,7 +21,7 @@ export const DetailTableComponent: {
     () => import("@/components/part/detail/GPUPerformance")
   ),
   [Infos.GPU_FEAT]: lazy(() => import("@/components/part/detail/GPUFeature")),
-  [Infos.GPU_MEMORY]: lazy(() => import("@/components/part/detail/CPUMemory")),
+  [Infos.GPU_MEMORY]: lazy(() => import("@/components/part/detail/GPUMemory")),
   [Infos.PROCESSOR_CACHE]: lazy(
     () => import("@/components/part/detail/ProcessorCache")
   ),
