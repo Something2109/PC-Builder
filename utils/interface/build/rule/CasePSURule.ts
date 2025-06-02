@@ -62,7 +62,7 @@ const CasePSURule: AttributeRule<typeof attributes> = {
     const result: ReturnType<typeof this.filter> = {};
 
     if (psu_length) {
-      result.case_psu_length = [psu_length];
+      result.case_psu_length = [psu_length, Number.MAX_VALUE];
     }
 
     if (psu_form_factor) {
@@ -76,7 +76,7 @@ const CasePSURule: AttributeRule<typeof attributes> = {
     }
 
     if (case_psu_length) {
-      result.psu_length = [case_psu_length];
+      result.psu_length = [0, case_psu_length];
     }
 
     return result;

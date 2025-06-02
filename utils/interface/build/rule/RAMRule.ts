@@ -110,7 +110,7 @@ const RAMRule: AttributeRule<typeof attributes> = {
         main_board_slot;
 
       if (vacantSlots > 0) {
-        result.rams = { ...result.rams, kit: [main_board_slot] };
+        result.rams = { ...result.rams, kit: [0, main_board_slot] };
       }
     }
 
@@ -132,7 +132,7 @@ const RAMRule: AttributeRule<typeof attributes> = {
         );
 
       const ram_kits = rams.reduce((acc, ram) => acc + (ram?.kit ?? 0), 0);
-      if (ram_kits > 0) result.main_board_slot = [ram_kits];
+      if (ram_kits > 0) result.main_board_slot = [0, ram_kits];
     }
 
     return result;
