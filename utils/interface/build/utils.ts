@@ -54,6 +54,14 @@ const BuildPartSchema = z
 
 type BuildPartList = z.infer<typeof BuildPartSchema>;
 
+type BuildPartDetails<T = Part.Detail> = {
+  [key in keyof Required<BuildPartList>]?: Required<BuildPartList>[key] extends string[]
+    ? T[]
+    : Required<BuildPartList>[key] extends string
+    ? T
+    : never;
+};
+
 type BuildListInferValue<
   P extends Products,
   V
@@ -119,7 +127,7 @@ type BuildFilterValue<
 interface ProductRule {
   name: string;
 
-  validate(build: BuildPartList): { [key in Products]?: string };
+  validate(build: BuildPartDetails): { [key in Products]?: string };
 }
 
 interface AttributeRule<T extends BuildAttributeMapping> {
@@ -138,6 +146,7 @@ export type {
   ProductRule,
   AttributeRule,
   BuildPartList,
+  BuildPartDetails,
   BuildAttributeMapping,
   BuildAttributeValue,
   BuildValidateAttributes,

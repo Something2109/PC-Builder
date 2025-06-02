@@ -14,6 +14,7 @@ import {
   BuildFilterAttributes,
   BuildPartList,
   BuildPartSchema,
+  BuildPartDetails,
   BuildValidateAttributes,
   ProductRule,
   AttributeRule,
@@ -44,13 +45,7 @@ namespace Build {
 
   export type List = BuildPartList;
 
-  export type Details<T = Part.Detail> = {
-    [key in keyof Required<BuildPartList>]?: Required<BuildPartList>[key] extends string[]
-      ? T[]
-      : Required<BuildPartList>[key] extends string
-      ? T
-      : never;
-  };
+  export type Details<T = Part.Detail> = BuildPartDetails<T>;
 
   export type Result = {
     products: ReturnType<ProductRule["validate"]>;

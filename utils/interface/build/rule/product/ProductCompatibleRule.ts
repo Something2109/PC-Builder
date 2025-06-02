@@ -1,10 +1,10 @@
 import { Products } from "@/utils/Enum";
-import { BuildPartList, ProductRule } from "../../utils";
+import { BuildPartDetails, ProductRule } from "../../utils";
 
 const ProductCompatibleRule: ProductRule = {
   name: "Product Requirement Rule",
 
-  validate(build: BuildPartList) {
+  validate(build: BuildPartDetails) {
     const result: ReturnType<typeof this.validate> = {};
 
     if (!build.cpu) result[Products.CPU] = "CPU is required.";
