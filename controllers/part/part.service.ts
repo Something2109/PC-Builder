@@ -64,7 +64,7 @@ class PartService implements PartServiceInterface {
   async create(product: Products, data: Part.Detail) {
     try {
       const instance = await this.CRUDService.create(
-        data,
+        { ...data, part: product },
         product ? Mapping.Info[product] : undefined
       );
 
