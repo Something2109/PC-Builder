@@ -52,7 +52,10 @@ export default function SummaryTable({
       </Table.Head>
       <tbody>
         {data.map((product, index) => (
-          <Table.Row key={`Row-${index}`}>
+          <Table.Row
+            key={`Row-${index}`}
+            className="hover:rounded-lg hover:bg-line hover:dark:text-background"
+          >
             {Components.map((Component) => (
               <Component
                 key={`Row-${Component.name}-${index}`}
