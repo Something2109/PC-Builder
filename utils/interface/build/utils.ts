@@ -116,13 +116,13 @@ type BuildFilterValue<
   ? Attribute.Filter
   : undefined;
 
-interface GenericRule {
+interface ProductRule {
   name: string;
 
-  validate(build: BuildPartList): string[];
+  validate(build: BuildPartList): { [key in Products]?: string };
 }
 
-interface ProductRule<T extends BuildAttributeMapping> {
+interface AttributeRule<T extends BuildAttributeMapping> {
   name: string;
 
   attributes: T;
@@ -135,8 +135,8 @@ interface ProductRule<T extends BuildAttributeMapping> {
 }
 
 export type {
-  GenericRule,
   ProductRule,
+  AttributeRule,
   BuildPartList,
   BuildAttributeMapping,
   BuildAttributeValue,

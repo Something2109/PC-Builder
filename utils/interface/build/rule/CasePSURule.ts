@@ -1,4 +1,4 @@
-import { ProductRule } from "../utils";
+import { AttributeRule } from "../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -9,7 +9,7 @@ const attributes = {
   case_psu_length: [Products.CASE, Infos.CASE_SPEC, "max_psu_length"],
 } as const;
 
-const CasePSURule: ProductRule<typeof attributes> = {
+const CasePSURule: AttributeRule<typeof attributes> = {
   name: "Case PSU Compatibility Rule",
 
   attributes,

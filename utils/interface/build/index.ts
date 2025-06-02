@@ -1,4 +1,4 @@
-import ProductCompatibleRule from "./rule/generic/ProductCompatibleRule";
+import ProductCompatibleRule from "./rule/product/ProductCompatibleRule";
 import CPUMainboardSocketRule from "./rule/socket/CPUMainboardSocketRule";
 import GPURule from "./rule/GPURule";
 import MainboardAIOSocketRule from "./rule/socket/MainboardAIOSocketRule";
@@ -15,13 +15,13 @@ import {
   BuildPartList,
   BuildPartSchema,
   BuildValidateAttributes,
-  GenericRule,
   ProductRule,
+  AttributeRule,
 } from "./utils";
 import Part, { Information } from "../part";
 import { Infos, Products } from "@/utils/Enum";
 
-const ProductRuleList: ProductRule<BuildAttributeMapping>[] = [
+const ProductRuleList: AttributeRule<BuildAttributeMapping>[] = [
   CPUMainboardSocketRule,
   GPURule,
   MainboardAIOSocketRule,
@@ -53,15 +53,15 @@ namespace Build {
   };
 
   export type Result = {
-    generic: { [name in string]: string[] };
+    products: ReturnType<ProductRule["validate"]>;
     rules: { [name in string]: string };
-    products: { [id in string]: { [name in string]: string[] } };
+    attributes: { [id in string]: { [attr in string]: string[] } };
   };
 
-  export type Rule<T extends BuildAttributeMapping> = ProductRule<T>;
+  export type Rule<T extends BuildAttributeMapping> = AttributeRule<T>;
 
   export namespace Rule {
-    export const Generic: GenericRule[] = [ProductCompatibleRule];
+    export const Product = ProductCompatibleRule;
 
     export type Mapping = BuildAttributeMapping;
 
@@ -75,7 +75,7 @@ namespace Build {
      * An array of all PC build validation rules.
      * Each rule enforces compatibility between different PC components.
      */
-    export const Product = ProductRuleList;
+    export const Attribute = ProductRuleList;
   }
 
   export namespace Product {
@@ -98,7 +98,7 @@ namespace Build {
       });
 
       return acc;
-    }, {} as { [key in Products]?: ProductRule<BuildAttributeMapping>[] });
+    }, {} as { [key in Products]?: AttributeRule<BuildAttributeMapping>[] });
 
     /**
      * A mapping of each product type to the information filters
