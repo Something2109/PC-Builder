@@ -58,18 +58,14 @@ class BuildService {
   }
 
   async validate(buildList: Partial<Build.List>) {
-    const genericResult = Build.Rule.Generic.map((rule) => {
-      const result = rule.validate(buildList);
-
-      return result.length > 0 && { name: rule.name, result };
-    });
-
     const buildDetails = await this.getBuildDetail(
       buildList,
       Build.Product.ValidateAttributes
     );
 
-    const result = Build.Rule.Product.reduce(
+    const genericResult = Build.Rule.Product.validate(buildDetails);
+
+    const result = Build.Rule.Attribute.reduce(
       (acc, rule) => {
         const errors = this.validateRule(rule, buildDetails);
 
@@ -81,17 +77,17 @@ class BuildService {
         }
 
         Object.entries(errors).forEach(([id, error]) => {
-          if (!acc.products[id]) acc.products[id] = {};
-          acc.products[id][rule.name] = error;
+          if (!acc.attributes[id]) acc.attributes[id] = {};
+          acc.attributes[id][rule.name] = error;
         });
 
         return acc;
       },
-      { rules: {}, products: {} } as Omit<Build.Result, "generic">
+      { rules: {}, attributes: {} } as Omit<Build.Result, "products">
     );
 
     return {
-      generic: genericResult.filter((val) => val),
+      products: genericResult,
       ...result,
     };
   }
