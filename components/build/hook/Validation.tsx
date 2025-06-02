@@ -3,17 +3,15 @@
 import Build from "@/utils/interface/build";
 import { createContext, useActionState, useContext } from "react";
 
-const DefaultResult = { generic: {}, rules: {}, products: {} };
+const DefaultResult = { attributes: {}, rules: {}, products: {} };
 
 const ValidationContext = createContext<
   Build.Result & { pending: boolean; validate: (list: Build.List) => void }
 >({
-  generic: {},
-  rules: {},
-  products: {},
+  ...DefaultResult,
   pending: false,
   validate: function (list: Build.List): void {
-    throw new Error("Function not implemented.");
+    throw new Error("You are trying to call validate without a context.");
   },
 });
 
