@@ -49,8 +49,13 @@ namespace Build {
 
   export type Result = {
     products: ReturnType<ProductRule["validate"]>;
-    rules: { [name in string]: string };
-    attributes: { [id in string]: { [attr in string]: string[] } };
+    rules: { [name in string]: RuleResult };
+    missing: { [id in string]: { [attr in string]: string[] } };
+  };
+
+  export type RuleResult = {
+    error?: string;
+    attributes: BuildValidateResult<any>;
   };
 
   export type Rule<T extends BuildAttributeMapping> = AttributeRule<T>;
