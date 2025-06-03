@@ -7,9 +7,11 @@ import {
   createContext,
   useActionState,
   useContext,
+  useEffect,
   useLayoutEffect,
   useReducer,
   useState,
+  useTransition,
 } from "react";
 import { JwtPayload } from "jsonwebtoken";
 import { createDecoder } from "fast-jwt";
@@ -124,42 +126,51 @@ export function useLoginAction(pathname?: string) {
   return [state, formAction, pending, error, setError] as const;
 }
 
-export function useRefreshToken(pathname?: string | null) {
+export function useRefreshAction(pathname?: string | null) {
+  const [pending, startTransition] = useTransition();
   const [_, setUser] = useContext(AuthContext);
   const router = useRouter();
   pathname = pathname ?? "/";
 
-  return async () => {
-    const token = localStorage.getItem(AUTH_KEY);
+  useEffect(() => {
+    startTransition(async () => {
+      const token = localStorage.getItem(AUTH_KEY);
 
-    try {
-      const response = await axios.post("/api/auth/refresh", undefined, {
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUser(response.data.refresh_token);
-      router.replace(pathname);
-    } catch (err) {
-      router.replace(`${LoginPath}?redirect=${pathname}`);
-    }
-  };
+      try {
+        const response = await axios.post("/api/auth/refresh", undefined, {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(response.data.refresh_token);
+        router.replace(pathname);
+      } catch (err) {
+        router.replace(`${LoginPath}?redirect=${pathname}`);
+      }
+    });
+  }, []);
+
+  return pending;
 }
 
 export function useLogoutAction() {
+  const [pending, startTransition] = useTransition();
   const [_, setUser] = useContext(AuthContext);
   const router = useRouter();
 
-  return async () => {
-    try {
-      await axios.post("/api/auth/logout", undefined, {
-        withCredentials: true,
-      });
-      setUser(null);
-      router.push(LoginPath);
-    } catch (err) {
-      const error = err as AxiosError;
-      console.error(err);
-      alert(error.response?.data);
-    }
-  };
+  const logout = () =>
+    startTransition(async () => {
+      try {
+        await axios.post("/api/auth/logout", undefined, {
+          withCredentials: true,
+        });
+        setUser(null);
+        router.push(LoginPath);
+      } catch (err) {
+        const error = err as AxiosError;
+        console.error(err);
+        alert(error.response?.data);
+      }
+    });
+
+  return [pending, logout] as const;
 }
