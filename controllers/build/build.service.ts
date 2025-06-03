@@ -71,19 +71,19 @@ class BuildService {
 
         if (!errors) return acc;
 
-        if (typeof errors === "string") {
+        if (errors["attributes"] !== undefined) {
           acc.rules[rule.name] = errors;
           return acc;
         }
 
-        Object.entries(errors).forEach(([id, error]) => {
-          if (!acc.attributes[id]) acc.attributes[id] = {};
-          acc.attributes[id][rule.name] = error;
+        Object.entries(errors.missing).forEach(([id, error]) => {
+          if (!acc.missing[id]) acc.missing[id] = {};
+          acc.missing[id][rule.name] = error;
         });
 
         return acc;
       },
-      { rules: {}, attributes: {} } as Omit<Build.Result, "products">
+      { rules: {}, missing: {} } as Omit<Build.Result, "products">
     );
 
     return {
@@ -239,9 +239,9 @@ class BuildService {
     const validateResult = rule.validate(attributes);
 
     if (!validateResult || typeof validateResult === "string")
-      return validateResult;
+      return { error: validateResult, attributes };
 
-    return this.parseValidateResult(rule, build, validateResult);
+    return { missing: this.parseValidateResult(rule, build, validateResult) };
   }
 
   /**
