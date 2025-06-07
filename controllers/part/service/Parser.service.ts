@@ -9,7 +9,7 @@ import { ModelAttributeList } from "../interface/database.interface";
 
 @Injectable()
 class ParseService implements ParseServiceInterface {
-  summary(data: Part.Detail, part?: Products): Part.Summary<Products> {
+  summary(data: Part.Model, part?: Products): Part.Summary<Products> {
     const summary: Record<string, any> = {};
 
     Part.BasicSummaryAttributes.forEach((key) => (summary[key] = data[key]));

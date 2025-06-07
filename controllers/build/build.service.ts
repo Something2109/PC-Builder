@@ -102,10 +102,10 @@ class BuildService {
    * @param transform - Optional transformation function for part details.
    * @returns A promise that resolves to an object containing part details.
    */
-  protected async getBuildDetail<T = Part.Detail>(
+  protected async getBuildDetail<T = Part.Model>(
     build: Partial<Build.List>,
     productInfoMapping: { [prod in Products]?: { [info in Infos]?: string[] } },
-    transform?: (data: Part.Detail, product: Products) => T
+    transform?: (data: Part.Model, product: Products) => T
   ): Promise<Partial<Build.Details<T>>> {
     const promises = Object.values(Products).map(async (key) => {
       const product = key as Products;
@@ -153,7 +153,7 @@ class BuildService {
     product: Products,
     fetchIds: Readonly<string | string[]>,
     attributes?: { [key in Infos]?: string[] }
-  ): Promise<Part.Detail | Part.Detail[] | undefined> {
+  ): Promise<Part.Model | Part.Model[] | undefined> {
     const ids: string[] = Array.isArray(fetchIds) ? fetchIds : [fetchIds]; // Ensure list is an array
 
     if (ids.length === 0) return undefined; // Check if the list is empty
@@ -296,7 +296,7 @@ class BuildService {
    * @param attr - Optional attribute to specify which part of the info to retrieve.
    * @returns The parsed information from the part detail.
    */
-  protected parseDetail(detail: Part.Detail, info: Infos, attr?: string) {
+  protected parseDetail(detail: Part.Model, info: Infos, attr?: string) {
     let result = detail[info];
 
     if (!result) return undefined;
