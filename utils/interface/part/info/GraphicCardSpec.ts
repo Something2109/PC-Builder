@@ -1,8 +1,13 @@
-import { ExternalPorts, InternalConnectors, Primitive } from "../../utils";
+import {
+  createDTO,
+  createModel,
+  InternalConnectors,
+  Primitive,
+} from "../../utils";
 import { z } from "zod";
 
 namespace GraphicCardSpec {
-  export const Schema = z.object({
+  const Info = z.object({
     width: Primitive.Number,
     length: Primitive.Number,
     height: Primitive.Number,
@@ -14,7 +19,7 @@ namespace GraphicCardSpec {
     power_connector_count: Primitive.Number,
   });
 
-  export type Info = z.infer<typeof Schema>;
+  export type Info = z.infer<typeof Info>;
 
   export const Label: { [key in keyof Info]: string } = {
     width: "Width",
@@ -27,6 +32,16 @@ namespace GraphicCardSpec {
     power_connector: "Power Connector",
     power_connector_count: "Power Connector Count",
   };
+
+  const Model = createModel(Info);
+
+  export type Model = z.infer<typeof Model>;
+
+  const DTO = createDTO(Info);
+
+  export type DTO = z.infer<typeof DTO>;
+
+  export const Schemas = { Info, Model, DTO };
 }
 
 export default GraphicCardSpec;

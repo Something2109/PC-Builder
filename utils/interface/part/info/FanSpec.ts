@@ -1,4 +1,10 @@
-import { FormFactor, InternalConnectors, Primitive } from "../../utils";
+import {
+  createDTO,
+  createModel,
+  FormFactor,
+  InternalConnectors,
+  Primitive,
+} from "../../utils";
 import { z } from "zod";
 
 namespace FanSpec {
@@ -6,7 +12,7 @@ namespace FanSpec {
 
   export type Bearing = z.infer<typeof Bearing>;
 
-  export const Schema = z.object({
+  const Info = z.object({
     form_factor: FormFactor.Fan,
 
     width: Primitive.Number,
@@ -26,7 +32,7 @@ namespace FanSpec {
     rgb: InternalConnectors.RGB,
   });
 
-  export type Info = z.infer<typeof Schema>;
+  export type Info = z.infer<typeof Info>;
 
   export const Label: { [key in keyof Info]: string } = {
     form_factor: "Form Factor",
@@ -47,6 +53,16 @@ namespace FanSpec {
     connector: "Power Connector",
     rgb: "RGB",
   };
+
+  const Model = createModel(Info);
+
+  export type Model = z.infer<typeof Model>;
+
+  const DTO = createDTO(Info);
+
+  export type DTO = z.infer<typeof DTO>;
+
+  export const Schemas = { Info, Model, DTO };
 }
 
 export default FanSpec;
