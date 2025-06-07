@@ -108,11 +108,10 @@ namespace Part {
      * @template I - The info key from the `Infos` enum.
      * * This type extracts the type of information associated with the given info key.
      */
-    export type InfoType<I extends Infos> = NonNullable<
-      Part.Detail[I]
-    > extends Information.Info[I][]
-      ? (Information.Info[I] | undefined)[]
-      : Information.Info[I] | undefined;
+    export type InfoType<I extends Infos> =
+      I extends Information.MultipleValueInfo
+        ? (Information.Info[I] | undefined)[]
+        : Information.Info[I] | undefined;
 
     /**
      * Type representing the attribute type for a given info key and attribute name.
@@ -125,7 +124,7 @@ namespace Part {
       I extends Infos,
       A extends string
     > = A extends keyof Information.Info[I]
-      ? NonNullable<Part.Detail[I]> extends Information.Info[I][]
+      ? I extends Information.MultipleValueInfo
         ? (Information.Info[I][A] | undefined)[]
         : Information.Info[I][A] | undefined
       : undefined;
