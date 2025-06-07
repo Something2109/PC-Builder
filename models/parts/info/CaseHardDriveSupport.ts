@@ -30,7 +30,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 @Table({ modelName: Infos.CASE_HARD_DRIVE })
 class CaseHardDriveSupportModel
   extends Model
-  implements CaseHardDriveSupport.Info
+  implements CaseHardDriveSupport.Model
 {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
@@ -55,7 +55,7 @@ class CaseHardDriveSupportModel
   declare form_factor: Case.HardDriveFormFactor;
 
   @Column(DataType.TINYINT)
-  declare count: number;
+  declare count: number | null;
 }
 
 export { CaseHardDriveSupportModel };

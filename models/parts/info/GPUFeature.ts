@@ -11,12 +11,7 @@ import {
 import GPUFeature from "@/utils/interface/part/info/GPUFeature";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
-import {
-  ModelScopes,
-  PartDefaultScope,
-  PartDetailTable,
-  defaultFilter,
-} from "../../interface";
+import { ModelScopes, PartDefaultScope, defaultFilter } from "../../interface";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -28,10 +23,7 @@ import {
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.GPU_FEAT })
-class GPUFeatureModel
-  extends Model
-  implements PartDetailTable<GPUFeature.Info>
-{
+class GPUFeatureModel extends Model implements GPUFeature.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)

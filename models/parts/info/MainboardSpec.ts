@@ -12,12 +12,7 @@ import MainboardSpec from "@/utils/interface/part/info/MainboardSpec";
 import { InternalConnectors, FormFactor } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
-import {
-  PartDetailTable,
-  PartDefaultScope,
-  ModelScopes,
-  defaultFilter,
-} from "../../interface";
+import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -31,10 +26,7 @@ import {
   },
 }))
 @Table({ modelName: Infos.MAIN_SPEC })
-class MainboardSpecModel
-  extends Model
-  implements PartDetailTable<MainboardSpec.Info>
-{
+class MainboardSpecModel extends Model implements MainboardSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -69,25 +61,6 @@ class MainboardSpecModel
 
   @Column(DataType.TINYINT)
   declare ram_slot: number | null;
-
-  /**
-   * Declare the miscelanous connector object saving the data as a JSON string
-   * in the {@link miscelanous_connectors} column.
-   */
-
-  @Column(DataType.TEXT)
-  get miscelanous_connectors(): Record<string, number> | undefined {
-    const data = this.getDataValue("miscelanous_connectors");
-
-    return data ? JSON.parse(data) : undefined;
-  }
-
-  set miscelanous_connectors(value: Record<string, number> | null) {
-    this.setDataValue(
-      "miscelanous_connectors",
-      value ? JSON.stringify(value) : null
-    );
-  }
 }
 
 export { MainboardSpecModel };

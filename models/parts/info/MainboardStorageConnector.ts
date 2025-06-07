@@ -32,7 +32,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 @Table({ modelName: Infos.MAIN_STORAGE })
 class MainboardStorageConnectorModel
   extends Model
-  implements MainboardStorageConnector.Info
+  implements MainboardStorageConnector.Model
 {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
@@ -52,7 +52,7 @@ class MainboardStorageConnectorModel
   declare form_factor: InternalConnectors.Storage;
 
   @Column(DataType.TINYINT)
-  declare count: number;
+  declare count: number | null;
 }
 
 export { MainboardStorageConnectorModel };

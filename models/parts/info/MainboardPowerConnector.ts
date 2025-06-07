@@ -32,7 +32,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 @Table({ modelName: Infos.MAIN_POWER })
 class MainboardPowerConnectorModel
   extends Model
-  implements MainboardPowerConnector.Info
+  implements MainboardPowerConnector.Model
 {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
@@ -50,7 +50,7 @@ class MainboardPowerConnectorModel
   declare type: InternalConnectors.Power.Mainboard;
 
   @Column(DataType.TINYINT)
-  declare count: number;
+  declare count: number | null;
 }
 
 export { MainboardPowerConnectorModel };

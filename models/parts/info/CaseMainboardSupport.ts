@@ -30,7 +30,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 @Table({ modelName: Infos.CASE_MAIN })
 class CaseMainboardSupportModel
   extends Model
-  implements CaseMainboardSupport.Info
+  implements CaseMainboardSupport.Model
 {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

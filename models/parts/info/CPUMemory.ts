@@ -12,12 +12,7 @@ import CPUMemory from "@/utils/interface/part/info/CPUMemory";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
-import {
-  PartDetailTable,
-  PartDefaultScope,
-  ModelScopes,
-  defaultFilter,
-} from "../../interface";
+import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -31,7 +26,7 @@ import {
   },
 }))
 @Table({ modelName: Infos.CPU_MEMORY })
-class CPUMemoryModel extends Model implements PartDetailTable<CPUMemory.Info> {
+class CPUMemoryModel extends Model implements CPUMemory.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -45,7 +40,7 @@ class CPUMemoryModel extends Model implements PartDetailTable<CPUMemory.Info> {
     type: DataType.STRING,
     validate: { isIn: [InternalConnectors.RAM.options] },
   })
-  declare type: InternalConnectors.RAM | null;
+  declare type: InternalConnectors.RAM;
 
   @Column(DataType.INTEGER)
   declare speed: number | null;

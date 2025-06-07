@@ -30,7 +30,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   },
 }))
 @Table({ modelName: Infos.EXTERNAL_PORTS })
-class PartExternalPortModel extends Model implements PartExternalPorts.Info {
+class PartExternalPortModel extends Model implements PartExternalPorts.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -51,7 +51,7 @@ class PartExternalPortModel extends Model implements PartExternalPorts.Info {
   declare name: ExternalPorts;
 
   @Column(DataType.TINYINT)
-  declare count: number;
+  declare count: number | null;
 }
 
 export { PartExternalPortModel };

@@ -30,7 +30,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   },
 }))
 @Table({ modelName: Infos.MAIN_PCIE })
-class MainboardPCIeModel extends Model implements MainboardPCIe.Info {
+class MainboardPCIeModel extends Model implements MainboardPCIe.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -58,7 +58,7 @@ class MainboardPCIeModel extends Model implements MainboardPCIe.Info {
   declare width: InternalConnectors.PCIe.Width;
 
   @Column(DataType.TINYINT)
-  declare count: number;
+  declare count: number | null;
 }
 
 export { MainboardPCIeModel };

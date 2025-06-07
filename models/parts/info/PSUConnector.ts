@@ -30,7 +30,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   },
 }))
 @Table({ modelName: Infos.PSU_CONNECTOR })
-class PSUConnectorModel extends Model implements PSUConnector.Info {
+class PSUConnectorModel extends Model implements PSUConnector.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -47,7 +47,7 @@ class PSUConnectorModel extends Model implements PSUConnector.Info {
   declare type: InternalConnectors.Power;
 
   @Column(DataType.TINYINT)
-  declare count: number;
+  declare count: number | null;
 }
 
 export { PSUConnectorModel };

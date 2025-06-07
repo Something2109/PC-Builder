@@ -11,12 +11,7 @@ import {
 import StoragePerformance from "@/utils/interface/part/info/StoragePerformance";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
-import {
-  PartDetailTable,
-  PartDefaultScope,
-  ModelScopes,
-  defaultFilter,
-} from "../../interface";
+import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -30,7 +25,7 @@ import {
 @Table({ modelName: Infos.STORAGE_PERF })
 class StoragePerformanceModel
   extends Model
-  implements PartDetailTable<StoragePerformance.Info>
+  implements StoragePerformance.Model
 {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
