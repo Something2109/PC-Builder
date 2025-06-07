@@ -39,6 +39,19 @@ interface UnitInterface<Units extends string> {
    * @returns The numnber value corresponding to the {@link dest} unit.
    */
   exchange(num: number, src: Units, dest: Units): number;
+
+  /**
+   * Exchange the {@link num} based on its value corresponding
+   * to a ${@link threshold} number.
+   * If the {@link num} value is greater than the {@link threshold},
+   * lower down the unit value of it.
+   *
+   * @param num The number to exchange.
+   * @param src The unit name of the {@link num}.
+   * @param threshold The max value the result should be.
+   * @returns The tuple of result value and its unit.
+   */
+  adaptiveExchange(num: number, src: Units, threshold: number): [number, Units];
 }
 
 /**
@@ -49,26 +62,28 @@ interface UnitInterface<Units extends string> {
  */
 class Unit<Units extends string> implements UnitInterface<Units> {
   private readonly Exchanger: Record<Units, number>;
+  private readonly Order: Units[];
+  private readonly Step: number;
   private readonly Regexp: RegExp;
 
   constructor(ratio: Units[] | Record<Units, number>, step = 1) {
-    ratio = Array.isArray(ratio)
-      ? ratio.reduce((acc, curr, index) => {
-          acc[curr] = Math.pow(step, index);
-          return acc;
-        }, {} as Record<Units, number>)
-      : ratio;
-    this.Exchanger = ratio;
+    const [Exchanger, Order, Step] = Array.isArray(ratio)
+      ? this.attributeFromArray(ratio, step)
+      : this.attributeFromObject(ratio);
+
+    this.Exchanger = Exchanger;
+    this.Order = Order;
+    this.Step = Step;
 
     const NumberRegex = "-?\\d+\\.?\\d*|-?\\d*\\.?\\d+";
-    const UnitRegex = Object.keys(ratio).join("|");
+    const UnitRegex = Order.join("|");
     this.Regexp = new RegExp(
       `(^|\\W)(${NumberRegex})?[ _-]*(${UnitRegex})(\\W|$)`
     );
   }
 
   list() {
-    return Object.keys(this.Exchanger) as Units[];
+    return this.Order;
   }
 
   parse(str: string): [number | null, Units] | null {
@@ -93,6 +108,29 @@ class Unit<Units extends string> implements UnitInterface<Units> {
     return num * this.ratio(src, dest);
   }
 
+  adaptiveExchange(
+    num: number,
+    src: Units,
+    threshold: number = this.Step,
+    min: number = 0
+  ): [number, Units] {
+    if (num <= threshold && num >= 0) return [num, src];
+
+    let current = this.Order.indexOf(src);
+
+    while (num > threshold || num < min) {
+      const nextIndex = num > threshold ? current + 1 : current - 1;
+
+      if (nextIndex === -1 || nextIndex === this.Order.length) break;
+
+      num = this.exchange(num, src, this.Order[nextIndex]);
+      src = this.Order[nextIndex];
+      current = nextIndex;
+    }
+
+    return [num, src];
+  }
+
   /**
    * The utility function used to transform the regex result
    * to the parse result type.
@@ -106,6 +144,46 @@ class Unit<Units extends string> implements UnitInterface<Units> {
 
     return [num ? Number(num) : null, unit as Units];
   }
+
+  /**
+   * Create the required attributes of the unit class
+   * based on the given list of ordered units
+   * and the step value of adjacent unit.
+   * @param units The ordered unit list.
+   * @param step The step between each pair of adjacent unit.
+   * @returns The required attributes.
+   */
+  private attributeFromArray(units: Units[], step: number) {
+    const exchanger = units.reduce((acc, curr, index) => {
+      acc[curr] = Math.pow(step, index);
+      return acc;
+    }, {} as Record<Units, number>);
+
+    return [exchanger, units, step] as const;
+  }
+
+  /**
+   * Create the required attributes of the unit class
+   * based on the given record of unit key and its relative values.
+   * @param ratio The record of unit name and value.
+   * @returns The required attributes.
+   */
+  private attributeFromObject(ratio: Record<Units, number>) {
+    const exchanger = ratio;
+
+    const order = Object.keys(exchanger).sort(
+      (a, b) => exchanger[a as Units] - exchanger[b as Units]
+    ) as Units[];
+
+    const step = Object.values<number>(ratio)
+      .sort((a, b) => a - b)
+      .reduce((prev, curr, index, arr) => {
+        const newRatio = index > 0 ? curr / arr[index - 1] : 1;
+        return newRatio > prev ? newRatio : prev;
+      }, 1);
+
+    return [exchanger, order, step] as const;
+  }
 }
 
 type DerivedUnitName<
@@ -114,103 +192,32 @@ type DerivedUnitName<
 > = `${Unit1}/${Unit2}`;
 
 /**
- * The generic derived unit class.
- * Use in parsing and exchanging unit value in the project.
- * Created by passing two units to the constructor.
+ * Create the ratio object of the derived unit from the 2 unit objects.
+ * Cautious: order does matter.
+ *
+ * @param unit1 The first unit.
+ * @param unit2 The second unit.
+ * @returns The record of derived unit names and number ratio.
  */
-class DerivedUnit<Unit1 extends string, Unit2 extends string>
-  implements UnitInterface<DerivedUnitName<Unit1, Unit2>>
-{
-  private readonly unit1: UnitInterface<Unit1>;
-  private readonly unit2: UnitInterface<Unit2>;
-  private readonly Regexp: RegExp;
+function ratioFromUnits<Unit1 extends string, Unit2 extends string>(
+  unit1: UnitInterface<Unit1>,
+  unit2: UnitInterface<Unit2>
+): Record<DerivedUnitName<Unit1, Unit2>, number> {
+  const Unit1Order = unit1.list();
+  const Unit2Order = unit2.list();
 
-  constructor(unit1: UnitInterface<Unit1>, unit2: UnitInterface<Unit2>) {
-    this.unit1 = unit1;
-    this.unit2 = unit2;
+  const BaseUnit1 = Unit1Order[0];
+  const BaseUnit2 = Unit2Order[Unit2Order.length - 1];
 
-    const NumberRegex = "-?\\d+\\.?\\d*|-?\\d*\\.?\\d+";
-    const Unit1Regex = unit1.list().join("|");
-    const Unit2Regex = unit2.list().join("|");
-    this.Regexp = new RegExp(
-      `(^|\\W)(${NumberRegex})?[ _-]*(${Unit1Regex})\/(${Unit2Regex})(\\W|$)`
-    );
-  }
-
-  list(): DerivedUnitName<Unit1, Unit2>[] {
-    return this.unit1
-      .list()
-      .map((val1) => this.unit2.list().map((val2) => this.toUnit(val1, val2)))
-      .flat();
-  }
-
-  parse(str: string): [number | null, DerivedUnitName<Unit1, Unit2>] | null {
-    const result = str.match(this.Regexp);
-
-    if (!result) return null;
-
-    const [num, unit1, unit2] = this.extractRegexResult(result);
-
-    return [num, this.toUnit(unit1, unit2)];
-  }
-
-  parseAll(str: string): [number | null, DerivedUnitName<Unit1, Unit2>][] {
-    const results = str.matchAll(this.Regexp);
-
-    return [...results].map((result) => {
-      const [num, unit1, unit2] = this.extractRegexResult(result);
-
-      return [num, this.toUnit(unit1, unit2)];
+  const ratio = Unit1Order.reduce((acc, curr1) => {
+    Unit2Order.forEach((curr2) => {
+      const unit = `${curr1}/${curr2}` as DerivedUnitName<Unit1, Unit2>;
+      acc[unit] = unit1.ratio(curr1, BaseUnit1) / unit2.ratio(curr2, BaseUnit2);
     });
-  }
+    return acc;
+  }, {} as Record<DerivedUnitName<Unit1, Unit2>, number>);
 
-  ratio(
-    src: DerivedUnitName<Unit1, Unit2>,
-    dest: DerivedUnitName<Unit1, Unit2>
-  ): number {
-    const result1 = src.match(this.Regexp);
-    const result2 = dest.match(this.Regexp);
-
-    if (!result1) throw new Error(`Cannot extract unit from type ${src}`);
-    if (!result2) throw new Error(`Cannot extract unit from type ${dest}`);
-
-    const [_, src1, src2] = this.extractRegexResult(result1);
-    const [__, dest1, dest2] = this.extractRegexResult(result2);
-
-    return this.unit1.ratio(src1, dest1) / this.unit2.ratio(src2, dest2);
-  }
-
-  exchange(
-    num: number,
-    src: DerivedUnitName<Unit1, Unit2>,
-    dest: DerivedUnitName<Unit1, Unit2>
-  ): number {
-    return num * this.ratio(src, dest);
-  }
-
-  /**
-   * Create the name of the composite unit by combining the name of the 2 units.
-   * @param unit1 The first unit.
-   * @param unit2 The second unit.
-   * @returns The composite unit.
-   */
-  private toUnit(unit1: Unit1, unit2: Unit2): DerivedUnitName<Unit1, Unit2> {
-    return `${unit1}/${unit2}` as DerivedUnitName<Unit1, Unit2>;
-  }
-
-  /**
-   * The utility function used to transform the regex result
-   * to the parse result type.
-   * @param result The regex match result.
-   * @returns The result tuple of {@link parse} and {@link parseAll}.
-   */
-  private extractRegexResult(
-    result: RegExpMatchArray | RegExpExecArray
-  ): [number | null, Unit1, Unit2] {
-    const [_, __, num, unit1, unit2] = result;
-
-    return [num ? Number(num) : null, unit1 as Unit1, unit2 as Unit2];
-  }
+  return ratio;
 }
 
 const MemoryUnits = new Unit(["B", "KB", "MB", "GB", "TB", "PB"], 1024);
@@ -235,13 +242,13 @@ const TimeUnits = new Unit({
 
 const TransferUnits = new Unit(["T", "KT", "MT", "GT"], 1000);
 
-const MemorySpeedUnit = new DerivedUnit(MemoryUnits, TimeUnits);
+const MemorySpeedUnit = new Unit(ratioFromUnits(MemoryUnits, TimeUnits));
 
-const LengthSpeedUnit = new DerivedUnit(LengthUnits, TimeUnits);
+const LengthSpeedUnit = new Unit(ratioFromUnits(LengthUnits, TimeUnits));
 
-const VolumeSpeedUnit = new DerivedUnit(VolumeUnits, TimeUnits);
+const VolumeSpeedUnit = new Unit(ratioFromUnits(VolumeUnits, TimeUnits));
 
-const TransferSpeedUnit = new DerivedUnit(TransferUnits, TimeUnits);
+const TransferSpeedUnit = new Unit(ratioFromUnits(TransferUnits, TimeUnits));
 
 export {
   type UnitInterface,

@@ -1,4 +1,4 @@
-import ProductCompatibleRule from "./rule/generic/ProductCompatibleRule";
+import ProductCompatibleRule from "./rule/product/ProductCompatibleRule";
 import CPUMainboardSocketRule from "./rule/socket/CPUMainboardSocketRule";
 import GPURule from "./rule/GPURule";
 import MainboardAIOSocketRule from "./rule/socket/MainboardAIOSocketRule";
@@ -10,17 +10,19 @@ import PCIeRule from "./rule/PCIeRule";
 import RAMRule from "./rule/RAMRule";
 import {
   BuildAttributeMapping,
+  BuildValidateResult,
   BuildFilterAttributes,
   BuildPartList,
   BuildPartSchema,
+  BuildPartDetails,
   BuildValidateAttributes,
-  GenericRule,
   ProductRule,
+  AttributeRule,
 } from "./utils";
 import Part, { Information } from "../part";
 import { Infos, Products } from "@/utils/Enum";
 
-const ProductRuleList: ProductRule<BuildAttributeMapping>[] = [
+const ProductRuleList: AttributeRule<BuildAttributeMapping>[] = [
   CPUMainboardSocketRule,
   GPURule,
   MainboardAIOSocketRule,
@@ -43,32 +45,37 @@ namespace Build {
 
   export type List = BuildPartList;
 
-  export type Details<T = Part.Detail> = {
-    [key in keyof Required<BuildPartList>]?: Required<BuildPartList>[key] extends string[]
-      ? T[]
-      : Required<BuildPartList>[key] extends string
-      ? T
-      : never;
+  export type Details<T = Part.Model> = BuildPartDetails<T>;
+
+  export type Result = {
+    products: ReturnType<ProductRule["validate"]>;
+    rules: { [name in string]: RuleResult };
+    missing: { [id in string]: { [attr in string]: string[] } };
   };
 
-  export type AttributeMapping = BuildAttributeMapping;
+  export type RuleResult = {
+    error?: string;
+    attributes: BuildValidateResult<any>;
+  };
 
-  export type ValidateAttributes<T extends AttributeMapping> =
-    BuildValidateAttributes<T>;
-
-  export type FilterAttributes<T extends AttributeMapping> =
-    BuildFilterAttributes<T>;
-
-  export type Rule<T extends AttributeMapping> = ProductRule<T>;
+  export type Rule<T extends BuildAttributeMapping> = AttributeRule<T>;
 
   export namespace Rule {
-    export const Generic: GenericRule[] = [ProductCompatibleRule];
+    export const Product = ProductCompatibleRule;
+
+    export type Mapping = BuildAttributeMapping;
+
+    export type Attributes<T extends Mapping> = BuildValidateAttributes<T>;
+
+    export type Result<T extends Mapping> = BuildValidateResult<T>;
+
+    export type Filter<T extends Mapping> = BuildFilterAttributes<T>;
 
     /**
      * An array of all PC build validation rules.
      * Each rule enforces compatibility between different PC components.
      */
-    export const Product = ProductRuleList;
+    export const Attribute = ProductRuleList;
   }
 
   export namespace Product {
@@ -91,7 +98,7 @@ namespace Build {
       });
 
       return acc;
-    }, {} as { [key in Products]?: ProductRule<BuildAttributeMapping>[] });
+    }, {} as { [key in Products]?: AttributeRule<BuildAttributeMapping>[] });
 
     /**
      * A mapping of each product type to the information filters
@@ -110,7 +117,7 @@ namespace Build {
 
         if (!attr)
           acc[filterProduct][info] =
-            Information.Schema.shape[info].keyof().options;
+            Information.Info.shape[info].keyof().options;
 
         if (!acc[filterProduct][info]) acc[filterProduct][info] = [];
 
@@ -151,7 +158,7 @@ namespace Build {
 
             if (!attr)
               acc[filterProduct][info] =
-                Information.Schema.shape[info].keyof().options;
+                Information.Info.shape[info].keyof().options;
 
             if (!acc[filterProduct][info]) acc[filterProduct][info] = [];
 

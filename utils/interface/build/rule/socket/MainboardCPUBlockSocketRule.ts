@@ -1,4 +1,4 @@
-import { ProductRule } from "../../utils";
+import { AttributeRule } from "../../utils";
 import { Infos, Products } from "@/utils/Enum";
 
 const attributes = {
@@ -6,17 +6,24 @@ const attributes = {
   cpu_block_socket: [Products.CPU_BLOCK, Infos.CPU_BLOCK_SOCKET, "socket"],
 } as const;
 
-const MainboardCPUBlockSocketRule: ProductRule<typeof attributes> = {
+const MainboardCPUBlockSocketRule: AttributeRule<typeof attributes> = {
   name: "CPU Socket Compatibility Rule",
 
   attributes,
 
-  validate: (build) => {
+  validate(build) {
+    const result: ReturnType<typeof this.validate> = {};
     const { mainboard_socket, cpu_block_socket } = build;
 
-    if (!mainboard_socket || !cpu_block_socket) {
-      return "Not enough information to validate CPU socket compatibility.";
+    if (!mainboard_socket) {
+      result.mainboard_socket = "Mainboard socket is not specified.";
     }
+
+    if (cpu_block_socket.length === 0) {
+      result.cpu_block_socket = "CPU block socket is not specified.";
+    }
+
+    if (!mainboard_socket || cpu_block_socket.length === 0) return result;
 
     if (!cpu_block_socket.includes(mainboard_socket)) {
       return `The mainboard ${mainboard_socket} socket is not compatible with the CPU block.`;
@@ -34,7 +41,9 @@ const MainboardCPUBlockSocketRule: ProductRule<typeof attributes> = {
     }
 
     if (cpu_block_socket && cpu_block_socket.length > 0) {
-      result.mainboard_socket = cpu_block_socket;
+      result.mainboard_socket = cpu_block_socket.filter(
+        (socket) => socket !== undefined
+      );
     }
 
     return result;
