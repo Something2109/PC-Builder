@@ -1,8 +1,14 @@
-import { FormFactor, Material, Primitive } from "../../utils";
+import {
+  createDTO,
+  createModel,
+  FormFactor,
+  Material,
+  Primitive,
+} from "../../utils";
 import { z } from "zod";
 
 export namespace RadiatorSpec {
-  export const Schema = z.object({
+  const Info = z.object({
     form_factor: FormFactor.Radiator,
 
     width: Primitive.Number,
@@ -13,7 +19,7 @@ export namespace RadiatorSpec {
     material: Material.Metal,
   });
 
-  export type Info = z.infer<typeof Schema>;
+  export type Info = z.infer<typeof Info>;
 
   export const Label: { [key in keyof Info]: string } = {
     form_factor: "Form Factor",
@@ -25,6 +31,16 @@ export namespace RadiatorSpec {
     fpi: "FPI",
     material: "Material",
   };
+
+  const Model = createModel(Info);
+
+  export type Model = z.infer<typeof Model>;
+
+  const DTO = createDTO(Info);
+
+  export type DTO = z.infer<typeof DTO>;
+
+  export const Schemas = { Info, Model, DTO };
 }
 
 export default RadiatorSpec;

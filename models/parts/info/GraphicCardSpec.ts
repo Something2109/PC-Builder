@@ -12,12 +12,7 @@ import GraphicCardSpec from "@/utils/interface/part/info/GraphicCardSpec";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
-import {
-  PartDetailTable,
-  PartDefaultScope,
-  ModelScopes,
-  defaultFilter,
-} from "../../interface";
+import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -29,10 +24,7 @@ import {
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.GRAPHIC_CARD_SPEC })
-class GraphicCardSpecModel
-  extends Model
-  implements PartDetailTable<GraphicCardSpec.Info>
-{
+class GraphicCardSpecModel extends Model implements GraphicCardSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)

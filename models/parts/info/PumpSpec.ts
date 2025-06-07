@@ -12,12 +12,7 @@ import PumpSpec from "@/utils/interface/part/info/PumpSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
-import {
-  PartDetailTable,
-  PartDefaultScope,
-  ModelScopes,
-  defaultFilter,
-} from "../../interface";
+import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -29,7 +24,7 @@ import {
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.PUMP_SPEC })
-class PumpSpecModel extends Model implements PartDetailTable<PumpSpec.Info> {
+class PumpSpecModel extends Model implements PumpSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)

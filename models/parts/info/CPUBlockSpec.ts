@@ -12,12 +12,7 @@ import CPUBlockSpec from "@/utils/interface/part/info/CPUBlockSpec";
 import { InternalConnectors, Material } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
-import {
-  PartDetailTable,
-  PartDefaultScope,
-  ModelScopes,
-  defaultFilter,
-} from "../../interface";
+import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -29,10 +24,7 @@ import {
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.CPU_BLOCK_SPEC })
-class CPUBlockSpecModel
-  extends Model
-  implements PartDetailTable<CPUBlockSpec.Info>
-{
+class CPUBlockSpecModel extends Model implements CPUBlockSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)

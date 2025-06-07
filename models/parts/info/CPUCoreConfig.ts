@@ -23,7 +23,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.CPU_CORES })
-class CPUCoreConfigModel extends Model implements CPUCoreConfig.Info {
+class CPUCoreConfigModel extends Model implements CPUCoreConfig.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -37,7 +37,7 @@ class CPUCoreConfigModel extends Model implements CPUCoreConfig.Info {
   declare name: string;
 
   @Column(DataType.TINYINT)
-  declare count: number;
+  declare count: number | null;
 
   @Column(DataType.FLOAT)
   declare base_frequency: number | null;

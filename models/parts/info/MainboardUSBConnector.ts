@@ -32,7 +32,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 @Table({ modelName: Infos.MAIN_USB })
 class MainboardUSBConnectorModel
   extends Model
-  implements MainboardUSBConnector.Info
+  implements MainboardUSBConnector.Model
 {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
@@ -57,7 +57,7 @@ class MainboardUSBConnectorModel
   declare connector: ExternalPorts.Peripheral.USB.Connector;
 
   @Column(DataType.TINYINT)
-  declare count: number;
+  declare count: number | null;
 }
 
 export { MainboardUSBConnectorModel };

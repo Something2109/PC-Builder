@@ -12,12 +12,7 @@ import RadiatorSpec from "@/utils/interface/part/info/RadiatorSpec";
 import { FormFactor, Material } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
-import {
-  ModelScopes,
-  PartDefaultScope,
-  PartDetailTable,
-  defaultFilter,
-} from "../../interface";
+import { ModelScopes, PartDefaultScope, defaultFilter } from "../../interface";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -29,10 +24,7 @@ import {
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.RADIATOR_SPEC })
-class RadiatorSpecModel
-  extends Model
-  implements PartDetailTable<RadiatorSpec.Info>
-{
+class RadiatorSpecModel extends Model implements RadiatorSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
