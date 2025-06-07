@@ -54,7 +54,7 @@ const BuildPartSchema = z
 
 type BuildPartList = z.infer<typeof BuildPartSchema>;
 
-type BuildPartDetails<T = Part.Detail> = {
+type BuildPartDetails<T = Part.Model> = {
   [key in keyof Required<BuildPartList>]?: Required<BuildPartList>[key] extends string[]
     ? T[]
     : Required<BuildPartList>[key] extends string

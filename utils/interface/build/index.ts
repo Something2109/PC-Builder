@@ -45,7 +45,7 @@ namespace Build {
 
   export type List = BuildPartList;
 
-  export type Details<T = Part.Detail> = BuildPartDetails<T>;
+  export type Details<T = Part.Model> = BuildPartDetails<T>;
 
   export type Result = {
     products: ReturnType<ProductRule["validate"]>;
@@ -117,7 +117,7 @@ namespace Build {
 
         if (!attr)
           acc[filterProduct][info] =
-            Information.Schema.shape[info].keyof().options;
+            Information.Info.shape[info].keyof().options;
 
         if (!acc[filterProduct][info]) acc[filterProduct][info] = [];
 
@@ -158,7 +158,7 @@ namespace Build {
 
             if (!attr)
               acc[filterProduct][info] =
-                Information.Schema.shape[info].keyof().options;
+                Information.Info.shape[info].keyof().options;
 
             if (!acc[filterProduct][info]) acc[filterProduct][info] = [];
 
