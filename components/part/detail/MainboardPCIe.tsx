@@ -3,16 +3,16 @@ import MainboardPCIe from "@/utils/interface/part/info/MainboardPCIe";
 import { InternalConnectors } from "@/utils/interface/utils";
 
 type ControllerPCIeObject = {
-  [side in InternalConnectors.PCIe.Controller]?: MainboardPCIe.Info[];
+  [side in InternalConnectors.PCIe.Controller]?: MainboardPCIe.DTO[];
 };
 
 export default function MainboardPCIeDisplay({
   defaultValue,
 }: {
-  defaultValue: MainboardPCIe.Info[];
+  defaultValue: MainboardPCIe.DTO[];
 }) {
   const value: ControllerPCIeObject = defaultValue.reduce<ControllerPCIeObject>(
-    (acc: ControllerPCIeObject, curr: MainboardPCIe.Info) => {
+    (acc: ControllerPCIeObject, curr: MainboardPCIe.DTO) => {
       const side = curr.controller;
       if (!acc[side]) acc[side] = [];
 

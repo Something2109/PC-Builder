@@ -9,11 +9,11 @@ import CPUBlockSocketSupport from "@/utils/interface/part/info/CPUBlockSocketSup
 function Component({
   defaultValue,
 }: {
-  defaultValue?: CPUBlockSocketSupport.Info[] | null;
+  defaultValue?: CPUBlockSocketSupport.DTO[] | null;
 }) {
   const [socketSet, addName, deleteName, _, changeSocket] = useObjectSet(
     () => ({ socket: "" }),
-    (info: CPUBlockSocketSupport.Info) => info.socket,
+    (info: CPUBlockSocketSupport.DTO) => info.socket,
     defaultValue
   );
 
@@ -63,7 +63,7 @@ function submit(formData: FormData) {
   return formData
     .entries()
     .filter(([_, value]) => value !== "")
-    .map(([_, socket]) => CPUBlockSocketSupport.Schema.parse({ socket })!)
+    .map(([_, socket]) => CPUBlockSocketSupport.Schemas.DTO.parse({ socket }))
     .toArray();
 }
 

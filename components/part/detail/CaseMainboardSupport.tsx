@@ -4,7 +4,7 @@ import CaseMainboardSupport from "@/utils/interface/part/info/CaseMainboardSuppo
 export default ({
   defaultValue,
 }: {
-  defaultValue: CaseMainboardSupport.Info[];
+  defaultValue: CaseMainboardSupport.DTO[];
 }) => (
   <Table.Component>
     <thead>

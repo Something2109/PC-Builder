@@ -7,7 +7,7 @@ import {
   TransferSpeedUnit,
 } from "@/utils/extract/Units";
 
-export default ({ defaultValue }: { defaultValue: CPUMemory.Info[] }) => (
+export default ({ defaultValue }: { defaultValue: CPUMemory.DTO[] }) => (
   <Table.Component>
     <thead>
       <Table.Row>

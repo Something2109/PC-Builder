@@ -4,7 +4,7 @@ import CPUBlockSocketSupport from "@/utils/interface/part/info/CPUBlockSocketSup
 export default ({
   defaultValue,
 }: {
-  defaultValue: CPUBlockSocketSupport.Info[];
+  defaultValue: CPUBlockSocketSupport.DTO[];
 }) => (
   <Table.Component>
     <thead>

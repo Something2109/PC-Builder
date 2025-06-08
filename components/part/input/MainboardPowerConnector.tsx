@@ -10,12 +10,12 @@ import { useRef } from "react";
 function Component({
   defaultValue,
 }: {
-  defaultValue?: MainboardPowerConnector.Info[] | null;
+  defaultValue?: MainboardPowerConnector.DTO[] | null;
 }) {
   const [formFactors, addConnector, deleteConnector, existConnector] =
     useObjectSet(
       (type: InternalConnectors.Power.Mainboard) => ({ type, count: 0 }),
-      (info: MainboardPowerConnector.Info) => info.type,
+      (info: MainboardPowerConnector.DTO) => info.type,
       defaultValue
     );
 
@@ -37,7 +37,7 @@ function Component({
               <Input
                 type="number"
                 name={value.type}
-                defaultValue={value.count}
+                defaultValue={value.count ?? 0}
                 onChange={(e) => (value.count = Number(e.target.value))}
               />
               <DeleteButton onClick={() => deleteConnector(value)} />
@@ -89,9 +89,9 @@ function submit(formData: FormData) {
   return formData
     .entries()
     .map(([type, count]) =>
-      MainboardPowerConnector.Schema.parse({ type, count })
+      MainboardPowerConnector.Schemas.DTO.parse({ type, count })
     )
-    .filter((val) => val.count > 0)
+    .filter((val) => val.count)
     .toArray();
 }
 

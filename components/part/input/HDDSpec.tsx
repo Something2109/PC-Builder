@@ -5,7 +5,7 @@ import HDDSpec from "@/utils/interface/part/info/HDDSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { MemoryUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<HDDSpec.Info> = {
+const Components: InfoComponentObject<HDDSpec.DTO> = {
   rotational_speed: (props) => (
     <SuffixInput suffix="RPM" type="number" {...props} />
   ),
@@ -21,7 +21,7 @@ const Components: InfoComponentObject<HDDSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  return HDDSpec.Schema.partial().parse(defaultParse(formData))!;
+  return HDDSpec.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

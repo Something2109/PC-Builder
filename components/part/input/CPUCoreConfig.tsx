@@ -11,7 +11,7 @@ import { useRef } from "react";
 function Component({
   defaultValue,
 }: {
-  defaultValue?: CPUCoreConfig.Info[] | null;
+  defaultValue?: CPUCoreConfig.DTO[] | null;
 }) {
   const [savedInputValues, addName, deleteName, _, changeName] = useObjectSet(
     (name: string) => ({
@@ -20,7 +20,7 @@ function Component({
       turbo_frequency: 0,
       count: 0,
     }),
-    (info: CPUCoreConfig.Info) => info.name,
+    (info: CPUCoreConfig.DTO) => info.name,
     defaultValue
   );
 
@@ -61,7 +61,7 @@ function Component({
                 <Input
                   type="number"
                   name={`${name}___count`}
-                  defaultValue={value.count}
+                  defaultValue={value.count ?? 0}
                 />
               </Table.Cell>
               <Table.Cell>
@@ -118,8 +118,8 @@ function submit(formData: FormData) {
   }, {} as MappingFormdata);
 
   return Object.values(raw)
-    .map((val) => CPUCoreConfig.Schema.parse(val)!)
-    .filter((val) => val.count > 0);
+    .map((val) => CPUCoreConfig.Schemas.DTO.parse(val))
+    .filter((val) => val.count);
 }
 
 export default GenericInputField(Component, submit);

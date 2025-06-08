@@ -5,7 +5,7 @@ import { ExternalPorts } from "@/utils/interface/utils";
 export default ({
   defaultValue,
 }: {
-  defaultValue: PartExternalPorts.Info[];
+  defaultValue: PartExternalPorts.DTO[];
 }) => {
   const groupByType = Object.groupBy(defaultValue, (val) => val.type);
 

@@ -11,7 +11,7 @@ import { useRef, useState } from "react";
 function Component({
   defaultValue,
 }: {
-  defaultValue?: GraphicCardPort.Info[] | null;
+  defaultValue?: GraphicCardPort.DTO[] | null;
 }) {
   const [SavedInputValues, addName, deleteName] = useObjectSet(
     (type: ExternalPorts.Display.Type, name: ExternalPorts.Display) => ({
@@ -19,7 +19,7 @@ function Component({
       name,
       count: 0,
     }),
-    (info: GraphicCardPort.Info) => info.name,
+    (info: GraphicCardPort.DTO) => info.name,
     defaultValue
   );
   const groupByType = Object.groupBy(
@@ -55,7 +55,7 @@ function Component({
                 <Input
                   type="number"
                   name={`${key}___count`}
-                  defaultValue={value.count}
+                  defaultValue={value.count ?? 0}
                   onChange={(e) => (value.count = Number(e.target.value))}
                 />
                 <DeleteButton onClick={() => deleteName(value)} />
@@ -125,8 +125,8 @@ function submit(formData: FormData) {
   }, {} as MappingFormdata);
 
   return Object.values(raw)
-    .map((val) => GraphicCardPort.Schema.parse(val)!)
-    .filter((val: any) => val.count > 0);
+    .map((val) => GraphicCardPort.Schemas.DTO.parse(val))
+    .filter((val: any) => val.count);
 }
 
 export default GenericInputField(Component, submit);

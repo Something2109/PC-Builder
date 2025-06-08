@@ -10,15 +10,15 @@ import { useRef } from "react";
 function Component({
   defaultValue,
 }: {
-  defaultValue?: MainboardStorageConnector.Info[] | null;
+  defaultValue?: MainboardStorageConnector.DTO[] | null;
 }) {
   const [formFactors, addConnector, deleteConnector, existConnector] =
     useObjectSet(
-      (form_factor: InternalConnectors.Storage | "") => ({
+      (form_factor: InternalConnectors.Storage) => ({
         form_factor,
         count: 0,
       }),
-      (info) => info.form_factor,
+      (info: MainboardStorageConnector.DTO) => info.form_factor,
       defaultValue
     );
 
@@ -40,7 +40,7 @@ function Component({
               <Input
                 type="number"
                 name={connector}
-                defaultValue={value.count}
+                defaultValue={value.count ?? 0}
                 onChange={(e) => (value.count = Number(e.target.value))}
               />
               <DeleteButton onClick={() => deleteConnector(value)} />
@@ -92,9 +92,9 @@ function submit(formData: FormData) {
   return formData
     .entries()
     .map(([form_factor, count]) =>
-      MainboardStorageConnector.Schema.parse({ form_factor, count })
+      MainboardStorageConnector.Schemas.DTO.parse({ form_factor, count })
     )
-    .filter((val) => val.count > 0)
+    .filter((val) => val.count)
     .toArray();
 }
 

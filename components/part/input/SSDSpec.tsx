@@ -5,7 +5,7 @@ import SSDSpec from "@/utils/interface/part/info/SSDSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { MemoryUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<SSDSpec.Info> = {
+const Components: InfoComponentObject<SSDSpec.DTO> = {
   memory_type: (props) => (
     <OptionSelect options={SSDSpec.MemoryCell.options} {...props} />
   ),
@@ -22,7 +22,7 @@ const Components: InfoComponentObject<SSDSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  return SSDSpec.Schema.partial().parse(defaultParse(formData))!;
+  return SSDSpec.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

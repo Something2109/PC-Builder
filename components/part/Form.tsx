@@ -105,7 +105,7 @@ export function InfoForm({
 }: {
   path: string;
   info: Infos;
-  defaultValue: Part.Detail;
+  defaultValue: Part.DTO;
 }) {
   const label = useRef(Information.Label[info]);
   const [formValue, save, pending, error, setError] = useInfoAction(

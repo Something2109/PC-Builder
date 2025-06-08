@@ -3,7 +3,7 @@ import { UnitDisplay } from "@/components/utils/Display";
 import SSDSpec from "@/utils/interface/part/info/SSDSpec";
 import { MemoryUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<SSDSpec.Info> = {
+const Components: InfoComponentObject<SSDSpec.DTO> = {
   memory_type: ({ defaultValue }) => defaultValue,
   capacity: ({ defaultValue }) => (
     <UnitDisplay

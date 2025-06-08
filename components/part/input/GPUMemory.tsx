@@ -9,7 +9,7 @@ import {
   TransferSpeedUnit,
 } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<GPUMemory.Info> = {
+const Components: InfoComponentObject<GPUMemory.DTO> = {
   type: (props) => (
     <OptionSelect options={InternalConnectors.SGRAM.options} {...props} />
   ),
@@ -26,7 +26,7 @@ const Components: InfoComponentObject<GPUMemory.Info> = {
 };
 
 function submit(formData: FormData) {
-  return GPUMemory.Schema.partial().parse(defaultParse(formData))!;
+  return GPUMemory.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

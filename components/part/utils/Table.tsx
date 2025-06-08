@@ -46,7 +46,7 @@ export namespace Table {
 }
 
 type InfoAttributeComponent<Value> = FunctionComponent<
-  { value?: NonNullable<Value>; defaultValue?: Value } & Omit<
+  { value?: NonNullable<Value>; defaultValue?: Exclude<Value, null> } & Omit<
     InputHTMLAttributes<HTMLInputElement> &
       SelectHTMLAttributes<HTMLSelectElement>,
     "defaultValue" | "value"

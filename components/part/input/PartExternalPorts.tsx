@@ -11,7 +11,7 @@ import { useRef, useState } from "react";
 function Component({
   defaultValue,
 }: {
-  defaultValue?: PartExternalPorts.Info[] | null;
+  defaultValue?: PartExternalPorts.DTO[] | null;
 }) {
   const [SavedInputValues, addName, deleteName] = useObjectSet(
     (type: ExternalPorts.Type, name: ExternalPorts) => ({
@@ -19,7 +19,7 @@ function Component({
       name,
       count: 0,
     }),
-    (info: PartExternalPorts.Info) => `${info.type} ${info.name}`,
+    (info: PartExternalPorts.DTO) => `${info.type} ${info.name}`,
     defaultValue
   );
   const groupByType = Object.groupBy(
@@ -128,8 +128,8 @@ function PortTypeInputField({
   defaultValue,
   onDelete,
 }: {
-  defaultValue?: [string, PartExternalPorts.Info][];
-  onDelete: (info: PartExternalPorts.Info) => void;
+  defaultValue?: [string, PartExternalPorts.DTO][];
+  onDelete: (info: PartExternalPorts.DTO) => void;
 }) {
   return defaultValue?.map(([key, value], index, arr) => (
     <Table.Row key={`external-${key}`}>
@@ -144,7 +144,7 @@ function PortTypeInputField({
         <Input
           type="number"
           name={`${key}___count`}
-          defaultValue={value.count}
+          defaultValue={value.count ?? 0}
           onChange={(e) => (value.count = Number(e.target.value))}
         />
         <DeleteButton onClick={() => onDelete(value)} />
@@ -168,8 +168,8 @@ function submit(formData: FormData) {
   }, {} as MappingFormdata);
 
   return Object.values(raw)
-    .map((val) => PartExternalPorts.Schema.parse(val)!)
-    .filter((val: any) => val.count > 0);
+    .map((val) => PartExternalPorts.Schemas.DTO.parse(val))
+    .filter((val: any) => val.count);
 }
 
 export default GenericInputField(Component, submit);

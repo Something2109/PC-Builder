@@ -4,7 +4,7 @@ import MainboardStorageConnector from "@/utils/interface/part/info/MainboardStor
 export default ({
   defaultValue,
 }: {
-  defaultValue: MainboardStorageConnector.Info[];
+  defaultValue: MainboardStorageConnector.DTO[];
 }) => (
   <Table.Component>
     <thead>

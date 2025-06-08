@@ -4,7 +4,7 @@ import { Input, SuffixInput, OptionSelect } from "@/components/utils/Input";
 import MainboardSpec from "@/utils/interface/part/info/MainboardSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 
-const Components: InfoComponentObject<MainboardSpec.Info> = {
+const Components: InfoComponentObject<MainboardSpec.DTO> = {
   form_factor: (props) => (
     <OptionSelect options={FormFactor.Mainboard.options} {...props} />
   ),
@@ -19,11 +19,10 @@ const Components: InfoComponentObject<MainboardSpec.Info> = {
   ram_slot: (props) => (
     <SuffixInput suffix="slot(s)" type="number" {...props} />
   ),
-  miscelanous_connectors: (props) => <></>,
 };
 
 function submit(formData: FormData) {
-  return MainboardSpec.Schema.partial().parse(defaultParse(formData))!;
+  return MainboardSpec.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

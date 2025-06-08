@@ -10,7 +10,7 @@ import { useRef } from "react";
 function Component({
   defaultValue,
 }: {
-  defaultValue?: MainboardUSBConnector.Info[] | null;
+  defaultValue?: MainboardUSBConnector.DTO[] | null;
 }) {
   const [SavedInputValues, addName, deleteName] = useObjectSet(
     (
@@ -56,7 +56,7 @@ function Component({
               <Input
                 type="number"
                 name={`${key}___count`}
-                defaultValue={value.count}
+                defaultValue={value.count ?? 0}
                 onChange={(e) => (value.count = Number(e.target.value))}
               />
               <DeleteButton onClick={() => deleteName(value)} />
@@ -129,8 +129,8 @@ function submit(formData: FormData) {
   }, {} as MappingFormdata);
 
   return Object.values(raw)
-    .map((val) => MainboardUSBConnector.Schema.parse(val)!)
-    .filter((val: any) => val.count > 0);
+    .map((val) => MainboardUSBConnector.Schemas.DTO.parse(val))
+    .filter((val: any) => val.count);
 }
 
 export default GenericInputField(Component, submit);

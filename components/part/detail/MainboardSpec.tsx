@@ -2,7 +2,7 @@ import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay } from "@/components/utils/Display";
 import MainboardSpec from "@/utils/interface/part/info/MainboardSpec";
 
-const Components: InfoComponentObject<MainboardSpec.Info> = {
+const Components: InfoComponentObject<MainboardSpec.DTO> = {
   form_factor: ({ defaultValue }) => defaultValue,
   socket: ({ defaultValue }) => defaultValue,
   chipset: ({ defaultValue }) => defaultValue,
@@ -11,10 +11,6 @@ const Components: InfoComponentObject<MainboardSpec.Info> = {
   ram_slot: ({ defaultValue }) => (
     <SuffixDisplay suffix="slot(s)">{defaultValue}</SuffixDisplay>
   ),
-  miscelanous_connectors: ({ defaultValue }) =>
-    Object.entries(defaultValue ?? {})
-      .map(([key, count]) => `${count} * ${key}`)
-      .join(", "),
 };
 
 export default InfoComponent(Components, MainboardSpec.Label, { strict: true });

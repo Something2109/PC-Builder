@@ -1,7 +1,7 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import GPUSpec from "@/utils/interface/part/info/GPUSpec";
 
-const Components: InfoComponentObject<GPUSpec.Info> = {
+const Components: InfoComponentObject<GPUSpec.DTO> = {
   family: ({ defaultValue }) => defaultValue,
   core_count: ({ defaultValue }) => defaultValue,
   execution_unit: ({ defaultValue }) => defaultValue,

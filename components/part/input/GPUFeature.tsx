@@ -3,7 +3,7 @@ import { defaultParse, GenericInputField } from "../utils/Form";
 import { Input } from "@/components/utils/Input";
 import GPUFeature from "@/utils/interface/part/info/GPUFeature";
 
-const Components: InfoComponentObject<GPUFeature.Info> = {
+const Components: InfoComponentObject<GPUFeature.DTO> = {
   DirectX: (props) => <Input {...props} />,
   OpenGL: (props) => <Input {...props} />,
   OpenCL: (props) => <Input {...props} />,
@@ -12,7 +12,7 @@ const Components: InfoComponentObject<GPUFeature.Info> = {
 };
 
 function submit(formData: FormData) {
-  return GPUFeature.Schema.partial().parse(defaultParse(formData))!;
+  return GPUFeature.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

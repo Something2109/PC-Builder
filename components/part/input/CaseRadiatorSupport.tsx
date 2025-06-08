@@ -4,18 +4,17 @@ import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
 import { ChoiceInput } from "@/components/utils/Input";
 import CaseRadiatorSupport from "@/utils/interface/part/info/CaseRadiatorSupport";
 import { Case, FormFactor } from "@/utils/interface/utils";
-import { useRef } from "react";
 
 type CaseSideFanObject = { [side in Case.Side]?: FormFactor.Radiator[] };
 
 function Component({
   defaultValue,
 }: {
-  defaultValue?: CaseRadiatorSupport.Info[] | null;
+  defaultValue?: CaseRadiatorSupport.DTO[] | null;
 }) {
   const defaultValueObj =
     defaultValue?.reduce<CaseSideFanObject>(
-      (acc: CaseSideFanObject, curr: CaseRadiatorSupport.Info) => {
+      (acc: CaseSideFanObject, curr: CaseRadiatorSupport.DTO) => {
         const side = curr.case_side;
         if (!acc[side]) acc[side] = [];
 
@@ -62,7 +61,7 @@ function submit(formData: FormData) {
   return formData
     .entries()
     .map(([case_side, form_factor]) =>
-      CaseRadiatorSupport.Schema.parse({ case_side, form_factor })
+      CaseRadiatorSupport.Schemas.DTO.parse({ case_side, form_factor })
     )
     .toArray();
 }

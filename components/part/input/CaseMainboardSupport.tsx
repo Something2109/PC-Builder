@@ -4,12 +4,11 @@ import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
 import { ChoiceInput } from "@/components/utils/Input";
 import CaseMainboardSupport from "@/utils/interface/part/info/CaseMainboardSupport";
 import { FormFactor } from "@/utils/interface/utils";
-import { useRef } from "react";
 
 function Component({
   defaultValue,
 }: {
-  defaultValue?: CaseMainboardSupport.Info[] | null;
+  defaultValue?: CaseMainboardSupport.DTO[] | null;
 }) {
   const defaultValueObj = defaultValue?.map((val) => val.form_factor) ?? [];
 
@@ -45,7 +44,7 @@ function submit(formData: FormData) {
   return formData
     .entries()
     .map(([key, form_factor]) =>
-      CaseMainboardSupport.Schema.parse({ form_factor })
+      CaseMainboardSupport.Schemas.DTO.parse({ form_factor })
     )
     .toArray();
 }

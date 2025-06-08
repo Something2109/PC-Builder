@@ -5,7 +5,7 @@ import StorageCache from "@/utils/interface/part/info/StorageCache";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { MemoryUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<StorageCache.Info> = {
+const Components: InfoComponentObject<StorageCache.DTO> = {
   type: (props) => (
     <OptionSelect options={InternalConnectors.RAM.options} {...props} />
   ),
@@ -15,7 +15,7 @@ const Components: InfoComponentObject<StorageCache.Info> = {
 };
 
 function submit(formData: FormData) {
-  return StorageCache.Schema.partial().parse(defaultParse(formData))!;
+  return StorageCache.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

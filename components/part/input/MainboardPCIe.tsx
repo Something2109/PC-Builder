@@ -10,7 +10,7 @@ import { useRef } from "react";
 function Component({
   defaultValue,
 }: {
-  defaultValue?: MainboardPCIe.Info[] | null;
+  defaultValue?: MainboardPCIe.DTO[] | null;
 }) {
   const groupByController = Object.groupBy(
     defaultValue ?? [],
@@ -45,7 +45,7 @@ function ControllerRow({
   defaultValue,
 }: {
   controller: InternalConnectors.PCIe.Controller;
-  defaultValue?: MainboardPCIe.Info[];
+  defaultValue?: MainboardPCIe.DTO[];
 }) {
   const [SavedInputValues, addPCIe, deletePCIe] = useObjectSet(
     (version: number, width: InternalConnectors.PCIe.Width) => ({
@@ -54,7 +54,7 @@ function ControllerRow({
       width,
       count: 0,
     }),
-    (info) =>
+    (info: MainboardPCIe.DTO) =>
       `${controller} ${InternalConnectors.PCIe.toString(
         info.version,
         info.width
@@ -86,7 +86,7 @@ function ControllerRow({
             <Input
               type="number"
               name={`${key}___count`}
-              defaultValue={value.count}
+              defaultValue={value.count ?? 0}
               onChange={(e) => (value.count = Number(e.target.value))}
             />
             <DeleteButton onClick={() => deletePCIe(value)} />
@@ -154,8 +154,8 @@ function submit(formData: FormData) {
   }, {} as MappingFormdata);
 
   return Object.values(raw)
-    .map((val) => MainboardPCIe.Schema.parse(val)!)
-    .filter((val) => val.count > 0);
+    .map((val) => MainboardPCIe.Schemas.DTO.parse(val))
+    .filter((val) => val.count);
 }
 
 export default GenericInputField(Component, submit);

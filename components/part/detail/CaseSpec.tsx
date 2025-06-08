@@ -3,7 +3,7 @@ import { UnitDisplay } from "@/components/utils/Display";
 import CaseSpec from "@/utils/interface/part/info/CaseSpec";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<CaseSpec.Info> = {
+const Components: InfoComponentObject<CaseSpec.DTO> = {
   form_factor: ({ defaultValue }) => defaultValue,
   width: ({ defaultValue }) => (
     <UnitDisplay

@@ -3,7 +3,7 @@ import { UnitDisplay } from "@/components/utils/Display";
 import RadiatorSpec from "@/utils/interface/part/info/RadiatorSpec";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<RadiatorSpec.Info> = {
+const Components: InfoComponentObject<RadiatorSpec.DTO> = {
   form_factor: ({ defaultValue }) => defaultValue,
   width: ({ defaultValue }) => (
     <UnitDisplay

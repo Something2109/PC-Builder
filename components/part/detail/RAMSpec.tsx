@@ -3,7 +3,7 @@ import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import RAMSpec from "@/utils/interface/part/info/RAMSpec";
 import { MemoryUnits, TransferSpeedUnit } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<RAMSpec.Info> = {
+const Components: InfoComponentObject<RAMSpec.DTO> = {
   speed: ({ defaultValue }) => (
     <UnitDisplay
       Unit={TransferSpeedUnit}

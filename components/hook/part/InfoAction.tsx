@@ -7,13 +7,13 @@ import { useRef, useActionState, useState } from "react";
 export function useInfoAction(
   path: string,
   info: Infos,
-  defaultValue: Part.Detail
+  defaultValue: Part.DTO
 ) {
   const label = useRef(Information.Label[info]);
   const [error, setError] = useState<string | null>(null);
   const [formValue, save, pending] = useActionState<
-    Partial<Part.Detail[typeof info]> | null,
-    Partial<Part.Detail[typeof info]> | null
+    Partial<Part.DTO[typeof info]> | null,
+    Partial<Part.DTO[typeof info]> | null
   >(async (prev, data) => {
     const operation = prev ? (data ? "save" : "delete") : "add";
     const body = JSON.stringify({ [info]: data });
@@ -35,7 +35,7 @@ export function useInfoAction(
       return prev;
     }
 
-    const newData = (await response.json()) as Part.Detail;
+    const newData = (await response.json()) as Part.DTO;
 
     alert(`Successfully ${operation} ${label.current} info.`);
 

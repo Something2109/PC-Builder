@@ -5,7 +5,7 @@ import PumpSpec from "@/utils/interface/part/info/PumpSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<PumpSpec.Info> = {
+const Components: InfoComponentObject<PumpSpec.DTO> = {
   form_factor: (props) => (
     <OptionSelect options={FormFactor.Pump.options} {...props} />
   ),
@@ -46,7 +46,7 @@ const Components: InfoComponentObject<PumpSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  return PumpSpec.Schema.partial().parse(defaultParse(formData))!;
+  return PumpSpec.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

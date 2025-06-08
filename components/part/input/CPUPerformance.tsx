@@ -4,7 +4,7 @@ import { SuffixInput, UnitInput } from "@/components/utils/Input";
 import CPUPerformance from "@/utils/interface/part/info/CPUPerformance";
 import { FrequencyUnits } from "@/utils/extract/Units";
 
-export const Components: InfoComponentObject<CPUPerformance.Info> = {
+export const Components: InfoComponentObject<CPUPerformance.DTO> = {
   base_frequency: (props) => (
     <UnitInput Unit={FrequencyUnits} defaultUnit="GHz" {...props} />
   ),
@@ -15,7 +15,7 @@ export const Components: InfoComponentObject<CPUPerformance.Info> = {
 };
 
 function submit(formData: FormData) {
-  return CPUPerformance.Schema.partial().parse(defaultParse(formData))!;
+  return CPUPerformance.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

@@ -11,7 +11,7 @@ import RAMSpec from "@/utils/interface/part/info/RAMSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { MemoryUnits, TransferSpeedUnit } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<RAMSpec.Info> = {
+const Components: InfoComponentObject<RAMSpec.DTO> = {
   speed: (props) => (
     <UnitInput Unit={TransferSpeedUnit} defaultUnit="MT/s" {...props} />
   ),
@@ -70,7 +70,7 @@ function submit(formData: FormData) {
     .getAll("latency")
     .filter((v) => Number(v) > 0) as string[];
 
-  return RAMSpec.Schema.partial().parse(raw)!;
+  return RAMSpec.Schemas.DTO.parse(raw);
 }
 
 export default GenericInputField(

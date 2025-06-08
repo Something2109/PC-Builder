@@ -3,7 +3,7 @@ import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import PumpSpec from "@/utils/interface/part/info/PumpSpec";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<PumpSpec.Info> = {
+const Components: InfoComponentObject<PumpSpec.DTO> = {
   form_factor: ({ defaultValue }) => defaultValue,
   width: ({ defaultValue }) => (
     <UnitDisplay

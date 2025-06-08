@@ -10,7 +10,7 @@ import { useRef } from "react";
 function MainComponent({
   defaultValue,
 }: {
-  defaultValue?: CaseFanSupport.Info[] | null;
+  defaultValue?: CaseFanSupport.DTO[] | null;
 }) {
   const groupBySide = Object.groupBy(
     defaultValue ?? [],
@@ -44,7 +44,7 @@ function SideRow({
   defaultValue,
 }: {
   side: Case.Side;
-  defaultValue?: CaseFanSupport.Info[];
+  defaultValue?: CaseFanSupport.DTO[];
 }) {
   const [savedInputValues, addName, deleteName, existName] = useObjectSet(
     (form_factor: FormFactor.Fan) => ({ case_side, form_factor, count: 0 }),
@@ -70,7 +70,7 @@ function SideRow({
             <Input
               type="number"
               name={`${case_side}___${val.form_factor}`}
-              defaultValue={val.count}
+              defaultValue={val.count ?? 0}
               onChange={(e) => (val.count = Number(e.target.value))}
             />
             <DeleteButton onClick={() => deleteName(val)} />
@@ -129,7 +129,11 @@ function submit(formData: FormData) {
         FormFactor.Fan
       ];
       const count = Number(value);
-      return CaseFanSupport.Schema.parse({ case_side, form_factor, count });
+      return CaseFanSupport.Schemas.DTO.parse({
+        case_side,
+        form_factor,
+        count,
+      });
     })
     .toArray();
 }

@@ -15,18 +15,18 @@ import {
 function Component({
   defaultValue,
 }: {
-  defaultValue?: CPUMemory.Info[] | null;
+  defaultValue?: CPUMemory.DTO[] | null;
 }) {
   const [formFactors, addConnector, deleteConnector, existConnector] =
     useObjectSet(
-      (type: InternalConnectors.RAM | "") => ({
+      (type: InternalConnectors.RAM) => ({
         type,
         speed: 0,
         capacity: 0,
         channel_count: 0,
         bandwidth: 0,
       }),
-      (info) => info.type,
+      (info: CPUMemory.DTO) => info.type,
       defaultValue
     );
 
@@ -52,7 +52,7 @@ function Component({
                 name={`${type}-speed`}
                 Unit={TransferSpeedUnit}
                 defaultUnit="MT/s"
-                defaultValue={value.speed}
+                defaultValue={value.speed ?? 0}
                 onChange={(e) => (value.speed = Number(e.target.value))}
               />
             </Table.Cell>
@@ -61,7 +61,7 @@ function Component({
                 name={`${type}-capacity`}
                 Unit={MemoryUnits}
                 defaultUnit="GB"
-                defaultValue={value.capacity}
+                defaultValue={value.capacity ?? 0}
                 onChange={(e) => (value.capacity = Number(e.target.value))}
               />
             </Table.Cell>
@@ -70,7 +70,7 @@ function Component({
                 type="number"
                 name={`${type}-channel_count`}
                 suffix="channel(s)"
-                defaultValue={value.channel_count}
+                defaultValue={value.channel_count ?? 0}
                 onChange={(e) => (value.channel_count = Number(e.target.value))}
               />
             </Table.Cell>
@@ -79,7 +79,7 @@ function Component({
                 Unit={MemorySpeedUnit}
                 defaultUnit="GB/s"
                 name={`${type}-bandwidth`}
-                defaultValue={value.bandwidth}
+                defaultValue={value.bandwidth ?? 0}
                 onChange={(e) => (value.bandwidth = Number(e.target.value))}
               />
               <DeleteButton onClick={() => deleteConnector(value)} />
@@ -137,8 +137,8 @@ function submit(formData: FormData) {
 
     return acc;
   }, {} as MappingFormdata);
-  console.log(raw);
-  return Object.values(raw).map((val) => CPUMemory.Schema.parse(val)!);
+
+  return Object.values(raw).map((val) => CPUMemory.Schemas.DTO.parse(val));
 }
 
 export default GenericInputField(Component, submit);

@@ -9,12 +9,12 @@ import { InternalConnectors } from "@/utils/interface/utils";
 function Component({
   defaultValue,
 }: {
-  defaultValue?: PSUConnector.Info[] | null;
+  defaultValue?: PSUConnector.DTO[] | null;
 }) {
   const [formFactors, addConnector, deleteConnector, existConnector] =
     useObjectSet(
-      (type: InternalConnectors.Power | "") => ({ type, count: 0 }),
-      (info) => info.type,
+      (type: InternalConnectors.Power) => ({ type, count: 0 }),
+      (info: PSUConnector.DTO) => info.type,
       defaultValue
     );
 
@@ -36,7 +36,7 @@ function Component({
               <Input
                 type="number"
                 name={type}
-                defaultValue={value.count}
+                defaultValue={value.count ?? 0}
                 onChange={(e) => (value.count = Number(e.target.value))}
               />
               <DeleteButton onClick={() => deleteConnector(value)} />
@@ -65,8 +65,8 @@ function Component({
 function submit(formData: FormData) {
   return formData
     .entries()
-    .map(([type, count]) => PSUConnector.Schema.parse({ type, count }))
-    .filter((val) => val.count > 0)
+    .map(([type, count]) => PSUConnector.Schemas.DTO.parse({ type, count }))
+    .filter((val) => val.count)
     .toArray();
 }
 

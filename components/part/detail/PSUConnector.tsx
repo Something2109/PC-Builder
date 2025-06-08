@@ -1,7 +1,7 @@
 import { Table } from "../utils/Table";
 import PSUConnector from "@/utils/interface/part/info/PSUConnector";
 
-export default ({ defaultValue }: { defaultValue: PSUConnector.Info[] }) => (
+export default ({ defaultValue }: { defaultValue: PSUConnector.DTO[] }) => (
   <Table.Component>
     <thead>
       <Table.Row>

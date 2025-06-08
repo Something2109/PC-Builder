@@ -4,7 +4,7 @@ import MainboardFanConnector from "@/utils/interface/part/info/MainboardFanConne
 export default ({
   defaultValue,
 }: {
-  defaultValue: MainboardFanConnector.Info[];
+  defaultValue: MainboardFanConnector.DTO[];
 }) => (
   <Table.Component>
     <thead>

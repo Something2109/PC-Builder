@@ -4,7 +4,7 @@ import { UnitInput } from "@/components/utils/Input";
 import StoragePerformance from "@/utils/interface/part/info/StoragePerformance";
 import { MemorySpeedUnit } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<StoragePerformance.Info> = {
+const Components: InfoComponentObject<StoragePerformance.DTO> = {
   read_speed: (props) => (
     <UnitInput Unit={MemorySpeedUnit} defaultUnit="MB/s" {...props} />
   ),
@@ -14,7 +14,7 @@ const Components: InfoComponentObject<StoragePerformance.Info> = {
 };
 
 function submit(formData: FormData) {
-  return StoragePerformance.Schema.partial().parse(defaultParse(formData))!;
+  return StoragePerformance.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

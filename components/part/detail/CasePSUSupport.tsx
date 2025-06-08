@@ -1,7 +1,7 @@
 import { Table } from "../utils/Table";
 import CasePSUSupport from "@/utils/interface/part/info/CasePSUSupport";
 
-export default ({ defaultValue }: { defaultValue: CasePSUSupport.Info[] }) => (
+export default ({ defaultValue }: { defaultValue: CasePSUSupport.DTO[] }) => (
   <Table.Component>
     <thead>
       <Table.Row>

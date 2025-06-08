@@ -4,7 +4,7 @@ import MainboardPowerConnector from "@/utils/interface/part/info/MainboardPowerC
 export default ({
   defaultValue,
 }: {
-  defaultValue: MainboardPowerConnector.Info[];
+  defaultValue: MainboardPowerConnector.DTO[];
 }) => (
   <Table.Component>
     <thead>

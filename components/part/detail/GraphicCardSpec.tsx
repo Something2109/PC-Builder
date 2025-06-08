@@ -3,7 +3,7 @@ import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import GraphicCardSpec from "@/utils/interface/part/info/GraphicCardSpec";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<GraphicCardSpec.Info> = {
+const Components: InfoComponentObject<GraphicCardSpec.DTO> = {
   width: ({ defaultValue }) => (
     <UnitDisplay
       Unit={LengthUnits}

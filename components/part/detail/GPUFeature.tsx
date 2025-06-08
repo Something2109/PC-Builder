@@ -1,7 +1,7 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import GPUFeature from "@/utils/interface/part/info/GPUFeature";
 
-const Components: InfoComponentObject<GPUFeature.Info> = {
+const Components: InfoComponentObject<GPUFeature.DTO> = {
   DirectX: ({ defaultValue }) => defaultValue,
   OpenGL: ({ defaultValue }) => defaultValue,
   OpenCL: ({ defaultValue }) => defaultValue,

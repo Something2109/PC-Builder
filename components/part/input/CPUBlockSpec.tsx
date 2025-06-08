@@ -4,7 +4,7 @@ import { OptionSelect } from "@/components/utils/Input";
 import CPUBlockSpec from "@/utils/interface/part/info/CPUBlockSpec";
 import { InternalConnectors, Material } from "@/utils/interface/utils";
 
-const Components: InfoComponentObject<CPUBlockSpec.Info> = {
+const Components: InfoComponentObject<CPUBlockSpec.DTO> = {
   plate: (props) => (
     <OptionSelect options={Material.Metal.options} {...props} />
   ),
@@ -14,7 +14,7 @@ const Components: InfoComponentObject<CPUBlockSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  return CPUBlockSpec.Schema.partial().parse(defaultParse(formData))!;
+  return CPUBlockSpec.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

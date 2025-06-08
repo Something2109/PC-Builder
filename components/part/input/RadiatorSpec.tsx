@@ -5,7 +5,7 @@ import RadiatorSpec from "@/utils/interface/part/info/RadiatorSpec";
 import { FormFactor, Material } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<RadiatorSpec.Info> = {
+const Components: InfoComponentObject<RadiatorSpec.DTO> = {
   form_factor: (props) => (
     <OptionSelect options={FormFactor.Radiator.options} {...props} />
   ),
@@ -25,7 +25,7 @@ const Components: InfoComponentObject<RadiatorSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  return RadiatorSpec.Schema.partial().parse(defaultParse(formData))!;
+  return RadiatorSpec.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

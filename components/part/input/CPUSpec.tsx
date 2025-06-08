@@ -3,7 +3,7 @@ import { defaultParse, GenericInputField } from "../utils/Form";
 import { Input, SuffixInput } from "@/components/utils/Input";
 import CPUSpec from "@/utils/interface/part/info/CPUSpec";
 
-export const Components: InfoComponentObject<CPUSpec.Info> = {
+export const Components: InfoComponentObject<CPUSpec.DTO> = {
   family: (props) => <Input {...props} />,
   socket: (props) => <Input {...props} />,
   total_cores: (props) => (
@@ -17,7 +17,7 @@ export const Components: InfoComponentObject<CPUSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  return CPUSpec.Schema.partial().parse(defaultParse(formData))!;
+  return CPUSpec.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

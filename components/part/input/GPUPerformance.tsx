@@ -4,7 +4,7 @@ import { SuffixInput, UnitInput } from "@/components/utils/Input";
 import GPUPerformance from "@/utils/interface/part/info/GPUPerformance";
 import { FrequencyUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<GPUPerformance.Info> = {
+const Components: InfoComponentObject<GPUPerformance.DTO> = {
   base_frequency: (props) => (
     <UnitInput Unit={FrequencyUnits} defaultUnit="MHz" {...props} />
   ),
@@ -15,7 +15,7 @@ const Components: InfoComponentObject<GPUPerformance.Info> = {
 };
 
 function submit(formData: FormData) {
-  return GPUPerformance.Schema.partial().parse(defaultParse(formData))!;
+  return GPUPerformance.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

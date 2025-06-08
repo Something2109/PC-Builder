@@ -10,14 +10,14 @@ import { useRef } from "react";
 function Component({
   defaultValue,
 }: {
-  defaultValue?: MainboardFanConnector.Info[] | null;
+  defaultValue?: MainboardFanConnector.DTO[] | null;
 }) {
   const [SavedInputValues, addName, deleteName] = useObjectSet(
     (
       connector: InternalConnectors.Fan.Connector,
       type: InternalConnectors.Fan.Type
     ) => ({ connector, type, count: 0 }),
-    (info: MainboardFanConnector.Info) =>
+    (info: MainboardFanConnector.DTO) =>
       InternalConnectors.Fan.toString(info.connector, info.type),
     defaultValue
   );
@@ -48,7 +48,7 @@ function Component({
               <Input
                 type="number"
                 name={`${key}___count`}
-                defaultValue={value.count}
+                defaultValue={value.count ?? 0}
                 onChange={(e) => (value.count = Number(e.target.value))}
               />
               <DeleteButton onClick={() => deleteName(value)} />
@@ -120,8 +120,8 @@ function submit(formData: FormData) {
   }, {} as MappingFormdata);
 
   return Object.values(raw)
-    .map((val) => MainboardFanConnector.Schema.parse(val)!)
-    .filter((val: any) => val.count > 0);
+    .map((val) => MainboardFanConnector.Schemas.DTO.parse(val))
+    .filter((val: any) => val.count);
 }
 
 export default GenericInputField(Component, submit);

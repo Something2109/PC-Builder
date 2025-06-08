@@ -10,7 +10,7 @@ import { useRef } from "react";
 function MainComponent({
   defaultValue,
 }: {
-  defaultValue?: CaseHardDriveSupport.Info[] | null;
+  defaultValue?: CaseHardDriveSupport.DTO[] | null;
 }) {
   const groupByPlace = Object.groupBy(defaultValue ?? [], (val) => val.place);
 
@@ -41,7 +41,7 @@ function PlaceRow({
   defaultValue,
 }: {
   place: Case.HardDrivePlace;
-  defaultValue?: CaseHardDriveSupport.Info[];
+  defaultValue?: CaseHardDriveSupport.DTO[];
 }) {
   const [savedInputValues, addName, deleteName, existName] = useObjectSet(
     (form_factor: Case.HardDriveFormFactor) => ({
@@ -69,7 +69,7 @@ function PlaceRow({
             <Input
               type="number"
               name={`${place}___${value.form_factor}`}
-              defaultValue={value.count}
+              defaultValue={value.count ?? 0}
               onChange={(e) => (value.count = Number(e.target.value))}
             />
             <DeleteButton onClick={() => deleteName(value)} />
@@ -128,7 +128,11 @@ function submit(formData: FormData) {
         Case.HardDriveFormFactor
       ];
       const count = Number(value);
-      return CaseHardDriveSupport.Schema.parse({ place, form_factor, count });
+      return CaseHardDriveSupport.Schemas.DTO.parse({
+        place,
+        form_factor,
+        count,
+      });
     })
     .toArray();
 }

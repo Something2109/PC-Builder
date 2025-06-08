@@ -7,7 +7,7 @@ type CaseSideRadiatorObject = { [side in Case.Side]?: FormFactor.Radiator[] };
 export default function CaseRadiatorSupportDisplay({
   defaultValue,
 }: {
-  defaultValue: CaseRadiatorSupport.Info[];
+  defaultValue: CaseRadiatorSupport.DTO[];
 }) {
   const value: CaseSideRadiatorObject =
     defaultValue.reduce<CaseSideRadiatorObject>(
