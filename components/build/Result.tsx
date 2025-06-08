@@ -5,7 +5,9 @@ import { VerticalCollapsible } from "@/components/utils/Collapsible";
 import { ColumnWrapper } from "@/components/utils/FlexWrapper";
 
 export default function BuildResultList() {
-  const { rules } = useValidation();
+  const {
+    result: { rules },
+  } = useValidation();
 
   return (
     <VerticalCollapsible>
@@ -13,9 +15,10 @@ export default function BuildResultList() {
       <ColumnWrapper>
         <h2>Rules</h2>
         <ul>
-          {Object.entries(rules).map(([name, rule], index) => (
-            <li key={`Rule-${name}`}>{`${index + 1}. ${name} ${rule}`}</li>
-          ))}
+          {Object.entries(rules).map(
+            ([name, { error }]) =>
+              error && <li key={`Rule-${name}`}>{`${name}: ${error}`}</li>
+          )}
         </ul>
       </ColumnWrapper>
     </VerticalCollapsible>

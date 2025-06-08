@@ -36,7 +36,9 @@ export default function BuildProductList() {
 
 function ProductTypeComponent({ product }: { product: Products }) {
   const { details: context, remove: removeProduct } = useBuildContext();
-  const { products: productErrors } = useValidation();
+  const {
+    result: { products: errors },
+  } = useValidation();
 
   let details = context[product];
   if (!Array.isArray(details) && details) details = [details];
@@ -68,6 +70,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
             Cells={[RemoveButtonCell]}
           />
         )}
+        {errors[product] && <li className="text-red-500">{errors[product]}</li>}
         {addable && (
           <li>
             <RedirectButton href={`/build/${product}`}>Add</RedirectButton>
