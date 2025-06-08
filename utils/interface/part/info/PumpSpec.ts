@@ -1,8 +1,14 @@
-import { FormFactor, InternalConnectors, Primitive } from "../../utils";
+import {
+  createDTO,
+  createModel,
+  FormFactor,
+  InternalConnectors,
+  Primitive,
+} from "../../utils";
 import { z } from "zod";
 
 export namespace PumpSpec {
-  export const Schema = z.object({
+  const Info = z.object({
     form_factor: FormFactor.Pump,
 
     width: Primitive.Number,
@@ -19,7 +25,7 @@ export namespace PumpSpec {
     rgb: InternalConnectors.RGB,
   });
 
-  export type Info = z.infer<typeof Schema>;
+  export type Info = z.infer<typeof Info>;
 
   export const Label: { [key in keyof Info]: string } = {
     form_factor: "Form Factor",
@@ -37,6 +43,16 @@ export namespace PumpSpec {
     control_connector: "Control Connector",
     rgb: "RGB",
   };
+
+  const Model = createModel(Info);
+
+  export type Model = z.infer<typeof Model>;
+
+  const DTO = createDTO(Info);
+
+  export type DTO = z.infer<typeof DTO>;
+
+  export const Schemas = { Info, Model, DTO };
 }
 
 export default PumpSpec;

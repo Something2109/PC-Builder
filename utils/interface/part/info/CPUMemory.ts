@@ -1,8 +1,13 @@
-import { InternalConnectors, Primitive } from "../../utils";
+import {
+  createDTO,
+  createModel,
+  InternalConnectors,
+  Primitive,
+} from "../../utils";
 import { z } from "zod";
 
 export namespace CPUMemory {
-  export const Schema = z.object({
+  const Info = z.object({
     type: InternalConnectors.RAM,
     speed: Primitive.Number,
     capacity: Primitive.Number,
@@ -10,7 +15,7 @@ export namespace CPUMemory {
     bandwidth: Primitive.Number,
   });
 
-  export type Info = z.infer<typeof Schema>;
+  export type Info = z.infer<typeof Info>;
 
   export const Label: { [key in keyof Info]: string } = {
     type: "Memory Type",
@@ -19,6 +24,18 @@ export namespace CPUMemory {
     channel_count: "Memory Channel",
     bandwidth: "Memory Bandwidth",
   };
+
+  const Required = ["type"] as const;
+
+  const Model = createModel(Info, [...Required]);
+
+  export type Model = z.infer<typeof Model>;
+
+  const DTO = createDTO(Info, [...Required]);
+
+  export type DTO = z.infer<typeof DTO>;
+
+  export const Schemas = { Info, Model, DTO };
 }
 
 export default CPUMemory;

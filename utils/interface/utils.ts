@@ -618,6 +618,44 @@ const NumberFilterOptions = FilterOptions(Primitive.Number).transform((arg) => {
   return [arg[0], arg[arg.length - 1]];
 });
 
+function createModel<
+  T extends { [key: string]: z.ZodSchema },
+  Required extends keyof T = never
+>(schema: z.ZodObject<T>, required?: Required[]) {
+  const newSchema = Object.fromEntries(
+    Object.entries(schema.shape).map(([key, value]) =>
+      required && required.includes(key as Required)
+        ? [key, value]
+        : [key, value.nullable()]
+    )
+  ) as {
+    [key in keyof T]: key extends Required
+      ? T[key]
+      : ReturnType<T[key]["nullable"]>;
+  };
+
+  return z.object(newSchema);
+}
+
+function createDTO<
+  T extends { [key: string]: z.ZodSchema },
+  Required extends keyof T = never
+>(schema: z.ZodObject<T>, required?: Required[]) {
+  const newSchema = Object.fromEntries(
+    Object.entries(schema.shape).map(([key, value]) =>
+      required && required.includes(key as Required)
+        ? [key, value]
+        : [key, value.nullish()]
+    )
+  ) as {
+    [key in keyof T]: key extends Required
+      ? T[key]
+      : ReturnType<T[key]["nullish"]>;
+  };
+
+  return z.object(newSchema);
+}
+
 export {
   Primitive,
   FormFactor,
@@ -627,6 +665,8 @@ export {
   Case,
   NumberFilterOptions,
   FilterOptions,
+  createModel,
+  createDTO,
 };
 
 export type { FilterOptionsType };

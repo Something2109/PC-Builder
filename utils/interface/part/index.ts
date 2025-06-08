@@ -1,5 +1,5 @@
 import { Infos, Products } from "../../Enum";
-import { FilterOptions, Primitive } from "../utils";
+import { createDTO, createModel, FilterOptions, Primitive } from "../utils";
 import { z } from "zod";
 import { Product } from "./product";
 import { Mapping } from "./mapping";
@@ -15,9 +15,9 @@ namespace Part {
     brand: Primitive.String,
     series: Primitive.String,
 
-    launch_date: z.coerce.date().nullable().optional(),
-    url: Primitive.String.url().nullable().optional(),
-    image_url: Primitive.String.url().nullable().optional(),
+    launch_date: z.coerce.date(),
+    url: Primitive.String.url(),
+    image_url: Primitive.String.url(),
   });
 
   export type BasicInfo = z.infer<typeof BasicInfo>;
@@ -83,15 +83,24 @@ namespace Part {
     [key in Infos]?: Record<string, string[] | number[]> | null;
   };
 
-  export const Detail = Part.BasicInfo.merge(
-    z.object(Information.Detail).partial()
-  );
+  export const Model = createModel(Part.BasicInfo, [
+    "id",
+    "name",
+    "code_name",
+  ]).merge(z.object(Information.Model));
 
-  export type Detail = z.infer<typeof Detail>;
+  export type Model = z.infer<typeof Model>;
+
+  export const DTO = createDTO(Part.BasicInfo.omit({ id: true }), [
+    "name",
+    "code_name",
+  ]).merge(z.object(Information.DTO).partial());
+
+  export type DTO = z.infer<typeof DTO>;
 
   /**
    * The `Infer` namespace provides types to infer information and attributes
-   * based on the part's {@link Detail} info.
+   * based on the part's {@link DTO} info.
    */
   export namespace Infer {
     /**
@@ -99,11 +108,10 @@ namespace Part {
      * @template I - The info key from the `Infos` enum.
      * * This type extracts the type of information associated with the given info key.
      */
-    export type InfoType<I extends Infos> = NonNullable<
-      Part.Detail[I]
-    > extends Information.Info[I][]
-      ? (Information.Info[I] | undefined)[]
-      : Information.Info[I] | undefined;
+    export type InfoType<I extends Infos> =
+      I extends Information.MultipleValueInfo
+        ? (Information.Info[I] | undefined)[]
+        : Information.Info[I] | undefined;
 
     /**
      * Type representing the attribute type for a given info key and attribute name.
@@ -116,7 +124,7 @@ namespace Part {
       I extends Infos,
       A extends string
     > = A extends keyof Information.Info[I]
-      ? NonNullable<Part.Detail[I]> extends Information.Info[I][]
+      ? I extends Information.MultipleValueInfo
         ? (Information.Info[I][A] | undefined)[]
         : Information.Info[I][A] | undefined
       : undefined;

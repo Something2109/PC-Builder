@@ -1,8 +1,14 @@
-import { FormFactor, InternalConnectors, Primitive } from "../../utils";
+import {
+  createDTO,
+  createModel,
+  FormFactor,
+  InternalConnectors,
+  Primitive,
+} from "../../utils";
 import { z } from "zod";
 
 export namespace HDDSpec {
-  export const Schema = z.object({
+  const Info = z.object({
     rotational_speed: Primitive.Number,
     capacity: Primitive.Number,
 
@@ -10,7 +16,7 @@ export namespace HDDSpec {
     interface: InternalConnectors.Storage.HDD,
   });
 
-  export type Info = z.infer<typeof Schema>;
+  export type Info = z.infer<typeof Info>;
 
   export const Label: { [key in keyof Info]: string } = {
     rotational_speed: "Rotational Speed",
@@ -19,6 +25,16 @@ export namespace HDDSpec {
     form_factor: "Form Factor",
     interface: "Interface",
   };
+
+  const Model = createModel(Info);
+
+  export type Model = z.infer<typeof Model>;
+
+  const DTO = createDTO(Info);
+
+  export type DTO = z.infer<typeof DTO>;
+
+  export const Schemas = { Info, Model, DTO };
 }
 
 export default HDDSpec;

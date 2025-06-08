@@ -37,51 +37,87 @@ import StoragePerformance from "./info/StoragePerformance";
 import PartExternalPorts from "./info/PartExternalPorts";
 import MainboardFanConnector from "./info/MainboardFanConnector";
 
+const Schemas = {
+  [Infos.CPU_SPEC]: CPUSpec.Schemas,
+  [Infos.CPU_PERF]: CPUPerformance.Schemas,
+  [Infos.CPU_CORES]: CPUCoreConfig.Schemas,
+  [Infos.CPU_MEMORY]: CPUMemory.Schemas,
+  [Infos.GPU_SPEC]: GPUSpec.Schemas,
+  [Infos.GPU_PERF]: GPUPerformance.Schemas,
+  [Infos.GPU_MEMORY]: GPUMemory.Schemas,
+  [Infos.GPU_FEAT]: GPUFeature.Schemas,
+  [Infos.PROCESSOR_CACHE]: ProcessorCache.Schemas,
+  [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Schemas,
+  [Infos.GRAPHIC_CARD_PORT]: GraphicCardPort.Schemas,
+  [Infos.MAIN_SPEC]: MainboardSpec.Schemas,
+  [Infos.MAIN_POWER]: MainboardPowerConnector.Schemas,
+  [Infos.MAIN_PCIE]: MainboardPCIe.Schemas,
+  [Infos.MAIN_STORAGE]: MainboardStorageConnector.Schemas,
+  [Infos.MAIN_USB]: MainboardUSBConnector.Schemas,
+  [Infos.MAIN_FAN]: MainboardFanConnector.Schemas,
+  [Infos.RAM_SPEC]: RAMSpec.Schemas,
+  [Infos.SSD_SPEC]: SSDSpec.Schemas,
+  [Infos.HDD_SPEC]: HDDSpec.Schemas,
+  [Infos.STORAGE_PERF]: StoragePerformance.Schemas,
+  [Infos.STORAGE_CACHE]: StorageCache.Schemas,
+  [Infos.PSU_SPEC]: PSUSpec.Schemas,
+  [Infos.PSU_CONNECTOR]: PSUConnector.Schemas,
+  [Infos.CASE_SPEC]: CaseSpec.Schemas,
+  [Infos.CASE_MAIN]: CaseMainboardSupport.Schemas,
+  [Infos.CASE_FAN]: CaseFanSupport.Schemas,
+  [Infos.CASE_HARD_DRIVE]: CaseHardDriveSupport.Schemas,
+  [Infos.CASE_RADIATOR]: CaseRadiatorSupport.Schemas,
+  [Infos.CASE_PSU]: CasePSUSupport.Schemas,
+  [Infos.FAN_SPEC]: FanSpec.Schemas,
+  [Infos.CPU_BLOCK_SPEC]: CPUBlockSpec.Schemas,
+  [Infos.CPU_BLOCK_SOCKET]: CPUBlockSocketSupport.Schemas,
+  [Infos.PUMP_SPEC]: PumpSpec.Schemas,
+  [Infos.RADIATOR_SPEC]: RadiatorSpec.Schemas,
+  [Infos.EXTERNAL_PORTS]: PartExternalPorts.Schemas,
+};
+
+const MultipleValueInfo = [
+  Infos.CPU_CORES,
+  Infos.CPU_MEMORY,
+  Infos.GRAPHIC_CARD_PORT,
+  Infos.MAIN_POWER,
+  Infos.MAIN_PCIE,
+  Infos.MAIN_STORAGE,
+  Infos.MAIN_USB,
+  Infos.MAIN_FAN,
+  Infos.PSU_CONNECTOR,
+  Infos.CASE_MAIN,
+  Infos.CASE_FAN,
+  Infos.CASE_HARD_DRIVE,
+  Infos.CASE_RADIATOR,
+  Infos.CASE_PSU,
+  Infos.CPU_BLOCK_SOCKET,
+  Infos.EXTERNAL_PORTS,
+] as const;
+
+function objectMap<
+  Obj extends Record<string, any>,
+  Map extends (arg: [keyof Obj, Obj[keyof Obj]]) => [keyof Obj, unknown]
+>(obj: Obj, map: Map) {
+  return Object.fromEntries(Object.entries(obj).map(map)) as {
+    [key in keyof Obj]: ReturnType<Map>[1];
+  };
+}
+
 /**
  * DECLARE THE {@link Infos} RELATED MAPPING OBJECTS
  * TO BE USED IN MANY DYNAMIC MAPPING OF THE PROJECT
  */
 export namespace Information {
-  export const Schema = z.object({
-    [Infos.CPU_SPEC]: CPUSpec.Schema,
-    [Infos.CPU_PERF]: CPUPerformance.Schema,
-    [Infos.CPU_CORES]: CPUCoreConfig.Schema,
-    [Infos.CPU_MEMORY]: CPUMemory.Schema,
-    [Infos.GPU_SPEC]: GPUSpec.Schema,
-    [Infos.GPU_PERF]: GPUPerformance.Schema,
-    [Infos.GPU_MEMORY]: GPUMemory.Schema,
-    [Infos.GPU_FEAT]: GPUFeature.Schema,
-    [Infos.PROCESSOR_CACHE]: ProcessorCache.Schema,
-    [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Schema,
-    [Infos.GRAPHIC_CARD_PORT]: GraphicCardPort.Schema,
-    [Infos.MAIN_SPEC]: MainboardSpec.Schema,
-    [Infos.MAIN_POWER]: MainboardPowerConnector.Schema,
-    [Infos.MAIN_PCIE]: MainboardPCIe.Schema,
-    [Infos.MAIN_STORAGE]: MainboardStorageConnector.Schema,
-    [Infos.MAIN_USB]: MainboardUSBConnector.Schema,
-    [Infos.MAIN_FAN]: MainboardFanConnector.Schema,
-    [Infos.RAM_SPEC]: RAMSpec.Schema,
-    [Infos.SSD_SPEC]: SSDSpec.Schema,
-    [Infos.HDD_SPEC]: HDDSpec.Schema,
-    [Infos.STORAGE_PERF]: StoragePerformance.Schema,
-    [Infos.STORAGE_CACHE]: StorageCache.Schema,
-    [Infos.PSU_SPEC]: PSUSpec.Schema,
-    [Infos.PSU_CONNECTOR]: PSUConnector.Schema,
-    [Infos.CASE_SPEC]: CaseSpec.Schema,
-    [Infos.CASE_MAIN]: CaseMainboardSupport.Schema,
-    [Infos.CASE_FAN]: CaseFanSupport.Schema,
-    [Infos.CASE_HARD_DRIVE]: CaseHardDriveSupport.Schema,
-    [Infos.CASE_RADIATOR]: CaseRadiatorSupport.Schema,
-    [Infos.CASE_PSU]: CasePSUSupport.Schema,
-    [Infos.FAN_SPEC]: FanSpec.Schema,
-    [Infos.CPU_BLOCK_SPEC]: CPUBlockSpec.Schema,
-    [Infos.CPU_BLOCK_SOCKET]: CPUBlockSocketSupport.Schema,
-    [Infos.PUMP_SPEC]: PumpSpec.Schema,
-    [Infos.RADIATOR_SPEC]: RadiatorSpec.Schema,
-    [Infos.EXTERNAL_PORTS]: PartExternalPorts.Schema,
-  });
+  export const Info = z.object(
+    objectMap(Schemas, ([key, value]) => [key, value.Info]) as {
+      [key in Infos]: (typeof Schemas)[key]["Info"];
+    }
+  );
 
-  export type Info = z.infer<typeof Schema>;
+  export type Info = z.infer<typeof Info>;
+
+  export type MultipleValueInfo = (typeof MultipleValueInfo)[number];
 
   /**
    * The label list of the information.
@@ -127,89 +163,34 @@ export namespace Information {
   };
 
   /**
-   * The attribute label list of the information.
-   * Contains the label corresponding to each attribute in each {@link Infos} type.
+   * The model schema of each info type.
+   * Contains the type of each attribute of the info from each {@link Infos} type.
    */
-  export const AttributeLabels: Record<Infos, Record<string, string>> = {
-    [Infos.CPU_SPEC]: CPUSpec.Label,
-    [Infos.CPU_PERF]: CPUPerformance.Label,
-    [Infos.CPU_CORES]: CPUCoreConfig.Label,
-    [Infos.CPU_MEMORY]: CPUMemory.Label,
-    [Infos.GPU_SPEC]: GPUSpec.Label,
-    [Infos.GPU_PERF]: GPUPerformance.Label,
-    [Infos.GPU_MEMORY]: GPUMemory.Label,
-    [Infos.GPU_FEAT]: GPUFeature.Label,
-    [Infos.PROCESSOR_CACHE]: ProcessorCache.Label,
-    [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Label,
-    [Infos.GRAPHIC_CARD_PORT]: GraphicCardPort.Label,
-    [Infos.MAIN_SPEC]: MainboardSpec.Label,
-    [Infos.MAIN_POWER]: MainboardPowerConnector.Label,
-    [Infos.MAIN_PCIE]: MainboardPCIe.Label,
-    [Infos.MAIN_STORAGE]: MainboardStorageConnector.Label,
-    [Infos.MAIN_USB]: MainboardUSBConnector.Label,
-    [Infos.MAIN_FAN]: MainboardFanConnector.Label,
-    [Infos.RAM_SPEC]: RAMSpec.Label,
-    [Infos.SSD_SPEC]: SSDSpec.Label,
-    [Infos.HDD_SPEC]: HDDSpec.Label,
-    [Infos.STORAGE_PERF]: StoragePerformance.Label,
-    [Infos.STORAGE_CACHE]: StorageCache.Label,
-    [Infos.PSU_SPEC]: PSUSpec.Label,
-    [Infos.PSU_CONNECTOR]: PSUConnector.Label,
-    [Infos.CASE_SPEC]: CaseSpec.Label,
-    [Infos.CASE_MAIN]: CaseMainboardSupport.Label,
-    [Infos.CASE_FAN]: CaseFanSupport.Label,
-    [Infos.CASE_HARD_DRIVE]: CaseHardDriveSupport.Label,
-    [Infos.CASE_RADIATOR]: CaseRadiatorSupport.Label,
-    [Infos.CASE_PSU]: CasePSUSupport.Label,
-    [Infos.FAN_SPEC]: FanSpec.Label,
-    [Infos.CPU_BLOCK_SPEC]: CPUBlockSpec.Label,
-    [Infos.CPU_BLOCK_SOCKET]: CPUBlockSocketSupport.Label,
-    [Infos.PUMP_SPEC]: PumpSpec.Label,
-    [Infos.RADIATOR_SPEC]: RadiatorSpec.Label,
-    [Infos.EXTERNAL_PORTS]: PartExternalPorts.Label,
+  export type Model = {
+    [key in Infos]: key extends MultipleValueInfo
+      ? z.ZodArray<(typeof Schemas)[key]["Model"]>
+      : ReturnType<(typeof Schemas)[key]["Model"]["nullable"]>;
   };
 
+  export const Model = objectMap(Schemas, ([key, value]) =>
+    MultipleValueInfo.includes(key as MultipleValueInfo)
+      ? [key, z.array(value.Model)]
+      : [key, value.Model.nullable()]
+  ) as Model;
+
   /**
-   * The detail information of a specific product.
-   * Contains the most detailed information of the product from each {@link Infos} type.
-   * This is a generic type used in all the {@link Products} type.
+   * The DTO schema of each info type.
+   * Contains the most detailed information of the info from each {@link Infos} type.
    */
-  export const Detail = {
-    [Infos.CPU_SPEC]: CPUSpec.Schema.partial().nullish(),
-    [Infos.CPU_PERF]: CPUPerformance.Schema.partial().nullish(),
-    [Infos.CPU_CORES]: z.array(CPUCoreConfig.Schema.partial()),
-    [Infos.CPU_MEMORY]: z.array(CPUMemory.Schema.partial()),
-    [Infos.GPU_SPEC]: GPUSpec.Schema.partial().nullish(),
-    [Infos.GPU_PERF]: GPUPerformance.Schema.partial().nullish(),
-    [Infos.GPU_MEMORY]: GPUMemory.Schema.partial().nullish(),
-    [Infos.GPU_FEAT]: GPUFeature.Schema.partial().nullish(),
-    [Infos.PROCESSOR_CACHE]: ProcessorCache.Schema.partial().nullish(),
-    [Infos.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Schema.partial().nullish(),
-    [Infos.GRAPHIC_CARD_PORT]: z.array(GraphicCardPort.Schema),
-    [Infos.MAIN_SPEC]: MainboardSpec.Schema.partial().nullish(),
-    [Infos.MAIN_POWER]: z.array(MainboardPowerConnector.Schema),
-    [Infos.MAIN_PCIE]: z.array(MainboardPCIe.Schema),
-    [Infos.MAIN_STORAGE]: z.array(MainboardStorageConnector.Schema),
-    [Infos.MAIN_USB]: z.array(MainboardUSBConnector.Schema),
-    [Infos.MAIN_FAN]: z.array(MainboardFanConnector.Schema),
-    [Infos.RAM_SPEC]: RAMSpec.Schema.partial().nullish(),
-    [Infos.SSD_SPEC]: SSDSpec.Schema.partial().nullish(),
-    [Infos.HDD_SPEC]: HDDSpec.Schema.partial().nullish(),
-    [Infos.STORAGE_PERF]: StoragePerformance.Schema.partial().nullish(),
-    [Infos.STORAGE_CACHE]: StorageCache.Schema.partial().nullish(),
-    [Infos.PSU_SPEC]: PSUSpec.Schema.partial().nullish(),
-    [Infos.PSU_CONNECTOR]: z.array(PSUConnector.Schema),
-    [Infos.CASE_SPEC]: CaseSpec.Schema.partial().nullish(),
-    [Infos.CASE_MAIN]: z.array(CaseMainboardSupport.Schema),
-    [Infos.CASE_FAN]: z.array(CaseFanSupport.Schema),
-    [Infos.CASE_HARD_DRIVE]: z.array(CaseHardDriveSupport.Schema),
-    [Infos.CASE_RADIATOR]: z.array(CaseRadiatorSupport.Schema),
-    [Infos.CASE_PSU]: z.array(CasePSUSupport.Schema),
-    [Infos.FAN_SPEC]: FanSpec.Schema.partial().nullish(),
-    [Infos.CPU_BLOCK_SPEC]: CPUBlockSpec.Schema.partial().nullish(),
-    [Infos.CPU_BLOCK_SOCKET]: z.array(CPUBlockSocketSupport.Schema),
-    [Infos.PUMP_SPEC]: PumpSpec.Schema.partial().nullish(),
-    [Infos.RADIATOR_SPEC]: RadiatorSpec.Schema.partial().nullish(),
-    [Infos.EXTERNAL_PORTS]: z.array(PartExternalPorts.Schema),
+  export type DTO = {
+    [key in Infos]: key extends MultipleValueInfo
+      ? z.ZodArray<(typeof Schemas)[key]["DTO"]>
+      : ReturnType<(typeof Schemas)[key]["DTO"]["nullish"]>;
   };
+
+  export const DTO = objectMap(Schemas, ([key, value]) =>
+    MultipleValueInfo.includes(key as MultipleValueInfo)
+      ? [key, z.array(value.DTO)]
+      : [key, value.DTO.nullish()]
+  ) as DTO;
 }
