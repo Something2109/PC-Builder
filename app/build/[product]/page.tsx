@@ -12,6 +12,7 @@ import Part, { Product } from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
 import { use } from "react";
 import { useRouter } from "next/navigation";
+import { ChoiceInput } from "@/components/utils/Input";
 
 export default function BuildProductSummary({
   params: productParams,
@@ -21,7 +22,15 @@ export default function BuildProductSummary({
   const router = useRouter();
   const { product } = use(productParams);
   const { details, add: addDetails } = useBuildContext();
-  const { data, params, page, setParams, setPage } = useProductSummary(product);
+  const {
+    data,
+    params,
+    page,
+    includeBuild,
+    setParams,
+    setPage,
+    setIncludeBuild,
+  } = useProductSummary(product);
 
   if (!data) return "Loading";
 
@@ -49,6 +58,14 @@ export default function BuildProductSummary({
           className="text-xl font-bold"
           id="list"
         >{`${data.total} ${Product.Label[product]}`}</h1>
+        <RowWrapper>
+          <ChoiceInput
+            type="checkbox"
+            onChange={() => setIncludeBuild(!includeBuild)}
+            defaultChecked={includeBuild}
+          />
+          <label>Include Build</label>
+        </RowWrapper>
         <ToggleButton label="Filter">
           <FilterBar
             action={(formData: FormData) => setParams(formData)}

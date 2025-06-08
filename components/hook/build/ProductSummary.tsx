@@ -8,8 +8,10 @@ type ProductLoad = {
   data: API.Payload<Part.Summary> | null;
   params: URLSearchParams;
   page: number;
+  includeBuild: boolean;
   setParams: (params: FormData) => void;
   setPage: (num: number) => void;
+  setIncludeBuild: (val: boolean) => void;
 };
 
 function useProductSummary(product: Products): ProductLoad {
@@ -17,6 +19,7 @@ function useProductSummary(product: Products): ProductLoad {
 
   const [data, setData] = useState<API.Payload<Part.Summary> | null>(null);
   const [page, setPage] = useState(1);
+  const [includeBuild, setIncludeBuild] = useState(true);
   const [params, setParams] = useReducer(
     (_, formData: FormData) => {
       setPage(1);
@@ -35,16 +38,24 @@ function useProductSummary(product: Products): ProductLoad {
     fetch(`/api/build/${product}?${params.toString()}&page=${page}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(list),
+      body: includeBuild ? JSON.stringify(list) : undefined,
     }).then((response) => {
       if (response.ok) {
         response.json().then((val) => setData(val));
         window.scroll({ top: 0, behavior: "smooth" });
       }
     });
-  }, [product, params, page]);
+  }, [product, params, page, includeBuild]);
 
-  return { data, params, page, setParams, setPage };
+  return {
+    data,
+    params,
+    page,
+    includeBuild,
+    setParams,
+    setPage,
+    setIncludeBuild,
+  };
 }
 
 export default useProductSummary;
