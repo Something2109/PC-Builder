@@ -16,8 +16,8 @@ export default function Error({
 
   return (
     <ErrorPanel
-      className="h-[70vh]"
-      text="Something went wrong!"
+      className="h-[60vh]"
+      text="Cannot find any part right now..."
       reset={reset}
     />
   );

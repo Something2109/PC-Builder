@@ -13,6 +13,8 @@ import { Products } from "@/utils/Enum";
 import { use } from "react";
 import { useRouter } from "next/navigation";
 import { ChoiceInput } from "@/components/utils/Input";
+import LoadingPanel from "@/components/utils/LoadingPanel";
+import ErrorPanel from "@/components/utils/ErrorPanel";
 
 export default function BuildProductSummary({
   params: productParams,
@@ -23,6 +25,7 @@ export default function BuildProductSummary({
   const { product } = use(productParams);
   const { details, add: addDetails } = useBuildContext();
   const {
+    loading,
     data,
     params,
     page,
@@ -32,7 +35,17 @@ export default function BuildProductSummary({
     setIncludeBuild,
   } = useProductSummary(product);
 
-  if (!data) return "Loading";
+  if (loading)
+    return <LoadingPanel className="h-[70vh]" text="Loading Product" />;
+
+  if (!data)
+    return (
+      <ErrorPanel
+        className="h-[70vh]"
+        text="Cannot find any product right now..."
+        reset={() => {}}
+      />
+    );
 
   const addable = !details[product] || Array.isArray(details[product]);
 
