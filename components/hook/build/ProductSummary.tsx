@@ -2,9 +2,10 @@ import { useBuildContext } from "./BuildContext";
 import Part from "@/utils/interface/part";
 import { API } from "@/utils/interface/api";
 import { Products } from "@/utils/Enum";
-import { useEffect, useState, useReducer } from "react";
+import { useEffect, useState, useReducer, useTransition } from "react";
 
 type ProductLoad = {
+  loading: boolean;
   data: API.Payload<Part.Summary> | null;
   params: URLSearchParams;
   page: number;
@@ -17,6 +18,7 @@ type ProductLoad = {
 function useProductSummary(product: Products): ProductLoad {
   const { list } = useBuildContext();
 
+  const [loading, startTransition] = useTransition();
   const [data, setData] = useState<API.Payload<Part.Summary> | null>(null);
   const [page, setPage] = useState(1);
   const [includeBuild, setIncludeBuild] = useState(true);
@@ -34,20 +36,27 @@ function useProductSummary(product: Products): ProductLoad {
     setPage(1);
   }, [product]);
 
-  useEffect(() => {
-    fetch(`/api/build/${product}?${params.toString()}&page=${page}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: includeBuild ? JSON.stringify(list) : undefined,
-    }).then((response) => {
-      if (response.ok) {
-        response.json().then((val) => setData(val));
+  useEffect(
+    () =>
+      startTransition(async () => {
+        const response = await fetch(
+          `/api/build/${product}?${params.toString()}&page=${page}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: includeBuild ? JSON.stringify(list) : undefined,
+          }
+        );
+
+        setData(response.ok ? await response.json() : null);
+
         window.scroll({ top: 0, behavior: "smooth" });
-      }
-    });
-  }, [product, params, page, includeBuild]);
+      }),
+    [product, params, page, includeBuild]
+  );
 
   return {
+    loading,
     data,
     params,
     page,
