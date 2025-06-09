@@ -93,10 +93,7 @@ class SequelizeContext {
       method: [ModelScopes.FILTER, options.part],
     });
 
-    const where = options.q
-      ? { name: { [Op.like]: `%${options.q}%` } }
-      : undefined;
-    this.searchOptions = { where };
+    this.searchOptions = { where: this.createWhereOption(options.q) };
     this.pageOptions = {
       offset: (options.page - 1) * options.limit,
       limit: options.limit,
@@ -222,6 +219,26 @@ class SequelizeContext {
     })) as { min: number; max: number };
 
     return [query.min, query.max];
+  }
+
+  /**
+   * Create the search options for the where parameters.
+   * @param query The query string to search.
+   * @returns The option for the query.
+   */
+  protected createWhereOption(query?: string) {
+    if (!query) return undefined;
+
+    const where = {
+      [Op.or]: {
+        name: { [Op.like]: `%${query}%` },
+        code_name: { [Op.like]: `${query}%` },
+        brand: { [Op.like]: `%${query}%` },
+        series: { [Op.like]: `%${query}%` },
+      },
+    };
+
+    return where;
   }
 }
 
