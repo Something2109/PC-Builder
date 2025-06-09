@@ -24,12 +24,12 @@ export default function CaseRadiatorSupportDisplay({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{CaseRadiatorSupport.Label.case_side}</Table.Cell>
           <Table.Cell>{CaseRadiatorSupport.Label.form_factor}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {Object.entries(value).map(([side, radiatorObj]) => (
           <Table.Row key={`rad-${side}`}>

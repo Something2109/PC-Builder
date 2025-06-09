@@ -5,14 +5,14 @@ import { FrequencyUnits } from "@/utils/extract/Units";
 
 export default ({ defaultValue }: { defaultValue: CPUCoreConfig.DTO[] }) => (
   <Table.Component>
-    <thead>
+    <Table.Head>
       <Table.Row>
         <Table.Cell>{CPUCoreConfig.Label.name}</Table.Cell>
         <Table.Cell>{CPUCoreConfig.Label.count}</Table.Cell>
         <Table.Cell>{CPUCoreConfig.Label.base_frequency}</Table.Cell>
         <Table.Cell>{CPUCoreConfig.Label.turbo_frequency}</Table.Cell>
       </Table.Row>
-    </thead>
+    </Table.Head>
     <tbody>
       {defaultValue.map((val) => (
         <Table.Row key={`core-${val.name}`}>

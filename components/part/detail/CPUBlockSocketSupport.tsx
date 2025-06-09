@@ -7,11 +7,11 @@ export default ({
   defaultValue: CPUBlockSocketSupport.DTO[];
 }) => (
   <Table.Component>
-    <thead>
+    <Table.Head>
       <Table.Row>
         <Table.Cell>{CPUBlockSocketSupport.Label.socket}</Table.Cell>
       </Table.Row>
-    </thead>
+    </Table.Head>
     <tbody>
       <Table.Row>
         <Table.Cell>

@@ -27,16 +27,16 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{CaseRadiatorSupport.Label.case_side}</Table.Cell>
           <Table.Cell>{CaseRadiatorSupport.Label.form_factor}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {Case.Side.options.map((side) => (
           <Table.Row key={`rad-${side}`}>
-            <Table.Cell>{side}</Table.Cell>
+            <Table.Cell className="font-bold">{side}</Table.Cell>
             <Table.Cell key={`rad-${side}`}>
               <ResponsiveWrapper className="flex-wrap gap-x-3 justify-between">
                 {FormFactor.Radiator.options.map((val) => (

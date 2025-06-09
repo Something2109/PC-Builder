@@ -19,11 +19,11 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{CPUBlockSocketSupport.Label.socket}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {socketSet.map(([key, value]) => {
           const onChange = useDebounce(

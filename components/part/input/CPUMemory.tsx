@@ -32,7 +32,7 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{CPUMemory.Label.type}</Table.Cell>
           <Table.Cell>{CPUMemory.Label.speed}</Table.Cell>
@@ -40,7 +40,7 @@ function Component({
           <Table.Cell>{CPUMemory.Label.channel_count}</Table.Cell>
           <Table.Cell>{CPUMemory.Label.bandwidth}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {formFactors.map(([type, value]) => (
           <Table.Row key={`memory-${type}`}>

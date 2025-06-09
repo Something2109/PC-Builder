@@ -19,13 +19,13 @@ function MainComponent({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{CaseFanSupport.Label.case_side}</Table.Cell>
           <Table.Cell>{CaseFanSupport.Label.form_factor}</Table.Cell>
           <Table.Cell>{CaseFanSupport.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {Case.Side.options.map((side) => (
           <SideRow
@@ -61,7 +61,9 @@ function SideRow({
       {savedInputValues.map(([key, val], index) => (
         <Table.Row key={`fan-${case_side}-${key}`}>
           {index === 0 && (
-            <Table.Cell rowSpan={rowSpan}>{case_side}</Table.Cell>
+            <Table.Cell className="font-bold" rowSpan={rowSpan}>
+              {case_side}
+            </Table.Cell>
           )}
           <Table.Cell>
             <label>{val.form_factor}</label>
@@ -78,7 +80,7 @@ function SideRow({
         </Table.Row>
       ))}
       <AddRow exist={existName} add={addName}>
-        {savedInputValues.length === 0 && <Table.Cell>{case_side}</Table.Cell>}
+        {savedInputValues.length === 0 && case_side}
       </AddRow>
     </>
   );
@@ -105,7 +107,7 @@ function AddRow({
   return (
     options.length > 0 && (
       <Table.Row>
-        {children}
+        <Table.Cell className="font-bold">{children}</Table.Cell>
         <Table.Cell>
           <OptionSelect ref={FormFactorInput} options={options} required />
         </Table.Cell>

@@ -25,19 +25,21 @@ export default function MainboardPCIeDisplay({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{MainboardPCIe.Label.controller}</Table.Cell>
           <Table.Cell>{`${MainboardPCIe.Label.version} ${MainboardPCIe.Label.width}`}</Table.Cell>
           <Table.Cell>{MainboardPCIe.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {InternalConnectors.PCIe.Controller.options.map((controller) =>
           value[controller]?.map(({ version, width, count }, index, arr) => (
             <Table.Row key={`pcie-${controller}-${version}-${width}`}>
               {index === 0 && (
-                <Table.Cell rowSpan={arr.length}>{controller}</Table.Cell>
+                <Table.Cell className="font-bold" rowSpan={arr.length}>
+                  {controller}
+                </Table.Cell>
               )}
               <Table.Cell>
                 {InternalConnectors.PCIe.toString(version, width)}

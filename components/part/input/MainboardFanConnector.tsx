@@ -24,13 +24,13 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{MainboardFanConnector.Label.type}</Table.Cell>
           <Table.Cell>{MainboardFanConnector.Label.connector}</Table.Cell>
           <Table.Cell>{MainboardFanConnector.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {SavedInputValues.map(([key, value]) => (
           <Table.Row key={`fan-${key}`}>

@@ -21,12 +21,12 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{MainboardPowerConnector.Label.type}</Table.Cell>
           <Table.Cell>{MainboardPowerConnector.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {formFactors.map(([key, value]) => (
           <Table.Row key={`power-${key}`}>

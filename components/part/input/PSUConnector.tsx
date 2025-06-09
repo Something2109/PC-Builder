@@ -20,12 +20,12 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{PSUConnector.Label.type}</Table.Cell>
           <Table.Cell>{PSUConnector.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {formFactors.map(([type, value]) => (
           <Table.Row key={`connector-${type}`}>

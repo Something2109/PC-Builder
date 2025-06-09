@@ -28,13 +28,13 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{MainboardUSBConnector.Label.generation}</Table.Cell>
           <Table.Cell>{MainboardUSBConnector.Label.connector}</Table.Cell>
           <Table.Cell>{MainboardUSBConnector.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {SavedInputValues.map(([key, value]) => (
           <Table.Row key={`usb-${key}`}>

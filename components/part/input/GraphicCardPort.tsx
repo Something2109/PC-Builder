@@ -29,29 +29,31 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{GraphicCardPort.Label.type}</Table.Cell>
           <Table.Cell>{GraphicCardPort.Label.name}</Table.Cell>
           <Table.Cell>{GraphicCardPort.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {Object.values(groupByType).map((value) =>
           value.map(([key, value], index, arr) => (
             <Table.Row key={`port-${key}`}>
               {index === 0 && (
-                <Table.Cell rowSpan={arr.length}>{value.type}</Table.Cell>
+                <Table.Cell className="font-bold" rowSpan={arr.length}>
+                  {value.type}
+                </Table.Cell>
               )}
               <Table.Cell>
                 <Input name={`${key}___name`} value={value.name} readOnly />
+              </Table.Cell>
+              <Table.Cell className="relative">
                 <Input
                   type="hidden"
                   name={`${key}___type`}
                   value={value.type}
                 />
-              </Table.Cell>
-              <Table.Cell className="relative">
                 <Input
                   type="number"
                   name={`${key}___count`}

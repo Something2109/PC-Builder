@@ -14,11 +14,11 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{CasePSUSupport.Label.psu_support}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         <Table.Row>
           <Table.Cell>

@@ -24,12 +24,12 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{MainboardStorageConnector.Label.form_factor}</Table.Cell>
           <Table.Cell>{MainboardStorageConnector.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {formFactors.map(([connector, value]) => (
           <Table.Row key={`storage-${connector}`}>

@@ -19,14 +19,14 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{MainboardPCIe.Label.controller}</Table.Cell>
           <Table.Cell>{MainboardPCIe.Label.version}</Table.Cell>
           <Table.Cell>{MainboardPCIe.Label.width}</Table.Cell>
           <Table.Cell>{MainboardPCIe.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {InternalConnectors.PCIe.Controller.options.map((controller) => (
           <ControllerRow
@@ -67,7 +67,9 @@ function ControllerRow({
       {SavedInputValues.map(([key, value], index, arr) => (
         <Table.Row key={`pcie-${controller}-${key}`}>
           {index === 0 && (
-            <Table.Cell rowSpan={arr.length + 1}>{controller}</Table.Cell>
+            <Table.Cell className="font-bold" rowSpan={arr.length + 1}>
+              {controller}
+            </Table.Cell>
           )}
           <Table.Cell colSpan={0} className="hidden">
             <Input
@@ -119,7 +121,7 @@ function AddRow({
 
   return (
     <Table.Row>
-      {children && <Table.Cell>{children}</Table.Cell>}
+      {children && <Table.Cell className="font-bold">{children}</Table.Cell>}
       <Table.Cell>
         <Input ref={VersionInput} type="number" defaultValue={0} />
       </Table.Cell>

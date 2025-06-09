@@ -7,13 +7,13 @@ export default ({
   defaultValue: MainboardFanConnector.DTO[];
 }) => (
   <Table.Component>
-    <thead>
+    <Table.Head>
       <Table.Row>
         <Table.Cell>{MainboardFanConnector.Label.type}</Table.Cell>
         <Table.Cell>{MainboardFanConnector.Label.connector}</Table.Cell>
         <Table.Cell>{MainboardFanConnector.Label.count}</Table.Cell>
       </Table.Row>
-    </thead>
+    </Table.Head>
     <tbody>
       {defaultValue.map((val) => (
         <Table.Row key={`port-${val.type}-${val.connector}`}>

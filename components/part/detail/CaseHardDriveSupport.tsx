@@ -10,19 +10,21 @@ export default function CaseHardDriveSupportDisplay({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{CaseHardDriveSupport.Label.place}</Table.Cell>
           <Table.Cell>{CaseHardDriveSupport.Label.form_factor}</Table.Cell>
           <Table.Cell>{CaseHardDriveSupport.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {Object.entries(value).map(([side, fanObj]) =>
           fanObj.map(({ form_factor, count }, index, fans) => (
             <Table.Row key={`drive-${side}-${form_factor}`}>
               {index === 0 && (
-                <Table.Cell rowSpan={fans.length}>{side}</Table.Cell>
+                <Table.Cell className="font-bold" rowSpan={fans.length}>
+                  {side}
+                </Table.Cell>
               )}
               <Table.Cell>{form_factor}</Table.Cell>
               <Table.Cell>{count}</Table.Cell>

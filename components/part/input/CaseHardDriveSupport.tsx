@@ -16,13 +16,13 @@ function MainComponent({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{CaseHardDriveSupport.Label.place}</Table.Cell>
           <Table.Cell>{CaseHardDriveSupport.Label.form_factor}</Table.Cell>
           <Table.Cell>{CaseHardDriveSupport.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {Case.HardDrivePlace.options.map((side) => (
           <PlaceRow
@@ -61,7 +61,11 @@ function PlaceRow({
     <>
       {savedInputValues.map(([key, value], index) => (
         <Table.Row key={`drive-${place}-${key}`}>
-          {index === 0 && <Table.Cell rowSpan={rowSpan}>{place}</Table.Cell>}
+          {index === 0 && (
+            <Table.Cell className="font-bold" rowSpan={rowSpan}>
+              {place}
+            </Table.Cell>
+          )}
           <Table.Cell>
             <label>{value.form_factor}</label>
           </Table.Cell>
@@ -77,7 +81,7 @@ function PlaceRow({
         </Table.Row>
       ))}
       <AddRow exist={existName} add={addName}>
-        {savedInputValues.length === 0 && <Table.Cell>{place}</Table.Cell>}
+        {savedInputValues.length === 0 && place}
       </AddRow>
     </>
   );
@@ -104,7 +108,7 @@ function AddRow({
   return (
     options.length > 0 && (
       <Table.Row>
-        {children}
+        <Table.Cell className="font-bold">{children}</Table.Cell>
         <Table.Cell>
           <OptionSelect ref={FormFactorInput} options={options} required />
         </Table.Cell>
