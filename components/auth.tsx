@@ -20,10 +20,16 @@ import axios, { AxiosError } from "axios";
 
 const decode = createDecoder();
 
-const AUTH_KEY = "Authorization";
+type SaveTokens = {
+  refresh_token?: string | null;
+  csrf_token?: string | null;
+};
+
+const AUTH_KEY = "REFRESH-TOKEN";
+const CSRF_KEY = "CSRF-TOKEN";
 const LoginPath = "/auth/login";
 const AuthContext = createContext<
-  [User.JwtPayload | null, ActionDispatch<[string | null]>]
+  [User.JwtPayload | null, ActionDispatch<[SaveTokens]>]
 >([null, () => {}]);
 
 function decodeToken(token: string | null) {
@@ -52,19 +58,32 @@ export function useAuth() {
 
 export function AuthWrapper({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useReducer(
-    (_: User.JwtPayload | null, curr: string | null) => {
-      const userInfo = decodeToken(curr);
+    (_: User.JwtPayload | null, { refresh_token, csrf_token }: SaveTokens) => {
+      const userInfo = decodeToken(refresh_token ?? null);
 
-      curr && userInfo
-        ? localStorage.setItem(AUTH_KEY, curr)
+      refresh_token && userInfo
+        ? localStorage.setItem(AUTH_KEY, refresh_token)
         : localStorage.removeItem(AUTH_KEY);
+
+      if (csrf_token) {
+        localStorage.setItem(CSRF_KEY, csrf_token);
+
+        axios.defaults.headers.common["x-csrf-token"] = csrf_token;
+      }
 
       return userInfo;
     },
     null
   );
 
-  useLayoutEffect(() => setUser(localStorage?.getItem(AUTH_KEY)), []);
+  useLayoutEffect(
+    () =>
+      setUser({
+        refresh_token: localStorage.getItem(AUTH_KEY),
+        csrf_token: localStorage.getItem(CSRF_KEY),
+      }),
+    []
+  );
 
   return <AuthContext value={[user, setUser]}>{children}</AuthContext>;
 }
@@ -110,12 +129,16 @@ export function useLoginAction(pathname?: string) {
         const response = await axios.post("/api/auth/login", body, {
           withCredentials: true,
         });
-        setUser(response.data.refresh_token);
+        setUser(response.data);
         router.push(pathname ?? "/");
       } catch (err) {
         const error = err as AxiosError;
         console.error(err);
-        setError(error.response?.data as LoginError);
+
+        const LoginError = error.response
+          ? (error.response.data as LoginError)
+          : { message: "Cannot connect to server." };
+        setError(LoginError);
       }
 
       return body as Record<string, string>;
@@ -160,15 +183,15 @@ export function useLogoutAction() {
   const logout = () =>
     startTransition(async () => {
       try {
-        await axios.post("/api/auth/logout", undefined, {
+        const response = await axios.post("/api/auth/logout", undefined, {
           withCredentials: true,
         });
-        setUser(null);
+        setUser(response.data);
         router.push(LoginPath);
       } catch (err) {
         const error = err as AxiosError;
         console.error(err);
-        alert(error.response?.data);
+        alert(error.response?.data ?? "Cannot connect to server.");
       }
     });
 
