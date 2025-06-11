@@ -11,11 +11,11 @@ import {
 } from "@/components/utils/FlexWrapper";
 import { Input } from "@/components/utils/Input";
 import Part from "@/utils/interface/part";
-import { Products } from "@/utils/Enum";
+import { Infos, Products } from "@/utils/Enum";
 import { useState } from "react";
 
 const Components: InfoComponentObject<
-  Omit<Part.BasicInfo, "id" | "part" | "name" | "image_url">
+  Omit<Part.DTO, "id" | "part" | "name" | "image_url" | Infos>
 > = {
   code_name: (props) => <Input {...props} />,
   brand: (props) => <Input {...props} />,
@@ -42,11 +42,10 @@ export default function PartForm({
 }: {
   path: string;
   part: Products;
-  defaultValue?: Part.BasicInfo;
+  defaultValue?: Part.DTO;
 }) {
   const [formValue, save, pending, error, setError] = usePartAction(
     path,
-    part,
     defaultValue
   );
 
@@ -107,7 +106,7 @@ function PictureInput({
 }: {
   part: Products;
   className?: string;
-  defaultValue?: Part.BasicInfo;
+  defaultValue?: Part.DTO;
 }) {
   const [image, setImage] = useState<string | undefined>(
     defaultValue?.image_url ?? undefined

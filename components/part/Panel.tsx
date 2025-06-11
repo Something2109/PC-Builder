@@ -3,7 +3,7 @@ import { Products } from "@/utils/Enum";
 import { RedirectButton } from "../utils/Button";
 import PartPicture from "./Picture";
 
-export default function PartPanel({ item }: { item: Part.BasicInfo }) {
+export default function PartPanel({ item }: { item: Part.Summary }) {
   return (
     <RedirectButton
       href={`/part/${item.part}/${item.id}`}

@@ -1,4 +1,5 @@
 import Part from "@/utils/interface/part";
+import { Infos } from "@/utils/Enum";
 import { TableHTMLAttributes } from "react";
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import {
@@ -9,7 +10,7 @@ import PartPicture from "../Picture";
 import { RedirectButton } from "@/components/utils/Button";
 
 const Components: InfoComponentObject<
-  Omit<Part.BasicInfo, "id" | "part" | "name" | "image_url">
+  Omit<Part.DTO, "id" | "part" | "name" | "image_url" | Infos>
 > = {
   code_name: ({ defaultValue: value }) => value,
   brand: ({ defaultValue: value }) => value,

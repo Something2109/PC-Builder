@@ -25,14 +25,10 @@ function createPayload(formData: FormData | null) {
   return RequestPayload;
 }
 
-export default function usePartAction(
-  path: string,
-  part: Products,
-  defaultValue?: Part.BasicInfo
-) {
+export default function usePartAction(path: string, defaultValue?: Part.DTO) {
   const [error, setError] = useState<string | null>(null);
   const [formValue, save, pending] = useActionState<
-    Part.BasicInfo | undefined,
+    Part.DTO | undefined,
     FormData | null
   >(async (prev, formData) => {
     const operation = prev ? (formData ? "save" : "delete") : "add";
