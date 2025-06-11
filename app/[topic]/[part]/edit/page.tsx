@@ -1,11 +1,12 @@
 "use client";
 
-import { EditableArticle } from "@/components/article";
+import { EditableArticle } from "@/components/articles/Form";
 import { Article } from "@/utils/interface/article/article";
 import { Button, RedirectButton } from "@/components/utils/Button";
 import { NotificationBar } from "@/components/utils/NotificationBar";
 import { use, useEffect, useState } from "react";
 import { ColumnWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
+import axios, { AxiosError } from "axios";
 
 export default function PartTopicEditPage({
   params,
@@ -41,15 +42,18 @@ export default function PartTopicEditPage({
   async function save() {
     setNoti(null);
 
-    const response = await fetch(SaveLink, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-    if (response.ok) {
-      setData(await response.json());
+    try {
+      const response = await axios.post(SaveLink, data, {
+        withCredentials: true,
+      });
+      setData(response.data);
       setNoti({ message: "Save successful", alert: false });
-    } else {
-      setNoti({ message: (await response.json()).message, alert: true });
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      const message =
+        error.response?.data.message ?? "Cannot connect to server.";
+
+      setNoti({ message, alert: true });
       setData({
         title: "",
         author: "admin",

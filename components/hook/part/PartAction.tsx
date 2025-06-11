@@ -3,9 +3,12 @@
 import Part from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
 import { useActionState, useState } from "react";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
 function createPayload(formData: FormData | null) {
-  const RequestPayload: RequestInit = {};
+  const RequestPayload: Omit<AxiosRequestConfig, "url"> = {
+    withCredentials: true,
+  };
 
   if (formData) {
     const raw = Object.fromEntries(formData.entries()) as any;
@@ -14,8 +17,7 @@ function createPayload(formData: FormData | null) {
 
     const data = Part.BasicInfo.omit({ id: true, part: true }).parse(raw);
     RequestPayload.method = "POST";
-    RequestPayload.headers = { "Content-Type": "application/json" };
-    RequestPayload.body = JSON.stringify(data);
+    RequestPayload.data = data;
   } else {
     RequestPayload.method = "DELETE";
   }
@@ -34,24 +36,26 @@ export default function usePartAction(
     FormData | null
   >(async (prev, formData) => {
     const operation = prev ? (formData ? "save" : "delete") : "add";
-    const RequestPayload: RequestInit = createPayload(formData);
+    const RequestPayload = { ...createPayload(formData), url: path };
 
     setError(null);
     if (!confirm(`Are you sure you want to ${operation} basic info?`))
       return prev;
 
-    const response = await fetch(path, RequestPayload);
+    try {
+      const response = await axios.request<Part.BasicInfo>(RequestPayload);
 
-    if (!response.ok) {
-      setError((await response.json()).message);
+      alert(`Successfully ${operation} part info.`);
+
+      return response.data;
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      const message =
+        error.response?.data.message ?? "Cannot connect to server.";
+
+      setError(message);
       return prev;
     }
-
-    const newData = (await response.json()) as Part.BasicInfo;
-
-    alert(`Successfully ${operation} part info.`);
-
-    return newData;
   }, defaultValue);
 
   return [formValue, save, pending, error, setError] as const;

@@ -2,6 +2,7 @@
 
 import Build from "@/utils/interface/build";
 import { createContext, useActionState, useContext } from "react";
+import axios from "axios";
 
 const DefaultResult = { missing: {}, rules: {}, products: {} };
 
@@ -22,17 +23,18 @@ const ValidationContext = createContext<Validation>({
 function useValidateAction() {
   const [state, setState, pending] = useActionState<Build.Result, Build.List>(
     async (_, list) => {
-      const response = await fetch(`/api/build/validate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(list),
-      });
+      try {
+        const response = await axios.post<Build.Result>(
+          `/api/build/validate`,
+          list,
+          { withCredentials: true }
+        );
 
-      if (!response.ok) return DefaultResult;
-
-      const result = await response.json();
-
-      return result;
+        return response.data;
+      } catch (err) {
+        console.error(err);
+      }
+      return DefaultResult;
     },
     DefaultResult
   );

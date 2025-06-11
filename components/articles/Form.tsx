@@ -6,6 +6,7 @@ import { TextArea } from "@/components/utils/Input";
 import { ColumnWrapper, RowWrapper } from "../utils/FlexWrapper";
 import { Button, RedirectButton } from "../utils/Button";
 import { NotificationBar } from "../utils/NotificationBar";
+import axios, { AxiosError } from "axios";
 
 const Content = Article.ContentName;
 
@@ -122,18 +123,22 @@ function EditableArticle({ article }: { article: Article.Type }) {
     async (data) => {
       setNoti(null);
 
-      const response = await fetch(`/api/article/${id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      const body = await response.json();
-
-      if (response.ok) {
+      try {
+        const response = await axios.post(`/api/article/${id}`, data, {
+          withCredentials: true,
+        });
         setNoti({ message: "Save successful", alert: false });
-        return body;
+
+        return response.data;
+      } catch (err) {
+        const error = err as AxiosError<{ message: string }>;
+        const message =
+          error.response?.data.message ?? "Cannot connect to server.";
+
+        setNoti({ message, alert: true });
+        alert(error.response?.data);
       }
-      setNoti({ message: body.message, alert: true });
+
       return data;
     },
     initial

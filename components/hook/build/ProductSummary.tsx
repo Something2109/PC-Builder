@@ -3,6 +3,7 @@ import Part from "@/utils/interface/part";
 import { API } from "@/utils/interface/api";
 import { Products } from "@/utils/Enum";
 import { useEffect, useState, useReducer, useTransition } from "react";
+import axios, { AxiosError } from "axios";
 
 type ProductLoad = {
   loading: boolean;
@@ -39,18 +40,21 @@ function useProductSummary(product: Products): ProductLoad {
   useEffect(
     () =>
       startTransition(async () => {
-        const response = await fetch(
-          `/api/build/${product}?${params.toString()}&page=${page}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: includeBuild ? JSON.stringify(list) : undefined,
-          }
-        );
+        try {
+          const response = await axios.post<API.Payload<Part.Summary>>(
+            `/api/build/${product}?${params.toString()}&page=${page}`,
+            includeBuild ? list : undefined,
+            { withCredentials: true }
+          );
 
-        setData(response.ok ? await response.json() : null);
+          setData(response.data);
 
-        window.scroll({ top: 0, behavior: "smooth" });
+          window.scroll({ top: 0, behavior: "smooth" });
+        } catch (err) {
+          const error = err as AxiosError;
+          console.error(error);
+          setData(null);
+        }
       }),
     [product, params, page, includeBuild]
   );

@@ -3,6 +3,7 @@
 import Part, { Information } from "@/utils/interface/part";
 import { Infos } from "@/utils/Enum";
 import { useRef, useActionState, useState } from "react";
+import axios, { AxiosError } from "axios";
 
 export function useInfoAction(
   path: string,
@@ -14,9 +15,8 @@ export function useInfoAction(
   const [formValue, save, pending] = useActionState<
     Partial<Part.DTO[typeof info]> | null,
     Partial<Part.DTO[typeof info]> | null
-  >(async (prev, data) => {
-    const operation = prev ? (data ? "save" : "delete") : "add";
-    const body = JSON.stringify({ [info]: data });
+  >(async (prev, raw) => {
+    const operation = prev ? (raw ? "save" : "delete") : "add";
 
     setError(null);
     if (
@@ -24,22 +24,24 @@ export function useInfoAction(
     )
       return prev;
 
-    const response = await fetch(path, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body,
-    });
+    try {
+      const response = await axios.post<Part.DTO>(
+        path,
+        { [info]: raw },
+        { withCredentials: true }
+      );
 
-    if (!response.ok) {
-      setError((await response.json()).message);
+      alert(`Successfully ${operation} ${label.current} info.`);
+
+      return response.data[info];
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      const message =
+        error.response?.data.message ?? "Cannot connect to server.";
+
+      setError(message);
       return prev;
     }
-
-    const newData = (await response.json()) as Part.DTO;
-
-    alert(`Successfully ${operation} ${label.current} info.`);
-
-    return newData[info];
   }, defaultValue[info]);
 
   return [formValue, save, pending, error, setError] as const;
