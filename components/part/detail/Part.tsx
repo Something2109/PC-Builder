@@ -10,12 +10,11 @@ import PartPicture from "../Picture";
 import { RedirectButton } from "@/components/utils/Button";
 
 const Components: InfoComponentObject<
-  Omit<Part.DTO, "id" | "part" | "name" | "image_url" | Infos>
+  Omit<Part.DTO, "id" | "part" | "name" | "url" | "image_url" | Infos>
 > = {
   code_name: ({ defaultValue: value }) => value,
   brand: ({ defaultValue: value }) => value,
   series: ({ defaultValue: value }) => value,
-  url: ({ defaultValue: value }) => value,
   launch_date: ({ defaultValue: value }) =>
     new Date(value ?? new Date()).toISOString().slice(0, 10),
 };
