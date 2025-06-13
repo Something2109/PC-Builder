@@ -115,6 +115,7 @@ function PictureInput({
   return (
     <ColumnWrapper className={className}>
       <PartPicture
+        className="w-full"
         part={part}
         src={image}
         onError={() => setImage(undefined)}
