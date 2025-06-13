@@ -36,8 +36,8 @@ export function PartTable({
         part={part}
         src={defaultValue.image_url ?? undefined}
       />
-      <ColumnWrapper className="w-full lg:w-2/3 p-5">
-        <h1 className="text-4xl font-bold">{defaultValue.name}</h1>
+      <ColumnWrapper className="w-full lg:w-2/3 px-5 justify-center">
+        <h1 className="text-4xl font-bold mb-4">{defaultValue.name}</h1>
         <PartInfo defaultValue={defaultValue} />
         {url ? (
           <RedirectButton href={url} target="_blank">

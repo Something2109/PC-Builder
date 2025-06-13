@@ -8,8 +8,9 @@ import { Button, RedirectButton } from "@/components/utils/Button";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
+  RowWrapper,
 } from "@/components/utils/FlexWrapper";
-import { Input } from "@/components/utils/Input";
+import { Input, TextArea } from "@/components/utils/Input";
 import Part from "@/utils/interface/part";
 import { Infos, Products } from "@/utils/Enum";
 import { useState } from "react";
@@ -25,6 +26,7 @@ const Components: InfoComponentObject<
   ),
   launch_date: ({ defaultValue, value, ...props }) => (
     <Input
+      type="date"
       defaultValue={new Date(defaultValue ?? new Date())
         .toISOString()
         .slice(0, 10)}
@@ -60,11 +62,11 @@ export default function PartForm({
           defaultValue={defaultValue}
         />
 
-        <ColumnWrapper className="w-full lg:w-2/3 p-5">
-          <Input
+        <ColumnWrapper className="w-full lg:w-2/3 px-5 justify-center">
+          <TextArea
             name="name"
             placeholder="Name"
-            className="text-4xl font-bold"
+            className="text-4xl font-bold mb-4"
             defaultValue={name}
             required
           />
@@ -74,18 +76,20 @@ export default function PartForm({
               To brand page
             </RedirectButton>
           )}
-          <Button type="submit" className="w-full" disabled={pending}>
-            {pending ? "Saving..." : "Save"}
-          </Button>
-          {!pending && formValue && (
-            <Button
-              type="submit"
-              className="w-full"
-              formAction={() => save(null)}
-            >
-              Delete
+          <RowWrapper>
+            {!pending && formValue && (
+              <Button
+                type="submit"
+                className="px-2 flex-1"
+                formAction={() => save(null)}
+              >
+                Delete
+              </Button>
+            )}
+            <Button type="submit" className="w-full" disabled={pending}>
+              {pending ? "Saving..." : "Save"}
             </Button>
-          )}
+          </RowWrapper>
           {error && (
             <NotificationBar
               message={error}
