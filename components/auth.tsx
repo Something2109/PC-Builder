@@ -162,9 +162,9 @@ export function useRefreshAction(pathname?: string | null) {
       try {
         const response = await axios.post("/api/auth/refresh", undefined, {
           withCredentials: true,
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: token ? `Bearer ${token}` : undefined },
         });
-        setUser(response.data.refresh_token);
+        setUser(response.data);
         router.replace(pathname);
       } catch (err) {
         router.replace(`${LoginPath}?redirect=${pathname}`);
