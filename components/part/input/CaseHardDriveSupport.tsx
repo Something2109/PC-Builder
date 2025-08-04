@@ -5,7 +5,7 @@ import { Button, DeleteButton } from "@/components/utils/Button";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import CaseHardDriveSupport from "@/utils/interface/part/info/CaseHardDriveSupport";
 import { Case } from "@/utils/interface/utils";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 function MainComponent({
   defaultValue,
@@ -53,46 +53,50 @@ function PlaceRow({
     defaultValue
   );
   const rowSpan = Math.min(
-    savedInputValues.length + 1,
-    Case.HardDriveFormFactor.options.length
+    savedInputValues.length + 2,
+    Case.HardDriveFormFactor.options.length + 1
   );
 
   return (
     <>
-      {savedInputValues.map(([key, value], index) => (
-        <Table.Row key={`drive-${place}-${key}`}>
-          {index === 0 && (
-            <Table.Cell className="font-bold" rowSpan={rowSpan}>
-              {place}
-            </Table.Cell>
-          )}
+      <Table.Row>
+        <Table.Cell className="font-bold" rowSpan={rowSpan}>
+          {place}
+        </Table.Cell>
+      </Table.Row>
+      {savedInputValues.map(([key, value]) => (
+        <Table.Row className="relative" key={`drive-${place}-${key}`}>
+          <ValueRow value={value} />
           <Table.Cell>
-            <label>{value.form_factor}</label>
-          </Table.Cell>
-          <Table.Cell className="relative">
-            <Input
-              type="number"
-              name={`${place}___${value.form_factor}`}
-              defaultValue={value.count ?? 0}
-              onChange={(e) => (value.count = Number(e.target.value))}
-            />
             <DeleteButton onClick={() => deleteName(value)} />
           </Table.Cell>
         </Table.Row>
       ))}
-      <AddRow exist={existName} add={addName}>
-        {savedInputValues.length === 0 && place}
-      </AddRow>
+      <AddRow exist={existName} add={addName} />
     </>
   );
 }
 
+const ValueRow = memo(({ value }: { value: CaseHardDriveSupport.DTO }) => (
+  <>
+    <Table.Cell>
+      <label>{value.form_factor}</label>
+    </Table.Cell>
+    <Table.Cell>
+      <Input
+        type="number"
+        name={`${value.place}___${value.form_factor}`}
+        defaultValue={value.count ?? 0}
+        onChange={(e) => (value.count = Number(e.target.value))}
+      />
+    </Table.Cell>
+  </>
+));
+
 function AddRow({
-  children,
   exist,
   add,
 }: {
-  children?: React.ReactNode;
   exist: (name: Case.HardDriveFormFactor) => boolean;
   add: (value: Case.HardDriveFormFactor) => void;
 }) {
@@ -108,7 +112,6 @@ function AddRow({
   return (
     options.length > 0 && (
       <Table.Row>
-        <Table.Cell className="font-bold">{children}</Table.Cell>
         <Table.Cell>
           <OptionSelect ref={FormFactorInput} options={options} required />
         </Table.Cell>
