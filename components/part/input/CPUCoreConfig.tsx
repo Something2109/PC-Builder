@@ -6,7 +6,7 @@ import { Button, DeleteButton } from "@/components/utils/Button";
 import useDebounce from "@/components/utils/Debounce";
 import CPUCoreConfig from "@/utils/interface/part/info/CPUCoreConfig";
 import { FrequencyUnits } from "@/utils/extract/Units";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 function Component({
   defaultValue,
@@ -37,53 +37,14 @@ function Component({
         </Table.Row>
       </Table.Head>
       <tbody>
-        {savedInputValues.map(([key, value], index) => {
-          const onChange = useDebounce(
-            (e: React.ChangeEvent<HTMLInputElement>) => {
-              const info = changeName(value, { name: e.target.value });
-              e.target.value = info.name;
-            },
-            1000
-          );
-
-          const name = String(new Date().getTime() + index);
-
-          return (
-            <Table.Row key={`core-${key}`}>
-              <Table.Cell>
-                <Input
-                  name={`${name}___name`}
-                  defaultValue={value.name}
-                  onChange={onChange}
-                />
-              </Table.Cell>
-              <Table.Cell>
-                <Input
-                  type="number"
-                  name={`${name}___count`}
-                  defaultValue={value.count ?? 0}
-                />
-              </Table.Cell>
-              <Table.Cell>
-                <UnitInput
-                  Unit={FrequencyUnits}
-                  name={`${name}___base_frequency`}
-                  defaultValue={value.base_frequency ?? 0}
-                  defaultUnit="GHz"
-                />
-              </Table.Cell>
-              <Table.Cell className="relative">
-                <UnitInput
-                  Unit={FrequencyUnits}
-                  name={`${name}___turbo_frequency`}
-                  defaultValue={value.turbo_frequency ?? 0}
-                  defaultUnit="GHz"
-                />
-                <DeleteButton onClick={() => deleteName(value)} />
-              </Table.Cell>
-            </Table.Row>
-          );
-        })}
+        {savedInputValues.map(([key, value]) => (
+          <ValueRow
+            key={key}
+            value={value}
+            changeName={changeName}
+            deleteName={deleteName}
+          />
+        ))}
         <Table.Row>
           <Table.Cell>
             <Input ref={AddInput} />
@@ -106,6 +67,64 @@ function Component({
 type MappingFormdata = {
   [key in string]: { [key in string]: string | number };
 };
+
+const ValueRow = memo(
+  ({
+    value,
+    changeName,
+    deleteName,
+  }: {
+    value: CPUCoreConfig.DTO;
+    changeName: (
+      value: CPUCoreConfig.DTO,
+      info: CPUCoreConfig.DTO
+    ) => CPUCoreConfig.DTO;
+    deleteName: (value: CPUCoreConfig.DTO) => void;
+  }) => {
+    const onChange = useDebounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      const info = changeName(value, { name: e.target.value });
+      e.target.value = info.name;
+    }, 1000);
+
+    const name = String(new Date().getTime());
+
+    return (
+      <Table.Row>
+        <Table.Cell>
+          <Input
+            name={`${name}___name`}
+            defaultValue={value.name}
+            onChange={onChange}
+          />
+        </Table.Cell>
+        <Table.Cell>
+          <Input
+            type="number"
+            name={`${name}___count`}
+            defaultValue={value.count ?? 0}
+          />
+        </Table.Cell>
+        <Table.Cell>
+          <UnitInput
+            Unit={FrequencyUnits}
+            name={`${name}___base_frequency`}
+            defaultValue={value.base_frequency ?? 0}
+            defaultUnit="GHz"
+          />
+        </Table.Cell>
+        <Table.Cell className="relative">
+          <UnitInput
+            Unit={FrequencyUnits}
+            name={`${name}___turbo_frequency`}
+            defaultValue={value.turbo_frequency ?? 0}
+            defaultUnit="GHz"
+          />
+          <DeleteButton onClick={() => deleteName(value)} />
+        </Table.Cell>
+      </Table.Row>
+    );
+  }
+);
 
 function submit(formData: FormData) {
   const raw = formData.entries().reduce((acc, [key, value]) => {

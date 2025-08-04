@@ -5,7 +5,7 @@ import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import MainboardPowerConnector from "@/utils/interface/part/info/MainboardPowerConnector";
 import { InternalConnectors } from "@/utils/interface/utils";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 function Component({
   defaultValue,
@@ -29,26 +29,38 @@ function Component({
       </Table.Head>
       <tbody>
         {formFactors.map(([key, value]) => (
-          <Table.Row key={`power-${key}`}>
-            <Table.Cell>
-              <label>{value.type}</label>
-            </Table.Cell>
-            <Table.Cell className="relative">
-              <Input
-                type="number"
-                name={value.type}
-                defaultValue={value.count ?? 0}
-                onChange={(e) => (value.count = Number(e.target.value))}
-              />
-              <DeleteButton onClick={() => deleteConnector(value)} />
-            </Table.Cell>
-          </Table.Row>
+          <ValueRow key={key} value={value} deleteConnector={deleteConnector} />
         ))}
         <AddRow exist={existConnector} add={addConnector} />
       </tbody>
     </Table.Component>
   );
 }
+
+const ValueRow = memo(
+  ({
+    value,
+    deleteConnector,
+  }: {
+    value: MainboardPowerConnector.DTO;
+    deleteConnector: (value: MainboardPowerConnector.DTO) => void;
+  }) => (
+    <Table.Row>
+      <Table.Cell>
+        <label>{value.type}</label>
+      </Table.Cell>
+      <Table.Cell className="relative">
+        <Input
+          type="number"
+          name={value.type}
+          defaultValue={value.count ?? 0}
+          onChange={(e) => (value.count = Number(e.target.value))}
+        />
+        <DeleteButton onClick={() => deleteConnector(value)} />
+      </Table.Cell>
+    </Table.Row>
+  )
+);
 
 function AddRow({
   exist,

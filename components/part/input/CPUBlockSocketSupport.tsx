@@ -5,6 +5,7 @@ import useDebounce from "@/components/utils/Debounce";
 import { Input } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import CPUBlockSocketSupport from "@/utils/interface/part/info/CPUBlockSocketSupport";
+import { memo } from "react";
 
 function Component({
   defaultValue,
@@ -25,28 +26,14 @@ function Component({
         </Table.Row>
       </Table.Head>
       <tbody>
-        {socketSet.map(([key, value]) => {
-          const onChange = useDebounce(
-            (e: React.ChangeEvent<HTMLInputElement>) => {
-              const info = changeSocket(value, { socket: e.target.value });
-              e.target.value = info.socket;
-            },
-            500
-          );
-
-          return (
-            <Table.Row key={`socket-${key}`}>
-              <Table.Cell className="relative">
-                <Input
-                  name="socket"
-                  defaultValue={value.socket}
-                  onChange={onChange}
-                />
-                <DeleteButton onClick={() => deleteName(value)} />
-              </Table.Cell>
-            </Table.Row>
-          );
-        })}
+        {socketSet.map(([key, value]) => (
+          <ValueRow
+            key={key}
+            value={value}
+            changeSocket={changeSocket}
+            deleteName={deleteName}
+          />
+        ))}
         <Table.Row>
           <Table.Cell>
             <Button type="button" className="w-full" onClick={addName}>
@@ -58,6 +45,39 @@ function Component({
     </Table.Component>
   );
 }
+
+const ValueRow = memo(
+  ({
+    value,
+    changeSocket,
+    deleteName,
+  }: {
+    value: CPUBlockSocketSupport.DTO;
+    changeSocket: (
+      value: CPUBlockSocketSupport.DTO,
+      info: CPUBlockSocketSupport.DTO
+    ) => CPUBlockSocketSupport.DTO;
+    deleteName: (value: CPUBlockSocketSupport.DTO) => void;
+  }) => {
+    const onChange = useDebounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      const info = changeSocket(value, { socket: e.target.value });
+      e.target.value = info.socket;
+    }, 500);
+
+    return (
+      <Table.Row>
+        <Table.Cell className="relative">
+          <Input
+            name="socket"
+            defaultValue={value.socket}
+            onChange={onChange}
+          />
+          <DeleteButton onClick={() => deleteName(value)} />
+        </Table.Cell>
+      </Table.Row>
+    );
+  }
+);
 
 function submit(formData: FormData) {
   return formData

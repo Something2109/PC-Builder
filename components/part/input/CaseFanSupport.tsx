@@ -5,7 +5,7 @@ import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import CaseFanSupport from "@/utils/interface/part/info/CaseFanSupport";
 import { Case, FormFactor } from "@/utils/interface/utils";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 function MainComponent({
   defaultValue,
@@ -52,46 +52,50 @@ function SideRow({
     defaultValue
   );
   const rowSpan = Math.min(
-    savedInputValues.length + 1,
-    FormFactor.Fan.options.length
+    savedInputValues.length + 2,
+    FormFactor.Fan.options.length + 1
   );
 
   return (
     <>
-      {savedInputValues.map(([key, val], index) => (
-        <Table.Row key={`fan-${case_side}-${key}`}>
-          {index === 0 && (
-            <Table.Cell className="font-bold" rowSpan={rowSpan}>
-              {case_side}
-            </Table.Cell>
-          )}
+      <Table.Row>
+        <Table.Cell className="font-bold" rowSpan={rowSpan}>
+          {case_side}
+        </Table.Cell>
+      </Table.Row>
+      {savedInputValues.map(([key, val]) => (
+        <Table.Row className="relative" key={`fan-${case_side}-${key}`}>
+          <ValueRow value={val} />
           <Table.Cell>
-            <label>{val.form_factor}</label>
-          </Table.Cell>
-          <Table.Cell className="relative">
-            <Input
-              type="number"
-              name={`${case_side}___${val.form_factor}`}
-              defaultValue={val.count ?? 0}
-              onChange={(e) => (val.count = Number(e.target.value))}
-            />
             <DeleteButton onClick={() => deleteName(val)} />
           </Table.Cell>
         </Table.Row>
       ))}
-      <AddRow exist={existName} add={addName}>
-        {savedInputValues.length === 0 && case_side}
-      </AddRow>
+      <AddRow exist={existName} add={addName} />
     </>
   );
 }
 
+const ValueRow = memo(({ value }: { value: CaseFanSupport.DTO }) => (
+  <>
+    <Table.Cell>
+      <label>{value.form_factor}</label>
+    </Table.Cell>
+    <Table.Cell>
+      <Input
+        type="number"
+        name={`${value.case_side}___${value.form_factor}`}
+        defaultValue={value.count ?? 0}
+        onChange={(e) => (value.count = Number(e.target.value))}
+      />
+    </Table.Cell>
+  </>
+));
+
 function AddRow({
-  children,
   exist,
   add,
 }: {
-  children?: React.ReactNode;
   exist: (name: FormFactor.Fan) => boolean;
   add: (value: FormFactor.Fan) => void;
 }) {
@@ -107,7 +111,6 @@ function AddRow({
   return (
     options.length > 0 && (
       <Table.Row>
-        <Table.Cell className="font-bold">{children}</Table.Cell>
         <Table.Cell>
           <OptionSelect ref={FormFactorInput} options={options} required />
         </Table.Cell>

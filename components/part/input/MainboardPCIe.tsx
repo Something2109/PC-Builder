@@ -5,7 +5,7 @@ import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import MainboardPCIe from "@/utils/interface/part/info/MainboardPCIe";
 import { InternalConnectors } from "@/utils/interface/utils";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 function Component({
   defaultValue,
@@ -64,49 +64,61 @@ function ControllerRow({
 
   return (
     <>
-      {SavedInputValues.map(([key, value], index, arr) => (
-        <Table.Row key={`pcie-${controller}-${key}`}>
-          {index === 0 && (
-            <Table.Cell className="font-bold" rowSpan={arr.length + 1}>
-              {controller}
-            </Table.Cell>
-          )}
-          <Table.Cell colSpan={0} className="hidden">
-            <Input
-              type="hidden"
-              name={`${key}___controller`}
-              value={value.controller}
-            />
-          </Table.Cell>
+      <Table.Row>
+        <Table.Cell className="font-bold" rowSpan={SavedInputValues.length + 2}>
+          {controller}
+        </Table.Cell>
+      </Table.Row>
+      {SavedInputValues.map(([key, value]) => (
+        <Table.Row className="relative" key={`pcie-${controller}-${key}`}>
+          <ValueRow value={value} />
           <Table.Cell>
-            <Input name={`${key}___version`} value={value.version} readOnly />
-          </Table.Cell>
-          <Table.Cell>
-            <Input name={`${key}___width`} value={value.width} readOnly />
-          </Table.Cell>
-          <Table.Cell className="relative">
-            <Input
-              type="number"
-              name={`${key}___count`}
-              defaultValue={value.count ?? 0}
-              onChange={(e) => (value.count = Number(e.target.value))}
-            />
             <DeleteButton onClick={() => deletePCIe(value)} />
           </Table.Cell>
         </Table.Row>
       ))}
-      <AddRow add={addPCIe}>
-        {SavedInputValues.length === 0 && controller}
-      </AddRow>
+      <AddRow add={addPCIe} />
     </>
   );
 }
 
+const ValueRow = memo(({ value }: { value: MainboardPCIe.DTO }) => (
+  <>
+    <Table.Cell colSpan={0} className="hidden">
+      <Input
+        type="hidden"
+        name={`${value.controller}___controller`}
+        value={value.controller}
+      />
+    </Table.Cell>
+    <Table.Cell>
+      <Input
+        name={`${value.controller}___version`}
+        value={value.version}
+        readOnly
+      />
+    </Table.Cell>
+    <Table.Cell>
+      <Input
+        name={`${value.controller}___width`}
+        value={value.width}
+        readOnly
+      />
+    </Table.Cell>
+    <Table.Cell>
+      <Input
+        type="number"
+        name={`${value.controller}___count`}
+        defaultValue={value.count ?? 0}
+        onChange={(e) => (value.count = Number(e.target.value))}
+      />
+    </Table.Cell>
+  </>
+));
+
 function AddRow({
-  children,
   add,
 }: {
-  children?: React.ReactNode;
   add: (version: number, width: InternalConnectors.PCIe.Width) => void;
 }) {
   const VersionInput = useRef<HTMLInputElement>(null);
@@ -121,7 +133,6 @@ function AddRow({
 
   return (
     <Table.Row>
-      {children && <Table.Cell className="font-bold">{children}</Table.Cell>}
       <Table.Cell>
         <Input ref={VersionInput} type="number" defaultValue={0} />
       </Table.Cell>

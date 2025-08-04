@@ -6,7 +6,7 @@ import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import GraphicCardPort from "@/utils/interface/part/info/GraphicCardPort";
 import { ExternalPorts } from "@/utils/interface/utils";
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 
 function Component({
   defaultValue,
@@ -45,23 +45,7 @@ function Component({
                   {value.type}
                 </Table.Cell>
               )}
-              <Table.Cell>
-                <Input name={`${key}___name`} value={value.name} readOnly />
-              </Table.Cell>
-              <Table.Cell className="relative">
-                <Input
-                  type="hidden"
-                  name={`${key}___type`}
-                  value={value.type}
-                />
-                <Input
-                  type="number"
-                  name={`${key}___count`}
-                  defaultValue={value.count ?? 0}
-                  onChange={(e) => (value.count = Number(e.target.value))}
-                />
-                <DeleteButton onClick={() => deleteName(value)} />
-              </Table.Cell>
+              <ValueRow value={value} deleteName={deleteName} />
             </Table.Row>
           ))
         )}
@@ -70,6 +54,32 @@ function Component({
     </Table.Component>
   );
 }
+
+const ValueRow = memo(function ({
+  value,
+  deleteName,
+}: {
+  value: GraphicCardPort.DTO;
+  deleteName: (value: GraphicCardPort.DTO) => void;
+}) {
+  return (
+    <>
+      <Table.Cell>
+        <Input name={`${value.name}___name`} value={value.name} readOnly />
+      </Table.Cell>
+      <Table.Cell className="relative">
+        <Input type="hidden" name={`${value.name}___type`} value={value.type} />
+        <Input
+          type="number"
+          name={`${value.name}___count`}
+          defaultValue={value.count ?? 0}
+          onChange={(e) => (value.count = Number(e.target.value))}
+        />
+        <DeleteButton onClick={() => deleteName(value)} />
+      </Table.Cell>
+    </>
+  );
+});
 
 function AddRow({
   add,

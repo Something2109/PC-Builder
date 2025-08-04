@@ -5,7 +5,7 @@ import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import MainboardUSBConnector from "@/utils/interface/part/info/MainboardUSBConnector";
 import { ExternalPorts } from "@/utils/interface/utils";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 function Component({
   defaultValue,
@@ -37,37 +37,46 @@ function Component({
       </Table.Head>
       <tbody>
         {SavedInputValues.map(([key, value]) => (
-          <Table.Row key={`usb-${key}`}>
-            <Table.Cell>
-              <Input
-                name={`${key}___generation`}
-                value={value.generation}
-                readOnly
-              />
-            </Table.Cell>
-            <Table.Cell>
-              <Input
-                name={`${key}___connector`}
-                value={value.connector}
-                readOnly
-              />
-            </Table.Cell>
-            <Table.Cell className="relative">
-              <Input
-                type="number"
-                name={`${key}___count`}
-                defaultValue={value.count ?? 0}
-                onChange={(e) => (value.count = Number(e.target.value))}
-              />
-              <DeleteButton onClick={() => deleteName(value)} />
-            </Table.Cell>
-          </Table.Row>
+          <ValueRow key={key} value={value} deleteName={deleteName} />
         ))}
         <AddRow add={addName} />
       </tbody>
     </Table.Component>
   );
 }
+
+const ValueRow = memo(function ({
+  value,
+  deleteName,
+}: {
+  value: MainboardUSBConnector.DTO;
+  deleteName: (value: MainboardUSBConnector.DTO) => void;
+}) {
+  const key = ExternalPorts.Peripheral.USB.toString(
+    value.generation,
+    value.connector
+  );
+
+  return (
+    <Table.Row key={`usb-${key}`}>
+      <Table.Cell>
+        <Input name={`${key}___generation`} value={value.generation} readOnly />
+      </Table.Cell>
+      <Table.Cell>
+        <Input name={`${key}___connector`} value={value.connector} readOnly />
+      </Table.Cell>
+      <Table.Cell className="relative">
+        <Input
+          type="number"
+          name={`${key}___count`}
+          defaultValue={value.count ?? 0}
+          onChange={(e) => (value.count = Number(e.target.value))}
+        />
+        <DeleteButton onClick={() => deleteName(value)} />
+      </Table.Cell>
+    </Table.Row>
+  );
+});
 
 function AddRow({
   add,

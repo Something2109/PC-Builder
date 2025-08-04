@@ -6,7 +6,7 @@ import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import PartExternalPorts from "@/utils/interface/part/info/PartExternalPorts";
 import { ExternalPorts } from "@/utils/interface/utils";
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 
 function Component({
   defaultValue,
@@ -138,6 +138,22 @@ function PortTypeInputField({
           {value.type}
         </Table.Cell>
       )}
+      <ValueRow value={value} deleteName={onDelete} />
+    </Table.Row>
+  ));
+}
+
+const ValueRow = memo(function ({
+  value,
+  deleteName: onDelete,
+}: {
+  value: PartExternalPorts.DTO;
+  deleteName: (value: PartExternalPorts.DTO) => void;
+}) {
+  const key = `${value.type} ${value.name}`;
+
+  return (
+    <>
       <Table.Cell>
         <Input name={`${key}___name`} value={value.name} readOnly />
         <Input type="hidden" name={`${key}___type`} value={value.type} />
@@ -151,9 +167,9 @@ function PortTypeInputField({
         />
         <DeleteButton onClick={() => onDelete(value)} />
       </Table.Cell>
-    </Table.Row>
-  ));
-}
+    </>
+  );
+});
 
 type MappingFormdata = {
   [key in string]: { [key in string]: string | number };

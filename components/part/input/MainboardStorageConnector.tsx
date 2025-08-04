@@ -5,7 +5,7 @@ import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import MainboardStorageConnector from "@/utils/interface/part/info/MainboardStorageConnector";
 import { InternalConnectors } from "@/utils/interface/utils";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 function Component({
   defaultValue,
@@ -32,26 +32,42 @@ function Component({
       </Table.Head>
       <tbody>
         {formFactors.map(([connector, value]) => (
-          <Table.Row key={`storage-${connector}`}>
-            <Table.Cell>
-              <label>{connector}</label>
-            </Table.Cell>
-            <Table.Cell className="relative">
-              <Input
-                type="number"
-                name={connector}
-                defaultValue={value.count ?? 0}
-                onChange={(e) => (value.count = Number(e.target.value))}
-              />
-              <DeleteButton onClick={() => deleteConnector(value)} />
-            </Table.Cell>
-          </Table.Row>
+          <ValueRow
+            key={connector}
+            value={value}
+            deleteConnector={deleteConnector}
+          />
         ))}
         <AddRow exist={existConnector} add={addConnector} />
       </tbody>
     </Table.Component>
   );
 }
+
+const ValueRow = memo(
+  ({
+    value,
+    deleteConnector,
+  }: {
+    value: MainboardStorageConnector.DTO;
+    deleteConnector: (value: MainboardStorageConnector.DTO) => void;
+  }) => (
+    <Table.Row key={`storage-${value.form_factor}`}>
+      <Table.Cell>
+        <label>{value.form_factor}</label>
+      </Table.Cell>
+      <Table.Cell className="relative">
+        <Input
+          type="number"
+          name={value.form_factor}
+          defaultValue={value.count ?? 0}
+          onChange={(e) => (value.count = Number(e.target.value))}
+        />
+        <DeleteButton onClick={() => deleteConnector(value)} />
+      </Table.Cell>
+    </Table.Row>
+  )
+);
 
 function AddRow({
   exist,

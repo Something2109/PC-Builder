@@ -5,7 +5,7 @@ import { OptionSelect, SuffixInput, UnitInput } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import CPUMemory from "@/utils/interface/part/info/CPUMemory";
 import { InternalConnectors } from "@/utils/interface/utils";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import {
   MemorySpeedUnit,
   MemoryUnits,
@@ -43,54 +43,70 @@ function Component({
       </Table.Head>
       <tbody>
         {formFactors.map(([type, value]) => (
-          <Table.Row key={`memory-${type}`}>
-            <Table.Cell>
-              <label>{type}</label>
-            </Table.Cell>
-            <Table.Cell>
-              <UnitInput
-                name={`${type}-speed`}
-                Unit={TransferSpeedUnit}
-                defaultUnit="MT/s"
-                defaultValue={value.speed ?? 0}
-                onChange={(e) => (value.speed = Number(e.target.value))}
-              />
-            </Table.Cell>
-            <Table.Cell>
-              <UnitInput
-                name={`${type}-capacity`}
-                Unit={MemoryUnits}
-                defaultUnit="GB"
-                defaultValue={value.capacity ?? 0}
-                onChange={(e) => (value.capacity = Number(e.target.value))}
-              />
-            </Table.Cell>
-            <Table.Cell>
-              <SuffixInput
-                type="number"
-                name={`${type}-channel_count`}
-                suffix="channel(s)"
-                defaultValue={value.channel_count ?? 0}
-                onChange={(e) => (value.channel_count = Number(e.target.value))}
-              />
-            </Table.Cell>
-            <Table.Cell className="relative">
-              <UnitInput
-                Unit={MemorySpeedUnit}
-                defaultUnit="GB/s"
-                name={`${type}-bandwidth`}
-                defaultValue={value.bandwidth ?? 0}
-                onChange={(e) => (value.bandwidth = Number(e.target.value))}
-              />
-              <DeleteButton onClick={() => deleteConnector(value)} />
-            </Table.Cell>
-          </Table.Row>
+          <ValueRow
+            key={type}
+            value={value}
+            deleteConnector={deleteConnector}
+          />
         ))}
         <AddRow exist={existConnector} add={addConnector} />
       </tbody>
     </Table.Component>
   );
 }
+
+const ValueRow = memo(
+  ({
+    value,
+    deleteConnector,
+  }: {
+    value: CPUMemory.DTO;
+    deleteConnector: (value: CPUMemory.DTO) => void;
+  }) => (
+    <Table.Row>
+      <Table.Cell>
+        <label>{value.type}</label>
+      </Table.Cell>
+      <Table.Cell>
+        <UnitInput
+          name={`${value.type}-speed`}
+          Unit={TransferSpeedUnit}
+          defaultUnit="MT/s"
+          defaultValue={value.speed ?? 0}
+          onChange={(e) => (value.speed = Number(e.target.value))}
+        />
+      </Table.Cell>
+      <Table.Cell>
+        <UnitInput
+          name={`${value.type}-capacity`}
+          Unit={MemoryUnits}
+          defaultUnit="GB"
+          defaultValue={value.capacity ?? 0}
+          onChange={(e) => (value.capacity = Number(e.target.value))}
+        />
+      </Table.Cell>
+      <Table.Cell>
+        <SuffixInput
+          type="number"
+          name={`${value.type}-channel_count`}
+          suffix="channel(s)"
+          defaultValue={value.channel_count ?? 0}
+          onChange={(e) => (value.channel_count = Number(e.target.value))}
+        />
+      </Table.Cell>
+      <Table.Cell className="relative">
+        <UnitInput
+          Unit={MemorySpeedUnit}
+          defaultUnit="GB/s"
+          name={`${value.type}-bandwidth`}
+          defaultValue={value.bandwidth ?? 0}
+          onChange={(e) => (value.bandwidth = Number(e.target.value))}
+        />
+        <DeleteButton onClick={() => deleteConnector(value)} />
+      </Table.Cell>
+    </Table.Row>
+  )
+);
 
 function AddRow({
   exist,
