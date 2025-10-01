@@ -25,7 +25,7 @@ FROM base AS dev
 
 CMD ["dev"]
 
-FROM base as prod
+FROM base AS prod
 
 RUN npm run build
 
