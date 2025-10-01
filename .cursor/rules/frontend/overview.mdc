@@ -1,0 +1,70 @@
+---
+description: Frontend overview
+globs:
+alwaysApply: true
+---
+
+## Frontend Overview (Next.js)
+
+### Purpose
+
+- Provides the user interface for browsing parts, building PCs, searching, reading articles/guides, and authentication.
+
+### Tech Stack
+
+- Next.js ^15 (App Router), React ^19
+- Styling: TailwindCSS ^3 (dark mode via selector)
+- Data fetching: Axios
+- Validation/types: Zod
+
+### Key Configuration
+
+- `next.config.js`:
+  - `env.PageSize = "50"`
+  - `images.remotePatterns` for external product/content image hosts
+- `tailwind.config.js`:
+  - Content includes `app/**/*`, `components/**/*`
+  - Extended theme colors; `darkMode: "selector"`
+
+### Routing Structure (App Router)
+
+- Root: `app/`
+  - `/` → `app/page.tsx`
+  - `/build` → `app/build/page.tsx`, with nested `[product]/`
+  - `/part` → list, with dynamic segments `app/part/[part]/[id]/` and `new/`
+  - `/article` → article list and `[id]/` with `edit/`
+  - `/[topic]/[part]` → topic/part content and `edit/`
+  - `/auth/login` and `/auth/refresh`
+  - `/search`, `/guide`, error and not-found boundaries
+
+### Components Overview
+
+- `components/`
+  - `part/`: rich detail cards, filters, forms, inputs, summaries, tables
+  - `build/`: builder form, list, result, hooks (`BuildContext`, `Validation`, `ProductSummary`)
+  - `articles/`: display blocks (Image/List/Paragraph/Section) and input editors
+  - `auth/`: `LoginForm`, `UserPanel`
+  - Shared utilities: buttons, pagination, tables, toggles, debounce, etc.
+
+### Data Flow
+
+- API base is provided via `BACKEND_HOST` (in Docker env). Nginx proxies `/api` to NestJS, so the UI can call relative `/api/*` in containerized environments.
+- Auth flows use JWT (via cookies/headers) and server/client components as needed.
+
+### Images
+
+- External domains whitelisted in `next.config.js` to allow product images (retailer CDNs, etc.).
+
+### Development
+
+- `docker/nextjs/compose.yaml` provides `nextjs-dev` and `nextjs-prod` services.
+- Dev service uses `develop.watch` to sync local repo into the container for HMR.
+- Nginx proxies:
+  - Dev: `/` → `http://nextjs-dev:3000`
+  - Prod: `/` → `http://nextjs-prod:3000`
+
+### Key Paths
+
+- App routes: `app/*`
+- UI components: `components/*`
+- UI primitives/helpers: `components/utils/*`, `components/part/utils/*`

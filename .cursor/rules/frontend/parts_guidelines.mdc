@@ -1,0 +1,92 @@
+## Frontend Guideline: PC Part Handling (Next.js App Router)
+
+### Scope
+
+- Covers listing, filtering, viewing, and editing PC parts in the Next.js app.
+- Uses server components for data fetching and client components for interactions.
+
+### Routes (under `app/part`)
+
+- `/part` — all parts listing with pagination and global search.
+- `/part/[part]` — listing by product type.
+- `/part/[part]/[id]` — detail view (read-only table).
+- `/part/[part]/[id]/edit` — edit view (ADMIN).
+- `/part/[part]/new` — create new part (ADMIN).
+
+### Data Fetching
+
+- Use `process.env.BACKEND_HOST` to call API: `${BACKEND_HOST}/api/part/...` in server components.
+- Transform URLSearchParams from `searchParams` into a flat list of entries to preserve arrays.
+- On not-ok responses, use `notFound()` boundary.
+
+Example pattern (from `app/part/[part]/page.tsx`):
+
+- Build `URLSearchParams` from `searchParams`.
+- `fetch(`${BACKEND_HOST}/api/part/${part}?${options}`)`.
+- Render `SummaryTable`, `PaginationBar`, and `FilterBar` with same query context.
+
+### Filtering UX
+
+- Container: `components/part/Filter.tsx::FilterBar`
+  - Search input `name="q"`.
+  - `PartFilter` (common filters per-product).
+  - Lazy-loaded product-specific filters per `Products`.
+  - Submit → server route with querystring; Reset → `router.replace(/part/:part)`.
+- Attribute loading pattern (`components/part/utils/Filter.tsx`):
+  - Each filter attribute fetches options from `/api/part/filter/:product/:attribute?{context}`.
+  - Keep `context` synchronized with current selections.
+
+### Listing Components
+
+- `components/part/Summary.tsx` — renders tiles/tables using `Part.Summary` data.
+- `components/part/Panel.tsx` — compact part card for `/part` page.
+- `components/utils/PaginationBar.tsx` — compute total pages via `Math.ceil(total / Number(process.env.PageSize))`.
+
+### Detail & Edit
+
+- Read-only detail: `components/part/detail/*` tables (e.g., `detail/Part.tsx`).
+- Edit surface (ADMIN):
+  - Basic info form: `components/part/input/Part.tsx` (client) drives create/update/delete of base part fields.
+    - POST to `/api/part/:part` (create) or `/api/part/:part/:id` (update), `DELETE` to remove.
+    - Uses `Part.BasicInfo` zod for shaping payload; optional `url`/`image_url` normalized to `undefined`.
+    - On create success, redirect to `/part/:part/:id/edit`.
+  - Info sections: `components/part/Form.tsx::InfoForm`
+    - Lazy-loads per-`Infos` component from `components/part/input/*`.
+    - Uses `useInfoAction(path, info, defaultValue)` to add/update info blocks.
+    - Renders an Add button when info block is missing; otherwise renders the appropriate input component inside a `VerticalCollapsible`.
+
+### Enums, Types, and Mappings
+
+- `utils/Enum.ts` → `Products`, `Infos` shared with backend.
+- `utils/interface/part` → Zod schemas and TypeScript types for `Part.Detail`, `Part.BasicInfo`, labels, and `Mapping.Info` per product.
+- Adding a new product requires:
+  - Adding product to `Products` and info groups to `Infos`.
+  - Implementing display components (`components/part/detail/*`).
+  - Implementing input editors (`components/part/input/*`).
+  - Implementing filter widgets (`components/part/filter/*`) and labels in utilities.
+
+### Error & Auth Handling
+
+- Create/update/delete guarded in UI via `AuthRole` (client) and `ServerAuthRole` (server) with `roles=[ADMIN]`.
+- On failed API calls, surface message via `NotificationBar` in forms; on list/detail pages, route to Not Found.
+
+### URL & State Conventions
+
+- Maintain a single source of truth for filters in `URLSearchParams`.
+- When submitting filters, use `form` submit to preserve SSR and pagination behavior.
+- Use `router.replace()` for resets to clear all filters.
+
+### Implementation Checklist (Frontend)
+
+- New product onboarding:
+  - Add a new `components/part/filter/<Product>.tsx` for filter UI.
+  - Add `components/part/input/*` editors mapped in `InfoForm` for each `Infos` group.
+  - Add summary and detail renderers.
+  - Register the product in `FilterComponents` and `Mapping.Info` labels.
+  - Verify filter attribute fetchers hit `/api/part/filter/:product/:attribute` correctly.
+
+### Testing Tips
+
+- Navigate from `/part` to `/part/:product` verifying query propagation between list, filters, and pagination.
+- Create a part then confirm redirect to edit page and presence of info blocks.
+- Toggle filter attributes and confirm options reflect server-calculated values for the current context.
