@@ -23,7 +23,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.CPU_BLOCK_SOCKET })
-class CPUBlockSocketModel extends Model implements CPUBlockSocketSupport.Info {
+class CPUBlockSocketModel extends Model implements CPUBlockSocketSupport.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)

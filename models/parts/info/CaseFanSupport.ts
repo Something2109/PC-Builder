@@ -28,7 +28,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.CASE_FAN })
-class CaseFanSupportModel extends Model implements CaseFanSupport.Info {
+class CaseFanSupportModel extends Model implements CaseFanSupport.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -49,7 +49,7 @@ class CaseFanSupportModel extends Model implements CaseFanSupport.Info {
   declare form_factor: FormFactor.Fan;
 
   @Column(DataType.TINYINT)
-  declare count: number;
+  declare count: number | null;
 }
 
 export { CaseFanSupportModel };

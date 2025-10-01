@@ -24,7 +24,7 @@ export interface ParseServiceInterface {
    * @param part - (Optional) The product type to parse.
    * @returns The summarized part information.
    */
-  summary(data: Part.Detail, part?: Products): Part.Summary<Products>;
+  summary(data: Part.Model, part?: Products): Part.Summary<Products>;
 
   /**
    * Generates a filter response for the filter function.
@@ -102,10 +102,7 @@ export interface PartServiceInterface {
    * @param data - Partial details of the part to create.
    * @returns A promise resolving to the created part detail, or null if creation failed.
    */
-  create(
-    part: Products,
-    data: Partial<Part.Detail>
-  ): Promise<Part.Detail | null>;
+  create(part: Products, data: Partial<Part.DTO>): Promise<Part.Model | null>;
 
   /**
    * Retrieves the details of a specific part by its ID and product type.
@@ -114,7 +111,7 @@ export interface PartServiceInterface {
    * @param product - The product type of the part.
    * @returns A promise resolving to the part detail, or null if not found.
    */
-  get(id: string, product: Products): Promise<Part.Detail | null>;
+  get(id: string, product: Products): Promise<Part.Model | null>;
 
   /**
    * Updates an existing part identified by its ID and product type with the provided data.
@@ -127,8 +124,8 @@ export interface PartServiceInterface {
   set(
     id: string,
     part: Products,
-    data: Partial<Part.Detail>
-  ): Promise<Part.Detail | null>;
+    data: Partial<Part.DTO>
+  ): Promise<Part.Model | null>;
 
   /**
    * Deletes a part identified by its ID and product type.
@@ -137,5 +134,5 @@ export interface PartServiceInterface {
    * @param product - The product type of the part.
    * @returns A promise resolving to the deleted part detail, or null if deletion failed.
    */
-  delete(id: string, product: Products): Promise<Part.Detail | null>;
+  delete(id: string, product: Products): Promise<Part.Model | null>;
 }

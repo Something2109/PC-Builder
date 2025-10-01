@@ -45,12 +45,17 @@ namespace Build {
 
   export type List = BuildPartList;
 
-  export type Details<T = Part.Detail> = BuildPartDetails<T>;
+  export type Details<T = Part.Model> = BuildPartDetails<T>;
 
   export type Result = {
     products: ReturnType<ProductRule["validate"]>;
-    rules: { [name in string]: string };
-    attributes: { [id in string]: { [attr in string]: string[] } };
+    rules: { [name in string]: RuleResult };
+    missing: { [id in string]: { [attr in string]: string[] } };
+  };
+
+  export type RuleResult = {
+    error?: string;
+    attributes: BuildValidateResult<any>;
   };
 
   export type Rule<T extends BuildAttributeMapping> = AttributeRule<T>;
@@ -112,7 +117,7 @@ namespace Build {
 
         if (!attr)
           acc[filterProduct][info] =
-            Information.Schema.shape[info].keyof().options;
+            Information.Info.shape[info].keyof().options;
 
         if (!acc[filterProduct][info]) acc[filterProduct][info] = [];
 
@@ -153,7 +158,7 @@ namespace Build {
 
             if (!attr)
               acc[filterProduct][info] =
-                Information.Schema.shape[info].keyof().options;
+                Information.Info.shape[info].keyof().options;
 
             if (!acc[filterProduct][info]) acc[filterProduct][info] = [];
 

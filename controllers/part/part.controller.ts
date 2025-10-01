@@ -24,10 +24,8 @@ import { Role } from "controllers/utils/role/role.decorator";
 const ProductValidator = new ParseEnumPipe(Products, {
   exceptionFactory: () => new NotFoundException("Product's not found"),
 });
-const CreateValidator = new ZodValidationPipe(
-  Part.Detail.omit({ id: true, part: true })
-);
-const UpdateValidator = new ZodValidationPipe(Part.Detail.partial());
+const CreateValidator = new ZodValidationPipe(Part.DTO);
+const UpdateValidator = new ZodValidationPipe(Part.DTO.partial());
 
 @Controller("part")
 export class PartController {
@@ -75,7 +73,7 @@ export class PartController {
   @Post(":part")
   async createPart(
     @Param("part", ProductValidator) part: Products,
-    @Body(CreateValidator) body: Part.Detail
+    @Body(CreateValidator) body: Part.DTO
   ) {
     const partInfo = await this.service.create(part, body);
 
@@ -103,7 +101,7 @@ export class PartController {
   async setPart(
     @Param("part", ProductValidator) part: Products,
     @Param("id", ParseUUIDPipe) id: string,
-    @Body(UpdateValidator) body: Part.Detail
+    @Body(UpdateValidator) body: Part.DTO
   ) {
     const partInfo = await this.service.set(id, part, body);
 

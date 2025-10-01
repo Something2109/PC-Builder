@@ -61,7 +61,7 @@ class PartService implements PartServiceInterface {
     return this.parseService.filter(result, product, ...attributes);
   }
 
-  async create(product: Products, data: Part.Detail) {
+  async create(product: Products, data: Part.DTO) {
     try {
       const instance = await this.CRUDService.create(
         { ...data, part: product },
@@ -89,7 +89,7 @@ class PartService implements PartServiceInterface {
     return data;
   }
 
-  async set(id: string, product: Products, data: Part.Detail) {
+  async set(id: string, product: Products, data: Part.DTO) {
     try {
       const instance = await this.CRUDService.get(id);
 

@@ -12,12 +12,7 @@ import RAMSpec from "@/utils/interface/part/info/RAMSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
-import {
-  PartDetailTable,
-  PartDefaultScope,
-  ModelScopes,
-  defaultFilter,
-} from "../../interface";
+import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -29,7 +24,7 @@ import {
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.RAM_SPEC })
-class RAMSpecModel extends Model implements PartDetailTable<RAMSpec.Info> {
+class RAMSpecModel extends Model implements RAMSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -48,10 +43,10 @@ class RAMSpecModel extends Model implements PartDetailTable<RAMSpec.Info> {
   declare voltage: number | null;
 
   @Column(DataType.STRING)
-  get latency(): number[] | undefined {
+  get latency(): number[] | null {
     const data = this.getDataValue("latency");
 
-    return data ? JSON.parse(data) : undefined;
+    return data ? JSON.parse(data) : null;
   }
 
   set latency(value: number[] | null) {

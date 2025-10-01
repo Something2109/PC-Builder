@@ -23,7 +23,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     );
   }
 
-  async get(id: string, infos?: Infos[]): Promise<Part.Detail | null> {
+  async get(id: string, infos?: Infos[]): Promise<Part.Model | null> {
     const include = this.infoToModel(infos);
 
     const instance = await this.PartModel.findByPk(id, { include });
@@ -33,9 +33,9 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
   async set(
     id: string,
-    { part, ...data }: Part.Detail,
+    { part, ...data }: Part.DTO,
     infos?: Infos[]
-  ): Promise<Part.Detail | null> {
+  ): Promise<Part.Model | null> {
     const instance =
       (await this.validateCodename(data.code_name, id)) ||
       (await this.PartModel.findByPk(id));
@@ -55,7 +55,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     return await this.get(id, infos);
   }
 
-  async create(data: Part.Detail, infos?: Infos[]): Promise<Part.Detail> {
+  async create(data: Part.DTO, infos?: Infos[]): Promise<Part.Model> {
     let instance =
       (await this.validateCodename(data.code_name)) ||
       PartInformation.build(data);
@@ -70,10 +70,10 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
       );
     }
 
-    return (await this.get(instance.id, infos)) as Part.Detail;
+    return (await this.get(instance.id, infos))!;
   }
 
-  async delete(id: string, infos?: Infos[]): Promise<Part.Detail | null> {
+  async delete(id: string, infos?: Infos[]): Promise<Part.Model | null> {
     const include = this.infoToModel(infos);
 
     const instance = await this.PartModel.findByPk(id, { include });
@@ -126,7 +126,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
   protected async setInfo(
     id: string,
     info: Infos,
-    data: Part.Detail[typeof info]
+    data: Part.DTO[typeof info]
   ): Promise<void> {
     // If data is undefined (no operation specified)
     if (data === undefined) return;

@@ -38,10 +38,6 @@ enum ModelScopes {
   DETAIL = "detail",
 }
 
-type PartDetailTable<T extends Object> = {
-  [key in keyof T]: T[key] | null | undefined;
-};
-
 const PartDefaultScope = {
   attributes: {
     exclude: ["raw", "createdAt", "updatedAt"],
@@ -66,10 +62,4 @@ function defaultFilter<
   return where as WhereOptions<T>;
 }
 
-export {
-  Tables,
-  ModelScopes,
-  defaultFilter,
-  type PartDetailTable,
-  PartDefaultScope,
-};
+export { Tables, ModelScopes, defaultFilter, PartDefaultScope };

@@ -1,8 +1,8 @@
-import { Primitive } from "../../utils";
+import { createDTO, createModel, Primitive } from "../../utils";
 import { z } from "zod";
 
 export namespace CPUSpec {
-  export const Schema = z.object({
+  const Info = z.object({
     family: Primitive.String,
 
     socket: Primitive.String,
@@ -12,7 +12,7 @@ export namespace CPUSpec {
     lithography: Primitive.String,
   });
 
-  export type Info = z.infer<typeof Schema>;
+  export type Info = z.infer<typeof Info>;
 
   export const Label: { [key in keyof Info]: string } = {
     family: "Family",
@@ -23,6 +23,16 @@ export namespace CPUSpec {
 
     lithography: "Lithography",
   };
+
+  const Model = createModel(Info);
+
+  export type Model = z.infer<typeof Model>;
+
+  const DTO = createDTO(Info);
+
+  export type DTO = z.infer<typeof DTO>;
+
+  export const Schemas = { Info, Model, DTO };
 }
 
 export default CPUSpec;

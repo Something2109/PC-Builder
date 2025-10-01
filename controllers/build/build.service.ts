@@ -71,19 +71,19 @@ class BuildService {
 
         if (!errors) return acc;
 
-        if (typeof errors === "string") {
+        if (errors["attributes"] !== undefined) {
           acc.rules[rule.name] = errors;
           return acc;
         }
 
-        Object.entries(errors).forEach(([id, error]) => {
-          if (!acc.attributes[id]) acc.attributes[id] = {};
-          acc.attributes[id][rule.name] = error;
+        Object.entries(errors.missing).forEach(([id, error]) => {
+          if (!acc.missing[id]) acc.missing[id] = {};
+          acc.missing[id][rule.name] = error;
         });
 
         return acc;
       },
-      { rules: {}, attributes: {} } as Omit<Build.Result, "products">
+      { rules: {}, missing: {} } as Omit<Build.Result, "products">
     );
 
     return {
@@ -102,10 +102,10 @@ class BuildService {
    * @param transform - Optional transformation function for part details.
    * @returns A promise that resolves to an object containing part details.
    */
-  protected async getBuildDetail<T = Part.Detail>(
+  protected async getBuildDetail<T = Part.Model>(
     build: Partial<Build.List>,
     productInfoMapping: { [prod in Products]?: { [info in Infos]?: string[] } },
-    transform?: (data: Part.Detail, product: Products) => T
+    transform?: (data: Part.Model, product: Products) => T
   ): Promise<Partial<Build.Details<T>>> {
     const promises = Object.values(Products).map(async (key) => {
       const product = key as Products;
@@ -153,7 +153,7 @@ class BuildService {
     product: Products,
     fetchIds: Readonly<string | string[]>,
     attributes?: { [key in Infos]?: string[] }
-  ): Promise<Part.Detail | Part.Detail[] | undefined> {
+  ): Promise<Part.Model | Part.Model[] | undefined> {
     const ids: string[] = Array.isArray(fetchIds) ? fetchIds : [fetchIds]; // Ensure list is an array
 
     if (ids.length === 0) return undefined; // Check if the list is empty
@@ -239,9 +239,9 @@ class BuildService {
     const validateResult = rule.validate(attributes);
 
     if (!validateResult || typeof validateResult === "string")
-      return validateResult;
+      return { error: validateResult, attributes };
 
-    return this.parseValidateResult(rule, build, validateResult);
+    return { missing: this.parseValidateResult(rule, build, validateResult) };
   }
 
   /**
@@ -296,7 +296,7 @@ class BuildService {
    * @param attr - Optional attribute to specify which part of the info to retrieve.
    * @returns The parsed information from the part detail.
    */
-  protected parseDetail(detail: Part.Detail, info: Infos, attr?: string) {
+  protected parseDetail(detail: Part.Model, info: Infos, attr?: string) {
     let result = detail[info];
 
     if (!result) return undefined;

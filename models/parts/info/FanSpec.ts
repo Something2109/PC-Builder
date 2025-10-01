@@ -12,12 +12,7 @@ import FanSpec from "@/utils/interface/part/info/FanSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
-import {
-  ModelScopes,
-  PartDefaultScope,
-  PartDetailTable,
-  defaultFilter,
-} from "../../interface";
+import { ModelScopes, PartDefaultScope, defaultFilter } from "../../interface";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -29,7 +24,7 @@ import {
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.FAN_SPEC })
-class FanSpecModel extends Model implements PartDetailTable<FanSpec.Info> {
+class FanSpecModel extends Model implements FanSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)

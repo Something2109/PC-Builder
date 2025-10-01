@@ -1,8 +1,8 @@
-import { FormFactor, ExternalPorts, Primitive } from "../../utils";
+import { createDTO, createModel, FormFactor, Primitive } from "../../utils";
 import { z } from "zod";
 
 export namespace CaseSpec {
-  export const Schema = z.object({
+  const Info = z.object({
     form_factor: FormFactor.Case,
 
     width: Primitive.Number,
@@ -15,7 +15,7 @@ export namespace CaseSpec {
     max_psu_length: Primitive.Number,
   });
 
-  export type Info = z.infer<typeof Schema>;
+  export type Info = z.infer<typeof Info>;
 
   export const Label: { [key in keyof Info]: string } = {
     form_factor: "Form Factor",
@@ -29,6 +29,16 @@ export namespace CaseSpec {
     max_cooler_height: "Max Cooler Height",
     max_psu_length: "Max PSU Length",
   };
+
+  const Model = createModel(Info);
+
+  export type Model = z.infer<typeof Model>;
+
+  const DTO = createDTO(Info);
+
+  export type DTO = z.infer<typeof DTO>;
+
+  export const Schemas = { Info, Model, DTO };
 }
 
 export default CaseSpec;

@@ -89,6 +89,6 @@ const Mongo = MongooseModule.forRoot(
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(SessionExtractionMiddleware).forRoutes("*");
+    consumer.apply(SessionExtractionMiddleware).forRoutes("*path");
   }
 }

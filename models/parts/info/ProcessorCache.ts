@@ -11,12 +11,7 @@ import {
 import ProcessorCache from "@/utils/interface/part/info/ProcessorCache";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
-import {
-  PartDetailTable,
-  PartDefaultScope,
-  ModelScopes,
-  defaultFilter,
-} from "../../interface";
+import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -30,10 +25,7 @@ import {
   },
 }))
 @Table({ modelName: Infos.PROCESSOR_CACHE })
-class ProcessorCacheModel
-  extends Model
-  implements PartDetailTable<ProcessorCache.Info>
-{
+class ProcessorCacheModel extends Model implements ProcessorCache.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)

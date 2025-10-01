@@ -7,6 +7,7 @@ import {
 import Part from "@/utils/interface/part";
 import { Products, Infos } from "@/utils/Enum";
 import {
+  AllowNull,
   Column,
   DataType,
   Default,
@@ -57,10 +58,6 @@ import { RadiatorSpecModel } from "./info/RadiatorSpec";
 import { CPUBlockSocketModel } from "./info/CPUBlockSocketSupport";
 import { PartExternalPortModel } from "./info/PartExternalPorts";
 
-type InfoModelMapping = {
-  [key in Infos]: Model | Model[] | null;
-};
-
 @DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -76,10 +73,7 @@ type InfoModelMapping = {
   [ModelScopes.DETAIL]: { attributes: { exclude: ["createdAt", "updatedAt"] } },
 }))
 @Table({ modelName: Tables.PART })
-class PartInformation
-  extends Model
-  implements Part.BasicInfo, InfoModelMapping
-{
+class PartInformation extends Model implements Part.Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -91,7 +85,8 @@ class PartInformation
   })
   declare part: Products;
 
-  @Column({ type: DataType.STRING })
+  @AllowNull(false)
+  @Column(DataType.STRING)
   declare name: string;
 
   @Unique
@@ -99,19 +94,19 @@ class PartInformation
   declare code_name: string;
 
   @Column(DataType.STRING)
-  declare brand: string;
+  declare brand: string | null;
 
   @Column(DataType.STRING)
-  declare series: string;
+  declare series: string | null;
 
   @Column(DataType.DATE)
-  declare launch_date?: Date;
+  declare launch_date: Date | null;
 
   @Column({ type: DataType.STRING, validate: { isUrl: true } })
-  declare url?: string;
+  declare url: string | null;
 
   @Column({ type: DataType.STRING, validate: { isUrl: true } })
-  declare image_url?: string;
+  declare image_url: string | null;
 
   @HasOne(() => CPUSpecModel)
   declare [Infos.CPU_SPEC]: CPUSpecModel | null;

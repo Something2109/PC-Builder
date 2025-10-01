@@ -6,15 +6,17 @@ import {
   Res,
   HttpCode,
   UnauthorizedException,
+  Req,
 } from "@nestjs/common";
+import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
 import { LoginAuthorizationGuard } from "./auth.guard";
+import { AuthUser } from "controllers/utils/role/role.decorator";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { User } from "@/utils/interface/user/User";
-import { Response } from "express";
-import { AuthUser } from "controllers/utils/role/role.decorator";
 
 const SignUpValidator = new ZodValidationPipe(User.LogInOptions);
+const AUTHORIZATION_COOKIE_NAME = "Authorization";
 
 @Controller("auth")
 export class AuthController {
@@ -23,6 +25,7 @@ export class AuthController {
   @UseGuards(new LoginAuthorizationGuard())
   @Post("signup")
   async signUp(
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
     @Body(SignUpValidator) payload: User.LogInOptions
   ) {
@@ -31,15 +34,16 @@ export class AuthController {
       payload.password
     );
 
-    this.setToken(res, tokens.access_token);
+    const csrf_token = this.setToken(req, res, tokens.access_token);
 
-    res.json(tokens);
+    res.json(csrf_token ? { ...tokens, csrf_token } : tokens);
   }
 
   @UseGuards(new LoginAuthorizationGuard())
   @HttpCode(200)
   @Post("login")
   async logIn(
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
     @Body(SignUpValidator) payload: User.LogInOptions
   ) {
@@ -48,14 +52,15 @@ export class AuthController {
       payload.password
     );
 
-    this.setToken(res, tokens.access_token);
+    const csrf_token = this.setToken(req, res, tokens.access_token);
 
-    res.json(tokens);
+    res.json(csrf_token ? { ...tokens, csrf_token } : tokens);
   }
 
   @HttpCode(200)
   @Post("refresh")
   async refreshToken(
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
     @AuthUser() user?: User.JwtPayload
   ) {
@@ -64,26 +69,32 @@ export class AuthController {
 
     const tokens = await this.authService.signTokens(user);
 
-    this.setToken(res, tokens.access_token);
+    const csrf_token = this.setToken(req, res, tokens.access_token);
 
-    res.json(tokens);
+    res.json(csrf_token ? { ...tokens, csrf_token } : tokens);
   }
 
   @HttpCode(200)
   @Post("logout")
-  async logOut(@Res({ passthrough: true }) res: Response) {
-    this.setToken(res);
+  async logOut(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    return { csrf_token: this.setToken(req, res) };
   }
 
-  private setToken(res: Response, token?: string) {
-    const expired = new Date();
-    expired.setDate(expired.getDate() + 2);
+  private setToken(req: Request, res: Response, token?: string) {
+    token = token ? `Bearer ${token}` : "";
+    const expires = new Date();
+    expires.setDate(expires.getDate() + 2);
 
-    res.cookie("Authorization", token ? `Bearer ${token}` : "", {
-      expires: expired,
+    const cookieOptions = {
+      expires,
       sameSite: "strict",
       secure: true,
       httpOnly: true,
-    });
+    } as const;
+
+    req.cookies[AUTHORIZATION_COOKIE_NAME] = token;
+    res.cookie(AUTHORIZATION_COOKIE_NAME, token, cookieOptions);
+
+    return req.csrfToken && req.csrfToken({ cookieOptions });
   }
 }

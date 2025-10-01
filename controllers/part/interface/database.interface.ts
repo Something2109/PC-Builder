@@ -34,7 +34,7 @@ export interface DatabaseListInterface {
   list(
     options: Part.Filter & API.PageOptions & API.SearchOptions,
     attrs?: { [key in Infos]?: string[] }
-  ): Promise<API.Payload<Part.Detail>>;
+  ): Promise<API.Payload<Part.Model>>;
 
   /**
    * Retrieves available filters for parts based on pagination and search options.
@@ -58,7 +58,7 @@ export interface DatabaseCRUDInterface {
    * @param infos - Optional array of `Infos` specifying which details to retrieve.
    * @returns A promise resolving to the part details or null if not found.
    */
-  get(id: string, infos?: readonly Infos[]): Promise<Part.Detail | null>;
+  get(id: string, infos?: readonly Infos[]): Promise<Part.Model | null>;
 
   /**
    * Updates the details of a part by its ID.
@@ -69,9 +69,9 @@ export interface DatabaseCRUDInterface {
    */
   set(
     id: string,
-    data: Part.Detail,
+    data: Part.DTO,
     infos?: readonly Infos[]
-  ): Promise<Part.Detail | null>;
+  ): Promise<Part.Model | null>;
 
   /**
    * Creates a new part in the database.
@@ -79,15 +79,12 @@ export interface DatabaseCRUDInterface {
    * @param infos - Optional array of `Infos` specifying which details to return.
    * @returns A promise resolving to the created part details or null if creation failed.
    */
-  create(
-    data: Part.Detail,
-    infos?: readonly Infos[]
-  ): Promise<Part.Detail | null>;
+  create(data: Part.DTO, infos?: readonly Infos[]): Promise<Part.Model | null>;
 
   /**
    * Deletes a part from the database by its ID.
    * @param id - The unique identifier of the part.
    * @returns A promise resolving to the deleted part details or null if not found.
    */
-  delete(id: string): Promise<Part.Detail | null>;
+  delete(id: string): Promise<Part.Model | null>;
 }

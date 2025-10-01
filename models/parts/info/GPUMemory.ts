@@ -12,12 +12,7 @@ import GPUMemory from "@/utils/interface/part/info/GPUMemory";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { Infos } from "@/utils/Enum";
 import { PartInformation } from "..";
-import {
-  PartDetailTable,
-  PartDefaultScope,
-  ModelScopes,
-  defaultFilter,
-} from "../../interface";
+import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
@@ -31,7 +26,7 @@ import {
   },
 }))
 @Table({ modelName: Infos.GPU_MEMORY })
-class GPUMemoryModel extends Model implements PartDetailTable<GPUMemory.Info> {
+class GPUMemoryModel extends Model implements GPUMemory.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)

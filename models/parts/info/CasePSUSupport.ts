@@ -28,7 +28,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.CASE_PSU })
-class CasePSUSupportModel extends Model implements CasePSUSupport.Info {
+class CasePSUSupportModel extends Model implements CasePSUSupport.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)

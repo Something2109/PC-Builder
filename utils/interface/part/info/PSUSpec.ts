@@ -1,4 +1,4 @@
-import { FormFactor, Primitive } from "../../utils";
+import { createDTO, createModel, FormFactor, Primitive } from "../../utils";
 import { z } from "zod";
 
 export namespace PSUSpec {
@@ -22,7 +22,7 @@ export namespace PSUSpec {
 
   export type Efficiency = z.infer<typeof Efficiency>;
 
-  export const Schema = z.object({
+  const Info = z.object({
     wattage: Primitive.Number,
     efficiency: Efficiency,
 
@@ -33,7 +33,7 @@ export namespace PSUSpec {
     modular: Modular,
   });
 
-  export type Info = z.infer<typeof Schema>;
+  export type Info = z.infer<typeof Info>;
 
   export const Label: { [key in keyof Info]: string } = {
     wattage: "Wattage",
@@ -45,6 +45,16 @@ export namespace PSUSpec {
     height: "Height",
     modular: "Modular Type",
   };
+
+  const Model = createModel(Info);
+
+  export type Model = z.infer<typeof Model>;
+
+  const DTO = createDTO(Info);
+
+  export type DTO = z.infer<typeof DTO>;
+
+  export const Schemas = { Info, Model, DTO };
 }
 
 export default PSUSpec;

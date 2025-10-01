@@ -30,7 +30,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   },
 }))
 @Table({ modelName: Infos.GRAPHIC_CARD_PORT })
-class GraphicCardPortModel extends Model implements GraphicCardPort.Info {
+class GraphicCardPortModel extends Model implements GraphicCardPort.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -51,7 +51,7 @@ class GraphicCardPortModel extends Model implements GraphicCardPort.Info {
   declare name: ExternalPorts.Display;
 
   @Column(DataType.TINYINT)
-  declare count: number;
+  declare count: number | null;
 }
 
 export { GraphicCardPortModel };
