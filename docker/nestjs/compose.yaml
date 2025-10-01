@@ -15,8 +15,6 @@ services:
       - DATABASE_PASSWORD=${DATABASE_PASSWORD:?error}
       - JWT_SECRET=${JWT_SECRET:?error}
       - CSRF_SECRET=${CSRF_SECRET:?error}
-    env_file:
-      - .env
     profiles:
       - production
   nestjs-dev:
