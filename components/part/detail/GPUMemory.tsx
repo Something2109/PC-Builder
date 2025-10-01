@@ -7,7 +7,7 @@ import {
 } from "@/utils/extract/Units";
 import GPUMemory from "@/utils/interface/part/info/GPUMemory";
 
-const Components: InfoComponentObject<GPUMemory.Info> = {
+const Components: InfoComponentObject<GPUMemory.DTO> = {
   type: ({ defaultValue }) => defaultValue,
   speed: ({ defaultValue }) => (
     <UnitDisplay

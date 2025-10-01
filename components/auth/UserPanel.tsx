@@ -10,7 +10,7 @@ const LoginPath = "/auth/login";
 
 export function UserPanel() {
   const user = useAuth();
-  const logout = useLogoutAction();
+  const [isLogginOut, logout] = useLogoutAction();
   const [display, setDisplay] = useState(false);
   const pathname = usePathname();
 
@@ -40,6 +40,7 @@ export function UserPanel() {
           type="button"
           onClick={logout}
           className="px-2 py-1 border-0 rounded hover:bg-line dark:hover:text-background"
+          disabled={isLogginOut}
         >
           Log Out
         </Button>

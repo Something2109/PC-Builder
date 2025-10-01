@@ -5,25 +5,27 @@ import { ExternalPorts } from "@/utils/interface/utils";
 export default ({
   defaultValue,
 }: {
-  defaultValue: PartExternalPorts.Info[];
+  defaultValue: PartExternalPorts.DTO[];
 }) => {
   const groupByType = Object.groupBy(defaultValue, (val) => val.type);
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{PartExternalPorts.Label.type}</Table.Cell>
           <Table.Cell>{PartExternalPorts.Label.name}</Table.Cell>
           <Table.Cell>{PartExternalPorts.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {ExternalPorts.Type.options.map((type) =>
           groupByType[type]?.map((value, index, arr) => (
             <Table.Row key={`External-${type}-${value.name}`}>
               {index === 0 && (
-                <Table.Cell rowSpan={arr.length}>{type}</Table.Cell>
+                <Table.Cell className="font-bold" rowSpan={arr.length}>
+                  {type}
+                </Table.Cell>
               )}
               <Table.Cell>{value.name}</Table.Cell>
               <Table.Cell>{value.count}</Table.Cell>

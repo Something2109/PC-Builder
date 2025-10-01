@@ -10,7 +10,7 @@ import FanSpec from "@/utils/interface/part/info/FanSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<FanSpec.Info> = {
+const Components: InfoComponentObject<FanSpec.DTO> = {
   form_factor: (props) => (
     <OptionSelect options={FormFactor.Fan.options} {...props} />
   ),
@@ -52,7 +52,7 @@ const Components: InfoComponentObject<FanSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  return FanSpec.Schema.partial().parse(defaultParse(formData))!;
+  return FanSpec.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

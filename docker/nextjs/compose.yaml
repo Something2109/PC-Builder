@@ -9,8 +9,6 @@ services:
     environment:
       - BACKEND_HOST=http://nestjs-prod:3000
       - JWT_SECRET=${JWT_SECRET:?error}
-    env_file:
-      - .env
     profiles:
       - production
   nextjs-dev:
@@ -23,8 +21,6 @@ services:
     environment:
       - BACKEND_HOST=http://nestjs-dev:3000
       - JWT_SECRET=${JWT_SECRET:?error}
-    env_file:
-      - .env
     profiles:
       - development
     develop:

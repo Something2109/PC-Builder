@@ -1,17 +1,17 @@
 import { PortInputFields } from "../utils/Input";
-import { useObjectSet } from "../utils/Hook";
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import PartExternalPorts from "@/utils/interface/part/info/PartExternalPorts";
 import { ExternalPorts } from "@/utils/interface/utils";
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 
 function Component({
   defaultValue,
 }: {
-  defaultValue?: PartExternalPorts.Info[] | null;
+  defaultValue?: PartExternalPorts.DTO[] | null;
 }) {
   const [SavedInputValues, addName, deleteName] = useObjectSet(
     (type: ExternalPorts.Type, name: ExternalPorts) => ({
@@ -19,7 +19,7 @@ function Component({
       name,
       count: 0,
     }),
-    (info: PartExternalPorts.Info) => `${info.type} ${info.name}`,
+    (info: PartExternalPorts.DTO) => `${info.type} ${info.name}`,
     defaultValue
   );
   const groupByType = Object.groupBy(
@@ -29,13 +29,13 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{PartExternalPorts.Label.type}</Table.Cell>
           <Table.Cell>{PartExternalPorts.Label.name}</Table.Cell>
           <Table.Cell>{PartExternalPorts.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {ExternalPorts.Type.options.map((type) => (
           <PortTypeInputField
@@ -128,14 +128,32 @@ function PortTypeInputField({
   defaultValue,
   onDelete,
 }: {
-  defaultValue?: [string, PartExternalPorts.Info][];
-  onDelete: (info: PartExternalPorts.Info) => void;
+  defaultValue?: [string, PartExternalPorts.DTO][];
+  onDelete: (info: PartExternalPorts.DTO) => void;
 }) {
   return defaultValue?.map(([key, value], index, arr) => (
     <Table.Row key={`external-${key}`}>
       {index === 0 && (
-        <Table.Cell rowSpan={arr.length}>{value.type}</Table.Cell>
+        <Table.Cell className="font-bold" rowSpan={arr.length}>
+          {value.type}
+        </Table.Cell>
       )}
+      <ValueRow value={value} deleteName={onDelete} />
+    </Table.Row>
+  ));
+}
+
+const ValueRow = memo(function ({
+  value,
+  deleteName: onDelete,
+}: {
+  value: PartExternalPorts.DTO;
+  deleteName: (value: PartExternalPorts.DTO) => void;
+}) {
+  const key = `${value.type} ${value.name}`;
+
+  return (
+    <>
       <Table.Cell>
         <Input name={`${key}___name`} value={value.name} readOnly />
         <Input type="hidden" name={`${key}___type`} value={value.type} />
@@ -144,14 +162,14 @@ function PortTypeInputField({
         <Input
           type="number"
           name={`${key}___count`}
-          defaultValue={value.count}
+          defaultValue={value.count ?? 0}
           onChange={(e) => (value.count = Number(e.target.value))}
         />
         <DeleteButton onClick={() => onDelete(value)} />
       </Table.Cell>
-    </Table.Row>
-  ));
-}
+    </>
+  );
+});
 
 type MappingFormdata = {
   [key in string]: { [key in string]: string | number };
@@ -168,8 +186,8 @@ function submit(formData: FormData) {
   }, {} as MappingFormdata);
 
   return Object.values(raw)
-    .map((val) => PartExternalPorts.Schema.parse(val)!)
-    .filter((val: any) => val.count > 0);
+    .map((val) => PartExternalPorts.Schemas.DTO.parse(val))
+    .filter((val: any) => val.count);
 }
 
 export default GenericInputField(Component, submit);

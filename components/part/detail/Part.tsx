@@ -1,4 +1,5 @@
 import Part from "@/utils/interface/part";
+import { Infos } from "@/utils/Enum";
 import { TableHTMLAttributes } from "react";
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import {
@@ -9,12 +10,11 @@ import PartPicture from "../Picture";
 import { RedirectButton } from "@/components/utils/Button";
 
 const Components: InfoComponentObject<
-  Omit<Part.BasicInfo, "id" | "part" | "name" | "image_url">
+  Omit<Part.DTO, "id" | "part" | "name" | "url" | "image_url" | Infos>
 > = {
   code_name: ({ defaultValue: value }) => value,
   brand: ({ defaultValue: value }) => value,
   series: ({ defaultValue: value }) => value,
-  url: ({ defaultValue: value }) => value,
   launch_date: ({ defaultValue: value }) =>
     new Date(value ?? new Date()).toISOString().slice(0, 10),
 };
@@ -36,8 +36,8 @@ export function PartTable({
         part={part}
         src={defaultValue.image_url ?? undefined}
       />
-      <ColumnWrapper className="w-full lg:w-2/3 p-5">
-        <h1 className="text-4xl font-bold">{defaultValue.name}</h1>
+      <ColumnWrapper className="w-full lg:w-2/3 px-5 justify-center">
+        <h1 className="text-4xl font-bold mb-4">{defaultValue.name}</h1>
         <PartInfo defaultValue={defaultValue} />
         {url ? (
           <RedirectButton href={url} target="_blank">

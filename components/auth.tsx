@@ -7,9 +7,11 @@ import {
   createContext,
   useActionState,
   useContext,
+  useEffect,
   useLayoutEffect,
   useReducer,
   useState,
+  useTransition,
 } from "react";
 import { JwtPayload } from "jsonwebtoken";
 import { createDecoder } from "fast-jwt";
@@ -18,10 +20,16 @@ import axios, { AxiosError } from "axios";
 
 const decode = createDecoder();
 
-const AUTH_KEY = "Authorization";
+type SaveTokens = {
+  refresh_token?: string | null;
+  csrf_token?: string | null;
+};
+
+const AUTH_KEY = "REFRESH-TOKEN";
+const CSRF_KEY = "CSRF-TOKEN";
 const LoginPath = "/auth/login";
 const AuthContext = createContext<
-  [User.JwtPayload | null, ActionDispatch<[string | null]>]
+  [User.JwtPayload | null, ActionDispatch<[SaveTokens]>]
 >([null, () => {}]);
 
 function decodeToken(token: string | null) {
@@ -50,19 +58,32 @@ export function useAuth() {
 
 export function AuthWrapper({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useReducer(
-    (_: User.JwtPayload | null, curr: string | null) => {
-      const userInfo = decodeToken(curr);
+    (_: User.JwtPayload | null, { refresh_token, csrf_token }: SaveTokens) => {
+      const userInfo = decodeToken(refresh_token ?? null);
 
-      curr && userInfo
-        ? localStorage.setItem(AUTH_KEY, curr)
+      refresh_token && userInfo
+        ? localStorage.setItem(AUTH_KEY, refresh_token)
         : localStorage.removeItem(AUTH_KEY);
+
+      if (csrf_token) {
+        localStorage.setItem(CSRF_KEY, csrf_token);
+
+        axios.defaults.headers.common["x-csrf-token"] = csrf_token;
+      }
 
       return userInfo;
     },
     null
   );
 
-  useLayoutEffect(() => setUser(localStorage?.getItem(AUTH_KEY)), []);
+  useLayoutEffect(
+    () =>
+      setUser({
+        refresh_token: localStorage.getItem(AUTH_KEY),
+        csrf_token: localStorage.getItem(CSRF_KEY),
+      }),
+    []
+  );
 
   return <AuthContext value={[user, setUser]}>{children}</AuthContext>;
 }
@@ -108,12 +129,16 @@ export function useLoginAction(pathname?: string) {
         const response = await axios.post("/api/auth/login", body, {
           withCredentials: true,
         });
-        setUser(response.data.refresh_token);
+        setUser(response.data);
         router.push(pathname ?? "/");
       } catch (err) {
         const error = err as AxiosError;
         console.error(err);
-        setError(error.response?.data as LoginError);
+
+        const LoginError = error.response
+          ? (error.response.data as LoginError)
+          : { message: "Cannot connect to server." };
+        setError(LoginError);
       }
 
       return body as Record<string, string>;
@@ -124,42 +149,51 @@ export function useLoginAction(pathname?: string) {
   return [state, formAction, pending, error, setError] as const;
 }
 
-export function useRefreshToken(pathname?: string | null) {
+export function useRefreshAction(pathname?: string | null) {
+  const [pending, startTransition] = useTransition();
   const [_, setUser] = useContext(AuthContext);
   const router = useRouter();
   pathname = pathname ?? "/";
 
-  return async () => {
-    const token = localStorage.getItem(AUTH_KEY);
+  useEffect(() => {
+    startTransition(async () => {
+      const token = localStorage.getItem(AUTH_KEY);
 
-    try {
-      const response = await axios.post("/api/auth/refresh", undefined, {
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUser(response.data.refresh_token);
-      router.replace(pathname);
-    } catch (err) {
-      router.replace(`${LoginPath}?redirect=${pathname}`);
-    }
-  };
+      try {
+        const response = await axios.post("/api/auth/refresh", undefined, {
+          withCredentials: true,
+          headers: { Authorization: token ? `Bearer ${token}` : undefined },
+        });
+        setUser(response.data);
+        router.replace(pathname);
+      } catch (err) {
+        router.replace(`${LoginPath}?redirect=${pathname}`);
+      }
+    });
+  }, []);
+
+  return pending;
 }
 
 export function useLogoutAction() {
+  const [pending, startTransition] = useTransition();
   const [_, setUser] = useContext(AuthContext);
   const router = useRouter();
 
-  return async () => {
-    try {
-      await axios.post("/api/auth/logout", undefined, {
-        withCredentials: true,
-      });
-      setUser(null);
-      router.push(LoginPath);
-    } catch (err) {
-      const error = err as AxiosError;
-      console.error(err);
-      alert(error.response?.data);
-    }
-  };
+  const logout = () =>
+    startTransition(async () => {
+      try {
+        const response = await axios.post("/api/auth/logout", undefined, {
+          withCredentials: true,
+        });
+        setUser(response.data);
+        router.push(LoginPath);
+      } catch (err) {
+        const error = err as AxiosError;
+        console.error(err);
+        alert(error.response?.data ?? "Cannot connect to server.");
+      }
+    });
+
+  return [pending, logout] as const;
 }

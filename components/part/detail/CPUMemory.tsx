@@ -7,9 +7,9 @@ import {
   TransferSpeedUnit,
 } from "@/utils/extract/Units";
 
-export default ({ defaultValue }: { defaultValue: CPUMemory.Info[] }) => (
+export default ({ defaultValue }: { defaultValue: CPUMemory.DTO[] }) => (
   <Table.Component>
-    <thead>
+    <Table.Head>
       <Table.Row>
         <Table.Cell>{CPUMemory.Label.type}</Table.Cell>
         <Table.Cell>{CPUMemory.Label.speed}</Table.Cell>
@@ -17,7 +17,7 @@ export default ({ defaultValue }: { defaultValue: CPUMemory.Info[] }) => (
         <Table.Cell>{CPUMemory.Label.channel_count}</Table.Cell>
         <Table.Cell>{CPUMemory.Label.bandwidth}</Table.Cell>
       </Table.Row>
-    </thead>
+    </Table.Head>
     <tbody>
       {defaultValue.map((val) => (
         <Table.Row key={`memory-${val.type}-${val.speed}`}>

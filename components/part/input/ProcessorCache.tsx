@@ -4,7 +4,7 @@ import { UnitInput } from "@/components/utils/Input";
 import ProcessorCache from "@/utils/interface/part/info/ProcessorCache";
 import { MemoryUnits } from "@/utils/extract/Units";
 
-export const Components: InfoComponentObject<ProcessorCache.Info> = {
+export const Components: InfoComponentObject<ProcessorCache.DTO> = {
   L1_cache: (props) => (
     <UnitInput Unit={MemoryUnits} defaultUnit="MB" {...props} />
   ),
@@ -17,7 +17,7 @@ export const Components: InfoComponentObject<ProcessorCache.Info> = {
 };
 
 function submit(formData: FormData) {
-  return ProcessorCache.Schema.partial().parse(defaultParse(formData))!;
+  return ProcessorCache.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

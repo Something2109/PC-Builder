@@ -3,7 +3,7 @@ import { Products } from "@/utils/Enum";
 import { RedirectButton } from "../utils/Button";
 import PartPicture from "./Picture";
 
-export default function PartPanel({ item }: { item: Part.BasicInfo }) {
+export default function PartPanel({ item }: { item: Part.Summary }) {
   return (
     <RedirectButton
       href={`/part/${item.part}/${item.id}`}
@@ -12,7 +12,7 @@ export default function PartPanel({ item }: { item: Part.BasicInfo }) {
       <PartPicture
         part={item.part}
         src={item.image_url ?? undefined}
-        className="h-20 lg:size-auto content-center"
+        className="w-full"
       />
       <div className="size-full ml-3 flex flex-col justify-between text-left lg:ml-0 lg:mt-2">
         <h3 className="mb-2 text-xs sm:text-sm md:text-md font-bold">

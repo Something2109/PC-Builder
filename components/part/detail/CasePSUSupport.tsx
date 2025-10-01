@@ -1,13 +1,13 @@
 import { Table } from "../utils/Table";
 import CasePSUSupport from "@/utils/interface/part/info/CasePSUSupport";
 
-export default ({ defaultValue }: { defaultValue: CasePSUSupport.Info[] }) => (
+export default ({ defaultValue }: { defaultValue: CasePSUSupport.DTO[] }) => (
   <Table.Component>
-    <thead>
+    <Table.Head>
       <Table.Row>
         <Table.Cell>{CasePSUSupport.Label.psu_support}</Table.Cell>
       </Table.Row>
-    </thead>
+    </Table.Head>
     <tbody>
       <Table.Row>
         <Table.Cell>

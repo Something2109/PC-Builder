@@ -1,6 +1,7 @@
 import PartPanel from "@/components/part/Panel";
 import { SearchBar } from "@/components/searchbar";
 import PaginationBar from "@/components/utils/PaginationBar";
+import { API } from "@/utils/interface/api";
 import Part from "@/utils/interface/part";
 import { notFound } from "next/navigation";
 
@@ -25,10 +26,7 @@ export default async function ListPage({
 
   if (!response) return notFound();
 
-  const data = (await response.json()) as {
-    total: number;
-    list: Part.BasicInfo[];
-  };
+  const data = (await response.json()) as API.Payload<Part.Summary>;
 
   const page = options.get("page") ?? "1";
   options.delete("page");

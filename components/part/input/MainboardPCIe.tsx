@@ -1,16 +1,16 @@
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import MainboardPCIe from "@/utils/interface/part/info/MainboardPCIe";
 import { InternalConnectors } from "@/utils/interface/utils";
-import { useRef } from "react";
-import { useObjectSet } from "../utils/Hook";
+import { memo, useRef } from "react";
 
 function Component({
   defaultValue,
 }: {
-  defaultValue?: MainboardPCIe.Info[] | null;
+  defaultValue?: MainboardPCIe.DTO[] | null;
 }) {
   const groupByController = Object.groupBy(
     defaultValue ?? [],
@@ -19,14 +19,14 @@ function Component({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{MainboardPCIe.Label.controller}</Table.Cell>
           <Table.Cell>{MainboardPCIe.Label.version}</Table.Cell>
           <Table.Cell>{MainboardPCIe.Label.width}</Table.Cell>
           <Table.Cell>{MainboardPCIe.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {InternalConnectors.PCIe.Controller.options.map((controller) => (
           <ControllerRow
@@ -45,7 +45,7 @@ function ControllerRow({
   defaultValue,
 }: {
   controller: InternalConnectors.PCIe.Controller;
-  defaultValue?: MainboardPCIe.Info[];
+  defaultValue?: MainboardPCIe.DTO[];
 }) {
   const [SavedInputValues, addPCIe, deletePCIe] = useObjectSet(
     (version: number, width: InternalConnectors.PCIe.Width) => ({
@@ -54,7 +54,7 @@ function ControllerRow({
       width,
       count: 0,
     }),
-    (info) =>
+    (info: MainboardPCIe.DTO) =>
       `${controller} ${InternalConnectors.PCIe.toString(
         info.version,
         info.width
@@ -64,47 +64,61 @@ function ControllerRow({
 
   return (
     <>
-      {SavedInputValues.map(([key, value], index, arr) => (
-        <Table.Row key={`pcie-${controller}-${key}`}>
-          {index === 0 && (
-            <Table.Cell rowSpan={arr.length + 1}>{controller}</Table.Cell>
-          )}
-          <Table.Cell colSpan={0} className="hidden">
-            <Input
-              type="hidden"
-              name={`${key}___controller`}
-              value={value.controller}
-            />
-          </Table.Cell>
+      <Table.Row>
+        <Table.Cell className="font-bold" rowSpan={SavedInputValues.length + 2}>
+          {controller}
+        </Table.Cell>
+      </Table.Row>
+      {SavedInputValues.map(([key, value]) => (
+        <Table.Row className="relative" key={`pcie-${controller}-${key}`}>
+          <ValueRow value={value} />
           <Table.Cell>
-            <Input name={`${key}___version`} value={value.version} readOnly />
-          </Table.Cell>
-          <Table.Cell>
-            <Input name={`${key}___width`} value={value.width} readOnly />
-          </Table.Cell>
-          <Table.Cell className="relative">
-            <Input
-              type="number"
-              name={`${key}___count`}
-              defaultValue={value.count}
-              onChange={(e) => (value.count = Number(e.target.value))}
-            />
             <DeleteButton onClick={() => deletePCIe(value)} />
           </Table.Cell>
         </Table.Row>
       ))}
-      <AddRow add={addPCIe}>
-        {SavedInputValues.length === 0 && controller}
-      </AddRow>
+      <AddRow add={addPCIe} />
     </>
   );
 }
 
+const ValueRow = memo(({ value }: { value: MainboardPCIe.DTO }) => (
+  <>
+    <Table.Cell colSpan={0} className="hidden">
+      <Input
+        type="hidden"
+        name={`${value.controller}___controller`}
+        value={value.controller}
+      />
+    </Table.Cell>
+    <Table.Cell>
+      <Input
+        name={`${value.controller}___version`}
+        value={value.version}
+        readOnly
+      />
+    </Table.Cell>
+    <Table.Cell>
+      <Input
+        name={`${value.controller}___width`}
+        value={value.width}
+        readOnly
+      />
+    </Table.Cell>
+    <Table.Cell>
+      <Input
+        type="number"
+        name={`${value.controller}___count`}
+        defaultValue={value.count ?? 0}
+        onChange={(e) => (value.count = Number(e.target.value))}
+      />
+    </Table.Cell>
+  </>
+));
+
 function AddRow({
-  children,
   add,
 }: {
-  children?: React.ReactNode;
   add: (version: number, width: InternalConnectors.PCIe.Width) => void;
 }) {
   const VersionInput = useRef<HTMLInputElement>(null);
@@ -119,7 +133,6 @@ function AddRow({
 
   return (
     <Table.Row>
-      {children && <Table.Cell>{children}</Table.Cell>}
       <Table.Cell>
         <Input ref={VersionInput} type="number" defaultValue={0} />
       </Table.Cell>
@@ -154,8 +167,8 @@ function submit(formData: FormData) {
   }, {} as MappingFormdata);
 
   return Object.values(raw)
-    .map((val) => MainboardPCIe.Schema.parse(val)!)
-    .filter((val) => val.count > 0);
+    .map((val) => MainboardPCIe.Schemas.DTO.parse(val))
+    .filter((val) => val.count);
 }
 
 export default GenericInputField(Component, submit);

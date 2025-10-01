@@ -1,11 +1,11 @@
 "use client";
 
-import { useBuildContext } from "./hook/BuildContext";
-import { useValidation } from "./hook/Validation";
-import { Button, DeleteButton, RedirectButton } from "../utils/Button";
+import { useBuildContext } from "@/components/hook/build/BuildContext";
+import { useValidation } from "@/components/hook/build/Validation";
+import SummaryTable from "@/components/part/Summary";
+import { Button, RedirectButton } from "@/components/utils/Button";
 import Part, { Product } from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
-import SummaryTable from "../part/Summary";
 
 const ProductRenderOrder = [
   Products.CPU,
@@ -36,7 +36,9 @@ export default function BuildProductList() {
 
 function ProductTypeComponent({ product }: { product: Products }) {
   const { details: context, remove: removeProduct } = useBuildContext();
-  const { products: productErrors } = useValidation();
+  const {
+    result: { products: errors },
+  } = useValidation();
 
   let details = context[product];
   if (!Array.isArray(details) && details) details = [details];
@@ -68,6 +70,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
             Cells={[RemoveButtonCell]}
           />
         )}
+        {errors[product] && <li className="text-red-500">{errors[product]}</li>}
         {addable && (
           <li>
             <RedirectButton href={`/build/${product}`}>Add</RedirectButton>

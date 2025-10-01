@@ -19,7 +19,7 @@ export default async function PartDetailPage({
 
   if (!response.ok) return notFound();
 
-  const data = (await response.json()) as Part.Detail;
+  const data = (await response.json()) as Part.DTO;
 
   return (
     <>

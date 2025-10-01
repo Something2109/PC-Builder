@@ -5,7 +5,7 @@ import Part from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
 import { createContext, useContext, useReducer, useRef } from "react";
 
-type DetailMapping<T = Part.Detail> = {
+type DetailMapping<T = Part.DTO> = {
   [key in Products]?: T[];
 };
 

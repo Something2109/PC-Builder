@@ -5,7 +5,7 @@ import CaseSpec from "@/utils/interface/part/info/CaseSpec";
 import { FormFactor } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<CaseSpec.Info> = {
+const Components: InfoComponentObject<CaseSpec.DTO> = {
   form_factor: (props) => (
     <OptionSelect options={FormFactor.Case.options} {...props} />
   ),
@@ -28,7 +28,7 @@ const Components: InfoComponentObject<CaseSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  return CaseSpec.Schema.partial().parse(defaultParse(formData))!;
+  return CaseSpec.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

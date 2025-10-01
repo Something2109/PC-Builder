@@ -4,22 +4,21 @@ import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
 import { ChoiceInput } from "@/components/utils/Input";
 import CasePSUSupport from "@/utils/interface/part/info/CasePSUSupport";
 import { FormFactor } from "@/utils/interface/utils";
-import { useRef } from "react";
 
 function Component({
   defaultValue,
 }: {
-  defaultValue?: CasePSUSupport.Info[] | null;
+  defaultValue?: CasePSUSupport.DTO[] | null;
 }) {
   const defaultValueObj = defaultValue?.map((val) => val.psu_support) ?? [];
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{CasePSUSupport.Label.psu_support}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         <Table.Row>
           <Table.Cell>
@@ -44,7 +43,9 @@ function Component({
 function submit(formData: FormData) {
   return formData
     .entries()
-    .map(([key, psu_support]) => CasePSUSupport.Schema.parse({ psu_support }))
+    .map(([key, psu_support]) =>
+      CasePSUSupport.Schemas.DTO.parse({ psu_support })
+    )
     .toArray();
 }
 

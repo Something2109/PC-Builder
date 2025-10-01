@@ -2,13 +2,18 @@
 
 import Build from "@/utils/interface/build";
 import { createContext, useActionState, useContext } from "react";
+import axios from "axios";
 
-const DefaultResult = { attributes: {}, rules: {}, products: {} };
+const DefaultResult = { missing: {}, rules: {}, products: {} };
 
-const ValidationContext = createContext<
-  Build.Result & { pending: boolean; validate: (list: Build.List) => void }
->({
-  ...DefaultResult,
+type Validation = {
+  result: Build.Result;
+  pending: boolean;
+  validate: (list: Build.List) => void;
+};
+
+const ValidationContext = createContext<Validation>({
+  result: DefaultResult,
   pending: false,
   validate: function (list: Build.List): void {
     throw new Error("You are trying to call validate without a context.");
@@ -18,17 +23,18 @@ const ValidationContext = createContext<
 function useValidateAction() {
   const [state, setState, pending] = useActionState<Build.Result, Build.List>(
     async (_, list) => {
-      const response = await fetch(`/api/build/validate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(list),
-      });
+      try {
+        const response = await axios.post<Build.Result>(
+          `/api/build/validate`,
+          list,
+          { withCredentials: true }
+        );
 
-      if (!response.ok) return DefaultResult;
-
-      const result = await response.json();
-
-      return result;
+        return response.data;
+      } catch (err) {
+        console.error(err);
+      }
+      return DefaultResult;
     },
     DefaultResult
   );
@@ -37,12 +43,12 @@ function useValidateAction() {
 }
 
 function ValidationProvider({ children }: { children: React.ReactNode }) {
-  const [state, validate, pending] = useValidateAction();
+  const [result, validate, pending] = useValidateAction();
 
   return (
     <ValidationContext.Provider
       value={{
-        ...state,
+        result,
         pending,
         validate,
       }}

@@ -3,7 +3,7 @@ import { UnitDisplay } from "@/components/utils/Display";
 import ProcessorCache from "@/utils/interface/part/info/ProcessorCache";
 import { MemoryUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<ProcessorCache.Info> = {
+const Components: InfoComponentObject<ProcessorCache.DTO> = {
   L1_cache: ({ defaultValue }) => (
     <UnitDisplay
       Unit={MemoryUnits}

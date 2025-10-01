@@ -5,7 +5,7 @@ import PSUSpec from "@/utils/interface/part/info/PSUSpec";
 import { FormFactor } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<PSUSpec.Info> = {
+const Components: InfoComponentObject<PSUSpec.DTO> = {
   wattage: (props) => <SuffixInput suffix="W" type="number" {...props} />,
   efficiency: (props) => (
     <OptionSelect options={PSUSpec.Efficiency.options} {...props} />
@@ -28,7 +28,7 @@ const Components: InfoComponentObject<PSUSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  return PSUSpec.Schema.partial().parse(defaultParse(formData))!;
+  return PSUSpec.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

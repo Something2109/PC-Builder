@@ -3,7 +3,7 @@ import { defaultParse, GenericInputField } from "../utils/Form";
 import { Input } from "@/components/utils/Input";
 import GPUSpec from "@/utils/interface/part/info/GPUSpec";
 
-const Components: InfoComponentObject<GPUSpec.Info> = {
+const Components: InfoComponentObject<GPUSpec.DTO> = {
   family: (props) => <Input {...props} />,
   core_count: (props) => <Input type="number" {...props} />,
   execution_unit: (props) => <Input type="number" {...props} />,
@@ -14,7 +14,7 @@ const Components: InfoComponentObject<GPUSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  return GPUSpec.Schema.partial().parse(defaultParse(formData))!;
+  return GPUSpec.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

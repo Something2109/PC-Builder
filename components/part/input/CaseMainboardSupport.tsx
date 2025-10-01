@@ -4,22 +4,21 @@ import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
 import { ChoiceInput } from "@/components/utils/Input";
 import CaseMainboardSupport from "@/utils/interface/part/info/CaseMainboardSupport";
 import { FormFactor } from "@/utils/interface/utils";
-import { useRef } from "react";
 
 function Component({
   defaultValue,
 }: {
-  defaultValue?: CaseMainboardSupport.Info[] | null;
+  defaultValue?: CaseMainboardSupport.DTO[] | null;
 }) {
   const defaultValueObj = defaultValue?.map((val) => val.form_factor) ?? [];
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{CaseMainboardSupport.Label.form_factor}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         <Table.Row>
           <Table.Cell>
@@ -45,7 +44,7 @@ function submit(formData: FormData) {
   return formData
     .entries()
     .map(([key, form_factor]) =>
-      CaseMainboardSupport.Schema.parse({ form_factor })
+      CaseMainboardSupport.Schemas.DTO.parse({ form_factor })
     )
     .toArray();
 }

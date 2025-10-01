@@ -3,16 +3,16 @@ import MainboardPCIe from "@/utils/interface/part/info/MainboardPCIe";
 import { InternalConnectors } from "@/utils/interface/utils";
 
 type ControllerPCIeObject = {
-  [side in InternalConnectors.PCIe.Controller]?: MainboardPCIe.Info[];
+  [side in InternalConnectors.PCIe.Controller]?: MainboardPCIe.DTO[];
 };
 
 export default function MainboardPCIeDisplay({
   defaultValue,
 }: {
-  defaultValue: MainboardPCIe.Info[];
+  defaultValue: MainboardPCIe.DTO[];
 }) {
   const value: ControllerPCIeObject = defaultValue.reduce<ControllerPCIeObject>(
-    (acc: ControllerPCIeObject, curr: MainboardPCIe.Info) => {
+    (acc: ControllerPCIeObject, curr: MainboardPCIe.DTO) => {
       const side = curr.controller;
       if (!acc[side]) acc[side] = [];
 
@@ -25,19 +25,21 @@ export default function MainboardPCIeDisplay({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{MainboardPCIe.Label.controller}</Table.Cell>
           <Table.Cell>{`${MainboardPCIe.Label.version} ${MainboardPCIe.Label.width}`}</Table.Cell>
           <Table.Cell>{MainboardPCIe.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {InternalConnectors.PCIe.Controller.options.map((controller) =>
           value[controller]?.map(({ version, width, count }, index, arr) => (
             <Table.Row key={`pcie-${controller}-${version}-${width}`}>
               {index === 0 && (
-                <Table.Cell rowSpan={arr.length}>{controller}</Table.Cell>
+                <Table.Cell className="font-bold" rowSpan={arr.length}>
+                  {controller}
+                </Table.Cell>
               )}
               <Table.Cell>
                 {InternalConnectors.PCIe.toString(version, width)}

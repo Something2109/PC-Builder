@@ -3,7 +3,7 @@ import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import FanSpec from "@/utils/interface/part/info/FanSpec";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<FanSpec.Info> = {
+const Components: InfoComponentObject<FanSpec.DTO> = {
   form_factor: ({ defaultValue }) => defaultValue,
   width: ({ defaultValue }) => (
     <UnitDisplay

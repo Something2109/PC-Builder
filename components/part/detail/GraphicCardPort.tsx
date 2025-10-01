@@ -1,15 +1,15 @@
 import { Table } from "../utils/Table";
 import GraphicCardPort from "@/utils/interface/part/info/GraphicCardPort";
 
-export default ({ defaultValue }: { defaultValue: GraphicCardPort.Info[] }) => (
+export default ({ defaultValue }: { defaultValue: GraphicCardPort.DTO[] }) => (
   <Table.Component>
-    <thead>
+    <Table.Head>
       <Table.Row>
         <Table.Cell>{GraphicCardPort.Label.type}</Table.Cell>
         <Table.Cell>{GraphicCardPort.Label.name}</Table.Cell>
         <Table.Cell>{GraphicCardPort.Label.count}</Table.Cell>
       </Table.Row>
-    </thead>
+    </Table.Head>
     <tbody>
       {defaultValue.map((val) => (
         <Table.Row key={`port-${val.name}`}>

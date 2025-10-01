@@ -4,15 +4,15 @@ import MainboardStorageConnector from "@/utils/interface/part/info/MainboardStor
 export default ({
   defaultValue,
 }: {
-  defaultValue: MainboardStorageConnector.Info[];
+  defaultValue: MainboardStorageConnector.DTO[];
 }) => (
   <Table.Component>
-    <thead>
+    <Table.Head>
       <Table.Row>
         <Table.Cell>{MainboardStorageConnector.Label.form_factor}</Table.Cell>
         <Table.Cell>{MainboardStorageConnector.Label.count}</Table.Cell>
       </Table.Row>
-    </thead>
+    </Table.Head>
     <tbody>
       {defaultValue.map((val) => (
         <Table.Row key={`storage-${val.form_factor}`}>

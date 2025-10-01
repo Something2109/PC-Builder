@@ -10,7 +10,7 @@ export function SuffixDisplay({
   children,
 }: {
   suffix: string;
-  children?: string | number;
+  children?: string | number | null;
 }) {
   return children && `${children} ${suffix}`;
 }

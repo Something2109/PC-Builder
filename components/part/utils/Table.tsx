@@ -9,10 +9,11 @@ import {
 
 export namespace Table {
   const tableClass = "w-full border-2";
+  const tableHead = "font-bold";
   const tableRow =
     "border-b-2 only:last:border-b-2 last:border-b-0 *:rounded-sm";
   const tableCell =
-    "border-r-2 last:border-r-0 first:font-bold p-2 [&:has(table)]:p-0";
+    "border-r-2 not-only:last:border-r-0 p-2 [&:has(table)]:p-0";
 
   export const Component = ({
     className,
@@ -21,6 +22,16 @@ export namespace Table {
     <table
       className={className ? className.concat(" ", tableClass) : tableClass}
       {...rest}
+    />
+  );
+
+  export const Head = ({
+    className,
+    ...attr
+  }: HTMLAttributes<HTMLTableSectionElement>) => (
+    <thead
+      className={className ? className.concat(" ", tableHead) : tableHead}
+      {...attr}
     />
   );
 
@@ -46,7 +57,7 @@ export namespace Table {
 }
 
 type InfoAttributeComponent<Value> = FunctionComponent<
-  { value?: NonNullable<Value>; defaultValue?: Value } & Omit<
+  { value?: NonNullable<Value>; defaultValue?: Exclude<Value, null> } & Omit<
     InputHTMLAttributes<HTMLInputElement> &
       SelectHTMLAttributes<HTMLSelectElement>,
     "defaultValue" | "value"
@@ -82,7 +93,7 @@ export function InfoComponent<T extends Record<string, any>>(
 
           return (
             <Table.Row key={key}>
-              <Table.Cell>{Labels[key]}</Table.Cell>
+              <Table.Cell className="font-bold">{Labels[key]}</Table.Cell>
               <Table.Cell>
                 <Component
                   name={key}

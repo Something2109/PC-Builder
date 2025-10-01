@@ -1,8 +1,8 @@
 "use client";
 
-import { useBuildContext } from "./hook/BuildContext";
-import { useValidation } from "./hook/Validation";
-import { Button } from "../utils/Button";
+import { useBuildContext } from "@/components/hook/build/BuildContext";
+import { useValidation } from "@/components/hook/build/Validation";
+import { Button } from "@/components/utils/Button";
 
 export default function BuildValidateForm() {
   const { list } = useBuildContext();

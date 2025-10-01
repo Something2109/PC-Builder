@@ -24,7 +24,7 @@ export default function Header() {
         >
           PC Builder
         </Link>
-        <RowWrapper className="m-10 items-center">
+        <RowWrapper className="gap-4 m-10 items-center">
           <DarkModeButton />
           <UserPanel />
           <button

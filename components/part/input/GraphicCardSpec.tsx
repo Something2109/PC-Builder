@@ -10,7 +10,7 @@ import GraphicCardSpec from "@/utils/interface/part/info/GraphicCardSpec";
 import { InternalConnectors } from "@/utils/interface/utils";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<GraphicCardSpec.Info> = {
+const Components: InfoComponentObject<GraphicCardSpec.DTO> = {
   width: (props) => (
     <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
@@ -32,7 +32,7 @@ const Components: InfoComponentObject<GraphicCardSpec.Info> = {
 };
 
 function submit(formData: FormData) {
-  return GraphicCardSpec.Schema.partial().parse(defaultParse(formData))!;
+  return GraphicCardSpec.Schemas.DTO.parse(defaultParse(formData));
 }
 
 export default GenericInputField(

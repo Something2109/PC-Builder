@@ -1,7 +1,7 @@
 "use client";
 
-import useProductSummary from "@/components/build/hook/ProductSummary";
-import { useBuildContext } from "@/components/build/hook/BuildContext";
+import useProductSummary from "@/components/hook/build/ProductSummary";
+import { useBuildContext } from "@/components/hook/build/BuildContext";
 import SummaryTable from "@/components/part/Summary";
 import { FilterBar } from "@/components/part/Filter";
 import { ColumnWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
@@ -12,6 +12,9 @@ import Part, { Product } from "@/utils/interface/part";
 import { Products } from "@/utils/Enum";
 import { use } from "react";
 import { useRouter } from "next/navigation";
+import { ChoiceInput } from "@/components/utils/Input";
+import LoadingPanel from "@/components/utils/LoadingPanel";
+import ErrorPanel from "@/components/utils/ErrorPanel";
 
 export default function BuildProductSummary({
   params: productParams,
@@ -21,9 +24,28 @@ export default function BuildProductSummary({
   const router = useRouter();
   const { product } = use(productParams);
   const { details, add: addDetails } = useBuildContext();
-  const { data, params, page, setParams, setPage } = useProductSummary(product);
+  const {
+    loading,
+    data,
+    params,
+    page,
+    includeBuild,
+    setParams,
+    setPage,
+    setIncludeBuild,
+  } = useProductSummary(product);
 
-  if (!data) return "Loading";
+  if (loading)
+    return <LoadingPanel className="h-[70vh]" text="Loading Product" />;
+
+  if (!data)
+    return (
+      <ErrorPanel
+        className="h-[70vh]"
+        text="Cannot find any product right now..."
+        reset={() => {}}
+      />
+    );
 
   const addable = !details[product] || Array.isArray(details[product]);
 
@@ -49,6 +71,14 @@ export default function BuildProductSummary({
           className="text-xl font-bold"
           id="list"
         >{`${data.total} ${Product.Label[product]}`}</h1>
+        <RowWrapper>
+          <ChoiceInput
+            type="checkbox"
+            onChange={() => setIncludeBuild(!includeBuild)}
+            defaultChecked={includeBuild}
+          />
+          <label>Include Build</label>
+        </RowWrapper>
         <ToggleButton label="Filter">
           <FilterBar
             action={(formData: FormData) => setParams(formData)}

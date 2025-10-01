@@ -26,7 +26,7 @@ export default async function PartDetailEditPage({
 
   if (!response.ok) return notFound();
 
-  const data = (await response.json()) as Part.Detail;
+  const data = (await response.json()) as Part.DTO;
   const SaveLink = `/api/part/${part}/${id}`;
 
   return (

@@ -3,7 +3,7 @@ import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import PSUSpec from "@/utils/interface/part/info/PSUSpec";
 import { LengthUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<PSUSpec.Info> = {
+const Components: InfoComponentObject<PSUSpec.DTO> = {
   wattage: ({ defaultValue }) => (
     <SuffixDisplay suffix="W">{defaultValue}</SuffixDisplay>
   ),

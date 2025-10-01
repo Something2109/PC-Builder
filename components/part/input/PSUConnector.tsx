@@ -1,47 +1,39 @@
-import { useObjectSet } from "../utils/Hook";
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { DeleteButton } from "@/components/utils/Button";
 import PSUConnector from "@/utils/interface/part/info/PSUConnector";
 import { InternalConnectors } from "@/utils/interface/utils";
+import { memo } from "react";
 
 function Component({
   defaultValue,
 }: {
-  defaultValue?: PSUConnector.Info[] | null;
+  defaultValue?: PSUConnector.DTO[] | null;
 }) {
   const [formFactors, addConnector, deleteConnector, existConnector] =
     useObjectSet(
-      (type: InternalConnectors.Power | "") => ({ type, count: 0 }),
-      (info) => info.type,
+      (type: InternalConnectors.Power) => ({ type, count: 0 }),
+      (info: PSUConnector.DTO) => info.type,
       defaultValue
     );
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{PSUConnector.Label.type}</Table.Cell>
           <Table.Cell>{PSUConnector.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {formFactors.map(([type, value]) => (
-          <Table.Row key={`connector-${type}`}>
-            <Table.Cell>
-              <label>{type}</label>
-            </Table.Cell>
-            <Table.Cell className="relative">
-              <Input
-                type="number"
-                name={type}
-                defaultValue={value.count}
-                onChange={(e) => (value.count = Number(e.target.value))}
-              />
-              <DeleteButton onClick={() => deleteConnector(value)} />
-            </Table.Cell>
-          </Table.Row>
+          <ValueRow
+            key={type}
+            value={value}
+            deleteConnector={deleteConnector}
+          />
         ))}
         <Table.Row>
           <Table.Cell colSpan={2}>
@@ -62,11 +54,36 @@ function Component({
   );
 }
 
+const ValueRow = memo(
+  ({
+    value,
+    deleteConnector,
+  }: {
+    value: PSUConnector.DTO;
+    deleteConnector: (value: PSUConnector.DTO) => void;
+  }) => (
+    <Table.Row>
+      <Table.Cell>
+        <label>{value.type}</label>
+      </Table.Cell>
+      <Table.Cell className="relative">
+        <Input
+          type="number"
+          name={value.type}
+          defaultValue={value.count ?? 0}
+          onChange={(e) => (value.count = Number(e.target.value))}
+        />
+        <DeleteButton onClick={() => deleteConnector(value)} />
+      </Table.Cell>
+    </Table.Row>
+  )
+);
+
 function submit(formData: FormData) {
   return formData
     .entries()
-    .map(([type, count]) => PSUConnector.Schema.parse({ type, count }))
-    .filter((val) => val.count > 0)
+    .map(([type, count]) => PSUConnector.Schemas.DTO.parse({ type, count }))
+    .filter((val) => val.count)
     .toArray();
 }
 

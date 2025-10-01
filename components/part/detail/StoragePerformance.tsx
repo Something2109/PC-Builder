@@ -3,7 +3,7 @@ import { UnitDisplay } from "@/components/utils/Display";
 import StoragePerformance from "@/utils/interface/part/info/StoragePerformance";
 import { MemorySpeedUnit } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<StoragePerformance.Info> = {
+const Components: InfoComponentObject<StoragePerformance.DTO> = {
   read_speed: ({ defaultValue }) => (
     <UnitDisplay
       Unit={MemorySpeedUnit}

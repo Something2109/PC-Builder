@@ -2,20 +2,21 @@
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import PartPicture from "../Picture";
+import usePartAction from "@/components/hook/part/PartAction";
+import { NotificationBar } from "@/components/utils/NotificationBar";
+import { Button, RedirectButton } from "@/components/utils/Button";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
+  RowWrapper,
 } from "@/components/utils/FlexWrapper";
-import { Input } from "@/components/utils/Input";
+import { Input, TextArea } from "@/components/utils/Input";
 import Part from "@/utils/interface/part";
-import { Products } from "@/utils/Enum";
-import { useState, TableHTMLAttributes, useActionState } from "react";
-import { NotificationBar } from "@/components/utils/NotificationBar";
-import { Button, RedirectButton } from "@/components/utils/Button";
-import { useRouter } from "next/navigation";
+import { Infos, Products } from "@/utils/Enum";
+import { useState } from "react";
 
 const Components: InfoComponentObject<
-  Omit<Part.BasicInfo, "id" | "part" | "name" | "image_url">
+  Omit<Part.DTO, "id" | "part" | "name" | "image_url" | Infos>
 > = {
   code_name: (props) => <Input {...props} />,
   brand: (props) => <Input {...props} />,
@@ -25,6 +26,7 @@ const Components: InfoComponentObject<
   ),
   launch_date: ({ defaultValue, value, ...props }) => (
     <Input
+      type="date"
       defaultValue={new Date(defaultValue ?? new Date())
         .toISOString()
         .slice(0, 10)}
@@ -39,55 +41,15 @@ export default function PartForm({
   path,
   part,
   defaultValue,
-  ...rest
 }: {
   path: string;
   part: Products;
-  defaultValue?: Part.BasicInfo;
-} & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [formValue, save, pending] = useActionState<
-    Part.BasicInfo | undefined,
-    FormData | null
-  >(async (prev, formData) => {
-    const operation = prev ? (formData ? "save" : "delete") : "add";
-    const RequestPayload: RequestInit = {};
-
-    if (formData) {
-      const raw = Object.fromEntries(formData.entries()) as any;
-      if (!raw.url) raw.url = undefined;
-      if (!raw.image_url) raw.image_url = undefined;
-
-      const data = Part.BasicInfo.omit({ id: true, part: true }).parse(raw);
-      RequestPayload.method = "POST";
-      RequestPayload.headers = { "Content-Type": "application/json" };
-      RequestPayload.body = JSON.stringify(data);
-    } else {
-      RequestPayload.method = "DELETE";
-    }
-
-    setError(null);
-    if (!confirm(`Are you sure you want to ${operation} basic info?`))
-      return prev;
-
-    const response = await fetch(path, RequestPayload);
-
-    if (!response.ok) {
-      setError((await response.json()).message);
-      return prev;
-    } else {
-      alert(`Successfully ${operation} part info.`);
-    }
-
-    const newData = (await response.json()) as Part.BasicInfo;
-
-    if (!prev && newData) router.push(`/part/${part}/${newData.id}/edit`);
-
-    if (!formData) router.push(`/part/${part}`);
-
-    return newData;
-  }, defaultValue);
+  defaultValue?: Part.DTO;
+}) {
+  const [formValue, save, pending, error, setError] = usePartAction(
+    path,
+    defaultValue
+  );
 
   let { name } = formValue ?? {};
 
@@ -100,11 +62,11 @@ export default function PartForm({
           defaultValue={defaultValue}
         />
 
-        <ColumnWrapper className="w-full lg:w-2/3 p-5">
-          <Input
+        <ColumnWrapper className="w-full lg:w-2/3 px-5 justify-center">
+          <TextArea
             name="name"
             placeholder="Name"
-            className="text-4xl font-bold"
+            className="text-4xl font-bold mb-4"
             defaultValue={name}
             required
           />
@@ -114,18 +76,20 @@ export default function PartForm({
               To brand page
             </RedirectButton>
           )}
-          <Button type="submit" className="w-full" disabled={pending}>
-            {pending ? "Saving..." : "Save"}
-          </Button>
-          {!pending && formValue && (
-            <Button
-              type="submit"
-              className="w-full"
-              formAction={() => save(null)}
-            >
-              Delete
+          <RowWrapper>
+            {!pending && formValue && (
+              <Button
+                type="submit"
+                className="px-2 flex-1"
+                formAction={() => save(null)}
+              >
+                Delete
+              </Button>
+            )}
+            <Button type="submit" className="w-full" disabled={pending}>
+              {pending ? "Saving..." : "Save"}
             </Button>
-          )}
+          </RowWrapper>
           {error && (
             <NotificationBar
               message={error}
@@ -146,7 +110,7 @@ function PictureInput({
 }: {
   part: Products;
   className?: string;
-  defaultValue?: Part.BasicInfo;
+  defaultValue?: Part.DTO;
 }) {
   const [image, setImage] = useState<string | undefined>(
     defaultValue?.image_url ?? undefined
@@ -155,6 +119,7 @@ function PictureInput({
   return (
     <ColumnWrapper className={className}>
       <PartPicture
+        className="w-full"
         part={part}
         src={image}
         onError={() => setImage(undefined)}

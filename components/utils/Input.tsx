@@ -17,10 +17,12 @@ const defaultStyle = "only:w-full bg-transparent resize-none overflow-y-hidden";
 const rangeDivStyle = "relative hidden md:block w-full top-1.5";
 const rangeInputStyle = "absolute w-full first:bg-range-input";
 
-export function TextArea({
-  className,
-  ...rest
-}: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+type TextAreaProps = DetailedHTMLProps<
+  TextareaHTMLAttributes<HTMLTextAreaElement>,
+  HTMLTextAreaElement
+>;
+
+export function TextArea({ className, ...rest }: TextAreaProps) {
   let classList = [defaultStyle, "px-1"];
   if (className) {
     classList.push(className);

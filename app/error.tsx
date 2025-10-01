@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/utils/Button";
+import ErrorPanel from "@/components/utils/ErrorPanel";
 import { useEffect } from "react";
 
 export default function Error({
@@ -15,9 +15,10 @@ export default function Error({
   }, [error]);
 
   return (
-    <div>
-      <h2>Something went wrong!</h2>
-      <Button onClick={() => reset()}>Try again</Button>
-    </div>
+    <ErrorPanel
+      className="h-[70vh]"
+      text="Something went wrong!"
+      reset={reset}
+    />
   );
 }

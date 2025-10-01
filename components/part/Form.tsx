@@ -1,8 +1,8 @@
 "use client";
 
-import { useInfoAction } from "./utils/Hook";
 import { NotificationBar } from "../utils/NotificationBar";
 import { VerticalCollapsible } from "../utils/Collapsible";
+import { useInfoAction } from "@/components/hook/part/InfoAction";
 import { Button } from "@/components/utils/Button";
 import { Information } from "@/utils/interface/part";
 import Part from "@/utils/interface/part";
@@ -105,7 +105,7 @@ export function InfoForm({
 }: {
   path: string;
   info: Infos;
-  defaultValue: Part.Detail;
+  defaultValue: Part.DTO;
 }) {
   const label = useRef(Information.Label[info]);
   const [formValue, save, pending, error, setError] = useInfoAction(

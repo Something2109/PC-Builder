@@ -1,16 +1,16 @@
-import { useObjectSet } from "../utils/Hook";
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import CaseFanSupport from "@/utils/interface/part/info/CaseFanSupport";
 import { Case, FormFactor } from "@/utils/interface/utils";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 function MainComponent({
   defaultValue,
 }: {
-  defaultValue?: CaseFanSupport.Info[] | null;
+  defaultValue?: CaseFanSupport.DTO[] | null;
 }) {
   const groupBySide = Object.groupBy(
     defaultValue ?? [],
@@ -19,13 +19,13 @@ function MainComponent({
 
   return (
     <Table.Component>
-      <thead>
+      <Table.Head>
         <Table.Row>
           <Table.Cell>{CaseFanSupport.Label.case_side}</Table.Cell>
           <Table.Cell>{CaseFanSupport.Label.form_factor}</Table.Cell>
           <Table.Cell>{CaseFanSupport.Label.count}</Table.Cell>
         </Table.Row>
-      </thead>
+      </Table.Head>
       <tbody>
         {Case.Side.options.map((side) => (
           <SideRow
@@ -44,7 +44,7 @@ function SideRow({
   defaultValue,
 }: {
   side: Case.Side;
-  defaultValue?: CaseFanSupport.Info[];
+  defaultValue?: CaseFanSupport.DTO[];
 }) {
   const [savedInputValues, addName, deleteName, existName] = useObjectSet(
     (form_factor: FormFactor.Fan) => ({ case_side, form_factor, count: 0 }),
@@ -52,44 +52,50 @@ function SideRow({
     defaultValue
   );
   const rowSpan = Math.min(
-    savedInputValues.length + 1,
-    FormFactor.Fan.options.length
+    savedInputValues.length + 2,
+    FormFactor.Fan.options.length + 1
   );
 
   return (
     <>
-      {savedInputValues.map(([key, val], index) => (
-        <Table.Row key={`fan-${case_side}-${key}`}>
-          {index === 0 && (
-            <Table.Cell rowSpan={rowSpan}>{case_side}</Table.Cell>
-          )}
+      <Table.Row>
+        <Table.Cell className="font-bold" rowSpan={rowSpan}>
+          {case_side}
+        </Table.Cell>
+      </Table.Row>
+      {savedInputValues.map(([key, val]) => (
+        <Table.Row className="relative" key={`fan-${case_side}-${key}`}>
+          <ValueRow value={val} />
           <Table.Cell>
-            <label>{val.form_factor}</label>
-          </Table.Cell>
-          <Table.Cell className="relative">
-            <Input
-              type="number"
-              name={`${case_side}___${val.form_factor}`}
-              defaultValue={val.count}
-              onChange={(e) => (val.count = Number(e.target.value))}
-            />
             <DeleteButton onClick={() => deleteName(val)} />
           </Table.Cell>
         </Table.Row>
       ))}
-      <AddRow exist={existName} add={addName}>
-        {savedInputValues.length === 0 && <Table.Cell>{case_side}</Table.Cell>}
-      </AddRow>
+      <AddRow exist={existName} add={addName} />
     </>
   );
 }
 
+const ValueRow = memo(({ value }: { value: CaseFanSupport.DTO }) => (
+  <>
+    <Table.Cell>
+      <label>{value.form_factor}</label>
+    </Table.Cell>
+    <Table.Cell>
+      <Input
+        type="number"
+        name={`${value.case_side}___${value.form_factor}`}
+        defaultValue={value.count ?? 0}
+        onChange={(e) => (value.count = Number(e.target.value))}
+      />
+    </Table.Cell>
+  </>
+));
+
 function AddRow({
-  children,
   exist,
   add,
 }: {
-  children?: React.ReactNode;
   exist: (name: FormFactor.Fan) => boolean;
   add: (value: FormFactor.Fan) => void;
 }) {
@@ -105,7 +111,6 @@ function AddRow({
   return (
     options.length > 0 && (
       <Table.Row>
-        {children}
         <Table.Cell>
           <OptionSelect ref={FormFactorInput} options={options} required />
         </Table.Cell>
@@ -129,7 +134,11 @@ function submit(formData: FormData) {
         FormFactor.Fan
       ];
       const count = Number(value);
-      return CaseFanSupport.Schema.parse({ case_side, form_factor, count });
+      return CaseFanSupport.Schemas.DTO.parse({
+        case_side,
+        form_factor,
+        count,
+      });
     })
     .toArray();
 }

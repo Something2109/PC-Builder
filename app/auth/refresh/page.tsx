@@ -1,16 +1,13 @@
 "use client";
 
-import { useRefreshToken } from "@/components/auth";
+import { useRefreshAction } from "@/components/auth";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 
 export default function RefreshPage() {
   const param = useSearchParams();
-  const refresh = useRefreshToken(param.get("redirect"));
+  const pending = useRefreshAction(param.get("redirect"));
 
-  useEffect(() => {
-    refresh();
-  }, []);
+  if (!pending) return <h1>Failed to login</h1>;
 
   return <h1>Login In</h1>;
 }

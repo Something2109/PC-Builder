@@ -3,7 +3,7 @@ import { UnitDisplay, SuffixDisplay } from "@/components/utils/Display";
 import CPUPerformance from "@/utils/interface/part/info/CPUPerformance";
 import { FrequencyUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<CPUPerformance.Info> = {
+const Components: InfoComponentObject<CPUPerformance.DTO> = {
   base_frequency: ({ defaultValue }) => (
     <UnitDisplay
       Unit={FrequencyUnits}

@@ -3,7 +3,7 @@ import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import HDDSpec from "@/utils/interface/part/info/HDDSpec";
 import { MemoryUnits } from "@/utils/extract/Units";
 
-const Components: InfoComponentObject<HDDSpec.Info> = {
+const Components: InfoComponentObject<HDDSpec.DTO> = {
   rotational_speed: ({ defaultValue }) => (
     <SuffixDisplay suffix="RPM">{defaultValue}</SuffixDisplay>
   ),

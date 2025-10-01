@@ -5,7 +5,7 @@ import MainboardUSBConnector from "@/utils/interface/part/info/MainboardUSBConne
 export default ({
   defaultValue,
 }: {
-  defaultValue: MainboardUSBConnector.Info[];
+  defaultValue: MainboardUSBConnector.DTO[];
 }) => (
   <Table.Component>
     <tbody>
