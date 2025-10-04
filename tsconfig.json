@@ -3,20 +3,18 @@
     "paths": {
       "@/utils/*": ["./utils/*"]
     },
-    "baseUrl": ".",
     "outDir": "./dist",
     "target": "ES2021",
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "incremental": true,
-    "module": "esnext",
+    "module": "NodeNext",
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
-    "jsx": "preserve",
     "strictNullChecks": true
   },
   "include": ["**/*.ts", "**/*.tsx"],
