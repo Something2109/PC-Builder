@@ -121,7 +121,7 @@ export class PCIeExchanger {
   }
 
   static toObject(value: string): PCIeInfo {
-    const [_, version, width] = value.match(InternalConnectors.PCIe.Regex)!;
+    const [, version, width] = value.match(InternalConnectors.PCIe.Regex)!;
 
     if (!version || !width) {
       throw new Error("Invalid PCIe string");
@@ -145,7 +145,7 @@ export class USBExchanger {
   }
 
   static toObject(value: string): USBInfo {
-    const [_, generation, connector] = value.match(
+    const [, generation, connector] = value.match(
       ExternalPorts.Peripheral.USB.Regex
     )!;
 

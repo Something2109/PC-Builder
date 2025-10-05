@@ -21,7 +21,7 @@ const GPURule: AttributeRule<typeof attributes> = {
     return;
   },
 
-  filter(build) {
+  filter() {
     const result: ReturnType<typeof this.filter> = {};
 
     return result;

@@ -76,7 +76,7 @@ export namespace API {
     | number
     | bigint
     | boolean
-    | Function
+    | Function // eslint-disable-line @typescript-eslint/no-unsafe-function-type
     | Date
     | null
     | undefined;
@@ -87,7 +87,7 @@ export namespace API {
    * an object with the number key for mapping the index
    * and the value as the error message mapping of the value at the key index.
    */
-  type ArrayError<T extends ArrayError<any>> =
+  type ArrayError<T extends Array<unknown>> =
     | {
         [key in number]: Error<T[key]>;
       }
@@ -126,7 +126,7 @@ export namespace API {
    * an object with the key pointing to the wrong value
    * and the value as the error message mapping of the value at the key index.
    */
-  type ObjectError<T extends Object> =
+  type ObjectError<T extends object> =
     | {
         [key in keyof T]?: Error<T[key]>;
       }
@@ -137,13 +137,13 @@ export namespace API {
    */
   export type Error<T> = T extends DefaultType
     ? string
-    : T extends Array<any>
+    : T extends Array<unknown>
     ? ArrayError<T>
     : T extends Map<infer K, infer V>
     ? MapError<K, V>
     : T extends Set<infer Val>
     ? SetError<Val>
-    : T extends Object
+    : T extends object
     ? ObjectError<T>
     : string;
 
@@ -152,8 +152,8 @@ export namespace API {
    * @param issues The zod issue list
    * @returns The message mapping of the generic object.
    */
-  export function toError<T extends Error<any>>(issues: ZodIssue[]) {
-    return issues.reduce<string | {}>((acc, err) => {
+  export function toError<T>(issues: ZodIssue[]) {
+    return issues.reduce<string | object>((acc, err) => {
       const path = err.path;
       if (path.length === 0) return err.message;
 
@@ -161,7 +161,7 @@ export namespace API {
         curr[attr] =
           curr[attr] ?? (index === path.length - 1 ? err.message : {});
         return curr[attr];
-      }, acc as any);
+      }, acc as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       return acc;
     }, {}) as Error<T>;

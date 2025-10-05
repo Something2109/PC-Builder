@@ -96,7 +96,7 @@ const MultipleValueInfo = [
 ] as const;
 
 function objectMap<
-  Obj extends Record<string, any>,
+  Obj extends Record<string, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
   Map extends (arg: [keyof Obj, Obj[keyof Obj]]) => [keyof Obj, unknown]
 >(obj: Obj, map: Map) {
   return Object.fromEntries(Object.entries(obj).map(map)) as {

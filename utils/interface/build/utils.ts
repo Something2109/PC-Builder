@@ -84,16 +84,16 @@ type BuildValidateAttributes<T extends BuildAttributeMapping> = {
 type BuildAttributeValue<
   T extends BuildAttributeMapping,
   A extends keyof T
-> = T[A] extends Info.Tuple<infer _, infer I>
+> = T[A] extends Info.Tuple<Products, infer I>
   ? Info.Validate<I>
-  : T[A] extends Attribute.Tuple<infer _, infer I, infer A>
+  : T[A] extends Attribute.Tuple<Products, infer I, infer A>
   ? Attribute.Validate<I, A>
   : undefined;
 
 type BuildValidateResult<T extends BuildAttributeMapping> = {
-  -readonly [key in keyof T]?: T[key] extends Info.Tuple<infer P, infer _>
+  -readonly [key in keyof T]?: T[key] extends Info.Tuple<infer P, Infos>
     ? BuildListInferValue<P, Info.Result>
-    : T[key] extends Attribute.Tuple<infer P, infer _, infer __>
+    : T[key] extends Attribute.Tuple<infer P, Infos, string>
     ? BuildListInferValue<P, Attribute.Result>
     : undefined;
 };
@@ -101,16 +101,16 @@ type BuildValidateResult<T extends BuildAttributeMapping> = {
 type BuildResultValue<
   T extends BuildAttributeMapping,
   A extends keyof T
-> = T[A] extends Info.Tuple<infer P, infer _>
+> = T[A] extends Info.Tuple<Products, Infos>
   ? Info.Result
-  : T[A] extends Attribute.Tuple<infer P, infer _, infer __>
+  : T[A] extends Attribute.Tuple<Products, Infos, string>
   ? Attribute.Result
   : undefined;
 
 type BuildFilterAttributes<T extends BuildAttributeMapping> = {
-  -readonly [key in keyof T]?: T[key] extends Info.Tuple<infer _, infer I>
+  -readonly [key in keyof T]?: T[key] extends Info.Tuple<Products, infer I>
     ? Info.Filter<I>
-    : T[key] extends Attribute.Tuple<infer _, infer __, infer ___>
+    : T[key] extends Attribute.Tuple<Products, Infos, string>
     ? Attribute.Filter
     : undefined;
 };
@@ -118,9 +118,9 @@ type BuildFilterAttributes<T extends BuildAttributeMapping> = {
 type BuildFilterValue<
   T extends BuildAttributeMapping,
   A extends keyof T
-> = T[A] extends Info.Tuple<infer _, infer I>
+> = T[A] extends Info.Tuple<Products, infer I>
   ? Info.Filter<I>
-  : T[A] extends Attribute.Tuple<infer _, infer __, infer ___>
+  : T[A] extends Attribute.Tuple<Products, Infos, string>
   ? Attribute.Filter
   : undefined;
 

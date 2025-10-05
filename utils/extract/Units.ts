@@ -140,7 +140,7 @@ class Unit<Units extends string> implements UnitInterface<Units> {
   private extractRegexResult(
     result: RegExpMatchArray | RegExpExecArray
   ): [number | null, Units] {
-    const [_, __, num, unit] = result;
+    const [, , num, unit] = result;
 
     return [num ? Number(num) : null, unit as Units];
   }

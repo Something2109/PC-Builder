@@ -55,7 +55,7 @@ namespace Build {
 
   export type RuleResult = {
     error?: string;
-    attributes: BuildValidateResult<any>;
+    attributes: BuildValidateResult<BuildAttributeMapping>;
   };
 
   export type Rule<T extends BuildAttributeMapping> = AttributeRule<T>;

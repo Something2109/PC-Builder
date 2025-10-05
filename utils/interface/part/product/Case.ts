@@ -1,4 +1,4 @@
-import { FilterOptions, FormFactor, Case as CasePlace } from "../../utils";
+import { FilterOptions, FormFactor } from "../../utils";
 import { z } from "zod";
 
 export namespace Case {

@@ -593,7 +593,7 @@ namespace Case {
   export type HardDriveFormFactor = z.infer<typeof HardDriveFormFactor>;
 }
 
-type FilterOptionsType<Info extends {}, Attributes extends keyof Info> = {
+type FilterOptionsType<Info extends object, Attributes extends keyof Info> = {
   [key in Attributes]?: NonNullable<Required<Info>[key]> extends number
     ? number[]
     : Required<Info>[key] extends string
