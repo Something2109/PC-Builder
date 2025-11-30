@@ -1,7 +1,7 @@
 "use client";
 
 import { EditableArticle } from "@/components/articles/Form";
-import { Article } from "@/utils/interface/article/article";
+import * as Article from "@/utils/article";
 import { Button, RedirectButton } from "@/components/utils/Button";
 import { NotificationBar } from "@/components/utils/NotificationBar";
 import { use, useEffect, useState } from "react";

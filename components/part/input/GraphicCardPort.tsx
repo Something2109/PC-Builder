@@ -4,8 +4,8 @@ import { Table } from "../utils/Table";
 import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
-import GraphicCardPort from "@/utils/interface/part/info/GraphicCardPort";
-import { ExternalPorts } from "@/utils/interface/utils";
+import * as GraphicCardPort from "@/utils/part/info/GraphicCardPort";
+import { ExternalPorts } from "@/utils/interface";
 import { memo, useRef, useState } from "react";
 
 function Component({

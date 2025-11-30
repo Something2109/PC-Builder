@@ -1,4 +1,4 @@
-import { Article } from "@/utils/interface/article/article";
+import * as Article from "@/utils/article";
 import Image from "next/image";
 import { ContentProps } from "../utils";
 

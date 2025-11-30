@@ -2,8 +2,7 @@
 
 import { PartSummaryCells } from "./summary/Part";
 import { SummaryTable as Table } from "./utils/Summary";
-import Part from "@/utils/interface/part";
-import { Products } from "@/utils/Enum";
+import Part, { Products } from "@/utils/part";
 import { ComponentType, lazy, TableHTMLAttributes } from "react";
 
 export const SummaryInfoComponent = {

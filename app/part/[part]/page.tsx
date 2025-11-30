@@ -4,15 +4,14 @@ import { RedirectButton } from "@/components/utils/Button";
 import PaginationBar from "@/components/utils/PaginationBar";
 import { FilterBar } from "@/components/part/Filter";
 import { ToggleButton } from "@/components/utils/Toggle";
-import { Product } from "@/utils/interface/part";
-import { Products } from "@/utils/Enum";
+import { Product } from "@/utils/part";
 import { notFound } from "next/navigation";
 
 export default async function PartListPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ part: Products }>;
+  params: Promise<{ part: Product.Name }>;
   searchParams: Promise<Record<string, string | string[]>>;
 }) {
   const { part } = await params;

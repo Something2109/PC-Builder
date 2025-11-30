@@ -1,7 +1,7 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
-import PSUSpec from "@/utils/interface/part/info/PSUSpec";
-import { LengthUnits } from "@/utils/extract/Units";
+import * as PSUSpec from "@/utils/part/info/PSUSpec";
+import { LengthUnits } from "@/utils/Units";
 
 const Components: InfoComponentObject<PSUSpec.DTO> = {
   wattage: ({ defaultValue }) => (

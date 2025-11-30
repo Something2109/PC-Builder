@@ -1,7 +1,7 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { defaultParse, GenericInputField } from "../utils/Form";
 import { Input } from "@/components/utils/Input";
-import GPUSpec from "@/utils/interface/part/info/GPUSpec";
+import * as GPUSpec from "@/utils/part/info/GPUSpec";
 
 const Components: InfoComponentObject<GPUSpec.DTO> = {
   family: (props) => <Input {...props} />,

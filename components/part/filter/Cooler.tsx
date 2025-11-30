@@ -1,5 +1,5 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
-import Cooler from "@/utils/interface/part/product/Cooler";
+import * as Cooler from "@/utils/part/product/Cooler";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<Cooler.Filter> = {

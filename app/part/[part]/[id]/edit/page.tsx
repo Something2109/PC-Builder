@@ -1,12 +1,8 @@
 import { InfoForm } from "@/components/part/Form";
 import PartForm from "@/components/part/input/Part";
-import {
-  ColumnWrapper,
-  ResponsiveWrapper,
-} from "@/components/utils/FlexWrapper";
-import { ObjectTable } from "@/components/utils/ObjectTable";
-import Part, { Mapping } from "@/utils/interface/part";
-import { Products, Roles } from "@/utils/Enum";
+import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
+import Part, { Products, Mapping } from "@/utils/part";
+import { Roles } from "@/utils/user";
 import { notFound } from "next/navigation";
 import { AuthRole } from "@/components/auth";
 import { ServerAuthRole } from "@/components/auth-server";

@@ -1,5 +1,5 @@
 import { Input, OptionSelect } from "@/components/utils/Input";
-import { ExternalPorts } from "@/utils/interface/utils";
+import { ExternalPorts } from "@/utils/interface";
 import {
   ChangeEventHandler,
   FunctionComponent,

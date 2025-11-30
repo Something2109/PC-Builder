@@ -2,8 +2,8 @@ import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
 import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
 import { ChoiceInput } from "@/components/utils/Input";
-import CaseRadiatorSupport from "@/utils/interface/part/info/CaseRadiatorSupport";
-import { Case, FormFactor } from "@/utils/interface/utils";
+import * as CaseRadiatorSupport from "@/utils/part/info/CaseRadiatorSupport";
+import { Case, FormFactor } from "@/utils/interface";
 
 type CaseSideFanObject = { [side in Case.Side]?: FormFactor.Radiator[] };
 

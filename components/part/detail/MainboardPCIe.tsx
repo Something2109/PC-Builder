@@ -1,6 +1,6 @@
 import { Table } from "../utils/Table";
-import MainboardPCIe from "@/utils/interface/part/info/MainboardPCIe";
-import { InternalConnectors } from "@/utils/interface/utils";
+import * as MainboardPCIe from "@/utils/part/info/MainboardPCIe";
+import { InternalConnectors } from "@/utils/interface";
 
 type ControllerPCIeObject = {
   [side in InternalConnectors.PCIe.Controller]?: MainboardPCIe.DTO[];

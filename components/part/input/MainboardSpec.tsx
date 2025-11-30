@@ -1,8 +1,8 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { defaultParse, GenericInputField } from "../utils/Form";
 import { Input, SuffixInput, OptionSelect } from "@/components/utils/Input";
-import MainboardSpec from "@/utils/interface/part/info/MainboardSpec";
-import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
+import * as MainboardSpec from "@/utils/part/info/MainboardSpec";
+import { FormFactor, InternalConnectors } from "@/utils/interface";
 
 const Components: InfoComponentObject<MainboardSpec.DTO> = {
   form_factor: (props) => (

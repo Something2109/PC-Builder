@@ -1,4 +1,4 @@
-import { Products } from "@/utils/Enum";
+import { Products } from "@/utils/part";
 import { notFound } from "next/navigation";
 
 export default async function BuildSummaryLayout({

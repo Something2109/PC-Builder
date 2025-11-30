@@ -5,7 +5,8 @@ import {
   ColumnWrapper,
   ResponsiveWrapper,
 } from "@/components/utils/FlexWrapper";
-import { Products, Roles } from "@/utils/Enum";
+import { Products } from "@/utils/part";
+import { Roles } from "@/utils/user";
 
 const roles = [Roles.ADMIN];
 

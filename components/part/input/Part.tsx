@@ -11,8 +11,7 @@ import {
   RowWrapper,
 } from "@/components/utils/FlexWrapper";
 import { Input, TextArea } from "@/components/utils/Input";
-import Part from "@/utils/interface/part";
-import { Infos, Products } from "@/utils/Enum";
+import Part, { Infos, Products } from "@/utils/part";
 import { useState } from "react";
 
 const Components: InfoComponentObject<

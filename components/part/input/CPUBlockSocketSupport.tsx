@@ -4,7 +4,7 @@ import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import useDebounce from "@/components/utils/Debounce";
 import { Input } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
-import CPUBlockSocketSupport from "@/utils/interface/part/info/CPUBlockSocketSupport";
+import * as CPUBlockSocketSupport from "@/utils/part/info/CPUBlockSocketSupport";
 import { memo } from "react";
 
 function Component({

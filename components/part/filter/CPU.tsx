@@ -3,8 +3,8 @@ import {
   MinMaxRangeInput,
   UnitMinMaxRangeInput,
 } from "@/components/utils/Input";
-import CPU from "@/utils/interface/part/product/CPU";
-import { FrequencyUnits, MemoryUnits } from "@/utils/extract/Units";
+import * as CPU from "@/utils/part/product/CPU";
+import { FrequencyUnits, MemoryUnits } from "@/utils/Units";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<CPU.Filter> = {

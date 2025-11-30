@@ -6,9 +6,9 @@ import {
   OptionSelect,
   SuffixInput,
 } from "@/components/utils/Input";
-import FanSpec from "@/utils/interface/part/info/FanSpec";
-import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { LengthUnits } from "@/utils/extract/Units";
+import * as FanSpec from "@/utils/part/info/FanSpec";
+import { FormFactor, InternalConnectors } from "@/utils/interface";
+import { LengthUnits } from "@/utils/Units";
 
 const Components: InfoComponentObject<FanSpec.DTO> = {
   form_factor: (props) => (

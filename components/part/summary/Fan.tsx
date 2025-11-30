@@ -1,6 +1,6 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import { SuffixDisplay } from "@/components/utils/Display";
-import Fan from "@/utils/interface/part/product/Fan";
+import * as Fan from "@/utils/part/product/Fan";
 
 const Components: InfoSummaryMapping<Fan.Summary> = {
   form_factor: ({ value }) => value,

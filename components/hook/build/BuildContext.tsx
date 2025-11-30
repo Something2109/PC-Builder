@@ -1,8 +1,7 @@
 "use client";
 
-import Build from "@/utils/interface/build";
-import Part from "@/utils/interface/part";
-import { Products } from "@/utils/Enum";
+import Build from "@/utils/build";
+import Part, { Products } from "@/utils/part";
 import { createContext, useContext, useReducer, useRef } from "react";
 
 type DetailMapping<T = Part.DTO> = {

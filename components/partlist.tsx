@@ -1,5 +1,5 @@
 import Image, { StaticImageData } from "next/image";
-import { Products } from "@/utils/Enum";
+import { Products } from "@/utils/part";
 import { RedirectButton } from "./utils/Button";
 
 const title: { [key in Products]: string } = {

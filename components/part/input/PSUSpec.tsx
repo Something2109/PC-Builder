@@ -1,9 +1,9 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { defaultParse, GenericInputField } from "../utils/Form";
 import { SuffixInput, UnitInput, OptionSelect } from "@/components/utils/Input";
-import PSUSpec from "@/utils/interface/part/info/PSUSpec";
-import { FormFactor } from "@/utils/interface/utils";
-import { LengthUnits } from "@/utils/extract/Units";
+import * as PSUSpec from "@/utils/part/info/PSUSpec";
+import { FormFactor } from "@/utils/interface";
+import { LengthUnits } from "@/utils/Units";
 
 const Components: InfoComponentObject<PSUSpec.DTO> = {
   wattage: (props) => <SuffixInput suffix="W" type="number" {...props} />,

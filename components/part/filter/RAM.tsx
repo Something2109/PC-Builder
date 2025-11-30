@@ -2,8 +2,8 @@ import {
   MultipleChoiceInput,
   UnitMinMaxRangeInput,
 } from "@/components/utils/Input";
-import RAM from "@/utils/interface/part/product/RAM";
-import { MemoryUnits } from "@/utils/extract/Units";
+import * as RAM from "@/utils/part/product/RAM";
+import { MemoryUnits } from "@/utils/Units";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<RAM.Filter> = {

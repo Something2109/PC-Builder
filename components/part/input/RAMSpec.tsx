@@ -7,9 +7,9 @@ import {
   OptionSelect,
   Input,
 } from "@/components/utils/Input";
-import RAMSpec from "@/utils/interface/part/info/RAMSpec";
-import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { MemoryUnits, TransferSpeedUnit } from "@/utils/extract/Units";
+import * as RAMSpec from "@/utils/part/info/RAMSpec";
+import { FormFactor, InternalConnectors } from "@/utils/interface";
+import { MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
 
 const Components: InfoComponentObject<RAMSpec.DTO> = {
   speed: (props) => (

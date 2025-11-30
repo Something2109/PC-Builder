@@ -1,6 +1,6 @@
 "use client";
 
-import Build from "@/utils/interface/build";
+import Build from "@/utils/build";
 import { createContext, useActionState, useContext } from "react";
 import axios from "axios";
 

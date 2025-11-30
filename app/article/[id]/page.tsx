@@ -1,6 +1,6 @@
 import { ArticleComponent } from "@/components/articles/Article";
 import { RedirectButton } from "@/components/utils/Button";
-import { Article } from "@/utils/interface/article/article";
+import * as Article from "@/utils/article";
 import { notFound } from "next/navigation";
 import React from "react";
 

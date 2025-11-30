@@ -2,7 +2,7 @@ import { Section } from "./display/Section";
 import { Paragraph } from "./display/Paragraph";
 import { Picture } from "./display/Image";
 import { List } from "./display/List";
-import { Article } from "@/utils/interface/article/article";
+import * as Article from "@/utils/article";
 
 export type ContentProps<T extends Article.Content> = {
   content: T;

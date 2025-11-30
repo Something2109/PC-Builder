@@ -1,6 +1,6 @@
-import { Article } from "@/utils/interface/article/article";
-import { Products, Topics } from "@/utils/Enum";
-import { notFound, redirect } from "next/navigation";
+import * as Article from "@/utils/article";
+import { Products } from "@/utils/part";
+import { notFound } from "next/navigation";
 import React from "react";
 import { ColumnWrapper } from "@/components/utils/FlexWrapper";
 import { ArticleLink } from "@/components/utils/ArticleLink";
@@ -8,7 +8,7 @@ import { ArticleLink } from "@/components/utils/ArticleLink";
 export default async function PartTopicPage({
   params,
 }: {
-  params: Promise<{ topic: Topics; part: string }>;
+  params: Promise<{ topic: string; part: string }>;
 }) {
   const query = new URLSearchParams(await params);
   if (!Object.values(Products).includes(query.get("part") as Products))

@@ -1,5 +1,5 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
-import Mainboard from "@/utils/interface/part/product/Mainboard";
+import * as Mainboard from "@/utils/part/product/Mainboard";
 
 const Components: InfoSummaryMapping<Mainboard.Summary> = {
   form_factor: ({ value }) => value,

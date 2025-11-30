@@ -1,5 +1,5 @@
 import { Table } from "../utils/Table";
-import MainboardPowerConnector from "@/utils/interface/part/info/MainboardPowerConnector";
+import * as MainboardPowerConnector from "@/utils/part/info/MainboardPowerConnector";
 
 export default ({
   defaultValue,

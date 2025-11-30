@@ -1,7 +1,7 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { UnitDisplay } from "@/components/utils/Display";
-import StoragePerformance from "@/utils/interface/part/info/StoragePerformance";
-import { MemorySpeedUnit } from "@/utils/extract/Units";
+import * as StoragePerformance from "@/utils/part/info/StoragePerformance";
+import { MemorySpeedUnit } from "@/utils/Units";
 
 const Components: InfoComponentObject<StoragePerformance.DTO> = {
   read_speed: ({ defaultValue }) => (

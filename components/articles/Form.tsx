@@ -1,7 +1,7 @@
 "use client";
 
 import { lazy, useActionState, useCallback, useState } from "react";
-import { Article } from "@/utils/interface/article/article";
+import * as Article from "@/utils/article";
 import { TextArea } from "@/components/utils/Input";
 import { ColumnWrapper, RowWrapper } from "../utils/FlexWrapper";
 import { Button, RedirectButton } from "../utils/Button";

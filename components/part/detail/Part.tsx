@@ -1,5 +1,4 @@
-import Part from "@/utils/interface/part";
-import { Infos } from "@/utils/Enum";
+import Part, { Infos } from "@/utils/part";
 import { TableHTMLAttributes } from "react";
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import {

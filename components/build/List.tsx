@@ -4,8 +4,7 @@ import { useBuildContext } from "@/components/hook/build/BuildContext";
 import { useValidation } from "@/components/hook/build/Validation";
 import SummaryTable from "@/components/part/Summary";
 import { Button, RedirectButton } from "@/components/utils/Button";
-import Part, { Product } from "@/utils/interface/part";
-import { Products } from "@/utils/Enum";
+import Part, { Product, Products } from "@/utils/part";
 
 const ProductRenderOrder = [
   Products.CPU,

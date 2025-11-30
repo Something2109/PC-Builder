@@ -2,8 +2,8 @@ import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
 import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
 import { ChoiceInput } from "@/components/utils/Input";
-import CasePSUSupport from "@/utils/interface/part/info/CasePSUSupport";
-import { FormFactor } from "@/utils/interface/utils";
+import * as CasePSUSupport from "@/utils/part/info/CasePSUSupport";
+import { FormFactor } from "@/utils/interface";
 
 function Component({
   defaultValue,

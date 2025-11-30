@@ -1,6 +1,6 @@
 import { Table } from "../utils/Table";
-import PartExternalPorts from "@/utils/interface/part/info/PartExternalPorts";
-import { ExternalPorts } from "@/utils/interface/utils";
+import * as PartExternalPorts from "@/utils/part/info/PartExternalPorts";
+import { ExternalPorts } from "@/utils/interface";
 
 export default ({
   defaultValue,

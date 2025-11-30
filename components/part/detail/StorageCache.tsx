@@ -1,7 +1,7 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { UnitDisplay } from "@/components/utils/Display";
-import StorageCache from "@/utils/interface/part/info/StorageCache";
-import { MemoryUnits } from "@/utils/extract/Units";
+import * as StorageCache from "@/utils/part/info/StorageCache";
+import { MemoryUnits } from "@/utils/Units";
 
 const Components: InfoComponentObject<StorageCache.DTO> = {
   type: ({ defaultValue }) => defaultValue,

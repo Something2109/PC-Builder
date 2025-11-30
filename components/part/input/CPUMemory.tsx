@@ -3,14 +3,10 @@ import { Table } from "../utils/Table";
 import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { OptionSelect, SuffixInput, UnitInput } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
-import CPUMemory from "@/utils/interface/part/info/CPUMemory";
-import { InternalConnectors } from "@/utils/interface/utils";
+import * as CPUMemory from "@/utils/part/info/CPUMemory";
+import { InternalConnectors } from "@/utils/interface";
 import { memo, useRef } from "react";
-import {
-  MemorySpeedUnit,
-  MemoryUnits,
-  TransferSpeedUnit,
-} from "@/utils/extract/Units";
+import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
 
 function Component({
   defaultValue,

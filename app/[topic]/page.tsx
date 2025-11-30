@@ -1,14 +1,13 @@
 import { ArticleLink } from "@/components/utils/ArticleLink";
 import { ColumnWrapper } from "@/components/utils/FlexWrapper";
-import { Article } from "@/utils/interface/article/article";
-import { Topics } from "@/utils/Enum";
+import * as Article from "@/utils/article";
 import { notFound } from "next/navigation";
 import React from "react";
 
 export default async function TopicPage({
   params,
 }: {
-  params: Promise<{ topic: Topics }>;
+  params: Promise<{ topic: string }>;
 }) {
   const query = new URLSearchParams(await params);
   const response = await fetch(

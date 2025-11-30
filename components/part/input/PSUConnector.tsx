@@ -3,8 +3,8 @@ import { Table } from "../utils/Table";
 import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { DeleteButton } from "@/components/utils/Button";
-import PSUConnector from "@/utils/interface/part/info/PSUConnector";
-import { InternalConnectors } from "@/utils/interface/utils";
+import * as PSUConnector from "@/utils/part/info/PSUConnector";
+import { InternalConnectors } from "@/utils/interface";
 import { memo } from "react";
 
 function Component({

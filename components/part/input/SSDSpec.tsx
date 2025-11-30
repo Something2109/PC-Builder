@@ -1,9 +1,9 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { defaultParse, GenericInputField } from "../utils/Form";
 import { UnitInput, OptionSelect } from "@/components/utils/Input";
-import SSDSpec from "@/utils/interface/part/info/SSDSpec";
-import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { MemoryUnits } from "@/utils/extract/Units";
+import * as SSDSpec from "@/utils/part/info/SSDSpec";
+import { FormFactor, InternalConnectors } from "@/utils/interface";
+import { MemoryUnits } from "@/utils/Units";
 
 const Components: InfoComponentObject<SSDSpec.DTO> = {
   memory_type: (props) => (

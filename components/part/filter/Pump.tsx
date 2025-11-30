@@ -2,7 +2,7 @@ import {
   MultipleChoiceInput,
   MinMaxRangeInput,
 } from "@/components/utils/Input";
-import Pump from "@/utils/interface/part/product/Pump";
+import * as Pump from "@/utils/part/product/Pump";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<Pump.Filter> = {

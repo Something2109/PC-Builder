@@ -1,7 +1,7 @@
 import { EditableArticle } from "@/components/articles/Form";
-import { Article } from "@/utils/interface/article/article";
+import * as Article from "@/utils/article";
 import { AuthRole } from "@/components/auth";
-import { Roles } from "@/utils/Enum";
+import { Roles } from "@/utils/user";
 import { notFound } from "next/navigation";
 
 export default async function ArticleEditPage({

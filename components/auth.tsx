@@ -1,7 +1,6 @@
 "use client";
 
-import { User } from "@/utils/interface/user/User";
-import { Roles } from "@/utils/Enum";
+import { JwtPayload as UserJwtPayload, Roles } from "@/utils/user";
 import {
   ActionDispatch,
   createContext,
@@ -29,7 +28,7 @@ const AUTH_KEY = "REFRESH-TOKEN";
 const CSRF_KEY = "CSRF-TOKEN";
 const LoginPath = "/auth/login";
 const AuthContext = createContext<
-  [User.JwtPayload | null, ActionDispatch<[SaveTokens]>]
+  [UserJwtPayload | null, ActionDispatch<[SaveTokens]>]
 >([null, () => {}]);
 
 function decodeToken(token: string | null) {
@@ -48,7 +47,7 @@ function decodeToken(token: string | null) {
     if (payload.nbf && payload.nbf > current) return null;
   }
 
-  return payload.sub as any as User.JwtPayload;
+  return payload.sub as any as UserJwtPayload;
 }
 
 export function useAuth() {
@@ -58,7 +57,7 @@ export function useAuth() {
 
 export function AuthWrapper({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useReducer(
-    (_: User.JwtPayload | null, { refresh_token, csrf_token }: SaveTokens) => {
+    (_: UserJwtPayload | null, { refresh_token, csrf_token }: SaveTokens) => {
       const userInfo = decodeToken(refresh_token ?? null);
 
       refresh_token && userInfo

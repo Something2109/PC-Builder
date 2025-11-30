@@ -2,7 +2,7 @@
 
 import { RowWrapper } from "./FlexWrapper";
 import { OptionSelect } from "./Input";
-import { UnitInterface } from "@/utils/extract/Units";
+import { UnitInterface } from "@/utils/Units";
 import { ChangeEvent, useCallback, useRef, useState } from "react";
 
 export function SuffixDisplay({

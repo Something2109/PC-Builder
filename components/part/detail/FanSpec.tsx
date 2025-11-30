@@ -1,7 +1,7 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
-import FanSpec from "@/utils/interface/part/info/FanSpec";
-import { LengthUnits } from "@/utils/extract/Units";
+import * as FanSpec from "@/utils/part/info/FanSpec";
+import { LengthUnits } from "@/utils/Units";
 
 const Components: InfoComponentObject<FanSpec.DTO> = {
   form_factor: ({ defaultValue }) => defaultValue,

@@ -1,7 +1,7 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
-import RAMSpec from "@/utils/interface/part/info/RAMSpec";
-import { MemoryUnits, TransferSpeedUnit } from "@/utils/extract/Units";
+import * as RAMSpec from "@/utils/part/info/RAMSpec";
+import { MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
 
 const Components: InfoComponentObject<RAMSpec.DTO> = {
   speed: ({ defaultValue }) => (
