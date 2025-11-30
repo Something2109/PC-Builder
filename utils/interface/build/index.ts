@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-namespace */
+
 import ProductCompatibleRule from "./rule/product/ProductCompatibleRule";
 import CPUMainboardSocketRule from "./rule/socket/CPUMainboardSocketRule";
 import GPURule from "./rule/GPURule";
