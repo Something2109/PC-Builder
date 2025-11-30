@@ -1,26 +1,22 @@
 import { FormFactor } from "../../utils";
 import { z } from "zod";
 
-export namespace CasePSUSupport {
-  const Info = z.object({
-    psu_support: FormFactor.PSU,
-  });
+const Info = z.object({
+  psu_support: FormFactor.PSU,
+});
 
-  export type Info = z.infer<typeof Info>;
+export type Info = z.infer<typeof Info>;
 
-  export const Label: { [key in keyof Info]: string } = {
-    psu_support: "PSU Support",
-  };
+export const Label: { [key in keyof Info]: string } = {
+  psu_support: "PSU Support",
+};
 
-  const Model = Info;
+const Model = Info;
 
-  export type Model = z.infer<typeof Model>;
+export type Model = z.infer<typeof Model>;
 
-  const DTO = Info;
+const DTO = Info;
 
-  export type DTO = z.infer<typeof DTO>;
+export type DTO = z.infer<typeof DTO>;
 
-  export const Schemas = { Info, Model, DTO };
-}
-
-export default CasePSUSupport;
+export const Schemas = { Info, Model, DTO };

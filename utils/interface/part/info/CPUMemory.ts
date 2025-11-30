@@ -6,36 +6,32 @@ import {
 } from "../../utils";
 import { z } from "zod";
 
-export namespace CPUMemory {
-  const Info = z.object({
-    type: InternalConnectors.RAM,
-    speed: Primitive.Number,
-    capacity: Primitive.Number,
-    channel_count: Primitive.Number,
-    bandwidth: Primitive.Number,
-  });
+const Info = z.object({
+  type: InternalConnectors.RAM,
+  speed: Primitive.Number,
+  capacity: Primitive.Number,
+  channel_count: Primitive.Number,
+  bandwidth: Primitive.Number,
+});
 
-  export type Info = z.infer<typeof Info>;
+export type Info = z.infer<typeof Info>;
 
-  export const Label: { [key in keyof Info]: string } = {
-    type: "Memory Type",
-    speed: "Memory Speed",
-    capacity: "Memory Capacity",
-    channel_count: "Memory Channel",
-    bandwidth: "Memory Bandwidth",
-  };
+export const Label: { [key in keyof Info]: string } = {
+  type: "Memory Type",
+  speed: "Memory Speed",
+  capacity: "Memory Capacity",
+  channel_count: "Memory Channel",
+  bandwidth: "Memory Bandwidth",
+};
 
-  const Required = ["type"] as const;
+const Required = ["type"] as const;
 
-  const Model = createModel(Info, [...Required]);
+const Model = createModel(Info, [...Required]);
 
-  export type Model = z.infer<typeof Model>;
+export type Model = z.infer<typeof Model>;
 
-  const DTO = createDTO(Info, [...Required]);
+const DTO = createDTO(Info, [...Required]);
 
-  export type DTO = z.infer<typeof DTO>;
+export type DTO = z.infer<typeof DTO>;
 
-  export const Schemas = { Info, Model, DTO };
-}
-
-export default CPUMemory;
+export const Schemas = { Info, Model, DTO };

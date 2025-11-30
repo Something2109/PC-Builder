@@ -1,41 +1,41 @@
 import { z } from "zod";
 import { Infos } from "../../Enum";
-import CaseFanSupport from "./info/CaseFanSupport";
-import CaseHardDriveSupport from "./info/CaseHardDriveSupport";
-import CaseMainboardSupport from "./info/CaseMainboardSupport";
-import CasePSUSupport from "./info/CasePSUSupport";
-import CaseRadiatorSupport from "./info/CaseRadiatorSupport";
-import CaseSpec from "./info/CaseSpec";
-import CPUBlockSocketSupport from "./info/CPUBlockSocketSupport";
-import CPUBlockSpec from "./info/CPUBlockSpec";
-import CPUCoreConfig from "./info/CPUCoreConfig";
-import CPUPerformance from "./info/CPUPerformance";
-import CPUMemory from "./info/CPUMemory";
-import CPUSpec from "./info/CPUSpec";
-import FanSpec from "./info/FanSpec";
-import GPUFeature from "./info/GPUFeature";
-import GPUMemory from "./info/GPUMemory";
-import GPUPerformance from "./info/GPUPerformance";
-import GPUSpec from "./info/GPUSpec";
-import GraphicCardSpec from "./info/GraphicCardSpec";
-import GraphicCardPort from "./info/GraphicCardPort";
-import HDDSpec from "./info/HDDSpec";
-import MainboardSpec from "./info/MainboardSpec";
-import MainboardPowerConnector from "./info/MainboardPowerConnector";
-import MainboardPCIe from "./info/MainboardPCIe";
-import MainboardStorageConnector from "./info/MainboardStorageConnector";
-import MainboardUSBConnector from "./info/MainboardUSBConnector";
-import ProcessorCache from "./info/ProcessorCache";
-import PSUSpec from "./info/PSUSpec";
-import PSUConnector from "./info/PSUConnector";
-import PumpSpec from "./info/PumpSpec";
-import RadiatorSpec from "./info/RadiatorSpec";
-import RAMSpec from "./info/RAMSpec";
-import SSDSpec from "./info/SSDSpec";
-import StorageCache from "./info/StorageCache";
-import StoragePerformance from "./info/StoragePerformance";
-import PartExternalPorts from "./info/PartExternalPorts";
-import MainboardFanConnector from "./info/MainboardFanConnector";
+import * as CaseFanSupport from "./info/CaseFanSupport";
+import * as CaseHardDriveSupport from "./info/CaseHardDriveSupport";
+import * as CaseMainboardSupport from "./info/CaseMainboardSupport";
+import * as CasePSUSupport from "./info/CasePSUSupport";
+import * as CaseRadiatorSupport from "./info/CaseRadiatorSupport";
+import * as CaseSpec from "./info/CaseSpec";
+import * as CPUBlockSocketSupport from "./info/CPUBlockSocketSupport";
+import * as CPUBlockSpec from "./info/CPUBlockSpec";
+import * as CPUCoreConfig from "./info/CPUCoreConfig";
+import * as CPUPerformance from "./info/CPUPerformance";
+import * as CPUMemory from "./info/CPUMemory";
+import * as CPUSpec from "./info/CPUSpec";
+import * as FanSpec from "./info/FanSpec";
+import * as GPUFeature from "./info/GPUFeature";
+import * as GPUMemory from "./info/GPUMemory";
+import * as GPUPerformance from "./info/GPUPerformance";
+import * as GPUSpec from "./info/GPUSpec";
+import * as GraphicCardSpec from "./info/GraphicCardSpec";
+import * as GraphicCardPort from "./info/GraphicCardPort";
+import * as HDDSpec from "./info/HDDSpec";
+import * as MainboardSpec from "./info/MainboardSpec";
+import * as MainboardPowerConnector from "./info/MainboardPowerConnector";
+import * as MainboardPCIe from "./info/MainboardPCIe";
+import * as MainboardStorageConnector from "./info/MainboardStorageConnector";
+import * as MainboardUSBConnector from "./info/MainboardUSBConnector";
+import * as ProcessorCache from "./info/ProcessorCache";
+import * as PSUSpec from "./info/PSUSpec";
+import * as PSUConnector from "./info/PSUConnector";
+import * as PumpSpec from "./info/PumpSpec";
+import * as RadiatorSpec from "./info/RadiatorSpec";
+import * as RAMSpec from "./info/RAMSpec";
+import * as SSDSpec from "./info/SSDSpec";
+import * as StorageCache from "./info/StorageCache";
+import * as StoragePerformance from "./info/StoragePerformance";
+import * as PartExternalPorts from "./info/PartExternalPorts";
+import * as MainboardFanConnector from "./info/MainboardFanConnector";
 
 const Schemas = {
   [Infos.CPU_SPEC]: CPUSpec.Schemas,
@@ -108,89 +108,87 @@ function objectMap<
  * DECLARE THE {@link Infos} RELATED MAPPING OBJECTS
  * TO BE USED IN MANY DYNAMIC MAPPING OF THE PROJECT
  */
-export namespace Information {
-  export const Info = z.object(
-    objectMap(Schemas, ([key, value]) => [key, value.Info]) as {
-      [key in Infos]: (typeof Schemas)[key]["Info"];
-    }
-  );
+export const Info = z.object(
+  objectMap(Schemas, ([key, value]) => [key, value.Info]) as {
+    [key in Infos]: (typeof Schemas)[key]["Info"];
+  }
+);
 
-  export type Info = z.infer<typeof Info>;
+export type Info = z.infer<typeof Info>;
 
-  export type MultipleValueInfo = (typeof MultipleValueInfo)[number];
+export type MultipleValueInfo = (typeof MultipleValueInfo)[number];
 
-  /**
-   * The label list of the information.
-   * Contains the label corresponding to each {@link Infos} type.
-   */
-  export const Label: Record<Infos, string> = {
-    [Infos.CPU_SPEC]: "CPU Specs",
-    [Infos.CPU_PERF]: "CPU Performance",
-    [Infos.CPU_CORES]: "CPU Core Spec",
-    [Infos.CPU_MEMORY]: "Processor Memory",
-    [Infos.GPU_SPEC]: "GPU Specs",
-    [Infos.GPU_PERF]: "GPU Performance",
-    [Infos.GPU_MEMORY]: "Graphic Card Memory",
-    [Infos.GPU_FEAT]: "GPU Features",
-    [Infos.PROCESSOR_CACHE]: "Processor Cache",
-    [Infos.GRAPHIC_CARD_SPEC]: "Graphic Card Specs",
-    [Infos.GRAPHIC_CARD_PORT]: "Display External Ports",
-    [Infos.MAIN_SPEC]: "Mainboard Specs",
-    [Infos.MAIN_POWER]: "Mainboard Power Connectors",
-    [Infos.MAIN_PCIE]: "Mainboard PCIe",
-    [Infos.MAIN_STORAGE]: "Mainboard Storage",
-    [Infos.MAIN_USB]: "Mainboard USB",
-    [Infos.MAIN_FAN]: "Mainboard Fan Connectors",
-    [Infos.RAM_SPEC]: "RAM Specs",
-    [Infos.SSD_SPEC]: "SSD Specs",
-    [Infos.HDD_SPEC]: "HDD Specs",
-    [Infos.STORAGE_PERF]: "Storage Performance",
-    [Infos.STORAGE_CACHE]: "Storage Cache",
-    [Infos.PSU_SPEC]: "PSU Specs",
-    [Infos.PSU_CONNECTOR]: "PSU Power Connector",
-    [Infos.CASE_SPEC]: "Case Specs",
-    [Infos.CASE_MAIN]: "Case Mainboard Support",
-    [Infos.CASE_FAN]: "Case Fan Support",
-    [Infos.CASE_HARD_DRIVE]: "Case Hard Drive Support",
-    [Infos.CASE_RADIATOR]: "Case Radiator Support",
-    [Infos.CASE_PSU]: "Case PSU Support",
-    [Infos.FAN_SPEC]: "Fan Specs",
-    [Infos.CPU_BLOCK_SPEC]: "CPU Block Specs",
-    [Infos.CPU_BLOCK_SOCKET]: "CPU Block Socket Support",
-    [Infos.PUMP_SPEC]: "Pump Specs",
-    [Infos.RADIATOR_SPEC]: "Radiator Specs",
-    [Infos.EXTERNAL_PORTS]: "External Ports",
-  };
+/**
+ * The label list of the information.
+ * Contains the label corresponding to each {@link Infos} type.
+ */
+export const Label: Record<Infos, string> = {
+  [Infos.CPU_SPEC]: "CPU Specs",
+  [Infos.CPU_PERF]: "CPU Performance",
+  [Infos.CPU_CORES]: "CPU Core Spec",
+  [Infos.CPU_MEMORY]: "Processor Memory",
+  [Infos.GPU_SPEC]: "GPU Specs",
+  [Infos.GPU_PERF]: "GPU Performance",
+  [Infos.GPU_MEMORY]: "Graphic Card Memory",
+  [Infos.GPU_FEAT]: "GPU Features",
+  [Infos.PROCESSOR_CACHE]: "Processor Cache",
+  [Infos.GRAPHIC_CARD_SPEC]: "Graphic Card Specs",
+  [Infos.GRAPHIC_CARD_PORT]: "Display External Ports",
+  [Infos.MAIN_SPEC]: "Mainboard Specs",
+  [Infos.MAIN_POWER]: "Mainboard Power Connectors",
+  [Infos.MAIN_PCIE]: "Mainboard PCIe",
+  [Infos.MAIN_STORAGE]: "Mainboard Storage",
+  [Infos.MAIN_USB]: "Mainboard USB",
+  [Infos.MAIN_FAN]: "Mainboard Fan Connectors",
+  [Infos.RAM_SPEC]: "RAM Specs",
+  [Infos.SSD_SPEC]: "SSD Specs",
+  [Infos.HDD_SPEC]: "HDD Specs",
+  [Infos.STORAGE_PERF]: "Storage Performance",
+  [Infos.STORAGE_CACHE]: "Storage Cache",
+  [Infos.PSU_SPEC]: "PSU Specs",
+  [Infos.PSU_CONNECTOR]: "PSU Power Connector",
+  [Infos.CASE_SPEC]: "Case Specs",
+  [Infos.CASE_MAIN]: "Case Mainboard Support",
+  [Infos.CASE_FAN]: "Case Fan Support",
+  [Infos.CASE_HARD_DRIVE]: "Case Hard Drive Support",
+  [Infos.CASE_RADIATOR]: "Case Radiator Support",
+  [Infos.CASE_PSU]: "Case PSU Support",
+  [Infos.FAN_SPEC]: "Fan Specs",
+  [Infos.CPU_BLOCK_SPEC]: "CPU Block Specs",
+  [Infos.CPU_BLOCK_SOCKET]: "CPU Block Socket Support",
+  [Infos.PUMP_SPEC]: "Pump Specs",
+  [Infos.RADIATOR_SPEC]: "Radiator Specs",
+  [Infos.EXTERNAL_PORTS]: "External Ports",
+};
 
-  /**
-   * The model schema of each info type.
-   * Contains the type of each attribute of the info from each {@link Infos} type.
-   */
-  export type Model = {
-    [key in Infos]: key extends MultipleValueInfo
-      ? z.ZodArray<(typeof Schemas)[key]["Model"]>
-      : ReturnType<(typeof Schemas)[key]["Model"]["nullable"]>;
-  };
+/**
+ * The model schema of each info type.
+ * Contains the type of each attribute of the info from each {@link Infos} type.
+ */
+export type Model = {
+  [key in Infos]: key extends MultipleValueInfo
+    ? z.ZodArray<(typeof Schemas)[key]["Model"]>
+    : ReturnType<(typeof Schemas)[key]["Model"]["nullable"]>;
+};
 
-  export const Model = objectMap(Schemas, ([key, value]) =>
-    MultipleValueInfo.includes(key as MultipleValueInfo)
-      ? [key, z.array(value.Model)]
-      : [key, value.Model.nullable()]
-  ) as Model;
+export const Model = objectMap(Schemas, ([key, value]) =>
+  MultipleValueInfo.includes(key as MultipleValueInfo)
+    ? [key, z.array(value.Model)]
+    : [key, value.Model.nullable()]
+) as Model;
 
-  /**
-   * The DTO schema of each info type.
-   * Contains the most detailed information of the info from each {@link Infos} type.
-   */
-  export type DTO = {
-    [key in Infos]: key extends MultipleValueInfo
-      ? z.ZodArray<(typeof Schemas)[key]["DTO"]>
-      : ReturnType<(typeof Schemas)[key]["DTO"]["nullish"]>;
-  };
+/**
+ * The DTO schema of each info type.
+ * Contains the most detailed information of the info from each {@link Infos} type.
+ */
+export type DTO = {
+  [key in Infos]: key extends MultipleValueInfo
+    ? z.ZodArray<(typeof Schemas)[key]["DTO"]>
+    : ReturnType<(typeof Schemas)[key]["DTO"]["nullish"]>;
+};
 
-  export const DTO = objectMap(Schemas, ([key, value]) =>
-    MultipleValueInfo.includes(key as MultipleValueInfo)
-      ? [key, z.array(value.DTO)]
-      : [key, value.DTO.nullish()]
-  ) as DTO;
-}
+export const DTO = objectMap(Schemas, ([key, value]) =>
+  MultipleValueInfo.includes(key as MultipleValueInfo)
+    ? [key, z.array(value.DTO)]
+    : [key, value.DTO.nullish()]
+) as DTO;

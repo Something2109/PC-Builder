@@ -7,34 +7,30 @@ import {
 } from "../../utils";
 import { z } from "zod";
 
-export namespace HDDSpec {
-  const Info = z.object({
-    rotational_speed: Primitive.Number,
-    capacity: Primitive.Number,
+const Info = z.object({
+  rotational_speed: Primitive.Number,
+  capacity: Primitive.Number,
 
-    form_factor: FormFactor.HDD,
-    interface: InternalConnectors.Storage.HDD,
-  });
+  form_factor: FormFactor.HDD,
+  interface: InternalConnectors.Storage.HDD,
+});
 
-  export type Info = z.infer<typeof Info>;
+export type Info = z.infer<typeof Info>;
 
-  export const Label: { [key in keyof Info]: string } = {
-    rotational_speed: "Rotational Speed",
-    capacity: "Capacity",
+export const Label: { [key in keyof Info]: string } = {
+  rotational_speed: "Rotational Speed",
+  capacity: "Capacity",
 
-    form_factor: "Form Factor",
-    interface: "Interface",
-  };
+  form_factor: "Form Factor",
+  interface: "Interface",
+};
 
-  const Model = createModel(Info);
+const Model = createModel(Info);
 
-  export type Model = z.infer<typeof Model>;
+export type Model = z.infer<typeof Model>;
 
-  const DTO = createDTO(Info);
+const DTO = createDTO(Info);
 
-  export type DTO = z.infer<typeof DTO>;
+export type DTO = z.infer<typeof DTO>;
 
-  export const Schemas = { Info, Model, DTO };
-}
-
-export default HDDSpec;
+export const Schemas = { Info, Model, DTO };

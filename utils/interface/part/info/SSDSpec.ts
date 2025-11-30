@@ -7,40 +7,36 @@ import {
 } from "../../utils";
 import { z } from "zod";
 
-namespace SSDSpec {
-  export const MemoryCell = z.enum(["SLC", "MLC", "TLC", "QLC", "3D"]);
+export const MemoryCell = z.enum(["SLC", "MLC", "TLC", "QLC", "3D"]);
 
-  export type MemoryCell = z.infer<typeof MemoryCell>;
+export type MemoryCell = z.infer<typeof MemoryCell>;
 
-  const Info = z.object({
-    memory_type: MemoryCell,
-    capacity: Primitive.Number,
-    tbw: Primitive.Number,
+const Info = z.object({
+  memory_type: MemoryCell,
+  capacity: Primitive.Number,
+  tbw: Primitive.Number,
 
-    form_factor: FormFactor.SSD,
-    interface: InternalConnectors.Storage.SSD,
-  });
+  form_factor: FormFactor.SSD,
+  interface: InternalConnectors.Storage.SSD,
+});
 
-  export type Info = z.infer<typeof Info>;
+export type Info = z.infer<typeof Info>;
 
-  export const Label: { [key in keyof Info]: string } = {
-    memory_type: "Memory Cell",
-    capacity: "Capacity",
-    tbw: "TBW",
+export const Label: { [key in keyof Info]: string } = {
+  memory_type: "Memory Cell",
+  capacity: "Capacity",
+  tbw: "TBW",
 
-    form_factor: "Form Factor",
-    interface: "Interface",
-  };
+  form_factor: "Form Factor",
+  interface: "Interface",
+};
 
-  const Model = createModel(Info);
+const Model = createModel(Info);
 
-  export type Model = z.infer<typeof Model>;
+export type Model = z.infer<typeof Model>;
 
-  const DTO = createDTO(Info);
+const DTO = createDTO(Info);
 
-  export type DTO = z.infer<typeof DTO>;
+export type DTO = z.infer<typeof DTO>;
 
-  export const Schemas = { Info, Model, DTO };
-}
-
-export default SSDSpec;
+export const Schemas = { Info, Model, DTO };

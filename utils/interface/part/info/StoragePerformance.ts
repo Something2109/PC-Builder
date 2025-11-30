@@ -1,28 +1,24 @@
 import { createDTO, createModel, Primitive } from "../../utils";
 import { z } from "zod";
 
-namespace StoragePerformance {
-  const Info = z.object({
-    read_speed: Primitive.Number,
-    write_speed: Primitive.Number,
-  });
+const Info = z.object({
+  read_speed: Primitive.Number,
+  write_speed: Primitive.Number,
+});
 
-  export type Info = z.infer<typeof Info>;
+export type Info = z.infer<typeof Info>;
 
-  export const Label: { [key in keyof Info]: string } = {
-    read_speed: "Read Speed",
-    write_speed: "Write Speed",
-  };
+export const Label: { [key in keyof Info]: string } = {
+  read_speed: "Read Speed",
+  write_speed: "Write Speed",
+};
 
-  const Model = createModel(Info);
+const Model = createModel(Info);
 
-  export type Model = z.infer<typeof Model>;
+export type Model = z.infer<typeof Model>;
 
-  const DTO = createDTO(Info);
+const DTO = createDTO(Info);
 
-  export type DTO = z.infer<typeof DTO>;
+export type DTO = z.infer<typeof DTO>;
 
-  export const Schemas = { Info, Model, DTO };
-}
-
-export default StoragePerformance;
+export const Schemas = { Info, Model, DTO };

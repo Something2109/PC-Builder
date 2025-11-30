@@ -1,28 +1,24 @@
 import { Case, FormFactor } from "../../utils";
 import { z } from "zod";
 
-export namespace CaseRadiatorSupport {
-  const Info = z.object({
-    case_side: Case.Side,
-    form_factor: FormFactor.Radiator,
-  });
+const Info = z.object({
+  case_side: Case.Side,
+  form_factor: FormFactor.Radiator,
+});
 
-  export type Info = z.infer<typeof Info>;
+export type Info = z.infer<typeof Info>;
 
-  export const Label: { [key in keyof Info]: string } = {
-    case_side: "Case Side",
-    form_factor: "Radiator Support",
-  };
+export const Label: { [key in keyof Info]: string } = {
+  case_side: "Case Side",
+  form_factor: "Radiator Support",
+};
 
-  const Model = Info;
+const Model = Info;
 
-  export type Model = z.infer<typeof Model>;
+export type Model = z.infer<typeof Model>;
 
-  const DTO = Info;
+const DTO = Info;
 
-  export type DTO = z.infer<typeof DTO>;
+export type DTO = z.infer<typeof DTO>;
 
-  export const Schemas = { Info, Model, DTO };
-}
-
-export default CaseRadiatorSupport;
+export const Schemas = { Info, Model, DTO };

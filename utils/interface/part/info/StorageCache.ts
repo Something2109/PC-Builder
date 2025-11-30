@@ -6,28 +6,24 @@ import {
 } from "../../utils";
 import { z } from "zod";
 
-namespace StorageCache {
-  const Info = z.object({
-    type: InternalConnectors.RAM,
-    capacity: Primitive.Number,
-  });
+const Info = z.object({
+  type: InternalConnectors.RAM,
+  capacity: Primitive.Number,
+});
 
-  export type Info = z.infer<typeof Info>;
+export type Info = z.infer<typeof Info>;
 
-  export const Label: { [key in keyof Info]: string } = {
-    type: "Cache Memory Type",
-    capacity: "Cache Capacity",
-  };
+export const Label: { [key in keyof Info]: string } = {
+  type: "Cache Memory Type",
+  capacity: "Cache Capacity",
+};
 
-  const Model = createModel(Info);
+const Model = createModel(Info);
 
-  export type Model = z.infer<typeof Model>;
+export type Model = z.infer<typeof Model>;
 
-  const DTO = createDTO(Info);
+const DTO = createDTO(Info);
 
-  export type DTO = z.infer<typeof DTO>;
+export type DTO = z.infer<typeof DTO>;
 
-  export const Schemas = { Info, Model, DTO };
-}
-
-export default StorageCache;
+export const Schemas = { Info, Model, DTO };

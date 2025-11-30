@@ -7,40 +7,36 @@ import {
 } from "../../utils";
 import { z } from "zod";
 
-export namespace RadiatorSpec {
-  const Info = z.object({
-    form_factor: FormFactor.Radiator,
+const Info = z.object({
+  form_factor: FormFactor.Radiator,
 
-    width: Primitive.Number,
-    length: Primitive.Number,
-    height: Primitive.Number,
+  width: Primitive.Number,
+  length: Primitive.Number,
+  height: Primitive.Number,
 
-    fpi: Primitive.Number,
-    material: Material.Metal,
-  });
+  fpi: Primitive.Number,
+  material: Material.Metal,
+});
 
-  export type Info = z.infer<typeof Info>;
+export type Info = z.infer<typeof Info>;
 
-  export const Label: { [key in keyof Info]: string } = {
-    form_factor: "Form Factor",
+export const Label: { [key in keyof Info]: string } = {
+  form_factor: "Form Factor",
 
-    width: "Width",
-    length: "Length",
-    height: "Height",
+  width: "Width",
+  length: "Length",
+  height: "Height",
 
-    fpi: "FPI",
-    material: "Material",
-  };
+  fpi: "FPI",
+  material: "Material",
+};
 
-  const Model = createModel(Info);
+const Model = createModel(Info);
 
-  export type Model = z.infer<typeof Model>;
+export type Model = z.infer<typeof Model>;
 
-  const DTO = createDTO(Info);
+const DTO = createDTO(Info);
 
-  export type DTO = z.infer<typeof DTO>;
+export type DTO = z.infer<typeof DTO>;
 
-  export const Schemas = { Info, Model, DTO };
-}
-
-export default RadiatorSpec;
+export const Schemas = { Info, Model, DTO };
