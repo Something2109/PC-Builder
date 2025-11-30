@@ -1,5 +1,5 @@
 import { AttributeRule } from "../utils";
-import { Infos, Products } from "@/utils/Enum";
+import { Infos, Products } from "@/utils/part";
 
 const attributes = {
   psu_form_factor: [Products.PSU, Infos.PSU_SPEC, "form_factor"],

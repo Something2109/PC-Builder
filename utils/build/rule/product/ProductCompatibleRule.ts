@@ -1,4 +1,4 @@
-import { Products } from "@/utils/Enum";
+import { Name as Products } from "../../../part/product";
 import { BuildPartDetails, ProductRule } from "../../utils";
 
 const ProductCompatibleRule: ProductRule = {

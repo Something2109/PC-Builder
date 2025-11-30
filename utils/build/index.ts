@@ -22,7 +22,7 @@ import {
   AttributeRule,
 } from "./utils";
 import Part, { Information } from "../part";
-import { Infos, Products } from "@/utils/Enum";
+import { Infos, Products } from "@/utils/part";
 
 const ProductRuleList: AttributeRule<BuildAttributeMapping>[] = [
   CPUMainboardSocketRule,
@@ -92,12 +92,12 @@ namespace Build {
      * ]
      */
     export const Rule = ProductRuleList.reduce((acc, rule) => {
-      Object.values(rule.attributes).forEach((v) => {
+      for (const v of Object.values(rule.attributes)) {
         const [product] = v;
 
-        if (!acc[product]) acc[product] = [];
+        acc[product] ??= [];
         acc[product].push(rule);
-      });
+      }
 
       return acc;
     }, {} as { [key in Products]?: AttributeRule<BuildAttributeMapping>[] });
@@ -112,20 +112,20 @@ namespace Build {
      * and prevent unnecessary information be queried.
      */
     export const ValidateAttributes = ProductRuleList.reduce((acc, rule) => {
-      Object.values(rule.attributes).forEach((v) => {
+      for (const v of Object.values(rule.attributes)) {
         const [filterProduct, info, attr] = v;
 
-        if (!acc[filterProduct]) acc[filterProduct] = {};
+        acc[filterProduct] ??= {};
 
         if (!attr)
           acc[filterProduct][info] =
             Information.Info.shape[info].keyof().options;
 
-        if (!acc[filterProduct][info]) acc[filterProduct][info] = [];
+        acc[filterProduct][info] ??= [];
 
         if (attr && !acc[filterProduct][info].includes(attr))
           acc[filterProduct][info].push(attr);
-      });
+      }
       return acc;
     }, {} as { [key in Products]?: { [info in Infos]?: string[] } });
 
@@ -151,22 +151,22 @@ namespace Build {
         const product = key as Products;
 
         const productInfoMapping = rules.reduce((acc, rule) => {
-          Object.values(rule.attributes).forEach((v) => {
+          for (const v of Object.values(rule.attributes)) {
             const [filterProduct, info, attr] = v;
 
-            if (filterProduct === product) return;
+            if (filterProduct === product) continue;
 
-            if (!acc[filterProduct]) acc[filterProduct] = {};
+            acc[filterProduct] ??= {};
 
             if (!attr)
               acc[filterProduct][info] =
                 Information.Info.shape[info].keyof().options;
 
-            if (!acc[filterProduct][info]) acc[filterProduct][info] = [];
+            acc[filterProduct][info] ??= [];
 
             if (attr && !acc[filterProduct][info].includes(attr))
               acc[filterProduct][info].push(attr);
-          });
+          }
           return acc;
         }, {} as { [key in Products]?: { [info in Infos]?: string[] } });
 
