@@ -1,8 +1,7 @@
 import { DatabaseCRUDInterface } from "../interface/database.interface";
 import { PartInformation } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
-import Part from "@/utils/interface/part";
-import { Infos, Products } from "@/utils/Enum";
+import Part, { Infos, Products } from "@/utils/part";
 import { Includeable, Model, ModelStatic } from "sequelize";
 import { Injectable } from "@nestjs/common";
 

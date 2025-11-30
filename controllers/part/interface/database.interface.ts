@@ -1,6 +1,5 @@
-import Part from "@/utils/interface/part";
-import { API } from "@/utils/interface/api";
-import { Infos } from "@/utils/Enum";
+import Part, { Infos } from "@/utils/part";
+import * as API from "@/utils/API";
 
 /**
  * Constant identifier for the DatabaseListInterface.

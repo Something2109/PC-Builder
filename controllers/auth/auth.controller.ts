@@ -13,9 +13,9 @@ import { AuthService } from "./auth.service";
 import { LoginAuthorizationGuard } from "./auth.guard";
 import { AuthUser } from "controllers/utils/role/role.decorator";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
-import { User } from "@/utils/interface/user/User";
+import { LogInOptions, JwtPayload } from "@/utils/user";
 
-const SignUpValidator = new ZodValidationPipe(User.LogInOptions);
+const SignUpValidator = new ZodValidationPipe(LogInOptions);
 const AUTHORIZATION_COOKIE_NAME = "Authorization";
 
 @Controller("auth")
@@ -27,7 +27,7 @@ export class AuthController {
   async signUp(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-    @Body(SignUpValidator) payload: User.LogInOptions
+    @Body(SignUpValidator) payload: LogInOptions
   ) {
     const tokens = await this.authService.signUp(
       payload.username,
@@ -45,7 +45,7 @@ export class AuthController {
   async logIn(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-    @Body(SignUpValidator) payload: User.LogInOptions
+    @Body(SignUpValidator) payload: LogInOptions
   ) {
     const tokens = await this.authService.logIn(
       payload.username,
@@ -62,7 +62,7 @@ export class AuthController {
   async refreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-    @AuthUser() user?: User.JwtPayload
+    @AuthUser() user?: JwtPayload
   ) {
     if (!user)
       throw new UnauthorizedException("You must log in to do this action!");

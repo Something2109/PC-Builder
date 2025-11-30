@@ -1,5 +1,5 @@
-import { API } from "@/utils/interface/api";
-import { User } from "@/utils/interface/user/User";
+import { Tokens } from "@/utils/API";
+import { JwtPayload } from "@/utils/user";
 import { ConflictException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "controllers/user/user.service";
@@ -26,11 +26,11 @@ export class AuthService {
     return await this.signTokens(user);
   }
 
-  async signTokens(user: User.JwtPayload) {
+  async signTokens(user: JwtPayload) {
     const [access_token, refresh_token] = await Promise.all([
-      this.jwtService.signAsync({ sub: user, type: API.Tokens.ACCESS }),
+      this.jwtService.signAsync({ sub: user, type: Tokens.ACCESS }),
       this.jwtService.signAsync(
-        { sub: user, type: API.Tokens.REFRESH },
+        { sub: user, type: Tokens.REFRESH },
         { expiresIn: "30 days" }
       ),
     ]);

@@ -16,8 +16,8 @@ import {
   PART_INTERFACE,
   PartServiceInterface,
 } from "./interface/part.interface";
-import { Products, Roles } from "@/utils/Enum";
-import Part from "@/utils/interface/part";
+import { Roles } from "@/utils/user";
+import Part, { Products } from "@/utils/part";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { Role } from "controllers/utils/role/role.decorator";
 

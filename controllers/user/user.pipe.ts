@@ -1,6 +1,6 @@
-import { Roles } from "@/utils/Enum";
-import { API } from "@/utils/interface/api";
-import { User } from "@/utils/interface/user/User";
+import { Roles } from "@/utils/user";
+import * as API from "@/utils/API";
+import * as User from "@/utils/user";
 import { Injectable, PipeTransform } from "@nestjs/common";
 
 @Injectable()

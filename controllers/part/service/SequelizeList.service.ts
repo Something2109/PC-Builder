@@ -4,9 +4,8 @@ import {
 } from "../interface/database.interface";
 import { PartInformation } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
-import Part from "@/utils/interface/part";
-import { API } from "@/utils/interface/api";
-import { Infos } from "@/utils/Enum";
+import Part, { Infos } from "@/utils/part";
+import * as API from "@/utils/API";
 import { Injectable } from "@nestjs/common";
 import {
   col,

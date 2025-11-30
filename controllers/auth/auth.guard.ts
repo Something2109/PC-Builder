@@ -1,4 +1,4 @@
-import { API } from "@/utils/interface/api";
+import { Tokens, Session } from "@/utils/API";
 import {
   CanActivate,
   ExecutionContext,
@@ -12,17 +12,17 @@ import {
  */
 @Injectable()
 export class LoginAuthorizationGuard implements CanActivate {
-  constructor(private tokenType?: API.Tokens) {}
+  constructor(private tokenType?: Tokens) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const session = request.session as API.Session | undefined;
+    const session = request.session as Session | undefined;
 
     // If the session token type is the same as the guard's type.
     if (session?.type === this.tokenType) return true;
 
     // Treat refresh token as no login if no default token required.
-    if (session?.type === API.Tokens.REFRESH && !this.tokenType) return true;
+    if (session?.type === Tokens.REFRESH && !this.tokenType) return true;
 
     // Default message for no login.
     let message = "You must log in to do this action!";
@@ -33,7 +33,7 @@ export class LoginAuthorizationGuard implements CanActivate {
     }
 
     // If the user is required to use the refresh token.
-    if (session && this.tokenType === API.Tokens.REFRESH) {
+    if (session && this.tokenType === Tokens.REFRESH) {
       message = "You must use the refresh token to do this action!";
     }
 

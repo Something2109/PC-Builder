@@ -15,9 +15,9 @@ import { UsernameAuthorizationGuard } from "./user.guard";
 import { UserFilterPipe } from "./user.pipe";
 import { Role } from "controllers/utils/role/role.decorator";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
-import { User } from "@/utils/interface/user/User";
-import { API } from "@/utils/interface/api";
-import { Roles } from "@/utils/Enum";
+import * as User from "@/utils/user";
+import * as API from "@/utils/API";
+import { Roles } from "@/utils/user";
 
 const SignUpValidator = new ZodValidationPipe(User.LogInOptions);
 const InformationValidator = new ZodValidationPipe(User.Information.partial());

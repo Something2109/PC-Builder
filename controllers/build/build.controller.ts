@@ -9,8 +9,8 @@ import {
 } from "@nestjs/common";
 import { BuildService } from "./build.service";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
-import Build from "@/utils/interface/build";
-import { Products } from "@/utils/Enum";
+import Build from "@/utils/build";
+import { Products } from "@/utils/part";
 
 const BuildListValidationPipe = new ZodValidationPipe(Build.Schema);
 const ProductValidator = new ParseEnumPipe(Products, {
