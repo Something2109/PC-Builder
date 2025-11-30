@@ -8,11 +8,12 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import PartExternalPorts from "@/utils/interface/part/info/PartExternalPorts";
-import { ExternalPorts } from "@/utils/interface/utils";
-import { Infos } from "@/utils/Enum";
+import * as PartExternalPorts from "@/utils/part/info/PartExternalPorts";
+import { ExternalPorts } from "@/utils/interface";
+import { Infos } from "@/utils/part";
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
+import z from "zod";
 
 /**
  * Declare the PCIe model to store the mainboard's PCIe data.
@@ -48,7 +49,7 @@ class PartExternalPortModel extends Model implements PartExternalPorts.Model {
 
   @PrimaryKey
   @Column(DataType.STRING)
-  declare name: ExternalPorts;
+  declare name: z.infer<typeof ExternalPorts.Schema>;
 
   @Column(DataType.TINYINT)
   declare count: number | null;

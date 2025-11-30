@@ -1,6 +1,5 @@
 import { defaultFilter, Tables } from "../interface";
-import { User } from "@/utils/interface/user/User";
-import { Roles } from "@/utils/Enum";
+import { Type, Roles, FilterOptions } from "@/utils/user";
 import {
   Column,
   DataType,
@@ -30,7 +29,7 @@ enum UserModelScope {
   [UserModelScope.SUMMARY]: () => ({
     attributes: ["id", "username", "name", "role"],
   }),
-  [UserModelScope.FILTER]: (options: User.FilterOptions) => ({
+  [UserModelScope.FILTER]: (options: FilterOptions) => ({
     where: defaultFilter(options),
   }),
   [UserModelScope.DETAIL]: () => ({
@@ -38,7 +37,7 @@ enum UserModelScope {
   }),
 }))
 @Table({ tableName: Tables.USER })
-class UserModel extends Model implements User.Type {
+class UserModel extends Model implements Type {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

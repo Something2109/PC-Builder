@@ -8,9 +8,9 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import MainboardPowerConnector from "@/utils/interface/part/info/MainboardPowerConnector";
-import { InternalConnectors } from "@/utils/interface/utils";
-import { Infos } from "@/utils/Enum";
+import * as MainboardPowerConnector from "@/utils/part/info/MainboardPowerConnector";
+import { InternalConnectors } from "@/utils/interface";
+import { Infos } from "@/utils/part";
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

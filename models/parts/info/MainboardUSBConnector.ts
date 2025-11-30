@@ -8,9 +8,9 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import MainboardUSBConnector from "@/utils/interface/part/info/MainboardUSBConnector";
-import { ExternalPorts } from "@/utils/interface/utils";
-import { Infos } from "@/utils/Enum";
+import * as MainboardUSBConnector from "@/utils/part/info/MainboardUSBConnector";
+import { ExternalPorts } from "@/utils/interface";
+import { Infos } from "@/utils/part";
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

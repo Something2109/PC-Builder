@@ -1,4 +1,4 @@
-import { Article } from "@/utils/interface/article/article";
+import { Type, Content } from "@/utils/article";
 import { Tables } from "../interface";
 import {
   Column,
@@ -11,7 +11,7 @@ import {
 } from "sequelize-typescript";
 
 @Table({ modelName: Tables.ARTICLE })
-export class ArticleModel extends Model implements Omit<Article.Type, "id"> {
+export class ArticleModel extends Model implements Omit<Type, "id"> {
   @PrimaryKey
   @Column(DataType.STRING)
   declare topic: string;
@@ -36,11 +36,11 @@ export class ArticleModel extends Model implements Omit<Article.Type, "id"> {
   declare createdAt: Date;
 
   @Column(DataType.TEXT)
-  set content(val: Article.Content[]) {
+  set content(val: Content[]) {
     this.setDataValue("content", JSON.stringify(val));
   }
 
-  get content(): Article.Content[] {
+  get content(): Content[] {
     const data = this.getDataValue("content");
     return JSON.parse(data);
   }

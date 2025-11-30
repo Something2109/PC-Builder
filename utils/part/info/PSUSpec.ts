@@ -1,0 +1,53 @@
+import { FormFactor, Primitive } from "../../interface";
+import { createDTO, createModel } from "../../utils";
+import { z } from "zod";
+
+export const Modular = z.enum(["Non-Modular", "Semi-Modular", "Full-Modular"]);
+
+export type Modular = z.infer<typeof Modular>;
+
+export const Efficiency = z.enum([
+  "None",
+  "80 Plus",
+  "80 PLUS Bronze",
+  "80 PLUS Silver",
+  "80 PLUS Gold",
+  "80 PLUS Platinum",
+  "80 PLUS Titanium",
+]);
+
+export type Efficiency = z.infer<typeof Efficiency>;
+
+const Info = z.object({
+  wattage: Primitive.Number,
+  efficiency: Efficiency,
+
+  form_factor: FormFactor.PSU,
+  width: Primitive.Number,
+  length: Primitive.Number,
+  height: Primitive.Number,
+  modular: Modular,
+});
+
+export type Info = z.infer<typeof Info>;
+
+export const Label: { [key in keyof Info]: string } = {
+  wattage: "Wattage",
+  efficiency: "Efficiency",
+
+  form_factor: "Form Factor",
+  width: "Width",
+  length: "Length",
+  height: "Height",
+  modular: "Modular Type",
+};
+
+const Model = createModel(Info);
+
+export type Model = z.infer<typeof Model>;
+
+const DTO = createDTO(Info);
+
+export type DTO = z.infer<typeof DTO>;
+
+export const Schemas = { Info, Model, DTO };
