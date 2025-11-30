@@ -1,5 +1,4 @@
 import { ZodObject, ZodSchema } from "zod";
-import { Products } from "../../Enum";
 import * as AIOProduct from "./AIO";
 import * as CaseProduct from "./Case";
 import * as CoolerProduct from "./Cooler";
@@ -16,112 +15,130 @@ import * as CPUBlock from "./CPUBlock";
 import * as PumpProduct from "./Pump";
 import * as RadiatorProduct from "./Radiator";
 
+export enum Name {
+  CPU = "cpu",
+  GPU = "gpu",
+  GRAPHIC_CARD = "graphic_card",
+  MAIN = "mainboard",
+  RAM = "ram",
+  SSD = "ssd",
+  HDD = "hdd",
+  PSU = "psu",
+  CASE = "case",
+  COOLER = "cooler",
+  AIO = "aio",
+  FAN = "fan",
+  CPU_BLOCK = "cpu_block",
+  PUMP = "pump",
+  RADIATOR = "radiator",
+}
+
 /**
  * DECLARE THE PRODUCT RELATED MAPPING AND FILTER.
  */
-export const Label: { [key in Products]: string } = {
-  [Products.CPU]: CPUProduct.Label,
-  [Products.GPU]: GPUProduct.Label,
-  [Products.GRAPHIC_CARD]: GraphicCard.Label,
-  [Products.MAIN]: Mainboard.Label,
-  [Products.RAM]: RAMProduct.Label,
-  [Products.SSD]: SSDProduct.Label,
-  [Products.HDD]: HDDProduct.Label,
-  [Products.PSU]: PSUProduct.Label,
-  [Products.CASE]: CaseProduct.Label,
-  [Products.COOLER]: CoolerProduct.Label,
-  [Products.AIO]: AIOProduct.Label,
-  [Products.FAN]: FanProduct.Label,
-  [Products.CPU_BLOCK]: CPUBlock.Label,
-  [Products.PUMP]: PumpProduct.Label,
-  [Products.RADIATOR]: RadiatorProduct.Label,
+export const Label: { [key in Name]: string } = {
+  [Name.CPU]: CPUProduct.Label,
+  [Name.GPU]: GPUProduct.Label,
+  [Name.GRAPHIC_CARD]: GraphicCard.Label,
+  [Name.MAIN]: Mainboard.Label,
+  [Name.RAM]: RAMProduct.Label,
+  [Name.SSD]: SSDProduct.Label,
+  [Name.HDD]: HDDProduct.Label,
+  [Name.PSU]: PSUProduct.Label,
+  [Name.CASE]: CaseProduct.Label,
+  [Name.COOLER]: CoolerProduct.Label,
+  [Name.AIO]: AIOProduct.Label,
+  [Name.FAN]: FanProduct.Label,
+  [Name.CPU_BLOCK]: CPUBlock.Label,
+  [Name.PUMP]: PumpProduct.Label,
+  [Name.RADIATOR]: RadiatorProduct.Label,
 };
 
 export const AttributeLabels: {
-  [key in Products]: { [key in string]: string };
+  [key in Name]: { [key in string]: string };
 } = {
-  [Products.CPU]: CPUProduct.AttributeLabels,
-  [Products.GPU]: GPUProduct.AttributeLabels,
-  [Products.GRAPHIC_CARD]: GraphicCard.AttributeLabels,
-  [Products.MAIN]: Mainboard.AttributeLabels,
-  [Products.RAM]: RAMProduct.AttributeLabels,
-  [Products.SSD]: SSDProduct.AttributeLabels,
-  [Products.HDD]: HDDProduct.AttributeLabels,
-  [Products.PSU]: PSUProduct.AttributeLabels,
-  [Products.CASE]: CaseProduct.AttributeLabels,
-  [Products.COOLER]: CoolerProduct.AttributeLabels,
-  [Products.AIO]: AIOProduct.AttributeLabels,
-  [Products.FAN]: FanProduct.AttributeLabels,
-  [Products.CPU_BLOCK]: CPUBlock.AttributeLabels,
-  [Products.PUMP]: PumpProduct.AttributeLabels,
-  [Products.RADIATOR]: RadiatorProduct.AttributeLabels,
+  [Name.CPU]: CPUProduct.AttributeLabels,
+  [Name.GPU]: GPUProduct.AttributeLabels,
+  [Name.GRAPHIC_CARD]: GraphicCard.AttributeLabels,
+  [Name.MAIN]: Mainboard.AttributeLabels,
+  [Name.RAM]: RAMProduct.AttributeLabels,
+  [Name.SSD]: SSDProduct.AttributeLabels,
+  [Name.HDD]: HDDProduct.AttributeLabels,
+  [Name.PSU]: PSUProduct.AttributeLabels,
+  [Name.CASE]: CaseProduct.AttributeLabels,
+  [Name.COOLER]: CoolerProduct.AttributeLabels,
+  [Name.AIO]: AIOProduct.AttributeLabels,
+  [Name.FAN]: FanProduct.AttributeLabels,
+  [Name.CPU_BLOCK]: CPUBlock.AttributeLabels,
+  [Name.PUMP]: PumpProduct.AttributeLabels,
+  [Name.RADIATOR]: RadiatorProduct.AttributeLabels,
 };
 
 export type Attribute = {
-  [Products.CPU]: CPUProduct.Attribute;
-  [Products.GPU]: GPUProduct.Attribute;
-  [Products.GRAPHIC_CARD]: GraphicCard.Attribute;
-  [Products.MAIN]: Mainboard.Attribute;
-  [Products.RAM]: RAMProduct.Attribute;
-  [Products.SSD]: SSDProduct.Attribute;
-  [Products.HDD]: HDDProduct.Attribute;
-  [Products.PSU]: PSUProduct.Attribute;
-  [Products.CASE]: CaseProduct.Attribute;
-  [Products.COOLER]: CoolerProduct.Attribute;
-  [Products.AIO]: AIOProduct.Attribute;
-  [Products.FAN]: FanProduct.Attribute;
-  [Products.CPU_BLOCK]: CPUBlock.Attribute;
-  [Products.PUMP]: PumpProduct.Attribute;
-  [Products.RADIATOR]: RadiatorProduct.Attribute;
+  [Name.CPU]: CPUProduct.Attribute;
+  [Name.GPU]: GPUProduct.Attribute;
+  [Name.GRAPHIC_CARD]: GraphicCard.Attribute;
+  [Name.MAIN]: Mainboard.Attribute;
+  [Name.RAM]: RAMProduct.Attribute;
+  [Name.SSD]: SSDProduct.Attribute;
+  [Name.HDD]: HDDProduct.Attribute;
+  [Name.PSU]: PSUProduct.Attribute;
+  [Name.CASE]: CaseProduct.Attribute;
+  [Name.COOLER]: CoolerProduct.Attribute;
+  [Name.AIO]: AIOProduct.Attribute;
+  [Name.FAN]: FanProduct.Attribute;
+  [Name.CPU_BLOCK]: CPUBlock.Attribute;
+  [Name.PUMP]: PumpProduct.Attribute;
+  [Name.RADIATOR]: RadiatorProduct.Attribute;
 };
 
 /**
- * The product summary options of each {@link Products} type.
+ * The product summary options of each {@link Name} type.
  * Contains the schema of the summary of each product.
  */
 export const Summary: {
-  [key in Products]: ZodObject<{ [key in string]: ZodSchema }>;
+  [key in Name]: ZodObject<{ [key in string]: ZodSchema }>;
 } = {
-  [Products.CPU]: CPUProduct.Summary,
-  [Products.GPU]: GPUProduct.Summary,
-  [Products.GRAPHIC_CARD]: GraphicCard.Summary,
-  [Products.MAIN]: Mainboard.Summary,
-  [Products.RAM]: RAMProduct.Summary,
-  [Products.SSD]: SSDProduct.Summary,
-  [Products.HDD]: HDDProduct.Summary,
-  [Products.PSU]: PSUProduct.Summary,
-  [Products.CASE]: CaseProduct.Summary,
-  [Products.COOLER]: CoolerProduct.Summary,
-  [Products.AIO]: AIOProduct.Summary,
-  [Products.FAN]: FanProduct.Summary,
-  [Products.CPU_BLOCK]: CPUBlock.Summary,
-  [Products.PUMP]: PumpProduct.Summary,
-  [Products.RADIATOR]: RadiatorProduct.Summary,
+  [Name.CPU]: CPUProduct.Summary,
+  [Name.GPU]: GPUProduct.Summary,
+  [Name.GRAPHIC_CARD]: GraphicCard.Summary,
+  [Name.MAIN]: Mainboard.Summary,
+  [Name.RAM]: RAMProduct.Summary,
+  [Name.SSD]: SSDProduct.Summary,
+  [Name.HDD]: HDDProduct.Summary,
+  [Name.PSU]: PSUProduct.Summary,
+  [Name.CASE]: CaseProduct.Summary,
+  [Name.COOLER]: CoolerProduct.Summary,
+  [Name.AIO]: AIOProduct.Summary,
+  [Name.FAN]: FanProduct.Summary,
+  [Name.CPU_BLOCK]: CPUBlock.Summary,
+  [Name.PUMP]: PumpProduct.Summary,
+  [Name.RADIATOR]: RadiatorProduct.Summary,
 };
 
 /**
- * The product filter options of each {@link Products} type.
+ * The product filter options of each {@link Name} type.
  * Contains the attributes and the schema to verify the corresponsding value.
  * This is used to declare and verify the attributes of the product.
  * The attributes here can be different from {@link Info} filter options
  * and the mapping between the two should be defined in more specific implementation.
  */
 export const FilterOptions: {
-  [key in Products]: ZodObject<{ [key in string]: ZodSchema }>;
+  [key in Name]: ZodObject<{ [key in string]: ZodSchema }>;
 } = {
-  [Products.CPU]: CPUProduct.Filter,
-  [Products.GPU]: GPUProduct.Filter,
-  [Products.GRAPHIC_CARD]: GraphicCard.Filter,
-  [Products.MAIN]: Mainboard.Filter,
-  [Products.RAM]: RAMProduct.Filter,
-  [Products.SSD]: SSDProduct.Filter,
-  [Products.HDD]: HDDProduct.Filter,
-  [Products.PSU]: PSUProduct.Filter,
-  [Products.CASE]: CaseProduct.Filter,
-  [Products.COOLER]: CoolerProduct.Filter,
-  [Products.AIO]: AIOProduct.Filter,
-  [Products.FAN]: FanProduct.Filter,
-  [Products.CPU_BLOCK]: CPUBlock.Filter,
-  [Products.PUMP]: PumpProduct.Filter,
-  [Products.RADIATOR]: RadiatorProduct.Filter,
+  [Name.CPU]: CPUProduct.Filter,
+  [Name.GPU]: GPUProduct.Filter,
+  [Name.GRAPHIC_CARD]: GraphicCard.Filter,
+  [Name.MAIN]: Mainboard.Filter,
+  [Name.RAM]: RAMProduct.Filter,
+  [Name.SSD]: SSDProduct.Filter,
+  [Name.HDD]: HDDProduct.Filter,
+  [Name.PSU]: PSUProduct.Filter,
+  [Name.CASE]: CaseProduct.Filter,
+  [Name.COOLER]: CoolerProduct.Filter,
+  [Name.AIO]: AIOProduct.Filter,
+  [Name.FAN]: FanProduct.Filter,
+  [Name.CPU_BLOCK]: CPUBlock.Filter,
+  [Name.PUMP]: PumpProduct.Filter,
+  [Name.RADIATOR]: RadiatorProduct.Filter,
 };

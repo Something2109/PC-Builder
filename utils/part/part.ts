@@ -1,4 +1,3 @@
-import { Infos, Products } from "../Enum";
 import { Primitive } from "../interface";
 import { createDTO, createModel, FilterOptions } from "../utils";
 import { z } from "zod";
@@ -10,7 +9,7 @@ export * as Infer from "./infer";
 export const BasicInfo = z.object({
   id: Primitive.String,
 
-  part: z.nativeEnum(Products),
+  part: z.nativeEnum(Product.Name),
   name: Primitive.String,
   code_name: Primitive.String,
   brand: Primitive.String,
@@ -72,8 +71,8 @@ export const BasicFilterAttributes = BasicFilterSchema.pick({
   series: true,
 }).keyof().options;
 
-export type Summary<product extends Products | undefined = undefined> =
-  product extends Products
+export type Summary<product extends Product.Name | undefined = undefined> =
+  product extends Product.Name
     ? z.infer<typeof BasicSummarySchema> &
         z.infer<(typeof Product.Summary)[product]>
     : z.infer<typeof BasicSummarySchema>;
@@ -81,7 +80,7 @@ export type Summary<product extends Products | undefined = undefined> =
 export type Filter = {
   part?: z.infer<typeof BasicFilterSchema>;
 } & {
-  [key in Infos]?: Record<string, string[] | number[]> | null;
+  [key in Information.Name]?: Record<string, string[] | number[]> | null;
 };
 
 export const Model = createModel(BasicInfo, ["id", "name", "code_name"]).merge(
@@ -97,6 +96,7 @@ export const DTO = createDTO(BasicInfo.omit({ id: true }), [
 
 export type DTO = z.infer<typeof DTO>;
 
-export type Infer<I extends Infos, A extends string = ""> = A extends ""
-  ? Infer.InfoType<I>
-  : Infer.AttributeType<I, A>;
+export type Infer<
+  I extends Information.Name,
+  A extends string = ""
+> = A extends "" ? Infer.InfoType<I> : Infer.AttributeType<I, A>;
