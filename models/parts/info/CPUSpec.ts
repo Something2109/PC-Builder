@@ -8,8 +8,8 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import CPUSpec from "@/utils/interface/part/info/CPUSpec";
-import { Infos } from "@/utils/Enum";
+import * as CPUSpec from "@/utils/part/info/CPUSpec";
+import { Infos } from "@/utils/part";
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

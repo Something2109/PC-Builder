@@ -4,8 +4,7 @@ import {
   Tables,
   defaultFilter,
 } from "@/models/interface";
-import Part from "@/utils/interface/part";
-import { Products, Infos } from "@/utils/Enum";
+import Part, { Products, Infos } from "@/utils/part";
 import {
   AllowNull,
   Column,

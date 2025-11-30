@@ -8,9 +8,9 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import GraphicCardPort from "@/utils/interface/part/info/GraphicCardPort";
-import { ExternalPorts } from "@/utils/interface/utils";
-import { Infos } from "@/utils/Enum";
+import * as GraphicCardPort from "@/utils/part/info/GraphicCardPort";
+import { ExternalPorts } from "@/utils/interface";
+import { Infos } from "@/utils/part";
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

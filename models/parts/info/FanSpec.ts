@@ -8,9 +8,9 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import FanSpec from "@/utils/interface/part/info/FanSpec";
-import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { Infos } from "@/utils/Enum";
+import * as FanSpec from "@/utils/part/info/FanSpec";
+import { FormFactor, InternalConnectors } from "@/utils/interface";
+import { Infos } from "@/utils/part";
 import { PartInformation } from "..";
 import { ModelScopes, PartDefaultScope, defaultFilter } from "../../interface";
 

@@ -8,9 +8,9 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import CPUBlockSpec from "@/utils/interface/part/info/CPUBlockSpec";
-import { InternalConnectors, Material } from "@/utils/interface/utils";
-import { Infos } from "@/utils/Enum";
+import * as CPUBlockSpec from "@/utils/part/info/CPUBlockSpec";
+import { InternalConnectors, Material } from "@/utils/interface";
+import { Infos } from "@/utils/part";
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 
