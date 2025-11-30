@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { Primitive } from "../interface";
-import { Roles } from "@/utils/Enum";
+
+export enum Roles {
+  ADMIN = "admin",
+  USER = "user",
+  GUEST = "guest",
+}
 
 export const LogInOptions = z.object({
   username: Primitive.String.min(8),

@@ -1,5 +1,5 @@
 import { ZodIssue } from "zod";
-import * as User from "./user/User";
+import * as User from "./user";
 
 /**
  * The error namespace mapping the zod error of an object.
