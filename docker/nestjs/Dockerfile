@@ -13,7 +13,6 @@ RUN npm install
 # Copy the application source code into the image.
 # These layers are shared between the dev and builder stages.
 COPY controllers ./controllers
-COPY crawlers ./crawlers
 COPY models ./models
 COPY utils ./utils
 COPY nest-cli.json ./
