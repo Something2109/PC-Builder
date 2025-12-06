@@ -8,9 +8,9 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import HDDSpec from "@/utils/interface/part/info/HDDSpec";
-import { FormFactor, InternalConnectors } from "@/utils/interface/utils";
-import { Infos } from "@/utils/Enum";
+import * as HDDSpec from "@/utils/part/info/HDDSpec";
+import { FormFactor, InternalConnectors } from "@/utils/interface";
+import { Infos } from "@/utils/part";
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

@@ -1,9 +1,9 @@
-import { Products, Topics } from "@/utils/Enum";
+import { Products } from "@/utils/part";
 import { ArgumentMetadata, PipeTransform } from "@nestjs/common";
 
 export type ArticleFilter = {
   part?: Products;
-  topic?: Topics;
+  topic?: string;
 };
 
 export class QueryFilterPipe implements PipeTransform {
@@ -13,7 +13,7 @@ export class QueryFilterPipe implements PipeTransform {
   ): ArticleFilter {
     const criteria: ArticleFilter = {};
 
-    const topic = this.check(value["topic"], Object.values(Topics));
+    const topic = typeof value["topic"] === "string" ? value["topic"] : null;
     if (topic) criteria.topic = topic;
 
     const part = this.check(value["part"], Object.values(Products));

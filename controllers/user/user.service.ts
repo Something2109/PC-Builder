@@ -1,6 +1,6 @@
 import { UserModel, UserModelScope } from "@/models/user/User";
-import { API } from "@/utils/interface/api";
-import { User } from "@/utils/interface/user/User";
+import * as API from "@/utils/API";
+import * as User from "@/utils/user";
 import {
   Injectable,
   NotFoundException,

@@ -6,9 +6,8 @@ import {
   PARSE_INTERFACE,
   ParseServiceInterface,
 } from "controllers/part/interface/part.interface";
-import Build from "@/utils/interface/build";
-import Part, { Information, Mapping } from "@/utils/interface/part";
-import { Infos, Products } from "@/utils/Enum";
+import Build from "@/utils/build";
+import Part, { Infos, Products, Information, Mapping } from "@/utils/part";
 import {
   Inject,
   Injectable,

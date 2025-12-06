@@ -15,8 +15,7 @@ import {
   ParseServiceInterface,
   PartServiceInterface,
 } from "./interface/part.interface";
-import Part, { Mapping } from "@/utils/interface/part";
-import { Products } from "@/utils/Enum";
+import Part, { Products, Mapping } from "@/utils/part";
 
 @Injectable()
 class PartService implements PartServiceInterface {

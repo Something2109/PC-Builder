@@ -8,7 +8,7 @@ import {
   Table,
 } from "sequelize-typescript";
 import { Tables } from "../interface";
-import { RetailProductType } from "@/utils/interface/retailer/Product";
+import { RetailProductType } from "@/utils/retailer/Product";
 
 @Table({ modelName: Tables.RETAIL_PRODUCT })
 class RetailProduct extends Model implements RetailProductType {

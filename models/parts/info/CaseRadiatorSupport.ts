@@ -8,9 +8,9 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import CaseRadiatorSupport from "@/utils/interface/part/info/CaseRadiatorSupport";
-import { Case, FormFactor } from "@/utils/interface/utils";
-import { Infos } from "@/utils/Enum";
+import * as CaseRadiatorSupport from "@/utils/part/info/CaseRadiatorSupport";
+import { Case, FormFactor } from "@/utils/interface";
+import { Infos } from "@/utils/part";
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

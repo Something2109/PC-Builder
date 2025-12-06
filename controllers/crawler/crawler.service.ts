@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { Injectable } from "@nestjs/common";
-import { Products } from "@/utils/Enum";
+import { Products } from "@/utils/part";
 import { CrawlerChildProcess } from "crawlers/lib/process";
 
 @Injectable()

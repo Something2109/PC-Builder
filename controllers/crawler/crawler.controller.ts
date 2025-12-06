@@ -10,7 +10,8 @@ import {
 import { CrawlerService } from "./crawler.service";
 import { Role } from "controllers/utils/role/role.decorator";
 import { z } from "zod";
-import { Products, Roles } from "@/utils/Enum";
+import { Products } from "@/utils/part";
+import { Roles } from "@/utils/user";
 
 @Role(Roles.ADMIN)
 @Controller("crawler")

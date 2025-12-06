@@ -1,5 +1,5 @@
-import { API } from "@/utils/interface/api";
-import { User } from "@/utils/interface/user/User";
+import { Session } from "@/utils/API";
+import { JwtPayload } from "@/utils/user";
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Request, Response, NextFunction } from "express";
@@ -9,7 +9,7 @@ export class SessionExtractionMiddleware implements NestMiddleware {
   constructor(private jwtService: JwtService) {}
 
   async use(
-    req: Request & { session?: { type: string; sub: User.JwtPayload } },
+    req: Request & { session?: { type: string; sub: JwtPayload } },
     _: Response,
     next: NextFunction
   ) {
@@ -20,7 +20,7 @@ export class SessionExtractionMiddleware implements NestMiddleware {
       // Verify token.
       try {
         const payload = await this.jwtService.verifyAsync(token);
-        req.session = payload as API.Session; // Save the session type (access or refresh) to the request object.
+        req.session = payload as Session; // Save the session type (access or refresh) to the request object.
       } catch {}
     }
 

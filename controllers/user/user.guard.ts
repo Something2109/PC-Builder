@@ -1,4 +1,4 @@
-import { User } from "@/utils/interface/user/User";
+import * as User from "@/utils/user";
 import {
   CanActivate,
   ExecutionContext,

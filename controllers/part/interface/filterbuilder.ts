@@ -1,4 +1,4 @@
-import Part from "@/utils/interface/part";
+import Part from "@/utils/part";
 
 export class FilterOptionBuilder {
   private result: {
