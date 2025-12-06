@@ -9,7 +9,7 @@ import {
 import { RowWrapper } from "../utils/FlexWrapper";
 import { Button } from "../utils/Button";
 import { Input } from "../utils/Input";
-import { Products } from "@/utils/Enum";
+import { Products } from "@/utils/part";
 import { useRouter } from "next/navigation";
 import PartFilter from "./filter/Part";
 

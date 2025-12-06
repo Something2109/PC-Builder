@@ -1,7 +1,6 @@
 "use client";
 
-import Part from "@/utils/interface/part";
-import { Products } from "@/utils/Enum";
+import Part from "@/utils/part";
 import { useActionState, useState } from "react";
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 

@@ -1,6 +1,6 @@
 import { ArticleLink } from "@/components/utils/ArticleLink";
 import { ColumnWrapper } from "@/components/utils/FlexWrapper";
-import { Article } from "@/utils/interface/article/article";
+import * as Article from "@/utils/article";
 import { notFound } from "next/navigation";
 import React from "react";
 

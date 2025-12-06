@@ -1,7 +1,7 @@
 import { VerticalCollapsible } from "../../utils/Collapsible";
 import { Toggler } from "../../utils/Toggle";
 import { InfoLabel } from "../utils/Table";
-import { Products } from "@/utils/Enum";
+import { Products } from "@/utils/part";
 import {
   FunctionComponent,
   InputHTMLAttributes,

@@ -1,5 +1,5 @@
 import { Table } from "../utils/Table";
-import CaseFanSupport from "@/utils/interface/part/info/CaseFanSupport";
+import * as CaseFanSupport from "@/utils/part/info/CaseFanSupport";
 
 export default function CaseFanSupportDisplay({
   defaultValue,

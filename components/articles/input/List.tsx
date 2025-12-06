@@ -1,6 +1,6 @@
 "use client";
 
-import { Article } from "@/utils/interface/article/article";
+import * as Article from "@/utils/article";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 import { TextArea } from "@/components/utils/Input";
 

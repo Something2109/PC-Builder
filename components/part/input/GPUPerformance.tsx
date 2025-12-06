@@ -1,8 +1,8 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { defaultParse, GenericInputField } from "../utils/Form";
 import { SuffixInput, UnitInput } from "@/components/utils/Input";
-import GPUPerformance from "@/utils/interface/part/info/GPUPerformance";
-import { FrequencyUnits } from "@/utils/extract/Units";
+import * as GPUPerformance from "@/utils/part/info/GPUPerformance";
+import { FrequencyUnits } from "@/utils/Units";
 
 const Components: InfoComponentObject<GPUPerformance.DTO> = {
   base_frequency: (props) => (

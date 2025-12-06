@@ -1,5 +1,5 @@
 import { Table } from "../utils/Table";
-import CPUBlockSocketSupport from "@/utils/interface/part/info/CPUBlockSocketSupport";
+import * as CPUBlockSocketSupport from "@/utils/part/info/CPUBlockSocketSupport";
 
 export default ({
   defaultValue,

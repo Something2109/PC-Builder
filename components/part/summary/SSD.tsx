@@ -1,6 +1,6 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import { SuffixDisplay } from "@/components/utils/Display";
-import SSD from "@/utils/interface/part/product/SSD";
+import * as SSD from "@/utils/part/product/SSD";
 
 const Components: InfoSummaryMapping<SSD.Summary> = {
   capacity: ({ value }) => <SuffixDisplay suffix="GB">{value}</SuffixDisplay>,

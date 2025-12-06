@@ -1,5 +1,5 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import CPUBlockSpec from "@/utils/interface/part/info/CPUBlockSpec";
+import * as CPUBlockSpec from "@/utils/part/info/CPUBlockSpec";
 
 const Components: InfoComponentObject<CPUBlockSpec.DTO> = {
   plate: ({ defaultValue }) => defaultValue,

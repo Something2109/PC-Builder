@@ -1,8 +1,8 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { defaultParse, GenericInputField } from "../utils/Form";
 import { UnitInput } from "@/components/utils/Input";
-import ProcessorCache from "@/utils/interface/part/info/ProcessorCache";
-import { MemoryUnits } from "@/utils/extract/Units";
+import * as ProcessorCache from "@/utils/part/info/ProcessorCache";
+import { MemoryUnits } from "@/utils/Units";
 
 export const Components: InfoComponentObject<ProcessorCache.DTO> = {
   L1_cache: (props) => (

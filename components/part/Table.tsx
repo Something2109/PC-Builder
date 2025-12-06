@@ -1,8 +1,7 @@
 "use client";
 
 import { ColumnWrapper } from "../utils/FlexWrapper";
-import { Information } from "@/utils/interface/part";
-import { Infos } from "@/utils/Enum";
+import { Infos, Information } from "@/utils/part";
 import { lazy, LazyExoticComponent } from "react";
 
 export const DetailTableComponent: {

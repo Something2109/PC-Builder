@@ -1,7 +1,6 @@
 import { useBuildContext } from "./BuildContext";
-import Part from "@/utils/interface/part";
-import { API } from "@/utils/interface/api";
-import { Products } from "@/utils/Enum";
+import Part, { Products } from "@/utils/part";
+import * as API from "@/utils/API";
 import { useEffect, useState, useReducer, useTransition } from "react";
 import axios, { AxiosError } from "axios";
 

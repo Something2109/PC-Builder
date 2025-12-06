@@ -1,5 +1,4 @@
-import Part, { Product } from "@/utils/interface/part";
-import { Products } from "@/utils/Enum";
+import Part, { Product } from "@/utils/part";
 import { RedirectButton } from "../utils/Button";
 import PartPicture from "./Picture";
 
@@ -20,7 +19,7 @@ export default function PartPanel({ item }: { item: Part.Summary }) {
         </h3>
         <div className="font-normal">
           <p className="text-xs md:text-sm">{`Part: ${
-            Product.Label[item.part as Products]
+            Product.Label[item.part as Product.Name]
           }`}</p>
           <p className="text-xs md:text-sm">{`Brand: ${item.brand}`}</p>
         </div>

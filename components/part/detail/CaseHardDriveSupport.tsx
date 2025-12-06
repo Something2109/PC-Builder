@@ -1,5 +1,5 @@
 import { Table } from "../utils/Table";
-import CaseHardDriveSupport from "@/utils/interface/part/info/CaseHardDriveSupport";
+import * as CaseHardDriveSupport from "@/utils/part/info/CaseHardDriveSupport";
 
 export default function CaseHardDriveSupportDisplay({
   defaultValue,

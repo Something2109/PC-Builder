@@ -11,7 +11,7 @@ import {
   useRef,
 } from "react";
 import { RowWrapper } from "./FlexWrapper";
-import { UnitInterface } from "@/utils/extract/Units";
+import { UnitInterface } from "@/utils/Units";
 
 const defaultStyle = "only:w-full bg-transparent resize-none overflow-y-hidden";
 const rangeDivStyle = "relative hidden md:block w-full top-1.5";

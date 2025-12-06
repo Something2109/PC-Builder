@@ -8,8 +8,7 @@ import { ColumnWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
 import { ToggleButton } from "@/components/utils/Toggle";
 import { Button } from "@/components/utils/Button";
 import PaginationBar from "@/components/utils/PaginationBar";
-import Part, { Product } from "@/utils/interface/part";
-import { Products } from "@/utils/Enum";
+import Part, { Product } from "@/utils/part";
 import { use } from "react";
 import { useRouter } from "next/navigation";
 import { ChoiceInput } from "@/components/utils/Input";
@@ -19,7 +18,7 @@ import ErrorPanel from "@/components/utils/ErrorPanel";
 export default function BuildProductSummary({
   params: productParams,
 }: {
-  params: Promise<{ product: Products }>;
+  params: Promise<{ product: Product.Name }>;
 }) {
   const router = useRouter();
   const { product } = use(productParams);

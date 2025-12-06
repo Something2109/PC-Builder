@@ -3,8 +3,8 @@ import { Table } from "../utils/Table";
 import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
-import CaseFanSupport from "@/utils/interface/part/info/CaseFanSupport";
-import { Case, FormFactor } from "@/utils/interface/utils";
+import * as CaseFanSupport from "@/utils/part/info/CaseFanSupport";
+import { Case, FormFactor } from "@/utils/interface";
 import { memo, useRef } from "react";
 
 function MainComponent({

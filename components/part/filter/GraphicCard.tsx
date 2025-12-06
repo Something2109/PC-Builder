@@ -2,8 +2,8 @@ import {
   MinMaxRangeInput,
   UnitMinMaxRangeInput,
 } from "@/components/utils/Input";
-import GraphicCard from "@/utils/interface/part/product/GraphicCard";
-import { FrequencyUnits, LengthUnits } from "@/utils/extract/Units";
+import * as GraphicCard from "@/utils/part/product/GraphicCard";
+import { FrequencyUnits, LengthUnits } from "@/utils/Units";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<GraphicCard.Filter> = {

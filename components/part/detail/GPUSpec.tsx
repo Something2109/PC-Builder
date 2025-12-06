@@ -1,5 +1,5 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import GPUSpec from "@/utils/interface/part/info/GPUSpec";
+import * as GPUSpec from "@/utils/part/info/GPUSpec";
 
 const Components: InfoComponentObject<GPUSpec.DTO> = {
   family: ({ defaultValue }) => defaultValue,

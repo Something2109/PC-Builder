@@ -1,13 +1,12 @@
 "use client";
 
-import Part, { Information } from "@/utils/interface/part";
-import { Infos } from "@/utils/Enum";
+import Part, { Information } from "@/utils/part";
 import { useRef, useActionState, useState } from "react";
 import axios, { AxiosError } from "axios";
 
 export function useInfoAction(
   path: string,
-  info: Infos,
+  info: Information.Name,
   defaultValue: Part.DTO
 ) {
   const label = useRef(Information.Label[info]);

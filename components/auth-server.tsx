@@ -1,12 +1,11 @@
-import { Roles } from "@/utils/Enum";
-import { User } from "@/utils/interface/user/User";
+import { Roles, JwtPayload } from "@/utils/user";
 import { createVerifier } from "fast-jwt";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
 const verify = createVerifier({ key: process.env.JWT_SECRET! });
 
-export async function verifyToken(): Promise<User.JwtPayload | null> {
+export async function verifyToken(): Promise<JwtPayload | null> {
   const cookie = await cookies();
   const raw = cookie.get("Authorization");
 
@@ -25,7 +24,7 @@ export async function verifyToken(): Promise<User.JwtPayload | null> {
   try {
     const payload = verify(token);
 
-    return payload?.sub as User.JwtPayload;
+    return payload?.sub as JwtPayload;
   } catch (err) {
     console.error(err);
     return null;

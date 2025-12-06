@@ -1,7 +1,7 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { defaultParse, GenericInputField } from "../utils/Form";
 import { Input } from "@/components/utils/Input";
-import GPUFeature from "@/utils/interface/part/info/GPUFeature";
+import * as GPUFeature from "@/utils/part/info/GPUFeature";
 
 const Components: InfoComponentObject<GPUFeature.DTO> = {
   DirectX: (props) => <Input {...props} />,

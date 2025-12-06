@@ -1,5 +1,5 @@
 import { Table } from "../utils/Table";
-import CasePSUSupport from "@/utils/interface/part/info/CasePSUSupport";
+import * as CasePSUSupport from "@/utils/part/info/CasePSUSupport";
 
 export default ({ defaultValue }: { defaultValue: CasePSUSupport.DTO[] }) => (
   <Table.Component>

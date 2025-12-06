@@ -6,9 +6,9 @@ import {
   SuffixInput,
   UnitInput,
 } from "@/components/utils/Input";
-import GraphicCardSpec from "@/utils/interface/part/info/GraphicCardSpec";
-import { InternalConnectors } from "@/utils/interface/utils";
-import { LengthUnits } from "@/utils/extract/Units";
+import * as GraphicCardSpec from "@/utils/part/info/GraphicCardSpec";
+import { InternalConnectors } from "@/utils/interface";
+import { LengthUnits } from "@/utils/Units";
 
 const Components: InfoComponentObject<GraphicCardSpec.DTO> = {
   width: (props) => (

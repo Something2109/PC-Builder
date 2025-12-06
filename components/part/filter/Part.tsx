@@ -1,5 +1,5 @@
 import { MultipleChoiceInput } from "@/components/utils/Input";
-import Part from "@/utils/interface/part";
+import Part from "@/utils/part";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<{

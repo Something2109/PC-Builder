@@ -1,5 +1,5 @@
 import { Table } from "../utils/Table";
-import MainboardFanConnector from "@/utils/interface/part/info/MainboardFanConnector";
+import * as MainboardFanConnector from "@/utils/part/info/MainboardFanConnector";
 
 export default ({
   defaultValue,

@@ -1,4 +1,4 @@
-import CPU from "@/utils/interface/part/product/CPU";
+import * as CPU from "@/utils/part/product/CPU";
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import { SuffixDisplay } from "@/components/utils/Display";
 

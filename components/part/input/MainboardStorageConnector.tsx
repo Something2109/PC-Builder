@@ -3,8 +3,8 @@ import { Table } from "../utils/Table";
 import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Input, OptionSelect } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
-import MainboardStorageConnector from "@/utils/interface/part/info/MainboardStorageConnector";
-import { InternalConnectors } from "@/utils/interface/utils";
+import * as MainboardStorageConnector from "@/utils/part/info/MainboardStorageConnector";
+import { InternalConnectors } from "@/utils/interface";
 import { memo, useRef } from "react";
 
 function Component({

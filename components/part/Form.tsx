@@ -4,96 +4,118 @@ import { NotificationBar } from "../utils/NotificationBar";
 import { VerticalCollapsible } from "../utils/Collapsible";
 import { useInfoAction } from "@/components/hook/part/InfoAction";
 import { Button } from "@/components/utils/Button";
-import { Information } from "@/utils/interface/part";
-import Part from "@/utils/interface/part";
-import { Infos } from "@/utils/Enum";
+import Part, { Information } from "@/utils/part";
 import { lazy, LazyExoticComponent, useRef } from "react";
 
 const InputComponent: {
-  [key in Infos]: LazyExoticComponent<React.FC<any>>;
+  [key in Information.Name]: LazyExoticComponent<React.FC<any>>;
 } = {
-  [Infos.CPU_SPEC]: lazy(() => import("@/components/part/input/CPUSpec")),
-  [Infos.CPU_PERF]: lazy(
+  [Information.Name.CPU_SPEC]: lazy(
+    () => import("@/components/part/input/CPUSpec")
+  ),
+  [Information.Name.CPU_PERF]: lazy(
     () => import("@/components/part/input/CPUPerformance")
   ),
-  [Infos.CPU_CORES]: lazy(
+  [Information.Name.CPU_CORES]: lazy(
     () => import("@/components/part/input/CPUCoreConfig")
   ),
-  [Infos.CPU_MEMORY]: lazy(() => import("@/components/part/input/CPUMemory")),
-  [Infos.GPU_SPEC]: lazy(() => import("@/components/part/input/GPUSpec")),
-  [Infos.GPU_PERF]: lazy(
+  [Information.Name.CPU_MEMORY]: lazy(
+    () => import("@/components/part/input/CPUMemory")
+  ),
+  [Information.Name.GPU_SPEC]: lazy(
+    () => import("@/components/part/input/GPUSpec")
+  ),
+  [Information.Name.GPU_PERF]: lazy(
     () => import("@/components/part/input/GPUPerformance")
   ),
-  [Infos.GPU_MEMORY]: lazy(() => import("@/components/part/input/GPUMemory")),
-  [Infos.GPU_FEAT]: lazy(() => import("@/components/part/input/GPUFeature")),
-  [Infos.PROCESSOR_CACHE]: lazy(
+  [Information.Name.GPU_MEMORY]: lazy(
+    () => import("@/components/part/input/GPUMemory")
+  ),
+  [Information.Name.GPU_FEAT]: lazy(
+    () => import("@/components/part/input/GPUFeature")
+  ),
+  [Information.Name.PROCESSOR_CACHE]: lazy(
     () => import("@/components/part/input/ProcessorCache")
   ),
-  [Infos.GRAPHIC_CARD_SPEC]: lazy(
+  [Information.Name.GRAPHIC_CARD_SPEC]: lazy(
     () => import("@/components/part/input/GraphicCardSpec")
   ),
-  [Infos.GRAPHIC_CARD_PORT]: lazy(
+  [Information.Name.GRAPHIC_CARD_PORT]: lazy(
     () => import("@/components/part/input/GraphicCardPort")
   ),
-  [Infos.MAIN_SPEC]: lazy(
+  [Information.Name.MAIN_SPEC]: lazy(
     () => import("@/components/part/input/MainboardSpec")
   ),
-  [Infos.MAIN_POWER]: lazy(
+  [Information.Name.MAIN_POWER]: lazy(
     () => import("@/components/part/input/MainboardPowerConnector")
   ),
-  [Infos.MAIN_PCIE]: lazy(
+  [Information.Name.MAIN_PCIE]: lazy(
     () => import("@/components/part/input/MainboardPCIe")
   ),
-  [Infos.MAIN_STORAGE]: lazy(
+  [Information.Name.MAIN_STORAGE]: lazy(
     () => import("@/components/part/input/MainboardStorageConnector")
   ),
-  [Infos.MAIN_USB]: lazy(
+  [Information.Name.MAIN_USB]: lazy(
     () => import("@/components/part/input/MainboardUSBConnector")
   ),
-  [Infos.MAIN_FAN]: lazy(
+  [Information.Name.MAIN_FAN]: lazy(
     () => import("@/components/part/input/MainboardFanConnector")
   ),
-  [Infos.RAM_SPEC]: lazy(() => import("@/components/part/input/RAMSpec")),
-  [Infos.SSD_SPEC]: lazy(() => import("@/components/part/input/SSDSpec")),
-  [Infos.HDD_SPEC]: lazy(() => import("@/components/part/input/HDDSpec")),
-  [Infos.STORAGE_PERF]: lazy(
+  [Information.Name.RAM_SPEC]: lazy(
+    () => import("@/components/part/input/RAMSpec")
+  ),
+  [Information.Name.SSD_SPEC]: lazy(
+    () => import("@/components/part/input/SSDSpec")
+  ),
+  [Information.Name.HDD_SPEC]: lazy(
+    () => import("@/components/part/input/HDDSpec")
+  ),
+  [Information.Name.STORAGE_PERF]: lazy(
     () => import("@/components/part/input/StoragePerformance")
   ),
-  [Infos.STORAGE_CACHE]: lazy(
+  [Information.Name.STORAGE_CACHE]: lazy(
     () => import("@/components/part/input/StorageCache")
   ),
-  [Infos.PSU_SPEC]: lazy(() => import("@/components/part/input/PSUSpec")),
-  [Infos.PSU_CONNECTOR]: lazy(
+  [Information.Name.PSU_SPEC]: lazy(
+    () => import("@/components/part/input/PSUSpec")
+  ),
+  [Information.Name.PSU_CONNECTOR]: lazy(
     () => import("@/components/part/input/PSUConnector")
   ),
-  [Infos.CASE_SPEC]: lazy(() => import("@/components/part/input/CaseSpec")),
-  [Infos.CASE_MAIN]: lazy(
+  [Information.Name.CASE_SPEC]: lazy(
+    () => import("@/components/part/input/CaseSpec")
+  ),
+  [Information.Name.CASE_MAIN]: lazy(
     () => import("@/components/part/input/CaseMainboardSupport")
   ),
-  [Infos.CASE_FAN]: lazy(
+  [Information.Name.CASE_FAN]: lazy(
     () => import("@/components/part/input/CaseFanSupport")
   ),
-  [Infos.CASE_HARD_DRIVE]: lazy(
+  [Information.Name.CASE_HARD_DRIVE]: lazy(
     () => import("@/components/part/input/CaseHardDriveSupport")
   ),
-  [Infos.CASE_RADIATOR]: lazy(
+  [Information.Name.CASE_RADIATOR]: lazy(
     () => import("@/components/part/input/CaseRadiatorSupport")
   ),
-  [Infos.CASE_PSU]: lazy(
+  [Information.Name.CASE_PSU]: lazy(
     () => import("@/components/part/input/CasePSUSupport")
   ),
-  [Infos.FAN_SPEC]: lazy(() => import("@/components/part/input/FanSpec")),
-  [Infos.CPU_BLOCK_SPEC]: lazy(
+  [Information.Name.FAN_SPEC]: lazy(
+    () => import("@/components/part/input/FanSpec")
+  ),
+  [Information.Name.CPU_BLOCK_SPEC]: lazy(
     () => import("@/components/part/input/CPUBlockSpec")
   ),
-  [Infos.CPU_BLOCK_SOCKET]: lazy(
+  [Information.Name.CPU_BLOCK_SOCKET]: lazy(
     () => import("@/components/part/input/CPUBlockSocketSupport")
   ),
-  [Infos.PUMP_SPEC]: lazy(() => import("@/components/part/input/PumpSpec")),
-  [Infos.RADIATOR_SPEC]: lazy(
+  [Information.Name.PUMP_SPEC]: lazy(
+    () => import("@/components/part/input/PumpSpec")
+  ),
+  [Information.Name.RADIATOR_SPEC]: lazy(
     () => import("@/components/part/input/RadiatorSpec")
   ),
-  [Infos.EXTERNAL_PORTS]: lazy(
+  [Information.Name.EXTERNAL_PORTS]: lazy(
     () => import("@/components/part/input/PartExternalPorts")
   ),
 };
@@ -104,7 +126,7 @@ export function InfoForm({
   defaultValue,
 }: {
   path: string;
-  info: Infos;
+  info: Information.Name;
   defaultValue: Part.DTO;
 }) {
   const label = useRef(Information.Label[info]);

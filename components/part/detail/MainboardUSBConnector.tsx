@@ -1,6 +1,6 @@
-import { ExternalPorts } from "@/utils/interface/utils";
+import { ExternalPorts } from "@/utils/interface";
 import { Table } from "../utils/Table";
-import MainboardUSBConnector from "@/utils/interface/part/info/MainboardUSBConnector";
+import * as MainboardUSBConnector from "@/utils/part/info/MainboardUSBConnector";
 
 export default ({
   defaultValue,

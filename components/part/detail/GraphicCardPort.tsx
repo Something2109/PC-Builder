@@ -1,5 +1,5 @@
 import { Table } from "../utils/Table";
-import GraphicCardPort from "@/utils/interface/part/info/GraphicCardPort";
+import * as GraphicCardPort from "@/utils/part/info/GraphicCardPort";
 
 export default ({ defaultValue }: { defaultValue: GraphicCardPort.DTO[] }) => (
   <Table.Component>

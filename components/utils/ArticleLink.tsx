@@ -1,4 +1,4 @@
-import { Article } from "@/utils/interface/article/article";
+import * as Article from "@/utils/article";
 import { ColumnWrapper } from "./FlexWrapper";
 import Link from "next/link";
 

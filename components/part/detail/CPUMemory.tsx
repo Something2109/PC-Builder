@@ -1,11 +1,7 @@
 import { Table } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
-import CPUMemory from "@/utils/interface/part/info/CPUMemory";
-import {
-  MemorySpeedUnit,
-  MemoryUnits,
-  TransferSpeedUnit,
-} from "@/utils/extract/Units";
+import * as CPUMemory from "@/utils/part/info/CPUMemory";
+import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
 
 export default ({ defaultValue }: { defaultValue: CPUMemory.DTO[] }) => (
   <Table.Component>

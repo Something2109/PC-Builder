@@ -1,5 +1,4 @@
-import Part from "@/utils/interface/part";
-import { Products } from "@/utils/Enum";
+import Part, { Products } from "@/utils/part";
 import {
   ChangeEventHandler,
   useActionState,

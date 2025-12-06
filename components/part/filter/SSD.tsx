@@ -2,8 +2,8 @@ import {
   MultipleChoiceInput,
   UnitMinMaxRangeInput,
 } from "@/components/utils/Input";
-import SSD from "@/utils/interface/part/product/SSD";
-import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
+import * as SSD from "@/utils/part/product/SSD";
+import { MemorySpeedUnit, MemoryUnits } from "@/utils/Units";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<SSD.Filter> = {

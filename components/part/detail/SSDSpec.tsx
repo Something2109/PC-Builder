@@ -1,7 +1,7 @@
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { UnitDisplay } from "@/components/utils/Display";
-import SSDSpec from "@/utils/interface/part/info/SSDSpec";
-import { MemoryUnits } from "@/utils/extract/Units";
+import * as SSDSpec from "@/utils/part/info/SSDSpec";
+import { MemoryUnits } from "@/utils/Units";
 
 const Components: InfoComponentObject<SSDSpec.DTO> = {
   memory_type: ({ defaultValue }) => defaultValue,

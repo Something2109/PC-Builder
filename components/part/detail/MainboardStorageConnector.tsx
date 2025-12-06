@@ -1,5 +1,5 @@
 import { Table } from "../utils/Table";
-import MainboardStorageConnector from "@/utils/interface/part/info/MainboardStorageConnector";
+import * as MainboardStorageConnector from "@/utils/part/info/MainboardStorageConnector";
 
 export default ({
   defaultValue,

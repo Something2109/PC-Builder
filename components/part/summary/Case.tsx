@@ -1,5 +1,5 @@
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
-import Case from "@/utils/interface/part/product/Case";
+import * as Case from "@/utils/part/product/Case";
 
 const Components: InfoSummaryMapping<Case.Summary> = {
   form_factor: ({ value }) => value,

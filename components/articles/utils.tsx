@@ -1,4 +1,4 @@
-import { Article } from "@/utils/interface/article/article";
+import * as Article from "@/utils/article";
 import { Paragraph, ParagraphInput } from "./Paragraph";
 import { Picture, PictureInput } from "./Image";
 import { List, ListInput } from "./List";

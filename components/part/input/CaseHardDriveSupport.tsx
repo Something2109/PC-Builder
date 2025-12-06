@@ -3,8 +3,8 @@ import { Table } from "../utils/Table";
 import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import { Input, OptionSelect } from "@/components/utils/Input";
-import CaseHardDriveSupport from "@/utils/interface/part/info/CaseHardDriveSupport";
-import { Case } from "@/utils/interface/utils";
+import * as CaseHardDriveSupport from "@/utils/part/info/CaseHardDriveSupport";
+import { Case } from "@/utils/interface";
 import { memo, useRef } from "react";
 
 function MainComponent({

@@ -1,4 +1,4 @@
-import { Article } from "@/utils/interface/article/article";
+import * as Article from "@/utils/article";
 import { ContentProps, ContentRenderer } from "../utils";
 
 export function Section({

@@ -2,7 +2,7 @@
 
 import { ColumnWrapper, RowWrapper } from "./utils/FlexWrapper";
 import useSearchAction from "./hook/SearchAction";
-import { Products } from "@/utils/Enum";
+import { Products } from "@/utils/part";
 
 export function SearchBar({ q, part }: { q?: string; part?: Products }) {
   const [input, result, pending, onChange, onBlur, onEnter] =

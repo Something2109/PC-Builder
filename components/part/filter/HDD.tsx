@@ -3,8 +3,8 @@ import {
   MinMaxRangeInput,
   UnitMinMaxRangeInput,
 } from "@/components/utils/Input";
-import HDD from "@/utils/interface/part/product/HDD";
-import { MemorySpeedUnit, MemoryUnits } from "@/utils/extract/Units";
+import * as HDD from "@/utils/part/product/HDD";
+import { MemorySpeedUnit, MemoryUnits } from "@/utils/Units";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<HDD.Filter> = {

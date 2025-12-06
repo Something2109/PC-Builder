@@ -1,5 +1,5 @@
 import { Table } from "../utils/Table";
-import CaseMainboardSupport from "@/utils/interface/part/info/CaseMainboardSupport";
+import * as CaseMainboardSupport from "@/utils/part/info/CaseMainboardSupport";
 
 export default ({
   defaultValue,

@@ -4,8 +4,8 @@ import { useObjectSet } from "@/components/hook/part/ObjectSet";
 import { Input, UnitInput } from "@/components/utils/Input";
 import { Button, DeleteButton } from "@/components/utils/Button";
 import useDebounce from "@/components/utils/Debounce";
-import CPUCoreConfig from "@/utils/interface/part/info/CPUCoreConfig";
-import { FrequencyUnits } from "@/utils/extract/Units";
+import * as CPUCoreConfig from "@/utils/part/info/CPUCoreConfig";
+import { FrequencyUnits } from "@/utils/Units";
 import { memo, useRef } from "react";
 
 function Component({

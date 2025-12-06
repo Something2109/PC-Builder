@@ -3,8 +3,8 @@ import {
   MultipleChoiceInput,
   UnitMinMaxRangeInput,
 } from "@/components/utils/Input";
-import GPU from "@/utils/interface/part/product/GPU";
-import { FrequencyUnits, MemoryUnits } from "@/utils/extract/Units";
+import * as GPU from "@/utils/part/product/GPU";
+import { FrequencyUnits, MemoryUnits } from "@/utils/Units";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<GPU.Filter> = {

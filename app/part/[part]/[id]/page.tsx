@@ -1,10 +1,9 @@
 import { InfoTable } from "@/components/part/Table";
 import { PartTable } from "@/components/part/detail/Part";
 import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
-import { Products } from "@/utils/Enum";
 import { notFound } from "next/navigation";
 import React from "react";
-import Part, { Mapping } from "@/utils/interface/part";
+import Part, { Products, Mapping } from "@/utils/part";
 
 export default async function PartDetailPage({
   params,
@@ -19,7 +18,7 @@ export default async function PartDetailPage({
 
   if (!response.ok) return notFound();
 
-  const data = (await response.json()) as Part.DTO;
+  const data = (await response.json()) as Part.Model;
 
   return (
     <>
