@@ -17,6 +17,10 @@ import { BuildModule } from "./build/build.module";
 // Initiate the environment variables.
 const Config = ConfigModule.forRoot();
 
+const username = process.env.DATABASE_USERNAME;
+const password = process.env.DATABASE_PASSWORD;
+const database = process.env.DATABASE_NAME;
+
 // Initiate the JWT resolver module.
 const Jwt = JwtModule.register({
   global: true,
@@ -29,9 +33,9 @@ const Sequelize = SequelizeModule.forRoot({
   dialect: "mysql",
   host: process.env.MYSQL_HOST,
   port: Number(process.env.MYSQL_PORT),
-  username: process.env.DATABASE_USERNAME,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
+  username,
+  password,
+  database,
   autoLoadModels: true,
   logging: (
     (logger: Logger) => (sql: string, timeout: any) =>
@@ -42,7 +46,7 @@ const Sequelize = SequelizeModule.forRoot({
 
 // Initiate the Mongoose module.
 const Mongo = MongooseModule.forRoot(
-  `mongodb://${process.env.MONGO_HOST}/${process.env.DATABASE_NAME}`,
+  `mongodb://${username}:${password}@${process.env.MONGO_HOST}/${database}`,
   {
     onConnectionCreate: (connection: Connection) => {
       const logger = new Logger("Mongodb");
@@ -60,8 +64,6 @@ const Mongo = MongooseModule.forRoot(
       connection.on("disconnecting", () =>
         logger.verbose("Mongodb database disconnecting")
       );
-
-      return connection;
     },
   }
 );
