@@ -19,12 +19,13 @@ services:
       retries: 5
 
   mongo:
-    image: mongodb/mongodb-community-server:8.0.16-ubi8 # Pinned to a specific stable version
+    build:
+      context: ./mongo
+      dockerfile: Dockerfile
     ports:
       - "27017:27017"
     volumes:
       - Mongo:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
     environment:
       - MONGODB_INITDB_DATABASE=${DATABASE_NAME:-PC_Builder}
       # Added authentication. These variables must be in your .env file.
