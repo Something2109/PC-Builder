@@ -1,4 +1,4 @@
-import { Infos } from "../Enum";
+import { Infos } from "../part";
 import * as Information from "./info";
 
 /**
