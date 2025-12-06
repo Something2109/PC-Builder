@@ -5,7 +5,8 @@ FROM node:24-alpine AS deps
 WORKDIR /usr/local/app
 
 # Copy package.json and package-lock.json to leverage Docker cache.
-COPY package.json package-lock.json* ./
+COPY docker/nestjs/package.json ./
+COPY docker/nestjs/package-lock.json ./
 
 # Install all dependencies, including devDependencies needed for the build and dev stages.
 RUN npm install
@@ -17,7 +18,7 @@ COPY crawlers ./crawlers
 COPY models ./models
 COPY utils ./utils
 COPY nest-cli.json ./
-COPY ./docker/nestjs/tsconfig.json ./
+COPY docker/nestjs/tsconfig.json ./
 
 # --- Development Stage ---
 # This stage uses the 'deps' stage as a base and runs the app in development mode.

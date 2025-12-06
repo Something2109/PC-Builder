@@ -2,7 +2,9 @@
 # Installs dependencies and caches them in a separate layer.
 FROM node:lts-alpine AS deps
 WORKDIR /usr/local/app
-COPY package.json package-lock.json ./
+
+COPY docker/nextjs/package.json ./
+COPY docker/nextjs/package-lock.json ./
 RUN npm ci
 
 # Stage 2: Application Source
@@ -13,12 +15,11 @@ COPY app ./app
 COPY components ./components
 COPY public ./public
 COPY utils ./utils
-COPY data ./data
 COPY next-env.d.ts ./
 COPY next.config.js ./
 COPY postcss.config.js ./
 COPY tailwind.config.js ./
-COPY tsconfig.json ./
+COPY docker/nextjs/tsconfig.json ./
 COPY eslint.config.mjs ./
 
 # Stage 3: Builder
