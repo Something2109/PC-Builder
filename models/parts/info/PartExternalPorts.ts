@@ -13,7 +13,6 @@ import { ExternalPorts } from "@/utils/interface";
 import { Infos } from "@/utils/part";
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
-import z from "zod";
 
 /**
  * Declare the PCIe model to store the mainboard's PCIe data.
@@ -49,7 +48,7 @@ class PartExternalPortModel extends Model implements PartExternalPorts.Model {
 
   @PrimaryKey
   @Column(DataType.STRING)
-  declare name: z.infer<typeof ExternalPorts.Schema>;
+  declare name: ExternalPorts;
 
   @Column(DataType.TINYINT)
   declare count: number | null;
