@@ -5,12 +5,12 @@ export default async function BuildSummaryLayout({
   params,
   children,
 }: {
-  params: Promise<{ product: Products }>;
+  params: Promise<{ product: string }>;
   children: React.ReactNode;
 }) {
   const { product } = await params;
 
-  if (!Object.values(Products).includes(product)) return notFound();
+  if (!Object.values(Products).includes(product as Products)) return notFound();
 
   return children;
 }

@@ -1,5 +1,5 @@
 import * as Article from "@/utils/article";
-import { ContentProps, ContentRenderer } from "../utils";
+import { ContentProps } from "../utils";
 
 export function Section({
   content,

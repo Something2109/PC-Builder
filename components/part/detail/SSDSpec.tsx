@@ -12,13 +12,6 @@ const Components: InfoComponentObject<SSDSpec.DTO> = {
       defaultValue={defaultValue}
     />
   ),
-  cache: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={MemoryUnits}
-      defaultUnit="MB"
-      defaultValue={defaultValue}
-    />
-  ),
   tbw: ({ defaultValue }) => (
     <UnitDisplay
       Unit={MemoryUnits}
