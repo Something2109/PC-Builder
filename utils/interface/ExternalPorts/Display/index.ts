@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { Schema as HDMISchema } from "./HDMI";
+import { Schema as DisplayPortSchema } from "./DisplayPort";
 
 export const Type = z.enum(["HDMI", "DisplayPort", "DVI", "VGA"]);
 
@@ -20,4 +22,4 @@ export const VGA = z.enum(["VGA", "Mini-VGA"]);
 
 export type VGA = z.infer<typeof VGA>;
 
-export const Schema = z.union([HDMI.Schema, DisplayPort.Schema, DVI, VGA]);
+export const Schema = z.union([HDMISchema, DisplayPortSchema, DVI, VGA]);

@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { Schema as USBSchema } from "./USB";
+import { Schema as PS2Schema } from "./PS2";
 
 export const Type = z.enum(["USB", "PS/2"]);
 
@@ -12,4 +14,4 @@ export * as PS2 from "./PS2";
 
 export type PS2 = z.infer<typeof PS2.Schema>;
 
-export const Schema = z.union([USB.Schema, PS2.Schema]);
+export const Schema = z.union([USBSchema, PS2Schema]);
