@@ -1,4 +1,9 @@
 import { z } from "zod";
+import { Schema as NetworkSchema } from "./Network";
+import { Schema as PeripheralSchema } from "./Peripheral";
+import { Schema as DisplaySchema } from "./Display";
+import { Schema as AudioSchema } from "./Audio";
+import { Schema as InteractionSchema } from "./Interaction";
 
 export const Type = z.enum([
   "Network",
@@ -35,9 +40,9 @@ export * as Interaction from "./Interaction";
 export type Interaction = Interaction.Button;
 
 export const Schema = z.union([
-  Network.Schema,
-  Peripheral.Schema,
-  Display.Schema,
-  Audio.Schema,
-  Interaction.Schema,
+  NetworkSchema,
+  PeripheralSchema,
+  DisplaySchema,
+  AudioSchema,
+  InteractionSchema,
 ]);
