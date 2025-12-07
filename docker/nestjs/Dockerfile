@@ -16,11 +16,12 @@ RUN npm ci
 # This stage contains the source code and is used as a common base for the 
 # builder and dev stages to avoid duplicating the COPY commands.
 FROM deps AS app-source
-COPY controllers ./controllers
-COPY models ./models
-COPY utils ./utils
-COPY nest-cli.json ./
+
 COPY tsconfig.json ./
+COPY nest-cli.json ./
+COPY utils ./utils
+COPY models ./models
+COPY controllers ./controllers
 
 # Stage 4: Builder
 # Builds the NestJS application for production.
