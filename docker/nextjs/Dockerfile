@@ -1,7 +1,9 @@
+FROM node:24-alpine AS deps-source
+WORKDIR /usr/local/app/nextjs
+
 # Stage 1: Dependencies
 # Installs dependencies and caches them in a separate layer.
-FROM node:lts-alpine AS deps
-WORKDIR /usr/local/app
+FROM deps-source AS deps
 
 COPY docker/nextjs/package.json ./
 COPY docker/nextjs/package-lock.json ./
@@ -11,16 +13,17 @@ RUN npm ci
 # This stage contains the source code and is used as a common base for the 
 # builder and dev stages to avoid duplicating the COPY commands.
 FROM deps AS app-source
-COPY app ./app
-COPY components ./components
-COPY public ./public
-COPY utils ./utils
-COPY next-env.d.ts ./
-COPY next.config.js ./
-COPY postcss.config.js ./
-COPY tailwind.config.js ./
+
+COPY docker/nestjs/next-env.d.ts ./
+COPY docker/nestjs/next.config.js ./
+COPY docker/nestjs/postcss.config.js ./
+COPY docker/nestjs/tailwind.config.js ./
 COPY docker/nextjs/tsconfig.json ./
-COPY eslint.config.mjs ./
+COPY docker/nestjs/eslint.config.mjs ./
+COPY utils ./utils
+COPY public ./public
+COPY components ./components
+COPY app ./app
 
 # Stage 3: Builder
 # Builds the Next.js application for production. It inherits from the app-source stage.
@@ -38,18 +41,16 @@ CMD ["npm", "run", "dev"]
 # Final, lean, and secure production image.
 # It uses the standalone output from the 'builder' stage.
 # To build for production: `docker build -t myapp-prod .`
-FROM node:lts-alpine AS prod
-WORKDIR /usr/local/app
+FROM deps-source AS prod
 ENV NODE_ENV=production
 
 # Create a non-root user for security.
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
 
 # Copy only the necessary build artifacts from the builder stage.
-COPY --from=builder /usr/local/app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /usr/local/app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /usr/local/app/.next/static ./.next/static
+COPY --from=builder /usr/local/app/nextjs/public ./public
+COPY --from=builder --chown=nextjs:nodejs /usr/local/app/nextjs/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /usr/local/app/nextjs/.next/static ./.next/static
 
 USER nextjs
 EXPOSE 3000

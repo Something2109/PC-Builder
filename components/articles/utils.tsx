@@ -1,8 +1,12 @@
 import * as Article from "@/utils/article";
-import { Paragraph, ParagraphInput } from "./Paragraph";
-import { Picture, PictureInput } from "./Image";
-import { List, ListInput } from "./List";
-import { Section, SectionInput } from "./Section";
+import { Paragraph } from "./display/Paragraph";
+import ParagraphInput from "./input/Paragraph";
+import { Picture } from "./display/Image";
+import PictureInput from "./input/Image";
+import { List } from "./display/List";
+import ListInput from "./input/List";
+import { Section } from "./display/Section";
+import SectionInput from "./input/Section";
 import { Button } from "@/components/utils/Button";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 

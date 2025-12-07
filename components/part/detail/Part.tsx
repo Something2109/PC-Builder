@@ -24,7 +24,7 @@ export function PartTable({
   defaultValue,
   ...rest
 }: {
-  defaultValue: Part.BasicInfo;
+  defaultValue: Part.Model;
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
   let { id, part, url } = defaultValue;
 
@@ -32,7 +32,7 @@ export function PartTable({
     <ResponsiveWrapper className="w-full">
       <PartPicture
         className="w-full lg:w-1/3"
-        part={part}
+        part={part ?? "default"}
         src={defaultValue.image_url ?? undefined}
       />
       <ColumnWrapper className="w-full lg:w-2/3 px-5 justify-center">
