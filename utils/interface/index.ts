@@ -12,6 +12,13 @@ export * as InternalConnectors from "./InternalConnectors";
 
 export * as ExternalPorts from "./ExternalPorts";
 
+export type ExternalPorts =
+  | ExternalPorts.Network
+  | ExternalPorts.Peripheral
+  | ExternalPorts.Display
+  | ExternalPorts.Audio
+  | ExternalPorts.Interaction;
+
 export * as Material from "./Material";
 
 export * as Case from "./Case";

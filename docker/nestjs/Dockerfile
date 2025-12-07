@@ -1,55 +1,57 @@
-# Using a more recent stable Node.js Alpine image as the base.
-FROM node:24-alpine AS deps
-
-# Set the working directory.
-WORKDIR /usr/local/app
+# Stage 1: Dependency source
+# Base image declaration and include dependency declaration sources.
+FROM node:24-alpine AS deps-source
+WORKDIR /usr/local/app/nestjs
 
 # Copy package.json and package-lock.json to leverage Docker cache.
 COPY docker/nestjs/package.json ./
 COPY docker/nestjs/package-lock.json ./
 
-# Install all dependencies, including devDependencies needed for the build and dev stages.
-RUN npm install
+# Stage 2: Dependencies
+# Installs dependencies and caches them in a separate layer.
+FROM deps-source AS deps
 
-# Copy the application source code into the image.
-# These layers are shared between the dev and builder stages.
-COPY controllers ./controllers
-COPY models ./models
-COPY utils ./utils
-COPY nest-cli.json ./
+RUN npm ci
+
+# Stage 3: Application Source
+# This stage contains the source code and is used as a common base for the 
+# builder and dev stages to avoid duplicating the COPY commands.
+FROM deps AS app-source
+
 COPY docker/nestjs/tsconfig.json ./
+COPY docker/nestjs/nest-cli.json ./
+COPY utils ./utils
+COPY models ./models
+COPY controllers ./controllers
 
-# --- Development Stage ---
-# This stage uses the 'deps' stage as a base and runs the app in development mode.
-FROM deps AS dev
-WORKDIR /usr/local/app
-EXPOSE 3000
-
-# Command to start the application in development mode with hot-reloading.
-CMD ["npm", "run", "start:dev"]
-
-# --- Builder Stage ---
-# This stage builds the application for production.
-FROM deps AS builder
-WORKDIR /usr/local/app
-
-# Run the build script to generate the 'dist' folder.
+# Stage 4: Builder
+# Builds the NestJS application for production.
+FROM app-source AS builder
 RUN npm run build
 
-# --- Production Stage ---
-# This is the final, lightweight production image.
-FROM node:22-alpine AS prod
-WORKDIR /usr/local/app
-
-# Copy package files again to install only production dependencies.
-COPY package.json package-lock.json* ./
-RUN npm install --omit=dev
-
-# Copy the built application from the 'builder' stage.
-COPY --from=builder /usr/local/app/dist ./dist
-
+# Stage 5: Development
+# Creates an image for local development.
+FROM app-source AS dev
 EXPOSE 3000
+CMD ["npm", "run", "start:dev"]
 
-# Command to start the application in production mode.
-# "start:prod" is used as defined in package.json.
+# Stage 6: Production
+# Final, lean, and secure production image.
+FROM deps-source AS prod
+ENV NODE_ENV=production
+
+# Create a non-root user for security.
+RUN addgroup -g 1001 -S nodejs && adduser -S nestjs -u 1001
+
+# Install production dependencies
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Copy the built application from the builder stage
+COPY --from=builder --chown=nestjs:nodejs /usr/local/app/nestjs/dist ./dist
+
+# Give the nestjs user full read-write access to the workdir
+RUN chown nestjs:nodejs /usr/local/app/nestjs/
+
+USER nestjs
+EXPOSE 3000
 CMD ["npm", "run", "start:prod"]
