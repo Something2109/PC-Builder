@@ -1,20 +1,9 @@
 import { Products } from "../../utils/Enum";
-import { pipeline, Readable, Transform, Writable } from "stream";
-import { CrawlHandlerInterface, CrawlInfo, OutputObject } from "../interface";
-
-type FetchResult<Result, Fetched> = {
-  info: CrawlInfo<Result>;
-  response: Fetched;
-};
-
-type ExtractResult<Raw, Result> = {
-  info: CrawlInfo<Result>;
-  raw: Raw;
-};
-
-type ParseResult<Result> = Required<CrawlInfo<Result>>;
-
-type TransformCallback<Content> = (err?: Error | null, value?: Content) => void;
+import { Readable, Writable } from "node:stream";
+import { CrawlHandlerInterface, OutputObject } from "../interface";
+import { ErrorHandler } from "../utils/error-handler";
+import { StreamMonitor } from "../utils/monitor";
+import { CrawlStream } from "./stream";
 
 /**
  * The main crawler class.
@@ -24,9 +13,11 @@ type TransformCallback<Content> = (err?: Error | null, value?: Content) => void;
  */
 class Crawler<Raw, Final, Fetched = Response> {
   private readonly handler: CrawlHandlerInterface<Raw, Final, Fetched>;
-  private input: Readable;
-  private output: Writable;
-  private autoEnd: boolean;
+  private readonly input: Readable;
+  private readonly output: Writable;
+  private readonly autoEnd: boolean;
+  private readonly errorHandler: ErrorHandler;
+  private readonly monitor?: Writable;
 
   /**
    * The crawler constructor.
@@ -39,126 +30,71 @@ class Crawler<Raw, Final, Fetched = Response> {
    */
   constructor(
     handler: CrawlHandlerInterface<Raw, Final, Fetched>,
-    options?: { output?: Writable; autoEnd?: boolean }
+    options?: {
+      output?: Writable;
+      autoEnd?: boolean;
+      errorHandler?: ErrorHandler;
+      logPath?: string;
+      monitor?: Writable;
+    }
   ) {
     this.handler = handler;
 
-    this.input = new Readable({ objectMode: true, read() {} });
+    this.input = new Readable({
+      objectMode: true,
+      read() {},
+      highWaterMark: 64,
+    });
     this.output = options?.output ?? this.createDefaultOutput();
     this.autoEnd = options?.autoEnd ?? false;
+    this.errorHandler =
+      options?.errorHandler ??
+      new ErrorHandler({ path: options?.logPath ?? "./logs" });
+    this.monitor =
+      options?.monitor ??
+      new StreamMonitor({ logPath: options?.logPath ?? "./logs" });
   }
-
   /**
    * The crawl function.
-   * Call this to start the crawling process.
+   * Initializes the {@link CrawlStream} pipeline, connects it to input/output,
+   * sets up monitoring, and starts the crawl process.
+   * @param products Optional list of products to start crawling with.
    */
   async crawl(products?: Products[]) {
-    const FetchStream = this.createFetchStream();
+    const crawlStream = new CrawlStream(this.handler);
 
-    const ExtractStream = this.createExtractStream();
+    // 1. Input Piping
+    this.input.pipe(crawlStream, { end: false });
 
-    const ParseStream = this.createParseStream();
+    // 2. Output Piping
+    // CrawlStream readable side now only emits successful results (Final).
+    crawlStream.pipe(this.output, { end: false });
 
-    pipeline(
-      this.input,
-      FetchStream,
-      ExtractStream,
-      ParseStream,
-      this.output,
-      (error) => {
-        if (error) throw error;
-      }
-    );
+    // 3. Link Handling (Recycle links)
+    crawlStream.on("link", (link) => {
+      this.input.push(link);
+    });
+
+    // 4. Monitoring & Error Handling
+    if (this.monitor) {
+      crawlStream.monitorStream.pipe(this.monitor, { end: false });
+    }
+    crawlStream.monitorStream.pipe(this.errorHandler, { end: false });
+
+    // 5. Finish Trigger
+    // Monitor stream events are a good proxy for activity.
+    crawlStream.monitorStream.on("data", () => this.finish());
+
+    // 6. Error propagation
+    crawlStream.on("error", (err) => {
+      // Errors are already piped to errorHandler via monitorStream usually,
+      // but if CrawlStream itself emits error (e.g. pipeline breakage), we might want to log it.
+      // However, monitorStream handles pipeline errors.
+      // We can rely on that.
+    });
 
     this.handler.start(products).forEach((info) => {
       this.input.push(info);
-    });
-  }
-
-  /**
-   * Create a transform stream handling the fetch procedure.
-   * The stream takes the input {@link CrawlInfo}
-   * and return back the {@link FetchResult}.
-   * @returns The fetch stream.
-   */
-  private createFetchStream() {
-    const fetch = this.handler.fetch.bind(this.handler);
-    const onError = this.onError.bind(this);
-    const finish = this.finish.bind(this);
-
-    return new Transform({
-      objectMode: true,
-      autoDestroy: false,
-      transform(
-        info: CrawlInfo<Final>,
-        _,
-        next: TransformCallback<FetchResult<Final, Fetched>>
-      ) {
-        fetch(info)
-          .then((response) => next(null, { info, response }))
-          .catch((reason) => onError(reason, info).then(() => next()))
-          .finally(finish);
-      },
-    });
-  }
-
-  /**
-   * Create a stream handling the response extract procedure.
-   * The stream takes the input {@link FetchResult}
-   * and return back the {@link ExtractResult}
-   * of {@link Raw} and {@link Final}.
-   * @returns The extract stream created.
-   */
-  private createExtractStream() {
-    const input = this.input;
-    const extract = this.handler.extract.bind(this.handler);
-    const onError = this.onError.bind(this);
-    const finish = this.finish.bind(this);
-
-    return new Transform({
-      objectMode: true,
-      autoDestroy: false,
-      transform(
-        { info, response }: FetchResult<Final, Fetched>,
-        _,
-        callback: TransformCallback<ExtractResult<Raw, Final>>
-      ) {
-        extract(info, response)
-          .then(({ raw: list, info: links }) => {
-            links.forEach((link) => input.push(link));
-            list.forEach((raw) => this.push({ info, raw }));
-            callback();
-          })
-          .catch((reason) => onError(reason, info).then(() => callback()))
-          .finally(finish);
-      },
-    });
-  }
-
-  /**
-   * Create a stream handling the response extract procedure.
-   * The stream takes the input {@link ExtractResult}
-   * and return the {@link ParseResult}.
-   * @returns The parse stream created.
-   */
-  private createParseStream() {
-    const parse = this.handler.parse.bind(this.handler);
-    const onError = this.onError.bind(this);
-    const finish = this.finish.bind(this);
-
-    return new Transform({
-      objectMode: true,
-      autoDestroy: false,
-      transform(
-        { info, raw }: ExtractResult<Raw, Final>,
-        _,
-        callback: TransformCallback<OutputObject<Final>>
-      ) {
-        parse(info, raw)
-          .then((value) => callback(null, value))
-          .catch((reason) => onError(reason, info).then(() => callback()))
-          .finally(finish);
-      },
     });
   }
 
@@ -170,14 +106,13 @@ class Crawler<Raw, Final, Fetched = Response> {
   private createDefaultOutput() {
     return new Writable({
       objectMode: true,
-      autoDestroy: false,
       write(chunk: OutputObject<Final>, _, callback) {
-        "error" in chunk
-          ? process.stdout.write(
-              `${chunk.error.stack}\nIn: ${JSON.stringify(chunk)}\n`,
-              callback
-            )
-          : process.stdout.write(`${JSON.stringify(chunk)}\n`, callback);
+        if ("error" in chunk) {
+          callback();
+          return;
+        }
+        const str = JSON.stringify(chunk);
+        process.stdout.write(str + "\n", callback);
       },
     });
   }
@@ -197,13 +132,8 @@ class Crawler<Raw, Final, Fetched = Response> {
         },
       });
       this.input.push(null);
+      this.errorHandler.end();
     }
-  }
-
-  private async onError(error: Error, info: CrawlInfo<Final>) {
-    const message = await this.handler.error(info, error);
-
-    this.output.write(message);
   }
 }
 
