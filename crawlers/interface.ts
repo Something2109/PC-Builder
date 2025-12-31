@@ -249,6 +249,9 @@ export type {
   RequestOptions,
   OutputObject,
   CrawlHandlerInterface,
+  BaseOutput,
+  ErrorOutputObject,
+  ResultOutputObject,
 };
 
 export { isCrawlInfo };
