@@ -1,18 +1,18 @@
-import { Products } from "@/utils/Enum";
-import { createWriteStream, existsSync, mkdirSync, WriteStream } from "fs";
-import { Writable, WritableOptions } from "stream";
-import path from "path";
-import { OutputObject } from "../interface";
+import { Products } from "../../utils/Enum";
+import { createWriteStream, existsSync, mkdirSync, WriteStream } from "node:fs";
+import { Writable, WritableOptions } from "node:stream";
+import path from "node:path";
+import { OutputObject, BaseOutput } from "../interface";
 
 /**
  * The write stream that write the crawl result
  * to the file detemined in the constructor.
  */
 class FileWriter extends Writable {
-  private path: string;
+  private readonly path: string;
   private writeStream: {
     [key in Products]?: WriteStream;
-  } & { error?: WriteStream };
+  } & { error?: WriteStream; failed_requests?: WriteStream };
 
   constructor(options: Omit<WritableOptions, "objectMode"> & { path: string }) {
     super({ objectMode: true, ...options });
@@ -33,30 +33,26 @@ class FileWriter extends Writable {
    * @param callback The callback variable of the write function.
    */
   _write(
-    { progress: { created, processed }, ...chunk }: OutputObject,
+    chunk: OutputObject,
     encoding: BufferEncoding,
     callback: (error?: Error | null) => void
   ): void {
-    if ("result" in chunk || "error" in chunk) {
+    // Handle Standard Output
+    const {
+      progress: { created, processed },
+      ...rest
+    } = chunk as OutputObject & BaseOutput;
+
+    if ("result" in rest || "error" in rest) {
       const filename: keyof typeof this.writeStream =
-        "error" in chunk ? "error" : chunk.info.product;
+        "error" in rest ? "error" : rest.info.product;
 
       // Format the error object to be easier stringify to json.
-      if ("error" in chunk) {
-        chunk.error = chunk.error.stack as any;
+      if ("error" in rest) {
+        (rest as any).error = rest.error.stack as any;
       }
 
-      let prefix = ","; // used to format the output according to the json format.
-      if (!this.writeStream[filename]) {
-        // if the stream's currently not created.
-        this.writeStream[filename] = createWriteStream(
-          path.join(this.path, `${filename}.json`),
-          encoding
-        );
-
-        prefix = "["; // create the first character of the writing json file.
-      }
-      this.writeStream[filename].write(`${prefix}${JSON.stringify(chunk)}`);
+      this.writeToStream(filename, rest, encoding, false);
     }
 
     console.log(
@@ -73,14 +69,45 @@ class FileWriter extends Writable {
     callback();
   }
 
+  private writeToStream(
+    filename: string,
+    data: any,
+    encoding: BufferEncoding,
+    isJsonL: boolean
+  ) {
+    let prefix = ",";
+    const key = filename as keyof typeof this.writeStream;
+
+    if (!this.writeStream[key]) {
+      this.writeStream[key] = createWriteStream(
+        path.join(this.path, `${filename}.${isJsonL ? "jsonl" : "json"}`),
+        encoding
+      );
+      prefix = "[";
+    }
+
+    const stream = this.writeStream[key];
+
+    if (isJsonL) {
+      stream.write(JSON.stringify(data) + "\n");
+    } else {
+      stream.write(`${prefix}${JSON.stringify(data)}`);
+    }
+  }
+
   /**
    * Finish the writing process by end the json with the bracket
    * to create the array of object result.
    * @param callback The callback variable from the parent function.
    */
   _final(callback: (error?: Error | null) => void): void {
-    Object.values(this.writeStream).forEach((stream) => {
-      stream.end("]");
+    Object.entries(this.writeStream).forEach(([key, stream]) => {
+      // Don't close array for jsonl files
+      if (key !== "failed_requests" && stream) {
+        stream.end("]");
+      } else if (stream) {
+        stream.end();
+      }
     });
     callback();
   }

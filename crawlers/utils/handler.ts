@@ -1,4 +1,4 @@
-import { setTimeout } from "timers/promises";
+import { setTimeout } from "node:timers/promises";
 import {
   APIWebsiteInfo,
   CrawlHandlerInterface,
@@ -11,6 +11,7 @@ import { Products } from "../../utils/Enum";
 type CrawlHandlerOptions = {
   delay?: number;
   timeout?: number;
+  retries?: number;
   log?: boolean | ((msg: string) => void);
 };
 
@@ -18,10 +19,8 @@ type CrawlHandlerOptions = {
 
 const DEFAULT_DELAY_TIME = 0;
 const DEFAULT_TIMEOUT_TIME = 10000;
+const DEFAULT_RETRIES = 3;
 const DEFAULT_LOG_OPTION = (msg: string) => console.log(msg);
-
-const DELAY_FLAG = "delay" as const;
-const TIMEOUT_FLAG = "fetch_fail" as const;
 
 /**
  * The crawl handler class -
@@ -33,9 +32,10 @@ class CrawlHandler<Raw, Final, Fetched>
   implements CrawlHandlerInterface<Raw, Final, Fetched>
 {
   private readonly info: APIWebsiteInfo<Raw, Final, Fetched>;
-  private delay: number;
-  private timeout: number;
-  private log: ((msg: string) => void) | null;
+  private readonly delay: number;
+  private readonly timeout: number;
+  private readonly retries: number;
+  private readonly log: ((msg: string) => void) | null;
   readonly created;
   readonly processed;
 
@@ -58,19 +58,18 @@ class CrawlHandler<Raw, Final, Fetched>
     this.info = info;
     this.delay = options?.delay ?? DEFAULT_DELAY_TIME;
     this.timeout = options?.timeout ?? DEFAULT_TIMEOUT_TIME;
-    this.log = options?.log
-      ? options.log instanceof Function
-        ? options.log
-        : DEFAULT_LOG_OPTION
-      : null;
+    this.retries = options?.retries ?? DEFAULT_RETRIES;
     this.created = { page: 0, product: 0, parse: 0 };
     this.processed = { page: 0, product: 0, parse: 0, error: 0 };
+    this.log = null;
+    if (options?.log) {
+      this.log =
+        typeof options.log === "function" ? options.log : DEFAULT_LOG_OPTION;
+    }
   }
 
   public start(products?: Products[]) {
-    if (!products) {
-      products = Object.values(Products);
-    }
+    products ??= Object.values(Products);
 
     this.logMessage(
       `Start crawling info in ${
@@ -92,44 +91,79 @@ class CrawlHandler<Raw, Final, Fetched>
   public async fetch(info: CrawlInfo<Final>): Promise<Fetched> {
     this.logMessage(`Fetching: ${info.request.url.toString()}`);
 
-    const timeoutController = new AbortController();
-    const fetchProcess = this.info.fetch
-      ? this.info.fetch(info.request)
-      : (fetch(info.request.url, info.request) as Promise<Fetched>);
-    const delayTimeout = setTimeout(this.delay, DELAY_FLAG);
-    const fetchTimeout = setTimeout(this.timeout, TIMEOUT_FLAG, {
-      signal: timeoutController.signal,
-    });
+    try {
+      if (this.delay > 0) {
+        await setTimeout(this.delay);
+      }
 
-    /** Race between the 3 promise. */
-    let response = await Promise.race([
-      fetchProcess,
-      delayTimeout,
-      fetchTimeout,
-    ]);
+      return await this.withRetry(async () => {
+        // Use AbortSignal.timeout for fetch timeout
+        const signal = AbortSignal.timeout(this.timeout);
+        const requestInit = {
+          ...info.request,
+          signal,
+        };
 
-    /** If the delay promise finishes 1st, await for completion of the other 2. */
-    if (response === DELAY_FLAG) {
-      response = await Promise.race([fetchProcess, fetchTimeout]);
+        const fetchProcess = this.info.fetch
+          ? this.info.fetch({ ...info.request, ...requestInit })
+          : (fetch(info.request.url, requestInit) as Promise<Fetched>);
+
+        const response = await fetchProcess;
+
+        if (response instanceof Response) {
+          if (!response.ok) {
+            // Throw immediately on 404
+            if (response.status === 404) {
+              throw new Error(`Fetch error: 404 Not Found`);
+            }
+            // Throw for internal server errors or rate limits to trigger retry
+            if (response.status >= 500 || response.status === 429) {
+              throw new Error(
+                `Fetch error: ${response.status} ${response.statusText}`
+              );
+            }
+            // For other 4xx errors, we might want to throw or return as is.
+            // Behaving as original: throw error
+            throw new Error(
+              `Fetch error: ${response.status} ${response.statusText}`
+            );
+          }
+        }
+
+        return response;
+      });
+    } catch (error) {
+      this.processed["error"]++;
+      throw error;
     }
+  }
 
-    /** If the timeout promise finishes 1st, throw an error. */
-    if (response === TIMEOUT_FLAG) {
-      throw new Error(
-        `Fetch error: fetching process exceeds the timeout time.`
-      );
+  private async withRetry<T>(task: () => Promise<T>): Promise<T> {
+    let lastError: any;
+    for (let i = 0; i <= this.retries; i++) {
+      try {
+        return await task();
+      } catch (error: any) {
+        lastError = error;
+        // Don't retry on 404 (already handled in task by throwing specific error?)
+        // The task throws "Fetch error: 404 Not Found".
+        // The requirements say: "Handle 5xx and 429 errors but throw immediately on 404s."
+        if (error.message?.includes("404")) {
+          throw error;
+        }
+
+        if (i < this.retries) {
+          const backoff = Math.pow(2, i) * 1000; // Exponential backoff: 1s, 2s, 4s...
+          this.logMessage(
+            `Retry ${i + 1}/${this.retries} after ${backoff}ms error: ${
+              error.message
+            }`
+          );
+          await setTimeout(backoff);
+        }
+      }
     }
-
-    /** await delay promise if not finished. */
-    await delayTimeout;
-
-    timeoutController.abort();
-
-    if (response instanceof Response && !response.ok) {
-      throw new Error(`Fetch error: ${response.status} ${response.statusText}`);
-    }
-
-    return response;
+    throw lastError;
   }
 
   public async extract(info: CrawlInfo<Final>, response: Fetched) {
@@ -176,7 +210,7 @@ class CrawlHandler<Raw, Final, Fetched>
   }
 
   public async error(info: CrawlInfo<Final>, error: Error) {
-    this.logMessage(`Parsing ${info.request.url.toString()}`);
+    this.logMessage(`Error ${info.request.url.toString()}: ${error.message}`);
 
     const result = {
       info,
