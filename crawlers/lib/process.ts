@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import { ChildProcess, fork } from "child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { ChildProcess, fork } from "node:child_process";
 import { Products } from "../../utils/Enum";
 import {
   CrawlInfo,
@@ -8,7 +8,6 @@ import {
   OutputObject,
   ProgressInfo,
 } from "../interface";
-import { CrawlHandlerOptions } from "crawlers/utils/handler";
 
 enum CrawlState {
   IDLE = "idle",
@@ -20,7 +19,7 @@ type ChildProcessState = {
   progress: ProgressInfo | null;
 };
 
-type ChillProcessStartOptions = CrawlHandlerOptions & {
+type ChillProcessStartOptions = {
   products: Products[];
 };
 
@@ -47,11 +46,11 @@ const DEFAULT_ERROR_FUNCTION = (error: Error, info?: CrawlInfo<any>) => {
 };
 
 class CrawlerChildProcess {
-  private path: string;
+  private readonly path: string;
   private process: ChildProcess | null;
   private progress: ProgressInfo | null;
   private summary?: { [key in Products | "error"]?: number };
-  private resolver: {
+  private readonly resolver: {
     log: (msg: string) => void;
     output: (result: any, info?: CrawlInfo<any>) => void;
     error: (error: Error, info?: CrawlInfo<any>) => void;
@@ -167,19 +166,9 @@ class CrawlerChildProcess {
    */
   private argumentResolver(options?: ChillProcessStartOptions): string[] {
     let products = options?.products;
-    if (!products) {
-      products = Object.values(Products);
-    }
+    products ??= Object.values(Products);
 
     const args = ["--path", this.path, "--product", ...products];
-
-    if (options?.delay) {
-      args.push("--delay", options.delay.toString());
-    }
-
-    if (options?.delay) {
-      args.push("--delay", options.delay.toString());
-    }
 
     return args;
   }
@@ -201,9 +190,10 @@ class CrawlerChildProcess {
       this.resolver.error(chunk.error, chunk.info);
     }
 
-    const productType = "error" in chunk ? "error" : chunk.info.product;
+    const productType =
+      "error" in chunk ? "error" : (chunk.info.data?.product as Products);
 
-    if (!this.summary) this.summary = {};
+    this.summary ??= {};
 
     if (!this.summary[productType]) {
       this.summary[productType] = 0;

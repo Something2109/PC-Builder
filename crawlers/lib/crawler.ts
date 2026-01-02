@@ -1,6 +1,11 @@
 import { Products } from "../../utils/Enum";
 import { Readable, Writable } from "node:stream";
-import { CrawlHandlerInterface, OutputObject } from "../interface";
+import {
+  APIWebsiteInfo,
+  CrawlInfo,
+  InternalStage,
+  OutputObject,
+} from "../interface";
 import { ErrorHandler } from "../utils/error-handler";
 import { StreamMonitor } from "../utils/monitor";
 import { CrawlStream } from "./stream";
@@ -11,11 +16,10 @@ import { CrawlStream } from "./stream";
  * to decrease the block time of each crawl info's process affect the next one's process.
  * Should be used when dealing with large data of crawl info.
  */
-class Crawler<Raw, Final, Fetched = Response> {
-  private readonly handler: CrawlHandlerInterface<Raw, Final, Fetched>;
+class Crawler<Raw, Final = Raw, Fetched = Response> {
+  private readonly info: APIWebsiteInfo<Raw, Final, Fetched>;
   private readonly input: Readable;
   private readonly output: Writable;
-  private readonly autoEnd: boolean;
   private readonly errorHandler: ErrorHandler;
   private readonly monitor?: Writable;
 
@@ -26,19 +30,17 @@ class Crawler<Raw, Final, Fetched = Response> {
    * to customize the output of the crawler.
    * The output's write function's chunk parameter must implement the {@link OutputObject}
    * to work properly.
-   * Take auto as a boolean to determine if it automatically close the crawler when finish crawling.
    */
   constructor(
-    handler: CrawlHandlerInterface<Raw, Final, Fetched>,
+    info: APIWebsiteInfo<Raw, Final, Fetched>,
     options?: {
       output?: Writable;
-      autoEnd?: boolean;
       errorHandler?: ErrorHandler;
       logPath?: string;
       monitor?: Writable;
     }
   ) {
-    this.handler = handler;
+    this.info = info;
 
     this.input = new Readable({
       objectMode: true,
@@ -46,7 +48,6 @@ class Crawler<Raw, Final, Fetched = Response> {
       highWaterMark: 64,
     });
     this.output = options?.output ?? this.createDefaultOutput();
-    this.autoEnd = options?.autoEnd ?? false;
     this.errorHandler =
       options?.errorHandler ??
       new ErrorHandler({ path: options?.logPath ?? "./logs" });
@@ -61,7 +62,7 @@ class Crawler<Raw, Final, Fetched = Response> {
    * @param products Optional list of products to start crawling with.
    */
   async crawl(products?: Products[]) {
-    const crawlStream = new CrawlStream(this.handler);
+    const crawlStream = new CrawlStream(this.info);
 
     // 1. Input Piping
     this.input.pipe(crawlStream, { end: false });
@@ -81,20 +82,45 @@ class Crawler<Raw, Final, Fetched = Response> {
     }
     crawlStream.monitorStream.pipe(this.errorHandler, { end: false });
 
-    // 5. Finish Trigger
-    // Monitor stream events are a good proxy for activity.
-    crawlStream.monitorStream.on("data", () => this.finish());
-
-    // 6. Error propagation
+    // 5. Error propagation
     crawlStream.on("error", (err) => {
-      // Errors are already piped to errorHandler via monitorStream usually,
-      // but if CrawlStream itself emits error (e.g. pipeline breakage), we might want to log it.
-      // However, monitorStream handles pipeline errors.
-      // We can rely on that.
+      // Log fatal stream errors if needed
     });
 
-    this.handler.start(products).forEach((info) => {
-      this.input.push(info);
+    // Start with seeds
+    this.start(products);
+  }
+
+  /**
+   * Generates initial crawl infos and pushes them to the input stream.
+   * @param products List of products to crawl.
+   */
+  private start(products?: Products[]) {
+    if (!products || !this.info.path) return;
+
+    products.forEach((product) => {
+      // Default to page 1 for now
+      const requestOptions = this.info.path!(product, 1);
+
+      if (requestOptions) {
+        // Normalize RequestOptions to RequestObject
+        let request: any = requestOptions;
+        if (typeof request === "string" || request instanceof URL) {
+          request = { url: new URL(request.toString()) };
+        } else if ("url" in request && !(request.url instanceof URL)) {
+          request = { ...request, url: new URL(request.url) };
+        }
+
+        const info: CrawlInfo<InternalStage.Init, Raw, Final, Fetched> = {
+          request: request,
+          stage: InternalStage.Init, // Initial stage
+          data: { product }, // Save product context
+          index: 0,
+          product,
+        };
+
+        this.input.push(info);
+      }
     });
   }
 
@@ -115,25 +141,6 @@ class Crawler<Raw, Final, Fetched = Response> {
         process.stdout.write(str + "\n", callback);
       },
     });
-  }
-
-  /**
-   * Check if the crawler has finished crawling by
-   * comparing the created and the processed counter
-   * if they are equal or not.
-   * If finished, close the {@link output}.
-   */
-  private finish() {
-    if (this.handler.finish() && this.autoEnd) {
-      this.output.write({
-        progress: {
-          created: this.handler.created,
-          processed: this.handler.processed,
-        },
-      });
-      this.input.push(null);
-      this.errorHandler.end();
-    }
   }
 }
 
