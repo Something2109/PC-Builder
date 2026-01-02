@@ -1,11 +1,10 @@
-import path from "path";
-import fs from "fs";
+import path from "node:path";
+import fs from "node:fs";
 import { Crawler } from "./lib/crawler";
 import { z } from "zod";
 import { Products } from "../utils/Enum";
 import { FileWriter, ProcessWriter } from "./utils/writer";
 import { isCrawlInfo } from "./interface";
-import { CrawlHandler, CrawlHandlerOptions } from "./utils/handler";
 
 /** Create an argument object based on the {@link process.argv} list */
 
@@ -13,7 +12,7 @@ let key;
 const argumentList: Record<string, string[]> = {};
 
 for (const arg of process.argv) {
-  if (arg.match(/^-{1,2}(\w|\d|-)+/)) {
+  if (/^-{1,2}(\w|\d|-)+/.exec(arg)) {
     key = arg.replace(/-{1,2}/, "");
     argumentList[key] = [];
   } else if (key) {
@@ -50,30 +49,6 @@ if (!isCrawlInfo(websiteInfo)) {
   );
 }
 
-/** Handler option check */
-
-const options: CrawlHandlerOptions = {};
-
-if (argumentList["delay"] && argumentList["delay"][0]) {
-  options.delay = z.coerce
-    .number({
-      invalid_type_error: `Cannot parse the delay value ${argumentList["delay"][0]} to number.`,
-    })
-    .parse(argumentList["delay"][0]);
-}
-
-if (argumentList["timeout"] && argumentList["timeout"][0]) {
-  options.timeout = z.coerce
-    .number({
-      invalid_type_error: `Cannot parse the timeout value ${argumentList["timeout"][0]} to number.`,
-    })
-    .parse(argumentList["timeout"][0]);
-}
-
-if (argumentList["log"] !== undefined) {
-  options.log = true;
-}
-
 /** Product argument check */
 
 const productList = argumentList["product"]
@@ -85,7 +60,7 @@ const productList = argumentList["product"]
 let output;
 if (process.connected) {
   output = new ProcessWriter();
-} else if (argumentList["save-path"] && argumentList["save-path"][0]) {
+} else if (argumentList["save-path"]?.[0]) {
   let savepath = argumentList["save-path"][0];
 
   if (!path.isAbsolute(savepath)) {
@@ -101,8 +76,6 @@ if (process.connected) {
 
 /** Crawl session */
 
-const handler = new CrawlHandler(websiteInfo, options);
-
-const crawler = new Crawler(handler, { output, autoEnd: true });
+const crawler = new Crawler(websiteInfo, { output });
 
 crawler.crawl(productList);
