@@ -1,4 +1,4 @@
-import { Duplex, DuplexOptions, PassThrough, Transform } from "node:stream";
+import { Duplex, DuplexOptions, PassThrough, pipeline } from "node:stream";
 import {
   APIWebsiteInfo,
   CrawlInfo,
@@ -53,29 +53,24 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     this.monitorStream = new PassThrough({ objectMode: true });
 
     // Initialize pipeline stages
-    this.fetchStream = this.createFetchStream();
-    this.extractStream = this.createExtractStream();
+    this.fetchStream = this.initStage(this.createFetchStream);
+    this.extractStream = this.initStage(this.createExtractStream);
     this.resultFilter = this.createResultFilter();
 
+    const streams: (
+      | ParallelTransform<any, any>
+      | PipelineTransform<any, any>
+    )[] = [this.fetchStream, this.extractStream];
+
     if (this.info.parse) {
-      this.parseStream = this.createParseStream();
+      this.parseStream = this.initStage(this.createParseStream);
+      streams.push(this.parseStream);
     }
 
-    // Wire up the pipeline: Fetch -> Extract -> [Parse] -> ResultFilter
-    // Pipe internal events to monitorStream where appropriate
-    this.fetchStream.pipe(this.monitorStream, { end: false });
-    this.extractStream.pipe(this.monitorStream, { end: false });
-
-    // Main data flow
-    let tail: any = this.fetchStream.pipe(this.extractStream);
-
-    if (this.parseStream) {
-      tail = tail.pipe(this.parseStream);
-      this.parseStream.on("error", (err) => this.emit("error", err));
-      this.parseStream.pipe(this.monitorStream, { end: false });
-    }
-
-    tail.pipe(this.resultFilter);
+    // Use pipeline for error propagation and cleanup
+    pipeline([...streams, this.resultFilter], (err) => {
+      if (err) this.emit("error", err);
+    });
 
     // Listen to outputs from the final filter and push them to the Duplex's readable side
     this.resultFilter.on("data", (chunk: any) => {
@@ -84,13 +79,8 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
       }
     });
 
-    // Handle errors logic
-    const errorHandler = (err: Error) => this.emit("error", err);
-    this.fetchStream.on("error", errorHandler);
-    this.extractStream.on("error", errorHandler);
-    // parseStream error listener added conditionally above
-    this.resultFilter.on("error", errorHandler);
-    this.monitorStream.on("error", errorHandler);
+    // Handle errors logic (Monitor stream)
+    this.monitorStream.on("error", (err) => this.emit("error", err));
   }
 
   /**
@@ -278,6 +268,17 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
       }
     );
   };
+
+  /**
+   * Helper to initialize a stage stream and pipe it to the monitor.
+   * @param createFn Function that creates the stream.
+   * @returns The created and monitored stream.
+   */
+  private initStage<T extends NodeJS.ReadableStream>(createFn: () => T): T {
+    const stream = createFn();
+    stream.pipe(this.monitorStream, { end: false });
+    return stream;
+  }
 }
 
 export { CrawlStream };
