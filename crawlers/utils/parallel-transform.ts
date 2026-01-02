@@ -4,21 +4,26 @@ import { Transform, TransformCallback } from "node:stream";
  * A specialized Transform stream that processes chunks in parallel
  * up to a specified concurrency limit.
  */
-abstract class ParallelTransform<T, R> extends Transform {
+class ParallelTransform<T, R> extends Transform {
   private readonly concurrency: number;
+  private readonly processFn: (chunk: T) => Promise<void>;
   private running: number;
   private pendingCallback: TransformCallback | null;
 
-  constructor(options: { concurrency: number; highWaterMark?: number }) {
-    super({ objectMode: true, highWaterMark: options.highWaterMark });
-    this.concurrency = options.concurrency;
+  constructor(
+    processFn: (chunk: T) => Promise<void>,
+    options?: { concurrency?: number; highWaterMark?: number }
+  ) {
+    super({ objectMode: true, highWaterMark: options?.highWaterMark });
+    this.concurrency = options?.concurrency ?? 5;
     this.running = 0;
     this.pendingCallback = null;
+    this.processFn = processFn;
   }
 
   _transform(chunk: T, _encoding: BufferEncoding, callback: TransformCallback) {
     this.running++;
-    this.process(chunk)
+    this.processFn(chunk)
       .catch((err) => {
         this.emit("error", err);
       })
@@ -52,8 +57,6 @@ abstract class ParallelTransform<T, R> extends Transform {
       cb();
     }
   }
-
-  abstract process(chunk: T): Promise<void>;
 }
 
 export { ParallelTransform };

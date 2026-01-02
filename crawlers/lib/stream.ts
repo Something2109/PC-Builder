@@ -20,7 +20,10 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   public readonly monitorStream: PassThrough;
 
   // Pipeline stages
-  private readonly fetchStream: ParallelTransform<CrawlInfo, any>;
+  private readonly fetchStream: ParallelTransform<
+    CrawlInfo<InternalStage.Init, Raw, Final, Fetched>,
+    CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>
+  >;
   private readonly extractStream: PipelineTransform<
     CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>,
     CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>
@@ -139,11 +142,11 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   private readonly createFetchStream = () => {
     const api = this.info;
 
-    return new (class ParallelFetch extends ParallelTransform<
+    return new ParallelTransform<
       CrawlInfo<InternalStage.Init, Raw, Final, Fetched>,
       CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>
-    > {
-      async process(info: CrawlInfo<InternalStage.Init, Raw, Final, Fetched>) {
+    >(
+      async (info: CrawlInfo<InternalStage.Init, Raw, Final, Fetched>) => {
         try {
           // Default fetch if not provided
           const fetcher: FetchFunction<Fetched> =
@@ -180,8 +183,9 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
           };
           this.push(errorObj);
         }
-      }
-    })({ concurrency: 10, highWaterMark: 64 });
+      },
+      { concurrency: 10, highWaterMark: 64 }
+    );
   };
 
   /**
