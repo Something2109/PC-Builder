@@ -2,12 +2,19 @@ import fs from "node:fs";
 import path from "node:path";
 import { ChildProcess, fork } from "node:child_process";
 import { Products } from "../../utils/Enum";
-import {
-  CrawlInfo,
-  isCrawlInfo,
-  OutputObject,
-  ProgressInfo,
-} from "../interface";
+import { CrawlInfo, isCrawlInfo, InternalStage } from "../interface";
+
+type ProgressInfo = {
+  created: Record<InternalStage, number>;
+  processed: Record<InternalStage | "error", number>;
+};
+
+type OutputObject = {
+  progress: ProgressInfo;
+  info?: CrawlInfo;
+  result?: any;
+  error?: Error;
+};
 
 enum CrawlState {
   IDLE = "idle",
@@ -186,12 +193,12 @@ class CrawlerChildProcess {
       this.resolver.output(chunk.result, chunk.info);
     }
 
-    if ("error" in chunk) {
+    if (chunk.error) {
       this.resolver.error(chunk.error, chunk.info);
     }
 
     const productType =
-      "error" in chunk ? "error" : (chunk.info.data?.product as Products);
+      "error" in chunk ? "error" : (chunk.info?.data?.product as Products);
 
     this.summary ??= {};
 

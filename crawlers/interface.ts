@@ -16,27 +16,35 @@ type RequestOptions<ResultType = unknown> =
       result?: ResultType;
     };
 
-export enum InternalStage {
+enum InternalStage {
   Init = "init",
   Fetch = "fetch",
   Extract = "extract",
   Parse = "parse",
 }
 
+type CrawlDataMap<Raw, Final, Fetched> = {
+  [InternalStage.Init]: { product?: Products };
+  [InternalStage.Fetch]: { product?: Products; [InternalStage.Fetch]: Fetched };
+  [InternalStage.Extract]: {
+    product?: Products;
+    [InternalStage.Fetch]: Fetched;
+    [InternalStage.Extract]: Raw;
+  };
+  [InternalStage.Parse]: {
+    product?: Products;
+    [InternalStage.Fetch]: Fetched;
+    [InternalStage.Extract]: Raw;
+    [InternalStage.Parse]: Final;
+  };
+};
+
 export type CrawlData<
   S extends InternalStage,
   Raw,
   Final,
   Fetched
-> = S extends InternalStage.Init
-  ? { product?: Products }
-  : S extends InternalStage.Fetch
-  ? { product?: Products; fetch: Fetched }
-  : S extends InternalStage.Extract
-  ? { product?: Products; fetch: Fetched; extract: Raw }
-  : S extends InternalStage.Parse
-  ? { product?: Products; fetch: Fetched; extract: Raw; parse: Final }
-  : never;
+> = CrawlDataMap<Raw, Final, Fetched>[S];
 
 interface CrawlInfo<
   S extends InternalStage = InternalStage,
@@ -51,31 +59,12 @@ interface CrawlInfo<
   product: Products;
 }
 
-type ProgressInfo = {
-  created: Record<CrawlRecordKey, number>;
-  processed: Record<CrawlRecordKey | "error", number>;
-};
-
 /** Describe the type for the output object. */
 
-type BaseOutput = {
-  progress: ProgressInfo;
-};
-
-type ErrorOutputObject<Result> = BaseOutput & {
-  info?: CrawlInfo;
+type ErrorObject = {
+  info: CrawlInfo;
   error: Error;
 };
-
-type ResultOutputObject<Result> = BaseOutput & {
-  info: CrawlInfo;
-  result: Result;
-};
-
-type OutputObject<Result = unknown> =
-  | BaseOutput
-  | ErrorOutputObject<Result>
-  | ResultOutputObject<Result>;
 
 /** Describe required types for the crawl API inferface */
 
@@ -140,10 +129,6 @@ interface APIWebsiteInfo<Raw, Final = Raw, Fetched = Response> {
   parse?: ParseFunction<Raw, Final>;
 }
 
-/** Provide the types used in the crawler */
-
-type CrawlRecordKey = InternalStage;
-
 /**
  * Specify if the parameter object is a crawler object.
  * @param object The object to specify.
@@ -165,13 +150,9 @@ function isCrawlInfo(object?: any): object is APIWebsiteInfo<unknown, unknown> {
 export type {
   APIWebsiteInfo,
   CrawlInfo,
-  ProgressInfo,
   RequestObject,
   RequestOptions,
-  OutputObject,
-  BaseOutput,
-  ErrorOutputObject,
-  ResultOutputObject,
+  ErrorObject,
 };
 
-export { isCrawlInfo };
+export { InternalStage, isCrawlInfo };

@@ -1,7 +1,7 @@
 import { Writable, WritableOptions } from "node:stream";
 import { createWriteStream, WriteStream, existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
-import { ErrorOutputObject } from "../interface";
+import { ErrorObject } from "../interface";
 
 export class ErrorHandler extends Writable {
   private readonly logStream: WriteStream;
@@ -18,7 +18,7 @@ export class ErrorHandler extends Writable {
   }
 
   _write(
-    chunk: ErrorOutputObject<any>,
+    chunk: ErrorObject,
     _encoding: BufferEncoding,
     callback: (error?: Error | null) => void
   ): void {

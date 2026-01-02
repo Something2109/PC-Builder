@@ -1,5 +1,5 @@
 import { Transform, TransformCallback, TransformOptions } from "node:stream";
-import { ErrorOutputObject, CrawlInfo, InternalStage } from "../interface";
+import { ErrorObject, CrawlInfo, InternalStage } from "../interface";
 
 /**
  * A base Transform stream that automatically filters error messages.
@@ -28,7 +28,7 @@ class PipelineTransform<T, Final> extends Transform {
   }
 
   _transform(
-    chunk: T | ErrorOutputObject<Final>,
+    chunk: T | ErrorObject,
     _: BufferEncoding,
     callback: TransformCallback
   ) {
@@ -87,11 +87,7 @@ class PipelineTransform<T, Final> extends Transform {
   }
 
   protected _onError(error: any, chunk: T): void {
-    const errorObj: ErrorOutputObject<Final> = {
-      progress: {
-        created: {} as any, // Dummy progress
-        processed: {} as any,
-      },
+    const errorObj: ErrorObject = {
       info: chunk as unknown as CrawlInfo, // Cast chunk to CrawlInfo
       error: error instanceof Error ? error : new Error(String(error)),
     };
@@ -128,7 +124,7 @@ class PipelineTransform<T, Final> extends Transform {
     };
   }
 
-  private isErrorOutput(chunk: any): chunk is ErrorOutputObject<Final> {
+  private isErrorOutput(chunk: any): chunk is ErrorObject {
     return chunk && typeof chunk === "object" && "error" in chunk;
   }
 }
