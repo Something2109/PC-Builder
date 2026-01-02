@@ -36,7 +36,7 @@ class PipelineTransform<T, Final> extends Transform {
       callback();
     } else {
       this.running++;
-      this.startProcessing(chunk);
+      this.process(chunk);
 
       if (this.running < this.concurrency) {
         callback();
@@ -46,7 +46,7 @@ class PipelineTransform<T, Final> extends Transform {
     }
   }
 
-  private async startProcessing(chunk: T): Promise<void> {
+  private async process(chunk: T): Promise<void> {
     try {
       const result = await this.processFn(chunk);
 

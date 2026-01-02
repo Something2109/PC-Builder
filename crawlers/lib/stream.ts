@@ -1,12 +1,17 @@
-import { Duplex, DuplexOptions, PassThrough, pipeline } from "node:stream";
+import {
+  Duplex,
+  DuplexOptions,
+  PassThrough,
+  pipeline,
+  Transform,
+  TransformCallback,
+} from "node:stream";
 import {
   APIWebsiteInfo,
   CrawlInfo,
-  ErrorOutputObject,
   FetchFunction,
   InternalStage,
 } from "../interface";
-import { ParallelTransform } from "../utils/parallel-transform";
 import { PipelineTransform } from "../utils/pipeline-transform";
 
 /**
@@ -20,7 +25,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   public readonly monitorStream: PassThrough;
 
   // Pipeline stages
-  private readonly fetchStream: ParallelTransform<
+  private readonly fetchStream: PipelineTransform<
     CrawlInfo<InternalStage.Init, Raw, Final, Fetched>,
     CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>
   >;
@@ -32,11 +37,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>,
     CrawlInfo<InternalStage.Parse, Raw, Final, Fetched>
   >;
-  private readonly resultFilter: PipelineTransform<
-    | CrawlInfo<InternalStage.Parse, Raw, Final, Fetched>
-    | CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>,
-    Final
-  >;
+  private readonly resultFilter: Transform;
 
   /**
    * Constructs a new CrawlStream.
@@ -57,10 +58,10 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     this.extractStream = this.initStage(this.createExtractStream);
     this.resultFilter = this.createResultFilter();
 
-    const streams: (
-      | ParallelTransform<any, any>
-      | PipelineTransform<any, any>
-    )[] = [this.fetchStream, this.extractStream];
+    const streams: PipelineTransform<any, any>[] = [
+      this.fetchStream,
+      this.extractStream,
+    ];
 
     if (this.info.parse) {
       this.parseStream = this.initStage(this.createParseStream);
@@ -134,48 +135,23 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   private readonly createFetchStream = () => {
     const api = this.info;
 
-    return new ParallelTransform<
+    return new PipelineTransform<
       CrawlInfo<InternalStage.Init, Raw, Final, Fetched>,
       CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>
     >(
       async (info: CrawlInfo<InternalStage.Init, Raw, Final, Fetched>) => {
-        try {
-          // Default fetch if not provided
-          const fetcher: FetchFunction<Fetched> =
-            api.fetch ||
-            (async (req) => {
-              const res = await fetch(req.url, req);
-              if (!res.ok) throw new Error(`Fetch failed: ${res.statusText}`);
-              return res as unknown as Fetched;
-            });
+        // Default fetch if not provided
+        const fetcher: FetchFunction<Fetched> =
+          api.fetch ||
+          (async (req) => {
+            const res = await fetch(req.url, req);
+            if (!res.ok) throw new Error(`Fetch failed: ${res.statusText}`);
+            return res as unknown as Fetched;
+          });
 
-          const response = await fetcher(info.request);
-
-          // Create new info for next stage
-          const nextInfo: CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched> =
-            {
-              ...info,
-              stage: InternalStage.Fetch,
-              data: { ...info.data, fetch: response }, // fetch is now typed
-              index: info.index, // Maintain index
-              product: info.product,
-            };
-
-          this.push(nextInfo);
-        } catch (err) {
-          const error = err instanceof Error ? err : new Error(String(err));
-          // Wrap error in ErrorOutputObject
-          const errorObj: ErrorOutputObject<Final> = {
-            progress: {
-              created: {} as any,
-              processed: {} as any,
-            },
-            info,
-            error,
-          };
-          this.push(errorObj);
-        }
+        return await fetcher(info.request);
       },
+      InternalStage.Fetch,
       { concurrency: 10, highWaterMark: 64 }
     );
   };
@@ -193,20 +169,8 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
       CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>,
       CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>
     >(async (info: CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>) => {
-      const rawList = await api.extract(info, info.data.fetch);
-
-      rawList.forEach((raw, index) => {
-        const nextInfo: CrawlInfo<InternalStage.Extract, Raw, Final, Fetched> =
-          {
-            ...info,
-            stage: InternalStage.Extract,
-            data: { ...info.data, extract: raw },
-            index: index, // Set new index
-            product: info.product,
-          };
-        this.push(nextInfo);
-      });
-    });
+      return await api.extract(info, info.data.fetch);
+    }, InternalStage.Extract);
   };
 
   /**
@@ -222,22 +186,12 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
       CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>,
       CrawlInfo<InternalStage.Parse, Raw, Final, Fetched>
     >(async (info: CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>) => {
-      let result: Final;
+      let result: Final = info.data.extract as unknown as Final;
       if (api.parse) {
         result = await api.parse(info.data.extract, info);
-      } else {
-        result = info.data.extract as unknown as Final;
       }
-
-      const nextInfo: CrawlInfo<InternalStage.Parse, Raw, Final, Fetched> = {
-        ...info,
-        stage: InternalStage.Parse,
-        data: { ...info.data, parse: result },
-        index: info.index,
-        product: info.product,
-      };
-      this.push(nextInfo);
-    });
+      return result;
+    }, InternalStage.Parse);
   };
 
   /**
@@ -250,23 +204,24 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
    * @returns The configured result filter transform.
    */
   private readonly createResultFilter = () => {
-    return new PipelineTransform<
-      | CrawlInfo<InternalStage.Parse, Raw, Final, Fetched>
-      | CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>,
-      Final
-    >(
-      async (
-        chunk:
-          | CrawlInfo<InternalStage.Parse, Raw, Final, Fetched>
-          | CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>
-      ) => {
-        if (chunk.stage === InternalStage.Parse) {
-          this.push(chunk.data.parse);
-        } else {
-          this.push(chunk.data.extract);
+    return new Transform({
+      objectMode: true,
+      transform(
+        chunk: any,
+        _encoding: BufferEncoding,
+        callback: TransformCallback
+      ) {
+        if (!chunk?.error) {
+          if (chunk.stage === InternalStage.Parse) {
+            this.push(chunk.data.parse);
+          } else {
+            this.push(chunk.data.extract);
+          }
         }
-      }
-    );
+
+        callback();
+      },
+    });
   };
 
   /**
