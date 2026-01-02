@@ -38,6 +38,10 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     CrawlInfo<InternalStage.Parse, Raw, Final, Fetched>
   >;
   private readonly resultFilter: Transform;
+  private readonly streamOptions: {
+    concurrency: number;
+    highWaterMark: number;
+  };
 
   /**
    * Constructs a new CrawlStream.
@@ -46,11 +50,18 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
    */
   constructor(
     info: APIWebsiteInfo<Raw, Final, Fetched>,
-    options?: Omit<DuplexOptions, "objectMode"> & { logPath?: string }
+    options?: Omit<DuplexOptions, "objectMode"> & {
+      concurrency?: number;
+      logPath?: string;
+    }
   ) {
     super({ objectMode: true, ...options });
 
     this.info = info;
+    this.streamOptions = {
+      concurrency: options?.concurrency ?? 10,
+      highWaterMark: options?.highWaterMark ?? 64,
+    };
     this.monitorStream = new PassThrough({ objectMode: true });
 
     // Initialize pipeline stages
@@ -152,7 +163,10 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
         return await fetcher(info.request);
       },
       InternalStage.Fetch,
-      { concurrency: 10, highWaterMark: 64 }
+      {
+        concurrency: this.streamOptions?.concurrency ?? 10,
+        highWaterMark: this.streamOptions?.highWaterMark ?? 64,
+      }
     );
   };
 
