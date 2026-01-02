@@ -64,6 +64,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     // Wire up the pipeline: Fetch -> Extract -> [Parse] -> ResultFilter
     // Pipe internal events to monitorStream where appropriate
     this.fetchStream.pipe(this.monitorStream, { end: false });
+    this.extractStream.pipe(this.monitorStream, { end: false });
 
     // Main data flow
     let tail: any = this.fetchStream.pipe(this.extractStream);
@@ -71,6 +72,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     if (this.parseStream) {
       tail = tail.pipe(this.parseStream);
       this.parseStream.on("error", (err) => this.emit("error", err));
+      this.parseStream.pipe(this.monitorStream, { end: false });
     }
 
     tail.pipe(this.resultFilter);
