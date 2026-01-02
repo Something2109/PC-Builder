@@ -2,7 +2,8 @@ import { Transform, TransformCallback, TransformOptions } from "node:stream";
 import { ErrorObject, CrawlInfo, InternalStage } from "../interface";
 
 /**
- * A base Transform stream that automatically filters error messages.
+ * A base Transform stream that automatically filters error messages and handles concurrency.
+ * It manages the transition of `CrawlInfo` between stages by updating the internal stage and data.
  * If the chunk contains an error, it is pushed through without processing.
  */
 class PipelineTransform<T, Final> extends Transform {
@@ -94,6 +95,13 @@ class PipelineTransform<T, Final> extends Transform {
     this.push(errorObj);
   }
 
+  /**
+   * Creates the next `CrawlInfo` based on the current stage and result.
+   * Dynamically assigns the result to the corresponding stage key in `CrawlData`.
+   * @param prev The previous `CrawlInfo`.
+   * @param result The result from the process function.
+   * @returns The new `CrawlInfo` (or array of infos for Extract stage).
+   */
   private createNextCrawlInfo(
     prev: CrawlInfo,
     result: any

@@ -17,8 +17,10 @@ import { PipelineTransform } from "../utils/pipeline-transform";
 /**
  * The crawl stream extending the Node's {@link Duplex} class.
  * The stream acts as a wrapper for the Fetch -> Extract -> Parse pipeline.
- * It is a Duplex stream where the writable side feeds the pipeline
- * and the readable side outputs the results (and potential new crawl links).
+ * It is a Duplex stream where the writable side feeds the pipeline (init stage)
+ * and the readable side outputs the final results.
+ * It uses {@link PipelineTransform} for async stages to manage concurrency and state,
+ * and standard {@link Transform} for synchronous post-processing.
  */
 class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   private readonly info: APIWebsiteInfo<Raw, Final, Fetched>;
@@ -46,7 +48,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   /**
    * Constructs a new CrawlStream.
    * @param info The website info implementation (fetch, extract, parse logic).
-   * @param options Stream options and custom log path.
+   * @param options Stream options including concurrency and custom log path.
    */
   constructor(
     info: APIWebsiteInfo<Raw, Final, Fetched>,
@@ -172,8 +174,8 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
 
   /**
    * Creates the Extract stream.
-   * This stream extracts raw items and new links from the fetched response.
-   * New links are pushed back to the main stream flow (recursively or via event).
+   * This stream runs the API's extract function.
+   * It uses {@link PipelineTransform} to handle concurrency and stage transition to 'Extract'.
    * @returns The configured extract stream.
    */
   private readonly createExtractStream = () => {
@@ -188,10 +190,9 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   };
 
   /**
-   * Creates the Parse stream.
-   * This stream parses raw items into the Final result format.
-   * It also passes through any intermediate Links found in the pipeline.
-   * @returns The configured parse stream.
+   * Creates the Parse stream (Optional).
+   * This stream runs the API's parse function if provided.
+   * @returns The configured parse stream, or undefined if api.parse is irrelevant.
    */
   private readonly createParseStream = () => {
     const api = this.info;
@@ -209,12 +210,10 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   };
 
   /**
-   * Creates the Result Filter stream.
-   * This is the final stage of the pipeline.
-   * It splits the stream:
-   * - Results -> Pushed to output (Readable side)
-   * - Links -> Emitted as 'link' events (removed from output)
-   * - Errors -> Ignored (removed from output, already handled by monitor)
+   * Creates the Result filter stream.
+   * This is a simple {@link Transform} stream that unwraps the `CrawlInfo` object
+   * to emit the final data payload (from Parse or Extract stage).
+   * It is synchronous and does not use `PipelineTransform`.
    * @returns The configured result filter transform.
    */
   private readonly createResultFilter = () => {

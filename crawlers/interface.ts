@@ -12,7 +12,7 @@ type RequestOptions<ResultType = unknown> =
   | BaseRequestOptions
   | {
       request: BaseRequestOptions;
-      stage?: InternalStage;
+      stage?: InternalStage; // Optional stage, defaults to standard flow
       result?: ResultType;
     };
 
@@ -23,6 +23,10 @@ enum InternalStage {
   Parse = "parse",
 }
 
+/**
+ * Mapped type defining the data structure available at each stage.
+ * Keys are the stages, values are the cumulative data (product + previous stages' results).
+ */
 type CrawlDataMap<Raw, Final, Fetched> = {
   [InternalStage.Init]: { product?: Products };
   [InternalStage.Fetch]: { product?: Products; [InternalStage.Fetch]: Fetched };
@@ -39,6 +43,10 @@ type CrawlDataMap<Raw, Final, Fetched> = {
   };
 };
 
+/**
+ * The data attached to the CrawlInfo, strictly typed based on the current stage `S`.
+ * It selects the appropriate shape from `CrawlDataMap`.
+ */
 export type CrawlData<
   S extends InternalStage,
   Raw,
@@ -60,6 +68,16 @@ interface CrawlInfo<
 }
 
 /** Describe the type for the output object. */
+
+/**
+ * Options to configure the stream behavior.
+ */
+export type StreamOptions = {
+  /** Check `concurrency` in {@link PipelineTransform} */
+  concurrency?: number;
+  /** Check `highWaterMark` in {@link PipelineTransform} */
+  highWaterMark?: number;
+};
 
 type ErrorObject = {
   info: CrawlInfo;
