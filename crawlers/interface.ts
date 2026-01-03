@@ -8,13 +8,10 @@ type RequestObject = {
 
 type BaseRequestOptions = string | URL | RequestObject;
 
-type RequestOptions<ResultType = unknown> =
-  | BaseRequestOptions
-  | {
-      request: BaseRequestOptions;
-      stage?: InternalStage; // Optional stage, defaults to standard flow
-      result?: ResultType;
-    };
+type RequestOptions = {
+  request: BaseRequestOptions;
+  product: Products;
+};
 
 enum InternalStage {
   Init = "init",
@@ -28,15 +25,13 @@ enum InternalStage {
  * Keys are the stages, values are the cumulative data (product + previous stages' results).
  */
 type CrawlDataMap<Raw, Final, Fetched> = {
-  [InternalStage.Init]: { product?: Products };
-  [InternalStage.Fetch]: { product?: Products; [InternalStage.Fetch]: Fetched };
+  [InternalStage.Init]: {};
+  [InternalStage.Fetch]: { [InternalStage.Fetch]: Fetched };
   [InternalStage.Extract]: {
-    product?: Products;
     [InternalStage.Fetch]: Fetched;
     [InternalStage.Extract]: Raw;
   };
   [InternalStage.Parse]: {
-    product?: Products;
     [InternalStage.Fetch]: Fetched;
     [InternalStage.Extract]: Raw;
     [InternalStage.Parse]: Final;
@@ -121,7 +116,7 @@ interface APIWebsiteInfo<Raw, Final = Raw, Fetched = Response> {
    * @param page The page number to be created.
    * @returns The request options of the link to be crawled.
    */
-  path?(product: Products, page: number): RequestOptions<Final> | null;
+  path?(product: Products, page: number): RequestOptions | null;
 
   /**
    * The custom fetch function for getting the data page ready

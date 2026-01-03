@@ -198,7 +198,7 @@ class CrawlerChildProcess {
     }
 
     const productType =
-      "error" in chunk ? "error" : (chunk.info?.data?.product as Products);
+      "error" in chunk ? "error" : (chunk.info?.product as Products);
 
     this.summary ??= {};
 

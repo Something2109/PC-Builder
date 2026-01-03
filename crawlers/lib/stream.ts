@@ -11,6 +11,7 @@ import {
   CrawlInfo,
   FetchFunction,
   InternalStage,
+  RequestOptions,
   isCrawlInfo,
 } from "../interface";
 import { PipelineTransform } from "../utils/pipeline-transform";
@@ -155,15 +156,16 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   private readonly createInputTransform = () => {
     return new Transform({
       objectMode: true,
-      transform(chunk: any, encoding, callback) {
+      transform(chunk: RequestOptions, encoding, callback) {
         if (isCrawlInfo(chunk)) {
           this.push(chunk);
           callback();
           return;
         }
 
+        let { request, product } = chunk;
+
         // Normalize RequestOptions to RequestObject
-        let request: any = chunk;
         if (typeof request === "string" || request instanceof URL) {
           request = { url: new URL(request.toString()) };
         } else if ("url" in request && !(request.url instanceof URL)) {
@@ -171,11 +173,11 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
         }
 
         const info: CrawlInfo<InternalStage.Init, Raw, Final, Fetched> = {
-          request: request,
+          request,
           stage: InternalStage.Init,
-          data: { product: chunk.product }, // Check for product in chunk
+          data: {},
           index: 0,
-          product: chunk.product, // Check for product in chunk
+          product,
         };
 
         this.push(info);
