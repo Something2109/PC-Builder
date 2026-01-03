@@ -47,7 +47,7 @@ const DEFAULT_ERROR_FUNCTION = (error: Error, info?: CrawlInfo<any>) => {
 
   console.error(
     `[${new Date().toISOString()}]: ${errorMsg}\n\tWhen crawling: ${
-      info?.request.url
+      info?.data?.[InternalStage.Init]?.url
     }`
   );
 };

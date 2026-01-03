@@ -11,6 +11,7 @@ import {
   CrawlInfo,
   FetchFunction,
   InternalStage,
+  RequestObject,
   RequestOptions,
   isCrawlInfo,
 } from "../interface";
@@ -166,18 +167,21 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
         let { request, product } = chunk;
 
         // Normalize RequestOptions to RequestObject
+        let requestObject: RequestObject;
         if (typeof request === "string" || request instanceof URL) {
-          request = { url: new URL(request.toString()) };
+          requestObject = { url: new URL(request.toString()) };
         } else if ("url" in request && !(request.url instanceof URL)) {
-          request = { ...request, url: new URL(request.url) };
+          requestObject = { ...request, url: new URL(request.url) };
+        } else {
+          requestObject = request;
         }
 
         const info: CrawlInfo<InternalStage.Init, Raw, Final, Fetched> = {
           request,
-          stage: InternalStage.Init,
-          data: {},
-          index: 0,
           product,
+          stage: InternalStage.Init,
+          data: { [InternalStage.Init]: requestObject },
+          index: 0,
         };
 
         this.push(info);
@@ -209,7 +213,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
             return res as unknown as Fetched;
           });
 
-        return await fetcher(info.request);
+        return await fetcher(info.data[InternalStage.Init]);
       },
       InternalStage.Fetch,
       {

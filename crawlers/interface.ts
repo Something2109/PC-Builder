@@ -25,13 +25,18 @@ enum InternalStage {
  * Keys are the stages, values are the cumulative data (product + previous stages' results).
  */
 type CrawlDataMap<Raw, Final, Fetched> = {
-  [InternalStage.Init]: {};
-  [InternalStage.Fetch]: { [InternalStage.Fetch]: Fetched };
+  [InternalStage.Init]: { [InternalStage.Init]: RequestObject };
+  [InternalStage.Fetch]: {
+    [InternalStage.Init]: RequestObject;
+    [InternalStage.Fetch]: Fetched;
+  };
   [InternalStage.Extract]: {
+    [InternalStage.Init]: RequestObject;
     [InternalStage.Fetch]: Fetched;
     [InternalStage.Extract]: Raw;
   };
   [InternalStage.Parse]: {
+    [InternalStage.Init]: RequestObject;
     [InternalStage.Fetch]: Fetched;
     [InternalStage.Extract]: Raw;
     [InternalStage.Parse]: Final;
@@ -57,7 +62,7 @@ interface CrawlInfo<
 > {
   stage: S;
   data: CrawlData<S, Raw, Final, Fetched>;
-  request: RequestObject;
+  request: BaseRequestOptions;
   index: number;
   product: Products;
 }
