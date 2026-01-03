@@ -17,6 +17,13 @@ import {
 } from "../interface";
 import { PipelineTransform } from "../utils/pipeline-transform";
 
+const StageSequence = [
+  InternalStage.Init,
+  InternalStage.Fetch,
+  InternalStage.Extract,
+  InternalStage.Parse,
+];
+
 /**
  * The crawl stream extending the Node's {@link Duplex} class.
  * The stream acts as a wrapper for the Fetch -> Extract -> Parse pipeline.
@@ -213,9 +220,10 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
             return res as unknown as Fetched;
           });
 
-        return await fetcher(info.data[InternalStage.Init]);
+        const response = await fetcher(info.data[InternalStage.Init]);
+
+        return this.createNextCrawlInfo(info, response);
       },
-      InternalStage.Fetch,
       {
         concurrency: this.streamOptions?.concurrency ?? 10,
         highWaterMark: this.streamOptions?.highWaterMark ?? 64,
@@ -236,8 +244,10 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
       CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>,
       CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>
     >(async (info: CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>) => {
-      return await api.extract(info, info.data.fetch);
-    }, InternalStage.Extract);
+      const raw = await api.extract(info, info.data.fetch);
+
+      return this.createNextCrawlInfo(info, raw);
+    });
   };
 
   /**
@@ -256,8 +266,8 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
       if (api.parse) {
         result = await api.parse(info.data.extract, info);
       }
-      return result;
-    }, InternalStage.Parse);
+      return this.createNextCrawlInfo(info, result);
+    });
   };
 
   /**
@@ -297,6 +307,45 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     const stream = createFn();
     stream.pipe(this.monitorStream, { end: false });
     return stream;
+  }
+
+  /**
+   * Creates the next `CrawlInfo` based on the current stage and result.
+   * Dynamically assigns the result to the corresponding stage key in `CrawlData`.
+   * @param prev The previous `CrawlInfo`.
+   * @param result The result from the process function.
+   * @returns The new `CrawlInfo` (or array of infos for Extract stage).
+   */
+  private createNextCrawlInfo(
+    prev: CrawlInfo,
+    result: any
+  ): CrawlInfo | CrawlInfo[] {
+    const stageIndex = StageSequence.indexOf(prev.stage);
+    if (stageIndex === -1) {
+      throw new Error(`Invalid stage: ${prev.stage}`);
+    }
+    const nextStage = StageSequence[stageIndex + 1];
+
+    const baseInfo = {
+      ...prev,
+      stage: nextStage,
+      product: prev.product,
+    };
+
+    if (Array.isArray(result)) {
+      return result.map((item, index) => ({
+        ...baseInfo,
+        data: { ...prev.data, [nextStage]: item },
+        index,
+      }));
+    }
+
+    const newData: any = { ...prev.data, [nextStage]: result };
+
+    return {
+      ...baseInfo,
+      data: newData,
+    };
   }
 }
 
