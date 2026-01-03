@@ -11,6 +11,7 @@ import {
   CrawlInfo,
   FetchFunction,
   InternalStage,
+  isCrawlInfo,
 } from "../interface";
 import { PipelineTransform } from "../utils/pipeline-transform";
 
@@ -27,6 +28,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   public readonly monitorStream: PassThrough;
 
   // Pipeline stages
+  private readonly inputTransform: Transform;
   private readonly fetchStream: PipelineTransform<
     CrawlInfo<InternalStage.Init, Raw, Final, Fetched>,
     CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>
@@ -39,7 +41,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>,
     CrawlInfo<InternalStage.Parse, Raw, Final, Fetched>
   >;
-  private readonly resultFilter: Transform;
+  private readonly outputTransform: Transform;
   private readonly streamOptions: {
     concurrency: number;
     highWaterMark: number;
@@ -65,11 +67,12 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
       highWaterMark: options?.highWaterMark ?? 64,
     };
     this.monitorStream = new PassThrough({ objectMode: true });
+    this.inputTransform = this.initStage(this.createInputTransform);
 
     // Initialize pipeline stages
     this.fetchStream = this.initStage(this.createFetchStream);
     this.extractStream = this.initStage(this.createExtractStream);
-    this.resultFilter = this.createResultFilter();
+    this.outputTransform = this.createResultFilter();
 
     const streams: PipelineTransform<any, any>[] = [
       this.fetchStream,
@@ -82,14 +85,20 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     }
 
     // Use pipeline for error propagation and cleanup
-    pipeline([...streams, this.resultFilter], (err) => {
+    const pipelineStreams: (Transform | Duplex)[] = [
+      this.inputTransform,
+      ...streams,
+      this.outputTransform,
+    ];
+
+    pipeline(pipelineStreams, (err) => {
       if (err) this.emit("error", err);
     });
 
     // Listen to outputs from the final filter and push them to the Duplex's readable side
-    this.resultFilter.on("data", (chunk: any) => {
+    this.outputTransform.on("data", (chunk: any) => {
       if (!this.push(chunk)) {
-        this.resultFilter.pause();
+        this.outputTransform.pause();
       }
     });
 
@@ -109,10 +118,10 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     encoding: BufferEncoding,
     callback: (error?: Error | null) => void
   ): void {
-    if (this.fetchStream.write(chunk, encoding)) {
+    if (this.inputTransform.write(chunk, encoding)) {
       callback();
     } else {
-      this.fetchStream.once("drain", callback);
+      this.inputTransform.once("drain", callback);
     }
   }
 
@@ -122,7 +131,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
    * @param callback Callback when finalization is complete.
    */
   _final(callback: (error?: Error | null) => void): void {
-    this.fetchStream.end(() => {
+    this.inputTransform.end(() => {
       callback();
     });
   }
@@ -134,10 +143,46 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
    */
   _read(size: number): void {
     // Resume pipeline if it was paused
-    if (this.resultFilter.isPaused()) {
-      this.resultFilter.resume();
+    if (this.outputTransform.isPaused()) {
+      this.outputTransform.resume();
     }
   }
+
+  /**
+   * Creates the Input transform stream.
+   * Transforms raw `RequestOptions` (or existing `CrawlInfo`) into `CrawlInfo<Init>`.
+   */
+  private readonly createInputTransform = () => {
+    return new Transform({
+      objectMode: true,
+      transform(chunk: any, encoding, callback) {
+        if (isCrawlInfo(chunk)) {
+          this.push(chunk);
+          callback();
+          return;
+        }
+
+        // Normalize RequestOptions to RequestObject
+        let request: any = chunk;
+        if (typeof request === "string" || request instanceof URL) {
+          request = { url: new URL(request.toString()) };
+        } else if ("url" in request && !(request.url instanceof URL)) {
+          request = { ...request, url: new URL(request.url) };
+        }
+
+        const info: CrawlInfo<InternalStage.Init, Raw, Final, Fetched> = {
+          request: request,
+          stage: InternalStage.Init,
+          data: { product: chunk.product }, // Check for product in chunk
+          index: 0,
+          product: chunk.product, // Check for product in chunk
+        };
+
+        this.push(info);
+        callback();
+      },
+    });
+  };
 
   /**
    * Creates the Fetch stream.
