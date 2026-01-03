@@ -1,11 +1,6 @@
 import { Products } from "../../utils/Enum";
 import { Readable, Writable } from "node:stream";
-import {
-  APIWebsiteInfo,
-  CrawlInfo,
-  InternalStage,
-  OutputObject,
-} from "../interface";
+import { APIWebsiteInfo, CrawlInfo, InternalStage } from "../interface";
 import { ErrorHandler } from "../utils/error-handler";
 import { StreamMonitor } from "../utils/monitor";
 import { CrawlStream } from "./stream";
@@ -28,7 +23,7 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
    * @param info The website api to be used by the crawler.
    * @param options The options for the crawler. Take output as a {@link Writable}
    * to customize the output of the crawler.
-   * The output's write function's chunk parameter must implement the {@link OutputObject}
+   * The output's write function's chunk parameter must implement the output object
    * to work properly.
    */
   constructor(
@@ -132,8 +127,8 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
   private createDefaultOutput() {
     return new Writable({
       objectMode: true,
-      write(chunk: OutputObject<Final>, _, callback) {
-        if ("error" in chunk) {
+      write(chunk: any, _, callback) {
+        if (chunk && typeof chunk === "object" && "error" in chunk) {
           callback();
           return;
         }

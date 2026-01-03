@@ -2,7 +2,6 @@ import { Products } from "../../utils/Enum";
 import { createWriteStream, existsSync, mkdirSync, WriteStream } from "node:fs";
 import { Writable, WritableOptions } from "node:stream";
 import path from "node:path";
-import { OutputObject, BaseOutput } from "../interface";
 
 /**
  * The write stream that write the crawl result
@@ -33,39 +32,15 @@ class FileWriter extends Writable {
    * @param callback The callback variable of the write function.
    */
   _write(
-    chunk: OutputObject,
+    chunk: any,
     encoding: BufferEncoding,
     callback: (error?: Error | null) => void
   ): void {
-    // Handle Standard Output
-    const {
-      progress: { created, processed },
-      ...rest
-    } = chunk as OutputObject & BaseOutput;
-
-    if ("result" in rest || "error" in rest) {
-      const filename: keyof typeof this.writeStream =
-        "error" in rest ? "error" : rest.info.product;
-
-      // Format the error object to be easier stringify to json.
-      if ("error" in rest) {
-        (rest as any).error = rest.error.stack as any;
-      }
-
-      this.writeToStream(filename, rest, encoding, false);
+    if (chunk && typeof chunk === "object" && !("error" in chunk)) {
+      // Try to determine product from chunk if possible, otherwise use 'result'
+      const filename: string = chunk.product || "result";
+      this.writeToStream(filename, chunk, encoding, false);
     }
-
-    console.log(
-      `Progress: ${Object.entries(processed)
-        .map(([key, value]) => {
-          if (key !== "error") {
-            return `${value}/${created[key as keyof typeof created]} ${key}`;
-          }
-          return `Error: ${value}`;
-        })
-        .join(", ")}`
-    );
-
     callback();
   }
 
@@ -129,12 +104,14 @@ class ProcessWriter extends Writable {
    * @param callback The callback variable of the write function.
    */
   _write(
-    chunk: OutputObject,
+    chunk: any,
     encoding: BufferEncoding,
     callback: (error?: Error | null) => void
   ): void {
     if (process.send) {
       process.send(chunk, undefined, undefined, callback);
+    } else {
+      callback();
     }
   }
 }
