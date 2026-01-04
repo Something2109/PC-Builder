@@ -9,7 +9,7 @@ import path from "node:path";
  */
 class FileWriter extends Writable {
   private readonly path: string;
-  private writeStream: {
+  private readonly writeStream: {
     [key in Products]?: WriteStream;
   } & { error?: WriteStream; failed_requests?: WriteStream };
 
@@ -39,35 +39,22 @@ class FileWriter extends Writable {
     if (chunk && typeof chunk === "object" && !("error" in chunk)) {
       // Try to determine product from chunk if possible, otherwise use 'result'
       const filename: string = chunk.product || "result";
-      this.writeToStream(filename, chunk, encoding, false);
+      this.writeToStream(filename, chunk, encoding);
     }
     callback();
   }
 
-  private writeToStream(
-    filename: string,
-    data: any,
-    encoding: BufferEncoding,
-    isJsonL: boolean
-  ) {
-    let prefix = ",";
+  private writeToStream(filename: string, data: any, encoding: BufferEncoding) {
     const key = filename as keyof typeof this.writeStream;
 
-    if (!this.writeStream[key]) {
-      this.writeStream[key] = createWriteStream(
-        path.join(this.path, `${filename}.${isJsonL ? "jsonl" : "json"}`),
-        encoding
-      );
-      prefix = "[";
-    }
+    this.writeStream[key] ??= createWriteStream(
+      path.join(this.path, `${filename}.jsonl`),
+      encoding
+    );
 
     const stream = this.writeStream[key];
 
-    if (isJsonL) {
-      stream.write(JSON.stringify(data) + "\n");
-    } else {
-      stream.write(`${prefix}${JSON.stringify(data)}`);
-    }
+    stream.write(JSON.stringify(data) + "\n");
   }
 
   /**
@@ -77,10 +64,7 @@ class FileWriter extends Writable {
    */
   _final(callback: (error?: Error | null) => void): void {
     Object.entries(this.writeStream).forEach(([key, stream]) => {
-      // Don't close array for jsonl files
-      if (key !== "failed_requests" && stream) {
-        stream.end("]");
-      } else if (stream) {
+      if (stream) {
         stream.end();
       }
     });
