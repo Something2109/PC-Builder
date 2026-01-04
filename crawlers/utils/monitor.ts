@@ -1,12 +1,11 @@
 import { Writable, WritableOptions } from "node:stream";
 import { createWriteStream, WriteStream, existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
+import { CrawlInfo, ErrorObject, InternalStage } from "../interface";
 
 type MonitorOptions = WritableOptions & {
   logPath?: string;
 };
-
-import { InternalStage } from "../interface";
 
 /**
  * A Writable stream that acts as a logging monitor.
@@ -69,8 +68,11 @@ export class StreamMonitor extends Writable {
    * @param chunk The event object (Fetch, Parse, Extract, Error, etc.).
    * @returns Object containing log type and message string.
    */
-  private getLogDetails(chunk: any): { type: string; message: string } {
-    if (chunk instanceof Error || chunk?.error) {
+  private getLogDetails(chunk: ErrorObject | CrawlInfo): {
+    type: string;
+    message: string;
+  } {
+    if (chunk instanceof Error || "error" in chunk) {
       this.stats.failed++;
       const err = chunk instanceof Error ? chunk : chunk.error;
       return {
@@ -79,38 +81,33 @@ export class StreamMonitor extends Writable {
       };
     }
 
-    if (chunk?.stage === InternalStage.Fetch) {
-      this.stats[InternalStage.Fetch]++;
-      return {
-        type: "FETCH",
-        message: `Fetched ${chunk.info?.request?.url}`,
-      };
+    this.stats[chunk.stage]++;
+    const type = chunk.stage.toUpperCase();
+
+    let message = JSON.stringify(chunk);
+    switch (chunk.stage) {
+      case InternalStage.Init: {
+        message = `Initiated info from ${JSON.stringify(chunk.request)}`;
+        break;
+      }
+      case InternalStage.Fetch: {
+        message = `Fetched ${chunk.data[InternalStage.Init].url.toString()}`;
+        break;
+      }
+      case InternalStage.Extract: {
+        message = `Extracted raw item from ${
+          chunk.data[InternalStage.Init].url
+        }`;
+        break;
+      }
+      case InternalStage.Parse:
+        message = `Parsed data: ${JSON.stringify(
+          (chunk.data as any)[InternalStage.Parse]
+        ).substring(0, 50)}...`;
+        break;
     }
 
-    if (chunk?.stage === InternalStage.Parse) {
-      this.stats[InternalStage.Parse]++;
-      this.stats.success++; // Consider parsed items as success
-      return {
-        type: "PARSE",
-        message: `Parsed data: ${JSON.stringify(chunk.data.parse).substring(
-          0,
-          50
-        )}...`,
-      };
-    }
-
-    if (chunk?.stage === InternalStage.Extract) {
-      this.stats[InternalStage.Extract]++;
-      return {
-        type: "EXTRACT",
-        message: `Extracted raw item for ${chunk.request?.url}`,
-      };
-    }
-
-    return {
-      type: "DATA",
-      message: JSON.stringify(chunk),
-    };
+    return { type, message };
   }
 
   /**
