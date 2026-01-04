@@ -244,7 +244,15 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
       CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>,
       CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>
     >(async (info: CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>) => {
-      const raw = await api.extract(info, info.data.fetch);
+      const result = await api.extract(info, info.data.fetch);
+
+      const { raw, next } = Array.isArray(result)
+        ? { raw: result, next: [] }
+        : result;
+
+      if (next) {
+        next.forEach((item: RequestOptions) => this.inputTransform.write(item));
+      }
 
       return this.createNextCrawlInfo(info, raw);
     });

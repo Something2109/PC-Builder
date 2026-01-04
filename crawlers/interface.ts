@@ -93,7 +93,7 @@ export type FetchFunction<Fetched> = (
 export type ExtractFunction<Raw, Fetched> = (
   info: CrawlInfo,
   source: Fetched
-) => Promise<Raw[]>;
+) => Promise<Raw[] | { raw: Raw[]; next: RequestOptions[] }>;
 
 export type ParseFunction<Raw, Result> = (
   raw: Raw,

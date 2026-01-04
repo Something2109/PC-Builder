@@ -1,6 +1,6 @@
 import { Products } from "../../utils/Enum";
 import { Readable, Writable } from "node:stream";
-import { APIWebsiteInfo, CrawlInfo, InternalStage } from "../interface";
+import { APIWebsiteInfo } from "../interface";
 import { ErrorHandler } from "../utils/error-handler";
 import { StreamMonitor } from "../utils/monitor";
 import { CrawlStream } from "./stream";
@@ -106,15 +106,7 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
           request = { ...request, url: new URL(request.url) };
         }
 
-        const info: CrawlInfo<InternalStage.Init, Raw, Final, Fetched> = {
-          request: request,
-          stage: InternalStage.Init, // Initial stage
-          data: { product }, // Save product context
-          index: 0,
-          product,
-        };
-
-        this.input.push(info);
+        this.input.push(request);
       }
     });
   }
