@@ -31,34 +31,31 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
       const url = new URL(`${domain}/${mapping[product]}`);
       url.searchParams.set("page", page.toString());
 
-      return { url };
+      return { request: url, product };
     }
 
     return null;
   },
 
-  async extract(link, response) {
+  async extract(info, response) {
     const dom = new JSDOM(await response.text()).window.document;
     const itemContainer = dom.querySelector(".product-list");
 
     let list: Element[] = [];
-    let pages;
 
-    if (link.type == "page" && itemContainer) {
+    if (itemContainer) {
       list = [...itemContainer.querySelectorAll(".product-col")];
 
-      if (link.page == 1) {
-        const pageList = dom.querySelectorAll(".page-item");
-        const total =
-          pageList.length == 0
-            ? 1
-            : pageList.item(pageList.length - 2).textContent;
+      const url = new URL(info.request as string);
+      const page = Number(url.searchParams.get("page"));
 
-        pages = Number(total);
-      }
+      return {
+        raw: list,
+        next: list.length ? [this.path!(info.product, page + 1)!] : [],
+      };
     }
 
-    return { list, links: [], pages };
+    return { raw: list, next: [] };
   },
 
   async parse(raw) {

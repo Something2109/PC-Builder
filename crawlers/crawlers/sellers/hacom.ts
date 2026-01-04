@@ -5,7 +5,7 @@ import {
 } from "../../../utils/interface/retailer/Product";
 import { Products } from "../../../utils/Enum";
 
-const domain = "https://hacom.vn";
+const domain = "https://apis-web.hacom.vn";
 const mapping: { [key in Products]?: string } = {
   [Products.CPU]: "31",
   [Products.GRAPHIC_CARD]: "34",
@@ -22,19 +22,15 @@ const mapping: { [key in Products]?: string } = {
 
 type HacomJSONResponse = {
   total: number;
-  list: HacomPartDataAPI[];
+  data: HacomPartDataAPI[];
 };
 
 type HacomPartDataAPI = {
-  productName: string;
-  price: string;
-  productUrl: string;
-  productImage: {
-    small: string;
-    medium: string;
-    large: string;
-  };
-  quantity: string;
+  itemName: string;
+  unitSellingPrice: number;
+  url: string;
+  primaryImage: string;
+  onhandQuantity: number;
 };
 
 const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, RetailProductType> = {
@@ -44,47 +40,46 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, RetailProductType> = {
 
   path(product, page = 1) {
     if (mapping[product]) {
-      const url = new URL(`${domain}/ajax/get_json.php`);
+      const url = new URL(`${domain}/api-client/api/v1/TblItemV/get-list`);
 
-      url.searchParams.set("action", "product");
-      url.searchParams.set("action_type", "product-list");
-      url.searchParams.set("page", page.toString());
-      url.searchParams.set("show", "500");
-      url.searchParams.set("category", mapping[product]);
+      const request = {
+        url,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          isCount: false,
+          SearchModel: {
+            skip: 0,
+            take: 500,
+            categoryId: [mapping[product]],
+          },
+        }),
+      };
 
-      return { url };
+      return { request, product };
     }
 
     return null;
   },
 
-  async extract(link, response) {
-    if (link.type != "page") return { list: [], links: [] };
-
+  async extract(info, response) {
     const data: HacomJSONResponse = await response.json();
-    let pages;
 
-    if (link.page == 1) {
-      pages = Math.ceil(data.total / data.list.length);
-    }
-
-    if (Array.isArray(data.list)) {
-      return {
-        list: data.list,
-        links: [],
-        pages,
-      };
+    if (Array.isArray(data.data)) {
+      return data.data;
     }
 
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },
 
   async parse(raw) {
-    const name = raw.productName;
-    const price = Number(raw.price);
-    const link = `https://hacom.vn${raw.productUrl}`;
-    const img = raw.productImage.large;
-    const availability = Number(raw.quantity) !== 0;
+    const name = raw.itemName;
+    const price = Number(raw.unitSellingPrice);
+    const link = `https://hacom.vn/${raw.url}`;
+    const img = raw.primaryImage;
+    const availability = raw.unitSellingPrice > 0 && raw.onhandQuantity > 0;
 
     return RetailProductSchema.parse({ name, price, link, img, availability });
   },

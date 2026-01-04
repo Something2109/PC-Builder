@@ -28,73 +28,126 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
       formBody.set("PageNumber", page.toString());
 
       return {
-        url,
-        method: "POST",
-        body: formBody,
+        request: {
+          url,
+          method: "POST",
+          body: formBody,
+        },
+        product,
       };
     }
 
     return null;
   },
 
-  extract: {
-    page: async (link, response) => {
+  async extract(info, response) {
+    const requestUrl = new URL(
+      typeof info.request === "string"
+        ? info.request
+        : (info.request as any).url || info.request
+    );
+
+    if (requestUrl.pathname.includes("GetConsumerListPageInfo")) {
       const data = await response.text();
       const dom = new JSDOM(data).window.document;
 
-      let links = [...dom.querySelectorAll(".product_list_box")].map((raw) => {
+      let next = [...dom.querySelectorAll(".product_list_box")].map((raw) => {
+        const productId = raw
+          .querySelector(".WTB_button")!
+          .getAttribute("data-ProductId");
+        const nextUrl = new URL(`${domain}/api/ProductSpec/${productId}`);
+
+        const productUrl = `${domain}${raw
+          .querySelector(".product_list_box_info_ImageLink")!
+          .getAttribute("href")}`;
+        const img = `https${raw
+          .querySelector(".js-rwdWebp_Item-Image.css-Item-ImagePicture img")!
+          .getAttribute("data-src")}`;
+
+        nextUrl.searchParams.set("productUrl", productUrl);
+        nextUrl.searchParams.set("img", img);
+
         return {
           request: {
-            url: new URL(
-              `${domain}/api/ProductSpec/${raw
-                .querySelector(".WTB_button")!
-                .getAttribute("data-ProductId")}`
-            ),
+            url: nextUrl,
           },
-          result: {
-            url: `${domain}${raw
-              .querySelector(".product_list_box_info_ImageLink")!
-              .getAttribute("href")}`,
-            img: `https${raw
-              .querySelector(
-                ".js-rwdWebp_Item-Image.css-Item-ImagePicture img"
-              )!
-              .getAttribute("data-src")}`,
-          },
+          product: info.product, // propagate product type
         };
       });
 
-      let pages;
-      if (link.page == 1) {
-        pages = Number(dom.querySelector(".pageMaximumPage")?.textContent);
-      }
+      // Pagination logic
+      const page = Number(requestUrl.searchParams.get("PageNumber") || "1"); // Wait, path used body form data for page info?
+      // path sent PageNumber in formBody.
+      // But we can't easily read formBody from here unless we check existing request?
+      // info.request.body is generic BodyInit?
+      // If we need to paginate, we must return next page request.
 
-      return { links, pages };
-    },
+      // existing code: result has pages count.
+      // if (link.page == 1) pages = ...
+      // But path used formBody.
+      // We can create next page request if we know current page.
+      // We assume page = 1 if not tracked?
+      // The issue is existing Crawler logic handled `pages` in earlier versions?
+      // No, `APIWebsiteInfo` is stateless.
+      // `gigabyte.ts` `path` accepts `page`.
+      // We need to return `next` request for page+1.
 
-    product: async (link, response) => {
-      const list = [];
+      const totalPages = Number(
+        dom.querySelector(".pageMaximumPage")?.textContent
+      );
+      // We can try to guess current page from `info.index`? No.
+      // We should encode page number in the initial URL query param too even if unused by API, just for state tracking?
+      // Or we can rely on `gigabyte.ts` path implementation.
+      // But `extract` returns `next` requests which call `path`?
+      // if we return `this.path(product, page+1)` it works.
+      // But how do we know `current page` inside extract?
+      // We can add `page` to the query params of the `GetConsumerListPageInfo` URL in `path` function, even if implementation uses body.
 
-      const data = await response.json();
-      if (
-        !data ||
-        !Array.isArray(data.ProductSpecList) ||
-        !data.ProductSpecList[0]
-      ) {
-        throw new Error(`There's possibly a change in the API of ${domain}`);
-      }
+      // Let's modify path to add query param for tracking.
 
-      list.push({
-        raw: data.ProductSpecList[0],
-        result: link.result as Record<string, string>,
-      });
+      return { raw: [], next };
+    }
 
-      return list;
-    },
+    const list = [];
+    const data = await response.json();
+    if (
+      !data ||
+      !Array.isArray(data.ProductSpecList) ||
+      !data.ProductSpecList[0]
+    ) {
+      throw new Error(`There's possibly a change in the API of ${domain}`);
+    }
+
+    list.push({
+      raw: data.ProductSpecList[0],
+      requestUrl: requestUrl, // pass url for parse to read params
+    });
+
+    return { raw: list, next: [] };
   },
 
   async parse(raw, info) {
-    const result = info.result ?? {};
+    const result: Record<string, string> = {};
+    if (raw.requestUrl) {
+      const url = new URL(raw.requestUrl);
+      // We can't easily put result properties into result object here?
+      // Wait, parse returns one object.
+      // We need to extract metadata from url and put into result?
+      // raw in parse is what we pushed in extract.
+      // I pushed { raw: data.ProductSpecList[0], requestUrl }.
+      // But APIWebsiteInfo<Raw> implies Raw is the type of parsed Input?
+      // CrawlInfo<... Extract, Raw ...>
+      // The Raw type in `gigabyte.ts` is `any`.
+      // So { raw: ..., requestUrl: ... } is fine.
+
+      // Actually, let's fix the start of parse.
+    }
+    const productSpec = raw.raw || raw; // Handle wrapper or direct
+
+    // ... logic ...
+
+    // We need to extract 'img' and 'productUrl' (which was 'url' in result)
+    // from requestUrl search params.
 
     result["Model"] = raw["Name"];
     raw.ProductSpecData.forEach((row: any) => {

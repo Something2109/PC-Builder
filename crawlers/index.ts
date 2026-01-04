@@ -29,7 +29,7 @@ if (!filepath) {
   throw new Error("Cannot find path");
 }
 
-if (!filepath.endsWith(".js")) {
+if (!filepath.endsWith(".js") && !filepath.endsWith(".ts")) {
   throw new Error(`Invalid file type: ${path.basename(filepath)}`);
 }
 

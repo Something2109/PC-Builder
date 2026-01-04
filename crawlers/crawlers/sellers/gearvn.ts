@@ -52,22 +52,21 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, RetailProductType> = {
       url.searchParams.set("page", page.toString());
       url.searchParams.set("limit", "500");
 
-      return { url };
+      return { request: url, product };
     }
     return null;
   },
 
-  async extract(link, response) {
-    if (link.type != "page") {
-      return { list: [], links: [] };
-    }
+  async extract(info, response) {
     const data: GearvnJSONResponse = await response.json();
 
     if (Array.isArray(data.products)) {
+      const url = new URL(info.request as string);
+      const page = Number(url.searchParams.get("page"));
+
       return {
-        list: data.products,
-        links: [],
-        pages: link.page + 1,
+        raw: data.products,
+        next: data.products.length ? [this.path!(info.product, page + 1)!] : [],
       };
     }
 

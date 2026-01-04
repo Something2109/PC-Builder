@@ -31,25 +31,26 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
       const url = new URL(`${domain}/${mapping[product]}/`);
       url.searchParams.set("page", page.toString());
 
-      return { url };
+      return { request: url, product };
     }
 
     return null;
   },
 
   async extract(link, response) {
-    if (link.type != "page") return { list: [], links: [] };
-
     const dom = new JSDOM(await response.text()).window.document;
     const itemContainer = dom.getElementById("js-category-holder");
 
     if (itemContainer) {
-      const list = [...dom.querySelectorAll(".p-item")];
+      const raw = [...dom.querySelectorAll(".p-item")];
+      const currentPage = Number(
+        dom.querySelector(".paging-link.active")?.textContent
+      );
 
-      return { list, links: [], pages: link.page + 1 };
+      return { raw, next: [this.path!(link.product, currentPage + 1)!] };
     }
 
-    if (dom.querySelector(".alert-mess")) return { list: [], links: [] };
+    if (dom.querySelector(".alert-mess")) return [];
 
     throw new Error(`There's possibly a change in the API of ${domain}`);
   },

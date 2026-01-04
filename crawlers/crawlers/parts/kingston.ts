@@ -17,44 +17,52 @@ const CrawlInfo: APIWebsiteInfo<Document, Record<string, string>> = {
     if (mapping[product]) {
       const url = new URL(`${domain}/en/${mapping[product]}`);
 
-      return { url };
+      return { request: { url }, product };
     }
 
     return null;
   },
 
-  extract: {
-    page: async (link, response) => {
-      const dom = new JSDOM(await response.text()).window.document;
+  async extract(info, response) {
+    const dom = new JSDOM(await response.text()).window.document;
 
-      const links = [...dom.querySelectorAll(".c-productCard4__image")].map(
-        (raw) => ({
-          request: {
-            url: new URL(`${domain}${raw.getAttribute("href")}`),
-          },
-          result: {
-            url: `${domain}${raw.getAttribute("href")}`,
-            img: `${raw.querySelector("img")?.getAttribute("src")}`,
-          },
-        })
+    // Check for listing page
+    if (dom.querySelector(".c-productCard4__image")) {
+      const next = [...dom.querySelectorAll(".c-productCard4__image")].map(
+        (raw) => {
+          const url = new URL(`${domain}${raw.getAttribute("href")}`);
+          url.searchParams.set(
+            "originalUrl",
+            `${domain}${raw.getAttribute("href")}`
+          );
+          const img = raw.querySelector("img")?.getAttribute("src");
+          if (img) url.searchParams.set("img", img);
+
+          return {
+            request: {
+              url,
+            },
+            product: info.product,
+          };
+        }
       );
+      return { raw: [], next };
+    }
 
-      return { links };
-    },
-
-    product: async (link, response) => {
-      const list = [];
-
-      const dom = new JSDOM(await response.text()).window.document;
-
-      list.push(dom);
-
-      return list;
-    },
+    return { raw: [dom], next: [] };
   },
 
   async parse(raw, info) {
-    const result = info.result ?? {};
+    const result: Record<string, string> = {};
+    const url = new URL(
+      typeof info.request === "string"
+        ? info.request
+        : (info.request as any).url || info.request
+    );
+    if (url.searchParams.has("originalUrl"))
+      result["url"] = url.searchParams.get("originalUrl")!;
+    if (url.searchParams.has("img"))
+      result["img"] = url.searchParams.get("img")!;
     let table = raw.querySelector(".c-table__main");
 
     if (!table) {

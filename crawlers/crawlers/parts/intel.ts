@@ -24,50 +24,56 @@ const CrawlInfo: APIWebsiteInfo<Document, any> = {
       );
       url.searchParams.set("pageNo", page.toString());
 
-      return { url };
+      return { request: { url }, product };
     }
 
     return null;
   },
 
-  extract: {
-    page: async (link, response) => {
-      const dom = new JSDOM(await response.text()).window.document;
+  async extract(info, response) {
+    const text = await response.text();
+    const dom = new JSDOM(text).window.document;
 
-      const links = [
-        ...dom.querySelectorAll(
-          ".ark-product-name.ark-accessible-color.component a"
-        ),
-      ].map((element) => {
+    // Check if it's a search page
+    const productList = dom.querySelectorAll(
+      ".ark-product-name.ark-accessible-color.component a"
+    );
+    const requestUrl = new URL(
+      typeof info.request === "string"
+        ? info.request
+        : (info.request as any).url || info.request
+    );
+
+    if (
+      productList.length > 0 &&
+      requestUrl.toString().includes("advancedFilterSearch")
+    ) {
+      const next = [...productList].map((element) => {
         return {
           request: { url: new URL(`${domain}${element.getAttribute("href")}`) },
+          product: info.product,
         };
       });
+      return { raw: [], next };
+    }
 
-      let pages;
-      if (links.length > 0) {
-        pages = link.page + 1;
-      }
-      return { links, pages };
-    },
+    const element = dom.querySelector(".specs-blade.specifications");
 
-    product: async (link, response) => {
-      const dom = new JSDOM(await response.text()).window.document;
-      const list = [];
-      const element = dom.querySelector(".specs-blade.specifications");
+    if (!element) {
+      // Only throw if we expected product page?
+      // Reuse exception logic
+      const urlStr =
+        typeof info.request === "string"
+          ? info.request
+          : (info.request as any).url?.toString() || info.request.toString();
+      throw new Error(`Cannot find content table in ${urlStr}`);
+    }
 
-      if (!element) {
-        throw new Error(`Cannot find content table in ${link.request.url}`);
-      }
-
-      list.push(dom);
-
-      return list;
-    },
+    return { raw: [dom], next: [] }; // Raw is Document
   },
 
   async parse(raw, info) {
-    const result = info.result ?? {};
+    const result: any = {};
     const title = raw.querySelector(".product-family-title-text .h1");
 
     if (title && title.textContent) {

@@ -25,55 +25,86 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
       url.searchParams.set("ProductLevel1Code", "motherboards-components");
       url.searchParams.set("ProductLevel2Code", mapping[product]);
 
-      return { url };
+      return { request: { url }, product };
     }
 
     return null;
   },
 
-  extract: {
-    page: async (link, response) => {
+  async extract(info, response) {
+    const requestUrl = new URL(
+      typeof info.request === "string"
+        ? info.request
+        : (info.request as any).url || info.request
+    );
+
+    if (requestUrl.toString().includes("SeriesFilterResult")) {
       const data = await response.json();
       if (!data || !data.Result || !Array.isArray(data.Result.ProductList)) {
         throw new Error(`There's possibly a change in the API of ${domain}`);
       }
 
-      const links = data.Result.ProductList.map(
+      const next = data.Result.ProductList.map(
         (raw: { ProductURL: string }) => {
           const url: string = raw.ProductURL;
+          const requestUrl = new URL(
+            `${url}${url.includes("rog") ? "" : "tech"}spec`
+          );
+          requestUrl.searchParams.set("originalUrl", url);
+
           return {
             request: {
-              url: new URL(`${url}${url.includes("rog") ? "" : "tech"}spec`),
+              url: requestUrl,
             },
-            result: { url },
+            product: info.product,
           };
         }
       );
 
-      return { links };
-    },
+      return { raw: [], next };
+    }
 
-    product: async (link, response) => {
-      const list = [];
+    const list: Element[] = [];
 
-      const dom = new JSDOM(await response.text()).window.document;
-      let table = dom.getElementById("productTableBody");
-      if (link.request.url.hostname.includes("rog")) {
-        table = dom.querySelector(".specContent");
-      }
+    const dom = new JSDOM(await response.text()).window.document;
+    const url = new URL(
+      typeof info.request === "string"
+        ? info.request
+        : (info.request as any).url || info.request
+    );
+    let table = dom.getElementById("productTableBody");
+    if (url.hostname.includes("rog")) {
+      table = dom.querySelector(".specContent");
+    }
 
-      if (!table) {
-        throw new Error(`Cannot find content table in ${link.request.url}`);
-      }
+    if (!table) {
+      throw new Error(`Cannot find content table in ${url}`);
+    }
 
-      list.push(table);
+    list.push(table);
 
-      return list;
-    },
+    return { raw: list, next: [] };
   },
 
   async parse(raw, info) {
-    const result = info.result ?? {};
+    const result: Record<string, string> = {
+      Model: "",
+    };
+    const url = new URL(
+      typeof info.request === "string"
+        ? info.request
+        : (info.request as any).url || info.request
+    );
+    if (url.searchParams.has("originalUrl")) {
+      // url might be in result? No, we used it for link presumably?
+      // Actually existing code logic for result['Model'] below handles some of it?
+      // existing code used result from link?
+      // No, existing code used info.result for url?
+      // Actually asus.ts line 48: result: { url }.
+      // line 76: const result = info.result ?? {};
+      // line 93: result["Model"] = ...
+      // So result was accumulator.
+    }
 
     let rowClass = ".TechSpec__rowTable__1LR9D",
       titleClass = ".rowTableTitle",

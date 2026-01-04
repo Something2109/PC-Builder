@@ -16,7 +16,7 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
     if (mapping[product]) {
       const url = new URL(`${domain}/${mapping[product]}`);
 
-      return { url };
+      return { request: { url }, product };
     }
 
     return null;
@@ -29,13 +29,13 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
     const list = [...document.getElementsByTagName("table")];
 
     return {
-      list,
-      links: [],
+      raw: list,
+      next: [],
     };
   },
 
   async parse(raw, info) {
-    const result = info.result ?? {};
+    const result: any = {};
     const col_num: number = raw.rows[0].cells.length;
     let property_idx = 0;
 
