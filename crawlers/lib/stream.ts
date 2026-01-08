@@ -8,6 +8,7 @@ import {
 } from "node:stream";
 import {
   APIWebsiteInfo,
+  CrawlData,
   CrawlInfo,
   FetchFunction,
   InternalStage,
@@ -16,13 +17,6 @@ import {
   isCrawlInfo,
 } from "../interface";
 import { PipelineTransform } from "../utils/pipeline-transform";
-
-const StageSequence = [
-  InternalStage.Init,
-  InternalStage.Fetch,
-  InternalStage.Extract,
-  InternalStage.Parse,
-];
 
 /**
  * The crawl stream extending the Node's {@link Duplex} class.
@@ -44,7 +38,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   >;
   private readonly extractStream: PipelineTransform<
     CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>,
-    CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>
+    CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>[]
   >;
   private readonly parseStream?: PipelineTransform<
     CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>,
@@ -206,10 +200,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   private readonly createFetchStream = () => {
     const api = this.info;
 
-    return new PipelineTransform<
-      CrawlInfo<InternalStage.Init, Raw, Final, Fetched>,
-      CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>
-    >(
+    return new PipelineTransform(
       async (info: CrawlInfo<InternalStage.Init, Raw, Final, Fetched>) => {
         // Default fetch if not provided
         const fetcher: FetchFunction<Fetched> =
@@ -222,7 +213,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
 
         const response = await fetcher(info.data[InternalStage.Init]);
 
-        return this.createNextCrawlInfo(info, response);
+        return this.createNextCrawlInfo(info, InternalStage.Fetch, response);
       },
       {
         concurrency: this.streamOptions?.concurrency ?? 10,
@@ -240,22 +231,25 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   private readonly createExtractStream = () => {
     const api = this.info;
 
-    return new PipelineTransform<
-      CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>,
-      CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>
-    >(async (info: CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>) => {
-      const result = await api.extract(info, info.data.fetch);
+    return new PipelineTransform(
+      async (info: CrawlInfo<InternalStage.Fetch, Raw, Final, Fetched>) => {
+        const result = await api.extract(info, info.data.fetch);
 
-      const { raw, next } = Array.isArray(result)
-        ? { raw: result, next: [] }
-        : result;
+        const { raw, next } = Array.isArray(result)
+          ? { raw: result, next: [] }
+          : result;
 
-      if (next) {
-        next.forEach((item: RequestOptions) => this.inputTransform.write(item));
+        if (next) {
+          next.forEach((item: RequestOptions) =>
+            this.inputTransform.write(item)
+          );
+        }
+
+        return raw.map((item) =>
+          this.createNextCrawlInfo(info, InternalStage.Extract, item)
+        );
       }
-
-      return this.createNextCrawlInfo(info, raw);
-    });
+    );
   };
 
   /**
@@ -266,16 +260,15 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   private readonly createParseStream = () => {
     const api = this.info;
 
-    return new PipelineTransform<
-      CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>,
-      CrawlInfo<InternalStage.Parse, Raw, Final, Fetched>
-    >(async (info: CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>) => {
-      let result: Final = info.data.extract as unknown as Final;
-      if (api.parse) {
-        result = await api.parse(info.data.extract, info);
+    return new PipelineTransform(
+      async (info: CrawlInfo<InternalStage.Extract, Raw, Final, Fetched>) => {
+        let result: Final = info.data.extract as unknown as Final;
+        if (api.parse) {
+          result = await api.parse(info.data.extract, info);
+        }
+        return this.createNextCrawlInfo(info, InternalStage.Parse, result);
       }
-      return this.createNextCrawlInfo(info, result);
-    });
+    );
   };
 
   /**
@@ -322,38 +315,19 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
    * Dynamically assigns the result to the corresponding stage key in `CrawlData`.
    * @param prev The previous `CrawlInfo`.
    * @param result The result from the process function.
-   * @returns The new `CrawlInfo` (or array of infos for Extract stage).
+   * @returns The new `CrawlInfo`.
    */
-  private createNextCrawlInfo(
-    prev: CrawlInfo,
-    result: any
-  ): CrawlInfo | CrawlInfo[] {
-    const stageIndex = StageSequence.indexOf(prev.stage);
-    if (stageIndex === -1) {
-      throw new Error(`Invalid stage: ${prev.stage}`);
-    }
-    const nextStage = StageSequence[stageIndex + 1];
+  private createNextCrawlInfo<
+    Prev extends InternalStage,
+    Stage extends InternalStage
+  >(
+    prev: CrawlInfo<Prev, Raw, Final, Fetched>,
+    stage: Stage,
+    result: CrawlData<Stage, Raw, Final, Fetched>
+  ): CrawlInfo<Stage> {
+    const newData: any = { ...prev.data, [stage]: result };
 
-    const baseInfo = {
-      ...prev,
-      stage: nextStage,
-      product: prev.product,
-    };
-
-    if (Array.isArray(result)) {
-      return result.map((item, index) => ({
-        ...baseInfo,
-        data: { ...prev.data, [nextStage]: item },
-        index,
-      }));
-    }
-
-    const newData: any = { ...prev.data, [nextStage]: result };
-
-    return {
-      ...baseInfo,
-      data: newData,
-    };
+    return { ...prev, stage, data: newData };
   }
 }
 

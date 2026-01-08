@@ -8,12 +8,12 @@ import { ErrorObject } from "../interface";
  */
 class PipelineTransform<T, Final> extends Transform {
   private readonly concurrency: number;
-  private readonly processFn: (chunk: T) => Promise<any>;
+  private readonly processFn: (chunk: T) => Promise<Final>;
   private running: number;
   private pendingCallback: TransformCallback | null;
 
   constructor(
-    processFn: (chunk: T) => Promise<any>,
+    processFn: (chunk: T) => Promise<Final>,
     options?: Omit<TransformOptions, "objectMode"> & {
       concurrency?: number;
     }

@@ -20,27 +20,29 @@ enum InternalStage {
   Parse = "parse",
 }
 
+type CrawlStageResult<Raw, Final, Fetched> = {
+  [InternalStage.Init]: RequestObject;
+  [InternalStage.Fetch]: Fetched;
+  [InternalStage.Extract]: Raw;
+  [InternalStage.Parse]: Final;
+};
+
 /**
  * Mapped type defining the data structure available at each stage.
  * Keys are the stages, values are the cumulative data (product + previous stages' results).
  */
-type CrawlDataMap<Raw, Final, Fetched> = {
-  [InternalStage.Init]: { [InternalStage.Init]: RequestObject };
-  [InternalStage.Fetch]: {
-    [InternalStage.Init]: RequestObject;
-    [InternalStage.Fetch]: Fetched;
-  };
-  [InternalStage.Extract]: {
-    [InternalStage.Init]: RequestObject;
-    [InternalStage.Fetch]: Fetched;
-    [InternalStage.Extract]: Raw;
-  };
-  [InternalStage.Parse]: {
-    [InternalStage.Init]: RequestObject;
-    [InternalStage.Fetch]: Fetched;
-    [InternalStage.Extract]: Raw;
-    [InternalStage.Parse]: Final;
-  };
+type CrawlStageDataMap = {
+  [InternalStage.Init]: InternalStage.Init;
+  [InternalStage.Fetch]: InternalStage.Init | InternalStage.Fetch;
+  [InternalStage.Extract]:
+    | InternalStage.Init
+    | InternalStage.Fetch
+    | InternalStage.Extract;
+  [InternalStage.Parse]:
+    | InternalStage.Init
+    | InternalStage.Fetch
+    | InternalStage.Extract
+    | InternalStage.Parse;
 };
 
 /**
@@ -52,7 +54,7 @@ export type CrawlData<
   Raw,
   Final,
   Fetched
-> = CrawlDataMap<Raw, Final, Fetched>[S];
+> = CrawlStageResult<Raw, Final, Fetched>[S];
 
 interface CrawlInfo<
   S extends InternalStage = InternalStage,
@@ -61,7 +63,7 @@ interface CrawlInfo<
   Fetched = any
 > {
   stage: S;
-  data: CrawlData<S, Raw, Final, Fetched>;
+  data: Pick<CrawlStageResult<Raw, Final, Fetched>, CrawlStageDataMap[S]>;
   request: BaseRequestOptions;
   index: number;
   product: Products;
@@ -91,13 +93,13 @@ export type FetchFunction<Fetched> = (
 ) => Promise<Fetched>;
 
 export type ExtractFunction<Raw, Fetched> = (
-  info: CrawlInfo,
+  info: CrawlInfo<InternalStage.Fetch, Raw>,
   source: Fetched
 ) => Promise<Raw[] | { raw: Raw[]; next: RequestOptions[] }>;
 
 export type ParseFunction<Raw, Result> = (
   raw: Raw,
-  info: CrawlInfo
+  info: CrawlInfo<InternalStage.Extract, Raw, Result>
 ) => Promise<Result>;
 
 /**
