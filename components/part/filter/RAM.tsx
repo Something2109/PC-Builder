@@ -15,7 +15,7 @@ const Components: FilterMapping<RAM.Filter> = {
       {...props}
     />
   ),
-  capacity: ({ value, defaultValue, ...props }) => (
+  capacity: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemoryUnits}
       defaultUnit="GB"

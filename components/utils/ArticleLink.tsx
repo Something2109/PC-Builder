@@ -1,6 +1,7 @@
 import * as Article from "@/utils/article";
 import { ColumnWrapper } from "./FlexWrapper";
 import Link from "next/link";
+import { mergeClass } from "./mergeClass";
 
 const normal =
   "flex flex-col-reverse lg:flex-row p-3 lg:gap-3 border-t-2 border-line lg:rounded-xl lg:border-2";
@@ -13,13 +14,11 @@ function ArticleLink({
   summary,
   ...rest
 }: Parameters<typeof Link>[0] & { summary: Article.Summary }) {
-  let classList = [normal, light, dark];
-  if (className) {
-    classList.push(className);
-  }
-
   return (
-    <Link className={classList.join(" ")} {...rest}>
+    <Link
+      className={mergeClass(`${normal} ${light} ${dark}`, className)}
+      {...rest}
+    >
       <picture className="w-full *:w-full lg:min-w-48 lg:max-w-48 aspect-video content-center">
         <img
           src="/images/icons/pc.png"

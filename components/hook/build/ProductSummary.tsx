@@ -55,7 +55,7 @@ function useProductSummary(product: Products): ProductLoad {
           setData(null);
         }
       }),
-    [product, params, page, includeBuild]
+    [list, product, params, page, includeBuild]
   );
 
   return {

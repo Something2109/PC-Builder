@@ -7,9 +7,9 @@ import { FormFactor } from "@/utils/interface";
 
 function Component({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue?: CasePSUSupport.DTO[] | null;
-}) {
+}>) {
   const defaultValueObj = defaultValue?.map((val) => val.psu_support) ?? [];
 
   return (
@@ -43,7 +43,7 @@ function Component({
 function submit(formData: FormData) {
   return formData
     .entries()
-    .map(([key, psu_support]) =>
+    .map(([_, psu_support]) =>
       CasePSUSupport.Schemas.DTO.parse({ psu_support })
     )
     .toArray();

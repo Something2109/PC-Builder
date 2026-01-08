@@ -3,7 +3,11 @@ import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import * as CPUMemory from "@/utils/part/info/CPUMemory";
 import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
 
-export default ({ defaultValue }: { defaultValue: CPUMemory.DTO[] }) => (
+const CPUMemoryTable = ({
+  defaultValue,
+}: {
+  defaultValue: CPUMemory.DTO[];
+}) => (
   <Table.Component>
     <Table.Head>
       <Table.Row>
@@ -49,3 +53,5 @@ export default ({ defaultValue }: { defaultValue: CPUMemory.DTO[] }) => (
     </tbody>
   </Table.Component>
 );
+
+export default CPUMemoryTable;

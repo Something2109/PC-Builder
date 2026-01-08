@@ -37,7 +37,7 @@ export default function PartTopicEditPage({
         });
       }
     });
-  }, []);
+  }, [SaveLink]);
 
   async function save() {
     setNoti(null);

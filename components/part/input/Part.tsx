@@ -20,10 +20,10 @@ const Components: InfoComponentObject<
   code_name: (props) => <Input {...props} />,
   brand: (props) => <Input {...props} />,
   series: (props) => <Input {...props} />,
-  url: ({ defaultValue, value, ...props }) => (
+  url: ({ defaultValue, value: _, ...props }) => (
     <Input defaultValue={defaultValue ?? undefined} {...props} required />
   ),
-  launch_date: ({ defaultValue, value, ...props }) => (
+  launch_date: ({ defaultValue, value: _, ...props }) => (
     <Input
       type="date"
       defaultValue={new Date(defaultValue ?? new Date())
@@ -40,17 +40,17 @@ export default function PartForm({
   path,
   part,
   defaultValue,
-}: {
+}: Readonly<{
   path: string;
   part: Products;
   defaultValue?: Part.DTO;
-}) {
+}>) {
   const [formValue, save, pending, error, setError] = usePartAction(
     path,
     defaultValue
   );
 
-  let { name } = formValue ?? {};
+  const { name } = formValue ?? {};
 
   return (
     <form action={save}>
@@ -106,11 +106,11 @@ function PictureInput({
   part,
   className,
   defaultValue,
-}: {
+}: Readonly<{
   part: Products;
   className?: string;
   defaultValue?: Part.DTO;
-}) {
+}>) {
   const [image, setImage] = useState<string | undefined>(
     defaultValue?.image_url ?? undefined
   );

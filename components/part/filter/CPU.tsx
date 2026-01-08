@@ -16,14 +16,14 @@ const Components: FilterMapping<CPU.Filter> = {
       {...props}
     />
   ),
-  total_cores: ({ value, defaultValue, ...props }) => (
+  total_cores: ({ value, defaultValue: _, ...props }) => (
     <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
   ),
-  total_threads: ({ value, defaultValue, ...props }) => (
+  total_threads: ({ value, defaultValue: _, ...props }) => (
     <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
   ),
 
-  base_frequency: ({ value, defaultValue, ...props }) => (
+  base_frequency: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={FrequencyUnits}
       defaultUnit="GHz"
@@ -33,7 +33,7 @@ const Components: FilterMapping<CPU.Filter> = {
       {...props}
     />
   ),
-  turbo_frequency: ({ value, defaultValue, ...props }) => (
+  turbo_frequency: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={FrequencyUnits}
       defaultUnit="GHz"
@@ -43,7 +43,7 @@ const Components: FilterMapping<CPU.Filter> = {
       {...props}
     />
   ),
-  L3_cache: ({ value, defaultValue, ...props }) => (
+  L3_cache: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemoryUnits}
       defaultUnit="MB"
@@ -53,7 +53,7 @@ const Components: FilterMapping<CPU.Filter> = {
       {...props}
     />
   ),
-  tdp: ({ value, defaultValue, ...props }) => (
+  tdp: ({ value, defaultValue: _, ...props }) => (
     <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
   ),
 };

@@ -14,7 +14,7 @@ const Components: FilterMapping<PSU.Filter> = {
       {...props}
     />
   ),
-  wattage: ({ value, defaultValue, ...props }) => (
+  wattage: ({ value, defaultValue: _, ...props }) => (
     <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
   ),
   efficiency: ({ defaultValue, value, ...props }) => (

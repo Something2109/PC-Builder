@@ -1,50 +1,51 @@
 import { FunctionComponent, HTMLAttributes } from "react";
 import { RowWrapper } from "../../utils/FlexWrapper";
 import { InfoLabel } from "./Table";
+import { mergeClass } from "@/components/utils/mergeClass";
 
-export namespace SummaryTable {
-  const tableClass = "w-full border-separate border-spacing-0";
-  const tableHeader =
-    "hidden z-100 lg:table-header-group font-bold sticky top-32 bg-white dark:bg-background transition-bg";
-  const tableRow =
-    "grid grid-cols-2 border-b-2 *:p-2 lg:table-row *:lg:border-b-2";
-
-  export const Component = ({
+export const SummaryTable = {
+  Component: ({
     className,
+    children,
     ...rest
   }: HTMLAttributes<HTMLTableElement>) => (
     <table
-      className={className ? className.concat(" ", tableClass) : tableClass}
+      className={mergeClass(
+        "w-full border-separate border-spacing-0",
+        className
+      )}
       {...rest}
-    />
-  );
+    >
+      {children}
+    </table>
+  ),
 
-  export const Head = ({
-    className,
-    ...attr
-  }: HTMLAttributes<HTMLTableSectionElement>) => (
+  Head: ({ className, ...attr }: HTMLAttributes<HTMLTableSectionElement>) => (
     <thead
-      className={className ? className.concat(" ", tableHeader) : tableHeader}
+      className={mergeClass(
+        "hidden z-100 lg:table-header-group font-bold sticky top-32 bg-white dark:bg-background transition-bg",
+        className
+      )}
       {...attr}
     />
-  );
+  ),
 
-  export const Row = ({
-    className,
-    ...attr
-  }: HTMLAttributes<HTMLTableRowElement>) => (
+  Row: ({ className, ...attr }: HTMLAttributes<HTMLTableRowElement>) => (
     <tr
-      className={className ? className.concat(" ", tableRow) : tableRow}
+      className={mergeClass(
+        "grid grid-cols-2 border-b-2 *:p-2 lg:table-row *:lg:border-b-2",
+        className
+      )}
       {...attr}
     />
-  );
-}
+  ),
+};
 
-export type InfoSummaryMapping<T extends Record<string, any>> = {
+export type InfoSummaryMapping<T extends Record<string, unknown>> = {
   [key in keyof Required<T>]: FunctionComponent<{ value?: T[key] }>;
 };
 
-export function GenericSummaryCells<T extends Record<string, any>>(
+export function GenericSummaryCells<T extends Record<string, unknown>>(
   Components: InfoSummaryMapping<T>,
   Labels: InfoLabel<T>,
   Attributes: string[]

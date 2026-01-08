@@ -10,8 +10,8 @@ import { useRouter } from "next/navigation";
 export default function useSearchAction(part?: Products) {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
-  const [isTransition, transitioning] = useTransition();
-  let timeout: NodeJS.Timeout | undefined = undefined;
+  const [_, transitioning] = useTransition();
+  const timeout = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const [result, setSearch, pending] = useActionState<Part.Summary[], string>(
     async (prev, str: string) => {
@@ -34,14 +34,14 @@ export default function useSearchAction(part?: Products) {
   );
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => {
       transitioning(() => setSearch(e.target.value));
     }, 500);
   };
 
   const onBlur = () => {
-    clearTimeout(timeout);
+    clearTimeout(timeout.current);
     setTimeout(() => transitioning(() => setSearch("")), 200);
   };
 
@@ -49,8 +49,8 @@ export default function useSearchAction(part?: Products) {
     input.current?.blur();
     const search = input.current?.value;
     if (search && search.length > 0) {
-      timeout = setTimeout(() => {
-        clearTimeout(timeout);
+      timeout.current = setTimeout(() => {
+        clearTimeout(timeout.current);
         router.push(`/search?q=${search}`);
       }, 500);
     }

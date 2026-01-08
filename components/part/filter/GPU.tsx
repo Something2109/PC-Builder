@@ -8,7 +8,7 @@ import { FrequencyUnits, MemoryUnits } from "@/utils/Units";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<GPU.Filter> = {
-  base_frequency: ({ value, defaultValue, ...props }) => (
+  base_frequency: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={FrequencyUnits}
       defaultUnit="MHz"
@@ -18,7 +18,7 @@ const Components: FilterMapping<GPU.Filter> = {
       {...props}
     />
   ),
-  boost_frequency: ({ value, defaultValue, ...props }) => (
+  boost_frequency: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={FrequencyUnits}
       defaultUnit="MHz"
@@ -28,7 +28,7 @@ const Components: FilterMapping<GPU.Filter> = {
       {...props}
     />
   ),
-  memory_size: ({ value, defaultValue, ...props }) => (
+  memory_size: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemoryUnits}
       defaultUnit="GB"
@@ -46,7 +46,7 @@ const Components: FilterMapping<GPU.Filter> = {
       {...props}
     />
   ),
-  tdp: ({ value, defaultValue, ...props }) => (
+  tdp: ({ value, defaultValue: _, ...props }) => (
     <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
   ),
 };

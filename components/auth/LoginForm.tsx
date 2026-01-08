@@ -5,8 +5,9 @@ import { NotificationBar } from "../utils/NotificationBar";
 import { Button } from "../utils/Button";
 import { Input } from "../utils/Input";
 import { useLoginAction } from "../auth";
+import { mergeClass } from "../utils/mergeClass";
 
-export function LoginForm({ pathname }: { pathname?: string }) {
+export function LoginForm({ pathname }: Readonly<{ pathname?: string }>) {
   const [state, formAction, pending, error, setError] =
     useLoginAction(pathname);
 
@@ -62,8 +63,6 @@ export function LoginForm({ pathname }: { pathname?: string }) {
   );
 }
 
-const InputClass = "border-2 rounded-xl px-2 py-1 text-medium";
-
 function LoginField({
   className,
   children,
@@ -81,7 +80,10 @@ function LoginField({
       <Input
         name={name}
         id={id}
-        className={className ? className.concat(" ", InputClass) : InputClass}
+        className={mergeClass(
+          "border-2 rounded-xl px-2 py-1 text-medium",
+          className
+        )}
         {...rest}
       />
     </>

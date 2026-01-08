@@ -8,13 +8,13 @@ type DetailMapping<T = Part.DTO> = {
   [key in Products]?: T[];
 };
 
-const ArrayProducts = [
+const ArrayProducts = new Set<Products>([
   Products.GRAPHIC_CARD,
   Products.RAM,
   Products.SSD,
   Products.HDD,
   Products.FAN,
-];
+]);
 
 class BuildDetailBuilder {
   private readonly details: DetailMapping<Part.Summary>;
@@ -33,14 +33,14 @@ class BuildDetailBuilder {
 
   add(product: Products, summary: Part.Summary) {
     if (
-      !ArrayProducts.includes(product) &&
+      !ArrayProducts.has(product) &&
       this.details[product] &&
       this.details[product].length > 1
     ) {
       return undefined;
     }
 
-    if (!this.details[product]) this.details[product] = [];
+    this.details[product] ??= [];
 
     this.details[product].push(summary);
 
@@ -67,7 +67,7 @@ class BuildDetailBuilder {
       .map(([key, values]) => {
         const list = values.map((val) => val.id);
 
-        if (ArrayProducts.includes(key as Products)) return [key, list];
+        if (ArrayProducts.has(key as Products)) return [key, list];
 
         return [key, list[0]];
       })
@@ -81,7 +81,7 @@ class BuildDetailBuilder {
   detail(): Build.Details<Part.Summary> {
     const entries = Object.entries(this.details)
       .map(([key, list]) => {
-        if (ArrayProducts.includes(key as Products)) return [key, list];
+        if (ArrayProducts.has(key as Products)) return [key, list];
 
         return [key, list[0]];
       })
@@ -110,7 +110,7 @@ function useBuildDetails(defaultValue: Build.Details<Part.Summary>) {
     if (result) setDetails();
   };
 
-  return [details, list, add, remove] as const;
+  return { details, list, add, remove } as const;
 }
 
 type BuildContext = {
@@ -127,11 +127,11 @@ const BuildPartContext = createContext<BuildContext>({
   remove: () => {},
 });
 
-function BuildProvider({ children }: { children: React.ReactNode }) {
-  const [details, list, add, remove] = useBuildDetails({});
+function BuildProvider({ children }: Readonly<{ children: React.ReactNode }>) {
+  const buildDetail = useBuildDetails({});
 
   return (
-    <BuildPartContext.Provider value={{ details, list, add, remove }}>
+    <BuildPartContext.Provider value={buildDetail}>
       {children}
     </BuildPartContext.Provider>
   );

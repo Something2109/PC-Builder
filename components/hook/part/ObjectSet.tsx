@@ -1,23 +1,25 @@
 "use client";
 
-import { useRef, useReducer, useCallback } from "react";
+import { useState } from "react";
 
 type MappingType<T, Key extends string> = { [key in Key]: T };
 
-function toEntries<T extends {}, Key extends string>(obj: MappingType<T, Key>) {
+function toEntries<T extends object, Key extends string>(
+  obj: MappingType<T, Key>
+) {
   return Object.entries(obj) as [Key, T][];
 }
 
 export function useObjectSet<
-  T extends {},
-  ConstructParams extends any[],
+  T extends object,
+  ConstructParams extends unknown[],
   Key extends string
 >(
   construct: (...arg: ConstructParams) => T,
   generateKey: (info: T) => Key,
   defaultValue?: T[] | null
 ) {
-  const SetObject = useRef<MappingType<T, Key>>(
+  const [renderInfos, setRenderInfos] = useState(
     defaultValue?.reduce((acc, curr) => {
       const key = generateKey(curr);
       acc[key] = curr;
@@ -25,60 +27,41 @@ export function useObjectSet<
       return acc;
     }, {} as MappingType<T, Key>) ?? ({} as MappingType<T, Key>)
   );
-  const [renderInfos, setRenderInfos] = useReducer(
-    () => toEntries(SetObject.current),
-    toEntries(SetObject.current)
-  );
 
-  const addT = useCallback(
-    (...arg: ConstructParams) => {
-      const info = construct(...arg);
-      const key = generateKey(info);
+  const addT = (...arg: ConstructParams) => {
+    const info = construct(...arg);
+    const key = generateKey(info);
 
-      if (!SetObject.current[key] && key !== "") {
-        SetObject.current[key] = info;
-        setRenderInfos();
-      }
-    },
-    [defaultValue]
-  );
+    if (!renderInfos[key] && key !== "") {
+      setRenderInfos((prev) => ({ ...prev, [key]: info }));
+    }
+  };
 
-  const deleteT = useCallback(
-    (info: T) => {
-      const key = generateKey(info);
-      delete SetObject.current[key];
-      setRenderInfos();
-    },
-    [defaultValue]
-  );
+  const deleteT = (info: T) => {
+    const key = generateKey(info);
 
-  const existT = useCallback(
-    (key: Key) => Boolean(SetObject.current[key]),
-    [defaultValue]
-  );
+    setRenderInfos(
+      ({ [key]: _, ...newList }) => newList as MappingType<T, Key>
+    );
+  };
 
-  const changeT = useCallback(
-    (info: T, change: Partial<T>) => {
-      const oldKey = generateKey(info);
+  const existT = (key: Key) => Boolean(renderInfos[key]);
 
-      const newObj = { ...info, ...change };
-      const newKey = generateKey(info);
+  const changeT = (info: T, change: Partial<T>) => {
+    const oldKey = generateKey(info);
 
-      if (newKey !== oldKey) {
-        if (newKey === "" || SetObject.current[newKey]) return info;
+    const newObj = { ...info, ...change };
+    const newKey = generateKey(info);
 
-        delete SetObject.current[oldKey];
-        SetObject.current[newKey] = info;
-      }
+    if (newKey === "" || newKey === oldKey || renderInfos[newKey]) return info;
 
-      Object.keys(info).forEach((attr) => {
-        info[attr as keyof T] = newObj[attr as keyof T];
-      });
+    setRenderInfos(
+      ({ [oldKey]: _, ...newList }) =>
+        ({ ...newList, [newKey]: newObj } as MappingType<T, Key>)
+    );
 
-      return info;
-    },
-    [defaultValue]
-  );
+    return newObj;
+  };
 
-  return [renderInfos, addT, deleteT, existT, changeT] as const;
+  return [toEntries(renderInfos), addT, deleteT, existT, changeT] as const;
 }

@@ -22,11 +22,10 @@ const PartInfo = InfoComponent(Components, Part.Label);
 
 export function PartTable({
   defaultValue,
-  ...rest
 }: {
   defaultValue: Part.Model;
 } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) {
-  let { id, part, url } = defaultValue;
+  const { id, part, url } = defaultValue;
 
   return (
     <ResponsiveWrapper className="w-full">

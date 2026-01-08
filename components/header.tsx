@@ -2,18 +2,20 @@
 
 import Link from "next/link";
 import { RowWrapper } from "./utils/FlexWrapper";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { UserPanel } from "./auth/UserPanel";
 import { DarkModeButton } from "./body";
 
 export default function Header() {
+  const [prevPathname, setPrevPathname] = useState("");
   const [navbar, setNavbar] = useState(false);
   const pathname = usePathname();
 
-  useEffect(() => {
+  if (pathname !== prevPathname) {
     setNavbar(false); // Close the navigation panel
-  }, [pathname]);
+    setPrevPathname(pathname);
+  }
 
   return (
     <>
@@ -45,7 +47,7 @@ const smallScreen =
   "sticky z-10 mx-auto top-16 md:top-20 flex flex-row flex-wrap overflow-y-hidden bg-navigation h-fit";
 const mediumScreen = "md:justify-evenly md:max-h-fit";
 
-function NavigationBar({ toggle }: { toggle: boolean }) {
+function NavigationBar({ toggle }: Readonly<{ toggle: boolean }>) {
   return (
     <nav
       className={`transition-nav ${smallScreen} ${mediumScreen} ${
@@ -60,7 +62,10 @@ function NavigationBar({ toggle }: { toggle: boolean }) {
   );
 }
 
-function NavigationButton({ title, link }: { title: string; link: string }) {
+function NavigationButton({
+  title,
+  link,
+}: Readonly<{ title: string; link: string }>) {
   return (
     <Link
       href={link}

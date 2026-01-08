@@ -18,7 +18,7 @@ export function PartSummaryCells({
     );
   }
 
-  let { id, name, part, image_url, brand, series } = defaultValue;
+  const { id, name, part, image_url, brand, series } = defaultValue;
 
   return (
     <>

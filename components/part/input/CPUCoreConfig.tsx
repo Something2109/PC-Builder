@@ -10,9 +10,9 @@ import { memo, useRef } from "react";
 
 function Component({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue?: CPUCoreConfig.DTO[] | null;
-}) {
+}>) {
   const [savedInputValues, addName, deleteName, _, changeName] = useObjectSet(
     (name: string) => ({
       name,
@@ -68,70 +68,70 @@ type MappingFormdata = {
   [key in string]: { [key in string]: string | number };
 };
 
-const ValueRow = memo(
-  ({
-    value,
-    changeName,
-    deleteName,
-  }: {
-    value: CPUCoreConfig.DTO;
-    changeName: (
-      value: CPUCoreConfig.DTO,
-      info: CPUCoreConfig.DTO
-    ) => CPUCoreConfig.DTO;
-    deleteName: (value: CPUCoreConfig.DTO) => void;
-  }) => {
-    const onChange = useDebounce((e: React.ChangeEvent<HTMLInputElement>) => {
-      const info = changeName(value, { name: e.target.value });
-      e.target.value = info.name;
-    }, 1000);
+const UnmemoValueRow = ({
+  value,
+  changeName,
+  deleteName,
+}: {
+  value: CPUCoreConfig.DTO;
+  changeName: (
+    value: CPUCoreConfig.DTO,
+    info: CPUCoreConfig.DTO
+  ) => CPUCoreConfig.DTO;
+  deleteName: (value: CPUCoreConfig.DTO) => void;
+}) => {
+  const onChange = useDebounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    const info = changeName(value, { name: e.target.value });
+    e.target.value = info.name;
+  }, 1000);
 
-    const name = String(new Date().getTime());
+  const name = value.name;
 
-    return (
-      <Table.Row>
-        <Table.Cell>
-          <Input
-            name={`${name}___name`}
-            defaultValue={value.name}
-            onChange={onChange}
-          />
-        </Table.Cell>
-        <Table.Cell>
-          <Input
-            type="number"
-            name={`${name}___count`}
-            defaultValue={value.count ?? 0}
-          />
-        </Table.Cell>
-        <Table.Cell>
-          <UnitInput
-            Unit={FrequencyUnits}
-            name={`${name}___base_frequency`}
-            defaultValue={value.base_frequency ?? 0}
-            defaultUnit="GHz"
-          />
-        </Table.Cell>
-        <Table.Cell className="relative">
-          <UnitInput
-            Unit={FrequencyUnits}
-            name={`${name}___turbo_frequency`}
-            defaultValue={value.turbo_frequency ?? 0}
-            defaultUnit="GHz"
-          />
-          <DeleteButton onClick={() => deleteName(value)} />
-        </Table.Cell>
-      </Table.Row>
-    );
-  }
-);
+  return (
+    <Table.Row>
+      <Table.Cell>
+        <Input
+          name={`${name}___name`}
+          defaultValue={value.name}
+          onChange={onChange}
+        />
+      </Table.Cell>
+      <Table.Cell>
+        <Input
+          type="number"
+          name={`${name}___count`}
+          defaultValue={value.count ?? 0}
+        />
+      </Table.Cell>
+      <Table.Cell>
+        <UnitInput
+          Unit={FrequencyUnits}
+          name={`${name}___base_frequency`}
+          defaultValue={value.base_frequency ?? 0}
+          defaultUnit="GHz"
+        />
+      </Table.Cell>
+      <Table.Cell className="relative">
+        <UnitInput
+          Unit={FrequencyUnits}
+          name={`${name}___turbo_frequency`}
+          defaultValue={value.turbo_frequency ?? 0}
+          defaultUnit="GHz"
+        />
+        <DeleteButton onClick={() => deleteName(value)} />
+      </Table.Cell>
+    </Table.Row>
+  );
+};
+
+const ValueRow = memo(UnmemoValueRow);
 
 function submit(formData: FormData) {
   const raw = formData.entries().reduce((acc, [key, value]) => {
     const [mapping, attr] = key.split("___");
     if (!acc[mapping]) acc[mapping] = {};
 
-    acc[mapping][attr] = attr !== "name" ? Number(value) : value.toString();
+    acc[mapping][attr] = attr === "name" ? (value as string) : Number(value);
 
     return acc;
   }, {} as MappingFormdata);

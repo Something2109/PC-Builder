@@ -3,7 +3,11 @@ import { SuffixDisplay, UnitDisplay } from "@/components/utils/Display";
 import * as CPUCoreConfig from "@/utils/part/info/CPUCoreConfig";
 import { FrequencyUnits } from "@/utils/Units";
 
-export default ({ defaultValue }: { defaultValue: CPUCoreConfig.DTO[] }) => (
+const CPUCoreConfigTable = ({
+  defaultValue,
+}: {
+  defaultValue: CPUCoreConfig.DTO[];
+}) => (
   <Table.Component>
     <Table.Head>
       <Table.Row>
@@ -39,3 +43,5 @@ export default ({ defaultValue }: { defaultValue: CPUCoreConfig.DTO[] }) => (
     </tbody>
   </Table.Component>
 );
+
+export default CPUCoreConfigTable;

@@ -4,11 +4,11 @@ export function NotificationBar({
   message,
   remove,
   alert,
-}: {
+}: Readonly<{
   message: string;
-  remove: Function;
+  remove: () => void;
   alert: boolean;
-}) {
+}>) {
   return (
     <RowWrapper
       className={`rounded-xl p-2 justify-between font-bold text-line ${

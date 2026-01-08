@@ -35,11 +35,11 @@ export async function ServerAuthRole({
   children,
   roles,
   redirect: pathname,
-}: {
+}: Readonly<{
   children: React.ReactNode;
   roles: Roles[];
   redirect?: string;
-}) {
+}>) {
   const user = await verifyToken();
 
   if (!user) redirect(`/auth/refresh?redirect=${pathname ?? "/"}`);

@@ -91,15 +91,15 @@ export const DetailTableComponent: {
   [Infos.PSU_CONNECTOR]: lazy(
     () => import("@/components/part/detail/PSUConnector")
   ),
-};
+} as const;
 
 export function InfoTable({
   info,
   defaultValue,
-}: {
+}: Readonly<{
   info: Infos;
   defaultValue?: any;
-}) {
+}>) {
   const Component = DetailTableComponent[info];
 
   if (

@@ -3,7 +3,7 @@ import { TableHTMLAttributes } from "react";
 export function ObjectTable({
   object,
   ...rest
-}: { object?: {} } & TableHTMLAttributes<HTMLTableElement>) {
+}: { object?: object } & TableHTMLAttributes<HTMLTableElement>) {
   if (!object) return undefined;
 
   return (
@@ -13,7 +13,7 @@ export function ObjectTable({
           if (value) {
             return (
               <tr
-                key={new Date().getTime() + index}
+                key={`table-${key}-${value}-${index}`}
                 className="first:border-t-0 border-t-2 *:rounded-sm"
               >
                 <td className="p-2 font-bold">{key}</td>

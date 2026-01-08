@@ -1,5 +1,4 @@
 import PartList from "@/components/partlist";
-import { notFound } from "next/navigation";
 import React from "react";
 
 export default async function TopicLayout({

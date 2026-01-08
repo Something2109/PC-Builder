@@ -9,9 +9,9 @@ import { memo, useRef } from "react";
 
 function MainComponent({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue?: CaseHardDriveSupport.DTO[] | null;
-}) {
+}>) {
   const groupByPlace = Object.groupBy(defaultValue ?? [], (val) => val.place);
 
   return (
@@ -39,10 +39,10 @@ function MainComponent({
 function PlaceRow({
   place,
   defaultValue,
-}: {
+}: Readonly<{
   place: Case.HardDrivePlace;
   defaultValue?: CaseHardDriveSupport.DTO[];
-}) {
+}>) {
   const [savedInputValues, addName, deleteName, existName] = useObjectSet(
     (form_factor: Case.HardDriveFormFactor) => ({
       place,
@@ -77,7 +77,7 @@ function PlaceRow({
   );
 }
 
-const ValueRow = memo(({ value }: { value: CaseHardDriveSupport.DTO }) => (
+const UnmemoValueRow = ({ value }: { value: CaseHardDriveSupport.DTO }) => (
   <>
     <Table.Cell>
       <label>{value.form_factor}</label>
@@ -87,11 +87,12 @@ const ValueRow = memo(({ value }: { value: CaseHardDriveSupport.DTO }) => (
         type="number"
         name={`${value.place}___${value.form_factor}`}
         defaultValue={value.count ?? 0}
-        onChange={(e) => (value.count = Number(e.target.value))}
       />
     </Table.Cell>
   </>
-));
+);
+
+const ValueRow = memo(UnmemoValueRow);
 
 function AddRow({
   exist,

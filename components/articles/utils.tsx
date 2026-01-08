@@ -10,10 +10,10 @@ import SectionInput from "./input/Section";
 import { Button } from "@/components/utils/Button";
 import { RowWrapper } from "@/components/utils/FlexWrapper";
 
-export type ContentProps<T extends Article.Content> = {
+export type ContentProps<T extends Article.Content> = Readonly<{
   content: T;
   prefix?: string;
-};
+}>;
 
 const DisplayComponent = {
   [Article.ContentName.Paragraph]: Paragraph,
@@ -46,10 +46,10 @@ export function InputRenderer(props: InputContentProps<Article.Content>) {
 export function AddRow({
   list,
   set,
-}: {
+}: Readonly<{
   list: Article.Content[];
   set: React.Dispatch<React.SetStateAction<number>>;
-}) {
+}>) {
   function add(ct: Article.Content) {
     list.push(ct);
     console.log(ct);

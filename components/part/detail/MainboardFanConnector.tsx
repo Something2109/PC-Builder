@@ -1,7 +1,7 @@
 import { Table } from "../utils/Table";
 import * as MainboardFanConnector from "@/utils/part/info/MainboardFanConnector";
 
-export default ({
+const MainboardFanConnectorTable = ({
   defaultValue,
 }: {
   defaultValue: MainboardFanConnector.DTO[];
@@ -25,3 +25,5 @@ export default ({
     </tbody>
   </Table.Component>
 );
+
+export default MainboardFanConnectorTable;

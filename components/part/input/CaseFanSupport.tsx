@@ -9,9 +9,9 @@ import { memo, useRef } from "react";
 
 function MainComponent({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue?: CaseFanSupport.DTO[] | null;
-}) {
+}>) {
   const groupBySide = Object.groupBy(
     defaultValue ?? [],
     (val) => val.case_side
@@ -42,10 +42,10 @@ function MainComponent({
 function SideRow({
   side: case_side,
   defaultValue,
-}: {
+}: Readonly<{
   side: Case.Side;
   defaultValue?: CaseFanSupport.DTO[];
-}) {
+}>) {
   const [savedInputValues, addName, deleteName, existName] = useObjectSet(
     (form_factor: FormFactor.Fan) => ({ case_side, form_factor, count: 0 }),
     (info) => info.form_factor,
@@ -76,7 +76,7 @@ function SideRow({
   );
 }
 
-const ValueRow = memo(({ value }: { value: CaseFanSupport.DTO }) => (
+const UnmemoValueRow = ({ value }: { value: CaseFanSupport.DTO }) => (
   <>
     <Table.Cell>
       <label>{value.form_factor}</label>
@@ -86,11 +86,12 @@ const ValueRow = memo(({ value }: { value: CaseFanSupport.DTO }) => (
         type="number"
         name={`${value.case_side}___${value.form_factor}`}
         defaultValue={value.count ?? 0}
-        onChange={(e) => (value.count = Number(e.target.value))}
       />
     </Table.Cell>
   </>
-));
+);
+
+const ValueRow = memo(UnmemoValueRow);
 
 function AddRow({
   exist,

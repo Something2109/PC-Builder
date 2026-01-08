@@ -2,7 +2,7 @@ import { ExternalPorts } from "@/utils/interface";
 import { Table } from "../utils/Table";
 import * as MainboardUSBConnector from "@/utils/part/info/MainboardUSBConnector";
 
-export default ({
+const MainboardUSBConnectorTable = ({
   defaultValue,
 }: {
   defaultValue: MainboardUSBConnector.DTO[];
@@ -23,3 +23,5 @@ export default ({
     </tbody>
   </Table.Component>
 );
+
+export default MainboardUSBConnectorTable;

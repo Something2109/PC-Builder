@@ -31,7 +31,6 @@ export default function SummaryTable({
   part,
   data,
   Cells = [],
-  className,
   ...rest
 }: {
   part: Products;
@@ -50,14 +49,14 @@ export default function SummaryTable({
         </Table.Row>
       </Table.Head>
       <tbody>
-        {data.map((product, index) => (
+        {data.map((product) => (
           <Table.Row
-            key={`Row-${index}`}
+            key={`Row-${product.id}`}
             className="hover:rounded-lg hover:bg-line hover:dark:text-background"
           >
             {Components.map((Component) => (
               <Component
-                key={`Row-${Component.name}-${index}`}
+                key={`Row-${Component.name}-${product.id}`}
                 defaultValue={product}
               />
             ))}

@@ -18,7 +18,7 @@ type CustomFilterComponent<Value> = FunctionComponent<
   >
 >;
 
-export type FilterMapping<T extends Record<string, any>> = {
+export type FilterMapping<T extends Record<string, unknown>> = {
   [key in keyof Required<T>]: CustomFilterComponent<T[key]>;
 };
 
@@ -26,7 +26,7 @@ export function GenericFilterBar<T extends Record<string, string[] | number[]>>(
   Components: FilterMapping<T>,
   Labels: InfoLabel<T>
 ) {
-  return ({
+  const FilterBar = ({
     product,
     context,
   }: {
@@ -52,6 +52,8 @@ export function GenericFilterBar<T extends Record<string, string[] | number[]>>(
       ))}
     </>
   );
+
+  return FilterBar;
 }
 
 function FilterAttributeComponent<Value>({
@@ -60,13 +62,13 @@ function FilterAttributeComponent<Value>({
   context,
   label,
   Component,
-}: {
+}: Readonly<{
   product: Products;
   attribute: string;
   context: URLSearchParams;
   label: string;
   Component: CustomFilterComponent<Value>;
-}) {
+}>) {
   const [state, setState] = useState<Value | null>(null);
 
   useEffect(() => {

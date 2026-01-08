@@ -1,7 +1,11 @@
 import { Table } from "../utils/Table";
 import * as PSUConnector from "@/utils/part/info/PSUConnector";
 
-export default ({ defaultValue }: { defaultValue: PSUConnector.DTO[] }) => (
+const PSUConnectorTable = ({
+  defaultValue,
+}: {
+  defaultValue: PSUConnector.DTO[];
+}) => (
   <Table.Component>
     <Table.Head>
       <Table.Row>
@@ -19,3 +23,5 @@ export default ({ defaultValue }: { defaultValue: PSUConnector.DTO[] }) => (
     </tbody>
   </Table.Component>
 );
+
+export default PSUConnectorTable;

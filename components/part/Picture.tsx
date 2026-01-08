@@ -1,8 +1,9 @@
 "use client";
 
-import { ImgHTMLAttributes, useRef } from "react";
+import { ImgHTMLAttributes } from "react";
+import { mergeClass } from "../utils/mergeClass";
 
-const defaultClass = "aspect-square rounded-lg content-center bg-white p-1";
+const createDefaultUrl = (part: string) => `/images/icons/${part}.png`;
 
 export default function PartPicture({
   part,
@@ -12,20 +13,23 @@ export default function PartPicture({
 }: {
   part: string;
 } & ImgHTMLAttributes<HTMLImageElement>) {
-  const defaultUrl = useRef(`/images/icons/${part}.png`);
+  const defaultUrl = createDefaultUrl(part);
 
   return (
     <picture
-      className={className ? className.concat(" ", defaultClass) : defaultClass}
+      className={mergeClass(
+        "aspect-square rounded-lg content-center bg-white p-1",
+        className
+      )}
     >
       <img
-        src={src ?? defaultUrl.current}
-        alt={`${part} picture`}
+        src={src ?? defaultUrl}
+        alt={`${part}`}
         className="mx-auto object-cover object-center overflow-hidden"
         onError={(e) => {
           if (onError) onError(e);
           e.currentTarget.onerror = null;
-          e.currentTarget.src = defaultUrl.current;
+          e.currentTarget.src = defaultUrl;
         }}
       />
     </picture>

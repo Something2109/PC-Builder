@@ -14,13 +14,15 @@ const DarkChanger = createContext<Dispatch<SetStateAction<boolean>> | null>(
   null
 );
 
-export function ThemeBody({ children }: { children: React.ReactNode }) {
+export function ThemeBody({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const [dark, setDark] = useState(true);
 
   useLayoutEffect(() => {
     setDark(
-      window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
+      globalThis.window.matchMedia &&
+        globalThis.window.matchMedia("(prefers-color-scheme: dark)").matches
     );
   }, []);
 
