@@ -25,7 +25,7 @@ const CrawlInfo: APIWebsiteInfo<Element[], Record<string, string>[]> = {
     return null;
   },
 
-  async extract(info, response) {
+  async extract(response, info) {
     const dom = new JSDOM(await response.text()).window.document;
 
     const requestUrl = new URL(

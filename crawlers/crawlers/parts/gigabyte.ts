@@ -40,7 +40,7 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
     return null;
   },
 
-  async extract(info, response) {
+  async extract(response, info) {
     const requestUrl = new URL(
       typeof info.request === "string"
         ? info.request
@@ -126,7 +126,7 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
     return { raw: list, next: [] };
   },
 
-  async parse(raw, info) {
+  async parse(raw) {
     const result: Record<string, string> = {};
     if (raw.requestUrl) {
       const url = new URL(raw.requestUrl);

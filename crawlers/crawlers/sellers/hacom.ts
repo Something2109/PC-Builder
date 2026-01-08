@@ -64,7 +64,7 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, RetailProductType> = {
     return null;
   },
 
-  async extract(info, response) {
+  async extract(response, info) {
     const data: HacomJSONResponse = await response.json();
 
     if (Array.isArray(data.data)) {

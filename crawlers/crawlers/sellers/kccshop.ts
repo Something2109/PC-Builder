@@ -37,7 +37,7 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
     return null;
   },
 
-  async extract(link, response) {
+  async extract(response, info) {
     const dom = new JSDOM(await response.text()).window.document;
     const itemContainer = dom.getElementById("js-category-holder");
 
@@ -47,7 +47,7 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
         dom.querySelector(".paging-link.active")?.textContent
       );
 
-      return { raw, next: [this.path!(link.product, currentPage + 1)!] };
+      return { raw, next: [this.path!(info.product, currentPage + 1)!] };
     }
 
     if (dom.querySelector(".alert-mess")) return [];

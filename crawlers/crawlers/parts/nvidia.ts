@@ -22,7 +22,7 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
     return null;
   },
 
-  async extract(link, response) {
+  async extract(response) {
     const htmlText = await new Response(response.body).text();
 
     const document = new JSDOM(htmlText).window.document;
@@ -34,7 +34,7 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
     };
   },
 
-  async parse(raw, info) {
+  async parse(raw) {
     const result: any = {};
     const col_num: number = raw.rows[0].cells.length;
     let property_idx = 0;

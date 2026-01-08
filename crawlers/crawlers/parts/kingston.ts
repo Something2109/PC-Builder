@@ -23,7 +23,7 @@ const CrawlInfo: APIWebsiteInfo<Document, Record<string, string>> = {
     return null;
   },
 
-  async extract(info, response) {
+  async extract(response, info) {
     const dom = new JSDOM(await response.text()).window.document;
 
     // Check for listing page

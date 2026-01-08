@@ -37,7 +37,7 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
     return null;
   },
 
-  async extract(info, response) {
+  async extract(response, info) {
     const requestUrl = new URL(
       typeof info.request === "string"
         ? info.request

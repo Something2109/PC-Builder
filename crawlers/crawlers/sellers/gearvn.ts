@@ -57,7 +57,7 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, RetailProductType> = {
     return null;
   },
 
-  async extract(info, response) {
+  async extract(response, info) {
     const data: GearvnJSONResponse = await response.json();
 
     if (Array.isArray(data.products)) {

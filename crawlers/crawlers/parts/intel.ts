@@ -30,7 +30,7 @@ const CrawlInfo: APIWebsiteInfo<Document, any> = {
     return null;
   },
 
-  async extract(info, response) {
+  async extract(response, info) {
     const text = await response.text();
     const dom = new JSDOM(text).window.document;
 
@@ -72,7 +72,7 @@ const CrawlInfo: APIWebsiteInfo<Document, any> = {
     return { raw: [dom], next: [] }; // Raw is Document
   },
 
-  async parse(raw, info) {
+  async parse(raw) {
     const result: any = {};
     const title = raw.querySelector(".product-family-title-text .h1");
 

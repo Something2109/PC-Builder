@@ -37,7 +37,7 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
     return null;
   },
 
-  async extract(info, response) {
+  async extract(response, info) {
     const dom = new JSDOM(await response.text()).window.document;
     const itemContainer = dom.querySelector(".product-list");
 
