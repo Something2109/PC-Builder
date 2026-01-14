@@ -14,12 +14,12 @@ RUN npm ci
 # builder and dev stages to avoid duplicating the COPY commands.
 FROM deps AS app-source
 
-COPY docker/nestjs/next-env.d.ts ./
-COPY docker/nestjs/next.config.js ./
-COPY docker/nestjs/postcss.config.js ./
-COPY docker/nestjs/tailwind.config.js ./
+COPY docker/nextjs/next-env.d.ts ./
+COPY docker/nextjs/next.config.js ./
+COPY docker/nextjs/postcss.config.js ./
+COPY docker/nextjs/tailwind.config.js ./
 COPY docker/nextjs/tsconfig.json ./
-COPY docker/nestjs/eslint.config.mjs ./
+COPY docker/nextjs/eslint.config.mjs ./
 COPY utils ./utils
 COPY public ./public
 COPY components ./components
