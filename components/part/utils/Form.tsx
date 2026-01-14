@@ -8,7 +8,7 @@ export function GenericInputField<T>(
   InputComponent: FunctionComponent<{ defaultValue?: T | null }>,
   transform: (data: FormData) => T
 ) {
-  return ({
+  const InputField = ({
     pending,
     onSubmit,
     ...props
@@ -40,6 +40,8 @@ export function GenericInputField<T>(
       </>
     );
   };
+
+  return InputField;
 }
 
 export function defaultParse(data: FormData) {

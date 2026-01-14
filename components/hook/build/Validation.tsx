@@ -15,7 +15,7 @@ type Validation = {
 const ValidationContext = createContext<Validation>({
   result: DefaultResult,
   pending: false,
-  validate: function (list: Build.List): void {
+  validate: function (): void {
     throw new Error("You are trying to call validate without a context.");
   },
 });
@@ -39,20 +39,16 @@ function useValidateAction() {
     DefaultResult
   );
 
-  return [state, setState, pending] as const;
+  return { result: state, validate: setState, pending } as const;
 }
 
-function ValidationProvider({ children }: { children: React.ReactNode }) {
-  const [result, validate, pending] = useValidateAction();
+function ValidationProvider({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  const validation = useValidateAction();
 
   return (
-    <ValidationContext.Provider
-      value={{
-        result,
-        pending,
-        validate,
-      }}
-    >
+    <ValidationContext.Provider value={validation}>
       {children}
     </ValidationContext.Provider>
   );

@@ -1,11 +1,11 @@
 import { Table } from "../utils/Table";
 import * as CaseHardDriveSupport from "@/utils/part/info/CaseHardDriveSupport";
 
-export default function CaseHardDriveSupportDisplay({
+const CaseHardDriveSupportDisplay = ({
   defaultValue,
 }: {
   defaultValue: CaseHardDriveSupport.DTO[];
-}) {
+}) => {
   const value = Object.groupBy(defaultValue, (val) => val.place);
 
   return (
@@ -34,4 +34,6 @@ export default function CaseHardDriveSupportDisplay({
       </tbody>
     </Table.Component>
   );
-}
+};
+
+export default CaseHardDriveSupportDisplay;

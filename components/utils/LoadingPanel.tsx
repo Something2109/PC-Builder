@@ -2,8 +2,7 @@
 
 import { ColumnWrapper } from "./FlexWrapper";
 import { DetailedHTMLProps, HTMLAttributes, useEffect, useRef } from "react";
-
-const defaultClass = "justify-center items-center gap-4";
+import { mergeClass } from "./mergeClass";
 
 export default function LoadingPanel({
   text,
@@ -25,11 +24,11 @@ export default function LoadingPanel({
     }, 200);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [text]);
 
   return (
     <ColumnWrapper
-      className={className ? defaultClass.concat(" ", className) : defaultClass}
+      className={mergeClass("justify-center items-center gap-4", className)}
       {...rest}
     >
       <h1 ref={LoadingText} className="block text-bold text-2xl">

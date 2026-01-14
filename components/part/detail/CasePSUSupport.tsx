@@ -1,7 +1,11 @@
 import { Table } from "../utils/Table";
 import * as CasePSUSupport from "@/utils/part/info/CasePSUSupport";
 
-export default ({ defaultValue }: { defaultValue: CasePSUSupport.DTO[] }) => (
+const CasePSUSupportTable = ({
+  defaultValue,
+}: {
+  defaultValue: CasePSUSupport.DTO[];
+}) => (
   <Table.Component>
     <Table.Head>
       <Table.Row>
@@ -17,3 +21,5 @@ export default ({ defaultValue }: { defaultValue: CasePSUSupport.DTO[] }) => (
     </tbody>
   </Table.Component>
 );
+
+export default CasePSUSupportTable;

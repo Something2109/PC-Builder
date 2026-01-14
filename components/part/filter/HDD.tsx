@@ -16,7 +16,7 @@ const Components: FilterMapping<HDD.Filter> = {
       {...props}
     />
   ),
-  capacity: ({ value, defaultValue, ...props }) => (
+  capacity: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemoryUnits}
       defaultUnit="GB"
@@ -34,7 +34,7 @@ const Components: FilterMapping<HDD.Filter> = {
       {...props}
     />
   ),
-  read_speed: ({ value, defaultValue, ...props }) => (
+  read_speed: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemorySpeedUnit}
       defaultUnit="MB/s"
@@ -44,7 +44,7 @@ const Components: FilterMapping<HDD.Filter> = {
       {...props}
     />
   ),
-  write_speed: ({ value, defaultValue, ...props }) => (
+  write_speed: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemorySpeedUnit}
       defaultUnit="MB/s"
@@ -54,7 +54,7 @@ const Components: FilterMapping<HDD.Filter> = {
       {...props}
     />
   ),
-  rotational_speed: ({ value, defaultValue, ...props }) => (
+  rotational_speed: ({ value, defaultValue: _, ...props }) => (
     <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
   ),
 };

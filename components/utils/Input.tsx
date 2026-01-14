@@ -12,6 +12,7 @@ import {
 } from "react";
 import { RowWrapper } from "./FlexWrapper";
 import { UnitInterface } from "@/utils/Units";
+import { mergeClass } from "./mergeClass";
 
 const defaultStyle = "only:w-full bg-transparent resize-none overflow-y-hidden";
 const rangeDivStyle = "relative hidden md:block w-full top-1.5";
@@ -23,11 +24,6 @@ type TextAreaProps = DetailedHTMLProps<
 >;
 
 export function TextArea({ className, ...rest }: TextAreaProps) {
-  let classList = [defaultStyle, "px-1"];
-  if (className) {
-    classList.push(className);
-  }
-
   const textarea = useRef<HTMLTextAreaElement>(null);
   const resize = () => {
     textarea.current!.style.height = "auto";
@@ -39,7 +35,7 @@ export function TextArea({ className, ...rest }: TextAreaProps) {
     <textarea
       ref={textarea}
       rows={1}
-      className={classList.join(" ")}
+      className={mergeClass(`${defaultStyle} px-1`, className)}
       onInput={resize}
       {...rest}
     />
@@ -52,14 +48,9 @@ type InputProps = DetailedHTMLProps<
 >;
 
 export function Input({ className, type, defaultValue, ...rest }: InputProps) {
-  const classList = [defaultStyle, "px-1"];
-  if (className) {
-    classList.push(className);
-  }
-
   return (
     <input
-      className={classList.join(" ")}
+      className={mergeClass(`${defaultStyle} px-1`, className)}
       type={type}
       defaultValue={defaultValue}
       {...rest}
@@ -84,6 +75,7 @@ export function UnitInput<T extends string>({
   defaultUnit,
   name,
   defaultValue,
+  onChange,
   ...rest
 }: {
   Unit: UnitInterface<T>;
@@ -92,13 +84,12 @@ export function UnitInput<T extends string>({
   const SubmitInput = useRef<HTMLInputElement>(null);
   defaultValue = defaultValue ?? 0;
 
-  const defaultOnchange = rest.onChange;
-  rest.onChange = useCallback(
+  const onChangeInput = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.currentTarget.value;
 
       const result = Unit.parse(value);
-      if (result && result[0]) {
+      if (result?.[0]) {
         e.currentTarget.value = `${result[0]} ${result[1]}`;
         SubmitInput.current!.value = Unit.exchange(
           result[0],
@@ -112,15 +103,19 @@ export function UnitInput<T extends string>({
       e.currentTarget = SubmitInput.current!;
       e.target = SubmitInput.current!;
 
-      defaultOnchange?.call(defaultOnchange, e);
+      onChange?.call(onChange, e);
     },
-    [Unit]
+    [defaultUnit, Unit, onChange]
   );
 
   return (
     <>
       <input type="hidden" ref={SubmitInput} name={name} value={defaultValue} />
-      <Input defaultValue={`${defaultValue} ${defaultUnit}`} {...rest} />
+      <Input
+        defaultValue={`${defaultValue} ${defaultUnit}`}
+        onChange={onChangeInput}
+        {...rest}
+      />
     </>
   );
 }
@@ -131,12 +126,7 @@ type SelectProps = DetailedHTMLProps<
 >;
 
 export function Select({ className, ...rest }: SelectProps) {
-  const classList = [defaultStyle];
-  if (className) {
-    classList.push(className);
-  }
-
-  return <select className={classList.join(" ")} {...rest} />;
+  return <select className={mergeClass(defaultStyle, className)} {...rest} />;
 }
 
 export function OptionSelect({
@@ -145,7 +135,7 @@ export function OptionSelect({
 }: { options: string[] | number[] } & SelectProps) {
   return (
     <Select {...rest}>
-      {!Boolean(rest.required) && (
+      {!rest.required && (
         <option className="text-background" value={""}>
           None
         </option>
@@ -153,7 +143,7 @@ export function OptionSelect({
       {options.map((value) => (
         <option
           className="text-background"
-          key={`options-${rest.name ?? new Date().getTime()}-${value}`}
+          key={`options-${rest.name}-${value}`}
           value={value}
         >
           {value}
@@ -170,7 +160,7 @@ export function ChoiceInput({
   ...rest
 }: {
   type: "checkbox" | "radio";
-} & InputProps) {
+} & Omit<InputProps, "type">) {
   const id = `choice-${type}-${name}-${value}`;
 
   return (
@@ -189,7 +179,7 @@ export function MultipleChoiceInput({
 }: {
   value: string[];
   defaultValue?: string[];
-} & Omit<InputHTMLAttributes<HTMLInputElement>, "defaultValue" | "value">) {
+} & Omit<InputProps, "defaultValue" | "value">) {
   return (
     <RowWrapper className={className}>
       {value.map((val) => (
@@ -205,11 +195,7 @@ export function MultipleChoiceInput({
   );
 }
 
-export function MinMaxRangeInput({
-  name,
-  id,
-  ...props
-}: InputHTMLAttributes<HTMLInputElement>) {
+export function MinMaxRangeInput({ name, id, ...props }: InputProps) {
   const minInput = useRef<HTMLInputElement>(null);
   const maxInput = useRef<HTMLInputElement>(null);
   const minRangeInput = useRef<HTMLInputElement>(null);
@@ -227,7 +213,7 @@ export function MinMaxRangeInput({
     maxInput.current!.value = value[1].toString();
     minRangeInput.current!.value = value[0].toString();
     maxRangeInput.current!.value = value[1].toString();
-  }, [min, max]);
+  }, []);
 
   const onRangeInput = useCallback(() => {
     const value: [number, number] = [
@@ -238,7 +224,7 @@ export function MinMaxRangeInput({
 
     minInput.current!.value = value[0].toString();
     maxInput.current!.value = value[1].toString();
-  }, [min, max]);
+  }, []);
 
   return (
     <RowWrapper className="overflow-clip">
@@ -296,7 +282,7 @@ export function UnitMinMaxRangeInput<T extends string>({
 }: {
   Unit: UnitInterface<T>;
   defaultUnit: NoInfer<T>;
-} & Omit<InputHTMLAttributes<HTMLInputElement>, "type">) {
+} & Omit<InputProps, "type">) {
   const minInput = useRef<HTMLInputElement>(null);
   const maxInput = useRef<HTMLInputElement>(null);
   const minRangeInput = useRef<HTMLInputElement>(null);
@@ -306,7 +292,7 @@ export function UnitMinMaxRangeInput<T extends string>({
     const min = Unit.parse(minInput.current!.value);
     const max = Unit.parse(maxInput.current!.value);
 
-    if (!min || !min[0] || !max || !max[0]) return;
+    if (!min?.[0] || !max?.[0]) return;
 
     const value = [min, max];
     value.sort((a, b) => a[0]! - Unit.exchange(b[0]!, b[1], a[1]));
@@ -323,7 +309,7 @@ export function UnitMinMaxRangeInput<T extends string>({
     ).toString();
     minInput.current!.value = `${value[0][0]} ${value[0][1]}`;
     maxInput.current!.value = `${value[1][0]} ${value[1][1]}`;
-  }, [props.min, props.max, Unit]);
+  }, [Unit, defaultUnit]);
 
   const onRangeInput = useCallback(() => {
     const value: [number, number] = [
@@ -334,7 +320,7 @@ export function UnitMinMaxRangeInput<T extends string>({
 
     minInput.current!.value = `${value[0]} ${defaultUnit}`;
     maxInput.current!.value = `${value[1]} ${defaultUnit}`;
-  }, [props.min, props.max, Unit]);
+  }, [defaultUnit]);
 
   return (
     <RowWrapper className="overflow-clip">

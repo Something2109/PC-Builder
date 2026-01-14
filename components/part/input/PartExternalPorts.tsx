@@ -10,9 +10,9 @@ import { memo, useRef, useState } from "react";
 
 function Component({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue?: PartExternalPorts.DTO[] | null;
-}) {
+}>) {
   const [SavedInputValues, addName, deleteName] = useObjectSet(
     (type: ExternalPorts.Type, name: ExternalPorts) => ({
       type,
@@ -80,9 +80,9 @@ function usePortType() {
 
 function AddRow({
   add,
-}: {
+}: Readonly<{
   add: (type: ExternalPorts.Type, name: ExternalPorts) => void;
-}) {
+}>) {
   const NameInput = useRef<HTMLInputElement>(null);
   const [type, port, setType, setPort] = usePortType();
 
@@ -143,13 +143,13 @@ function PortTypeInputField({
   ));
 }
 
-const ValueRow = memo(function ({
+function UnmemoValueRow({
   value,
   deleteName: onDelete,
-}: {
+}: Readonly<{
   value: PartExternalPorts.DTO;
   deleteName: (value: PartExternalPorts.DTO) => void;
-}) {
+}>) {
   const key = `${value.type} ${value.name}`;
 
   return (
@@ -163,13 +163,14 @@ const ValueRow = memo(function ({
           type="number"
           name={`${key}___count`}
           defaultValue={value.count ?? 0}
-          onChange={(e) => (value.count = Number(e.target.value))}
         />
         <DeleteButton onClick={() => onDelete(value)} />
       </Table.Cell>
     </>
   );
-});
+}
+
+const ValueRow = memo(UnmemoValueRow);
 
 type MappingFormdata = {
   [key in string]: { [key in string]: string | number };
@@ -180,14 +181,14 @@ function submit(formData: FormData) {
     const [mapping, attr] = key.split("___");
     if (!acc[mapping]) acc[mapping] = {};
 
-    acc[mapping][attr] = attr === "count" ? Number(value) : value.toString();
+    acc[mapping][attr] = attr === "count" ? Number(value) : (value as string);
 
     return acc;
   }, {} as MappingFormdata);
 
   return Object.values(raw)
     .map((val) => PartExternalPorts.Schemas.DTO.parse(val))
-    .filter((val: any) => val.count);
+    .filter((val) => val.count);
 }
 
 export default GenericInputField(Component, submit);

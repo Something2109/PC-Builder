@@ -10,7 +10,10 @@ function createPayload(formData: FormData | null) {
   };
 
   if (formData) {
-    const raw = Object.fromEntries(formData.entries()) as any;
+    const raw = Object.fromEntries(formData.entries()) as Record<
+      string,
+      string | undefined
+    >;
     if (!raw.url) raw.url = undefined;
     if (!raw.image_url) raw.image_url = undefined;
 
@@ -30,7 +33,9 @@ export default function usePartAction(path: string, defaultValue?: Part.DTO) {
     Part.DTO | undefined,
     FormData | null
   >(async (prev, formData) => {
-    const operation = prev ? (formData ? "save" : "delete") : "add";
+    let operation = "add";
+    if (!prev) operation = formData ? "save" : "delete";
+
     const RequestPayload = { ...createPayload(formData), url: path };
 
     setError(null);

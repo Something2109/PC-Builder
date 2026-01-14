@@ -9,9 +9,9 @@ import { memo } from "react";
 
 function Component({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue?: CPUBlockSocketSupport.DTO[] | null;
-}) {
+}>) {
   const [socketSet, addName, deleteName, _, changeSocket] = useObjectSet(
     () => ({ socket: "" }),
     (info: CPUBlockSocketSupport.DTO) => info.socket,
@@ -46,38 +46,34 @@ function Component({
   );
 }
 
-const ValueRow = memo(
-  ({
-    value,
-    changeSocket,
-    deleteName,
-  }: {
-    value: CPUBlockSocketSupport.DTO;
-    changeSocket: (
-      value: CPUBlockSocketSupport.DTO,
-      info: CPUBlockSocketSupport.DTO
-    ) => CPUBlockSocketSupport.DTO;
-    deleteName: (value: CPUBlockSocketSupport.DTO) => void;
-  }) => {
-    const onChange = useDebounce((e: React.ChangeEvent<HTMLInputElement>) => {
-      const info = changeSocket(value, { socket: e.target.value });
-      e.target.value = info.socket;
-    }, 500);
+const UnmemoValueRow = ({
+  value,
+  changeSocket,
+  deleteName,
+}: {
+  value: CPUBlockSocketSupport.DTO;
+  changeSocket: (
+    value: CPUBlockSocketSupport.DTO,
+    info: CPUBlockSocketSupport.DTO
+  ) => CPUBlockSocketSupport.DTO;
+  deleteName: (value: CPUBlockSocketSupport.DTO) => void;
+}) => {
+  const onChange = useDebounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    const info = changeSocket(value, { socket: e.target.value });
+    e.target.value = info.socket;
+  }, 500);
 
-    return (
-      <Table.Row>
-        <Table.Cell className="relative">
-          <Input
-            name="socket"
-            defaultValue={value.socket}
-            onChange={onChange}
-          />
-          <DeleteButton onClick={() => deleteName(value)} />
-        </Table.Cell>
-      </Table.Row>
-    );
-  }
-);
+  return (
+    <Table.Row>
+      <Table.Cell className="relative">
+        <Input name="socket" defaultValue={value.socket} onChange={onChange} />
+        <DeleteButton onClick={() => deleteName(value)} />
+      </Table.Cell>
+    </Table.Row>
+  );
+};
+
+const ValueRow = memo(UnmemoValueRow);
 
 function submit(formData: FormData) {
   return formData

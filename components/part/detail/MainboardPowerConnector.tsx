@@ -1,7 +1,7 @@
 import { Table } from "../utils/Table";
 import * as MainboardPowerConnector from "@/utils/part/info/MainboardPowerConnector";
 
-export default ({
+const MainboardPowerConnectorTable = ({
   defaultValue,
 }: {
   defaultValue: MainboardPowerConnector.DTO[];
@@ -23,3 +23,5 @@ export default ({
     </tbody>
   </Table.Component>
 );
+
+export default MainboardPowerConnectorTable;

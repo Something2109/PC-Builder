@@ -1,7 +1,7 @@
 import { Table } from "../utils/Table";
 import * as CPUBlockSocketSupport from "@/utils/part/info/CPUBlockSocketSupport";
 
-export default ({
+const CPUBlockSocketSupportTable = ({
   defaultValue,
 }: {
   defaultValue: CPUBlockSocketSupport.DTO[];
@@ -21,3 +21,5 @@ export default ({
     </tbody>
   </Table.Component>
 );
+
+export default CPUBlockSocketSupportTable;

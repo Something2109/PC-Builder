@@ -10,9 +10,9 @@ import { memo, useRef, useState } from "react";
 
 function Component({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue?: GraphicCardPort.DTO[] | null;
-}) {
+}>) {
   const [SavedInputValues, addName, deleteName] = useObjectSet(
     (type: ExternalPorts.Display.Type, name: ExternalPorts.Display) => ({
       type,
@@ -55,13 +55,13 @@ function Component({
   );
 }
 
-const ValueRow = memo(function ({
+function UnmemoValueRow({
   value,
   deleteName,
-}: {
+}: Readonly<{
   value: GraphicCardPort.DTO;
   deleteName: (value: GraphicCardPort.DTO) => void;
-}) {
+}>) {
   return (
     <>
       <Table.Cell>
@@ -73,19 +73,20 @@ const ValueRow = memo(function ({
           type="number"
           name={`${value.name}___count`}
           defaultValue={value.count ?? 0}
-          onChange={(e) => (value.count = Number(e.target.value))}
         />
         <DeleteButton onClick={() => deleteName(value)} />
       </Table.Cell>
     </>
   );
-});
+}
+
+const ValueRow = memo(UnmemoValueRow);
 
 function AddRow({
   add,
-}: {
+}: Readonly<{
   add: (type: ExternalPorts.Display.Type, name: ExternalPorts.Display) => void;
-}) {
+}>) {
   const NameInput = useRef<HTMLInputElement>(null);
   const [type, setType] = useState<ExternalPorts.Display.Type>(
     ExternalPorts.Display.Type.options[0]
@@ -131,14 +132,14 @@ function submit(formData: FormData) {
     const [mapping, attr] = key.split("___");
     if (!acc[mapping]) acc[mapping] = {};
 
-    acc[mapping][attr] = attr === "count" ? Number(value) : value.toString();
+    acc[mapping][attr] = attr === "count" ? Number(value) : (value as string);
 
     return acc;
   }, {} as MappingFormdata);
 
   return Object.values(raw)
     .map((val) => GraphicCardPort.Schemas.DTO.parse(val))
-    .filter((val: any) => val.count);
+    .filter((val) => val.count);
 }
 
 export default GenericInputField(Component, submit);

@@ -9,9 +9,9 @@ import { memo, useRef } from "react";
 
 function Component({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue?: MainboardUSBConnector.DTO[] | null;
-}) {
+}>) {
   const [SavedInputValues, addName, deleteName] = useObjectSet(
     (
       generation: ExternalPorts.Peripheral.USB.Generation,
@@ -45,13 +45,13 @@ function Component({
   );
 }
 
-const ValueRow = memo(function ({
+function UnmemoValueRow({
   value,
   deleteName,
-}: {
+}: Readonly<{
   value: MainboardUSBConnector.DTO;
   deleteName: (value: MainboardUSBConnector.DTO) => void;
-}) {
+}>) {
   const key = ExternalPorts.Peripheral.USB.toString(
     value.generation,
     value.connector
@@ -70,22 +70,23 @@ const ValueRow = memo(function ({
           type="number"
           name={`${key}___count`}
           defaultValue={value.count ?? 0}
-          onChange={(e) => (value.count = Number(e.target.value))}
         />
         <DeleteButton onClick={() => deleteName(value)} />
       </Table.Cell>
     </Table.Row>
   );
-});
+}
+
+const ValueRow = memo(UnmemoValueRow);
 
 function AddRow({
   add,
-}: {
+}: Readonly<{
   add: (
     generation: ExternalPorts.Peripheral.USB.Generation,
     connector: ExternalPorts.Peripheral.USB.Connector
   ) => void;
-}) {
+}>) {
   const GenerationInput = useRef<HTMLSelectElement>(null);
   const ConnectorInput = useRef<HTMLSelectElement>(null);
 
@@ -132,14 +133,14 @@ function submit(formData: FormData) {
     const [mapping, attr] = key.split("___");
     if (!acc[mapping]) acc[mapping] = {};
 
-    acc[mapping][attr] = attr === "count" ? Number(value) : value.toString();
+    acc[mapping][attr] = attr === "count" ? Number(value) : (value as string);
 
     return acc;
   }, {} as MappingFormdata);
 
   return Object.values(raw)
     .map((val) => MainboardUSBConnector.Schemas.DTO.parse(val))
-    .filter((val: any) => val.count);
+    .filter((val) => val.count);
 }
 
 export default GenericInputField(Component, submit);

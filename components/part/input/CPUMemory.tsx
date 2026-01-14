@@ -10,9 +10,9 @@ import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
 
 function Component({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue?: CPUMemory.DTO[] | null;
-}) {
+}>) {
   const [formFactors, addConnector, deleteConnector, existConnector] =
     useObjectSet(
       (type: InternalConnectors.RAM) => ({
@@ -51,58 +51,54 @@ function Component({
   );
 }
 
-const ValueRow = memo(
-  ({
-    value,
-    deleteConnector,
-  }: {
-    value: CPUMemory.DTO;
-    deleteConnector: (value: CPUMemory.DTO) => void;
-  }) => (
-    <Table.Row>
-      <Table.Cell>
-        <label>{value.type}</label>
-      </Table.Cell>
-      <Table.Cell>
-        <UnitInput
-          name={`${value.type}-speed`}
-          Unit={TransferSpeedUnit}
-          defaultUnit="MT/s"
-          defaultValue={value.speed ?? 0}
-          onChange={(e) => (value.speed = Number(e.target.value))}
-        />
-      </Table.Cell>
-      <Table.Cell>
-        <UnitInput
-          name={`${value.type}-capacity`}
-          Unit={MemoryUnits}
-          defaultUnit="GB"
-          defaultValue={value.capacity ?? 0}
-          onChange={(e) => (value.capacity = Number(e.target.value))}
-        />
-      </Table.Cell>
-      <Table.Cell>
-        <SuffixInput
-          type="number"
-          name={`${value.type}-channel_count`}
-          suffix="channel(s)"
-          defaultValue={value.channel_count ?? 0}
-          onChange={(e) => (value.channel_count = Number(e.target.value))}
-        />
-      </Table.Cell>
-      <Table.Cell className="relative">
-        <UnitInput
-          Unit={MemorySpeedUnit}
-          defaultUnit="GB/s"
-          name={`${value.type}-bandwidth`}
-          defaultValue={value.bandwidth ?? 0}
-          onChange={(e) => (value.bandwidth = Number(e.target.value))}
-        />
-        <DeleteButton onClick={() => deleteConnector(value)} />
-      </Table.Cell>
-    </Table.Row>
-  )
+const UnmemoValueRow = ({
+  value,
+  deleteConnector,
+}: {
+  value: CPUMemory.DTO;
+  deleteConnector: (value: CPUMemory.DTO) => void;
+}) => (
+  <Table.Row>
+    <Table.Cell>
+      <label>{value.type}</label>
+    </Table.Cell>
+    <Table.Cell>
+      <UnitInput
+        name={`${value.type}-speed`}
+        Unit={TransferSpeedUnit}
+        defaultUnit="MT/s"
+        defaultValue={value.speed ?? 0}
+      />
+    </Table.Cell>
+    <Table.Cell>
+      <UnitInput
+        name={`${value.type}-capacity`}
+        Unit={MemoryUnits}
+        defaultUnit="GB"
+        defaultValue={value.capacity ?? 0}
+      />
+    </Table.Cell>
+    <Table.Cell>
+      <SuffixInput
+        type="number"
+        name={`${value.type}-channel_count`}
+        suffix="channel(s)"
+        defaultValue={value.channel_count ?? 0}
+      />
+    </Table.Cell>
+    <Table.Cell className="relative">
+      <UnitInput
+        Unit={MemorySpeedUnit}
+        defaultUnit="GB/s"
+        name={`${value.type}-bandwidth`}
+        defaultValue={value.bandwidth ?? 0}
+      />
+      <DeleteButton onClick={() => deleteConnector(value)} />
+    </Table.Cell>
+  </Table.Row>
 );
+
+const ValueRow = memo(UnmemoValueRow);
 
 function AddRow({
   exist,

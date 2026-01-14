@@ -1,3 +1,4 @@
+import { mergeClass } from "@/components/utils/mergeClass";
 import {
   FunctionComponent,
   HTMLAttributes,
@@ -7,54 +8,41 @@ import {
   TdHTMLAttributes,
 } from "react";
 
-export namespace Table {
-  const tableClass = "w-full border-2";
-  const tableHead = "font-bold";
-  const tableRow =
-    "border-b-2 only:last:border-b-2 last:border-b-0 *:rounded-sm";
-  const tableCell =
-    "border-r-2 not-only:last:border-r-0 p-2 [&:has(table)]:p-0";
-
-  export const Component = ({
+export const Table = {
+  Component: ({
     className,
+    children,
     ...rest
   }: HTMLAttributes<HTMLTableElement>) => (
-    <table
-      className={className ? className.concat(" ", tableClass) : tableClass}
-      {...rest}
-    />
-  );
+    <table className={mergeClass("w-full border-2", className)} {...rest}>
+      {children}
+    </table>
+  ),
 
-  export const Head = ({
-    className,
-    ...attr
-  }: HTMLAttributes<HTMLTableSectionElement>) => (
-    <thead
-      className={className ? className.concat(" ", tableHead) : tableHead}
-      {...attr}
-    />
-  );
+  Head: ({ className, ...attr }: HTMLAttributes<HTMLTableSectionElement>) => (
+    <thead className={mergeClass("font-bold", className)} {...attr} />
+  ),
 
-  export const Row = ({
-    className,
-    ...attr
-  }: HTMLAttributes<HTMLTableRowElement>) => (
+  Row: ({ className, ...attr }: HTMLAttributes<HTMLTableRowElement>) => (
     <tr
-      className={className ? className.concat(" ", tableRow) : tableRow}
+      className={mergeClass(
+        "border-b-2 only:last:border-b-2 last:border-b-0 *:rounded-sm",
+        className
+      )}
       {...attr}
     />
-  );
+  ),
 
-  export const Cell = ({
-    className,
-    ...attr
-  }: TdHTMLAttributes<HTMLTableCellElement>) => (
+  Cell: ({ className, ...attr }: TdHTMLAttributes<HTMLTableCellElement>) => (
     <td
-      className={className ? className.concat(" ", tableCell) : tableCell}
+      className={mergeClass(
+        "border-r-2 not-only:last:border-r-0 p-2 [&:has(table)]:p-0",
+        className
+      )}
       {...attr}
     />
-  );
-}
+  ),
+};
 
 type InfoAttributeComponent<Value> = FunctionComponent<
   { value?: NonNullable<Value>; defaultValue?: Exclude<Value, null> } & Omit<
@@ -64,27 +52,26 @@ type InfoAttributeComponent<Value> = FunctionComponent<
   >
 >;
 
-export type InfoComponentObject<T extends Record<string, any>> = {
+export type InfoComponentObject<T extends Record<string, unknown>> = {
   [key in keyof Required<T>]: InfoAttributeComponent<T[key]>;
 };
 
-export type InfoLabel<T extends Record<string, any>> = {
+export type InfoLabel<T extends Record<string, unknown>> = {
   [key in keyof Required<T>]: string;
 };
 
-export function InfoComponent<T extends Record<string, any>>(
+export function InfoComponent<T extends Record<string, unknown>>(
   ComponentObject: InfoComponentObject<T>,
   Labels: InfoLabel<T>,
   { strict }: { strict?: boolean } = {}
 ) {
-  return ({
+  const InfoTable = ({
     defaultValue,
-    className,
     ...rest
   }: {
     defaultValue?: Partial<T> | null;
   } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => (
-    <Table.Component>
+    <Table.Component {...rest}>
       <tbody>
         {Object.entries(ComponentObject).map(([key, Component]) => {
           const value = defaultValue ? defaultValue[key] : undefined;
@@ -108,4 +95,6 @@ export function InfoComponent<T extends Record<string, any>>(
       </tbody>
     </Table.Component>
   );
+
+  return InfoTable;
 }

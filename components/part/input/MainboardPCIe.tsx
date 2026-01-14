@@ -9,9 +9,9 @@ import { memo, useRef } from "react";
 
 function Component({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue?: MainboardPCIe.DTO[] | null;
-}) {
+}>) {
   const groupByController = Object.groupBy(
     defaultValue ?? [],
     (val) => val.controller
@@ -43,10 +43,10 @@ function Component({
 function ControllerRow({
   controller,
   defaultValue,
-}: {
+}: Readonly<{
   controller: InternalConnectors.PCIe.Controller;
   defaultValue?: MainboardPCIe.DTO[];
-}) {
+}>) {
   const [SavedInputValues, addPCIe, deletePCIe] = useObjectSet(
     (version: number, width: InternalConnectors.PCIe.Width) => ({
       controller,
@@ -82,7 +82,7 @@ function ControllerRow({
   );
 }
 
-const ValueRow = memo(({ value }: { value: MainboardPCIe.DTO }) => (
+const UnmemoValueRow = ({ value }: { value: MainboardPCIe.DTO }) => (
   <>
     <Table.Cell colSpan={0} className="hidden">
       <Input
@@ -110,17 +110,18 @@ const ValueRow = memo(({ value }: { value: MainboardPCIe.DTO }) => (
         type="number"
         name={`${value.controller}___count`}
         defaultValue={value.count ?? 0}
-        onChange={(e) => (value.count = Number(e.target.value))}
       />
     </Table.Cell>
   </>
-));
+);
+
+const ValueRow = memo(UnmemoValueRow);
 
 function AddRow({
   add,
-}: {
+}: Readonly<{
   add: (version: number, width: InternalConnectors.PCIe.Width) => void;
-}) {
+}>) {
   const VersionInput = useRef<HTMLInputElement>(null);
   const WidthInput = useRef<HTMLSelectElement>(null);
 
@@ -161,7 +162,7 @@ function submit(formData: FormData) {
     const [mapping, attr] = key.split("___");
     if (!acc[mapping]) acc[mapping] = {};
 
-    acc[mapping][attr] = attr === "count" ? Number(value) : value.toString();
+    acc[mapping][attr] = attr === "count" ? Number(value) : (value as string);
 
     return acc;
   }, {} as MappingFormdata);

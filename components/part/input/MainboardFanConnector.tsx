@@ -9,9 +9,9 @@ import { memo, useRef } from "react";
 
 function Component({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue?: MainboardFanConnector.DTO[] | null;
-}) {
+}>) {
   const [SavedInputValues, addName, deleteName] = useObjectSet(
     (
       connector: InternalConnectors.Fan.Connector,
@@ -41,13 +41,13 @@ function Component({
   );
 }
 
-const ValueRow = memo(function ({
+function UnmemoValueRow({
   value,
   deleteName,
-}: {
+}: Readonly<{
   value: MainboardFanConnector.DTO;
   deleteName: (value: MainboardFanConnector.DTO) => void;
-}) {
+}>) {
   const key = InternalConnectors.Fan.toString(value.connector, value.type);
 
   return (
@@ -63,22 +63,23 @@ const ValueRow = memo(function ({
           type="number"
           name={`${key}___count`}
           defaultValue={value.count ?? 0}
-          onChange={(e) => (value.count = Number(e.target.value))}
         />
         <DeleteButton onClick={() => deleteName(value)} />
       </Table.Cell>
     </Table.Row>
   );
-});
+}
+
+const ValueRow = memo(UnmemoValueRow);
 
 function AddRow({
   add,
-}: {
+}: Readonly<{
   add: (
     connector: InternalConnectors.Fan.Connector,
     type: InternalConnectors.Fan.Type
   ) => void;
-}) {
+}>) {
   const ConnectorInput = useRef<HTMLSelectElement>(null);
   const TypeInput = useRef<HTMLSelectElement>(null);
 
@@ -124,14 +125,14 @@ function submit(formData: FormData) {
     const [mapping, attr] = key.split("___");
     if (!acc[mapping]) acc[mapping] = {};
 
-    acc[mapping][attr] = attr === "count" ? Number(value) : value.toString();
+    acc[mapping][attr] = attr === "count" ? Number(value) : (value as string);
 
     return acc;
   }, {} as MappingFormdata);
 
   return Object.values(raw)
     .map((val) => MainboardFanConnector.Schemas.DTO.parse(val))
-    .filter((val: any) => val.count);
+    .filter((val) => val.count);
 }
 
 export default GenericInputField(Component, submit);

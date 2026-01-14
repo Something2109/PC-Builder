@@ -27,31 +27,27 @@ const PictureInput = function ({
   }, []);
   const [img, setImg] = useState<React.ReactNode | null>(getImageFromSrc());
 
-  const addImage = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const image = e.target.files[0];
+  const addImage = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files?.[0]) {
+        const image = e.target.files[0];
 
-      content.src = URL.createObjectURL(image);
-      setImg(getImageFromSrc());
+        content.src = URL.createObjectURL(image);
+        setImg(getImageFromSrc());
 
-      const reader = new FileReader();
-      if (reader) {
-        reader.onloadend = () => {
-          if (reader.result) {
-            content.image = reader.result.toString();
-          }
-        };
-        reader.readAsDataURL(image);
+        const reader = new FileReader();
+        if (reader) {
+          reader.onloadend = () => {
+            if (reader.result) {
+              content.image = reader.result.toString();
+            }
+          };
+          reader.readAsDataURL(image);
+        }
       }
-    }
-  }, []);
-
-  const resetImage = useCallback(() => {
-    removeImage();
-
-    content.src = initial.current;
-    setImg(getImageFromSrc());
-  }, []);
+    },
+    [content, getImageFromSrc]
+  );
 
   const removeImage = useCallback(() => {
     URL.revokeObjectURL(content.src);
@@ -59,7 +55,14 @@ const PictureInput = function ({
 
     content.src = "";
     setImg(getImageFromSrc());
-  }, []);
+  }, [content, getImageFromSrc]);
+
+  const resetImage = useCallback(() => {
+    removeImage();
+
+    content.src = initial.current;
+    setImg(getImageFromSrc());
+  }, [content, getImageFromSrc, removeImage]);
 
   return (
     <RowWrapper className="border-2 rounded-xl p-3 justify-between w-full">

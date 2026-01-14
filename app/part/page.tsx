@@ -7,15 +7,18 @@ import { notFound } from "next/navigation";
 
 export default async function ListPage({
   searchParams,
-}: {
+}: Readonly<{
   searchParams: Promise<{ [key: string]: string }>;
-}) {
+}>) {
   const query = await searchParams;
 
   const queryEntries = Object.entries(query).reduce((acc, [key, value]) => {
-    Array.isArray(value)
-      ? value.forEach((v) => acc.push([key, v]))
-      : acc.push([key, value]);
+    if (Array.isArray(value)) {
+      value.forEach((v) => acc.push([key, v]));
+      return acc;
+    }
+
+    acc.push([key, value]);
     return acc;
   }, [] as string[][]);
   const options = new URLSearchParams(queryEntries);

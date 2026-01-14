@@ -35,19 +35,21 @@ function decodeToken(token: string | null) {
   let payload: JwtPayload | null = null;
   try {
     payload = decode(token ?? "");
-  } catch (err) {}
+  } catch (err) {
+    console.error(err);
+  }
 
   if (!payload) return null;
 
   if (payload.exp || payload.iat) {
-    const current = new Date().getTime() / 1000;
+    const current = Date.now() / 1000;
 
     if (payload.exp && payload.exp < current) return null;
 
     if (payload.nbf && payload.nbf > current) return null;
   }
 
-  return payload.sub as any as UserJwtPayload;
+  return payload.sub as unknown as UserJwtPayload;
 }
 
 export function useAuth() {
@@ -55,14 +57,18 @@ export function useAuth() {
   return user;
 }
 
-export function AuthWrapper({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useReducer(
+export function AuthWrapper({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  const reducer = useReducer(
     (_: UserJwtPayload | null, { refresh_token, csrf_token }: SaveTokens) => {
       const userInfo = decodeToken(refresh_token ?? null);
 
-      refresh_token && userInfo
-        ? localStorage.setItem(AUTH_KEY, refresh_token)
-        : localStorage.removeItem(AUTH_KEY);
+      if (refresh_token && userInfo) {
+        localStorage.setItem(AUTH_KEY, refresh_token);
+      } else {
+        localStorage.removeItem(AUTH_KEY);
+      }
 
       if (csrf_token) {
         localStorage.setItem(CSRF_KEY, csrf_token);
@@ -77,23 +83,23 @@ export function AuthWrapper({ children }: { children: React.ReactNode }) {
 
   useLayoutEffect(
     () =>
-      setUser({
+      reducer[1]({
         refresh_token: localStorage.getItem(AUTH_KEY),
         csrf_token: localStorage.getItem(CSRF_KEY),
       }),
     []
   );
 
-  return <AuthContext value={[user, setUser]}>{children}</AuthContext>;
+  return <AuthContext value={reducer}>{children}</AuthContext>;
 }
 
 export function AuthRole({
   children,
   roles,
-}: {
+}: Readonly<{
   roles: Roles[];
   children: React.ReactNode;
-}) {
+}>) {
   const [user] = useContext(AuthContext);
   const router = useRouter();
   const pathname = usePathname();
@@ -121,7 +127,7 @@ export function useLoginAction(pathname?: string) {
   const [_, setUser] = useContext(AuthContext);
   const [error, setError] = useState<LoginError>({});
   const [state, formAction, pending] = useActionState(
-    async (_: any, form: FormData) => {
+    async (_: Record<string, string>, form: FormData) => {
       const body = Object.fromEntries(form.entries());
 
       try {
@@ -152,7 +158,7 @@ export function useRefreshAction(pathname?: string | null) {
   const [pending, startTransition] = useTransition();
   const [_, setUser] = useContext(AuthContext);
   const router = useRouter();
-  pathname = pathname ?? "/";
+  const redirectPath = pathname ?? "/";
 
   useEffect(() => {
     startTransition(async () => {
@@ -164,9 +170,11 @@ export function useRefreshAction(pathname?: string | null) {
           headers: { Authorization: token ? `Bearer ${token}` : undefined },
         });
         setUser(response.data);
-        router.replace(pathname);
+        router.replace(redirectPath);
       } catch (err) {
-        router.replace(`${LoginPath}?redirect=${pathname}`);
+        console.error(err);
+
+        router.replace(`${LoginPath}?redirect=${redirectPath}`);
       }
     });
   }, []);

@@ -5,7 +5,7 @@ import { VerticalCollapsible } from "../utils/Collapsible";
 import { useInfoAction } from "@/components/hook/part/InfoAction";
 import { Button } from "@/components/utils/Button";
 import Part, { Information } from "@/utils/part";
-import { lazy, LazyExoticComponent, useRef } from "react";
+import { lazy, LazyExoticComponent } from "react";
 
 const InputComponent: {
   [key in Information.Name]: LazyExoticComponent<React.FC<any>>;
@@ -124,12 +124,11 @@ export function InfoForm({
   path,
   info,
   defaultValue,
-}: {
+}: Readonly<{
   path: string;
   info: Information.Name;
   defaultValue: Part.DTO;
-}) {
-  const label = useRef(Information.Label[info]);
+}>) {
   const [formValue, save, pending, error, setError] = useInfoAction(
     path,
     info,
@@ -144,11 +143,11 @@ export function InfoForm({
     <form className="flex flex-col gap-1 w-full">
       {formValue ? (
         <VerticalCollapsible className="sticky top-32">
-          <h1 className="text-4xl font-bold">{label.current}</h1>
+          <h1 className="text-4xl font-bold">{Information.Label[info]}</h1>
           <Component
             pending={pending}
             onSubmit={save}
-            defaultValue={formValue as any}
+            defaultValue={formValue}
           />
         </VerticalCollapsible>
       ) : (
@@ -159,8 +158,8 @@ export function InfoForm({
           disabled={pending}
         >
           {pending
-            ? `Adding ${label.current} ...`
-            : `Add ${label.current} Info`}
+            ? `Adding ${Information.Label[info]} ...`
+            : `Add ${Information.Label[info]} Info`}
         </Button>
       )}
       {error ? (

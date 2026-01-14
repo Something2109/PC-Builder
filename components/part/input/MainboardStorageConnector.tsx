@@ -44,30 +44,29 @@ function Component({
   );
 }
 
-const ValueRow = memo(
-  ({
-    value,
-    deleteConnector,
-  }: {
-    value: MainboardStorageConnector.DTO;
-    deleteConnector: (value: MainboardStorageConnector.DTO) => void;
-  }) => (
-    <Table.Row key={`storage-${value.form_factor}`}>
-      <Table.Cell>
-        <label>{value.form_factor}</label>
-      </Table.Cell>
-      <Table.Cell className="relative">
-        <Input
-          type="number"
-          name={value.form_factor}
-          defaultValue={value.count ?? 0}
-          onChange={(e) => (value.count = Number(e.target.value))}
-        />
-        <DeleteButton onClick={() => deleteConnector(value)} />
-      </Table.Cell>
-    </Table.Row>
-  )
+const UnmemoValueRow = ({
+  value,
+  deleteConnector,
+}: {
+  value: MainboardStorageConnector.DTO;
+  deleteConnector: (value: MainboardStorageConnector.DTO) => void;
+}) => (
+  <Table.Row key={`storage-${value.form_factor}`}>
+    <Table.Cell>
+      <label>{value.form_factor}</label>
+    </Table.Cell>
+    <Table.Cell className="relative">
+      <Input
+        type="number"
+        name={value.form_factor}
+        defaultValue={value.count ?? 0}
+      />
+      <DeleteButton onClick={() => deleteConnector(value)} />
+    </Table.Cell>
+  </Table.Row>
 );
+
+const ValueRow = memo(UnmemoValueRow);
 
 function AddRow({
   exist,

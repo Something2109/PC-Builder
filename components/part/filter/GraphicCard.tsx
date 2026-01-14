@@ -7,7 +7,7 @@ import { FrequencyUnits, LengthUnits } from "@/utils/Units";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<GraphicCard.Filter> = {
-  length: ({ value, defaultValue, ...props }) => (
+  length: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={LengthUnits}
       defaultUnit="mm"
@@ -17,7 +17,7 @@ const Components: FilterMapping<GraphicCard.Filter> = {
       {...props}
     />
   ),
-  base_frequency: ({ value, defaultValue, ...props }) => (
+  base_frequency: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={FrequencyUnits}
       defaultUnit="MHz"
@@ -27,7 +27,7 @@ const Components: FilterMapping<GraphicCard.Filter> = {
       {...props}
     />
   ),
-  boost_frequency: ({ value, defaultValue, ...props }) => (
+  boost_frequency: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={FrequencyUnits}
       defaultUnit="MHz"
@@ -37,7 +37,7 @@ const Components: FilterMapping<GraphicCard.Filter> = {
       {...props}
     />
   ),
-  width: ({ value, defaultValue, ...props }) => (
+  width: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={LengthUnits}
       defaultUnit="mm"
@@ -47,7 +47,7 @@ const Components: FilterMapping<GraphicCard.Filter> = {
       {...props}
     />
   ),
-  height: ({ value, defaultValue, ...props }) => (
+  height: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={LengthUnits}
       defaultUnit="mm"
@@ -57,7 +57,7 @@ const Components: FilterMapping<GraphicCard.Filter> = {
       {...props}
     />
   ),
-  minimum_psu: ({ value, defaultValue, ...props }) => (
+  minimum_psu: ({ value, defaultValue: _, ...props }) => (
     <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
   ),
 };

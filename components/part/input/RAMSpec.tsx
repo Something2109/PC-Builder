@@ -21,7 +21,7 @@ const Components: InfoComponentObject<RAMSpec.DTO> = {
   voltage: (props) => (
     <SuffixInput suffix="V" type="number" step={0.01} {...props} />
   ),
-  latency: ({ defaultValue, value, ...props }) => (
+  latency: ({ defaultValue, value: _, ...props }) => (
     <RowWrapper>
       <Input
         {...props}

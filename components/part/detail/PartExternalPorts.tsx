@@ -2,11 +2,11 @@ import { Table } from "../utils/Table";
 import * as PartExternalPorts from "@/utils/part/info/PartExternalPorts";
 import { ExternalPorts } from "@/utils/interface";
 
-export default ({
+const PartExternalPortTable = ({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue: PartExternalPorts.DTO[];
-}) => {
+}>) => {
   const groupByType = Object.groupBy(defaultValue, (val) => val.type);
 
   return (
@@ -36,3 +36,5 @@ export default ({
     </Table.Component>
   );
 };
+
+export default PartExternalPortTable;

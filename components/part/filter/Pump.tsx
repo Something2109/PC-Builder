@@ -14,7 +14,7 @@ const Components: FilterMapping<Pump.Filter> = {
       {...props}
     />
   ),
-  flow_rate: ({ value, defaultValue, ...props }) => (
+  flow_rate: ({ value, defaultValue: _, ...props }) => (
     <MinMaxRangeInput step={0.01} min={value[0]} max={value[1]} {...props} />
   ),
   power_connector: ({ defaultValue, value, ...props }) => (

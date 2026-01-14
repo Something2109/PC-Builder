@@ -1,7 +1,7 @@
 import { Table } from "../utils/Table";
 import * as CaseMainboardSupport from "@/utils/part/info/CaseMainboardSupport";
 
-export default ({
+const CaseMainboardSupportTable = ({
   defaultValue,
 }: {
   defaultValue: CaseMainboardSupport.DTO[];
@@ -21,3 +21,5 @@ export default ({
     </tbody>
   </Table.Component>
 );
+
+export default CaseMainboardSupportTable;

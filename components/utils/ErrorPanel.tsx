@@ -4,8 +4,7 @@ import { Button } from "@/components/utils/Button";
 import { ColumnWrapper } from "@/components/utils/FlexWrapper";
 import Image from "next/image";
 import { DetailedHTMLProps, HTMLAttributes } from "react";
-
-const defaultClass = "justify-center items-center gap-4";
+import { mergeClass } from "./mergeClass";
 
 export default function ErrorPanel({
   text,
@@ -18,7 +17,7 @@ export default function ErrorPanel({
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) {
   return (
     <ColumnWrapper
-      className={className ? defaultClass.concat(" ", className) : defaultClass}
+      className={mergeClass("justify-center items-center gap-4", className)}
       {...rest}
     >
       <picture className="">

@@ -28,36 +28,48 @@ function ContentListComponent({
   contents,
   prefix,
   parent,
-}: {
+}: Readonly<{
   contents: Article.Content[];
   prefix?: string;
   parent: Article.ContentName;
-}) {
+}>) {
   const [change, setChange] = useState(0);
-  const add = useCallback((type: Article.ContentName) => {
-    contents.push(defaultValue[type]);
-    setChange((prev) => ++prev);
-  }, []);
-  const shiftUp = useCallback((index: number) => {
-    [contents[index], contents[index - 1]] = [
-      contents[index - 1],
-      contents[index],
-    ];
-    setChange((prev) => ++prev);
-  }, []);
-  const shiftDown = useCallback((index: number) => {
-    [contents[index], contents[index + 1]] = [
-      contents[index + 1],
-      contents[index],
-    ];
-    setChange((prev) => ++prev);
-  }, []);
-  const remove = useCallback((index: number) => {
-    if (confirm("Are you sure you want to remove this content?")) {
-      contents.splice(index, 1);
+  const add = useCallback(
+    (type: Article.ContentName) => {
+      contents.push(defaultValue[type]);
       setChange((prev) => ++prev);
-    }
-  }, []);
+    },
+    [contents]
+  );
+  const shiftUp = useCallback(
+    (index: number) => {
+      [contents[index], contents[index - 1]] = [
+        contents[index - 1],
+        contents[index],
+      ];
+      setChange((prev) => ++prev);
+    },
+    [contents]
+  );
+  const shiftDown = useCallback(
+    (index: number) => {
+      [contents[index], contents[index + 1]] = [
+        contents[index + 1],
+        contents[index],
+      ];
+      setChange((prev) => ++prev);
+    },
+    [contents]
+  );
+  const remove = useCallback(
+    (index: number) => {
+      if (confirm("Are you sure you want to remove this content?")) {
+        contents.splice(index, 1);
+        setChange((prev) => ++prev);
+      }
+    },
+    [contents]
+  );
 
   let sectionCount = 1;
   return (
@@ -80,7 +92,7 @@ function ContentListComponent({
           <Component
             content={content as never}
             prefix={sectionPrefix}
-            key={new Date().getTime() + index}
+            key={Date.now() + index}
           >
             <EditPanelWrapper className="justify-center">
               {index !== 0 && (
@@ -113,7 +125,7 @@ function ContentListComponent({
   );
 }
 
-function EditableArticle({ article }: { article: Article.Type }) {
+function EditableArticle({ article }: Readonly<{ article: Article.Type }>) {
   const { id, ...initial } = article;
   const [notification, setNoti] = useState<{
     message: string;

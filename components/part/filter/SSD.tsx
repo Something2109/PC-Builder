@@ -23,7 +23,7 @@ const Components: FilterMapping<SSD.Filter> = {
       {...props}
     />
   ),
-  capacity: ({ value, defaultValue, ...props }) => (
+  capacity: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemoryUnits}
       defaultUnit="GB"
@@ -41,7 +41,7 @@ const Components: FilterMapping<SSD.Filter> = {
       {...props}
     />
   ),
-  read_speed: ({ value, defaultValue, ...props }) => (
+  read_speed: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemorySpeedUnit}
       defaultUnit="MB/s"
@@ -51,7 +51,7 @@ const Components: FilterMapping<SSD.Filter> = {
       {...props}
     />
   ),
-  write_speed: ({ value, defaultValue, ...props }) => (
+  write_speed: ({ value, defaultValue: _, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemorySpeedUnit}
       defaultUnit="MB/s"

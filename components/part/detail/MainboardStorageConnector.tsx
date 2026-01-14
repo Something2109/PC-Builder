@@ -1,7 +1,7 @@
 import { Table } from "../utils/Table";
 import * as MainboardStorageConnector from "@/utils/part/info/MainboardStorageConnector";
 
-export default ({
+const MainboardStorageConnectorTable = ({
   defaultValue,
 }: {
   defaultValue: MainboardStorageConnector.DTO[];
@@ -23,3 +23,5 @@ export default ({
     </tbody>
   </Table.Component>
 );
+
+export default MainboardStorageConnectorTable;

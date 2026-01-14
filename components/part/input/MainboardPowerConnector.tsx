@@ -9,9 +9,9 @@ import { memo, useRef } from "react";
 
 function Component({
   defaultValue,
-}: {
+}: Readonly<{
   defaultValue?: MainboardPowerConnector.DTO[] | null;
-}) {
+}>) {
   const [formFactors, addConnector, deleteConnector, existConnector] =
     useObjectSet(
       (type: InternalConnectors.Power.Mainboard) => ({ type, count: 0 }),
@@ -37,30 +37,25 @@ function Component({
   );
 }
 
-const ValueRow = memo(
-  ({
-    value,
-    deleteConnector,
-  }: {
-    value: MainboardPowerConnector.DTO;
-    deleteConnector: (value: MainboardPowerConnector.DTO) => void;
-  }) => (
-    <Table.Row>
-      <Table.Cell>
-        <label>{value.type}</label>
-      </Table.Cell>
-      <Table.Cell className="relative">
-        <Input
-          type="number"
-          name={value.type}
-          defaultValue={value.count ?? 0}
-          onChange={(e) => (value.count = Number(e.target.value))}
-        />
-        <DeleteButton onClick={() => deleteConnector(value)} />
-      </Table.Cell>
-    </Table.Row>
-  )
+const UnmemoValueRow = ({
+  value,
+  deleteConnector,
+}: {
+  value: MainboardPowerConnector.DTO;
+  deleteConnector: (value: MainboardPowerConnector.DTO) => void;
+}) => (
+  <Table.Row>
+    <Table.Cell>
+      <label>{value.type}</label>
+    </Table.Cell>
+    <Table.Cell className="relative">
+      <Input type="number" name={value.type} defaultValue={value.count ?? 0} />
+      <DeleteButton onClick={() => deleteConnector(value)} />
+    </Table.Cell>
+  </Table.Row>
 );
+
+const ValueRow = memo(UnmemoValueRow);
 
 function AddRow({
   exist,
