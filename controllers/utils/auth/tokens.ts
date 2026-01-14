@@ -1,19 +1,12 @@
+import { Tokens } from "@/utils/API";
 import { Request } from "express";
 
-const ACCESS_TOKEN_COOKIE_NAME = "Access_Token";
-const REFRESH_TOKEN_COOKIE_NAME = "Refresh_Token";
-
 function getAccessToken(request: Request) {
-  return request.cookies[ACCESS_TOKEN_COOKIE_NAME];
+  return request.cookies[Tokens.ACCESS];
 }
 
 function getRefreshToken(request: Request) {
-  return request.cookies[REFRESH_TOKEN_COOKIE_NAME];
+  return request.cookies[Tokens.REFRESH];
 }
 
-export {
-  ACCESS_TOKEN_COOKIE_NAME,
-  REFRESH_TOKEN_COOKIE_NAME,
-  getAccessToken,
-  getRefreshToken,
-};
+export { getAccessToken, getRefreshToken };
