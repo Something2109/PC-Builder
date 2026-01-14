@@ -5,7 +5,6 @@ import Part, { Products, Mapping } from "@/utils/part";
 import { Roles } from "@/utils/user";
 import { notFound } from "next/navigation";
 import { AuthRole } from "@/components/auth";
-import { ServerAuthRole } from "@/components/auth-server";
 
 const roles = [Roles.ADMIN];
 
@@ -26,20 +25,18 @@ export default async function PartDetailEditPage({
   const SaveLink = `/api/part/${part}/${id}`;
 
   return (
-    <ServerAuthRole roles={roles} redirect={`/part/${part}/${id}/edit`}>
-      <AuthRole roles={roles}>
-        <PartForm path={SaveLink} part={part} defaultValue={data} />
-        <ResponsiveWrapper className="w-full align-top flex-wrap">
-          {Mapping.Info[part].map((info) => (
-            <InfoForm
-              key={info}
-              path={SaveLink}
-              info={info}
-              defaultValue={data}
-            />
-          ))}
-        </ResponsiveWrapper>
-      </AuthRole>
-    </ServerAuthRole>
+    <AuthRole roles={roles}>
+      <PartForm path={SaveLink} part={part} defaultValue={data} />
+      <ResponsiveWrapper className="w-full align-top flex-wrap">
+        {Mapping.Info[part].map((info) => (
+          <InfoForm
+            key={info}
+            path={SaveLink}
+            info={info}
+            defaultValue={data}
+          />
+        ))}
+      </ResponsiveWrapper>
+    </AuthRole>
   );
 }
