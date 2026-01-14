@@ -1,3 +1,4 @@
+import { getAccessToken } from "./auth/tokens";
 import { Session } from "@/utils/API";
 import { JwtPayload } from "@/utils/user";
 import { Injectable, NestMiddleware } from "@nestjs/common";
@@ -13,7 +14,7 @@ export class SessionExtractionMiddleware implements NestMiddleware {
     _: Response,
     next: NextFunction
   ) {
-    const authString = req.headers.authorization ?? req.cookies.Authorization;
+    const authString = getAccessToken(req);
 
     const [type, token] = authString?.split(" ") ?? [];
     if (type === "Bearer") {
