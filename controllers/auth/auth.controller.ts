@@ -14,10 +14,10 @@ import { LoginAuthorizationGuard } from "./auth.guard";
 import {
   ACCESS_TOKEN_COOKIE_NAME,
   REFRESH_TOKEN_COOKIE_NAME,
+  getRefreshToken,
 } from "controllers/utils/auth/tokens";
-import { AuthUser } from "controllers/utils/role/role.decorator";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
-import { LogInOptions, JwtPayload } from "@/utils/user";
+import { LogInOptions } from "@/utils/user";
 
 const SignUpValidator = new ZodValidationPipe(LogInOptions);
 
@@ -64,13 +64,19 @@ export class AuthController {
   @Post("refresh")
   async refreshToken(
     @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-    @AuthUser() user?: JwtPayload
+    @Res({ passthrough: true }) res: Response
   ) {
-    if (!user)
-      throw new UnauthorizedException("You must log in to do this action!");
+    const refresh_token = getRefreshToken(req);
 
-    const tokens = await this.authService.signTokens(user);
+    if (!refresh_token) {
+      throw new UnauthorizedException("No Refresh Token provided");
+    }
+
+    const tokens = await this.authService.refresh(refresh_token);
+
+    if (!tokens) {
+      throw new UnauthorizedException("Invalid Refresh Token");
+    }
 
     this.setTokens(req, res, tokens);
 

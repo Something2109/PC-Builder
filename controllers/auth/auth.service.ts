@@ -26,6 +26,20 @@ export class AuthService {
     return await this.signTokens(user);
   }
 
+  async refresh(refresh_token: string) {
+    const [_, token] = refresh_token.split(" ");
+
+    try {
+      const payload = await this.jwtService.verifyAsync(token);
+
+      if (payload.type === Tokens.REFRESH) {
+        return await this.signTokens(payload.sub);
+      }
+    } catch {}
+
+    return null;
+  }
+
   async signTokens(user: JwtPayload) {
     const [access_token, refresh_token] = await Promise.all([
       this.jwtService.signAsync({ sub: user, type: Tokens.ACCESS }),
