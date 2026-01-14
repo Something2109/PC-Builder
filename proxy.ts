@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { Tokens } from "./utils/API";
 
 // Define paths that REQUIRE authentication
 const PROTECTED_PATHS = ["/admin", "/profile", "/build/save"];
@@ -7,10 +8,10 @@ const PROTECTED_PATHS = ["/admin", "/profile", "/build/save"];
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const accessToken = request.cookies.get("Access_Token");
+  const accessToken = request.cookies.get(Tokens.ACCESS);
   if (accessToken) return NextResponse.next();
 
-  const refreshToken = request.cookies.get("Refresh_Token");
+  const refreshToken = request.cookies.get(Tokens.REFRESH);
   if (refreshToken) {
     try {
       const apiResponse = await fetch(
@@ -28,7 +29,7 @@ export async function middleware(request: NextRequest) {
         const requestHeaders = new Headers(request.headers);
         requestHeaders.set(
           "Cookie",
-          `Access_Token=Bearer ${newAccessToken}; ${request.headers.get(
+          `${Tokens.ACCESS}=Bearer ${newAccessToken}; ${request.headers.get(
             "cookie"
           )}`
         );

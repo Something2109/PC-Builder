@@ -1,3 +1,4 @@
+import { Tokens } from "@/utils/API";
 import { JwtPayload } from "@/utils/user";
 import { createVerifier } from "fast-jwt";
 import { cookies } from "next/headers";
@@ -6,7 +7,7 @@ const verify = createVerifier({ key: process.env.JWT_SECRET! });
 
 export async function verifyToken(): Promise<JwtPayload | null> {
   const cookie = await cookies();
-  const raw = cookie.get("Access_Token");
+  const raw = cookie.get(Tokens.ACCESS);
 
   if (!raw) return null;
 
