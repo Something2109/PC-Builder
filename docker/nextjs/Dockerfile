@@ -5,8 +5,8 @@ WORKDIR /usr/local/app/nextjs
 # Installs dependencies and caches them in a separate layer.
 FROM deps-source AS deps
 
-COPY docker/nextjs/package.json ./
-COPY docker/nextjs/package-lock.json ./
+COPY frontend/package.json ./
+COPY frontend/package-lock.json ./
 RUN npm ci
 
 # Stage 2: Application Source
@@ -14,16 +14,16 @@ RUN npm ci
 # builder and dev stages to avoid duplicating the COPY commands.
 FROM deps AS app-source
 
-COPY docker/nextjs/next-env.d.ts ./
-COPY docker/nextjs/next.config.js ./
-COPY docker/nextjs/postcss.config.js ./
-COPY docker/nextjs/tailwind.config.js ./
-COPY docker/nextjs/tsconfig.json ./
-COPY docker/nextjs/eslint.config.mjs ./
+COPY frontend/next-env.d.ts ./
+COPY frontend/next.config.js ./
+COPY frontend/postcss.config.js ./
+COPY frontend/tailwind.config.js ./
+COPY frontend/tsconfig.json ./
+COPY frontend/eslint.config.mjs ./
 COPY utils ./utils
-COPY public ./public
-COPY components ./components
-COPY app ./app
+COPY frontend/public ./public
+COPY frontend/components ./components
+COPY frontend/app ./app
 
 # Stage 3: Builder
 # Builds the Next.js application for production. It inherits from the app-source stage.

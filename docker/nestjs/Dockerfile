@@ -4,8 +4,8 @@ FROM node:24-alpine AS deps-source
 WORKDIR /usr/local/app/nestjs
 
 # Copy package.json and package-lock.json to leverage Docker cache.
-COPY docker/nestjs/package.json ./
-COPY docker/nestjs/package-lock.json ./
+COPY backend/package.json ./
+COPY backend/package-lock.json ./
 
 # Stage 2: Dependencies
 # Installs dependencies and caches them in a separate layer.
@@ -18,11 +18,11 @@ RUN npm ci
 # builder and dev stages to avoid duplicating the COPY commands.
 FROM deps AS app-source
 
-COPY docker/nestjs/tsconfig.json ./
-COPY docker/nestjs/nest-cli.json ./
+COPY backend/tsconfig.json ./
+COPY backend/nest-cli.json ./
 COPY utils ./utils
-COPY models ./models
-COPY controllers ./controllers
+COPY backend/models ./models
+COPY backend/controllers ./controllers
 
 # Stage 4: Builder
 # Builds the NestJS application for production.
