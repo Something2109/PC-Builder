@@ -1,13 +1,13 @@
-import { Roles, JwtPayload } from "@/utils/user";
-import { createVerifier } from "fast-jwt";
-import { redirect } from "next/navigation";
+import { Tokens } from "@/utils/API";
+import { JwtPayload } from "@/utils/user";
+import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
-const verify = createVerifier({ key: process.env.JWT_SECRET! });
+const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function verifyToken(): Promise<JwtPayload | null> {
   const cookie = await cookies();
-  const raw = cookie.get("Authorization");
+  const raw = cookie.get(Tokens.ACCESS);
 
   if (!raw) return null;
 
@@ -22,30 +22,11 @@ export async function verifyToken(): Promise<JwtPayload | null> {
   if (bearer !== "Bearer") return null;
 
   try {
-    const payload = verify(token);
+    const { payload } = await jwtVerify(token, secret);
 
-    return payload?.sub as JwtPayload;
+    return payload?.sub as unknown as JwtPayload;
   } catch (err) {
     console.error(err);
     return null;
   }
-}
-
-export async function ServerAuthRole({
-  children,
-  roles,
-  redirect: pathname,
-}: Readonly<{
-  children: React.ReactNode;
-  roles: Roles[];
-  redirect?: string;
-}>) {
-  const user = await verifyToken();
-
-  if (!user) redirect(`/auth/refresh?redirect=${pathname ?? "/"}`);
-
-  if (!roles.includes(user.role))
-    return <h1>You are not authorized to access this page</h1>;
-
-  return children;
 }

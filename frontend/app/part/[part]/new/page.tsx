@@ -1,5 +1,4 @@
 import { AuthRole } from "@/components/auth";
-import { ServerAuthRole } from "@/components/auth-server";
 import PartForm from "@/components/part/input/Part";
 import {
   ColumnWrapper,
@@ -20,15 +19,13 @@ export default async function PartDetailNewPage({
   const SaveLink = `/api/part/${part}`;
 
   return (
-    <ServerAuthRole roles={roles} redirect={`/part/${part}/new`}>
-      <AuthRole roles={roles}>
-        <PartForm path={SaveLink} part={part} />
-        <ResponsiveWrapper className="w-full align-top">
-          <ColumnWrapper className="basis-1/2">
-            <h1 className="text-4xl font-bold">Raw</h1>
-          </ColumnWrapper>
-        </ResponsiveWrapper>
-      </AuthRole>
-    </ServerAuthRole>
+    <AuthRole roles={roles}>
+      <PartForm path={SaveLink} part={part} />
+      <ResponsiveWrapper className="w-full align-top">
+        <ColumnWrapper className="basis-1/2">
+          <h1 className="text-4xl font-bold">Raw</h1>
+        </ColumnWrapper>
+      </ResponsiveWrapper>
+    </AuthRole>
   );
 }

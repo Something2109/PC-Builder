@@ -2,55 +2,24 @@
 
 import { JwtPayload as UserJwtPayload, Roles } from "@/utils/user";
 import {
-  ActionDispatch,
+  Dispatch,
+  SetStateAction,
   createContext,
   useActionState,
   useContext,
   useEffect,
   useLayoutEffect,
-  useReducer,
   useState,
   useTransition,
 } from "react";
-import { JwtPayload } from "jsonwebtoken";
-import { createDecoder } from "fast-jwt";
 import { usePathname, useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 
-const decode = createDecoder();
-
-type SaveTokens = {
-  refresh_token?: string | null;
-  csrf_token?: string | null;
-};
-
 const AUTH_KEY = "REFRESH-TOKEN";
-const CSRF_KEY = "CSRF-TOKEN";
 const LoginPath = "/auth/login";
 const AuthContext = createContext<
-  [UserJwtPayload | null, ActionDispatch<[SaveTokens]>]
+  [UserJwtPayload | null, Dispatch<SetStateAction<UserJwtPayload | null>>]
 >([null, () => {}]);
-
-function decodeToken(token: string | null) {
-  let payload: JwtPayload | null = null;
-  try {
-    payload = decode(token ?? "");
-  } catch (err) {
-    console.error(err);
-  }
-
-  if (!payload) return null;
-
-  if (payload.exp || payload.iat) {
-    const current = Date.now() / 1000;
-
-    if (payload.exp && payload.exp < current) return null;
-
-    if (payload.nbf && payload.nbf > current) return null;
-  }
-
-  return payload.sub as unknown as UserJwtPayload;
-}
 
 export function useAuth() {
   const [user, _] = useContext(AuthContext);
@@ -58,39 +27,12 @@ export function useAuth() {
 }
 
 export function AuthWrapper({
+  user,
   children,
-}: Readonly<{ children: React.ReactNode }>) {
-  const reducer = useReducer(
-    (_: UserJwtPayload | null, { refresh_token, csrf_token }: SaveTokens) => {
-      const userInfo = decodeToken(refresh_token ?? null);
+}: Readonly<{ user: UserJwtPayload | null; children: React.ReactNode }>) {
+  const state = useState(user);
 
-      if (refresh_token && userInfo) {
-        localStorage.setItem(AUTH_KEY, refresh_token);
-      } else {
-        localStorage.removeItem(AUTH_KEY);
-      }
-
-      if (csrf_token) {
-        localStorage.setItem(CSRF_KEY, csrf_token);
-
-        axios.defaults.headers.common["x-csrf-token"] = csrf_token;
-      }
-
-      return userInfo;
-    },
-    null
-  );
-
-  useLayoutEffect(
-    () =>
-      reducer[1]({
-        refresh_token: localStorage.getItem(AUTH_KEY),
-        csrf_token: localStorage.getItem(CSRF_KEY),
-      }),
-    []
-  );
-
-  return <AuthContext value={reducer}>{children}</AuthContext>;
+  return <AuthContext value={state}>{children}</AuthContext>;
 }
 
 export function AuthRole({

@@ -1,0 +1,90 @@
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { Tokens } from "./utils/API";
+import { jwtVerify } from "jose";
+
+// Define paths that REQUIRE authentication
+const PROTECTED_PATHS = ["/admin", "/profile", "/build/save"];
+
+const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+
+async function validateAccessToken(accessToken: string) {
+  const regexMatch =
+    /(Bearer) ([A-Za-z0-9-_]*\.[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*)/.exec(
+      accessToken
+    );
+
+  if (!regexMatch) return false;
+
+  const [_, bearer, token] = regexMatch;
+
+  if (bearer !== "Bearer") return false;
+
+  try {
+    await jwtVerify(token, secret);
+
+    return true;
+  } catch {}
+
+  return false;
+}
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  const accessToken = request.cookies.get(Tokens.ACCESS);
+  const refreshToken = request.cookies.get(Tokens.REFRESH);
+
+  if (accessToken && (await validateAccessToken(accessToken.value))) {
+    return NextResponse.next();
+  }
+
+  if (refreshToken) {
+    try {
+      const apiResponse = await fetch(
+        `${process.env.BACKEND_HOST}/api/auth/refresh`,
+        {
+          method: "POST",
+          headers: { Cookie: request.headers.get("cookie") || "" },
+        }
+      );
+
+      if (apiResponse.ok) {
+        const data = await apiResponse.json();
+        const newAccessToken = data.access_token;
+
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set(
+          "Cookie",
+          `${Tokens.ACCESS}=Bearer ${newAccessToken}; ${request.headers.get(
+            "cookie"
+          )}`
+        );
+
+        const response = NextResponse.next({
+          request: { headers: requestHeaders },
+        });
+
+        const backendCookies = apiResponse.headers.getSetCookie();
+        backendCookies.forEach((cookie) =>
+          response.headers.append("Set-Cookie", cookie)
+        );
+
+        return response;
+      }
+    } catch (error) {
+      console.error("Token refresh failed:", error);
+    }
+  }
+
+  // 4. Final Fallback: If refresh failed and route is protected, login
+  if (PROTECTED_PATHS.some((path) => pathname.startsWith(path))) {
+    return NextResponse.redirect(new URL("/auth/login", request.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};
