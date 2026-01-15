@@ -8,15 +8,15 @@ import {
   UnauthorizedException,
   Req,
 } from "@nestjs/common";
-import { Request, Response } from "express";
+import { CookieOptions, Request, Response } from "express";
 import { AuthService } from "./auth.service";
 import { LoginAuthorizationGuard } from "./auth.guard";
-import { AuthUser } from "controllers/utils/role/role.decorator";
+import { getRefreshToken } from "controllers/utils/auth/tokens";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
-import { LogInOptions, JwtPayload } from "@/utils/user";
+import { LogInOptions } from "@/utils/user";
+import { Tokens } from "@/utils/API";
 
 const SignUpValidator = new ZodValidationPipe(LogInOptions);
-const AUTHORIZATION_COOKIE_NAME = "Authorization";
 
 @Controller("auth")
 export class AuthController {
@@ -34,9 +34,9 @@ export class AuthController {
       payload.password
     );
 
-    const csrf_token = this.setToken(req, res, tokens.access_token);
+    this.setTokens(req, res, tokens);
 
-    res.json(csrf_token ? { ...tokens, csrf_token } : tokens);
+    res.json({});
   }
 
   @UseGuards(new LoginAuthorizationGuard())
@@ -52,49 +52,82 @@ export class AuthController {
       payload.password
     );
 
-    const csrf_token = this.setToken(req, res, tokens.access_token);
+    this.setTokens(req, res, tokens);
 
-    res.json(csrf_token ? { ...tokens, csrf_token } : tokens);
+    res.json({});
   }
 
   @HttpCode(200)
   @Post("refresh")
   async refreshToken(
     @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-    @AuthUser() user?: JwtPayload
+    @Res({ passthrough: true }) res: Response
   ) {
-    if (!user)
-      throw new UnauthorizedException("You must log in to do this action!");
+    const refresh_token = getRefreshToken(req);
 
-    const tokens = await this.authService.signTokens(user);
+    if (!refresh_token) {
+      throw new UnauthorizedException("No Refresh Token provided");
+    }
 
-    const csrf_token = this.setToken(req, res, tokens.access_token);
+    const tokens = await this.authService.refresh(refresh_token);
 
-    res.json(csrf_token ? { ...tokens, csrf_token } : tokens);
+    if (!tokens) {
+      throw new UnauthorizedException("Invalid Refresh Token");
+    }
+
+    this.setTokens(req, res, tokens);
+
+    res.json({ access_token: tokens.access_token });
   }
 
   @HttpCode(200)
   @Post("logout")
   async logOut(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    return { csrf_token: this.setToken(req, res) };
+    this.setTokens(req, res);
+
+    res.json({});
   }
 
-  private setToken(req: Request, res: Response, token?: string) {
+  private setTokens(
+    req: Request,
+    res: Response,
+    tokens?: { access_token: string; refresh_token: string }
+  ) {
+    const { access_token, refresh_token } = tokens ?? {};
+
+    const access_token_expires = new Date();
+    access_token_expires.setDate(access_token_expires.getDate() + 1);
+    this.setTokenCookie(req, res, Tokens.ACCESS, access_token, {
+      expires: access_token_expires,
+    });
+
+    const refresh_token_expires = new Date();
+    refresh_token_expires.setDate(refresh_token_expires.getDate() + 30);
+    this.setTokenCookie(req, res, Tokens.REFRESH, refresh_token, {
+      expires: refresh_token_expires,
+      path: "/api/auth/refresh",
+    });
+
+    req.csrfToken && req.csrfToken();
+  }
+
+  private setTokenCookie(
+    req: Request,
+    res: Response,
+    name: string,
+    token?: string,
+    options?: CookieOptions
+  ) {
     token = token ? `Bearer ${token}` : "";
-    const expires = new Date();
-    expires.setDate(expires.getDate() + 2);
 
     const cookieOptions = {
-      expires,
       sameSite: "strict",
       secure: true,
       httpOnly: true,
+      ...options,
     } as const;
 
-    req.cookies[AUTHORIZATION_COOKIE_NAME] = token;
-    res.cookie(AUTHORIZATION_COOKIE_NAME, token, cookieOptions);
-
-    return req.csrfToken && req.csrfToken({ cookieOptions });
+    req.cookies[name] = token;
+    res.cookie(name, token, cookieOptions);
   }
 }
