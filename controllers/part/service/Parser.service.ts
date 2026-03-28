@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import Part, { Product, Mapping, Infos, Products } from "@/utils/part";
+import Part, { Product, Mapping, Products } from "@/utils/part";
 import * as API from "@/utils/API";
 import { Primitive } from "@/utils/interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
@@ -57,7 +57,7 @@ class ParseService implements ParseServiceInterface {
 
   options(
     params: Record<string, string | string[]>,
-    part?: Products
+    part?: Products,
   ): Part.Filter & API.PageOptions & API.SearchOptions {
     const pageOptions: API.PageOptions & API.SearchOptions =
       API.toPageOptions(params);
@@ -77,7 +77,7 @@ class ParseService implements ParseServiceInterface {
         attributes.length === 0
           ? Part.BasicFilterAttributes
           : Part.BasicFilterAttributes.filter((attr) =>
-              attributes.includes(attr)
+              attributes.includes(attr),
             ),
     };
 
@@ -89,14 +89,14 @@ class ParseService implements ParseServiceInterface {
 
       entries.forEach((entry) => {
         if (!entry) return;
-        const [info, attr] = entry as [Infos, string];
+        const [info, attr] = entry;
 
-        if (!infoMapping[info]) infoMapping[info] = [];
+        infoMapping[info] ??= [];
         infoMapping[info].push(attr);
       });
 
       Mapping.Info[product].forEach((info) => {
-        if (!infoMapping[info]) infoMapping[info] = [];
+        infoMapping[info] ??= [];
       });
     }
 
@@ -111,7 +111,7 @@ class ParseService implements ParseServiceInterface {
    */
   protected buildFilterOptions(
     params: Record<string, string | string[]>,
-    part?: Products
+    part?: Products,
   ): FilterOptionBuilder {
     const builder = new FilterOptionBuilder();
 

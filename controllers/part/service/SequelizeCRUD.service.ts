@@ -18,7 +18,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
         acc[info] = association.target.scope(ModelScopes.DETAIL);
         return acc;
       },
-      {} as { [key in Infos]: ModelStatic<any> }
+      {} as { [key in Infos]: ModelStatic<any> },
     );
   }
 
@@ -33,7 +33,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
   async set(
     id: string,
     { part, ...data }: Part.DTO,
-    infos?: Infos[]
+    infos?: Infos[],
   ): Promise<Part.Model | null> {
     const instance =
       (await this.validateCodename(data.code_name, id)) ||
@@ -47,7 +47,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
     if (infos) {
       await Promise.all(
-        infos.map((info) => this.setInfo(id, info, data[info]))
+        infos.map((info) => this.setInfo(id, info, data[info])),
       );
     }
 
@@ -65,7 +65,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
     if (infos) {
       await Promise.all(
-        infos.map((info) => this.setInfo(instance.id, info, data[info]))
+        infos.map((info) => this.setInfo(instance.id, info, data[info])),
       );
     }
 
@@ -125,7 +125,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
   protected async setInfo(
     id: string,
     info: Infos,
-    data: Part.DTO[typeof info]
+    data: Part.DTO[typeof info],
   ): Promise<void> {
     // If data is undefined (no operation specified)
     if (data === undefined) return;
@@ -134,7 +134,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
     // If data is null (delete the info)
     if (data === null) {
-      instances.map((value) => value.destroy());
+      instances.forEach((value) => value.destroy());
       return;
     }
 
@@ -184,7 +184,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
    */
   protected hashByAttributes<T extends string>(
     instance: { [key in T]: any },
-    attrs: readonly T[]
+    attrs: readonly T[],
   ) {
     return attrs.map((value) => instance[value]).join("-");
   }

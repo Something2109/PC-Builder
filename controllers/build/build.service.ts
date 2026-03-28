@@ -18,27 +18,27 @@ import {
 class BuildService {
   constructor(
     @Inject(PARSE_INTERFACE)
-    private parseService: ParseServiceInterface,
+    private readonly parseService: ParseServiceInterface,
     @Inject(LIST_INTERFACE)
-    private partDatabase: DatabaseListInterface
+    private readonly partDatabase: DatabaseListInterface,
   ) {}
 
   async getPartDetails(options: Partial<Build.List>) {
     return await this.getBuildDetail(
       options,
       Mapping.SummaryAttributeMapping,
-      this.parseService.summary
+      this.parseService.summary,
     );
   }
 
   async getSuitablePart(
     product: Products,
     buildList: Partial<Build.List>,
-    params: Record<string, string | string[]>
+    params: Record<string, string | string[]>,
   ) {
     const buildDetails = await this.getBuildDetail(
       buildList,
-      Build.Product.RelevantFilterAttributes[product] ?? {}
+      Build.Product.RelevantFilterAttributes[product] ?? {},
     );
 
     const buildOptions = this.getFilterFromBuild(product, buildDetails);
@@ -47,7 +47,7 @@ class BuildService {
 
     const { list, total } = await this.partDatabase.list(
       { ...options, ...buildOptions },
-      Mapping.SummaryAttributeMapping[product]
+      Mapping.SummaryAttributeMapping[product],
     );
 
     return {
@@ -59,7 +59,7 @@ class BuildService {
   async validate(buildList: Partial<Build.List>) {
     const buildDetails = await this.getBuildDetail(
       buildList,
-      Build.Product.ValidateAttributes
+      Build.Product.ValidateAttributes,
     );
 
     const genericResult = Build.Rule.Product.validate(buildDetails);
@@ -82,7 +82,7 @@ class BuildService {
 
         return acc;
       },
-      { rules: {}, missing: {} } as Omit<Build.Result, "products">
+      { rules: {}, missing: {} } as Omit<Build.Result, "products">,
     );
 
     return {
@@ -104,7 +104,7 @@ class BuildService {
   protected async getBuildDetail<T = Part.Model>(
     build: Partial<Build.List>,
     productInfoMapping: { [prod in Products]?: { [info in Infos]?: string[] } },
-    transform?: (data: Part.Model, product: Products) => T
+    transform?: (data: Part.Model, product: Products) => T,
   ): Promise<Partial<Build.Details<T>>> {
     const promises = Object.values(Products).map(async (key) => {
       const product = key as Products;
@@ -114,7 +114,7 @@ class BuildService {
       const list = await this.fetchProductDetails(
         product,
         build[product],
-        productInfoMapping[product]
+        productInfoMapping[product],
       ); // Fetch the part details from the database
 
       if (!list) return undefined; // Check if the list is valid
@@ -133,7 +133,7 @@ class BuildService {
     const result = await Promise.all(promises);
 
     const buildDetails = Object.fromEntries(
-      result.filter((val) => val !== undefined)
+      result.filter((val) => val !== undefined),
     );
 
     return buildDetails as Partial<Build.Details<T>>;
@@ -151,7 +151,7 @@ class BuildService {
   protected async fetchProductDetails(
     product: Products,
     fetchIds: Readonly<string | string[]>,
-    attributes?: { [key in Infos]?: string[] }
+    attributes?: { [key in Infos]?: string[] },
   ): Promise<Part.Model | Part.Model[] | undefined> {
     const ids: string[] = Array.isArray(fetchIds) ? fetchIds : [fetchIds]; // Ensure list is an array
 
@@ -160,7 +160,7 @@ class BuildService {
     try {
       const { list: raw } = await this.partDatabase.list(
         { part: { id: ids }, page: 1, limit: ids.length },
-        attributes
+        attributes,
       ); // Fetch the part details from the database
 
       const list = raw.filter((item) => item.part === product);
@@ -171,7 +171,7 @@ class BuildService {
     } catch (err) {
       const error = err as Error;
       throw new InternalServerErrorException(
-        `Failed to fetch product details: ${error.message}`
+        `Failed to fetch product details: ${error.message}`,
       );
     }
   }
@@ -187,7 +187,7 @@ class BuildService {
    */
   protected getFilterFromBuild(
     product: Products,
-    buildDetails: Partial<Build.Details>
+    buildDetails: Partial<Build.Details>,
   ): Part.Filter {
     const buildOptions = Build.Product.Rule[product]?.reduce((acc, rule) => {
       const validateObject = this.getValidateAttributes(rule, buildDetails);
@@ -220,7 +220,7 @@ class BuildService {
    */
   protected validateRule<T extends Build.Rule.Mapping>(
     rule: Build.Rule<T>,
-    build: Partial<Build.Details>
+    build: Partial<Build.Details>,
   ) {
     const hasProducts = Object.values(rule.attributes).reduce(
       (acc, [product]) => {
@@ -229,7 +229,7 @@ class BuildService {
         }
         return acc && Boolean(build[product]);
       },
-      true
+      true,
     );
 
     if (!hasProducts) return;
@@ -254,7 +254,7 @@ class BuildService {
    */
   protected getValidateAttributes<T extends Build.Rule.Mapping>(
     rule: Build.Rule<T>,
-    build: Partial<Build.Details>
+    build: Partial<Build.Details>,
   ) {
     const filter = Object.entries(rule.attributes).reduce(
       (acc, [key, tuple]) => {
@@ -266,7 +266,7 @@ class BuildService {
         let parsedInfo: any = undefined; // Initialize parsedInfo
         if (Array.isArray(build[product])) {
           parsedInfo = build[product].map((detail) =>
-            this.parseDetail(detail, info, attr)
+            this.parseDetail(detail, info, attr),
           ); // If the product is an array, map over it
 
           if (parsedInfo.length === 0) return acc; // Check if the parsed info is valid
@@ -279,7 +279,7 @@ class BuildService {
 
         return acc;
       },
-      {} as { [key in keyof T]: any }
+      {} as { [key in keyof T]: any },
     );
 
     return filter as Build.Rule.Attributes<T>;
@@ -322,7 +322,7 @@ class BuildService {
   protected parseValidateResult<T extends Build.Rule.Mapping>(
     rule: Build.Rule<T>,
     build: Partial<Build.Details>,
-    result: Build.Rule.Result<T>
+    result: Build.Rule.Result<T>,
   ) {
     const parsed: Record<string, string[]> = {};
 

@@ -7,10 +7,8 @@ export class FilterOptionBuilder {
 
   add(info: keyof Part.Filter, key: string, value?: string[] | number[]) {
     if (value && value.length > 0) {
-      if (!this.result) this.result = {};
-
-      if (!this.result[info]) this.result[info] = {} as never;
-
+      this.result ??= {};
+      this.result[info] ??= {};
       this.result[info][key] = value;
     }
     return this;

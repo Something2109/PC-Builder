@@ -17,32 +17,27 @@ import {
   Op,
 } from "sequelize";
 
+type ListOptions = Part.Filter & API.PageOptions & API.SearchOptions;
+
 @Injectable()
 class SequelizeListService implements DatabaseListInterface {
-  async list(
-    options: Part.Filter & API.PageOptions & API.SearchOptions,
-    attrs?: { [key in Infos]?: string[] }
-  ) {
+  async list(options: ListOptions, attrs?: { [key in Infos]?: string[] }) {
     const Context = new SequelizeContext(options, attrs);
 
     return await Context.list();
   }
 
   async filter(
-    options: Part.Filter & API.PageOptions & API.SearchOptions,
-    attrs: ModelAttributeList
+    options: ListOptions,
+    attrs: ModelAttributeList,
   ): Promise<Part.Filter> {
     const { part, ...infos } = attrs;
     const Context = new SequelizeContext(options, infos);
     const filter: Part.Filter = {};
 
     const partPromises = part.map(async (attr) => {
-      const value =
-        options.part && options.part[attr]
-          ? options.part[attr]
-          : await Context.filter(attr);
-
-      if (!filter.part) filter.part = {};
+      const value = options.part?.[attr] ?? (await Context.filter(attr));
+      filter.part ??= {};
       filter.part[attr] = value as string[];
     });
 
@@ -50,11 +45,10 @@ class SequelizeListService implements DatabaseListInterface {
       const info = key as Infos;
       return attributes.map(async (attribute) => {
         const value =
-          options[info] && options[info][attribute]
-            ? options[info][attribute]
-            : await Context.filter(attribute, key as Infos);
+          options[info]?.[attribute] ??
+          (await Context.filter(attribute, key as Infos));
 
-        if (!filter[info]) filter[info] = {};
+        filter[info] ??= {};
         filter[info][attribute] = value;
       });
     });
@@ -84,10 +78,7 @@ class SequelizeContext {
   private readonly pageOptions: { limit: number; offset: number };
   private readonly searchOptions: Filterable;
 
-  constructor(
-    options: Part.Filter & API.PageOptions & API.SearchOptions,
-    attrs?: { [key in Infos]?: string[] }
-  ) {
+  constructor(options: ListOptions, attrs?: { [key in Infos]?: string[] }) {
     this.PartModel = PartInformation.scope({
       method: [ModelScopes.FILTER, options.part],
     });
@@ -190,7 +181,7 @@ class SequelizeContext {
       subQuery: false,
     });
 
-    return query.map((value) => value[attribute]).filter((value) => value);
+    return query.map((value) => value[attribute]).filter(Boolean);
   }
 
   /**
@@ -210,8 +201,8 @@ class SequelizeContext {
       ...this.searchOptions,
       ...this.pageOptions,
       attributes: [
-        [fn("min", col(attribute as string)), "min"],
-        [fn("max", col(attribute as string)), "max"],
+        [fn("min", col(attribute)), "min"],
+        [fn("max", col(attribute)), "max"],
       ],
       include,
       raw: true,
