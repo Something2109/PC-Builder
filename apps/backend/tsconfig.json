@@ -4,7 +4,7 @@
     "outDir": "./dist",
     "paths": {
       "@/models/*": ["models/*"],
-      "@/utils/*": ["utils/*"]
+      "@/utils/*": ["../../packages/shared/*"]
     },
     "target": "ES2021",
     "allowJs": true,

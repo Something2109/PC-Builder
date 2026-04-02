@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { Products } from "@/utils/Enum";
+import { Products } from "@pc-builder/shared";
 
 type BaseLink = {
   url: URL;
