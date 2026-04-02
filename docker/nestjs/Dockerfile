@@ -32,6 +32,7 @@ RUN npm run build
 # Stage 5: Development
 # Creates an image for local development.
 FROM app-source AS dev
+WORKDIR /usr/local/app/apps/backend
 EXPOSE 3000
 CMD ["npm", "run", "start:dev"]
 
