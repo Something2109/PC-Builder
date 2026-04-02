@@ -31,7 +31,7 @@ const UpdateValidator = new ZodValidationPipe(Part.DTO.partial());
 export class PartController {
   constructor(
     @Inject(PART_INTERFACE)
-    private service: PartServiceInterface
+    private readonly service: PartServiceInterface,
   ) {}
 
   @Get("filter")
@@ -42,7 +42,7 @@ export class PartController {
   @Get("filter/:part")
   async getPartFilter(
     @Param("part", ProductValidator) part: Products,
-    @Query() params: Record<string, string | string[]>
+    @Query() params: Record<string, string | string[]>,
   ) {
     return await this.service.filter(params, part);
   }
@@ -51,7 +51,7 @@ export class PartController {
   async getPartFilterAttribute(
     @Param("part", ProductValidator) part: Products,
     @Param("attribute") attribute: string,
-    @Query() params: Record<string, string | string[]>
+    @Query() params: Record<string, string | string[]>,
   ) {
     return await this.service.filter(params, part, attribute);
   }
@@ -64,7 +64,7 @@ export class PartController {
   @Get(":part")
   async partList(
     @Param("part", ProductValidator) part: Products,
-    @Query() params: Record<string, string | string[]>
+    @Query() params: Record<string, string | string[]>,
   ) {
     return await this.service.list(params, part);
   }
@@ -73,7 +73,7 @@ export class PartController {
   @Post(":part")
   async createPart(
     @Param("part", ProductValidator) part: Products,
-    @Body(CreateValidator) body: Part.DTO
+    @Body(CreateValidator) body: Part.DTO,
   ) {
     const partInfo = await this.service.create(part, body);
 
@@ -87,7 +87,7 @@ export class PartController {
   @Get(":part/:id")
   async getPart(
     @Param("part", ProductValidator) part: Products,
-    @Param("id", ParseUUIDPipe) id: string
+    @Param("id", ParseUUIDPipe) id: string,
   ) {
     const partInfo = await this.service.get(id, part);
 
@@ -101,7 +101,7 @@ export class PartController {
   async setPart(
     @Param("part", ProductValidator) part: Products,
     @Param("id", ParseUUIDPipe) id: string,
-    @Body(UpdateValidator) body: Part.DTO
+    @Body(UpdateValidator) body: Part.DTO,
   ) {
     const partInfo = await this.service.set(id, part, body);
 
@@ -114,7 +114,7 @@ export class PartController {
   @Delete(":part/:id")
   async deletePart(
     @Param("part", ProductValidator) part: Products,
-    @Param("id", ParseUUIDPipe) id: string
+    @Param("id", ParseUUIDPipe) id: string,
   ) {
     const partInfo = await this.service.delete(id, part);
 

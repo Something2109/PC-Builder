@@ -1,6 +1,6 @@
 import { InferAttributes, WhereOptions } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
-import { ConnectionOptions } from "./options";
+import { getConnectionOptions } from "./sequelize.options";
 
 if (
   !(
@@ -14,19 +14,11 @@ if (
   throw new Error("Not enough env variables specified");
 }
 
-const Connection = new Sequelize({
-  database: process.env.DATABASE_NAME,
-  dialect: "mysql",
-  host: process.env.DATABASE_HOST,
-  port: Number(process.env.DATABASE_PORT),
-  username: process.env.DATABASE_USERNAME,
-  password: process.env.DATABASE_PASSWORD,
-  ...ConnectionOptions,
-});
+const Connection = new Sequelize(getConnectionOptions());
 
 export function IdSubQuery<T extends InferAttributes<any>>(
   name: string,
-  options?: WhereOptions<T>
+  options?: WhereOptions<T>,
 ): string {
   return (Connection.getQueryInterface().queryGenerator as any)
     .selectQuery(name, { attributes: ["id"], where: options ?? {} })

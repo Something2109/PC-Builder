@@ -1,4 +1,4 @@
-import { UserModel, UserModelScope } from "@/models/user/User";
+import UserModel, { UserModelScope } from "@/models/user/User.entity";
 import * as API from "@/utils/API";
 import * as User from "@/utils/user";
 import {
@@ -10,7 +10,7 @@ import { Sequelize } from "sequelize-typescript";
 
 @Injectable()
 export class UserService {
-  constructor(private sequelize: Sequelize) {}
+  constructor(private readonly sequelize: Sequelize) {}
 
   async verify({ username, password }: { username: string; password: string }) {
     const user = await UserModel.scope(UserModelScope.VERIFY).findOne({
@@ -44,7 +44,7 @@ export class UserService {
     if (!created) return null;
 
     await this.sequelize.transaction(
-      async (transaction) => await user.save({ transaction })
+      async (transaction) => await user.save({ transaction }),
     );
 
     const { password: _, ...result } = user.toJSON();
@@ -84,7 +84,7 @@ export class UserService {
     user.set(options);
 
     await this.sequelize.transaction(
-      async (transaction) => await user.save({ transaction })
+      async (transaction) => await user.save({ transaction }),
     );
 
     return user.toJSON();
@@ -96,7 +96,7 @@ export class UserService {
     if (!user) return null;
 
     await this.sequelize.transaction(
-      async (transaction) => await user.destroy({ transaction })
+      async (transaction) => await user.destroy({ transaction }),
     );
 
     return user.toJSON();

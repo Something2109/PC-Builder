@@ -19,7 +19,7 @@ const ProductValidator = new ParseEnumPipe(Products, {
 
 @Controller("build")
 export class BuildController {
-  constructor(private service: BuildService) {}
+  constructor(private readonly service: BuildService) {}
 
   @Post()
   async getSummary(@Body(BuildListValidationPipe) buildList: Build.List) {
@@ -35,7 +35,7 @@ export class BuildController {
   async getSuitablePart(
     @Param("product", ProductValidator) part: Products,
     @Body(BuildListValidationPipe) buildList: Build.List,
-    @Query() params: Record<string, string | string[]>
+    @Query() params: Record<string, string | string[]>,
   ) {
     return await this.service.getSuitablePart(part, buildList, params);
   }

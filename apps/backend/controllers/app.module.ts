@@ -4,8 +4,8 @@ import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { MongooseModule } from "@nestjs/mongoose";
-import { ConnectionOptions } from "@/models/options";
 import { Connection } from "mongoose";
+import { getConnectionOptions } from "@/models/sequelize.options";
 import { ArticleModule } from "./article/article.module";
 import { AuthModule } from "./auth/auth.module";
 import { PartModule } from "./part/part.module";
@@ -30,18 +30,12 @@ const Jwt = JwtModule.register({
 
 // Initiate the Sequelize module.
 const Sequelize = SequelizeModule.forRoot({
-  dialect: "mysql",
-  host: process.env.MYSQL_HOST,
-  port: Number(process.env.MYSQL_PORT),
-  username,
-  password,
-  database,
+  ...getConnectionOptions(),
   autoLoadModels: true,
   logging: (
     (logger: Logger) => (sql: string, timeout: any) =>
       setTimeout(() => logger.verbose(sql), timeout ?? 0)
   )(new Logger("Sequelize")),
-  ...ConnectionOptions,
 });
 
 // Initiate the Mongoose module.
@@ -52,20 +46,20 @@ const Mongo = MongooseModule.forRoot(
       const logger = new Logger("Mongodb");
 
       connection.on("connected", () =>
-        logger.verbose("Mongodb database connected")
+        logger.verbose("Mongodb database connected"),
       );
       connection.on("open", () => logger.verbose("Mongodb database open"));
       connection.on("disconnected", () =>
-        logger.verbose("Mongodb database disconnected")
+        logger.verbose("Mongodb database disconnected"),
       );
       connection.on("reconnected", () =>
-        logger.verbose("Mongodb database reconnected")
+        logger.verbose("Mongodb database reconnected"),
       );
       connection.on("disconnecting", () =>
-        logger.verbose("Mongodb database disconnecting")
+        logger.verbose("Mongodb database disconnecting"),
       );
     },
-  }
+  },
 );
 
 @Module({
