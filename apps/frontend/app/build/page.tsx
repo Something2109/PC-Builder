@@ -1,7 +1,7 @@
-import BuildProductList from "@/components/build/List";
-import BuildValidateForm from "@/components/build/Form";
-import BuildResultList from "@/components/build/Result";
-import { ColumnWrapper } from "@/components/utils/FlexWrapper";
+import BuildProductList from "@/features/build/components/List";
+import BuildValidateForm from "@/features/build/components/Form";
+import BuildResultList from "@/features/build/components/Result";
+import { ColumnWrapper } from "@/ui/FlexWrapper";
 
 export default function build() {
   return (

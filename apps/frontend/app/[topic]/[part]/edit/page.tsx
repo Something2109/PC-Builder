@@ -1,11 +1,11 @@
 "use client";
 
-import { EditableArticle } from "@/components/articles/Form";
+import { EditableArticle } from "@/features/article/components/Form";
 import * as Article from "@/utils/article";
-import { Button, RedirectButton } from "@/components/utils/Button";
-import { NotificationBar } from "@/components/utils/NotificationBar";
+import { Button, RedirectButton } from "@/ui/Button";
+import { NotificationBar } from "@/ui/NotificationBar";
 import { use, useEffect, useState } from "react";
-import { ColumnWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
+import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
 import axios, { AxiosError } from "axios";
 
 export default function PartTopicEditPage({

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRefreshAction } from "@/components/auth";
+import { useRefreshAction } from "@/features/auth";
 import { useSearchParams } from "next/navigation";
 
 export default function RefreshPage() {

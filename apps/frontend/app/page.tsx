@@ -1,4 +1,4 @@
-import { SearchBar } from "@/components/searchbar";
+import { SearchBar } from "@/layout/searchbar";
 import React from "react";
 
 export default function Page() {

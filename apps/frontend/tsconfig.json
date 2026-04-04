@@ -3,10 +3,13 @@
     "baseUrl": ".",
     "outDir": "./dist",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/css/*": ["public/stylesheets/*"],
-      "@/models/*": ["models/*"],
-      "@/utils/*": ["utils/*", "../../packages/shared/*"],
+      "@/*": ["src/*"],
+      "@/features/*": ["src/features/*"],
+      "@/components/*": ["src/components/*"],
+      "@/ui/*": ["src/components/ui/*"],
+      "@/layout/*": ["src/components/layout/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/utils/*": ["src/utils/*", "../../packages/shared/*"],
       "@/images/*": ["public/images/*"]
     },
     "target": "ES2015",
@@ -29,7 +32,7 @@
         "name": "next"
       }
     ],
-    "ignoreDeprecations": "6.0",
+
     "strictNullChecks": true
   },
   "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],

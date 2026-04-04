@@ -1,6 +1,6 @@
 "use client";
 
-import ErrorPanel from "@/components/utils/ErrorPanel";
+import ErrorPanel from "@/ui/ErrorPanel";
 import { useEffect } from "react";
 
 export default function Error({

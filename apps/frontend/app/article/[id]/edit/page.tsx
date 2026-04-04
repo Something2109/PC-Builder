@@ -1,6 +1,6 @@
-import { EditableArticle } from "@/components/articles/Form";
+import { EditableArticle } from "@/features/article/components/Form";
 import * as Article from "@/utils/article";
-import { AuthRole } from "@/components/auth";
+import { AuthRole } from "@/features/auth";
 import { Roles } from "@/utils/user";
 import { notFound } from "next/navigation";
 

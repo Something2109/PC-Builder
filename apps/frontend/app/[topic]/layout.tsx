@@ -1,4 +1,4 @@
-import PartList from "@/components/partlist";
+import { PartList } from "@/features/part";
 import React from "react";
 
 export default async function TopicLayout({

@@ -1,9 +1,9 @@
-import { AuthRole } from "@/components/auth";
-import PartForm from "@/components/part/input/Part";
+import { AuthRole } from "@/features/auth";
+import PartForm from "@/features/part/components/input/Part";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
-} from "@/components/utils/FlexWrapper";
+} from "@/ui/FlexWrapper";
 import { Products } from "@/utils/part";
 import { Roles } from "@/utils/user";
 

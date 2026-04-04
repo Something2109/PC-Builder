@@ -1,6 +1,6 @@
-import PartPanel from "@/components/part/Panel";
-import { SearchBar } from "@/components/searchbar";
-import PaginationBar from "@/components/utils/PaginationBar";
+import PartPanel from "@/features/part/components/Panel";
+import { SearchBar } from "@/layout/searchbar";
+import PaginationBar from "@/ui/PaginationBar";
 import * as API from "@/utils/API";
 import Part from "@/utils/part";
 import { notFound } from "next/navigation";

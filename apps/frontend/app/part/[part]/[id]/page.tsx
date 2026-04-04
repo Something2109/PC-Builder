@@ -1,6 +1,6 @@
-import { InfoTable } from "@/components/part/Table";
-import { PartTable } from "@/components/part/detail/Part";
-import { ResponsiveWrapper } from "@/components/utils/FlexWrapper";
+import { InfoTable } from "@/features/part/components/Table";
+import { PartTable } from "@/features/part/components/detail/Part";
+import { ResponsiveWrapper } from "@/ui/FlexWrapper";
 import { notFound } from "next/navigation";
 import React from "react";
 import Part, { Products, Mapping } from "@/utils/part";

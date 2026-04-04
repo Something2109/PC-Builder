@@ -1,9 +1,9 @@
-import "@/css/globals.css";
-import Header from "@/components/header";
-import { ThemeBody } from "@/components/body";
-import Footer from "@/components/footer";
-import { AuthWrapper } from "@/components/auth";
-import { verifyToken } from "@/components/auth-server";
+import "../public/stylesheets/globals.css";
+import Header from "@/layout/header";
+import { ThemeBody } from "@/layout/body";
+import Footer from "@/layout/footer";
+import { AuthWrapper } from "@/features/auth";
+import { verifyToken } from "@/features/auth/server";
 
 export default async function RootLayout({
   children,

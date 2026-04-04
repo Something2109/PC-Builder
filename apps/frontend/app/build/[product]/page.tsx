@@ -1,19 +1,19 @@
 "use client";
 
-import useProductSummary from "@/components/hook/build/ProductSummary";
-import { useBuildContext } from "@/components/hook/build/BuildContext";
-import SummaryTable from "@/components/part/Summary";
-import { FilterBar } from "@/components/part/Filter";
-import { ColumnWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
-import { ToggleButton } from "@/components/utils/Toggle";
-import { Button } from "@/components/utils/Button";
-import PaginationBar from "@/components/utils/PaginationBar";
+import useProductSummary from "@/features/build/hooks/ProductSummary";
+import { useBuildContext } from "@/features/build/hooks/BuildContext";
+import SummaryTable from "@/features/part/components/Summary";
+import { FilterBar } from "@/features/part/components/Filter";
+import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
+import { ToggleButton } from "@/ui/Toggle";
+import { Button } from "@/ui/Button";
+import PaginationBar from "@/ui/PaginationBar";
 import Part, { Product } from "@/utils/part";
 import { use } from "react";
 import { useRouter } from "next/navigation";
-import { ChoiceInput } from "@/components/utils/Input";
-import LoadingPanel from "@/components/utils/LoadingPanel";
-import ErrorPanel from "@/components/utils/ErrorPanel";
+import { ChoiceInput } from "@/ui/Input";
+import LoadingPanel from "@/ui/LoadingPanel";
+import ErrorPanel from "@/ui/ErrorPanel";
 
 export default function BuildProductSummary({
   params: productParams,

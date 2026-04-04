@@ -2,8 +2,8 @@ import * as Article from "@/utils/article";
 import { Products } from "@/utils/part";
 import { notFound } from "next/navigation";
 import React from "react";
-import { ColumnWrapper } from "@/components/utils/FlexWrapper";
-import { ArticleLink } from "@/components/utils/ArticleLink";
+import { ColumnWrapper } from "@/ui/FlexWrapper";
+import { ArticleLink } from "@/features/article";
 
 export default async function PartTopicPage({
   params,

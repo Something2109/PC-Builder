@@ -1,9 +1,9 @@
-import { ColumnWrapper, RowWrapper } from "@/components/utils/FlexWrapper";
-import SummaryTable from "@/components/part/Summary";
-import { RedirectButton } from "@/components/utils/Button";
-import PaginationBar from "@/components/utils/PaginationBar";
-import { FilterBar } from "@/components/part/Filter";
-import { ToggleButton } from "@/components/utils/Toggle";
+import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
+import SummaryTable from "@/features/part/components/Summary";
+import { RedirectButton } from "@/ui/Button";
+import PaginationBar from "@/ui/PaginationBar";
+import { FilterBar } from "@/features/part/components/Filter";
+import { ToggleButton } from "@/ui/Toggle";
 import { Product } from "@/utils/part";
 import { notFound } from "next/navigation";
 
