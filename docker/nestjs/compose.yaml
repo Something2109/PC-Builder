@@ -38,14 +38,14 @@ services:
     develop:
       watch:
         - action: sync
-          path: ../../
-          target: /usr/local/app
-          ignore:
-            - app
-            - components
-            - docker
-            - public
-            - next-env.d.ts
-            - next.config.js
-            - postcss.config.js
-            - tailwind.config.js
+          path: ../../apps/backend
+          target: /usr/local/app/apps/backend
+        - action: sync
+          path: ../../packages/shared
+          target: /usr/local/app/packages/shared
+        - action: rebuild
+          path: ../../package.json
+        - action: rebuild
+          path: ../../apps/backend/package.json
+        - action: rebuild
+          path: ../../package-lock.json

@@ -26,9 +26,14 @@ services:
     develop:
       watch:
         - action: sync
-          path: ../../
-          target: /usr/local/app
-          ignore:
-            - crawlers
-            - docker
-            - nest-cli.json
+          path: ../../apps/frontend
+          target: /usr/local/app/apps/frontend
+        - action: sync
+          path: ../../packages/shared
+          target: /usr/local/app/packages/shared
+        - action: rebuild
+          path: ../../package.json
+        - action: rebuild
+          path: ../../apps/frontend/package.json
+        - action: rebuild
+          path: ../../package-lock.json
