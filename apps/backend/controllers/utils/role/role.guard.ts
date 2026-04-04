@@ -4,6 +4,7 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
+  ForbiddenException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Roles } from "@/utils/user";
@@ -37,7 +38,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException("You must log in to do this action!");
 
     if (!requiredRoles.includes(session.sub.role))
-      throw new UnauthorizedException(
+      throw new ForbiddenException(
         "You are not authorized to do this action!"
       );
 

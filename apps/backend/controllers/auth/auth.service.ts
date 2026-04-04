@@ -1,6 +1,10 @@
 import { Tokens } from "@/utils/API";
 import { JwtPayload } from "@/utils/user";
-import { ConflictException, Injectable } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "controllers/user/user.service";
 
@@ -22,8 +26,9 @@ export class AuthService {
 
   async logIn(username: string, password: string) {
     const user = await this.userService.verify({ username, password });
+    const tokens = await this.signTokens(user);
 
-    return await this.signTokens(user);
+    return { user, tokens };
   }
 
   async refresh(refresh_token: string) {
@@ -34,10 +39,15 @@ export class AuthService {
 
       if (payload.type === Tokens.REFRESH) {
         return await this.signTokens(payload.sub);
+      } else {
+        throw new UnauthorizedException("Invalid Token Type");
       }
-    } catch {}
-
-    return null;
+    } catch (err: any) {
+      if (err.name === "TokenExpiredError") {
+        throw new UnauthorizedException("Refresh Token Expired");
+      }
+      throw new UnauthorizedException("Invalid Refresh Token");
+    }
   }
 
   async signTokens(user: JwtPayload) {

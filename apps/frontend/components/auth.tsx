@@ -13,26 +13,55 @@ import {
   useTransition,
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import axios, { AxiosError } from "axios";
+import axiosInstance from "@/utils/axios";
+import { AxiosError } from "axios";
 
-const AUTH_KEY = "REFRESH-TOKEN";
 const LoginPath = "/auth/login";
-const AuthContext = createContext<
-  [UserJwtPayload | null, Dispatch<SetStateAction<UserJwtPayload | null>>]
->([null, () => {}]);
+
+interface AuthContextType {
+  user: UserJwtPayload | null;
+  setUser: Dispatch<SetStateAction<UserJwtPayload | null>>;
+  refresh: () => Promise<void>;
+  loading: boolean;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function useAuth() {
-  const [user, _] = useContext(AuthContext);
-  return user;
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within AuthWrapper");
+  return context.user;
 }
 
 export function AuthWrapper({
-  user,
+  user: initialUser,
   children,
 }: Readonly<{ user: UserJwtPayload | null; children: React.ReactNode }>) {
-  const state = useState(user);
+  const [user, setUser] = useState<UserJwtPayload | null>(initialUser);
+  const [loading, setLoading] = useState(!initialUser);
 
-  return <AuthContext value={state}>{children}</AuthContext>;
+  const refresh = async () => {
+    try {
+      const response = await axiosInstance.get("/auth/me");
+      setUser(response.data);
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!initialUser) {
+      refresh();
+    }
+  }, [initialUser]);
+
+  return (
+    <AuthContext.Provider value={{ user, setUser, refresh, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function AuthRole({
@@ -42,12 +71,13 @@ export function AuthRole({
   roles: Roles[];
   children: React.ReactNode;
 }>) {
-  const [user] = useContext(AuthContext);
+  const context = useContext(AuthContext);
+  const user = context?.user;
   const router = useRouter();
   const pathname = usePathname();
 
   useLayoutEffect(() => {
-    if (!user) router.push(`${LoginPath}?redirect=${pathname}`);
+    if (!user && !context?.loading) router.push(`${LoginPath}?redirect=${pathname}`);
   });
 
   if (!user) return;
@@ -66,17 +96,15 @@ type LoginError = {
 
 export function useLoginAction(pathname?: string) {
   const router = useRouter();
-  const [_, setUser] = useContext(AuthContext);
+  const context = useContext(AuthContext);
   const [error, setError] = useState<LoginError>({});
   const [state, formAction, pending] = useActionState(
     async (_: Record<string, string>, form: FormData) => {
       const body = Object.fromEntries(form.entries());
 
       try {
-        const response = await axios.post("/api/auth/login", body, {
-          withCredentials: true,
-        });
-        setUser(response.data);
+        const response = await axiosInstance.post("/auth/login", body);
+        context?.setUser(response.data);
         router.push(pathname ?? "/");
       } catch (err) {
         const error = err as AxiosError;
@@ -98,24 +126,18 @@ export function useLoginAction(pathname?: string) {
 
 export function useRefreshAction(pathname?: string | null) {
   const [pending, startTransition] = useTransition();
-  const [_, setUser] = useContext(AuthContext);
+  const context = useContext(AuthContext);
   const router = useRouter();
   const redirectPath = pathname ?? "/";
 
   useEffect(() => {
     startTransition(async () => {
-      const token = localStorage.getItem(AUTH_KEY);
-
       try {
-        const response = await axios.post("/api/auth/refresh", undefined, {
-          withCredentials: true,
-          headers: { Authorization: token ? `Bearer ${token}` : undefined },
-        });
-        setUser(response.data);
+        const response = await axiosInstance.post("/auth/refresh");
+        context?.setUser(response.data);
         router.replace(redirectPath);
       } catch (err) {
         console.error(err);
-
         router.replace(`${LoginPath}?redirect=${redirectPath}`);
       }
     });
@@ -126,21 +148,19 @@ export function useRefreshAction(pathname?: string | null) {
 
 export function useLogoutAction() {
   const [pending, startTransition] = useTransition();
-  const [_, setUser] = useContext(AuthContext);
+  const context = useContext(AuthContext);
   const router = useRouter();
 
   const logout = () =>
     startTransition(async () => {
       try {
-        const response = await axios.post("/api/auth/logout", undefined, {
-          withCredentials: true,
-        });
-        setUser(response.data);
+        await axiosInstance.post("/auth/logout");
+        context?.setUser(null);
         router.push(LoginPath);
       } catch (err) {
         const error = err as AxiosError;
         console.error(err);
-        alert(error.response?.data ?? "Cannot connect to server.");
+        alert(typeof error.response?.data === 'string' ? error.response.data : "Cannot connect to server.");
       }
     });
 

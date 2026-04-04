@@ -7,6 +7,7 @@ import {
   HttpCode,
   UnauthorizedException,
   Req,
+  Get,
 } from "@nestjs/common";
 import { CookieOptions, Request, Response } from "express";
 import { AuthService } from "./auth.service";
@@ -29,14 +30,14 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body(SignUpValidator) payload: LogInOptions
   ) {
-    const tokens = await this.authService.signUp(
+    const { user, tokens } = await this.authService.signUp(
       payload.username,
       payload.password
     );
 
     this.setTokens(req, res, tokens);
 
-    res.json({});
+    res.json(user);
   }
 
   @UseGuards(new LoginAuthorizationGuard())
@@ -47,14 +48,20 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body(SignUpValidator) payload: LogInOptions
   ) {
-    const tokens = await this.authService.logIn(
+    const { user, tokens } = await this.authService.logIn(
       payload.username,
       payload.password
     );
 
     this.setTokens(req, res, tokens);
 
-    res.json({});
+    res.json(user);
+  }
+
+  @UseGuards(new LoginAuthorizationGuard(true))
+  @Get("me")
+  async getMe(@Req() req: Request) {
+    return (req as any).session.sub;
   }
 
   @HttpCode(200)
@@ -70,10 +77,6 @@ export class AuthController {
     }
 
     const tokens = await this.authService.refresh(refresh_token);
-
-    if (!tokens) {
-      throw new UnauthorizedException("Invalid Refresh Token");
-    }
 
     this.setTokens(req, res, tokens);
 

@@ -1,32 +1,30 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { Tokens } from "./utils/API";
-import { jwtVerify } from "jose";
+import { Tokens } from "@/utils/API";
 
 // Define paths that REQUIRE authentication
 const PROTECTED_PATHS = ["/admin", "/profile", "/build/save"];
 
-const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-
-async function validateAccessToken(accessToken: string) {
-  const regexMatch =
-    /(Bearer) ([A-Za-z0-9-_]*\.[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*)/.exec(
-      accessToken
-    );
-
-  if (!regexMatch) return false;
-
-  const [_, bearer, token] = regexMatch;
-
-  if (bearer !== "Bearer") return false;
+async function validateAccessToken(request: NextRequest) {
+  const accessToken = request.cookies.get(Tokens.ACCESS);
+  if (!accessToken) return false;
 
   try {
-    await jwtVerify(token, secret);
+    const apiResponse = await fetch(
+      `${process.env.BACKEND_HOST}/api/auth/me`,
+      {
+        method: "GET",
+        headers: {
+          Cookie: `${Tokens.ACCESS}=${accessToken.value}`,
+        },
+      }
+    );
 
-    return true;
-  } catch {}
-
-  return false;
+    return apiResponse.ok;
+  } catch (error) {
+    console.error("Access token validation failed:", error);
+    return false;
+  }
 }
 
 export async function middleware(request: NextRequest) {
@@ -35,7 +33,7 @@ export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get(Tokens.ACCESS);
   const refreshToken = request.cookies.get(Tokens.REFRESH);
 
-  if (accessToken && (await validateAccessToken(accessToken.value))) {
+  if (accessToken && (await validateAccessToken(request))) {
     return NextResponse.next();
   }
 

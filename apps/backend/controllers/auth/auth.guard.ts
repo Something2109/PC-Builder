@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  UnauthorizedException,
   Injectable,
 } from "@nestjs/common";
 
@@ -22,14 +23,18 @@ export class LoginAuthorizationGuard implements CanActivate {
 
     if (!this.requiredSession && !session) return true;
 
-    // Default message for no login.
-    let message = "You must log in to do this action!";
-
-    // If the user is required to be not logged in.
-    if (session) {
-      message = `You have logged in as ${session.sub.username}`;
+    // If the user is required to be logged in but isn't.
+    if (this.requiredSession && !session) {
+      throw new UnauthorizedException("You must log in to do this action!");
     }
 
-    throw new ForbiddenException(message);
+    // If the user is required to be not logged in but is.
+    if (!this.requiredSession && session) {
+      throw new ForbiddenException(
+        `You have logged in as ${session.sub.username}`
+      );
+    }
+
+    return false;
   }
 }
