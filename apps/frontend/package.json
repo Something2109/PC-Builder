@@ -13,8 +13,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint .",
-    "crawl": "tsc ./crawlers/src/*.ts --outDir ./crawlers/dist"
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",

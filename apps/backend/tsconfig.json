@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
+    "rootDir": "../../",
     "baseUrl": ".",
-    "outDir": "./dist",
+    "outDir": "dist",
     "paths": {
       "@/models/*": ["models/*"],
       "@/utils/*": ["../../packages/shared/*"]
@@ -21,6 +22,6 @@
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", ".next", "app"]
+  "include": ["**/*.ts", "**/*.tsx", "../../packages/shared/**/*.ts"],
+  "exclude": ["node_modules", ".next", "app", "../../apps/frontend", "../../apps/crawler"]
 }
