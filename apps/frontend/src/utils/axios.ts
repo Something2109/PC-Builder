@@ -11,7 +11,7 @@ const axiosInstance = axios.create({
 const getCookie = (name: string) => {
   if (typeof document === "undefined") return null;
   const value = `; ${document.cookie}`;
-console.log(value);
+
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop()?.split(";").shift();
   return null;
