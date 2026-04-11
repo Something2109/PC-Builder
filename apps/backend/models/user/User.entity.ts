@@ -26,7 +26,7 @@ enum UserModelScope {
 @DefaultScope(() => ({ attributes: { exclude: ["password", "refreshTokenHash"] } }))
 @Scopes(() => ({
   [UserModelScope.VERIFY]: () => ({
-    attributes: ["id", "username", "password", "role"],
+    attributes: ["id", "username", "password", "role", "refreshTokenHash"],
   }),
   [UserModelScope.SUMMARY]: () => ({
     attributes: ["id", "username", "name", "role"],

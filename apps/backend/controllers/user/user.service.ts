@@ -29,7 +29,7 @@ export class UserService {
         password: "Password not match",
       });
 
-    const { password: _, ...info } = user.toJSON();
+    const { password: _, refreshTokenHash: __, ...info } = user.toJSON();
 
     return info as User.JwtPayload;
   }
@@ -105,7 +105,9 @@ export class UserService {
   }
 
   async setRefreshToken(username: string, refreshToken: string | null) {
-    const user = await UserModel.findOne({ where: { username } });
+    const user = await UserModel.scope(UserModelScope.VERIFY).findOne({
+      where: { username },
+    });
     if (!user) return null;
 
     if (refreshToken) {
@@ -121,7 +123,8 @@ export class UserService {
   }
 
   async verifyRefreshToken(username: string, refreshToken: string): Promise<boolean> {
-    const user = await UserModel.findOne({ where: { username } });
+    const user = await UserModel.scope(UserModelScope.VERIFY).findOne({ where: { username } });
+
     if (!user || !user.refreshTokenHash) return false;
 
     return await bcrypt.compare(refreshToken, user.refreshTokenHash);
