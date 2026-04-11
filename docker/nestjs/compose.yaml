@@ -17,6 +17,12 @@ services:
       - CSRF_SECRET=${CSRF_SECRET:?error}
     profiles:
       - production
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r => r.ok ? process.exit(0) : process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
   nestjs-dev:
     build:
       context: ../../
@@ -35,6 +41,12 @@ services:
       - CSRF_SECRET=${CSRF_SECRET:?error}
     profiles:
       - development
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r => r.ok ? process.exit(0) : process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     develop:
       watch:
         - action: sync

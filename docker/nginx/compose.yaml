@@ -7,6 +7,11 @@ services:
       - 3000:80
     profiles:
       - production
+    depends_on:
+      nestjs-prod:
+        condition: service_healthy
+      nextjs-prod:
+        condition: service_healthy
   nginx-dev:
     build:
       context: .
@@ -15,3 +20,8 @@ services:
       - 3000:80
     profiles:
       - development
+    depends_on:
+      nestjs-dev:
+        condition: service_healthy
+      nextjs-dev:
+        condition: service_healthy

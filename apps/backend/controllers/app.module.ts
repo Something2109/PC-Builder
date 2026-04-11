@@ -13,6 +13,7 @@ import { UserModule } from "./user/user.module";
 import { AuthGuard } from "./utils/role/role.guard";
 import { SessionExtractionMiddleware } from "./utils/session.middleware";
 import { BuildModule } from "./build/build.module";
+import { AppController } from "./app.controller";
 
 // Initiate the environment variables.
 const Config = ConfigModule.forRoot();
@@ -63,6 +64,7 @@ const Mongo = MongooseModule.forRoot(
 );
 
 @Module({
+  controllers: [AppController],
   imports: [
     Config,
     Jwt,
