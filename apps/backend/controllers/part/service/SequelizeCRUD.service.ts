@@ -7,20 +7,31 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 class SequelizeCRUDService implements DatabaseCRUDInterface {
-  private readonly PartModel: ModelStatic<PartInformation>;
-  private readonly InfoModels: { [key in Infos]: ModelStatic<any> };
+  private _PartModel?: ModelStatic<PartInformation>;
+  private _InfoModels?: { [key in Infos]: ModelStatic<any> };
 
-  constructor() {
-    this.PartModel = PartInformation.scope(ModelScopes.DETAIL);
-    this.InfoModels = Object.entries(PartInformation.associations).reduce(
-      (acc, [key, association]) => {
-        const info = key as Infos;
-        acc[info] = association.target.scope(ModelScopes.DETAIL);
-        return acc;
-      },
-      {} as { [key in Infos]: ModelStatic<any> },
-    );
+  private get PartModel(): ModelStatic<PartInformation> {
+    if (!this._PartModel) {
+      this._PartModel = PartInformation.scope(ModelScopes.DETAIL);
+    }
+    return this._PartModel;
   }
+
+  private get InfoModels(): { [key in Infos]: ModelStatic<any> } {
+    if (!this._InfoModels) {
+      this._InfoModels = Object.entries(PartInformation.associations).reduce(
+        (acc, [key, association]) => {
+          const info = key as Infos;
+          acc[info] = association.target.scope(ModelScopes.DETAIL);
+          return acc;
+        },
+        {} as { [key in Infos]: ModelStatic<any> },
+      );
+    }
+    return this._InfoModels;
+  }
+
+  constructor() {}
 
   async get(id: string, infos?: Infos[]): Promise<Part.Model | null> {
     const include = this.infoToModel(infos);

@@ -11,6 +11,7 @@ import {
   ParseEnumPipe,
   Inject,
   InternalServerErrorException,
+  UsePipes,
 } from "@nestjs/common";
 import {
   PART_INTERFACE,
@@ -24,8 +25,7 @@ import { Role } from "controllers/utils/role/role.decorator";
 const ProductValidator = new ParseEnumPipe(Products, {
   exceptionFactory: () => new NotFoundException("Product's not found"),
 });
-const CreateValidator = new ZodValidationPipe(Part.DTO);
-const UpdateValidator = new ZodValidationPipe(Part.DTO.partial());
+ 
 
 @Controller("part")
 export class PartController {
@@ -71,9 +71,10 @@ export class PartController {
 
   @Role(Roles.ADMIN)
   @Post(":part")
+  @UsePipes(new ZodValidationPipe(Part.DTO))
   async createPart(
     @Param("part", ProductValidator) part: Products,
-    @Body(CreateValidator) body: Part.DTO,
+    @Body() body: Part.DTO,
   ) {
     const partInfo = await this.service.create(part, body);
 
@@ -98,10 +99,11 @@ export class PartController {
 
   @Role(Roles.ADMIN)
   @Post(":part/:id")
+  @UsePipes(new ZodValidationPipe(Part.DTO.partial()))
   async setPart(
     @Param("part", ProductValidator) part: Products,
     @Param("id", ParseUUIDPipe) id: string,
-    @Body(UpdateValidator) body: Part.DTO,
+    @Body() body: Part.DTO,
   ) {
     const partInfo = await this.service.set(id, part, body);
 
