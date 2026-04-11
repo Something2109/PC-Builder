@@ -15,6 +15,12 @@ async function bootstrap() {
     skipCsrfProtection: (request: Request) =>
       request.originalUrl.startsWith("/api/auth"),
     cookieName: "CSRF_Token",
+    cookieOptions: {
+      httpOnly: false,
+      sameSite: "lax",
+      path: "/",
+      secure: true,
+    },
     errorConfig: { message: "Invalid CSRF token." },
   });
 

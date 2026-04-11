@@ -8,6 +8,28 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+const getCookie = (name: string) => {
+  if (typeof document === "undefined") return null;
+  const value = `; ${document.cookie}`;
+console.log(value);
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(";").shift();
+  return null;
+};
+
+axiosInstance.interceptors.request.use((config) => {
+  const method = config.method?.toLowerCase();
+
+  if (method && ["post", "put", "delete", "patch"].includes(method)) {
+    const csrfToken = getCookie("CSRF_Token");
+    
+    if (csrfToken) {
+      config.headers["X-CSRF-Token"] = csrfToken;
+    }
+  }
+  return config;
+});
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
