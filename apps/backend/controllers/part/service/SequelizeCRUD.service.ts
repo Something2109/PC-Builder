@@ -2,8 +2,9 @@ import { DatabaseCRUDInterface } from "../interface/database.interface";
 import { PartInformation } from "@/models/parts";
 import { ModelScopes } from "@/models/interface";
 import Part, { Infos, Products } from "@/utils/part";
-import { Includeable, Model, ModelStatic } from "sequelize";
+import { Includeable, Model, ModelStatic, Transaction } from "sequelize";
 import { Injectable } from "@nestjs/common";
+import { Sequelize } from "sequelize-typescript";
 
 @Injectable()
 class SequelizeCRUDService implements DatabaseCRUDInterface {
@@ -31,7 +32,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     return this._InfoModels;
   }
 
-  constructor() {}
+  constructor(private readonly sequelize: Sequelize) {}
 
   async get(id: string, infos?: Infos[]): Promise<Part.Model | null> {
     const include = this.infoToModel(infos);
@@ -46,52 +47,65 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     { part, ...data }: Part.DTO,
     infos?: Infos[],
   ): Promise<Part.Model | null> {
-    const instance =
-      (await this.validateCodename(data.code_name, id)) ||
-      (await this.PartModel.findByPk(id));
-    if (!instance) return null;
+    return await this.sequelize.transaction(async (transaction) => {
+      const instance =
+        (await this.validateCodename(data.code_name, id, transaction)) ||
+        (await this.PartModel.findByPk(id, { transaction }));
+      if (!instance) return null;
 
-    instance.set(data);
-    if (!instance.part) instance.part = part as Products;
+      instance.set(data);
+      if (!instance.part) instance.part = part as Products;
 
-    await instance.save();
+      await instance.save({ transaction });
 
-    if (infos) {
-      await Promise.all(
-        infos.map((info) => this.setInfo(id, info, data[info])),
-      );
-    }
+      if (infos) {
+        await Promise.all(
+          infos.map((info) =>
+            this.setInfo(id, info, data[info], transaction),
+          ),
+        );
+      }
 
-    return await this.get(id, infos);
+      return await this.get(id, infos);
+    });
   }
 
   async create(data: Part.DTO, infos?: Infos[]): Promise<Part.Model> {
-    let instance =
-      (await this.validateCodename(data.code_name)) ||
-      PartInformation.build(data);
+    return (await this.sequelize.transaction(async (transaction) => {
+      let instance =
+        (await this.validateCodename(data.code_name, undefined, transaction)) ||
+        PartInformation.build(data);
 
-    instance.set(data);
+      instance.set(data);
 
-    instance = await instance.save();
+      instance = await instance.save({ transaction });
 
-    if (infos) {
-      await Promise.all(
-        infos.map((info) => this.setInfo(instance.id, info, data[info])),
-      );
-    }
+      if (infos) {
+        await Promise.all(
+          infos.map((info) =>
+            this.setInfo(instance.id, info, data[info], transaction),
+          ),
+        );
+      }
 
-    return (await this.get(instance.id, infos))!;
+      return (await this.get(instance.id, infos))!;
+    }))!;
   }
 
   async delete(id: string, infos?: Infos[]): Promise<Part.Model | null> {
     const include = this.infoToModel(infos);
 
-    const instance = await this.PartModel.findByPk(id, { include });
-    if (!instance) return null;
+    return await this.sequelize.transaction(async (transaction) => {
+      const instance = await this.PartModel.findByPk(id, {
+        include,
+        transaction,
+      });
+      if (!instance) return null;
 
-    await instance.destroy();
+      await instance.destroy({ transaction });
 
-    return instance.toJSON();
+      return instance.toJSON();
+    });
   }
 
   /**
@@ -111,10 +125,17 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
    * @param id The optional id for validating if the model
    * @returns The part instance if the code name and id mapped to one object else null.
    */
-  protected async validateCodename(code_name: string, id?: string) {
+  protected async validateCodename(
+    code_name: string,
+    id?: string,
+    transaction?: Transaction,
+  ) {
     if (!code_name) return undefined;
 
-    const instance = await this.PartModel.findOne({ where: { code_name } });
+    const instance = await this.PartModel.findOne({
+      where: { code_name },
+      transaction,
+    });
     if (instance && instance.id !== id)
       throw new Error(`Part already exists with the code name: ${code_name}`);
 
@@ -137,15 +158,19 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     id: string,
     info: Infos,
     data: Part.DTO[typeof info],
+    transaction?: Transaction,
   ): Promise<void> {
     // If data is undefined (no operation specified)
     if (data === undefined) return;
 
-    const instances = await this.InfoModels[info].findAll({ where: { id } });
+    const instances = await this.InfoModels[info].findAll({
+      where: { id },
+      transaction,
+    });
 
     // If data is null (delete the info)
     if (data === null) {
-      instances.forEach((value) => value.destroy());
+      instances.forEach((value) => value.destroy({ transaction }));
       return;
     }
 
@@ -182,8 +207,10 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
     // destroy the unused old data and save the new data
     await Promise.all([
-      ...Object.values(oldInstances).map((value) => value.destroy()),
-      ...newInstances.map((value) => value.save()),
+      ...Object.values(oldInstances).map((value) =>
+        value.destroy({ transaction }),
+      ),
+      ...newInstances.map((value) => value.save({ transaction })),
     ]);
   }
 
