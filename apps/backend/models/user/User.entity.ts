@@ -1,3 +1,4 @@
+import * as bcrypt from "bcrypt";
 import { defaultFilter, Tables } from "../interface";
 import { Type, Roles, FilterOptions } from "@/utils/user";
 import {
@@ -12,6 +13,7 @@ import {
   PrimaryKey,
   Scopes,
   Table,
+  BeforeSave,
 } from "sequelize-typescript";
 
 enum UserModelScope {
@@ -21,7 +23,7 @@ enum UserModelScope {
   DETAIL = "detail",
 }
 
-@DefaultScope(() => ({ attributes: { exclude: ["password"] } }))
+@DefaultScope(() => ({ attributes: { exclude: ["password", "refreshTokenHash"] } }))
 @Scopes(() => ({
   [UserModelScope.VERIFY]: () => ({
     attributes: ["id", "username", "password", "role"],
@@ -33,7 +35,7 @@ enum UserModelScope {
     where: defaultFilter(options),
   }),
   [UserModelScope.DETAIL]: () => ({
-    attributes: { exclude: ["password"] },
+    attributes: { exclude: ["password", "refreshTokenHash"] },
   }),
 }))
 @Table({ tableName: Tables.USER })
@@ -45,12 +47,15 @@ export default class UserModel extends Model implements Type {
 
   @Index
   @NotNull
-  @Column({ type: DataType.STRING, allowNull: false, validate: { min: 8 } })
+  @Column({ type: DataType.STRING, allowNull: false, validate: { len: [8, 255] } })
   declare username: string;
 
   @NotNull
-  @Column({ type: DataType.STRING, allowNull: false, validate: { min: 8 } })
+  @Column({ type: DataType.STRING, allowNull: false, validate: { len: [8, 255] } })
   declare password: string;
+
+  @Column(DataType.STRING)
+  declare refreshTokenHash: string | null;
 
   @Column(DataType.STRING)
   declare name: string | null;
@@ -65,6 +70,14 @@ export default class UserModel extends Model implements Type {
     validate: { isIn: [Object.values(Roles)] },
   })
   declare role: Roles;
+ 
+  @BeforeSave
+  static async hashPassword(instance: UserModel) {
+    if (instance.changed("password")) {
+      const salt = await bcrypt.genSalt(10);
+      instance.password = await bcrypt.hash(instance.password, salt);
+    }
+  }
 }
 
 export { UserModelScope };

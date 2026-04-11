@@ -1,3 +1,4 @@
+import * as bcrypt from "bcrypt";
 import UserModel, { UserModelScope } from "@/models/user/User.entity";
 import * as API from "@/utils/API";
 import * as User from "@/utils/user";
@@ -22,7 +23,8 @@ export class UserService {
         username: `No username match ${username}`,
       });
 
-    if (user.password !== password)
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid)
       throw new UnauthorizedException({
         password: "Password not match",
       });
@@ -100,5 +102,28 @@ export class UserService {
     );
 
     return user.toJSON();
+  }
+
+  async setRefreshToken(username: string, refreshToken: string | null) {
+    const user = await UserModel.findOne({ where: { username } });
+    if (!user) return null;
+
+    if (refreshToken) {
+      const salt = await bcrypt.genSalt(10);
+      user.refreshTokenHash = await bcrypt.hash(refreshToken, salt);
+    } else {
+      user.refreshTokenHash = null;
+    }
+
+    await this.sequelize.transaction(
+      async (transaction) => await user.save({ transaction }),
+    );
+  }
+
+  async verifyRefreshToken(username: string, refreshToken: string): Promise<boolean> {
+    const user = await UserModel.findOne({ where: { username } });
+    if (!user || !user.refreshTokenHash) return false;
+
+    return await bcrypt.compare(refreshToken, user.refreshTokenHash);
   }
 }

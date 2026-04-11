@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
   Req,
   Get,
+  UsePipes,
 } from "@nestjs/common";
 import { CookieOptions, Request, Response } from "express";
 import { AuthService } from "./auth.service";
@@ -17,18 +18,17 @@ import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { LogInOptions } from "@/utils/user";
 import { Tokens } from "@/utils/API";
 
-const SignUpValidator = new ZodValidationPipe(LogInOptions);
-
 @Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @UseGuards(new LoginAuthorizationGuard())
   @Post("signup")
+  @UsePipes(new ZodValidationPipe(LogInOptions))
   async signUp(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-    @Body(SignUpValidator) payload: LogInOptions
+    @Body() payload: LogInOptions
   ) {
     const { user, tokens } = await this.authService.signUp(
       payload.username,
@@ -43,10 +43,11 @@ export class AuthController {
   @UseGuards(new LoginAuthorizationGuard())
   @HttpCode(200)
   @Post("login")
+  @UsePipes(new ZodValidationPipe(LogInOptions))
   async logIn(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-    @Body(SignUpValidator) payload: LogInOptions
+    @Body() payload: LogInOptions
   ) {
     const { user, tokens } = await this.authService.logIn(
       payload.username,
@@ -76,16 +77,21 @@ export class AuthController {
       throw new UnauthorizedException("No Refresh Token provided");
     }
 
-    const tokens = await this.authService.refresh(refresh_token);
+    const { user, tokens } = await this.authService.refresh(refresh_token);
 
     this.setTokens(req, res, tokens);
 
-    res.json({ access_token: tokens.access_token });
+    res.json(user);
   }
 
   @HttpCode(200)
   @Post("logout")
   async logOut(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const user = (req as any).session?.sub;
+    if (user) {
+      await this.authService.logOut(user.username);
+    }
+
     this.setTokens(req, res);
 
     res.json({});
@@ -99,7 +105,7 @@ export class AuthController {
     const { access_token, refresh_token } = tokens ?? {};
 
     const access_token_expires = new Date();
-    access_token_expires.setDate(access_token_expires.getDate() + 1);
+    access_token_expires.setMinutes(access_token_expires.getMinutes() + 30);
     this.setTokenCookie(req, res, Tokens.ACCESS, access_token, {
       expires: access_token_expires,
     });
@@ -124,7 +130,7 @@ export class AuthController {
     token = token ? `Bearer ${token}` : "";
 
     const cookieOptions = {
-      sameSite: "strict",
+      sameSite: "lax",
       secure: true,
       httpOnly: true,
       ...options,
