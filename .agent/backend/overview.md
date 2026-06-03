@@ -1,0 +1,72 @@
+## Backend Overview (NestJS)
+
+### Purpose
+
+- Provides REST API for parts catalog, PC builds, articles, authentication, and users.
+- Serves under the global prefix `/api` (set in [apps/backend/controllers/main.ts](./apps/backend/controllers/main.ts)).
+
+### Tech Stack
+
+- NestJS ^11, TypeScript ^5
+- Auth: JWT (`@nestjs/jwt`), cookie parsing
+- ORM: Sequelize (`sequelize-typescript`) for MySQL
+- ODM: Mongoose for MongoDB
+- Config: `@nestjs/config`
+
+### Entry and Core Setup
+
+- [apps/backend/controllers/main.ts](./apps/backend/controllers/main.ts) initializes the app, sets `api` prefix, adds `cookieParser`, listens on `PORT` (default 3000).
+- [apps/backend/controllers/app.module.ts](./apps/backend/controllers/app.module.ts) wires:
+  - `JwtModule` (global) with `JWT_SECRET`, `expiresIn: 30m`.
+  - `SequelizeModule.forRoot(...)` using `MYSQL_HOST/PORT`, `DATABASE_*` and `ConnectionOptions`.
+  - `MongooseModule.forRoot(...)` with detailed connection logging.
+  - Global `AuthGuard` via `APP_GUARD`.
+  - `SessionExtractionMiddleware` applied to all routes.
+
+### Modules
+
+- `apps/backend/controllers/article/`: CRUD for articles; has `Article.entity.ts`, services for articles and images.
+- `apps/backend/controllers/auth/`: Login/refresh/guarding; `auth.guard.ts`, `auth.service.ts`.
+- `apps/backend/controllers/build/`: Build workflows and validations, exposes endpoints to compute/validate builds.
+- `apps/backend/controllers/part/`: Parts listing/filtering/detail; includes interfaces and Sequelize services.
+- `apps/backend/controllers/user/`: User management, guards, pipes, and service.
+
+### Data Stores
+
+- MySQL: Primary relational store for structured entities (via Sequelize). Auto-loads models.
+- MongoDB: Document store (via Mongoose) used for notion-like articles and content.
+
+### Security & Middleware
+
+- JWT-based auth (global availability) with cookie-based session extraction.
+- `AuthGuard` as a global guard for role-based access.
+- `SessionExtractionMiddleware` attaches session/user context from cookies/headers.
+
+### Environment Variables
+
+- `MYSQL_HOST`, `MYSQL_PORT`
+- `MONGO_HOST`
+- `DATABASE_NAME`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`
+- `JWT_SECRET`
+- `PORT` (optional; default 3000)
+
+### Docker & Networking
+
+- Services in [docker/nestjs/compose.yaml](./docker/nestjs/compose.yaml):
+  - `nestjs-dev` (port 5000→3000), `nestjs-prod` (port 5000→3000)
+  - Reads env (see above), profile-based startup
+- Proxied by Nginx:
+  - Dev: `/api` → `http://nestjs-dev:3000`
+  - Prod: `/api` → `http://nestjs-prod:3000`
+
+### Development
+
+- Start stack with profiles via root [compose.yaml](./compose.yaml) includes.
+- Dev service uses `develop.watch` to sync code into the container for hot-reload.
+
+### Key Paths
+
+- App entry: [apps/backend/controllers/main.ts](./apps/backend/controllers/main.ts)
+- App module: [apps/backend/controllers/app.module.ts](./apps/backend/controllers/app.module.ts)
+- Feature modules: `apps/backend/controllers/*`
+- Models/options: `apps/backend/models/*`

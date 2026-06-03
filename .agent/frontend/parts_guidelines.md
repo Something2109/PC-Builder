@@ -5,7 +5,7 @@
 - Covers listing, filtering, viewing, and editing PC parts in the Next.js app.
 - Uses server components for data fetching and client components for interactions.
 
-### Routes (under `app/part`)
+### Routes (under [apps/frontend/app/part/](./apps/frontend/app/part/))
 
 - `/part` — all parts listing with pagination and global search.
 - `/part/[part]` — listing by product type.
@@ -19,7 +19,7 @@
 - Transform URLSearchParams from `searchParams` into a flat list of entries to preserve arrays.
 - On not-ok responses, use `notFound()` boundary.
 
-Example pattern (from `app/part/[part]/page.tsx`):
+Example pattern (from `apps/frontend/app/part/[part]/page.tsx`):
 
 - Build `URLSearchParams` from `searchParams`.
 - `fetch(`${BACKEND_HOST}/api/part/${part}?${options}`)`.
@@ -27,43 +27,43 @@ Example pattern (from `app/part/[part]/page.tsx`):
 
 ### Filtering UX
 
-- Container: `components/part/Filter.tsx::FilterBar`
+- Container: [apps/frontend/src/features/part/components/Filter.tsx](./apps/frontend/src/features/part/components/Filter.tsx) (`FilterBar`)
   - Search input `name="q"`.
   - `PartFilter` (common filters per-product).
   - Lazy-loaded product-specific filters per `Products`.
   - Submit → server route with querystring; Reset → `router.replace(/part/:part)`.
-- Attribute loading pattern (`components/part/utils/Filter.tsx`):
+- Attribute loading pattern ([apps/frontend/src/features/part/components/utils/Filter.tsx](./apps/frontend/src/features/part/components/utils/Filter.tsx)):
   - Each filter attribute fetches options from `/api/part/filter/:product/:attribute?{context}`.
   - Keep `context` synchronized with current selections.
 
 ### Listing Components
 
-- `components/part/Summary.tsx` — renders tiles/tables using `Part.Summary` data.
-- `components/part/Panel.tsx` — compact part card for `/part` page.
-- `components/utils/PaginationBar.tsx` — compute total pages via `Math.ceil(total / Number(process.env.PageSize))`.
+- [Summary.tsx](./apps/frontend/src/features/part/components/Summary.tsx) — renders tiles/tables using `Part.Summary` data.
+- [Panel.tsx](./apps/frontend/src/features/part/components/Panel.tsx) — compact part card for `/part` page.
+- [PaginationBar.tsx](./apps/frontend/src/components/ui/PaginationBar.tsx) — compute total pages via `Math.ceil(total / Number(process.env.PageSize))`.
 
 ### Detail & Edit
 
-- Read-only detail: `components/part/detail/*` tables (e.g., `detail/Part.tsx`).
+- Read-only detail: `apps/frontend/src/features/part/components/detail/*` tables (e.g., `detail/Part.tsx`).
 - Edit surface (ADMIN):
-  - Basic info form: `components/part/input/Part.tsx` (client) drives create/update/delete of base part fields.
+  - Basic info form: `apps/frontend/src/features/part/components/input/Part.tsx` (client) drives create/update/delete of base part fields.
     - POST to `/api/part/:part` (create) or `/api/part/:part/:id` (update), `DELETE` to remove.
     - Uses `Part.BasicInfo` zod for shaping payload; optional `url`/`image_url` normalized to `undefined`.
     - On create success, redirect to `/part/:part/:id/edit`.
-  - Info sections: `components/part/Form.tsx::InfoForm`
-    - Lazy-loads per-`Infos` component from `components/part/input/*`.
+  - Info sections: [apps/frontend/src/features/part/components/Form.tsx](./apps/frontend/src/features/part/components/Form.tsx) (`InfoForm`)
+    - Lazy-loads per-`Infos` component from `apps/frontend/src/features/part/components/input/*`.
     - Uses `useInfoAction(path, info, defaultValue)` to add/update info blocks.
     - Renders an Add button when info block is missing; otherwise renders the appropriate input component inside a `VerticalCollapsible`.
 
 ### Enums, Types, and Mappings
 
-- `utils/Enum.ts` → `Products`, `Infos` shared with backend.
-- `utils/interface/part` → Zod schemas and TypeScript types for `Part.Detail`, `Part.BasicInfo`, labels, and `Mapping.Info` per product.
+- [packages/shared/index.ts](./packages/shared/index.ts) (exports `Products`, `Infos` shared with backend).
+- [packages/shared/part/](./packages/shared/part/) — Zod schemas and TypeScript types for `Part.Detail`, `Part.BasicInfo`, labels, and `Mapping.Info` per product.
 - Adding a new product requires:
   - Adding product to `Products` and info groups to `Infos`.
-  - Implementing display components (`components/part/detail/*`).
-  - Implementing input editors (`components/part/input/*`).
-  - Implementing filter widgets (`components/part/filter/*`) and labels in utilities.
+  - Implementing display components under `apps/frontend/src/features/part/components/detail/*`.
+  - Implementing input editors under `apps/frontend/src/features/part/components/input/*`.
+  - Implementing filter widgets under `apps/frontend/src/features/part/components/filter/*` and labels in utilities.
 
 ### Error & Auth Handling
 
@@ -79,8 +79,8 @@ Example pattern (from `app/part/[part]/page.tsx`):
 ### Implementation Checklist (Frontend)
 
 - New product onboarding:
-  - Add a new `components/part/filter/<Product>.tsx` for filter UI.
-  - Add `components/part/input/*` editors mapped in `InfoForm` for each `Infos` group.
+  - Add a new `apps/frontend/src/features/part/components/filter/<Product>.tsx` for filter UI.
+  - Add `apps/frontend/src/features/part/components/input/*` editors mapped in `InfoForm` for each `Infos` group.
   - Add summary and detail renderers.
   - Register the product in `FilterComponents` and `Mapping.Info` labels.
   - Verify filter attribute fetchers hit `/api/part/filter/:product/:attribute` correctly.

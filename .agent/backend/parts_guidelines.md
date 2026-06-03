@@ -3,9 +3,9 @@
 ### Scope
 
 - Covers how to expose and implement PC parts listing, filtering, detail, create/update/delete in the NestJS backend.
-- Applies to routes under `api/part` with global prefix set in `controllers/main.ts`.
+- Applies to routes under `api/part` with global prefix set in [apps/backend/controllers/main.ts](./apps/backend/controllers/main.ts).
 
-### Routing & Endpoints (in `controllers/part/part.controller.ts`)
+### Routing & Endpoints (in [apps/backend/controllers/part/part.controller.ts](./apps/backend/controllers/part/part.controller.ts))
 
 - `GET /part` — list all parts (paginated, query-filtered)
 - `GET /part/:part` — list by product type `:part` (paginated, query-filtered)
@@ -26,7 +26,7 @@
 - Role guard: `@Role(Roles.ADMIN)` for create/update/delete.
 - ID validation: `ParseUUIDPipe` for `:id`.
 
-### Service Responsibilities (in `controllers/part/part.service.ts`)
+### Service Responsibilities (in [apps/backend/controllers/part/part.service.ts](./apps/backend/controllers/part/part.service.ts))
 
 - `list(params, product?)`:
   - Parse query via `ParseService.options(params, product)`.
@@ -52,10 +52,10 @@
 
 ### Data Access Layer
 
-- List: `controllers/part/service/SequelizeList.service.ts`
+- List: [apps/backend/controllers/part/service/SequelizeList.service.ts](./apps/backend/controllers/part/service/SequelizeList.service.ts)
   - Builds dynamic Sequelize context from `Part.Filter & API.PageOptions & API.SearchOptions`.
   - Supports: pagination, text search (`q`), per-attribute filtering (joins via `Infos` → include trees), and aggregation for filter values.
-- CRUD: `controllers/part/service/SequelizeCRUD.service.ts`
+- CRUD: [apps/backend/controllers/part/service/SequelizeCRUD.service.ts](./apps/backend/controllers/part/service/SequelizeCRUD.service.ts)
   - `get(id, infos?)` with scoped includes per `infos`.
   - `create(data, infos?)` with optional info upserts post-save.
   - `set(id, data, infos?)` partial update across part and info tables.
@@ -63,8 +63,8 @@
 
 ### Types & Mappings
 
-- Enums: `utils/Enum.ts` → `Products`, `Infos`.
-- Zod models/types: `utils/interface/part` → `Part.Detail`, `Part.BasicInfo`, labels/mappings.
+- Enums: [packages/shared/index.ts](./packages/shared/index.ts) (exports `Products`, `Infos`).
+- Zod models/types: [packages/shared/part/](./packages/shared/part/) (defines `Part.Detail`, `Part.BasicInfo`, labels, and schemas).
 - Mapping tables: `Mapping.Info[product]` lists per-product info groups; `Mapping.SummaryAttributeMapping[product]` defines attributes to include in list summaries.
 
 ### Query Contract (incoming)
@@ -89,8 +89,8 @@
 ### Implementation Checklist
 
 - Add new product:
-  - Extend `Products` and `Infos` enums.
-  - Add models under `models/parts/info/*` and associations in `PartInformation`.
+  - Extend `Products` and `Infos` enums in shared package.
+  - Add models under [apps/backend/models/parts/info/](./apps/backend/models/parts/info/) and associations in `PartInformation`.
   - Update `Mapping.Info` and `Mapping.SummaryAttributeMapping`.
   - Ensure `ParseService.attributes` and `summary` cover new attributes.
   - Add frontend filters/inputs (see frontend guideline).

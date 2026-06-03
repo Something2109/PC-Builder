@@ -1,8 +1,3 @@
----
-description: Project overview
-globs:
-alwaysApply: true
----
 
 ## PC-Builder: Project Overview
 
@@ -55,7 +50,7 @@ alwaysApply: true
   - MySQL: `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD`
   - MongoDB: `MONGO_INITDB_DATABASE`
 
-### Frontend layout (Next.js App Router)
+### Frontend layout (Next.js App Router) — `apps/frontend/`
 
 - `app/` contains route groups and pages (App Router):
   - `app/page.tsx`: Landing/home
@@ -65,63 +60,40 @@ alwaysApply: true
   - `app/[topic]/[part]/`: Topic/part content with edit support
   - `app/auth/`: `login`, `refresh`
   - `app/search/`, `app/guide/`, error and not-found boundaries
-- `components/`: UI and domain components
-  - `components/part/`: filtering, forms, detail, summary
-  - `components/build/`: builder context, validation, list/result
-  - `components/articles/`: display + input editors
-  - `components/auth/`: login panel, user panel
-  - `components/utils/`: UI primitives and utilities
+- `src/`: Reusable components, features, hooks, and utils:
+  - `src/components/layout/`: layout wrappers and UI headers
+  - `src/components/ui/`: baseline primitives (modals, fields, grid)
+  - `src/features/article/`: display, form edit editor components
+  - `src/features/auth/`: auth forms
+  - `src/features/build/`: builder view components, validation panel
+  - `src/features/part/`: specification tables and comparison matrices
+  - `src/hooks/`: common hooks like search actions
+  - `src/utils/`: custom axios configurations and clients
 
-### Backend layout (NestJS)
+### Backend layout (NestJS) — `apps/backend/`
 
 - Entry: `controllers/main.ts` sets global prefix `api`, attaches `cookieParser`, listens on `PORT` (default 3000)
 - Root module: `controllers/app.module.ts`
-  - Modules: `ArticleModule`, `AuthModule`, `CrawlerModule`, `PartModule`, `BuildModule`, `UserModule`
+  - Modules: `ArticleModule`, `AuthModule`, `PartModule`, `BuildModule`, `UserModule`
   - Databases: `SequelizeModule` (MySQL), `MongooseModule` (MongoDB)
   - Auth: Global `AuthGuard` via `APP_GUARD`, `JwtModule` configured with `JWT_SECRET`
   - Middleware: `SessionExtractionMiddleware` for all routes
 - Feature modules under `controllers/*` with entities/services/pipes/guards
+- SQL models live in `models/` with `sequelize-typescript` integration (CPU, GPU, Motherboard, etc.) and options in `models/sequelize.options.ts`
+- Mongo schemas used by Mongoose (e.g. for articles/content) under `controllers/article/entities/`
 
-### Data models
+### Shared Library — `packages/shared/`
 
-- SQL models live in `models/` with `sequelize-typescript` integration and options in `models/options.ts`
-- Mongo schemas used by Mongoose (e.g., for articles/content)
-- Parts info catalogs under `models/parts/info/`
-
-### Utilities (`utils/`)
-
-- Purpose: shared enums, type interfaces, compatibility rules, and data extraction helpers used across UI/backend.
+- Purpose: shared enums, type interfaces, compatibility rules, and data extraction helpers used across UI, backend, and crawler.
 - Contents:
-  - `Enum.ts`: common enumerations.
-  - `extract/`: parsing and units helpers (`Connector.ts`, `Units.ts`).
-  - `interface/`: domain types and rules
-    - `api.ts`: API contracts.
-    - `article/article.ts`: article structures.
-    - `build/`: builder types and compatibility rules
-      - `rule/`: constraints such as `CaseMainboardRule`, `CasePSURule`, `GPURule`, `PCIeRule`, socket rules (CPU/Mainboard/AIO/Cooler/CPUBlock).
-      - `utils.ts`, `index.ts`.
-    - `part/`: part schemas and mappings
-      - `info/`: detailed spec models (Case/GPU/CPU/Mainboard/Storage/etc.).
-      - `mapping.ts`, `product/` (AIO, Case, Cooler, CPU, GPU, etc.), `product.ts`, `index.ts`.
-    - `retailer/Product.ts`, `user/User.ts`, `utils.ts`.
-
-### Nginx routing
-
-- Development (`docker/nginx/dev/http.conf`):
-  - `/api` → `http://nestjs-dev:3000`
-  - `/` → `http://nextjs-dev:3000` (WebSocket headers preserved)
-- Production (`docker/nginx/prod/http.conf`):
-  - `/api` → `http://nestjs-prod:3000`
-  - `/` → `http://nextjs-prod:3000`
-
-### Notable frontend config
-
-- `next.config.js`:
-  - `env.PageSize = "50"`
-  - `images.remotePatterns` allow images from several external domains (PC retailers/content)
-- `tailwind.config.js`:
-  - App Router paths in `content`
-  - Extended theme colors and `darkMode: "selector"`
+  - `index.ts`: main package exports.
+  - `utils.ts`, `Units.ts`, `API.ts`: utility structures and endpoint parameters.
+  - `article/`: article metadata types and structures.
+  - `build/`: compatibility constraints (e.g. socket constraints, physical clearance constraints) and helper methods.
+  - `interface/`: detailed interface spec formats (material, form factor, external ports).
+  - `part/`: CPU, GPU, motherboard product mappings.
+  - `retailer/`: prices and product specs from retailers.
+  - `user/`: user validation properties.
 
 ### Development tips
 
@@ -134,10 +106,8 @@ alwaysApply: true
 - API is served under `/api/*` due to `app.setGlobalPrefix("api")`.
 
 ### Key paths
-
-- Frontend routes: `app/*`
-- Frontend components: `components/*`
-- Backend modules/controllers/services: `controllers/*`
-- Data models and types: `models/*`, `utils/interface/*`
-- Crawlers: `crawlers/*`
+- Frontend app: `apps/frontend/`
+- Backend app: `apps/backend/`
+- Crawler app: `apps/crawler/`
+- Shared package: `packages/shared/`
 - Docker stack: `docker/*` and root `compose.yaml`

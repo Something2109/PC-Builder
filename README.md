@@ -125,13 +125,19 @@ All of the above are wired for you in the compose files; you primarily need to s
 
 ## Repository Layout
 
-- `app/` Next.js routes (App Router)
-- `components/` UI components and domain components
-- `controllers/` NestJS modules/controllers/services (backend)
-- `models/` Sequelize/Mongoose models and options
-- `utils/` Shared enums, interfaces, rules, extractors
-- `docker/` Compose files and Dockerfiles per service
-- `compose.yaml` Root compose that includes the sub‑stacks
+The project is structured as an **npm workspaces monorepo**:
+
+*   **[apps/](./apps)**: Contains application services.
+    *   **[frontend/](./apps/frontend)**: Next.js frontend application.
+    *   **[backend/](./apps/backend)**: NestJS backend API.
+    *   **[crawler/](./apps/crawler)**: Parts catalog crawler script.
+*   **[packages/](./packages)**: Shared library modules.
+    *   **[shared/](./packages/shared)**: Common schemas (Zod), rules, and interfaces.
+*   **[docker/](./docker)**: Service-specific Docker configurations and profiles.
+*   **[compose.yaml](./compose.yaml)**: Root docker-compose configuration.
+
+For a comprehensive breakdown of files, directories, and architectural components, refer to **[.agent/project_structure.md](./.agent/project_structure.md)**.
+For coding standards, syntax formatting rules, and folder structure guidelines, refer to **[.agent/coding_conventions.md](./.agent/coding_conventions.md)**.
 
 ## Common Tasks
 
