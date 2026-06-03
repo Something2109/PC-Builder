@@ -1,4 +1,4 @@
-import * as Article from "@/utils/article";
+import { Summary } from "@/utils/article";
 import { Products } from "@/utils/part";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -15,12 +15,12 @@ export default async function PartTopicPage({
     return notFound();
 
   const response = await fetch(
-    `${process.env.BACKEND_HOST}/api/article?${query}`
+    `${process.env.BACKEND_HOST}/api/article?${query}`,
   );
 
   if (!response.ok) return notFound();
 
-  const articleSumaries = (await response.json()) as Article.Summary[];
+  const articleSumaries = (await response.json()) as Summary[];
 
   return (
     <>

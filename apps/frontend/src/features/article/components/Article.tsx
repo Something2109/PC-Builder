@@ -2,15 +2,13 @@ import { Section } from "./display/Section";
 import { Paragraph } from "./display/Paragraph";
 import { Picture } from "./display/Image";
 import { List } from "./display/List";
-import * as Article from "@/utils/article";
-
-import { ContentProps } from "./utils";
+import { ContentName, Content, Article, generateId } from "@/utils/article";
 
 const Components = {
-  [Article.ContentName.Paragraph]: Paragraph,
-  [Article.ContentName.Section]: Section,
-  [Article.ContentName.Image]: Picture,
-  [Article.ContentName.List]: List,
+  [ContentName.Paragraph]: Paragraph,
+  [ContentName.Section]: Section,
+  [ContentName.Image]: Picture,
+  [ContentName.List]: List,
 };
 
 function ContentListComponent({
@@ -18,18 +16,18 @@ function ContentListComponent({
   prefix,
   parent,
 }: {
-  contents: Article.Content[];
+  contents: Content[];
   prefix?: string;
-  parent: Article.ContentName;
+  parent: ContentName;
 }) {
   let sectionCount = 1;
   return contents.map((content, index) => {
     const Component = Components[content.type];
 
     let sectionPrefix = undefined;
-    if (parent === Article.ContentName.List) {
+    if (parent === ContentName.List) {
       sectionPrefix = prefix;
-    } else if (content.type === Article.ContentName.Section) {
+    } else if (content.type === ContentName.Section) {
       sectionPrefix = `${prefix ?? ""}${sectionCount++}.`;
     }
 
@@ -45,9 +43,7 @@ function ContentListComponent({
             parent={content.type}
             contents={content.content}
             prefix={
-              content.type === Article.ContentName.List
-                ? content.symbol
-                : sectionPrefix
+              content.type === ContentName.List ? content.symbol : sectionPrefix
             }
           />
         )}
@@ -56,18 +52,19 @@ function ContentListComponent({
   });
 }
 
-function ArticleComponent({ article }: { article: Article.Type }) {
+function ArticleComponent({ article }: { article: Article }) {
   return (
     <article className="flex flex-col gap-2 w-full">
       <h1 className="font-bold text-4xl my-5">{article.title}</h1>
       <Paragraph
         content={{
-          type: Article.ContentName.Paragraph,
+          id: generateId(),
+          type: ContentName.Paragraph,
           content: article.standfirst,
         }}
       />
       <ContentListComponent
-        parent={Article.ContentName.Section}
+        parent={ContentName.Section}
         contents={article.content}
       />
     </article>

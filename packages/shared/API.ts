@@ -1,4 +1,4 @@
-import { ZodIssue } from "zod";
+import { $ZodIssue } from "zod/v4/core";
 import * as User from "./user";
 
 /**
@@ -41,11 +41,11 @@ export type SearchOptions = {
  * @returns The page options.
  */
 export function toPageOptions(
-  query: Record<string, string | string[]>
+  query: Record<string, string | string[]>,
 ): PageOptions {
   const page = Number(Array.isArray(query.page) ? query.page[0] : query.page);
   const limit = Number(
-    Array.isArray(query.limit) ? query.limit[0] : query.limit
+    Array.isArray(query.limit) ? query.limit[0] : query.limit,
   );
 
   const result: PageOptions = {
@@ -98,11 +98,11 @@ type ArrayError<T extends Array<unknown>> =
  * an object with the index key pointing to the mapping tuple
  * with a wrong type and the object value pointing the key or value error message.
  */
-type MapError<K, V> =
+type MapError<T extends Map<unknown, unknown>> =
   | {
       [key in number]: {
-        key?: Error<K>;
-        value?: Error<V>;
+        key?: T extends Map<infer K, any> ? Error<K> : never;
+        value?: T extends Map<any, infer V> ? Error<V> : never;
       };
     }
   | string;
@@ -115,7 +115,7 @@ type MapError<K, V> =
  */
 type SetError<T> =
   | {
-      [key in number]: Error<T>;
+      [key in number]: T extends Set<infer V> ? Error<V> : never;
     }
   | string;
 
@@ -137,35 +137,68 @@ type ObjectError<T extends object> =
 export type Error<T> = T extends DefaultType
   ? string
   : T extends Array<unknown>
-  ? ArrayError<T>
-  : T extends Map<infer K, infer V>
-  ? MapError<K, V>
-  : T extends Set<infer Val>
-  ? SetError<Val>
-  : T extends object
-  ? ObjectError<T>
-  : string;
+    ? ArrayError<T>
+    : T extends Map<unknown, unknown>
+      ? MapError<T>
+      : T extends Set<unknown>
+        ? SetError<T>
+        : T extends object
+          ? ObjectError<T>
+          : string;
 
-/**
- * Transform the zod issue list to the error message mapping.
- * @param issues The zod issue list
- * @returns The message mapping of the generic object.
- */
-export function toError<T>(issues: ZodIssue[]) {
-  return issues.reduce<string | object>((acc, err) => {
-    const path = err.path;
-    if (path.length === 0) return err.message;
+// 1. Overload for when we expect a primitive / root-level string error
+export function toError<T extends DefaultType>(issues: $ZodIssue[]): string;
 
-    let curr = acc as Record<string, object>;
+// 2. Overload for when we expect an array error structure
+export function toError<T extends Array<unknown>>(
+  issues: $ZodIssue[],
+): ArrayError<T>;
+
+// 3. Overload for when we expect a Map error structure
+export function toError<T extends Map<any, any>>(
+  issues: $ZodIssue[],
+): MapError<T>;
+
+// 4. Overload for when we expect a Set error structure
+export function toError<T extends Set<unknown>>(
+  issues: $ZodIssue[],
+): SetError<T>;
+
+// 5. Overload for standard objects
+export function toError<T extends object>(issues: $ZodIssue[]): ObjectError<T>;
+
+// 6. Fallback fallback / Catch-all
+export function toError<T>(issues: $ZodIssue[]): Error<T>;
+
+// Single Implementation block
+export function toError<T>(issues: $ZodIssue[]) {
+  // 1. Intercept root-level failures upfront to safeguard object structural mapping
+  const rootIssue = issues.find((issue) => issue.path.length === 0);
+  if (rootIssue) return rootIssue.message;
+
+  const result = {} as Record<PropertyKey, any>;
+
+  // 2. Linear imperative loop instead of reduce avoids accumulator mutation conflicts
+  for (const err of issues) {
+    const { path, message } = err;
+    let curr = result;
+
     for (let index = 0; index < path.length - 1; index++) {
       const attr = String(path[index]);
-      curr[attr] = (curr[attr] ?? {}) as Record<string, object>;
-      curr = curr[attr] as Record<string, object>;
+
+      // Dynamic branch defense: Ensure nested targets are clean parsing targets
+      if (typeof curr[attr] !== "object" || curr[attr] === null) {
+        curr[attr] = {};
+      }
+      curr = curr[attr];
     }
 
     const attr = path[path.length - 1];
-    curr[attr] = curr[attr] ?? err.message;
+    if (attr !== undefined) {
+      // Retain initial validation message for fields with multiple broken constraints
+      curr[attr] = curr[attr] ?? message;
+    }
+  }
 
-    return acc;
-  }, {}) as Error<T>;
+  return result;
 }

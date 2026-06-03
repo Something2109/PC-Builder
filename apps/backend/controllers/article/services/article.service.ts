@@ -1,6 +1,6 @@
 import { ArticleClass } from "../entities/Article.entity";
 import { Products } from "@/utils/part";
-import type { Type, Summary } from "@/utils/article";
+import { Article, type Summary } from "@/utils/article";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Document, Model } from "mongoose";
@@ -8,7 +8,7 @@ import { Document, Model } from "mongoose";
 @Injectable()
 export class ArticleService {
   constructor(
-    @InjectModel("article") private ArticleSchema: Model<ArticleClass>
+    @InjectModel("article") private ArticleSchema: Model<ArticleClass>,
   ) {}
 
   /**
@@ -37,9 +37,9 @@ export class ArticleService {
    * @returns The new article object created or null if not successed.
    */
   async create(
-    article: Type,
-    criteria?: { topic?: string; part?: string }
-  ): Promise<Type | null> {
+    article: Article,
+    criteria?: { topic?: string; part?: string },
+  ): Promise<Article | null> {
     const instance = await this.ArticleSchema.insertOne({
       ...criteria,
       ...article,
@@ -55,7 +55,7 @@ export class ArticleService {
    * @param id The id of the article to get.
    * @returns The article if found or null.
    */
-  async get(id: string): Promise<Type | null> {
+  async get(id: string): Promise<Article | null> {
     const instance = await this.ArticleSchema.findById(id);
 
     if (!instance) return null;
@@ -70,10 +70,10 @@ export class ArticleService {
    * @returns The changed article or null if none found.
    */
   async set(
-    article: Type,
+    article: Article,
     id: string,
-    criteria?: { topic?: string; part?: string }
-  ): Promise<Type | null> {
+    criteria?: { topic?: string; part?: string },
+  ): Promise<Article | null> {
     const instance = await this.ArticleSchema.findById(id);
 
     if (!instance) return null;
@@ -88,7 +88,7 @@ export class ArticleService {
    * @param id The article's id to delete.
    * @returns The article if success else null.
    */
-  async delete(id: string): Promise<Type | null> {
+  async delete(id: string): Promise<Article | null> {
     const instance = await this.ArticleSchema.findById(id);
 
     if (!instance) return null;
@@ -100,13 +100,15 @@ export class ArticleService {
 
   /**
    * Transform the mongodb {@link ArticleClass} schema object
-   * to the desirable {@link Type} object.
+   * to the desirable {@link Article} object.
    * @param instance The mongodb article class to transform.
    * @returns The corresponding article type object.
    */
-  private toArticleType(instance: Document<unknown, {}, ArticleClass>): Type {
+  private toArticleType(
+    instance: Document<unknown, {}, ArticleClass>,
+  ): Article {
     const { _id, __v, ...obj } = instance.toJSON();
 
-    return { id: _id, ...obj } as Type;
+    return Article.parse({ id: _id, ...obj });
   }
 }

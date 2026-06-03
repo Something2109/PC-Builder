@@ -1,6 +1,6 @@
 import { ArticleComponent } from "@/features/article/components/Article";
 import { RedirectButton } from "@/ui/Button";
-import * as Article from "@/utils/article";
+import { Article } from "@/utils/article";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -15,7 +15,7 @@ export default async function ArticlePage({
 
   if (!response.ok) return notFound();
 
-  const data = (await response.json()) as Article.Type;
+  const data = (await response.json()) as Article;
 
   if (!data) {
     return notFound();

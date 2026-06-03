@@ -8,14 +8,14 @@ import {
   Post,
   Query,
 } from "@nestjs/common";
-import { Schema, type Type } from "@/utils/article";
+import { Article } from "@/utils/article";
 import { Roles } from "@/utils/user";
 import { QueryFilterPipe, ArticleFilter } from "./article.pipe";
 import { ArticleService } from "./services/article.service";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { Role } from "controllers/utils/role/role.decorator";
 
-const ArticleValidator = new ZodValidationPipe(Schema.partial());
+const ArticleValidator = new ZodValidationPipe(Article.partial());
 const QueryValidator = new QueryFilterPipe();
 
 @Controller("article")
@@ -31,8 +31,8 @@ export class ArticleController {
 
   @Post()
   async createArticle(
-    @Body(ArticleValidator) article: Type,
-    @Query(QueryValidator) criteria: ArticleFilter
+    @Body(ArticleValidator) article: Article,
+    @Query(QueryValidator) criteria: ArticleFilter,
   ) {
     const result = await this.articleService.create(article, criteria);
 
@@ -53,8 +53,8 @@ export class ArticleController {
   @Post(":id")
   async setArticle(
     @Param("id") id: string,
-    @Body(ArticleValidator) article: Type,
-    @Query(QueryValidator) criteria: ArticleFilter
+    @Body(ArticleValidator) article: Article,
+    @Query(QueryValidator) criteria: ArticleFilter,
   ) {
     const result = await this.articleService.set(article, id, criteria);
 

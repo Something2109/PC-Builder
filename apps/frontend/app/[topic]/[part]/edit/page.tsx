@@ -1,7 +1,7 @@
 "use client";
 
 import { EditableArticle } from "@/features/article/components/Form";
-import * as Article from "@/utils/article";
+import { Article } from "@/utils/article";
 import { Button, RedirectButton } from "@/ui/Button";
 import { NotificationBar } from "@/ui/NotificationBar";
 import { use, useEffect, useState } from "react";
@@ -14,7 +14,7 @@ export default function PartTopicEditPage({
   params: Promise<{ topic: string; part: string }>;
 }) {
   const { topic, part } = use(params);
-  const [data, setData] = useState<Omit<Article.Type, "id"> | null>(null);
+  const [data, setData] = useState<Omit<Article, "id"> | null>(null);
   const [error, setError] = useState<{ message: string }>({
     message: "Loading",
   });
@@ -28,7 +28,7 @@ export default function PartTopicEditPage({
   useEffect(() => {
     fetch(SaveLink).then((response) => {
       if (response.ok) {
-        response.json().then((data: Article.Type) => {
+        response.json().then((data: Article) => {
           setData(data);
         });
       } else {
@@ -81,7 +81,7 @@ export default function PartTopicEditPage({
         ) : undefined}
       </ColumnWrapper>
 
-      <EditableArticle article={data as Article.Type} />
+      <EditableArticle article={data as Article} />
     </>
   ) : (
     <h1>{error.message}</h1>

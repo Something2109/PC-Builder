@@ -1,17 +1,20 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import type { Type, Content } from "@/utils/article";
+import type { Article, Content } from "@/utils/article";
 import { Products } from "@/utils/part";
 
 @Schema({ timestamps: true })
-export class ArticleClass implements Omit<Type, "id"> {
+export class ArticleClass implements Omit<Article, "id"> {
   declare _id: string;
 
   declare __v: number;
 
-  @Prop({ type: [{ type: String }] })
+  @Prop({ type: [{ type: String }], index: true })
   declare topic: string;
 
-  @Prop({ type: [{ type: String, enum: Object.values(Products) }] })
+  @Prop({
+    type: [{ type: String, enum: Object.values(Products) }],
+    index: true,
+  })
   declare part: Products;
 
   @Prop({ type: String, required: true })
@@ -22,6 +25,12 @@ export class ArticleClass implements Omit<Type, "id"> {
 
   @Prop()
   declare standfirst: string;
+
+  @Prop({ type: String })
+  declare cover?: string;
+
+  @Prop({ type: String })
+  declare icon?: string;
 
   @Prop()
   declare content: Content[];

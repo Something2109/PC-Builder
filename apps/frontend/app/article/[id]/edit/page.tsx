@@ -1,5 +1,5 @@
 import { EditableArticle } from "@/features/article/components/Form";
-import * as Article from "@/utils/article";
+import { Article } from "@/utils/article";
 import { AuthRole } from "@/features/auth";
 import { Roles } from "@/utils/user";
 import { notFound } from "next/navigation";
@@ -15,7 +15,7 @@ export default async function ArticleEditPage({
 
   if (!response.ok) return notFound();
 
-  const data = (await response.json()) as Article.Type;
+  const data = (await response.json()) as Article;
 
   if (!data) {
     return notFound();
@@ -23,7 +23,7 @@ export default async function ArticleEditPage({
 
   return (
     <AuthRole roles={[Roles.USER, Roles.ADMIN]}>
-      <EditableArticle article={data as Article.Type} />
+      <EditableArticle article={data as Article} />
     </AuthRole>
   );
 }

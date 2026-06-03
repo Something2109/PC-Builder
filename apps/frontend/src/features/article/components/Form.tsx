@@ -1,27 +1,25 @@
 "use client";
 
 import { lazy, useActionState, useCallback, useState } from "react";
-import * as Article from "@/utils/article";
+import { ContentName, Content, Article } from "@/utils/article";
 import { TextArea } from "@/ui/Input";
 import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
 import { Button, RedirectButton } from "@/ui/Button";
 import { NotificationBar } from "@/ui/NotificationBar";
 import axios, { AxiosError } from "axios";
 
-const Content = Article.ContentName;
-
 const Components = {
-  [Content.Paragraph]: lazy(() => import("./input/Paragraph")),
-  [Content.Section]: lazy(() => import("./input/Section")),
-  [Content.Image]: lazy(() => import("./input/Image")),
-  [Content.List]: lazy(() => import("./input/List")),
+  [ContentName.Paragraph]: lazy(() => import("./input/Paragraph")),
+  [ContentName.Section]: lazy(() => import("./input/Section")),
+  [ContentName.Image]: lazy(() => import("./input/Image")),
+  [ContentName.List]: lazy(() => import("./input/List")),
 };
 
-const defaultValue: { [key in Article.ContentName]: Article.Content } = {
-  [Content.Section]: { type: Content.Section, title: "", content: [] },
-  [Content.Paragraph]: { type: Content.Paragraph, content: "" },
-  [Content.Image]: { type: Content.Image, src: "", caption: "" },
-  [Content.List]: { type: Content.List, symbol: "*", content: [] },
+const defaultValue: { [key in ContentName]: Content } = {
+  [ContentName.Section]: { type: ContentName.Section, title: "", content: [] },
+  [ContentName.Paragraph]: { type: ContentName.Paragraph, content: "" },
+  [ContentName.Image]: { type: ContentName.Image, src: "", caption: "" },
+  [ContentName.List]: { type: ContentName.List, symbol: "*", content: [] },
 };
 
 function ContentListComponent({
@@ -29,17 +27,17 @@ function ContentListComponent({
   prefix,
   parent,
 }: Readonly<{
-  contents: Article.Content[];
+  contents: Content[];
   prefix?: string;
-  parent: Article.ContentName;
+  parent: ContentName;
 }>) {
   const [change, setChange] = useState(0);
   const add = useCallback(
-    (type: Article.ContentName) => {
+    (type: ContentName) => {
       contents.push(defaultValue[type]);
       setChange((prev) => ++prev);
     },
-    [contents]
+    [contents],
   );
   const shiftUp = useCallback(
     (index: number) => {
@@ -49,7 +47,7 @@ function ContentListComponent({
       ];
       setChange((prev) => ++prev);
     },
-    [contents]
+    [contents],
   );
   const shiftDown = useCallback(
     (index: number) => {
@@ -59,7 +57,7 @@ function ContentListComponent({
       ];
       setChange((prev) => ++prev);
     },
-    [contents]
+    [contents],
   );
   const remove = useCallback(
     (index: number) => {
@@ -68,7 +66,7 @@ function ContentListComponent({
         setChange((prev) => ++prev);
       }
     },
-    [contents]
+    [contents],
   );
 
   let sectionCount = 1;
@@ -77,14 +75,15 @@ function ContentListComponent({
       {contents.map((content, index) => {
         const Component = Components[content.type];
         let sectionPrefix = undefined;
-        if (parent === Content.List) {
+        if (parent === ContentName.List) {
           sectionPrefix = prefix;
-        } else if (content.type === Content.Section) {
+        } else if (content.type === ContentName.Section) {
           sectionPrefix = `${prefix ?? ""}${sectionCount++}.`;
         }
 
         const EditPanelWrapper =
-          content.type === Content.List || content.type === Content.Section
+          content.type === ContentName.List ||
+          content.type === ContentName.Section
             ? RowWrapper
             : ColumnWrapper;
 
@@ -108,7 +107,9 @@ function ContentListComponent({
                 parent={content.type}
                 contents={content.content}
                 prefix={
-                  content.type === Content.List ? content.symbol : sectionPrefix
+                  content.type === ContentName.List
+                    ? content.symbol
+                    : sectionPrefix
                 }
               />
             )}
@@ -116,22 +117,24 @@ function ContentListComponent({
         );
       })}
       <RowWrapper className="justify-center">
-        <Button onClick={() => add(Content.Section)}>Add Section</Button>
-        <Button onClick={() => add(Content.Paragraph)}>Add Paragraph</Button>
-        <Button onClick={() => add(Content.Image)}>Add Picture</Button>
-        <Button onClick={() => add(Content.List)}>Add List</Button>
+        <Button onClick={() => add(ContentName.Section)}>Add Section</Button>
+        <Button onClick={() => add(ContentName.Paragraph)}>
+          Add Paragraph
+        </Button>
+        <Button onClick={() => add(ContentName.Image)}>Add Picture</Button>
+        <Button onClick={() => add(ContentName.List)}>Add List</Button>
       </RowWrapper>
     </>
   );
 }
 
-function EditableArticle({ article }: Readonly<{ article: Article.Type }>) {
+function EditableArticle({ article }: Readonly<{ article: Article }>) {
   const { id, ...initial } = article;
   const [notification, setNoti] = useState<{
     message: string;
     alert: boolean;
   } | null>(null);
-  const [state, submit, pending] = useActionState<Omit<Article.Type, "id">>(
+  const [state, submit, pending] = useActionState<Omit<Article, "id">>(
     async (data) => {
       setNoti(null);
 
@@ -153,7 +156,7 @@ function EditableArticle({ article }: Readonly<{ article: Article.Type }>) {
 
       return data;
     },
-    initial
+    initial,
   );
 
   return (
@@ -187,7 +190,7 @@ function EditableArticle({ article }: Readonly<{ article: Article.Type }>) {
           onChange={(e) => (state.standfirst = e.target.value)}
         />
         <ContentListComponent
-          parent={Content.Section}
+          parent={ContentName.Section}
           contents={state.content}
         />
       </article>
