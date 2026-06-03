@@ -9,6 +9,7 @@ import {
   useCallback,
   useLayoutEffect,
   useRef,
+  useEffect,
 } from "react";
 import { RowWrapper } from "./FlexWrapper";
 import { UnitInterface } from "@/utils/Units";
@@ -366,3 +367,39 @@ export function UnitMinMaxRangeInput<T extends string>({
     </RowWrapper>
   );
 }
+
+export function AutoGrowingTextArea({
+  className,
+  ...props
+}: TextareaHTMLAttributes<HTMLTextAreaElement> & { className?: string }) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const resize = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  };
+
+  useEffect(() => {
+    resize();
+  }, [props.defaultValue, props.value]);
+
+  return (
+    <textarea
+      ref={textareaRef}
+      rows={1}
+      onChange={(e) => {
+        resize();
+        if (props.onChange) props.onChange(e);
+      }}
+      className={mergeClass(
+        "resize-none overflow-hidden bg-transparent w-full focus:outline-none border-none p-0",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+

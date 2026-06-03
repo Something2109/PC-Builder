@@ -1,8 +1,9 @@
 import { ArticleComponent } from "@/features/article/components/Article";
-import { RedirectButton } from "@/ui/Button";
 import { Article } from "@/utils/article";
 import { notFound } from "next/navigation";
 import React from "react";
+import { verifyToken } from "@/features/auth/server";
+import { Roles } from "@/utils/user";
 
 export default async function ArticlePage({
   params,
@@ -11,7 +12,15 @@ export default async function ArticlePage({
 }) {
   const { id } = await params;
 
-  const response = await fetch(`${process.env.BACKEND_HOST}/api/article/${id}`);
+  // Retrieve user for admin preview authorization checks
+  const user = await verifyToken();
+  const isAdmin =
+    user && (user.role === Roles.ADMIN || user.role === Roles.GUEST);
+
+  const url = `${process.env.BACKEND_HOST}/api/article/${id}${isAdmin ? "?preview=true" : ""}`;
+  const response = await fetch(url, {
+    cache: "no-store",
+  });
 
   if (!response.ok) return notFound();
 
@@ -22,11 +31,8 @@ export default async function ArticlePage({
   }
 
   return (
-    <>
+    <div className="w-full min-h-screen py-4">
       <ArticleComponent article={data} />
-      <RedirectButton href={`/article/${id}/edit`} className={"font-bold"}>
-        Edit
-      </RedirectButton>
-    </>
+    </div>
   );
 }

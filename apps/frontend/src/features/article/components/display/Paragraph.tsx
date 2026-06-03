@@ -1,18 +1,23 @@
-import * as Article from "@/utils/article";
+import { Paragraph as ParagraphType } from "@/utils/article";
 import { RowWrapper } from "@/ui/FlexWrapper";
 import { ContentProps } from "../utils";
 
 export function Paragraph({
   content,
   prefix,
-}: ContentProps<Article.Paragraph>) {
-  const paragraph = <p className="text-xl">{content.content}</p>;
+}: ContentProps<ParagraphType>) {
+  const paragraph = (
+    <p className="font-serif text-lg leading-relaxed text-slate-800 dark:text-slate-200 tracking-wide whitespace-pre-wrap">
+      {content.content}
+    </p>
+  );
   return prefix ? (
-    <RowWrapper>
-      <p className="text-xl">{prefix}</p>
+    <RowWrapper className="gap-2 items-start py-0.5">
+      <span className="font-serif text-lg text-blue-500 font-bold select-none min-w-[20px]">{prefix}</span>
       {paragraph}
     </RowWrapper>
   ) : (
-    paragraph
+    <div className="py-1">{paragraph}</div>
   );
 }
+

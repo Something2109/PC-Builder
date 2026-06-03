@@ -1,89 +1,40 @@
-"use client";
+import { notFound, redirect } from "next/navigation";
+import { Summary } from "@/utils/article";
+import { verifyToken } from "@/features/auth/server";
+import { Roles } from "@/utils/user";
 
-import { EditableArticle } from "@/features/article/components/Form";
-import { Article } from "@/utils/article";
-import { Button, RedirectButton } from "@/ui/Button";
-import { NotificationBar } from "@/ui/NotificationBar";
-import { use, useEffect, useState } from "react";
-import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
-import axios, { AxiosError } from "axios";
-
-export default function PartTopicEditPage({
+export default async function PartTopicEditPage({
   params,
 }: {
   params: Promise<{ topic: string; part: string }>;
 }) {
-  const { topic, part } = use(params);
-  const [data, setData] = useState<Omit<Article, "id"> | null>(null);
-  const [error, setError] = useState<{ message: string }>({
-    message: "Loading",
-  });
-  const [notification, setNoti] = useState<{
-    message: string;
-    alert: boolean;
-  } | null>(null);
-  const pageLink = `/${topic}/${part}`;
-  const SaveLink = `/api/${topic}/${part}`;
+  const { topic, part } = await params;
 
-  useEffect(() => {
-    fetch(SaveLink).then((response) => {
-      if (response.ok) {
-        response.json().then((data: Article) => {
-          setData(data);
-        });
-      } else {
-        response.json().then((data: { message: string }) => {
-          setError(data);
-        });
-      }
-    });
-  }, [SaveLink]);
-
-  async function save() {
-    setNoti(null);
-
-    try {
-      const response = await axios.post(SaveLink, data, {
-        withCredentials: true,
-      });
-      setData(response.data);
-      setNoti({ message: "Save successful", alert: false });
-    } catch (err) {
-      const error = err as AxiosError<{ message: string }>;
-      const message =
-        error.response?.data.message ?? "Cannot connect to server.";
-
-      setNoti({ message, alert: true });
-      setData({
-        title: "",
-        author: "admin",
-        standfirst: "",
-        createdAt: new Date(),
-        content: [],
-      });
-    }
+  // Protect the route first - verify role
+  const user = await verifyToken();
+  if (!user || (user.role !== Roles.ADMIN && user.role !== Roles.GUEST)) {
+    redirect(`/auth/login?redirect=/${topic}/${part}/edit`);
   }
 
-  return data ? (
-    <>
-      <ColumnWrapper className="sticky top-16 md:top-32 bg-white dark:bg-background">
-        <RowWrapper className="*:w-full">
-          <RedirectButton href={pageLink}>Back</RedirectButton>
-          <Button onClick={save}>Save</Button>
-        </RowWrapper>
-
-        {notification ? (
-          <NotificationBar
-            message={notification.message}
-            remove={() => setNoti(null)}
-            alert={notification.alert}
-          />
-        ) : undefined}
-      </ColumnWrapper>
-
-      <EditableArticle article={data as Article} />
-    </>
-  ) : (
-    <h1>{error.message}</h1>
+  // Fetch articles matching the topic and part
+  const query = new URLSearchParams({ topic, part });
+  const response = await fetch(
+    `${process.env.BACKEND_HOST}/api/article?${query}`,
+    { cache: "no-store" },
   );
+
+  if (!response.ok) return notFound();
+
+  const articleSummaries = (await response.json()) as Summary[];
+
+  if (articleSummaries.length > 0) {
+    // If article(s) exist, redirect to editing the first one found
+    const targetArticle = articleSummaries[0];
+    redirect(`/article/${targetArticle.id}/edit`);
+  } else {
+    // If no article exists, redirect to creation page with pre-filled parameters
+    redirect(
+      `/article/new?topic=${encodeURIComponent(topic)}&part=${encodeURIComponent(part)}`,
+    );
+  }
 }

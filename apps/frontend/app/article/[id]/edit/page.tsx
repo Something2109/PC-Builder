@@ -3,6 +3,7 @@ import { Article } from "@/utils/article";
 import { AuthRole } from "@/features/auth";
 import { Roles } from "@/utils/user";
 import { notFound } from "next/navigation";
+import React from "react";
 
 export default async function ArticleEditPage({
   params,
@@ -11,7 +12,13 @@ export default async function ArticleEditPage({
 }) {
   const { id } = await params;
 
-  const response = await fetch(`${process.env.BACKEND_HOST}/api/article/${id}`);
+  // Retrieve with preview=true to load drafts
+  const response = await fetch(
+    `${process.env.BACKEND_HOST}/api/article/${id}?preview=true`,
+    {
+      cache: "no-store",
+    },
+  );
 
   if (!response.ok) return notFound();
 
@@ -23,7 +30,9 @@ export default async function ArticleEditPage({
 
   return (
     <AuthRole roles={[Roles.USER, Roles.ADMIN]}>
-      <EditableArticle article={data as Article} />
+      <div className="container mx-auto px-4 py-8">
+        <EditableArticle article={data as Article} />
+      </div>
     </AuthRole>
   );
 }

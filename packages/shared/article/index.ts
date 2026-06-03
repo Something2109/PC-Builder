@@ -116,12 +116,6 @@ export const Summary = Article.omit({ content: true });
 
 export type Summary = z.infer<typeof Summary>;
 
-export function normalizeArticle(article: any): Article {
-  return Article.parse(article);
-}
-
-export type Type = Article;
-
 // Schemas for API Requests with automatic slugify transformations
 const BaseEditArticleDto = Article.omit({
   id: true,

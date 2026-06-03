@@ -1,31 +1,42 @@
 "use client";
 
-import * as Article from "@/utils/article";
+import React from "react";
+import { List as ListType, Content as ArticleContent, ContentName } from "@/utils/article";
 import { RowWrapper } from "@/ui/FlexWrapper";
-import { TextArea } from "@/ui/Input";
+import { ContentListComponent } from "./ContentListComponent";
 
-const ListInput = function ({
+interface ListInputProps {
+  content: ListType;
+  onChangeSymbol: (val: string) => void;
+  onUpdateContent: (val: ArticleContent[]) => void;
+}
+
+export function ListInput({
   content,
-  children: [button, ...children],
-}: {
-  content: Article.List;
-  children: React.ReactNode[];
-}) {
+  onChangeSymbol,
+  onUpdateContent,
+}: ListInputProps) {
   return (
-    <section className="flex flex-col gap-2 w-full border-2 rounded-xl p-3">
-      <RowWrapper>
-        <p>Symbol: </p>
-        <TextArea
-          placeholder="Symbol"
-          className="font-bold w-full"
+    <div className="flex flex-col gap-2 w-full border border-slate-100 dark:border-slate-800 rounded-xl p-3 my-2 bg-slate-50/20 dark:bg-slate-950/5">
+      <RowWrapper className="items-center gap-2 text-xs text-slate-400 dark:text-slate-500 mb-2">
+        <span>List Type / Bullet Symbol:</span>
+        <input
+          type="text"
+          maxLength={3}
           defaultValue={content.symbol}
-          onChange={(e) => (content.symbol = e.target.value)}
+          onChange={(e) => onChangeSymbol(e.target.value)}
+          className="w-10 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-1.5 py-0.5 text-center font-bold text-slate-700 dark:text-slate-200 focus:outline-none"
         />
-        {button}
       </RowWrapper>
-      {children}
-    </section>
-  );
-};
 
-export default ListInput;
+      <div className="pl-4 border-l border-slate-100 dark:border-slate-800 space-y-2">
+        <ContentListComponent
+          parent={ContentName.List}
+          contents={content.content}
+          onUpdate={onUpdateContent}
+          prefix={content.symbol}
+        />
+      </div>
+    </div>
+  );
+}
