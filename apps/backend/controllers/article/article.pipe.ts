@@ -1,9 +1,11 @@
 import { Products } from "@/utils/part";
+import { ArticleStatus } from "@/utils/article";
 import { ArgumentMetadata, PipeTransform } from "@nestjs/common";
 
 export type ArticleFilter = {
   part?: Products;
   topic?: string;
+  status?: ArticleStatus;
 };
 
 export class QueryFilterPipe implements PipeTransform {
@@ -15,6 +17,9 @@ export class QueryFilterPipe implements PipeTransform {
 
     const topic = typeof value["topic"] === "string" ? value["topic"] : null;
     if (topic) criteria.topic = topic;
+
+    const status = this.check(value["status"], Object.values(ArticleStatus));
+    if (status) criteria.status = status;
 
     const part = this.check(value["part"], Object.values(Products));
     if (part) criteria.part = part;

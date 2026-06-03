@@ -6,61 +6,84 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
-import { Article } from "@/utils/article";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { Roles } from "@/utils/user";
 import { QueryFilterPipe, ArticleFilter } from "./article.pipe";
 import { ArticleService } from "./services/article.service";
+import { ImageService } from "./services/image.service";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
 import { Role } from "controllers/utils/role/role.decorator";
+import { CreateArticleDto, UpdateArticleDto } from "@/utils/article";
 
-const ArticleValidator = new ZodValidationPipe(Article.partial());
+const CreateValidator = new ZodValidationPipe(CreateArticleDto);
+const UpdateValidator = new ZodValidationPipe(UpdateArticleDto);
 const QueryValidator = new QueryFilterPipe();
 
 @Controller("article")
 export class ArticleController {
-  constructor(private articleService: ArticleService) {}
+  constructor(
+    private articleService: ArticleService,
+    private imageService: ImageService,
+  ) {}
 
   @Get()
-  async listSummaries(@Query(QueryValidator) criteria: ArticleFilter) {
-    const article = await this.articleService.list(criteria);
-
-    return article;
+  async listArticles(@Query(QueryValidator) criteria: ArticleFilter) {
+    return this.articleService.list(criteria);
   }
 
-  @Post()
-  async createArticle(
-    @Body(ArticleValidator) article: Article,
-    @Query(QueryValidator) criteria: ArticleFilter,
+  @Get(":idOrSlug")
+  async getArticle(
+    @Param("idOrSlug") idOrSlug: string,
+    @Query("preview") preview?: string,
   ) {
-    const result = await this.articleService.create(article, criteria);
+    const result = await this.articleService.getByIdOrSlug(idOrSlug, preview === "true");
 
-    return result;
-  }
-
-  @Get(":id")
-  async getArticle(@Param("id") id: string) {
-    const result = await this.articleService.get(id);
-
-    if (!result)
-      throw new NotFoundException(`Cannot find article of id: ${id}`);
-
+    if (!result) {
+      throw new NotFoundException(`Cannot find article: ${idOrSlug}`);
+    }
     return result;
   }
 
   @Role(Roles.ADMIN, Roles.GUEST)
-  @Post(":id")
-  async setArticle(
-    @Param("id") id: string,
-    @Body(ArticleValidator) article: Article,
-    @Query(QueryValidator) criteria: ArticleFilter,
+  @Post()
+  async createArticle(
+    @Body(CreateValidator) dto: CreateArticleDto,
   ) {
-    const result = await this.articleService.set(article, id, criteria);
+    return this.articleService.create(dto);
+  }
 
-    if (!result)
+  // RESTful PUT endpoint
+  @Role(Roles.ADMIN, Roles.GUEST)
+  @Put(":id")
+  async updateArticle(
+    @Param("id") id: string,
+    @Body(UpdateValidator) dto: UpdateArticleDto,
+  ) {
+    const result = await this.articleService.update(id, dto);
+
+    if (!result) {
       throw new NotFoundException(`Cannot find article of id: ${id}`);
+    }
+    return result;
+  }
 
+  // Legacy POST endpoint for backward compatibility with frontend forms
+  @Role(Roles.ADMIN, Roles.GUEST)
+  @Post(":id")
+  async legacyUpdateArticle(
+    @Param("id") id: string,
+    @Body(UpdateValidator) dto: UpdateArticleDto,
+  ) {
+    const result = await this.articleService.update(id, dto);
+
+    if (!result) {
+      throw new NotFoundException(`Cannot find article of id: ${id}`);
+    }
     return result;
   }
 
@@ -69,9 +92,46 @@ export class ArticleController {
   async deleteArticle(@Param("id") id: string) {
     const result = await this.articleService.delete(id);
 
-    if (!result)
+    if (!result) {
       throw new NotFoundException(`Cannot find article of id: ${id}`);
-
+    }
     return result;
+  }
+
+  @Role(Roles.ADMIN, Roles.GUEST)
+  @Post(":id/publish")
+  async publishArticle(@Param("id") id: string) {
+    const result = await this.articleService.publish(id);
+
+    if (!result) {
+      throw new NotFoundException(`Cannot find article of id: ${id}`);
+    }
+    return result;
+  }
+
+  @Role(Roles.ADMIN, Roles.GUEST)
+  @Post("media/upload")
+  @UseInterceptors(FileInterceptor("file"))
+  async uploadMedia(
+    @UploadedFile() file: any,
+    @Query("subfolder") subfolder?: string,
+  ) {
+    if (!file) {
+      throw new NotFoundException("No file provided");
+    }
+    
+    // Save image using ImageService
+    const base64Data = file.buffer.toString("base64");
+    const mimeType = file.mimetype;
+    const base64Str = `data:${mimeType};base64,${base64Data}`;
+    
+    const folders = subfolder ? subfolder.split("/") : ["uploads"];
+    const savedPath = this.imageService.set(base64Str, ...folders);
+    
+    if (!savedPath) {
+      throw new Error("Failed to save image file");
+    }
+
+    return { url: savedPath };
   }
 }

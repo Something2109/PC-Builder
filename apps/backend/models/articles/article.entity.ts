@@ -1,4 +1,4 @@
-import { Type, Content } from "@/utils/article";
+import { Type, Content, ArticleStatus } from "@/utils/article";
 import { Tables } from "../interface";
 import {
   Column,
@@ -21,6 +21,10 @@ export default class ArticleModel extends Model implements Omit<Type, "id"> {
   declare part: string;
 
   @NotNull
+  @Column({ type: DataType.STRING, unique: true, allowNull: false })
+  declare slug: string;
+
+  @NotNull
   @Column({ type: DataType.STRING, allowNull: false })
   declare title: string;
 
@@ -32,8 +36,31 @@ export default class ArticleModel extends Model implements Omit<Type, "id"> {
   @Column({ type: DataType.STRING, allowNull: false })
   declare standfirst: string;
 
+  @Column(DataType.STRING)
+  declare cover?: string;
+
+  @Column(DataType.STRING)
+  declare icon?: string;
+
+  @Default(ArticleStatus.Draft)
+  @Column({
+    type: DataType.ENUM(...Object.values(ArticleStatus)),
+    allowNull: false,
+  })
+  declare status: ArticleStatus;
+
+  @Default(0)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  declare views: number;
+
+  @Column(DataType.DATE)
+  declare publishedAt?: Date;
+
   @Column(DataType.DATE)
   declare createdAt: Date;
+
+  @Column(DataType.DATE)
+  declare updatedAt?: Date;
 
   @Column(DataType.TEXT)
   set content(val: Content[]) {

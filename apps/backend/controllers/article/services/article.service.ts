@@ -1,14 +1,14 @@
-import { ArticleClass } from "../entities/Article.entity";
-import { Products } from "@/utils/part";
-import { Article, type Summary } from "@/utils/article";
-import { Injectable } from "@nestjs/common";
+import { Injectable, ConflictException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Document, Model } from "mongoose";
+import { ArticleClass } from "../entities/Article.entity";
+import { Products } from "@/utils/part";
+import { Article, ArticleStatus, Summary, CreateArticleDto, UpdateArticleDto } from "@/utils/article";
 
 @Injectable()
 export class ArticleService {
   constructor(
-    @InjectModel("article") private ArticleSchema: Model<ArticleClass>,
+    @InjectModel("article") private articleModel: Model<ArticleClass>,
   ) {}
 
   /**
@@ -19,81 +19,140 @@ export class ArticleService {
   async list(criteria: {
     topic?: string;
     part?: Products;
+    status?: ArticleStatus;
   }): Promise<Summary[]> {
-    const instances = await this.ArticleSchema.find(criteria).select({
-      _id: 1,
-      title: 1,
-      author: 1,
-      standfirst: 1,
-      createdAt: 1,
-    });
+    const query: Record<string, any> = { ...criteria };
+    if (!query.status) {
+      query.status = ArticleStatus.Published;
+    }
 
-    return instances.map(this.toArticleType);
+    const instances = await this.articleModel.find(query)
+      .select({
+        _id: 1,
+        slug: 1,
+        title: 1,
+        author: 1,
+        standfirst: 1,
+        createdAt: 1,
+        cover: 1,
+        icon: 1,
+        status: 1,
+        topic: 1,
+        part: 1,
+        views: 1,
+        publishedAt: 1,
+      })
+      .sort({ publishedAt: -1, createdAt: -1 });
+
+    return instances.map(this.toArticleType.bind(this));
   }
 
   /**
-   * Create the article with the following attributes.
-   * @param article The article attribute object to create article.
-   * @returns The new article object created or null if not successed.
-   */
-  async create(
-    article: Article,
-    criteria?: { topic?: string; part?: string },
-  ): Promise<Article | null> {
-    const instance = await this.ArticleSchema.insertOne({
-      ...criteria,
-      ...article,
-    });
-
-    if (!instance) return null;
-
-    return this.toArticleType(instance);
-  }
-
-  /**
-   * Get the article from the id.
-   * @param id The id of the article to get.
+   * Get the article from the id or slug.
+   * @param idOrSlug The id or slug of the article to get.
+   * @param isPreview Whether previewing a draft is allowed.
    * @returns The article if found or null.
    */
-  async get(id: string): Promise<Article | null> {
-    const instance = await this.ArticleSchema.findById(id);
-
+  async getByIdOrSlug(idOrSlug: string, isPreview = false): Promise<Article | null> {
+    const isId = idOrSlug.match(/^[0-9a-fA-F]{24}$/);
+    const query = isId ? { _id: idOrSlug } : { slug: idOrSlug };
+    
+    const instance = await this.articleModel.findOne(query);
     if (!instance) return null;
+
+    if (!isPreview && instance.status !== ArticleStatus.Published) {
+      return null;
+    }
+
+    // Safely increment view count asynchronously if accessed as published article
+    if (instance.status === ArticleStatus.Published) {
+      this.articleModel.updateOne(query, { $inc: { views: 1 } }).exec().catch((e) =>
+        console.error("Failed to increment views:", e),
+      );
+    }
 
     return this.toArticleType(instance);
   }
 
   /**
-   * Set the article of {@link id} with the article attributes.
-   * @param article The article attribute object to change article.
-   * @param id the id of the change article.
-   * @returns The changed article or null if none found.
+   * Create the article with the following DTO.
+   * @param dto The article creation DTO.
+   * @returns The new article object.
    */
-  async set(
-    article: Article,
-    id: string,
-    criteria?: { topic?: string; part?: string },
-  ): Promise<Article | null> {
-    const instance = await this.ArticleSchema.findById(id);
+  async create(dto: CreateArticleDto): Promise<Article> {
+    let slug = dto.slug;
+    
+    // Ensure slug uniqueness in the database
+    let suffix = 1;
+    const originalSlug = slug;
+    while (await this.articleModel.findOne({ slug })) {
+      slug = `${originalSlug}-${suffix++}`;
+    }
 
+    const instance = await this.articleModel.create({
+      ...dto,
+      slug,
+      views: 0,
+      status: dto.status || ArticleStatus.Draft,
+      publishedAt: dto.status === ArticleStatus.Published ? new Date() : null,
+    });
+
+    return this.toArticleType(instance);
+  }
+
+  /**
+   * Update the article of {@link id} with the DTO attributes.
+   * @param id the id of the article to update.
+   * @param dto The article update DTO.
+   * @returns The updated article or null if none found.
+   */
+  async update(id: string, dto: UpdateArticleDto): Promise<Article | null> {
+    const instance = await this.articleModel.findById(id);
     if (!instance) return null;
 
-    await instance.set({ ...criteria, ...article }).save();
+    const updates: Partial<ArticleClass> = { ...dto } as any;
 
+    if (dto.slug && dto.slug !== instance.slug) {
+      // Check duplicate slug for other records
+      const duplicate = await this.articleModel.findOne({ slug: dto.slug, _id: { $ne: id } });
+      if (duplicate) {
+        throw new ConflictException("Slug is already taken by another article");
+      }
+    }
+
+    if (dto.status === ArticleStatus.Published && instance.status !== ArticleStatus.Published) {
+      updates.publishedAt = new Date();
+    }
+
+    await instance.set(updates).save();
     return this.toArticleType(instance);
   }
 
   /**
    * Delete the article with the {@link id} and return it.
    * @param id The article's id to delete.
-   * @returns The article if success else null.
+   * @returns The deleted article if success else null.
    */
   async delete(id: string): Promise<Article | null> {
-    const instance = await this.ArticleSchema.findById(id);
-
+    const instance = await this.articleModel.findById(id);
     if (!instance) return null;
 
     await instance.deleteOne();
+    return this.toArticleType(instance);
+  }
+
+  /**
+   * Publish the article.
+   * @param id The article's id to publish.
+   * @returns The published article.
+   */
+  async publish(id: string): Promise<Article | null> {
+    const instance = await this.articleModel.findById(id);
+    if (!instance) return null;
+
+    instance.status = ArticleStatus.Published;
+    instance.publishedAt = new Date();
+    await instance.save();
 
     return this.toArticleType(instance);
   }
@@ -107,8 +166,9 @@ export class ArticleService {
   private toArticleType(
     instance: Document<unknown, {}, ArticleClass>,
   ): Article {
-    const { _id, __v, ...obj } = instance.toJSON();
+    const json = instance.toJSON();
+    const { _id, __v, ...obj } = json;
 
-    return Article.parse({ id: _id, ...obj });
+    return Article.parse({ id: _id.toString(), ...obj });
   }
 }

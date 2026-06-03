@@ -8,8 +8,27 @@ export enum ContentName {
   Section = "section",
 }
 
+export enum ArticleStatus {
+  Draft = "draft",
+  Published = "published",
+  Archived = "archived",
+}
+
 export function generateId(): string {
   return Math.random().toString(36).substring(2, 9);
+}
+
+export function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Remove accents
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/[^\w\-]+/g, "") // Remove all non-word chars
+    .replace(/\-\-+/g, "-") // Replace multiple - with single -
+    .replace(/^-+/, "") // Trim - from start
+    .replace(/-+$/, ""); // Trim - from end
 }
 
 export const IdSchema = z.preprocess(
@@ -75,13 +94,20 @@ export const Content = z.union([Section, List, Paragraph, Image]);
 
 export const Article = z.object({
   id: Primitive.String,
-  title: Primitive.String,
+  slug: z.string().min(3),
+  title: Primitive.String.min(3, "Title must be at least 3 characters"),
   author: Primitive.String,
   standfirst: Primitive.String,
   createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date().optional(),
+  publishedAt: z.coerce.date().nullable().optional(),
   content: ContentArray,
   cover: z.string().optional(),
   icon: z.string().optional(),
+  status: z.enum(ArticleStatus).default(ArticleStatus.Draft),
+  topic: z.string().optional(),
+  part: z.string().optional(),
+  views: z.number().default(0),
 });
 
 export type Article = z.infer<typeof Article>;
@@ -93,3 +119,41 @@ export type Summary = z.infer<typeof Summary>;
 export function normalizeArticle(article: any): Article {
   return Article.parse(article);
 }
+
+export type Type = Article;
+
+// Schemas for API Requests with automatic slugify transformations
+const BaseEditArticleDto = Article.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  views: true,
+}).partial({
+  slug: true,
+  status: true,
+  cover: true,
+  icon: true,
+});
+
+export const CreateArticleDto = BaseEditArticleDto.transform((data) => {
+  return {
+    ...data,
+    slug: slugify(data.slug || data.title),
+  };
+});
+
+export type CreateArticleDto = z.infer<typeof CreateArticleDto>;
+
+export const UpdateArticleDto = BaseEditArticleDto.partial().transform(
+  (data) => {
+    const result = { ...data };
+    if (data.slug) {
+      result.slug = slugify(data.slug);
+    } else if (data.title) {
+      result.slug = slugify(data.title);
+    }
+    return result;
+  },
+);
+
+export type UpdateArticleDto = z.infer<typeof UpdateArticleDto>;
