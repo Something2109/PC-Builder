@@ -140,7 +140,7 @@ class ParseService implements ParseServiceInterface {
 
       for (const name in Mapping.ProductToInfo[part]) {
         const [info, key] = Mapping.ProductToInfo[part][name];
-        builder.add(info, key, parsedParams[name]);
+        builder.add(info, key, parsedParams[name] as string[] | number[] | undefined);
       }
     }
 
