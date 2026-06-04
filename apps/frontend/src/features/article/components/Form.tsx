@@ -3,14 +3,40 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Article, Content, ContentName, ArticleStatus } from "@/utils/article";
+import {
+  Article,
+  Content,
+  ContentName,
+  ArticleStatus,
+  BaseEditArticleDto,
+} from "@/utils/article";
 import { RowWrapper } from "@/ui/FlexWrapper";
 import axios, { AxiosError } from "axios";
 import { mergeClass } from "@/ui/mergeClass";
 import { uploadFile } from "./utils";
 import { ContentListComponent } from "./input";
-import { AutoGrowingTextArea } from "@/ui/Input";
-import { Name as ProductName, Label as ProductLabel } from "@/utils/part/product";
+import { Input, Select, AutoGrowingTextArea } from "@/ui/Input";
+import {
+  Name as ProductName,
+  Label as ProductLabel,
+} from "@/utils/part/product";
+import { useForm } from "@tanstack/react-form";
+
+const articleFormSchema = BaseEditArticleDto;
+
+const ensureIds = (list: Content[]): Content[] => {
+  return list.map((item) => {
+    const id = item.id || Math.random().toString(36).substring(2, 9);
+    if (item.type === ContentName.Section || item.type === ContentName.List) {
+      return {
+        ...item,
+        id,
+        content: ensureIds(item.content || []),
+      };
+    }
+    return { ...item, id };
+  });
+};
 
 const PRESET_COVERS = [
   "linear-gradient(to right, #8b5cf6, #6366f1)", // Indigo Purple
@@ -50,39 +76,77 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
   const router = useRouter();
   const articleId = article.id;
 
-  // Track visual metadata states
-  const [title, setTitle] = useState(article.title);
-  const [standfirst, setStandfirst] = useState(article.standfirst);
-  const [cover, setCover] = useState<string | undefined>(article.cover);
-  const [icon, setIcon] = useState<string | undefined>(article.icon);
-  const [topic, setTopic] = useState<string | undefined>(article.topic);
-  const [part, setPart] = useState<string | undefined>(article.part);
-  const [contents, setContents] = useState<Content[]>(() => {
-    const ensureIds = (list: Content[]): Content[] => {
-      return list.map((item) => {
-        const id = item.id || Math.random().toString(36).substring(2, 9);
-        if (item.type === ContentName.Section || item.type === ContentName.List) {
-          return {
-            ...item,
-            id,
-            content: ensureIds(item.content || []),
-          };
-        }
-        return { ...item, id };
-      });
-    };
-    return ensureIds(article.content || []);
-  });
-
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showCoverSelector, setShowCoverSelector] = useState(false);
   const [isCoverUploading, setIsCoverUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const coverFileInputRef = useRef<HTMLInputElement>(null);
+  const submitStatusRef = useRef<ArticleStatus>(ArticleStatus.Draft);
+
+  const form = useForm({
+    defaultValues: {
+      title: article.title,
+      standfirst: article.standfirst || "",
+      cover: article.cover,
+      icon: article.icon,
+      topic: article.topic,
+      part: article.part,
+      content: ensureIds(article.content || []) as unknown[],
+      author: article.author || "admin",
+    },
+    onSubmit: async ({ value }) => {
+      if (isSaving) return;
+      setIsSaving(true);
+
+      const submitStatus = submitStatusRef.current;
+
+      const payload = {
+        ...value,
+        status: submitStatus,
+      };
+
+      try {
+        let response;
+        if (isNew) {
+          let createUrl = "/api/article";
+          const queryParams = new URLSearchParams();
+          if (value.topic) queryParams.set("topic", value.topic);
+          if (value.part) queryParams.set("part", value.part);
+          if (queryParams.toString()) {
+            createUrl += `?${queryParams.toString()}`;
+          }
+
+          response = await axios.post(createUrl, payload, {
+            withCredentials: true,
+          });
+
+          const createdArticle = response.data;
+          router.push(`/article/${createdArticle.slug || createdArticle.id}`);
+        } else {
+          response = await axios.put(`/api/article/${articleId}`, payload, {
+            withCredentials: true,
+          });
+
+          const updatedArticle = response.data;
+          router.push(`/article/${updatedArticle.slug || updatedArticle.id}`);
+        }
+
+        router.refresh();
+      } catch (err) {
+        const error = err as AxiosError<{ message: string }>;
+        const message =
+          error.response?.data?.message ||
+          "An error occurred while saving the article.";
+        alert(message);
+      } finally {
+        setIsSaving(false);
+      }
+    },
+  });
 
   const handlePresetCover = (preset: string) => {
-    setCover(preset);
+    form.setFieldValue("cover", preset);
     setShowCoverSelector(false);
   };
 
@@ -92,7 +156,7 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
     setIsCoverUploading(true);
     try {
       const url = await uploadFile(file, "covers");
-      setCover(url);
+      form.setFieldValue("cover", url);
       setShowCoverSelector(false);
     } catch (err) {
       console.error("Failed to upload cover:", err);
@@ -103,72 +167,10 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
   };
 
   const handleEmojiSelect = (emoji: string) => {
-    setIcon(emoji);
+    form.setFieldValue("icon", emoji);
     setShowEmojiPicker(false);
   };
 
-  // Submit Handler (Saves Draft or Publishes)
-  const handleSave = async (submitStatus: ArticleStatus) => {
-    if (isSaving) return;
-
-    if (!title.trim() || title.length < 3) {
-      alert("Title must be at least 3 characters long.");
-      return;
-    }
-
-    setIsSaving(true);
-
-    const payload = {
-      title,
-      standfirst,
-      cover,
-      icon,
-      status: submitStatus,
-      topic: topic || undefined,
-      part: part || undefined,
-      content: contents,
-      author: article.author || "admin",
-    };
-
-    try {
-      let response;
-      if (isNew) {
-        let createUrl = "/api/article";
-        const queryParams = new URLSearchParams();
-        if (topic) queryParams.set("topic", topic);
-        if (part) queryParams.set("part", part);
-        if (queryParams.toString()) {
-          createUrl += `?${queryParams.toString()}`;
-        }
-
-        response = await axios.post(createUrl, payload, {
-          withCredentials: true,
-        });
-
-        const createdArticle = response.data;
-        router.push(`/article/${createdArticle.slug || createdArticle.id}`);
-      } else {
-        response = await axios.put(`/api/article/${articleId}`, payload, {
-          withCredentials: true,
-        });
-
-        const updatedArticle = response.data;
-        router.push(`/article/${updatedArticle.slug || updatedArticle.id}`);
-      }
-
-      router.refresh();
-    } catch (err) {
-      const error = err as AxiosError<{ message: string }>;
-      const message =
-        error.response?.data?.message ||
-        "An error occurred while saving the article.";
-      alert(message);
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  // Handle Delete (Edit Mode Only)
   const handleDelete = async () => {
     if (isNew) return;
     if (!confirm("Are you sure you want to delete this article?")) return;
@@ -190,40 +192,49 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
     <div className="w-full max-w-4xl mx-auto my-6 px-1 md:px-4 pb-24">
       {/* Editor Cover area */}
       <div className="relative w-full h-[200px] md:h-[260px] rounded-3xl overflow-hidden bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-inner group">
-        {cover ? (
-          cover.startsWith("linear-gradient") ? (
-            <div className="w-full h-full" style={{ background: cover }} />
-          ) : (
-            <img
-              src={cover}
-              alt="Cover"
-              className="w-full h-full object-cover"
-            />
-          )
-        ) : (
-          <div className="w-full h-full bg-slate-100/50 dark:bg-slate-950/20 flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800">
-            <span className="text-xs text-slate-400">No cover image</span>
-          </div>
-        )}
+        <form.Subscribe selector={(state) => state.values.cover}>
+          {(cover) => (
+            <>
+              {cover ? (
+                cover.startsWith("linear-gradient") ? (
+                  <div
+                    className="w-full h-full"
+                    style={{ background: cover }}
+                  />
+                ) : (
+                  <img
+                    src={cover}
+                    alt="Cover"
+                    className="w-full h-full object-cover"
+                  />
+                )
+              ) : (
+                <div className="w-full h-full bg-slate-100/50 dark:bg-slate-950/20 flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800">
+                  <span className="text-xs text-slate-400">No cover image</span>
+                </div>
+              )}
 
-        <div className="absolute inset-0 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity gap-2 backdrop-blur-[1px]">
-          <button
-            type="button"
-            onClick={() => setShowCoverSelector(!showCoverSelector)}
-            className="bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-100 hover:bg-white text-xs font-semibold px-4 py-2 rounded-xl shadow-md transition-colors"
-          >
-            Change Cover
-          </button>
-          {cover && (
-            <button
-              type="button"
-              onClick={() => setCover(undefined)}
-              className="bg-red-600/90 text-white hover:bg-red-600 text-xs font-semibold px-4 py-2 rounded-xl shadow-md transition-colors"
-            >
-              Remove Cover
-            </button>
+              <div className="absolute inset-0 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity gap-2 backdrop-blur-[1px]">
+                <button
+                  type="button"
+                  onClick={() => setShowCoverSelector(!showCoverSelector)}
+                  className="bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-100 hover:bg-white text-xs font-semibold px-4 py-2 rounded-xl shadow-md transition-colors"
+                >
+                  Change Cover
+                </button>
+                {cover && (
+                  <button
+                    type="button"
+                    onClick={() => form.setFieldValue("cover", undefined)}
+                    className="bg-red-600/90 text-white hover:bg-red-600 text-xs font-semibold px-4 py-2 rounded-xl shadow-md transition-colors"
+                  >
+                    Remove Cover
+                  </button>
+                )}
+              </div>
+            </>
           )}
-        </div>
+        </form.Subscribe>
 
         {showCoverSelector && (
           <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-20">
@@ -276,127 +287,255 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
 
         {/* Floating Emoji Icon Selector */}
         <div className="absolute -bottom-10 left-8 md:left-12 z-10">
-          {icon ? (
-            <div
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              className="flex items-center justify-center text-5xl bg-white dark:bg-slate-900 border-4 border-white dark:border-slate-900 rounded-full w-20 h-20 shadow-lg cursor-pointer hover:rotate-6 hover:scale-105 transition-all select-none"
-              title="Change icon"
-            >
-              {icon}
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              className="flex items-center justify-center text-xs font-semibold bg-white dark:bg-slate-900 text-slate-500 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1.5 shadow-md hover:bg-slate-50 cursor-pointer"
-            >
-              😀 Add Icon
-            </button>
-          )}
-
-          {showEmojiPicker && (
-            <div className="absolute bottom-24 left-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 shadow-xl z-20 w-64 space-y-3">
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Select Emoji
-              </h4>
-              <div className="grid grid-cols-6 gap-2">
-                {PRESET_EMOJIS.map((emoji) => (
-                  <button
-                    key={emoji}
-                    type="button"
-                    onClick={() => handleEmojiSelect(emoji)}
-                    className="text-2xl hover:bg-slate-100 dark:hover:bg-slate-800 p-1.5 rounded-lg transition-colors"
+          <form.Subscribe selector={(state) => state.values.icon}>
+            {(icon) => (
+              <>
+                {icon ? (
+                  <div
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    className="flex items-center justify-center text-5xl bg-white dark:bg-slate-900 border-4 border-white dark:border-slate-900 rounded-full w-20 h-20 shadow-lg cursor-pointer hover:rotate-6 hover:scale-105 transition-all select-none"
+                    title="Change icon"
                   >
-                    {emoji}
-                  </button>
-                ))}
-              </div>
-              <div className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                {icon && (
+                    {icon}
+                  </div>
+                ) : (
                   <button
                     type="button"
-                    onClick={() => {
-                      setIcon(undefined);
-                      setShowEmojiPicker(false);
-                    }}
-                    className="grow text-center py-1.5 bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-[10px] rounded-lg transition-colors"
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    className="flex items-center justify-center text-xs font-semibold bg-white dark:bg-slate-900 text-slate-500 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1.5 shadow-md hover:bg-slate-50 cursor-pointer"
                   >
-                    Remove Icon
+                    😀 Add Icon
                   </button>
                 )}
-                <button
-                  type="button"
-                  onClick={() => setShowEmojiPicker(false)}
-                  className="grow text-center py-1.5 hover:bg-slate-100 text-slate-400 font-medium text-[10px] rounded-lg transition-colors"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          )}
+
+                {showEmojiPicker && (
+                  <div className="absolute bottom-24 left-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 shadow-xl z-20 w-64 space-y-3">
+                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Select Emoji
+                    </h4>
+                    <div className="grid grid-cols-6 gap-2">
+                      {PRESET_EMOJIS.map((emoji) => (
+                        <button
+                          key={emoji}
+                          type="button"
+                          onClick={() => handleEmojiSelect(emoji)}
+                          className="text-2xl hover:bg-slate-100 dark:hover:bg-slate-800 p-1.5 rounded-lg transition-colors"
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                      {icon && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            form.setFieldValue("icon", undefined);
+                            setShowEmojiPicker(false);
+                          }}
+                          className="grow text-center py-1.5 bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-[10px] rounded-lg transition-colors"
+                        >
+                          Remove Icon
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setShowEmojiPicker(false)}
+                        className="grow text-center py-1.5 hover:bg-slate-100 text-slate-400 font-medium text-[10px] rounded-lg transition-colors"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </form.Subscribe>
         </div>
       </div>
 
       {/* Editing Canvas */}
-      <div className={mergeClass("pt-16 px-4 md:px-12", !icon ? "pt-8" : "")}>
-        {/* Topic and part metadata inputs */}
-        <div className="flex flex-wrap items-center gap-3 mb-6 text-xs bg-slate-50 dark:bg-slate-900/20 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-4">
-          <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 font-semibold">Topic:</span>
-            <input
-              type="text"
-              placeholder="e.g. introduction, guide"
-              defaultValue={topic}
-              onChange={(e) => setTopic(e.target.value || undefined)}
-              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2.5 py-1 text-slate-700 dark:text-slate-200 focus:outline-none placeholder-slate-300 font-medium"
-            />
-          </div>
+      <form.Subscribe selector={(state) => state.values.icon}>
+        {(icon) => (
+          <div
+            className={mergeClass("pt-16 px-4 md:px-12", !icon ? "pt-8" : "")}
+          >
+            {/* Topic and part metadata inputs */}
+            <div className="flex flex-wrap items-center gap-3 mb-6 text-xs bg-slate-50 dark:bg-slate-900/20 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-4">
+              <div className="flex items-center gap-1.5">
+                <span className="text-slate-400 font-semibold">Topic:</span>
+                <form.Field
+                  name="topic"
+                  validators={{
+                    onChange: ({ value }) => {
+                      const res =
+                        articleFormSchema.shape.topic.safeParse(value);
+                      if (!res.success) {
+                        return res.error.issues[0]?.message;
+                      }
+                      return undefined;
+                    },
+                  }}
+                >
+                  {(field) => (
+                    <div>
+                      <Input
+                        name={field.name}
+                        value={field.state.value ?? ""}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        type="text"
+                        placeholder="e.g. introduction, guide"
+                        className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2.5 py-1 text-slate-700 dark:text-slate-200 focus:outline-none placeholder-slate-300 font-medium"
+                      />
+                      {field.state.meta.errors.length > 0 && (
+                        <div className="text-red-500 text-[10px] font-semibold mt-1">
+                          {field.state.meta.errors.join(", ")}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </form.Field>
+              </div>
 
-          <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 font-semibold">Part Category:</span>
-            <select
-              value={part || ""}
-              onChange={(e) => setPart(e.target.value || undefined)}
-              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2.5 py-1 text-slate-700 dark:text-slate-200 focus:outline-none font-medium"
+              <div className="flex items-center gap-1.5">
+                <span className="text-slate-400 font-semibold">
+                  Part Category:
+                </span>
+                <form.Field
+                  name="part"
+                  validators={{
+                    onChange: ({ value }) => {
+                      const res = articleFormSchema.shape.part.safeParse(value);
+                      if (!res.success) {
+                        return res.error.issues[0]?.message;
+                      }
+                      return undefined;
+                    },
+                  }}
+                >
+                  {(field) => (
+                    <div>
+                      <Select
+                        name={field.name}
+                        value={field.state.value ?? ""}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2.5 py-1 text-slate-700 dark:text-slate-200 focus:outline-none font-medium"
+                      >
+                        <option value="">Select a part category</option>
+                        {Object.values(ProductName).map((val) => (
+                          <option key={val} value={val}>
+                            {ProductLabel[val] || val.toUpperCase()}
+                          </option>
+                        ))}
+                      </Select>
+                      {field.state.meta.errors.length > 0 && (
+                        <div className="text-red-500 text-[10px] font-semibold mt-1">
+                          {field.state.meta.errors.join(", ")}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </form.Field>
+              </div>
+            </div>
+
+            {/* Title */}
+            <form.Field
+              name="title"
+              validators={{
+                onChange: ({ value }) => {
+                  const res = articleFormSchema.shape.title.safeParse(value);
+                  if (!res.success) {
+                    return res.error.issues[0]?.message;
+                  }
+                  return undefined;
+                },
+              }}
             >
-              <option value="">Select a part category</option>
-              {Object.values(ProductName).map((val) => (
-                <option key={val} value={val}>
-                  {ProductLabel[val] || val.toUpperCase()}
-                </option>
-              ))}
-            </select>
+              {(field) => (
+                <div className="w-full">
+                  <AutoGrowingTextArea
+                    name={field.name}
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Untitled Article"
+                    className="font-sans text-3xl md:text-5xl font-black text-slate-900 dark:text-slate-100 tracking-tight leading-tight mb-2 my-2 placeholder-slate-200 dark:placeholder-slate-800"
+                  />
+                  {field.state.meta.errors.length > 0 && (
+                    <div className="text-red-500 text-xs font-semibold mb-4 px-1">
+                      {field.state.meta.errors.join(", ")}
+                    </div>
+                  )}
+                </div>
+              )}
+            </form.Field>
+
+            {/* Standfirst */}
+            <form.Field
+              name="standfirst"
+              validators={{
+                onChange: ({ value }) => {
+                  const res =
+                    articleFormSchema.shape.standfirst.safeParse(value);
+                  if (!res.success) {
+                    return res.error.issues[0]?.message;
+                  }
+                  return undefined;
+                },
+              }}
+            >
+              {(field) => (
+                <div className="w-full">
+                  <AutoGrowingTextArea
+                    name={field.name}
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Write a short, engaging standfirst introduction..."
+                    className="font-serif text-lg text-slate-500 dark:text-slate-400 leading-relaxed italic border-l-4 border-slate-200 dark:border-slate-800 pl-4 mb-8 placeholder-slate-300 dark:placeholder-slate-800/80"
+                  />
+                  {field.state.meta.errors.length > 0 && (
+                    <div className="text-red-500 text-xs font-semibold mb-4 px-1">
+                      {field.state.meta.errors.join(", ")}
+                    </div>
+                  )}
+                </div>
+              )}
+            </form.Field>
+
+            <hr className="border-slate-100 dark:border-slate-800 mb-6" />
+
+            {/* Recursive Block List Editor */}
+            <div className="space-y-2">
+              <form.Field
+                name="content"
+                validators={{
+                  onChange: ({ value }) => {
+                    const res =
+                      articleFormSchema.shape.content.safeParse(value);
+                    if (!res.success) {
+                      return res.error.issues[0]?.message;
+                    }
+                    return undefined;
+                  },
+                }}
+              >
+                {(field) => (
+                  <ContentListComponent
+                    parent={ContentName.Section}
+                    contents={field.state.value as Content[]}
+                    onUpdate={(newContents) => field.handleChange(newContents)}
+                    isRoot={true}
+                  />
+                )}
+              </form.Field>
+            </div>
           </div>
-        </div>
-
-        {/* Title */}
-        <AutoGrowingTextArea
-          placeholder="Untitled Article"
-          defaultValue={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="font-sans text-3xl md:text-5xl font-black text-slate-900 dark:text-slate-100 tracking-tight leading-tight mb-4 my-2 placeholder-slate-200 dark:placeholder-slate-800"
-        />
-
-        {/* Standfirst */}
-        <AutoGrowingTextArea
-          placeholder="Write a short, engaging standfirst introduction..."
-          defaultValue={standfirst}
-          onChange={(e) => setStandfirst(e.target.value)}
-          className="font-serif text-lg text-slate-500 dark:text-slate-400 leading-relaxed italic border-l-4 border-slate-200 dark:border-slate-800 pl-4 mb-8 placeholder-slate-300 dark:placeholder-slate-800/80"
-        />
-
-        <hr className="border-slate-100 dark:border-slate-800 mb-6" />
-
-        {/* Recursive Block List Editor */}
-        <div className="space-y-2">
-          <ContentListComponent
-            parent={ContentName.Section}
-            contents={contents}
-            onUpdate={setContents}
-            isRoot={true}
-          />
-        </div>
-      </div>
+        )}
+      </form.Subscribe>
 
       {/* Floating Sticky Bottom Control Bar */}
       <div className="fixed bottom-6 left-0 right-0 z-40 px-4">
@@ -405,9 +544,13 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
             <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
               {isNew ? "Create mode" : "Edit mode"}
             </span>
-            <span className="text-xs font-semibold text-slate-200 max-w-[120px] truncate">
-              {title || "Untitled"}
-            </span>
+            <form.Subscribe selector={(state) => state.values.title}>
+              {(currentTitle) => (
+                <span className="text-xs font-semibold text-slate-200 max-w-[120px] truncate">
+                  {currentTitle || "Untitled"}
+                </span>
+              )}
+            </form.Subscribe>
           </div>
 
           <RowWrapper className="items-center gap-2">
@@ -432,7 +575,10 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
 
             <button
               type="button"
-              onClick={() => handleSave(ArticleStatus.Draft)}
+              onClick={() => {
+                submitStatusRef.current = ArticleStatus.Draft;
+                form.handleSubmit();
+              }}
               disabled={isSaving}
               className="py-1.5 px-4 bg-amber-600 hover:bg-amber-700 text-xs font-bold rounded-xl transition-colors disabled:opacity-50"
             >
@@ -441,7 +587,10 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
 
             <button
               type="button"
-              onClick={() => handleSave(ArticleStatus.Published)}
+              onClick={() => {
+                submitStatusRef.current = ArticleStatus.Published;
+                form.handleSubmit();
+              }}
               disabled={isSaving}
               className="py-1.5 px-4 bg-blue-600 hover:bg-blue-700 text-xs font-bold rounded-xl transition-colors disabled:opacity-50"
             >

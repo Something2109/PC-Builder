@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { NotificationBar } from "@/ui/NotificationBar";
@@ -140,7 +141,7 @@ export function InfoForm({
   if (!Component) return undefined;
 
   return (
-    <form className="flex flex-col gap-1 w-full">
+    <div className="flex flex-col gap-1 w-full">
       {formValue ? (
         <VerticalCollapsible className="sticky top-32">
           <h1 className="text-4xl font-bold">{Information.Label[info]}</h1>
@@ -152,9 +153,9 @@ export function InfoForm({
         </VerticalCollapsible>
       ) : (
         <Button
-          type="submit"
+          type="button"
           className="w-full"
-          formAction={() => save({})}
+          onClick={() => save({})}
           disabled={pending}
         >
           {pending
@@ -165,6 +166,6 @@ export function InfoForm({
       {error ? (
         <NotificationBar message={error} remove={() => setError(null)} alert />
       ) : undefined}
-    </form>
+    </div>
   );
 }

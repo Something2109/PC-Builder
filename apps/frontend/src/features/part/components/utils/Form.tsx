@@ -4,40 +4,55 @@ import { Button } from "@/ui/Button";
 import { RowWrapper } from "@/ui/FlexWrapper";
 import { FunctionComponent, TableHTMLAttributes } from "react";
 
-export function GenericInputField<T>(
-  InputComponent: FunctionComponent<{ defaultValue?: T | null }>,
-  transform: (data: FormData) => T
+import { useForm } from "@tanstack/react-form";
+import { FormApi, FormOptions } from "@/type/form";
+
+type InputFieldProps<T extends object> = Readonly<{
+  pending: boolean;
+}> &
+  Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue"> &
+  Pick<FormOptions<T>, "defaultValues" | "onSubmit">;
+
+type InputFieldComponent<T extends object> = FunctionComponent<{
+  form: FormApi<T>;
+  defaultValue?: T | null;
+}>;
+
+export function GenericInputField<T extends object>(
+  InputComponent: InputFieldComponent<T>,
+  _transform?: (data: FormData) => T
 ) {
   const InputField = ({
     pending,
+    defaultValues,
     onSubmit,
     ...props
-  }: {
-    pending: boolean;
-    onSubmit: (data: T | null) => void;
-    defaultValue?: T;
-  } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => {
+  }: InputFieldProps<T>) => {
+    const form = useForm({ defaultValues, onSubmit });
+
     return (
-      <>
-        <InputComponent {...props} />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="flex flex-col gap-1 w-full"
+      >
+        <InputComponent form={form} defaultValue={defaultValues} {...props} />
         {pending ? (
           <p className="button border-0">Saving...</p>
         ) : (
           <RowWrapper>
-            <Button type="submit" formAction={() => onSubmit(null)}>
+            <Button type="button" onClick={() => form.handleSubmit()}>
               Delete
             </Button>
-            <Button
-              type="submit"
-              formAction={(formData: FormData) => onSubmit(transform(formData))}
-              className="w-full"
-              disabled={pending}
-            >
+            <Button type="submit" className="w-full" disabled={pending}>
               Save
             </Button>
           </RowWrapper>
         )}
-      </>
+      </form>
     );
   };
 

@@ -19,16 +19,43 @@ const defaultStyle = "only:w-full bg-transparent resize-none overflow-y-hidden";
 const rangeDivStyle = "relative hidden md:block w-full top-1.5";
 const rangeInputStyle = "absolute w-full first:bg-range-input";
 
+// Intercepts the default onChange event and proxies its target value
+// to return undefined instead of empty string.
+function cleanEvent<
+  T extends HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
+>(e: ChangeEvent<T>, onChange?: (e: ChangeEvent<T>) => void) {
+  if (!onChange) return;
+  const proxyTarget = new Proxy(e.target, {
+    get(target, prop) {
+      if (prop === "value") {
+        return target.value || undefined;
+      }
+      return Reflect.get(target, prop);
+    },
+  });
+  const proxyEvent = new Proxy(e, {
+    get(target, prop) {
+      if (prop === "target" || prop === "currentTarget") {
+        return proxyTarget;
+      }
+      return Reflect.get(target, prop);
+    },
+  });
+  onChange(proxyEvent);
+}
+
 type TextAreaProps = DetailedHTMLProps<
   TextareaHTMLAttributes<HTMLTextAreaElement>,
   HTMLTextAreaElement
 >;
 
-export function TextArea({ className, ...rest }: TextAreaProps) {
+export function TextArea({ className, onChange, ...rest }: TextAreaProps) {
   const textarea = useRef<HTMLTextAreaElement>(null);
   const resize = () => {
-    textarea.current!.style.height = "auto";
-    textarea.current!.style.height = textarea.current!.scrollHeight + "px";
+    if (textarea.current) {
+      textarea.current.style.height = "auto";
+      textarea.current.style.height = textarea.current.scrollHeight + "px";
+    }
   };
   useLayoutEffect(resize, []);
 
@@ -38,6 +65,10 @@ export function TextArea({ className, ...rest }: TextAreaProps) {
       rows={1}
       className={mergeClass(`${defaultStyle} px-1`, className)}
       onInput={resize}
+      onChange={(e) => {
+        resize();
+        cleanEvent(e, onChange);
+      }}
       {...rest}
     />
   );
@@ -48,12 +79,11 @@ type InputProps = DetailedHTMLProps<
   HTMLInputElement
 >;
 
-export function Input({ className, type, defaultValue, ...rest }: InputProps) {
+export function Input({ className, onChange, ...rest }: InputProps) {
   return (
     <input
       className={mergeClass(`${defaultStyle} px-1`, className)}
-      type={type}
-      defaultValue={defaultValue}
+      onChange={(e) => cleanEvent(e, onChange)}
       {...rest}
     />
   );
@@ -88,23 +118,37 @@ export function UnitInput<T extends string>({
   const onChangeInput = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.currentTarget.value;
+      const [num, unit] = Unit.parse(value) ?? [null, null];
+      let finalValue: string = "0";
 
-      const result = Unit.parse(value);
-      if (result?.[0]) {
-        e.currentTarget.value = `${result[0]} ${result[1]}`;
-        SubmitInput.current!.value = Unit.exchange(
-          result[0],
-          result[1],
-          defaultUnit
-        ).toString();
+      if (num) {
+        e.currentTarget.value = `${num} ${unit}`;
+        finalValue = Unit.exchange(num, unit, defaultUnit).toString();
       } else {
-        SubmitInput.current!.value = "0";
+        e.currentTarget.value = "";
       }
 
-      e.currentTarget = SubmitInput.current!;
-      e.target = SubmitInput.current!;
+      SubmitInput.current!.value = finalValue;
 
-      onChange?.call(onChange, e);
+      if (onChange) {
+        const proxyTarget = new Proxy(SubmitInput.current!, {
+          get(target, prop) {
+            if (prop === "value") {
+              return finalValue;
+            }
+            return Reflect.get(target, prop);
+          },
+        });
+        const proxyEvent = new Proxy(e, {
+          get(target, prop) {
+            if (prop === "target" || prop === "currentTarget") {
+              return proxyTarget;
+            }
+            return Reflect.get(target, prop);
+          },
+        });
+        onChange(proxyEvent);
+      }
     },
     [defaultUnit, Unit, onChange]
   );
@@ -126,8 +170,14 @@ type SelectProps = DetailedHTMLProps<
   HTMLSelectElement
 >;
 
-export function Select({ className, ...rest }: SelectProps) {
-  return <select className={mergeClass(defaultStyle, className)} {...rest} />;
+export function Select({ className, onChange, ...rest }: SelectProps) {
+  return (
+    <select
+      className={mergeClass(defaultStyle, className)}
+      onChange={(e) => cleanEvent(e, onChange)}
+      {...rest}
+    />
+  );
 }
 
 export function OptionSelect({
@@ -370,6 +420,7 @@ export function UnitMinMaxRangeInput<T extends string>({
 
 export function AutoGrowingTextArea({
   className,
+  onChange,
   ...props
 }: TextareaHTMLAttributes<HTMLTextAreaElement> & { className?: string }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -392,7 +443,7 @@ export function AutoGrowingTextArea({
       rows={1}
       onChange={(e) => {
         resize();
-        if (props.onChange) props.onChange(e);
+        cleanEvent(e, onChange);
       }}
       className={mergeClass(
         "resize-none overflow-hidden bg-transparent w-full focus:outline-none border-none p-0",
@@ -402,4 +453,3 @@ export function AutoGrowingTextArea({
     />
   );
 }
-

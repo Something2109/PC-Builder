@@ -1,4 +1,5 @@
 import { mergeClass } from "@/ui/mergeClass";
+import { ReactFormExtendedApi } from "@tanstack/react-form";
 import {
   FunctionComponent,
   HTMLAttributes,
@@ -66,9 +67,11 @@ export function InfoComponent<T extends Record<string, unknown>>(
   { strict }: { strict?: boolean } = {}
 ) {
   const InfoTable = ({
+    form,
     defaultValue,
     ...rest
   }: {
+    form?: ReactFormExtendedApi<any, any, any, any, any, any, any, any, any, any, any, any>;
     defaultValue?: Partial<T> | null;
   } & Omit<TableHTMLAttributes<HTMLTableElement>, "defaultValue">) => (
     <Table.Component {...rest}>
@@ -82,12 +85,27 @@ export function InfoComponent<T extends Record<string, unknown>>(
             <Table.Row key={key}>
               <Table.Cell className="font-bold">{Labels[key]}</Table.Cell>
               <Table.Cell>
-                <Component
-                  name={key}
-                  title={Labels[key]}
-                  placeholder={Labels[key]}
-                  defaultValue={value}
-                />
+                {form ? (
+                  <form.Field name={key}>
+                    {(field) => (
+                      <Component
+                        name={field.name}
+                        value={field.state.value ?? ""}
+                        onBlur={field.handleBlur}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => field.handleChange(e.target.value)}
+                        title={Labels[key]}
+                        placeholder={Labels[key]}
+                      />
+                    )}
+                  </form.Field>
+                ) : (
+                  <Component
+                    name={key}
+                    title={Labels[key]}
+                    placeholder={Labels[key]}
+                    defaultValue={value}
+                  />
+                )}
               </Table.Cell>
             </Table.Row>
           );

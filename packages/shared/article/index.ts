@@ -117,7 +117,7 @@ export const Summary = Article.omit({ content: true });
 export type Summary = z.infer<typeof Summary>;
 
 // Schemas for API Requests with automatic slugify transformations
-const BaseEditArticleDto = Article.omit({
+export const BaseEditArticleDto = Article.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
