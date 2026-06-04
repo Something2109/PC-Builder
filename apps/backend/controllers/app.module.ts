@@ -35,11 +35,12 @@ import { AppController } from "./app.controller";
         ...getConnectionOptions(),
         host:
           config.get<string>("MYSQL_HOST") ||
-          config.get<string>("DATABASE_HOST"),
-        port: Number(config.get("MYSQL_PORT") || config.get("DATABASE_PORT")),
-        username: config.get<string>("DATABASE_USERNAME"),
+          config.get<string>("DATABASE_HOST") ||
+          "localhost",
+        port: Number(config.get("MYSQL_PORT") || config.get("DATABASE_PORT") || 3306),
+        username: config.get<string>("DATABASE_USERNAME") || "NestjsApp",
         password: config.get<string>("DATABASE_PASSWORD"),
-        database: config.get<string>("DATABASE_NAME"),
+        database: config.get<string>("DATABASE_NAME") || "PC_Builder",
         autoLoadModels: true,
         synchronize: true,
         sync: { alter: true },
@@ -54,10 +55,11 @@ import { AppController } from "./app.controller";
       useFactory: (config: ConfigService) => {
         const username = config.get<string>("DATABASE_USERNAME");
         const password = config.get<string>("DATABASE_PASSWORD");
-        const host = config.get<string>("MONGO_HOST");
-        const database = config.get<string>("DATABASE_NAME");
+        const host = config.get<string>("MONGO_HOST") || "localhost:27017";
+        const database = config.get<string>("DATABASE_NAME") || "PC_Builder";
+        const auth = username && password ? `${username}:${password}@` : "";
         return {
-          uri: `mongodb://${username}:${password}@${host}/${database}`,
+          uri: `mongodb://${auth}${host}/${database}`,
           onConnectionCreate: (connection: Connection) => {
             const logger = new Logger("Mongodb");
 

@@ -9,6 +9,7 @@ services:
     environment:
       - BACKEND_HOST=http://nestjs-prod:3000
       - JWT_SECRET=${JWT_SECRET:?error}
+      - HOSTNAME=0.0.0.0
     profiles:
       - production
     healthcheck:
@@ -27,6 +28,7 @@ services:
     environment:
       - BACKEND_HOST=http://nestjs-dev:3000
       - JWT_SECRET=${JWT_SECRET:?error}
+      - HOSTNAME=0.0.0.0
     profiles:
       - development
     healthcheck:

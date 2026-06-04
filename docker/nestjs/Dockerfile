@@ -27,7 +27,7 @@ COPY apps/backend ./apps/backend
 # Stage 4: Builder
 # Builds the NestJS application for production.
 FROM app-source AS builder
-RUN npm run build
+RUN npm run build:shared && npm run build:backend
 
 # Stage 5: Development
 # Creates an image for local development.
@@ -53,7 +53,7 @@ COPY --from=builder /usr/local/app/apps/backend/package.json ./apps/backend/pack
 RUN npm ci --omit=dev && npm cache clean --force
 
 # Copy the built application from the builder stage
-COPY --from=builder --chown=nestjs:nodejs /usr/local/app/apps/backend/dist ./dist
+COPY --from=builder --chown=nestjs:nodejs /usr/local/app/apps/backend/dist ./apps/backend/dist
 
 # Give the nestjs user full read-write access to the workdir
 RUN chown -R nestjs:nodejs /usr/local/app/apps/backend/
@@ -61,4 +61,4 @@ RUN chown -R nestjs:nodejs /usr/local/app/apps/backend/
 USER nestjs
 EXPOSE 3000
 WORKDIR /usr/local/app/apps/backend
-CMD ["node", "dist/controllers/main"]
+CMD ["node", "dist/apps/backend/controllers/main"]

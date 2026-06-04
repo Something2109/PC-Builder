@@ -28,9 +28,12 @@ services:
       - Mongo:/data/db
     environment:
       - MONGODB_INITDB_DATABASE=${DATABASE_NAME:-PC_Builder}
-      # Added authentication. These variables must be in your .env file.
-      - MONGODB_INITDB_ROOT_USERNAME=${DATABASE_USERNAME:-NestjsApp}
-      - MONGODB_INITDB_ROOT_PASSWORD=${DATABASE_PASSWORD:?error}
+      # Admin/Root user credentials
+      - MONGODB_INITDB_ROOT_USERNAME=admin
+      - MONGODB_INITDB_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD:?error}
+      # Application user credentials (passed to mongo-init.js)
+      - APP_DATABASE_USERNAME=${DATABASE_USERNAME:-NestjsApp}
+      - APP_DATABASE_PASSWORD=${DATABASE_PASSWORD:?error}
     healthcheck:
       # Checks if the MongoDB server is responsive
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
