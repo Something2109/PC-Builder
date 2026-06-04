@@ -57,7 +57,22 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
   const [icon, setIcon] = useState<string | undefined>(article.icon);
   const [topic, setTopic] = useState<string | undefined>(article.topic);
   const [part, setPart] = useState<string | undefined>(article.part);
-  const [contents, setContents] = useState<Content[]>(article.content || []);
+  const [contents, setContents] = useState<Content[]>(() => {
+    const ensureIds = (list: Content[]): Content[] => {
+      return list.map((item) => {
+        const id = item.id || Math.random().toString(36).substring(2, 9);
+        if (item.type === ContentName.Section || item.type === ContentName.List) {
+          return {
+            ...item,
+            id,
+            content: ensureIds(item.content || []),
+          };
+        }
+        return { ...item, id };
+      });
+    };
+    return ensureIds(article.content || []);
+  });
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showCoverSelector, setShowCoverSelector] = useState(false);
@@ -378,6 +393,7 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
             parent={ContentName.Section}
             contents={contents}
             onUpdate={setContents}
+            isRoot={true}
           />
         </div>
       </div>

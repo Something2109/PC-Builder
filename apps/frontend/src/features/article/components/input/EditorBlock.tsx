@@ -6,6 +6,8 @@ import { ParagraphInput } from "./Paragraph";
 import { SectionInput } from "./Section";
 import { ListInput } from "./List";
 import { ImageInput } from "./Image";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface EditorBlockProps {
   content: ArticleContent;
@@ -31,6 +33,22 @@ export function EditorBlock({
   onMoveUp,
   onMoveDown,
 }: EditorBlockProps) {
+  const id = content.id || `${content.type}-${index}`;
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : undefined,
+  };
+
   const handleUpdateParagraph = (val: string) => {
     onUpdate({ ...content, type: ContentName.Paragraph, content: val });
   };
@@ -66,9 +84,26 @@ export function EditorBlock({
   };
 
   return (
-    <div className="relative group/block flex items-start w-full gap-2 py-1.5 px-2 hover:bg-slate-50/50 dark:hover:bg-slate-900/10 rounded-xl transition-all">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="relative group/block flex items-start w-full gap-2 py-1.5 px-2 hover:bg-slate-50/50 dark:hover:bg-slate-900/10 rounded-xl transition-all"
+    >
       {/* Side Hover Handles (Move, Add, Delete) */}
       <div className="absolute -left-12 top-2 hidden group-hover/block:flex items-center gap-1 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-lg shadow-sm p-1 z-10 select-none">
+        <button
+          type="button"
+          {...attributes}
+          {...listeners}
+          className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-400 dark:text-slate-600 cursor-grab active:cursor-grabbing touch-none"
+          title="Drag to Reorder"
+        >
+          {/* Grabber/dots icon */}
+          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8.5 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm5 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm-5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm5 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm-5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm5 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+          </svg>
+        </button>
+
         <button
           type="button"
           onClick={onMoveUp}
