@@ -33,12 +33,16 @@ import { AppController } from "./app.controller";
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         ...getConnectionOptions(),
-        host: config.get<string>("MYSQL_HOST") || config.get<string>("DATABASE_HOST"),
+        host:
+          config.get<string>("MYSQL_HOST") ||
+          config.get<string>("DATABASE_HOST"),
         port: Number(config.get("MYSQL_PORT") || config.get("DATABASE_PORT")),
         username: config.get<string>("DATABASE_USERNAME"),
         password: config.get<string>("DATABASE_PASSWORD"),
         database: config.get<string>("DATABASE_NAME"),
         autoLoadModels: true,
+        synchronize: true,
+        sync: { alter: true },
         logging: (
           (logger: Logger) => (sql: string, timeout: any) =>
             setTimeout(() => logger.verbose(sql), timeout ?? 0)
@@ -60,7 +64,9 @@ import { AppController } from "./app.controller";
             connection.on("connected", () =>
               logger.verbose("Mongodb database connected"),
             );
-            connection.on("open", () => logger.verbose("Mongodb database open"));
+            connection.on("open", () =>
+              logger.verbose("Mongodb database open"),
+            );
             connection.on("disconnected", () =>
               logger.verbose("Mongodb database disconnected"),
             );
