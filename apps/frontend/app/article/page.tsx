@@ -5,6 +5,7 @@ import React from "react";
 import { verifyToken } from "@/features/auth/server";
 import { Roles } from "@/utils/user";
 import Link from "next/link";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 export default async function ArticleIndexPage() {
   const response = await fetch(`${process.env.BACKEND_HOST}/api/article`, {
@@ -17,8 +18,7 @@ export default async function ArticleIndexPage() {
 
   // Verify token for admin user checks
   const user = await verifyToken();
-  const isAdmin =
-    user && (user.role === Roles.ADMIN || user.role === Roles.GUEST);
+  const isAdmin = !!user;
 
   return (
     <div className="w-full max-w-6xl mx-auto my-6 px-4">
@@ -28,12 +28,12 @@ export default async function ArticleIndexPage() {
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
             <h1 className="text-3xl md:text-5xl font-black tracking-tight font-sans">
-              Giới thiệu & Hướng dẫn
+              Introductions & Guides
             </h1>
             <p className="text-sm md:text-base text-blue-100 font-serif max-w-xl mt-3 leading-relaxed">
-              Khám phá các bài viết hướng dẫn build PC chuyên sâu, review phần
-              cứng mới nhất và chia sẻ kinh nghiệm lắp ráp máy tính tối ưu hiệu
-              năng.
+              Explore in-depth PC build guides, reviews of the latest hardware,
+              and shared experiences on assembling computers for optimized
+              performance.
             </p>
           </div>
 
@@ -50,7 +50,7 @@ export default async function ArticleIndexPage() {
               >
                 <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
               </svg>
-              Viết Bài Mới
+              Write a New Article
             </Link>
           )}
         </div>
@@ -64,23 +64,13 @@ export default async function ArticleIndexPage() {
           ))}
         </div>
       ) : (
-        <div className="py-24 text-center rounded-3xl border border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/10">
-          <span className="text-5xl">📖</span>
-          <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 mt-4">
-            Chưa có bài viết nào
-          </h3>
-          <p className="text-sm text-slate-400 mt-1 max-w-sm mx-auto">
-            Các bài viết mới sẽ xuất hiện tại đây khi được xuất bản.
-          </p>
-          {isAdmin && (
-            <Link
-              href="/article/new"
-              className="inline-block mt-4 text-xs font-bold text-blue-600 hover:underline"
-            >
-              Tạo bài viết đầu tiên &rarr;
-            </Link>
-          )}
-        </div>
+        <EmptyState
+          title="No articles yet"
+          description="New articles will appear here when published."
+          actionLabel="Create the first article"
+          showAction={isAdmin}
+          actionHref="/article/new"
+        />
       )}
     </div>
   );

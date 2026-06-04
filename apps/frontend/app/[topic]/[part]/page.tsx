@@ -6,6 +6,7 @@ import React from "react";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
 import Link from "next/link";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 export default async function PartTopicPage({
   params,
@@ -81,23 +82,13 @@ export default async function PartTopicPage({
           ))}
         </div>
       ) : (
-        <div className="py-24 text-center rounded-3xl border border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/10">
-          <span className="text-5xl">📖</span>
-          <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 mt-4">
-            There isn&apos;t any article about {Label[part]} under {topic} yet.
-          </h3>
-          <p className="text-sm text-slate-400 mt-1 max-w-sm mx-auto">
-            Please come back later or contribute a new article.
-          </p>
-          {hasLoggedIn && (
-            <Link
-              href={`/article/new?topic=${encodeURIComponent(topic)}&part=${encodeURIComponent(part)}`}
-              className="inline-block mt-4 text-xs font-bold text-blue-600 hover:underline"
-            >
-              Write your first article. &rarr;
-            </Link>
-          )}
-        </div>
+        <EmptyState
+          title={`There isn't any article about ${Label[part]} under ${topic} yet.`}
+          description="Please come back later or contribute a new article."
+          actionLabel="Write your first article."
+          showAction={!!hasLoggedIn}
+          actionHref={`/article/new?topic=${encodeURIComponent(topic)}&part=${encodeURIComponent(part)}`}
+        />
       )}
     </div>
   );

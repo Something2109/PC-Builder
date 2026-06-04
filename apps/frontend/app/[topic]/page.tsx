@@ -3,8 +3,8 @@ import { Summary } from "@/utils/article";
 import { notFound } from "next/navigation";
 import React from "react";
 import { verifyToken } from "@/features/auth/server";
-import { Roles } from "@/utils/user";
 import Link from "next/link";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 export default async function TopicPage({
   params,
@@ -24,8 +24,7 @@ export default async function TopicPage({
 
   // Verify token for admin user checks
   const user = await verifyToken();
-  const isAdmin =
-    user && (user.role === Roles.ADMIN || user.role === Roles.GUEST);
+  const hasLoggedIn = !!user;
 
   return (
     <div className="w-full max-w-6xl mx-auto my-6 px-4">
@@ -35,15 +34,15 @@ export default async function TopicPage({
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
             <h1 className="text-3xl md:text-5xl font-black tracking-tight font-sans capitalize">
-              Chủ đề: {topic}
+              Topic: {topic}
             </h1>
             <p className="text-sm md:text-base text-violet-100 font-serif max-w-xl mt-3 leading-relaxed">
-              Tổng hợp các bài viết hướng dẫn chi tiết và chia sẻ kiến thức liên
-              quan đến chủ đề {topic}.
+              A compilation of detailed tutorials and knowledge-sharing articles
+              related to the {topic} topic.
             </p>
           </div>
 
-          {isAdmin && (
+          {hasLoggedIn && (
             <Link
               href={`/article/new?topic=${encodeURIComponent(topic)}`}
               className="shrink-0 bg-white hover:bg-slate-100 text-indigo-600 hover:text-indigo-700 font-bold px-6 py-3 rounded-2xl shadow-md transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] text-sm flex items-center gap-2"
@@ -56,7 +55,7 @@ export default async function TopicPage({
               >
                 <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
               </svg>
-              Viết Bài Mới
+              Write a New Article
             </Link>
           )}
         </div>
@@ -70,23 +69,10 @@ export default async function TopicPage({
           ))}
         </div>
       ) : (
-        <div className="py-24 text-center rounded-3xl border border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/10">
-          <span className="text-5xl">📖</span>
-          <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 mt-4">
-            Chưa có bài viết nào trong chủ đề này
-          </h3>
-          <p className="text-sm text-slate-400 mt-1 max-w-sm mx-auto">
-            Vui lòng quay lại sau hoặc đóng góp bài viết mới.
-          </p>
-          {isAdmin && (
-            <Link
-              href={`/article/new?topic=${encodeURIComponent(topic)}`}
-              className="inline-block mt-4 text-xs font-bold text-blue-600 hover:underline"
-            >
-              Viết bài viết đầu tiên &rarr;
-            </Link>
-          )}
-        </div>
+        <EmptyState
+          showAction={hasLoggedIn}
+          actionHref={`/article/new?topic=${encodeURIComponent(topic)}`}
+        />
       )}
     </div>
   );
