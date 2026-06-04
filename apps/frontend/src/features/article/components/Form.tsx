@@ -10,6 +10,7 @@ import { mergeClass } from "@/ui/mergeClass";
 import { uploadFile } from "./utils";
 import { ContentListComponent } from "./input";
 import { AutoGrowingTextArea } from "@/ui/Input";
+import { Name as ProductName, Label as ProductLabel } from "@/utils/part/product";
 
 const PRESET_COVERS = [
   "linear-gradient(to right, #8b5cf6, #6366f1)", // Indigo Purple
@@ -338,13 +339,18 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
 
           <div className="flex items-center gap-1.5">
             <span className="text-slate-400 font-semibold">Part Category:</span>
-            <input
-              type="text"
-              placeholder="e.g. cpu, ram"
-              defaultValue={part}
+            <select
+              value={part || ""}
               onChange={(e) => setPart(e.target.value || undefined)}
-              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2.5 py-1 text-slate-700 dark:text-slate-200 focus:outline-none placeholder-slate-300 font-medium uppercase"
-            />
+              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2.5 py-1 text-slate-700 dark:text-slate-200 focus:outline-none font-medium"
+            >
+              <option value="">Select a part category</option>
+              {Object.values(ProductName).map((val) => (
+                <option key={val} value={val}>
+                  {ProductLabel[val] || val.toUpperCase()}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 

@@ -1,16 +1,16 @@
 import { Summary } from "@/utils/article";
 import { Products } from "@/utils/part";
+import { Label } from "@/utils/part/product";
 import { notFound } from "next/navigation";
 import React from "react";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
-import { Roles } from "@/utils/user";
 import Link from "next/link";
 
 export default async function PartTopicPage({
   params,
 }: {
-  params: Promise<{ topic: string; part: string }>;
+  params: Promise<{ topic: string; part: Products }>;
 }) {
   const { topic, part } = await params;
 
@@ -31,8 +31,7 @@ export default async function PartTopicPage({
 
   // Verify token for admin user checks
   const user = await verifyToken();
-  const isAdmin =
-    user && (user.role === Roles.ADMIN || user.role === Roles.GUEST);
+  const hasLoggedIn = user;
 
   return (
     <div className="w-full max-w-6xl mx-auto my-6 px-4">
@@ -47,15 +46,15 @@ export default async function PartTopicPage({
               <span>{part}</span>
             </div>
             <h1 className="text-3xl md:text-5xl font-black tracking-tight font-sans capitalize">
-              Hướng dẫn {part.toUpperCase()}
+              {Label[part]}&apos;s {topic}
             </h1>
             <p className="text-sm md:text-base text-blue-100 font-serif max-w-xl mt-3 leading-relaxed">
-              Tổng hợp các bài viết hướng dẫn lắp ráp, cấu hình và tối ưu hóa
-              cho linh kiện {part.toUpperCase()} trong chủ đề {topic}.
+              A compilation of {topic} articles providing instructions on
+              assembling, configuring, and optimizing for the {Label[part]}.
             </p>
           </div>
 
-          {isAdmin && (
+          {hasLoggedIn && (
             <Link
               href={`/article/new?topic=${encodeURIComponent(topic)}&part=${encodeURIComponent(part)}`}
               className="shrink-0 bg-white hover:bg-slate-100 text-indigo-600 hover:text-indigo-700 font-bold px-6 py-3 rounded-2xl shadow-md transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] text-sm flex items-center gap-2"
@@ -68,7 +67,7 @@ export default async function PartTopicPage({
               >
                 <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
               </svg>
-              Viết Bài Mới
+              Write an Article
             </Link>
           )}
         </div>
@@ -85,17 +84,17 @@ export default async function PartTopicPage({
         <div className="py-24 text-center rounded-3xl border border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/10">
           <span className="text-5xl">📖</span>
           <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 mt-4">
-            Chưa có bài viết nào cho {part.toUpperCase()} trong chủ đề này
+            There isn&apos;t any article about {Label[part]} under {topic} yet.
           </h3>
           <p className="text-sm text-slate-400 mt-1 max-w-sm mx-auto">
-            Vui lòng quay lại sau hoặc đóng góp bài viết hướng dẫn mới.
+            Please come back later or contribute a new article.
           </p>
-          {isAdmin && (
+          {hasLoggedIn && (
             <Link
               href={`/article/new?topic=${encodeURIComponent(topic)}&part=${encodeURIComponent(part)}`}
               className="inline-block mt-4 text-xs font-bold text-blue-600 hover:underline"
             >
-              Viết bài viết đầu tiên &rarr;
+              Write your first article. &rarr;
             </Link>
           )}
         </div>
