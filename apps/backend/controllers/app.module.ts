@@ -1,4 +1,4 @@
-import { Module, Logger, MiddlewareConsumer, Global } from "@nestjs/common";
+import { Module, Logger, MiddlewareConsumer } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtModule } from "@nestjs/jwt";
@@ -39,7 +39,9 @@ import { SessionExtractionMiddleware } from "./utils/session.middleware";
           config.get<string>("MYSQL_HOST") ||
           config.get<string>("DATABASE_HOST") ||
           "localhost",
-        port: Number(config.get("MYSQL_PORT") || config.get("DATABASE_PORT") || 3306),
+        port: Number(
+          config.get("MYSQL_PORT") || config.get("DATABASE_PORT") || 3306
+        ),
         username: config.get<string>("DATABASE_USERNAME") || "NestjsApp",
         password: config.get<string>("DATABASE_PASSWORD"),
         database: config.get<string>("DATABASE_NAME") || "PC_Builder",
@@ -66,19 +68,19 @@ import { SessionExtractionMiddleware } from "./utils/session.middleware";
             const logger = new Logger("Mongodb");
 
             connection.on("connected", () =>
-              logger.verbose("Mongodb database connected"),
+              logger.verbose("Mongodb database connected")
             );
             connection.on("open", () =>
-              logger.verbose("Mongodb database open"),
+              logger.verbose("Mongodb database open")
             );
             connection.on("disconnected", () =>
-              logger.verbose("Mongodb database disconnected"),
+              logger.verbose("Mongodb database disconnected")
             );
             connection.on("reconnected", () =>
-              logger.verbose("Mongodb database reconnected"),
+              logger.verbose("Mongodb database reconnected")
             );
             connection.on("disconnecting", () =>
-              logger.verbose("Mongodb database disconnecting"),
+              logger.verbose("Mongodb database disconnecting")
             );
           },
         };

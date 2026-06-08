@@ -6,7 +6,7 @@ import {
   Injectable,
 } from "@nestjs/common";
 
-import { Tokens, Session } from "@/utils/API";
+import { Session } from "@/utils/API";
 
 /**
  * Inspect if the user has logged in or not.

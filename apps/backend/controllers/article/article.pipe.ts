@@ -12,7 +12,7 @@ export type ArticleFilter = {
 export class QueryFilterPipe implements PipeTransform {
   transform(
     value: Record<string, string | string[]>,
-    metadata: ArgumentMetadata
+    _metadata: ArgumentMetadata
   ): ArticleFilter {
     const criteria: ArticleFilter = {};
 

@@ -42,11 +42,11 @@ export type SearchOptions = {
  * @returns The page options.
  */
 export function toPageOptions(
-  query: Record<string, string | string[]>,
+  query: Record<string, string | string[]>
 ): PageOptions {
   const page = Number(Array.isArray(query.page) ? query.page[0] : query.page);
   const limit = Number(
-    Array.isArray(query.limit) ? query.limit[0] : query.limit,
+    Array.isArray(query.limit) ? query.limit[0] : query.limit
   );
 
   const result: PageOptions = {
@@ -76,7 +76,7 @@ type DefaultType =
   | number
   | bigint
   | boolean
-  | Function  
+  | Function
   | Date
   | null
   | undefined;
@@ -148,21 +148,21 @@ export type Error<T> = T extends DefaultType
           : string;
 
 // 1. Overload for when we expect a primitive / root-level string error
-export function toError<T extends DefaultType>(issues: $ZodIssue[]): string;
+export function toError<_T extends DefaultType>(issues: $ZodIssue[]): string;
 
 // 2. Overload for when we expect an array error structure
 export function toError<T extends Array<unknown>>(
-  issues: $ZodIssue[],
+  issues: $ZodIssue[]
 ): ArrayError<T>;
 
 // 3. Overload for when we expect a Map error structure
 export function toError<T extends Map<any, any>>(
-  issues: $ZodIssue[],
+  issues: $ZodIssue[]
 ): MapError<T>;
 
 // 4. Overload for when we expect a Set error structure
 export function toError<T extends Set<unknown>>(
-  issues: $ZodIssue[],
+  issues: $ZodIssue[]
 ): SetError<T>;
 
 // 5. Overload for standard objects
@@ -172,7 +172,7 @@ export function toError<T extends object>(issues: $ZodIssue[]): ObjectError<T>;
 export function toError<T>(issues: $ZodIssue[]): Error<T>;
 
 // Single Implementation block
-export function toError<T>(issues: $ZodIssue[]) {
+export function toError<_T>(issues: $ZodIssue[]) {
   // 1. Intercept root-level failures upfront to safeguard object structural mapping
   const rootIssue = issues.find((issue) => issue.path.length === 0);
   if (rootIssue) return rootIssue.message;

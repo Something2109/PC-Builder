@@ -1,17 +1,14 @@
 "use client";
 
-import { AxiosError } from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Dispatch,
   SetStateAction,
   createContext,
-  useActionState,
   useContext,
   useEffect,
   useLayoutEffect,
   useState,
-  useTransition,
 } from "react";
 
 import axiosInstance from "@/utils/axios";
@@ -26,7 +23,9 @@ interface AuthContextType {
   loading: boolean;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 export function AuthWrapper({
   user: initialUser,
@@ -39,7 +38,7 @@ export function AuthWrapper({
     try {
       const response = await axiosInstance.get("/auth/me");
       setUser(response.data);
-    } catch (error) {
+    } catch {
       setUser(null);
     } finally {
       setLoading(false);
@@ -59,7 +58,6 @@ export function AuthWrapper({
   );
 }
 
-
 export function AuthRole({
   children,
   roles,
@@ -73,7 +71,8 @@ export function AuthRole({
   const pathname = usePathname();
 
   useLayoutEffect(() => {
-    if (!user && !context?.loading) router.push(`${LoginPath}?redirect=${pathname}`);
+    if (!user && !context?.loading)
+      router.push(`${LoginPath}?redirect=${pathname}`);
   });
 
   if (!user) return;
@@ -83,4 +82,3 @@ export function AuthRole({
 
   return children;
 }
-

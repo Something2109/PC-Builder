@@ -6,7 +6,6 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
 import { Summary } from "@/utils/article";
-import { Roles } from "@/utils/user";
 
 export default async function ArticleIndexPage() {
   const response = await fetch(`${process.env.BACKEND_HOST}/api/article`, {
