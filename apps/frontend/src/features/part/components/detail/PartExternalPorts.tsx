@@ -1,6 +1,7 @@
-import { Table } from "../utils/Table";
-import * as PartExternalPorts from "@/utils/part/info/PartExternalPorts";
 import { ExternalPorts } from "@/utils/interface";
+import * as PartExternalPorts from "@/utils/part/info/PartExternalPorts";
+
+import { Table } from "../utils/Table";
 
 const PartExternalPortTable = ({
   defaultValue,

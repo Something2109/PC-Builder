@@ -1,7 +1,8 @@
 import { NestFactory } from "@nestjs/core";
-import { Request } from "express";
 import cookieParser from "cookie-parser";
 import { doubleCsrf } from "csrf-csrf";
+import { Request } from "express";
+
 import { AppModule } from "./app.module";
 import { getAccessToken } from "./utils/auth/tokens";
 

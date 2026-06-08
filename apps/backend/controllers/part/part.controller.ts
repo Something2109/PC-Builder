@@ -13,14 +13,16 @@ import {
   InternalServerErrorException,
   UsePipes,
 } from "@nestjs/common";
+import { Role } from "controllers/utils/role/role.decorator";
+import { ZodValidationPipe } from "controllers/utils/utils.modules";
+
+import Part, { Products } from "@/utils/part";
+import { Roles } from "@/utils/user";
+
 import {
   PART_INTERFACE,
   PartServiceInterface,
 } from "./interface/part.interface";
-import { Roles } from "@/utils/user";
-import Part, { Products } from "@/utils/part";
-import { ZodValidationPipe } from "controllers/utils/utils.modules";
-import { Role } from "controllers/utils/role/role.decorator";
 
 const ProductValidator = new ParseEnumPipe(Products, {
   exceptionFactory: () => new NotFoundException("Product's not found"),

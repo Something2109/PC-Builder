@@ -1,5 +1,6 @@
-import Part, { Product } from "@/utils/part";
 import { RedirectButton } from "@/ui/Button";
+import Part, { Product } from "@/utils/part";
+
 import PartPicture from "./Picture";
 
 export default function PartPanel({ item }: { item: Part.Summary }) {

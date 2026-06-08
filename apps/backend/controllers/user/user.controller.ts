@@ -10,14 +10,16 @@ import {
   ConflictException,
   NotFoundException,
 } from "@nestjs/common";
-import { UserService } from "./user.service";
-import { UsernameAuthorizationGuard } from "./user.guard";
-import { UserFilterPipe } from "./user.pipe";
 import { Role } from "controllers/utils/role/role.decorator";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
-import * as User from "@/utils/user";
+
 import * as API from "@/utils/API";
+import * as User from "@/utils/user";
 import { Roles } from "@/utils/user";
+
+import { UsernameAuthorizationGuard } from "./user.guard";
+import { UserFilterPipe } from "./user.pipe";
+import { UserService } from "./user.service";
 
 const SignUpValidator = new ZodValidationPipe(User.LogInOptions);
 const InformationValidator = new ZodValidationPipe(User.Information.partial());

@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 import * as CaseFanSupport from "./CaseFanSupport";
 import * as CaseHardDriveSupport from "./CaseHardDriveSupport";
 import * as CaseMainboardSupport from "./CaseMainboardSupport";
@@ -8,33 +9,33 @@ import * as CaseSpec from "./CaseSpec";
 import * as CPUBlockSocketSupport from "./CPUBlockSocketSupport";
 import * as CPUBlockSpec from "./CPUBlockSpec";
 import * as CPUCoreConfig from "./CPUCoreConfig";
-import * as CPUPerformance from "./CPUPerformance";
 import * as CPUMemory from "./CPUMemory";
+import * as CPUPerformance from "./CPUPerformance";
 import * as CPUSpec from "./CPUSpec";
 import * as FanSpec from "./FanSpec";
 import * as GPUFeature from "./GPUFeature";
 import * as GPUMemory from "./GPUMemory";
 import * as GPUPerformance from "./GPUPerformance";
 import * as GPUSpec from "./GPUSpec";
-import * as GraphicCardSpec from "./GraphicCardSpec";
 import * as GraphicCardPort from "./GraphicCardPort";
+import * as GraphicCardSpec from "./GraphicCardSpec";
 import * as HDDSpec from "./HDDSpec";
-import * as MainboardSpec from "./MainboardSpec";
-import * as MainboardPowerConnector from "./MainboardPowerConnector";
+import * as MainboardFanConnector from "./MainboardFanConnector";
 import * as MainboardPCIe from "./MainboardPCIe";
+import * as MainboardPowerConnector from "./MainboardPowerConnector";
+import * as MainboardSpec from "./MainboardSpec";
 import * as MainboardStorageConnector from "./MainboardStorageConnector";
 import * as MainboardUSBConnector from "./MainboardUSBConnector";
+import * as PartExternalPorts from "./PartExternalPorts";
 import * as ProcessorCache from "./ProcessorCache";
-import * as PSUSpec from "./PSUSpec";
 import * as PSUConnector from "./PSUConnector";
+import * as PSUSpec from "./PSUSpec";
 import * as PumpSpec from "./PumpSpec";
 import * as RadiatorSpec from "./RadiatorSpec";
 import * as RAMSpec from "./RAMSpec";
 import * as SSDSpec from "./SSDSpec";
 import * as StorageCache from "./StorageCache";
 import * as StoragePerformance from "./StoragePerformance";
-import * as PartExternalPorts from "./PartExternalPorts";
-import * as MainboardFanConnector from "./MainboardFanConnector";
 
 export enum Name {
   CPU_SPEC = "cpu_spec",
@@ -134,7 +135,7 @@ const MultipleValueInfo = [
 ] as const;
 
 function objectMap<
-  Obj extends Record<string, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
+  Obj extends Record<string, any>,  
   Map extends (arg: [keyof Obj, Obj[keyof Obj]]) => [keyof Obj, unknown]
 >(obj: Obj, map: Map) {
   return Object.fromEntries(Object.entries(obj).map(map)) as {

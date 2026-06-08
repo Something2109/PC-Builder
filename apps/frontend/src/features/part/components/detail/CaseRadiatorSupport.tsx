@@ -1,6 +1,7 @@
-import { Table } from "../utils/Table";
-import * as CaseRadiatorSupport from "@/utils/part/info/CaseRadiatorSupport";
 import { Case, FormFactor } from "@/utils/interface";
+import * as CaseRadiatorSupport from "@/utils/part/info/CaseRadiatorSupport";
+
+import { Table } from "../utils/Table";
 
 type CaseSideRadiatorObject = { [side in Case.Side]?: FormFactor.Radiator[] };
 

@@ -1,4 +1,5 @@
 import React from "react";
+
 import { PartList } from "@/features/part";
 
 export default function ListLayout({

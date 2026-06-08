@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import { FormFactor, InternalConnectors, Primitive } from "../../interface";
 import { FilterOptions, NumberFilterOptions } from "../../utils";
-import { z } from "zod";
 
 export const Label = "RAM";
 

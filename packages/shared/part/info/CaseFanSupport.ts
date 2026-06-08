@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import { Case, FormFactor, Primitive } from "../../interface";
 import { createDTO, createModel } from "../../utils";
-import { z } from "zod";
 
 const Info = z.object({
   case_side: Case.Side,

@@ -1,6 +1,7 @@
-import * as CPU from "@/utils/part/product/CPU";
-import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import { SuffixDisplay } from "@/ui/Display";
+import * as CPU from "@/utils/part/product/CPU";
+
+import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 
 const Components: InfoSummaryMapping<CPU.Summary> = {
   socket: ({ value }) => value,

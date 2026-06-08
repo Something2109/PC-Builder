@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import { FormFactor, Material, Primitive } from "../../interface";
 import { FilterOptions } from "../../utils";
-import { z } from "zod";
 
 export const Label = "AIO";
 

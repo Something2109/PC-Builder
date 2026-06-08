@@ -1,6 +1,7 @@
-import { ModelAttributeList } from "./database.interface";
-import Part, { Products } from "@/utils/part";
 import * as API from "@/utils/API";
+import Part, { Products } from "@/utils/part";
+
+import { ModelAttributeList } from "./database.interface";
 
 /**
  * Constant representing the Part interface identifier.

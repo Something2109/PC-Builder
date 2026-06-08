@@ -8,9 +8,11 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import * as RAMSpec from "@/utils/part/info/RAMSpec";
+
 import { FormFactor, InternalConnectors } from "@/utils/interface";
 import { Infos } from "@/utils/part";
+import * as RAMSpec from "@/utils/part/info/RAMSpec";
+
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

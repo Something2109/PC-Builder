@@ -3,6 +3,7 @@ import {
   MinMaxRangeInput,
 } from "@/ui/Input";
 import * as PSU from "@/utils/part/product/PSU";
+
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<PSU.Filter> = {

@@ -1,5 +1,6 @@
-import { Content as ArticleContent } from "@/utils/article";
 import axios from "axios";
+
+import { Content as ArticleContent } from "@/utils/article";
 
 export type ContentProps<T extends ArticleContent> = Readonly<{
   content: T;

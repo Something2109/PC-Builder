@@ -4,6 +4,9 @@ import {
   Injectable,
   Logger,
 } from "@nestjs/common";
+
+import Part, { Products, Mapping } from "@/utils/part";
+
 import {
   CRUD_INTERFACE,
   LIST_INTERFACE,
@@ -15,7 +18,6 @@ import {
   ParseServiceInterface,
   PartServiceInterface,
 } from "./interface/part.interface";
-import Part, { Products, Mapping } from "@/utils/part";
 
 @Injectable()
 class PartService implements PartServiceInterface {

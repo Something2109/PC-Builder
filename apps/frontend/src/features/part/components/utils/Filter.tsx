@@ -1,7 +1,3 @@
-import { VerticalCollapsible } from "@/ui/Collapsible";
-import { Toggler } from "@/ui/Toggle";
-import { InfoLabel } from "../utils/Table";
-import { Products } from "@/utils/part";
 import {
   FunctionComponent,
   InputHTMLAttributes,
@@ -9,6 +5,12 @@ import {
   useEffect,
   useState,
 } from "react";
+
+import { VerticalCollapsible } from "@/ui/Collapsible";
+import { Toggler } from "@/ui/Toggle";
+import { Products } from "@/utils/part";
+
+import { InfoLabel } from "../utils/Table";
 
 type CustomFilterComponent<Value> = FunctionComponent<
   { value: NonNullable<Value>; defaultValue?: Value } & Omit<

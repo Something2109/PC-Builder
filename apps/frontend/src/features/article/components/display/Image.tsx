@@ -1,6 +1,8 @@
-import { Image as ImageType } from "@/utils/article";
-import { ContentProps } from "../utils";
 import Image from "next/image";
+
+import { Image as ImageType } from "@/utils/article";
+
+import { ContentProps } from "../utils";
 
 export function Picture({ content }: ContentProps<ImageType>) {
   return (

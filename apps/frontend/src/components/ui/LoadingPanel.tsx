@@ -1,7 +1,8 @@
 "use client";
 
-import { ColumnWrapper } from "./FlexWrapper";
 import { DetailedHTMLProps, HTMLAttributes, useEffect, useRef } from "react";
+
+import { ColumnWrapper } from "./FlexWrapper";
 import { mergeClass } from "./mergeClass";
 
 export default function LoadingPanel({

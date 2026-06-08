@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, KeyboardEvent } from "react";
-import { Paragraph as ParagraphType, ContentName } from "@/utils/article";
+
 import { AutoGrowingTextArea } from "@/ui/Input";
+import { Paragraph as ParagraphType, ContentName } from "@/utils/article";
+
 import { SlashMenu } from "./SlashMenu";
 
 interface ParagraphInputProps {

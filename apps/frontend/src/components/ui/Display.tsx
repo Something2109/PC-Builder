@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
+
+import { UnitInterface } from "@/utils/Units";
+
 import { RowWrapper } from "./FlexWrapper";
 import { OptionSelect } from "./Input";
-import { UnitInterface } from "@/utils/Units";
-import { useState } from "react";
 
 export function SuffixDisplay({
   suffix,

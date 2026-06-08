@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import { FormFactor, Primitive } from "../../interface";
 import { createDTO, createModel } from "../../utils";
-import { z } from "zod";
 
 export const Modular = z.enum(["Non-Modular", "Semi-Modular", "Full-Modular"]);
 

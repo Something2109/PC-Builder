@@ -1,11 +1,12 @@
-import { Input, OptionSelect } from "@/ui/Input";
-import { ExternalPorts } from "@/utils/interface";
 import {
   ChangeEventHandler,
   FunctionComponent,
   RefObject,
   useRef,
 } from "react";
+
+import { Input, OptionSelect } from "@/ui/Input";
+import { ExternalPorts } from "@/utils/interface";
 
 function LanEthernetInput({
   ref,

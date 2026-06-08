@@ -1,7 +1,8 @@
+import { z } from "zod";
+
 import { FormFactor, InternalConnectors, Primitive } from "../../interface";
 import { FilterOptions, NumberFilterOptions } from "../../utils";
 import * as SSD from "../info/SSDSpec";
-import { z } from "zod";
 
 export const Label = "SSD";
 

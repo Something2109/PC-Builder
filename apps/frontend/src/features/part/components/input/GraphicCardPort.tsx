@@ -1,12 +1,14 @@
-import { PortInputFields } from "../utils/Input";
-import { GenericInputField } from "../utils/Form";
-import { Table } from "../utils/Table";
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
-import { Input, OptionSelect } from "@/ui/Input";
-import { Button, DeleteButton } from "@/ui/Button";
-import * as GraphicCardPort from "@/utils/part/info/GraphicCardPort";
-import { ExternalPorts } from "@/utils/interface";
 import { memo, useRef, useState } from "react";
+
+import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { Button, DeleteButton } from "@/ui/Button";
+import { Input, OptionSelect } from "@/ui/Input";
+import { ExternalPorts } from "@/utils/interface";
+import * as GraphicCardPort from "@/utils/part/info/GraphicCardPort";
+
+import { GenericInputField } from "../utils/Form";
+import { PortInputFields } from "../utils/Input";
+import { Table } from "../utils/Table";
 
 function Component({
   defaultValue,

@@ -1,6 +1,4 @@
 import * as bcrypt from "bcrypt";
-import { defaultFilter, Tables } from "../interface";
-import { Type, Roles, FilterOptions } from "@/utils/user";
 import {
   Column,
   DataType,
@@ -15,6 +13,10 @@ import {
   Table,
   BeforeSave,
 } from "sequelize-typescript";
+
+import { Type, Roles, FilterOptions } from "@/utils/user";
+
+import { defaultFilter, Tables } from "../interface";
 
 enum UserModelScope {
   VERIFY = "verify",

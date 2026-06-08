@@ -1,6 +1,7 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay } from "@/ui/Display";
 import * as MainboardSpec from "@/utils/part/info/MainboardSpec";
+
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<MainboardSpec.DTO> = {
   form_factor: ({ defaultValue }) => defaultValue,

@@ -1,8 +1,9 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import { SuffixInput, UnitInput } from "@/ui/Input";
 import * as CPUPerformance from "@/utils/part/info/CPUPerformance";
 import { FrequencyUnits } from "@/utils/Units";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 export const Components: InfoComponentObject<CPUPerformance.DTO> = {
   base_frequency: (props) => (

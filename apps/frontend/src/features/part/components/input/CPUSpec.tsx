@@ -1,7 +1,8 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import { Input, SuffixInput } from "@/ui/Input";
 import * as CPUSpec from "@/utils/part/info/CPUSpec";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 export const Components: InfoComponentObject<CPUSpec.DTO> = {
   family: (props) => <Input {...props} />,

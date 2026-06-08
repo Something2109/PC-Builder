@@ -1,7 +1,8 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
 import * as HDDSpec from "@/utils/part/info/HDDSpec";
 import { MemoryUnits } from "@/utils/Units";
+
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<HDDSpec.DTO> = {
   rotational_speed: ({ defaultValue }) => (

@@ -1,4 +1,5 @@
 import { $ZodIssue } from "zod/v4/core";
+
 import * as User from "./user";
 
 /**
@@ -75,7 +76,7 @@ type DefaultType =
   | number
   | bigint
   | boolean
-  | Function // eslint-disable-line @typescript-eslint/no-unsafe-function-type
+  | Function  
   | Date
   | null
   | undefined;

@@ -1,10 +1,12 @@
-import { DatabaseCRUDInterface } from "../interface/database.interface";
-import { PartInformation } from "@/models/parts";
-import { ModelScopes } from "@/models/interface";
-import Part, { Infos, Products } from "@/utils/part";
-import { Includeable, Model, ModelStatic, Transaction } from "sequelize";
 import { Injectable } from "@nestjs/common";
+import { Includeable, Model, ModelStatic, Transaction } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
+
+import { ModelScopes } from "@/models/interface";
+import { PartInformation } from "@/models/parts";
+import Part, { Infos, Products } from "@/utils/part";
+
+import { DatabaseCRUDInterface } from "../interface/database.interface";
 
 @Injectable()
 class SequelizeCRUDService implements DatabaseCRUDInterface {

@@ -1,15 +1,16 @@
 import { RowWrapper } from "@/ui/FlexWrapper";
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import {
   SuffixInput,
   UnitInput,
   OptionSelect,
   Input,
 } from "@/ui/Input";
-import * as RAMSpec from "@/utils/part/info/RAMSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface";
+import * as RAMSpec from "@/utils/part/info/RAMSpec";
 import { MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<RAMSpec.DTO> = {
   speed: (props) => (

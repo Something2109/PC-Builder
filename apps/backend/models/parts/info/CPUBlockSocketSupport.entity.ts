@@ -8,8 +8,10 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import * as CPUBlockSocketSupport from "@/utils/part/info/CPUBlockSocketSupport";
+
 import { Infos } from "@/utils/part";
+import * as CPUBlockSocketSupport from "@/utils/part/info/CPUBlockSocketSupport";
+
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

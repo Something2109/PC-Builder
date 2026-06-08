@@ -8,9 +8,11 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import * as MainboardStorageConnector from "@/utils/part/info/MainboardStorageConnector";
+
 import { InternalConnectors } from "@/utils/interface";
 import { Infos } from "@/utils/part";
+import * as MainboardStorageConnector from "@/utils/part/info/MainboardStorageConnector";
+
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

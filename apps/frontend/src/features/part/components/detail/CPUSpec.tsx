@@ -1,6 +1,7 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay } from "@/ui/Display";
 import * as CPUSpec from "@/utils/part/info/CPUSpec";
+
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<CPUSpec.DTO> = {
   family: ({ defaultValue }) => defaultValue,

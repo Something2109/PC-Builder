@@ -1,6 +1,7 @@
-import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import { SuffixDisplay } from "@/ui/Display";
 import * as Pump from "@/utils/part/product/Pump";
+
+import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 
 const Components: InfoSummaryMapping<Pump.Summary> = {
   form_factor: ({ value }) => value,

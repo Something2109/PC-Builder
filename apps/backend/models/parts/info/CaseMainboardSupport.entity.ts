@@ -8,9 +8,11 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import * as CaseMainboardSupport from "@/utils/part/info/CaseMainboardSupport";
+
 import { FormFactor } from "@/utils/interface";
 import { Infos } from "@/utils/part";
+import * as CaseMainboardSupport from "@/utils/part/info/CaseMainboardSupport";
+
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

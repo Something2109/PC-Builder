@@ -1,8 +1,9 @@
+import { z } from "zod";
+
 import { Primitive } from "../interface";
 import { createDTO, createModel, FilterOptions } from "../utils";
-import { z } from "zod";
-import * as Product from "./product";
 import * as Information from "./info";
+import * as Product from "./product";
 
 export * as Infer from "./infer";
 

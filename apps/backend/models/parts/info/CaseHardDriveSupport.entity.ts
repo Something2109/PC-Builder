@@ -8,9 +8,11 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import * as CaseHardDriveSupport from "@/utils/part/info/CaseHardDriveSupport";
+
 import { Case } from "@/utils/interface";
 import { Infos } from "@/utils/part";
+import * as CaseHardDriveSupport from "@/utils/part/info/CaseHardDriveSupport";
+
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

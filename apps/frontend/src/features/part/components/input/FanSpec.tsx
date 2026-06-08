@@ -1,14 +1,15 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import {
   Input,
   UnitInput,
   OptionSelect,
   SuffixInput,
 } from "@/ui/Input";
-import * as FanSpec from "@/utils/part/info/FanSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface";
+import * as FanSpec from "@/utils/part/info/FanSpec";
 import { LengthUnits } from "@/utils/Units";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<FanSpec.DTO> = {
   form_factor: (props) => (

@@ -1,9 +1,10 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import { OptionSelect, SuffixInput, UnitInput } from "@/ui/Input";
-import * as GPUMemory from "@/utils/part/info/GPUMemory";
 import { InternalConnectors } from "@/utils/interface";
+import * as GPUMemory from "@/utils/part/info/GPUMemory";
 import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<GPUMemory.DTO> = {
   type: (props) => (

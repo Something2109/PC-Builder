@@ -8,8 +8,10 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import * as ProcessorCache from "@/utils/part/info/ProcessorCache";
+
 import { Infos } from "@/utils/part";
+import * as ProcessorCache from "@/utils/part/info/ProcessorCache";
+
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

@@ -1,4 +1,5 @@
 import * as CPUBlock from "@/utils/part/product/CPUBlock";
+
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 
 const Components: InfoSummaryMapping<CPUBlock.Summary> = {

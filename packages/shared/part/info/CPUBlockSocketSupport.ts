@@ -1,5 +1,6 @@
-import { Primitive } from "../../interface";
 import { z } from "zod";
+
+import { Primitive } from "../../interface";
 
 const Info = z.object({
   socket: Primitive.String,

@@ -1,6 +1,7 @@
-import { verifyToken } from "@/features/auth/server";
-import { LoginForm } from "@/features/auth";
 import { redirect } from "next/navigation";
+
+import { LoginForm } from "@/features/auth";
+import { verifyToken } from "@/features/auth/server";
 
 export default async function LoginPage({
   searchParams,

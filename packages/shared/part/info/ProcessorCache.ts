@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import { Primitive } from "../../interface";
 import { createDTO, createModel } from "../../utils";
-import { z } from "zod";
 
 const Info = z.object({
   L1_cache: Primitive.Number,

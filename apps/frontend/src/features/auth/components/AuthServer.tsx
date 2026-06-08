@@ -1,6 +1,7 @@
+import { cookies } from "next/headers";
+
 import { Tokens } from "@/utils/API";
 import { JwtPayload } from "@/utils/user";
-import { cookies } from "next/headers";
 
 export async function verifyToken(): Promise<JwtPayload | null> {
   const cookie = await cookies();

@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { Schema as HDMISchema } from "./HDMI";
+
 import { Schema as DisplayPortSchema } from "./DisplayPort";
+import { Schema as HDMISchema } from "./HDMI";
 
 export const Type = z.enum(["HDMI", "DisplayPort", "DVI", "VGA"]);
 

@@ -1,7 +1,8 @@
 "use client";
 
-import { useRefreshAction } from "@/features/auth";
 import { useSearchParams } from "next/navigation";
+
+import { useRefreshAction } from "@/features/auth";
 
 export default function RefreshPage() {
   const param = useSearchParams();

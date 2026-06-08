@@ -4,6 +4,7 @@ import {
 } from "@/ui/Input";
 import * as RAM from "@/utils/part/product/RAM";
 import { MemoryUnits } from "@/utils/Units";
+
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<RAM.Filter> = {

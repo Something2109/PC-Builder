@@ -1,10 +1,11 @@
-import { ArticleLink } from "@/features/article";
-import { Summary } from "@/utils/article";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
-import { verifyToken } from "@/features/auth/server";
-import Link from "next/link";
+
 import { EmptyState } from "@/components/ui/EmptyState";
+import { ArticleLink } from "@/features/article";
+import { verifyToken } from "@/features/auth/server";
+import { Summary } from "@/utils/article";
 
 export default async function TopicPage({
   params,

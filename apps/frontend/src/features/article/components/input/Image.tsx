@@ -1,8 +1,10 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
+ 
 
 import React, { useRef, useState } from "react";
+
 import { Image as ImageType } from "@/utils/article";
+
 import { uploadFile } from "../utils";
 
 interface ImageInputProps {

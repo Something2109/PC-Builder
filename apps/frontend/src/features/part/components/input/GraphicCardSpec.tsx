@@ -1,14 +1,15 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import {
   Input,
   OptionSelect,
   SuffixInput,
   UnitInput,
 } from "@/ui/Input";
-import * as GraphicCardSpec from "@/utils/part/info/GraphicCardSpec";
 import { InternalConnectors } from "@/utils/interface";
+import * as GraphicCardSpec from "@/utils/part/info/GraphicCardSpec";
 import { LengthUnits } from "@/utils/Units";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<GraphicCardSpec.DTO> = {
   width: (props) => (

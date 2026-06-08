@@ -1,5 +1,6 @@
-import { Table } from "../utils/Table";
 import * as MainboardStorageConnector from "@/utils/part/info/MainboardStorageConnector";
+
+import { Table } from "../utils/Table";
 
 const MainboardStorageConnectorTable = ({
   defaultValue,

@@ -1,7 +1,8 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
-import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
 import * as GPUMemory from "@/utils/part/info/GPUMemory";
+import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
+
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<GPUMemory.DTO> = {
   type: ({ defaultValue }) => defaultValue,

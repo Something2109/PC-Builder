@@ -1,9 +1,10 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import { SuffixInput, UnitInput, OptionSelect } from "@/ui/Input";
-import * as PumpSpec from "@/utils/part/info/PumpSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface";
+import * as PumpSpec from "@/utils/part/info/PumpSpec";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/Units";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<PumpSpec.DTO> = {
   form_factor: (props) => (

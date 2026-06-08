@@ -5,6 +5,7 @@ import {
 } from "@/ui/Input";
 import * as CPU from "@/utils/part/product/CPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/Units";
+
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<CPU.Filter> = {

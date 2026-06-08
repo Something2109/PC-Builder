@@ -1,13 +1,15 @@
 "use client";
 
-import React from "react";
-import { Content as ArticleContent, ContentName } from "@/utils/article";
-import { ParagraphInput } from "./Paragraph";
-import { SectionInput } from "./Section";
-import { ListInput } from "./List";
-import { ImageInput } from "./Image";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import React from "react";
+
+import { Content as ArticleContent, ContentName } from "@/utils/article";
+
+import { ImageInput } from "./Image";
+import { ListInput } from "./List";
+import { ParagraphInput } from "./Paragraph";
+import { SectionInput } from "./Section";
 
 interface EditorBlockProps {
   content: ArticleContent;

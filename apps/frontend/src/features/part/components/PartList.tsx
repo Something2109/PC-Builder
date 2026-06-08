@@ -1,6 +1,7 @@
 import Image, { StaticImageData } from "next/image";
-import { Products } from "@/utils/part";
+
 import { RedirectButton } from "@/ui/Button";
+import { Products } from "@/utils/part";
 
 const title: { [key in Products]: string } = {
   [Products.CPU]: "CPU",

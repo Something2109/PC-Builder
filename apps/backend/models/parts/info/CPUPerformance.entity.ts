@@ -8,8 +8,10 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import * as CPUPerformance from "@/utils/part/info/CPUPerformance";
+
 import { Infos } from "@/utils/part";
+import * as CPUPerformance from "@/utils/part/info/CPUPerformance";
+
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

@@ -1,8 +1,9 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import { UnitInput } from "@/ui/Input";
 import * as StoragePerformance from "@/utils/part/info/StoragePerformance";
 import { MemorySpeedUnit } from "@/utils/Units";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<StoragePerformance.DTO> = {
   read_speed: (props) => (

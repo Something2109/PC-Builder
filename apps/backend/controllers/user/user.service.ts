@@ -1,13 +1,14 @@
-import * as bcrypt from "bcrypt";
-import UserModel, { UserModelScope } from "@/models/user/User.entity";
-import * as API from "@/utils/API";
-import * as User from "@/utils/user";
 import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
+import * as bcrypt from "bcrypt";
 import { Sequelize } from "sequelize-typescript";
+
+import UserModel, { UserModelScope } from "@/models/user/User.entity";
+import * as API from "@/utils/API";
+import * as User from "@/utils/user";
 
 @Injectable()
 export class UserService {

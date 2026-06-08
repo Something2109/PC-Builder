@@ -1,8 +1,9 @@
-import { InfoTable } from "@/features/part/components/Table";
-import { PartTable } from "@/features/part/components/detail/Part";
-import { ResponsiveWrapper } from "@/ui/FlexWrapper";
 import { notFound } from "next/navigation";
 import React from "react";
+
+import { PartTable } from "@/features/part/components/detail/Part";
+import { InfoTable } from "@/features/part/components/Table";
+import { ResponsiveWrapper } from "@/ui/FlexWrapper";
 import Part, { Products, Mapping } from "@/utils/part";
 
 export default async function PartDetailPage({

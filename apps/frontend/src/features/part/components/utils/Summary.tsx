@@ -1,7 +1,9 @@
 import { FunctionComponent, HTMLAttributes } from "react";
+
 import { RowWrapper } from "@/ui/FlexWrapper";
-import { InfoLabel } from "./Table";
 import { mergeClass } from "@/ui/mergeClass";
+
+import { InfoLabel } from "./Table";
 
 export const SummaryTable = {
   Component: ({

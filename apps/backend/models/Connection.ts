@@ -1,5 +1,6 @@
 import { InferAttributes, WhereOptions } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
+
 import { getConnectionOptions } from "./sequelize.options";
 
 if (

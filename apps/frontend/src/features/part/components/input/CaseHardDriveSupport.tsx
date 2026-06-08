@@ -1,11 +1,13 @@
-import { GenericInputField } from "../utils/Form";
-import { Table } from "../utils/Table";
+import { memo, useRef } from "react";
+
 import { useObjectSet } from "@/features/part/hooks/ObjectSet";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
-import * as CaseHardDriveSupport from "@/utils/part/info/CaseHardDriveSupport";
 import { Case } from "@/utils/interface";
-import { memo, useRef } from "react";
+import * as CaseHardDriveSupport from "@/utils/part/info/CaseHardDriveSupport";
+
+import { GenericInputField } from "../utils/Form";
+import { Table } from "../utils/Table";
 
 function MainComponent({
   defaultValue,

@@ -1,5 +1,3 @@
-import { Article, Content, ArticleStatus } from "@/utils/article";
-import { Tables } from "../interface";
 import {
   Column,
   DataType,
@@ -9,6 +7,10 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
+
+import { Article, Content, ArticleStatus } from "@/utils/article";
+
+import { Tables } from "../interface";
 
 @Table({ modelName: Tables.ARTICLE })
 export default class ArticleModel extends Model implements Omit<Article, "id"> {

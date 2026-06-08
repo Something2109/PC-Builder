@@ -1,10 +1,4 @@
-import {
-  ModelScopes,
-  PartDefaultScope,
-  Tables,
-  defaultFilter,
-} from "@/models/interface";
-import Part, { Products, Infos } from "@/utils/part";
+import { Includeable } from "sequelize";
 import {
   AllowNull,
   Column,
@@ -19,43 +13,51 @@ import {
   Table,
   Unique,
 } from "sequelize-typescript";
-import { Includeable } from "sequelize";
-import CaseSpecModel from "./info/CaseSpec.entity";
+
+import {
+  ModelScopes,
+  PartDefaultScope,
+  Tables,
+  defaultFilter,
+} from "@/models/interface";
+import Part, { Products, Infos } from "@/utils/part";
+
 import CaseFanSupportModel from "./info/CaseFanSupport.entity";
-import CaseRadiatorSupportModel from "./info/CaseRadiatorSupport.entity";
 import CaseHardDriveSupportModel from "./info/CaseHardDriveSupport.entity";
 import CaseMainboardSupportModel from "./info/CaseMainboardSupport.entity";
 import CasePSUSupportModel from "./info/CasePSUSupport.entity";
-import FanSpecModel from "./info/FanSpec.entity";
-import CPUSpecModel from "./info/CPUSpec.entity";
-import CPUPerformanceModel from "./info/CPUPerformance.entity";
-import CPUMemoryModel from "./info/CPUMemory.entity";
+import CaseRadiatorSupportModel from "./info/CaseRadiatorSupport.entity";
+import CaseSpecModel from "./info/CaseSpec.entity";
+import CPUBlockSocketModel from "./info/CPUBlockSocketSupport.entity";
+import CPUBlockSpecModel from "./info/CPUBlockSpec.entity";
 import CPUCoreConfigModel from "./info/CPUCoreConfig.entity";
-import GPUSpecModel from "./info/GPUSpec.entity";
-import GPUPerformanceModel from "./info/GPUPerformance.entity";
-import GPUMemoryModel from "./info/GPUMemory.entity";
+import CPUMemoryModel from "./info/CPUMemory.entity";
+import CPUPerformanceModel from "./info/CPUPerformance.entity";
+import CPUSpecModel from "./info/CPUSpec.entity";
+import FanSpecModel from "./info/FanSpec.entity";
 import GPUFeatureModel from "./info/GPUFeature.entity";
-import ProcessorCacheModel from "./info/ProcessorCache.entity";
-import GraphicCardSpecModel from "./info/GraphicCardSpec.entity";
+import GPUMemoryModel from "./info/GPUMemory.entity";
+import GPUPerformanceModel from "./info/GPUPerformance.entity";
+import GPUSpecModel from "./info/GPUSpec.entity";
 import GraphicCardPortModel from "./info/GraphicCardPort.entity";
-import MainboardSpecModel from "./info/MainboardSpec.entity";
-import MainboardPowerConnectorModel from "./info/MainboardPowerConnector.entity";
+import GraphicCardSpecModel from "./info/GraphicCardSpec.entity";
+import HDDSpecModel from "./info/HDDSpec.entity";
+import MainboardFanConnectorModel from "./info/MainboardFanConnector.entity";
 import MainboardPCIeModel from "./info/MainboardPCIe.entity";
+import MainboardPowerConnectorModel from "./info/MainboardPowerConnector.entity";
+import MainboardSpecModel from "./info/MainboardSpec.entity";
 import MainboardStorageConnectorModel from "./info/MainboardStorageConnector.entity";
 import MainboardUSBConnectorModel from "./info/MainboardUSBConnector.entity";
-import MainboardFanConnectorModel from "./info/MainboardFanConnector.entity";
-import RAMSpecModel from "./info/RAMSpec.entity";
-import SSDSpecModel from "./info/SSDSpec.entity";
-import HDDSpecModel from "./info/HDDSpec.entity";
-import StoragePerformanceModel from "./info/StoragePerformance.entity";
-import StorageCacheModel from "./info/StorageCache.entity";
-import PSUSpecModel from "./info/PSUSpec.entity";
+import PartExternalPortModel from "./info/PartExternalPorts.entity";
+import ProcessorCacheModel from "./info/ProcessorCache.entity";
 import PSUConnectorModel from "./info/PSUConnector.entity";
-import CPUBlockSpecModel from "./info/CPUBlockSpec.entity";
+import PSUSpecModel from "./info/PSUSpec.entity";
 import PumpSpecModel from "./info/PumpSpec.entity";
 import RadiatorSpecModel from "./info/RadiatorSpec.entity";
-import CPUBlockSocketModel from "./info/CPUBlockSocketSupport.entity";
-import PartExternalPortModel from "./info/PartExternalPorts.entity";
+import RAMSpecModel from "./info/RAMSpec.entity";
+import SSDSpecModel from "./info/SSDSpec.entity";
+import StorageCacheModel from "./info/StorageCache.entity";
+import StoragePerformanceModel from "./info/StoragePerformance.entity";
 
 @DefaultScope(() => PartDefaultScope)
 @Scopes(() => ({

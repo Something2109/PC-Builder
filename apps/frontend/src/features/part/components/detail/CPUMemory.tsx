@@ -1,7 +1,8 @@
-import { Table } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
 import * as CPUMemory from "@/utils/part/info/CPUMemory";
 import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
+
+import { Table } from "../utils/Table";
 
 const CPUMemoryTable = ({
   defaultValue,

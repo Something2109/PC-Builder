@@ -1,7 +1,8 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
 import * as GraphicCardSpec from "@/utils/part/info/GraphicCardSpec";
 import { LengthUnits } from "@/utils/Units";
+
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<GraphicCardSpec.DTO> = {
   width: ({ defaultValue }) => (

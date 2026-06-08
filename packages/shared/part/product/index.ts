@@ -1,19 +1,20 @@
 import { ZodObject, ZodSchema } from "zod";
+
 import * as AIOProduct from "./AIO";
 import * as CaseProduct from "./Case";
 import * as CoolerProduct from "./Cooler";
 import * as CPUProduct from "./CPU";
+import * as CPUBlock from "./CPUBlock";
 import * as FanProduct from "./Fan";
 import * as GPUProduct from "./GPU";
 import * as GraphicCard from "./GraphicCard";
 import * as HDDProduct from "./HDD";
 import * as Mainboard from "./Mainboard";
 import * as PSUProduct from "./PSU";
-import * as RAMProduct from "./RAM";
-import * as SSDProduct from "./SSD";
-import * as CPUBlock from "./CPUBlock";
 import * as PumpProduct from "./Pump";
 import * as RadiatorProduct from "./Radiator";
+import * as RAMProduct from "./RAM";
+import * as SSDProduct from "./SSD";
 
 export enum Name {
   CPU = "cpu",

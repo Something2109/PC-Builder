@@ -1,7 +1,8 @@
-import { Table } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
 import * as CPUCoreConfig from "@/utils/part/info/CPUCoreConfig";
 import { FrequencyUnits } from "@/utils/Units";
+
+import { Table } from "../utils/Table";
 
 const CPUCoreConfigTable = ({
   defaultValue,

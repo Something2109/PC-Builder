@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export default function useDebounce<T extends (...args: any[]) => any>(
   func: T,
   delay: number

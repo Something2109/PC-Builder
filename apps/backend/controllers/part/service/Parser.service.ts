@@ -1,10 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import Part, { Product, Mapping, Products } from "@/utils/part";
+
 import * as API from "@/utils/API";
 import { Primitive } from "@/utils/interface";
+import Part, { Product, Mapping, Products } from "@/utils/part";
+
+import { ModelAttributeList } from "../interface/database.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
 import { ParseServiceInterface } from "../interface/part.interface";
-import { ModelAttributeList } from "../interface/database.interface";
 
 @Injectable()
 class ParseService implements ParseServiceInterface {

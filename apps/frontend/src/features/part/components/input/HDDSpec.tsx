@@ -1,9 +1,10 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import { SuffixInput, UnitInput, OptionSelect } from "@/ui/Input";
-import * as HDDSpec from "@/utils/part/info/HDDSpec";
 import { FormFactor, InternalConnectors } from "@/utils/interface";
+import * as HDDSpec from "@/utils/part/info/HDDSpec";
 import { MemoryUnits } from "@/utils/Units";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<HDDSpec.DTO> = {
   rotational_speed: (props) => (

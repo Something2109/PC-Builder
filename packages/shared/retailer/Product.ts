@@ -1,5 +1,6 @@
-import { Primitive } from "../interface";
 import { z } from "zod";
+
+import { Primitive } from "../interface";
 
 export const RetailProductSchema = z.object({
   name: Primitive.String,

@@ -1,6 +1,8 @@
-import { Section as SectionType } from "@/utils/article";
-import { ContentProps } from "../utils";
 import React from "react";
+
+import { Section as SectionType } from "@/utils/article";
+
+import { ContentProps } from "../utils";
 
 export function Section({
   content,

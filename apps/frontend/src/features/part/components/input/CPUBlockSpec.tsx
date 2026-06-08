@@ -1,8 +1,9 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import { OptionSelect } from "@/ui/Input";
-import * as CPUBlockSpec from "@/utils/part/info/CPUBlockSpec";
 import { InternalConnectors, Material } from "@/utils/interface";
+import * as CPUBlockSpec from "@/utils/part/info/CPUBlockSpec";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<CPUBlockSpec.DTO> = {
   plate: (props) => (

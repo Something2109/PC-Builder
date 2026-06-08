@@ -1,6 +1,7 @@
-import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 import { SuffixDisplay } from "@/ui/Display";
 import * as RAM from "@/utils/part/product/RAM";
+
+import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 
 const Components: InfoSummaryMapping<RAM.Summary> = {
   speed: ({ value }) => <SuffixDisplay suffix="MT/s">{value}</SuffixDisplay>,

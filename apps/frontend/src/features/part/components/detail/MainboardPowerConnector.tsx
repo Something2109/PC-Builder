@@ -1,5 +1,6 @@
-import { Table } from "../utils/Table";
 import * as MainboardPowerConnector from "@/utils/part/info/MainboardPowerConnector";
+
+import { Table } from "../utils/Table";
 
 const MainboardPowerConnectorTable = ({
   defaultValue,

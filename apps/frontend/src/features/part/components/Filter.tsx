@@ -1,16 +1,18 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   lazy,
   FormHTMLAttributes,
   LazyExoticComponent,
   FunctionComponent,
 } from "react";
-import { RowWrapper } from "@/ui/FlexWrapper";
+
 import { Button } from "@/ui/Button";
+import { RowWrapper } from "@/ui/FlexWrapper";
 import { Input } from "@/ui/Input";
 import { Products } from "@/utils/part";
-import { useRouter } from "next/navigation";
+
 import PartFilter from "./filter/Part";
 
 const FilterComponents: {

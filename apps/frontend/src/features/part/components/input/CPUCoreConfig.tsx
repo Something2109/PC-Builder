@@ -1,12 +1,14 @@
-import { GenericInputField } from "../utils/Form";
-import { Table } from "../utils/Table";
+import { memo, useRef } from "react";
+
 import { useObjectSet } from "@/features/part/hooks/ObjectSet";
-import { Input, UnitInput } from "@/ui/Input";
 import { Button, DeleteButton } from "@/ui/Button";
 import useDebounce from "@/ui/Debounce";
+import { Input, UnitInput } from "@/ui/Input";
 import * as CPUCoreConfig from "@/utils/part/info/CPUCoreConfig";
 import { FrequencyUnits } from "@/utils/Units";
-import { memo, useRef } from "react";
+
+import { GenericInputField } from "../utils/Form";
+import { Table } from "../utils/Table";
 
 function Component({
   defaultValue,

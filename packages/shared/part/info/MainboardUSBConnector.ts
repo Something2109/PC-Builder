@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import { ExternalPorts, Primitive } from "../../interface";
 import { createDTO, createModel } from "../../utils";
-import { z } from "zod";
 
 const Info = z.object({
   generation: ExternalPorts.Peripheral.USB.Generation,

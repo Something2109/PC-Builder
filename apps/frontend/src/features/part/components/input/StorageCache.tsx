@@ -1,9 +1,10 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import { UnitInput, OptionSelect } from "@/ui/Input";
-import * as StorageCache from "@/utils/part/info/StorageCache";
 import { InternalConnectors } from "@/utils/interface";
+import * as StorageCache from "@/utils/part/info/StorageCache";
 import { MemoryUnits } from "@/utils/Units";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<StorageCache.DTO> = {
   type: (props) => (

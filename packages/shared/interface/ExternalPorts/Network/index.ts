@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 import { Schema as EthernetSchema } from "./Ethernet";
 
 export const Type = z.enum(["LAN Ethernet"]);

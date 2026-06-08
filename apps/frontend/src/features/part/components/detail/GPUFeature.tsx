@@ -1,5 +1,6 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import * as GPUFeature from "@/utils/part/info/GPUFeature";
+
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<GPUFeature.DTO> = {
   DirectX: ({ defaultValue }) => defaultValue,

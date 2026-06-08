@@ -1,7 +1,8 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { UnitDisplay, SuffixDisplay } from "@/ui/Display";
 import * as CPUPerformance from "@/utils/part/info/CPUPerformance";
 import { FrequencyUnits } from "@/utils/Units";
+
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<CPUPerformance.DTO> = {
   base_frequency: ({ defaultValue }) => (

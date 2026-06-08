@@ -1,7 +1,8 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { UnitDisplay } from "@/ui/Display";
 import * as ProcessorCache from "@/utils/part/info/ProcessorCache";
 import { MemoryUnits } from "@/utils/Units";
+
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<ProcessorCache.DTO> = {
   L1_cache: ({ defaultValue }) => (

@@ -1,10 +1,11 @@
+import { notFound } from "next/navigation";
+
+import { AuthRole } from "@/features/auth";
 import { InfoForm } from "@/features/part/components/Form";
 import PartForm from "@/features/part/components/input/Part";
 import { ResponsiveWrapper } from "@/ui/FlexWrapper";
 import Part, { Products, Mapping } from "@/utils/part";
 import { Roles } from "@/utils/user";
-import { notFound } from "next/navigation";
-import { AuthRole } from "@/features/auth";
 
 const roles = [Roles.ADMIN];
 

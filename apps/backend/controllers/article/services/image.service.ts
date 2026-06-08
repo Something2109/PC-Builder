@@ -1,7 +1,7 @@
-import path from "path";
-import fs from "fs";
-import { v4 as uuidv4 } from "uuid";
 import { Injectable } from "@nestjs/common";
+import fs from "fs";
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
 
 @Injectable()
 export class ImageService {

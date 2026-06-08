@@ -1,5 +1,6 @@
-import { Case, FormFactor } from "../../interface";
 import { z } from "zod";
+
+import { Case, FormFactor } from "../../interface";
 
 const Info = z.object({
   case_side: Case.Side,

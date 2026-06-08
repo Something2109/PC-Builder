@@ -1,9 +1,10 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import { Input, UnitInput, OptionSelect } from "@/ui/Input";
-import * as CaseSpec from "@/utils/part/info/CaseSpec";
 import { FormFactor } from "@/utils/interface";
+import * as CaseSpec from "@/utils/part/info/CaseSpec";
 import { LengthUnits } from "@/utils/Units";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<CaseSpec.DTO> = {
   form_factor: (props) => (

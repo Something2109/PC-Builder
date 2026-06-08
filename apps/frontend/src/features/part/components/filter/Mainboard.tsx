@@ -1,5 +1,6 @@
 import { MultipleChoiceInput } from "@/ui/Input";
 import * as Mainboard from "@/utils/part/product/Mainboard";
+
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<Mainboard.Filter> = {

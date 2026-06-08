@@ -1,8 +1,9 @@
-import PaginationBar from "@/ui/PaginationBar";
+import { notFound } from "next/navigation";
+
 import PartPanel from "@/features/part/components/Panel";
 import { SearchBar } from "@/layout/searchbar";
+import PaginationBar from "@/ui/PaginationBar";
 import Part from "@/utils/part";
-import { notFound } from "next/navigation";
 
 export default async function Page({
   searchParams,

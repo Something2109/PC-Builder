@@ -1,7 +1,8 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { UnitDisplay } from "@/ui/Display";
 import * as RadiatorSpec from "@/utils/part/info/RadiatorSpec";
 import { LengthUnits } from "@/utils/Units";
+
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<RadiatorSpec.DTO> = {
   form_factor: ({ defaultValue }) => defaultValue,

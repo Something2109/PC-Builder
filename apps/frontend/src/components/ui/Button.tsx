@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DetailedHTMLProps, ButtonHTMLAttributes } from "react";
+
 import { mergeClass } from "./mergeClass";
 
 const normal = "button dark:hover:bg-blue-500";

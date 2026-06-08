@@ -5,6 +5,7 @@ import {
 } from "@/ui/Input";
 import * as GPU from "@/utils/part/product/GPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/Units";
+
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<GPU.Filter> = {

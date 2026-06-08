@@ -1,11 +1,12 @@
-import Part, { Products } from "@/utils/part";
+import { useRouter } from "next/navigation";
 import {
   ChangeEventHandler,
   useActionState,
   useRef,
   useTransition,
 } from "react";
-import { useRouter } from "next/navigation";
+
+import Part, { Products } from "@/utils/part";
 
 export default function useSearchAction(part?: Products) {
   const router = useRouter();

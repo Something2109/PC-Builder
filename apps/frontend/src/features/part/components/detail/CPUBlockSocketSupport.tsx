@@ -1,5 +1,6 @@
-import { Table } from "../utils/Table";
 import * as CPUBlockSocketSupport from "@/utils/part/info/CPUBlockSocketSupport";
+
+import { Table } from "../utils/Table";
 
 const CPUBlockSocketSupportTable = ({
   defaultValue,

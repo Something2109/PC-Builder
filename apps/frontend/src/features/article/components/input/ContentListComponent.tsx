@@ -1,8 +1,5 @@
 "use client";
 
-import React from "react";
-import { Content as ArticleContent, ContentName } from "@/utils/article";
-import { EditorBlock } from "./EditorBlock";
 import {
   DndContext,
   closestCenter,
@@ -18,6 +15,11 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import React from "react";
+
+import { Content as ArticleContent, ContentName } from "@/utils/article";
+
+import { EditorBlock } from "./EditorBlock";
 
 const Content = ContentName;
 

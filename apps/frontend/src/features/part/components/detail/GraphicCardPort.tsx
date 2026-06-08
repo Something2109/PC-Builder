@@ -1,5 +1,6 @@
-import { Table } from "../utils/Table";
 import * as GraphicCardPort from "@/utils/part/info/GraphicCardPort";
+
+import { Table } from "../utils/Table";
 
 const GraphicCardPortTable = ({
   defaultValue,

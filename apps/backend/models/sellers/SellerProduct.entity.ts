@@ -7,8 +7,10 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { Tables } from "../interface";
+
 import { RetailProductType } from "@/utils/retailer/Product";
+
+import { Tables } from "../interface";
 
 @Table({ modelName: Tables.RETAIL_PRODUCT })
 export default class RetailProduct extends Model implements RetailProductType {

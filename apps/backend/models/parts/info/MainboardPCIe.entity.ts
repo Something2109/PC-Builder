@@ -8,9 +8,11 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import * as MainboardPCIe from "@/utils/part/info/MainboardPCIe";
+
 import { InternalConnectors } from "@/utils/interface";
 import { Infos } from "@/utils/part";
+import * as MainboardPCIe from "@/utils/part/info/MainboardPCIe";
+
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

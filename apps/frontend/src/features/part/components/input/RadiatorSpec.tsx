@@ -1,9 +1,10 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-import { defaultParse, GenericInputField } from "../utils/Form";
 import { Input, UnitInput, OptionSelect } from "@/ui/Input";
-import * as RadiatorSpec from "@/utils/part/info/RadiatorSpec";
 import { FormFactor, Material } from "@/utils/interface";
+import * as RadiatorSpec from "@/utils/part/info/RadiatorSpec";
 import { LengthUnits } from "@/utils/Units";
+
+import { defaultParse, GenericInputField } from "../utils/Form";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<RadiatorSpec.DTO> = {
   form_factor: (props) => (

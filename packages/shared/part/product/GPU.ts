@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import { Primitive } from "../../interface";
 import { FilterOptions, NumberFilterOptions } from "../../utils";
-import { z } from "zod";
 
 export const Label = "GPU";
 

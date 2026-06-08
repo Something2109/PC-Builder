@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
+
+import { lazy, LazyExoticComponent } from "react";
 
 import { ColumnWrapper } from "@/ui/FlexWrapper";
 import { Infos, Information } from "@/utils/part";
-import { lazy, LazyExoticComponent } from "react";
 
 export const DetailTableComponent: {
   [key in Infos]: LazyExoticComponent<React.FC<any>>;

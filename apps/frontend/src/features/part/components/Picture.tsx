@@ -1,6 +1,7 @@
 "use client";
 
 import { ImgHTMLAttributes } from "react";
+
 import { mergeClass } from "@/ui/mergeClass";
 
 const createDefaultUrl = (part: string) => `/images/icons/${part}.png`;

@@ -1,6 +1,7 @@
-import { Products } from "@/utils/part";
-import { ArticleStatus } from "@/utils/article";
 import { ArgumentMetadata, PipeTransform } from "@nestjs/common";
+
+import { ArticleStatus } from "@/utils/article";
+import { Products } from "@/utils/part";
 
 export type ArticleFilter = {
   part?: Products;

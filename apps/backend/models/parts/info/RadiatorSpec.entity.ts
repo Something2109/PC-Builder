@@ -8,9 +8,11 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import * as RadiatorSpec from "@/utils/part/info/RadiatorSpec";
+
 import { FormFactor, Material } from "@/utils/interface";
 import { Infos } from "@/utils/part";
+import * as RadiatorSpec from "@/utils/part/info/RadiatorSpec";
+
 import { PartInformation } from "..";
 import { ModelScopes, PartDefaultScope, defaultFilter } from "../../interface";
 

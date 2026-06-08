@@ -1,6 +1,7 @@
 "use client";
 
-import { JwtPayload as UserJwtPayload, Roles } from "@/utils/user";
+import { AxiosError } from "axios";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Dispatch,
   SetStateAction,
@@ -12,9 +13,9 @@ import {
   useState,
   useTransition,
 } from "react";
-import { usePathname, useRouter } from "next/navigation";
+
 import axiosInstance from "@/utils/axios";
-import { AxiosError } from "axios";
+import { JwtPayload as UserJwtPayload, Roles } from "@/utils/user";
 
 const LoginPath = "/auth/login";
 

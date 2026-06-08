@@ -1,6 +1,8 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { ArticleStatus } from "@/utils/article";
 import type { Article, Content } from "@/utils/article";
+
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+
+import { ArticleStatus } from "@/utils/article";
 import { Products } from "@/utils/part";
 
 @Schema({ timestamps: true })

@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import { InternalConnectors, Material } from "../../interface";
 import { createDTO, createModel } from "../../utils";
-import { z } from "zod";
 
 const Info = z.object({
   plate: Material.Metal,

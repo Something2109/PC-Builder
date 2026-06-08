@@ -1,11 +1,13 @@
-import { GenericInputField } from "../utils/Form";
-import { Table } from "../utils/Table";
+import { memo } from "react";
+
 import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { Button, DeleteButton } from "@/ui/Button";
 import useDebounce from "@/ui/Debounce";
 import { Input } from "@/ui/Input";
-import { Button, DeleteButton } from "@/ui/Button";
 import * as CPUBlockSocketSupport from "@/utils/part/info/CPUBlockSocketSupport";
-import { memo } from "react";
+
+import { GenericInputField } from "../utils/Form";
+import { Table } from "../utils/Table";
 
 function Component({
   defaultValue,

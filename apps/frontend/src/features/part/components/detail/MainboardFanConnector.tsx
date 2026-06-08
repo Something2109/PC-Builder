@@ -1,5 +1,6 @@
-import { Table } from "../utils/Table";
 import * as MainboardFanConnector from "@/utils/part/info/MainboardFanConnector";
+
+import { Table } from "../utils/Table";
 
 const MainboardFanConnectorTable = ({
   defaultValue,

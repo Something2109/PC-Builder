@@ -1,9 +1,10 @@
 import { z } from "zod";
+
+import { Schema as AudioSchema } from "./Audio";
+import { Schema as DisplaySchema } from "./Display";
+import { Schema as InteractionSchema } from "./Interaction";
 import { Schema as NetworkSchema } from "./Network";
 import { Schema as PeripheralSchema } from "./Peripheral";
-import { Schema as DisplaySchema } from "./Display";
-import { Schema as AudioSchema } from "./Audio";
-import { Schema as InteractionSchema } from "./Interaction";
 
 export const Type = z.enum([
   "Network",

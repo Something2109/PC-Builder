@@ -1,7 +1,8 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { UnitDisplay } from "@/ui/Display";
 import * as CaseSpec from "@/utils/part/info/CaseSpec";
 import { LengthUnits } from "@/utils/Units";
+
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<CaseSpec.DTO> = {
   form_factor: ({ defaultValue }) => defaultValue,

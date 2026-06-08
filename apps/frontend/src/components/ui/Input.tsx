@@ -11,8 +11,10 @@ import {
   useRef,
   useEffect,
 } from "react";
-import { RowWrapper } from "./FlexWrapper";
+
 import { UnitInterface } from "@/utils/Units";
+
+import { RowWrapper } from "./FlexWrapper";
 import { mergeClass } from "./mergeClass";
 
 const defaultStyle = "only:w-full bg-transparent resize-none overflow-y-hidden";

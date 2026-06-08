@@ -4,6 +4,7 @@ import {
 } from "@/ui/Input";
 import * as SSD from "@/utils/part/product/SSD";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/Units";
+
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<SSD.Filter> = {

@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import { FormFactor, InternalConnectors, Primitive } from "../../interface";
 import { createDTO, createModel } from "../../utils";
-import { z } from "zod";
 
 export const MemoryCell = z.enum(["SLC", "MLC", "TLC", "QLC", "3D"]);
 

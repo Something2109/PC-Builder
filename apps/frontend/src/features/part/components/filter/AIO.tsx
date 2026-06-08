@@ -1,5 +1,6 @@
 import { MultipleChoiceInput } from "@/ui/Input";
 import * as AIO from "@/utils/part/product/AIO";
+
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<AIO.Filter> = {

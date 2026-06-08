@@ -1,9 +1,11 @@
-import { getAccessToken } from "./auth/tokens";
-import { Session } from "@/utils/API";
-import { JwtPayload } from "@/utils/user";
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Request, Response, NextFunction } from "express";
+
+import { Session } from "@/utils/API";
+import { JwtPayload } from "@/utils/user";
+
+import { getAccessToken } from "./auth/tokens";
 
 @Injectable()
 export class SessionExtractionMiddleware implements NestMiddleware {

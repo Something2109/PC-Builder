@@ -8,9 +8,11 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import * as PSUConnector from "@/utils/part/info/PSUConnector";
+
 import { InternalConnectors } from "@/utils/interface";
 import { Infos } from "@/utils/part";
+import * as PSUConnector from "@/utils/part/info/PSUConnector";
+
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

@@ -1,5 +1,6 @@
-import { Table } from "../utils/Table";
 import * as CaseMainboardSupport from "@/utils/part/info/CaseMainboardSupport";
+
+import { Table } from "../utils/Table";
 
 const CaseMainboardSupportTable = ({
   defaultValue,

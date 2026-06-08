@@ -1,7 +1,8 @@
+import { z } from "zod";
+
 import { FormFactor, Primitive } from "../../interface";
 import { FilterOptions } from "../../utils";
 import * as Fan from "../info/FanSpec";
-import { z } from "zod";
 
 export const Label = "Fan";
 

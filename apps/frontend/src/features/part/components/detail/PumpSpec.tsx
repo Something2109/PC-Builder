@@ -1,7 +1,8 @@
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
 import * as PumpSpec from "@/utils/part/info/PumpSpec";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/Units";
+
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<PumpSpec.DTO> = {
   form_factor: ({ defaultValue }) => defaultValue,

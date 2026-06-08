@@ -1,8 +1,10 @@
 "use client";
 
 import React from "react";
-import { List as ListType, Content as ArticleContent, ContentName } from "@/utils/article";
+
 import { RowWrapper } from "@/ui/FlexWrapper";
+import { List as ListType, Content as ArticleContent, ContentName } from "@/utils/article";
+
 import { ContentListComponent } from "./ContentListComponent";
 
 interface ListInputProps {

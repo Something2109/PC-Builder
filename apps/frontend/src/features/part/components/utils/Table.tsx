@@ -1,4 +1,3 @@
-import { mergeClass } from "@/ui/mergeClass";
 import { ReactFormExtendedApi } from "@tanstack/react-form";
 import {
   FunctionComponent,
@@ -8,6 +7,8 @@ import {
   TableHTMLAttributes,
   TdHTMLAttributes,
 } from "react";
+
+import { mergeClass } from "@/ui/mergeClass";
 
 export const Table = {
   Component: ({

@@ -1,5 +1,6 @@
-import { FormFactor } from "../../interface";
 import { z } from "zod";
+
+import { FormFactor } from "../../interface";
 
 const Info = z.object({
   form_factor: FormFactor.Mainboard,

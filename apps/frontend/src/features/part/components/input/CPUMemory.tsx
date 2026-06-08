@@ -1,12 +1,14 @@
+import { memo, useRef } from "react";
+
+import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { Button, DeleteButton } from "@/ui/Button";
+import { OptionSelect, SuffixInput, UnitInput } from "@/ui/Input";
+import { InternalConnectors } from "@/utils/interface";
+import * as CPUMemory from "@/utils/part/info/CPUMemory";
+import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
+
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
-import { OptionSelect, SuffixInput, UnitInput } from "@/ui/Input";
-import { Button, DeleteButton } from "@/ui/Button";
-import * as CPUMemory from "@/utils/part/info/CPUMemory";
-import { InternalConnectors } from "@/utils/interface";
-import { memo, useRef } from "react";
-import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
 
 function Component({
   defaultValue,

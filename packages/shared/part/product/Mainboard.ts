@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import { FormFactor, InternalConnectors, Primitive } from "../../interface";
 import { FilterOptions } from "../../utils";
-import { z } from "zod";
 
 export const Label = "Mainboard";
 

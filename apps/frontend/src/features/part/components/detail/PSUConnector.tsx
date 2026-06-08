@@ -1,5 +1,6 @@
-import { Table } from "../utils/Table";
 import * as PSUConnector from "@/utils/part/info/PSUConnector";
+
+import { Table } from "../utils/Table";
 
 const PSUConnectorTable = ({
   defaultValue,

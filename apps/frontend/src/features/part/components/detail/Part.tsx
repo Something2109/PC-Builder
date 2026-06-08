@@ -1,12 +1,14 @@
-import Part, { Infos } from "@/utils/part";
 import { TableHTMLAttributes } from "react";
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
+
+import { RedirectButton } from "@/ui/Button";
 import {
   ColumnWrapper,
   ResponsiveWrapper,
 } from "@/ui/FlexWrapper";
+import Part, { Infos } from "@/utils/part";
+
 import PartPicture from "../Picture";
-import { RedirectButton } from "@/ui/Button";
+import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<
   Omit<Part.DTO, "id" | "part" | "name" | "url" | "image_url" | Infos>

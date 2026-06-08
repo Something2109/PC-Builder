@@ -1,9 +1,10 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+
 import { ArticleController } from "./article.controller";
+import { ArticleSchema } from "./entities/Article.entity";
 import { ArticleService } from "./services/article.service";
 import { ImageService } from "./services/image.service";
-import { ArticleSchema } from "./entities/Article.entity";
 
 @Module({
   imports: [

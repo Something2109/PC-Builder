@@ -1,5 +1,6 @@
-import { SearchBar } from "@/layout/searchbar";
 import React from "react";
+
+import { SearchBar } from "@/layout/searchbar";
 
 export default function Page() {
   return (

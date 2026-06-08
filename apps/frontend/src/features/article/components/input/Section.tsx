@@ -1,9 +1,11 @@
 "use client";
 
 import React from "react";
-import { Section as SectionType, Content as ArticleContent, ContentName } from "@/utils/article";
-import { AutoGrowingTextArea } from "@/ui/Input";
+
 import { RowWrapper } from "@/ui/FlexWrapper";
+import { AutoGrowingTextArea } from "@/ui/Input";
+import { Section as SectionType, Content as ArticleContent, ContentName } from "@/utils/article";
+
 import { ContentListComponent } from "./ContentListComponent";
 
 interface SectionInputProps {

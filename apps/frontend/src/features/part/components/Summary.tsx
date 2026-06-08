@@ -1,9 +1,11 @@
 "use client";
 
+import { ComponentType, lazy, TableHTMLAttributes } from "react";
+
+import Part, { Products } from "@/utils/part";
+
 import { PartSummaryCells } from "./summary/Part";
 import { SummaryTable as Table } from "./utils/Summary";
-import Part, { Products } from "@/utils/part";
-import { ComponentType, lazy, TableHTMLAttributes } from "react";
 
 export const SummaryInfoComponent = {
   [Products.CPU]: lazy(() => import("@/features/part/components/summary/CPU")),

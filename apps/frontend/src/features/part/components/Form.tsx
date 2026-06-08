@@ -1,12 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 
-import { NotificationBar } from "@/ui/NotificationBar";
-import { VerticalCollapsible } from "@/ui/Collapsible";
+import { lazy, LazyExoticComponent } from "react";
+
 import { useInfoAction } from "@/features/part/hooks/InfoAction";
 import { Button } from "@/ui/Button";
+import { VerticalCollapsible } from "@/ui/Collapsible";
+import { NotificationBar } from "@/ui/NotificationBar";
 import Part, { Information } from "@/utils/part";
-import { lazy, LazyExoticComponent } from "react";
 
 const InputComponent: {
   [key in Information.Name]: LazyExoticComponent<React.FC<any>>;

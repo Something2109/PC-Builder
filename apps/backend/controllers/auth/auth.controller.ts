@@ -10,13 +10,15 @@ import {
   Get,
   UsePipes,
 } from "@nestjs/common";
-import { CookieOptions, Request, Response } from "express";
-import { AuthService } from "./auth.service";
-import { LoginAuthorizationGuard } from "./auth.guard";
 import { getRefreshToken } from "controllers/utils/auth/tokens";
 import { ZodValidationPipe } from "controllers/utils/utils.modules";
-import { LogInOptions } from "@/utils/user";
+import { CookieOptions, Request, Response } from "express";
+
 import { Tokens } from "@/utils/API";
+import { LogInOptions } from "@/utils/user";
+
+import { LoginAuthorizationGuard } from "./auth.guard";
+import { AuthService } from "./auth.service";
 
 @Controller("auth")
 export class AuthController {

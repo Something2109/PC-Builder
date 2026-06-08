@@ -1,6 +1,8 @@
-import Part from "@/utils/part";
 import { TableHTMLAttributes } from "react";
+
 import { RowWrapper } from "@/ui/FlexWrapper";
+import Part from "@/utils/part";
+
 import PartPicture from "../Picture";
 
 export function PartSummaryCells({

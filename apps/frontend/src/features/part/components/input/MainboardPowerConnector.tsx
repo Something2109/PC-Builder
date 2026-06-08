@@ -1,11 +1,13 @@
+import { memo, useRef } from "react";
+
+import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { Button, DeleteButton } from "@/ui/Button";
+import { Input, OptionSelect } from "@/ui/Input";
+import { InternalConnectors } from "@/utils/interface";
+import * as MainboardPowerConnector from "@/utils/part/info/MainboardPowerConnector";
+
 import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
-import { Input, OptionSelect } from "@/ui/Input";
-import { Button, DeleteButton } from "@/ui/Button";
-import * as MainboardPowerConnector from "@/utils/part/info/MainboardPowerConnector";
-import { InternalConnectors } from "@/utils/interface";
-import { memo, useRef } from "react";
 
 function Component({
   defaultValue,

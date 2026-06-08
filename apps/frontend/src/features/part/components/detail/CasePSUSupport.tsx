@@ -1,5 +1,6 @@
-import { Table } from "../utils/Table";
 import * as CasePSUSupport from "@/utils/part/info/CasePSUSupport";
+
+import { Table } from "../utils/Table";
 
 const CasePSUSupportTable = ({
   defaultValue,

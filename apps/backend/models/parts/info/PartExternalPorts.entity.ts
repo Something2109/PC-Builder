@@ -8,9 +8,11 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import * as PartExternalPorts from "@/utils/part/info/PartExternalPorts";
+
 import { ExternalPorts } from "@/utils/interface";
 import { Infos } from "@/utils/part";
+import * as PartExternalPorts from "@/utils/part/info/PartExternalPorts";
+
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

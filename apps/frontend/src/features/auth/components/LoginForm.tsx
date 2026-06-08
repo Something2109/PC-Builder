@@ -1,13 +1,14 @@
 "use client";
 
+import { useForm } from "@tanstack/react-form";
 import { InputHTMLAttributes } from "react";
-import { NotificationBar } from "@/ui/NotificationBar";
+import { z } from "zod";
+
+import { useLoginAction } from "@/features/auth";
 import { Button } from "@/ui/Button";
 import { Input } from "@/ui/Input";
-import { useLoginAction } from "@/features/auth";
 import { mergeClass } from "@/ui/mergeClass";
-import { useForm } from "@tanstack/react-form";
-import { z } from "zod";
+import { NotificationBar } from "@/ui/NotificationBar";
 
 const loginSchema = z.object({
   username: z.string().min(8, "Username must be at least 8 characters long."),

@@ -1,5 +1,6 @@
-import { Paragraph as ParagraphType } from "@/utils/article";
 import { RowWrapper } from "@/ui/FlexWrapper";
+import { Paragraph as ParagraphType } from "@/utils/article";
+
 import { ContentProps } from "../utils";
 
 export function Paragraph({

@@ -1,5 +1,3 @@
-import { Tokens } from "@/utils/API";
-import { JwtPayload } from "@/utils/user";
 import {
   ConflictException,
   Injectable,
@@ -7,6 +5,9 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "controllers/user/user.service";
+
+import { Tokens } from "@/utils/API";
+import { JwtPayload } from "@/utils/user";
 
 @Injectable()
 export class AuthService {

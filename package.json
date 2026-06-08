@@ -14,10 +14,14 @@
     "build:backend": "npm run build --workspace=apps/backend",
     "build:shared": "npm run build --workspace=packages/shared",
     "crawl": "npm run crawl --workspace=apps/crawler",
-    "install:all": "npm install"
+    "install:all": "npm install",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
+    "eslint": "^9.39.4",
+    "eslint-plugin-perfectionist": "^5.9.0",
+    "prettier": "^3.3.3",
     "typescript": "^5.5.4",
-    "prettier": "^3.3.3"
+    "typescript-eslint": "^8.60.1"
   }
 }

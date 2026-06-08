@@ -1,9 +1,11 @@
 "use client";
 
-import { Button } from "@/ui/Button";
-import { ColumnWrapper } from "@/ui/FlexWrapper";
 import Image from "next/image";
 import { DetailedHTMLProps, HTMLAttributes } from "react";
+
+import { Button } from "@/ui/Button";
+import { ColumnWrapper } from "@/ui/FlexWrapper";
+
 import { mergeClass } from "./mergeClass";
 
 export default function ErrorPanel({

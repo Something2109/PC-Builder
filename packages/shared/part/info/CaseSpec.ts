@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import { FormFactor, Primitive } from "../../interface";
 import { createDTO, createModel } from "../../utils";
-import { z } from "zod";
 
 const Info = z.object({
   form_factor: FormFactor.Case,

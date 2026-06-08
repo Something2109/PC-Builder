@@ -1,5 +1,6 @@
-import { Table } from "../utils/Table";
 import * as CaseHardDriveSupport from "@/utils/part/info/CaseHardDriveSupport";
+
+import { Table } from "../utils/Table";
 
 const CaseHardDriveSupportDisplay = ({
   defaultValue,

@@ -1,7 +1,7 @@
 "use client";
 
-import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
 import useSearchAction from "@/hooks/useSearchAction";
+import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
 import { Products } from "@/utils/part";
 
 export function SearchBar({ q, part }: { q?: string; part?: Products }) {

@@ -1,6 +1,6 @@
-import path from "path";
-import fs from "fs";
 import { Products } from "@pc-builder/shared";
+import fs from "fs";
+import path from "path";
 
 type BaseLink = {
   url: URL;

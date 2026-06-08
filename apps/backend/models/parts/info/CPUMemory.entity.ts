@@ -8,9 +8,11 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-import * as CPUMemory from "@/utils/part/info/CPUMemory";
+
 import { InternalConnectors } from "@/utils/interface";
 import { Infos } from "@/utils/part";
+import * as CPUMemory from "@/utils/part/info/CPUMemory";
+
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
 

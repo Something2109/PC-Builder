@@ -1,10 +1,11 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useState } from "react";
+
+import { useAuth, useLogoutAction } from "@/features/auth";
 import { Button, RedirectButton } from "@/ui/Button";
 import { ColumnWrapper } from "@/ui/FlexWrapper";
-import { useAuth, useLogoutAction } from "@/features/auth";
-import { usePathname } from "next/navigation";
 
 const LoginPath = "/auth/login";
 

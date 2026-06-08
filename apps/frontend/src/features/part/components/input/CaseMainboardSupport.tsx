@@ -1,9 +1,10 @@
-import { GenericInputField } from "../utils/Form";
-import { Table } from "../utils/Table";
 import { ResponsiveWrapper } from "@/ui/FlexWrapper";
 import { ChoiceInput } from "@/ui/Input";
-import * as CaseMainboardSupport from "@/utils/part/info/CaseMainboardSupport";
 import { FormFactor } from "@/utils/interface";
+import * as CaseMainboardSupport from "@/utils/part/info/CaseMainboardSupport";
+
+import { GenericInputField } from "../utils/Form";
+import { Table } from "../utils/Table";
 
 function Component({
   defaultValue,

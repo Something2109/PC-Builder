@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { Schema as USBSchema } from "./USB";
+
 import { Schema as PS2Schema } from "./PS2";
+import { Schema as USBSchema } from "./USB";
 
 export const Type = z.enum(["USB", "PS/2"]);
 

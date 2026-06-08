@@ -1,4 +1,3 @@
-import { ROLE_METADATA_KEY } from "controllers/utils/role/role.decorator";
 import {
   CanActivate,
   ExecutionContext,
@@ -7,8 +6,10 @@ import {
   ForbiddenException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { Roles } from "@/utils/user";
+import { ROLE_METADATA_KEY } from "controllers/utils/role/role.decorator";
+
 import { Session, Tokens } from "@/utils/API";
+import { Roles } from "@/utils/user";
 
 /**
  * The global guard used by the application.

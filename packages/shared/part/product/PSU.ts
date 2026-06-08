@@ -1,7 +1,8 @@
+import { z } from "zod";
+
 import { FormFactor, Primitive } from "../../interface";
 import { FilterOptions, NumberFilterOptions } from "../../utils";
 import * as PSU from "../info/PSUSpec";
-import { z } from "zod";
 
 export const Label = "PSU";
 

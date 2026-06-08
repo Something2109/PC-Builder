@@ -1,11 +1,3 @@
-import {
-  DatabaseListInterface,
-  ModelAttributeList,
-} from "../interface/database.interface";
-import { PartInformation } from "@/models/parts";
-import { ModelScopes } from "@/models/interface";
-import Part, { Infos } from "@/utils/part";
-import * as API from "@/utils/API";
 import { Injectable } from "@nestjs/common";
 import {
   col,
@@ -16,6 +8,16 @@ import {
   ModelStatic,
   Op,
 } from "sequelize";
+
+import { ModelScopes } from "@/models/interface";
+import { PartInformation } from "@/models/parts";
+import * as API from "@/utils/API";
+import Part, { Infos } from "@/utils/part";
+
+import {
+  DatabaseListInterface,
+  ModelAttributeList,
+} from "../interface/database.interface";
 
 type ListOptions = Part.Filter & API.PageOptions & API.SearchOptions;
 

@@ -1,6 +1,7 @@
 import { ExternalPorts } from "@/utils/interface";
-import { Table } from "../utils/Table";
 import * as MainboardUSBConnector from "@/utils/part/info/MainboardUSBConnector";
+
+import { Table } from "../utils/Table";
 
 const MainboardUSBConnectorTable = ({
   defaultValue,

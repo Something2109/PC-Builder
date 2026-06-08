@@ -1,19 +1,21 @@
 import { Module, Logger, MiddlewareConsumer, Global } from "@nestjs/common";
-import { APP_GUARD } from "@nestjs/core";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { APP_GUARD } from "@nestjs/core";
 import { JwtModule } from "@nestjs/jwt";
-import { SequelizeModule } from "@nestjs/sequelize";
 import { MongooseModule } from "@nestjs/mongoose";
+import { SequelizeModule } from "@nestjs/sequelize";
 import { Connection } from "mongoose";
+
 import { getConnectionOptions } from "@/models/sequelize.options";
+
+import { AppController } from "./app.controller";
 import { ArticleModule } from "./article/article.module";
 import { AuthModule } from "./auth/auth.module";
+import { BuildModule } from "./build/build.module";
 import { PartModule } from "./part/part.module";
 import { UserModule } from "./user/user.module";
 import { AuthGuard } from "./utils/role/role.guard";
 import { SessionExtractionMiddleware } from "./utils/session.middleware";
-import { BuildModule } from "./build/build.module";
-import { AppController } from "./app.controller";
 
 @Module({
   controllers: [AppController],
