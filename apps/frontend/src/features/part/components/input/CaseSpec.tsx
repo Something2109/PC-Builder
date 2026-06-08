@@ -1,38 +1,37 @@
+import { ZodType } from "zod";
+
 import { Input, UnitInput, OptionSelect } from "@/ui/Input";
 import { FormFactor } from "@/utils/interface";
 import * as CaseSpec from "@/utils/part/info/CaseSpec";
 import { LengthUnits } from "@/utils/Units";
 
-import { defaultParse, GenericInputField } from "../utils/Form";
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<CaseSpec.DTO> = {
-  form_factor: (props) => (
+  form_factor: ({ form: _, options: __, ...props }) => (
     <OptionSelect options={FormFactor.Case.options} {...props} />
   ),
-  width: (props) => (
+  width: ({ form: _, ...props }) => (
     <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  length: (props) => (
+  length: ({ form: _, ...props }) => (
     <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  height: (props) => (
+  height: ({ form: _, ...props }) => (
     <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  expansion_slot: (props) => <Input type="number" {...props} />,
-  max_cooler_height: (props) => (
+  expansion_slot: ({ form: _, ...props }) => <Input type="number" {...props} />,
+  max_cooler_height: ({ form: _, ...props }) => (
     <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  max_psu_length: (props) => (
+  max_psu_length: ({ form: _, ...props }) => (
     <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
 };
 
-function submit(formData: FormData) {
-  return CaseSpec.Schemas.DTO.parse(defaultParse(formData));
-}
-
-export default GenericInputField(
-  InfoComponent(Components, CaseSpec.Label),
-  submit
+export default GenericSingleInputForm<CaseSpec.DTO>(
+  Components,
+  CaseSpec.Label,
+  CaseSpec.Schemas.DTO as ZodType<CaseSpec.DTO, CaseSpec.DTO>
 );

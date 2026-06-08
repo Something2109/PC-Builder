@@ -1,24 +1,23 @@
+import { ZodType } from "zod";
+
 import { OptionSelect } from "@/ui/Input";
-import { InternalConnectors, Material } from "@/utils/interface";
+import { Material, InternalConnectors } from "@/utils/interface";
 import * as CPUBlockSpec from "@/utils/part/info/CPUBlockSpec";
 
-import { defaultParse, GenericInputField } from "../utils/Form";
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<CPUBlockSpec.DTO> = {
-  plate: (props) => (
+  plate: ({ form: _, options: __, ...props }) => (
     <OptionSelect options={Material.Metal.options} {...props} />
   ),
-  rgb: (props) => (
+  rgb: ({ form: _, options: __, ...props }) => (
     <OptionSelect options={InternalConnectors.RGB.options} {...props} />
   ),
 };
 
-function submit(formData: FormData) {
-  return CPUBlockSpec.Schemas.DTO.parse(defaultParse(formData));
-}
-
-export default GenericInputField(
-  InfoComponent(Components, CPUBlockSpec.Label),
-  submit
+export default GenericSingleInputForm<CPUBlockSpec.DTO>(
+  Components,
+  CPUBlockSpec.Label,
+  CPUBlockSpec.Schemas.DTO as ZodType<CPUBlockSpec.DTO, CPUBlockSpec.DTO>
 );

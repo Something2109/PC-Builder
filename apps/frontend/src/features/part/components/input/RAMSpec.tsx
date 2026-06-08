@@ -1,3 +1,5 @@
+import { ZodType } from "zod";
+
 import { RowWrapper } from "@/ui/FlexWrapper";
 import {
   SuffixInput,
@@ -9,72 +11,55 @@ import { FormFactor, InternalConnectors } from "@/utils/interface";
 import * as RAMSpec from "@/utils/part/info/RAMSpec";
 import { MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
 
-import { defaultParse, GenericInputField } from "../utils/Form";
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<RAMSpec.DTO> = {
-  speed: (props) => (
+  speed: ({ form: _, ...props }) => (
     <UnitInput Unit={TransferSpeedUnit} defaultUnit="MT/s" {...props} />
   ),
-  capacity: (props) => (
+  capacity: ({ form: _, ...props }) => (
     <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
   ),
-  voltage: (props) => (
+  voltage: ({ form: _, ...props }) => (
     <SuffixInput suffix="V" type="number" step={0.01} {...props} />
   ),
-  latency: ({ defaultValue, value: _, ...props }) => (
-    <RowWrapper>
-      <Input
-        {...props}
-        type="number"
-        className="w-1/5"
-        defaultValue={defaultValue ? defaultValue[0] : ""}
-      ></Input>
-      {" - "}
-      <Input
-        {...props}
-        type="number"
-        className="w-1/5"
-        defaultValue={defaultValue ? defaultValue[1] : ""}
-      ></Input>
-      {" - "}
-      <Input
-        {...props}
-        type="number"
-        className="w-1/5"
-        defaultValue={defaultValue ? defaultValue[2] : ""}
-      ></Input>
-      {" - "}
-      <Input
-        {...props}
-        type="number"
-        className="w-1/5"
-        defaultValue={defaultValue ? defaultValue[3] : ""}
-      ></Input>
-    </RowWrapper>
-  ),
-  kit: (props) => (
+  latency: ({ state, handleChange, handleBlur }) => {
+    const arr = Array.isArray(state.value) ? state.value : ["", "", "", ""];
+    const handleChangeIdx = (idx: number, val: string) => {
+      const next = [...arr];
+      next[idx] = val === "" ? "" : Number(val);
+      handleChange(next as any);
+    };
+
+    return (
+      <RowWrapper>
+        {[0, 1, 2, 3].map((idx) => (
+          <Input
+            key={idx}
+            type="number"
+            className="w-1/5"
+            value={arr[idx] ?? ""}
+            onBlur={handleBlur}
+            onChange={(e) => handleChangeIdx(idx, e.target.value)}
+          />
+        ))}
+      </RowWrapper>
+    );
+  },
+  kit: ({ form: _, ...props }) => (
     <SuffixInput suffix="stick(s)" type="number" step={0.01} {...props} />
   ),
-  form_factor: (props) => (
+  form_factor: ({ form: _, options: __, ...props }) => (
     <OptionSelect options={FormFactor.RAM.options} {...props} />
   ),
-  interface: (props) => (
+  interface: ({ form: _, options: __, ...props }) => (
     <OptionSelect options={InternalConnectors.RAM.options} {...props} />
   ),
 };
 
-function submit(formData: FormData) {
-  const raw = defaultParse(formData);
-
-  raw.latency = formData
-    .getAll("latency")
-    .filter((v) => Number(v) > 0) as string[];
-
-  return RAMSpec.Schemas.DTO.parse(raw);
-}
-
-export default GenericInputField(
-  InfoComponent(Components, RAMSpec.Label),
-  submit
+export default GenericSingleInputForm<RAMSpec.DTO>(
+  Components,
+  RAMSpec.Label,
+  RAMSpec.Schemas.DTO as ZodType<RAMSpec.DTO, RAMSpec.DTO>
 );

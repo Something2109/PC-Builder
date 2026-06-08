@@ -1,32 +1,31 @@
+import { ZodType } from "zod";
+
 import { UnitInput, OptionSelect } from "@/ui/Input";
 import { FormFactor, InternalConnectors } from "@/utils/interface";
 import * as SSDSpec from "@/utils/part/info/SSDSpec";
 import { MemoryUnits } from "@/utils/Units";
 
-import { defaultParse, GenericInputField } from "../utils/Form";
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<SSDSpec.DTO> = {
-  memory_type: (props) => (
+  memory_type: ({ form: _, options: __, ...props }) => (
     <OptionSelect options={SSDSpec.MemoryCell.options} {...props} />
   ),
-  capacity: (props) => (
+  capacity: ({ form: _, ...props }) => (
     <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
   ),
-  tbw: (props) => <UnitInput Unit={MemoryUnits} defaultUnit="TB" {...props} />,
-  form_factor: (props) => (
+  tbw: ({ form: _, ...props }) => <UnitInput Unit={MemoryUnits} defaultUnit="TB" {...props} />,
+  form_factor: ({ form: _, options: __, ...props }) => (
     <OptionSelect options={FormFactor.SSD.options} {...props} />
   ),
-  interface: (props) => (
+  interface: ({ form: _, options: __, ...props }) => (
     <OptionSelect options={InternalConnectors.Storage.SSD.options} {...props} />
   ),
 };
 
-function submit(formData: FormData) {
-  return SSDSpec.Schemas.DTO.parse(defaultParse(formData));
-}
-
-export default GenericInputField(
-  InfoComponent(Components, SSDSpec.Label),
-  submit
+export default GenericSingleInputForm<SSDSpec.DTO>(
+  Components,
+  SSDSpec.Label,
+  SSDSpec.Schemas.DTO as ZodType<SSDSpec.DTO, SSDSpec.DTO>
 );

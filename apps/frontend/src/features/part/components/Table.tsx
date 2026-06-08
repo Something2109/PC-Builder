@@ -1,4 +1,3 @@
- 
 "use client";
 
 import { lazy, LazyExoticComponent } from "react";
@@ -7,22 +6,33 @@ import { ColumnWrapper } from "@/ui/FlexWrapper";
 import { Infos, Information } from "@/utils/part";
 
 export const DetailTableComponent: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key in Infos]: LazyExoticComponent<React.FC<any>>;
 } = {
-  [Infos.CPU_SPEC]: lazy(() => import("@/features/part/components/detail/CPUSpec")),
+  [Infos.CPU_SPEC]: lazy(
+    () => import("@/features/part/components/detail/CPUSpec")
+  ),
   [Infos.CPU_PERF]: lazy(
     () => import("@/features/part/components/detail/CPUPerformance")
   ),
   [Infos.CPU_CORES]: lazy(
     () => import("@/features/part/components/detail/CPUCoreConfig")
   ),
-  [Infos.CPU_MEMORY]: lazy(() => import("@/features/part/components/detail/CPUMemory")),
-  [Infos.GPU_SPEC]: lazy(() => import("@/features/part/components/detail/GPUSpec")),
+  [Infos.CPU_MEMORY]: lazy(
+    () => import("@/features/part/components/detail/CPUMemory")
+  ),
+  [Infos.GPU_SPEC]: lazy(
+    () => import("@/features/part/components/detail/GPUSpec")
+  ),
   [Infos.GPU_PERF]: lazy(
     () => import("@/features/part/components/detail/GPUPerformance")
   ),
-  [Infos.GPU_FEAT]: lazy(() => import("@/features/part/components/detail/GPUFeature")),
-  [Infos.GPU_MEMORY]: lazy(() => import("@/features/part/components/detail/GPUMemory")),
+  [Infos.GPU_FEAT]: lazy(
+    () => import("@/features/part/components/detail/GPUFeature")
+  ),
+  [Infos.GPU_MEMORY]: lazy(
+    () => import("@/features/part/components/detail/GPUMemory")
+  ),
   [Infos.PROCESSOR_CACHE]: lazy(
     () => import("@/features/part/components/detail/ProcessorCache")
   ),
@@ -50,17 +60,27 @@ export const DetailTableComponent: {
   [Infos.MAIN_FAN]: lazy(
     () => import("@/features/part/components/detail/MainboardFanConnector")
   ),
-  [Infos.RAM_SPEC]: lazy(() => import("@/features/part/components/detail/RAMSpec")),
-  [Infos.SSD_SPEC]: lazy(() => import("@/features/part/components/detail/SSDSpec")),
-  [Infos.HDD_SPEC]: lazy(() => import("@/features/part/components/detail/HDDSpec")),
+  [Infos.RAM_SPEC]: lazy(
+    () => import("@/features/part/components/detail/RAMSpec")
+  ),
+  [Infos.SSD_SPEC]: lazy(
+    () => import("@/features/part/components/detail/SSDSpec")
+  ),
+  [Infos.HDD_SPEC]: lazy(
+    () => import("@/features/part/components/detail/HDDSpec")
+  ),
   [Infos.STORAGE_PERF]: lazy(
     () => import("@/features/part/components/detail/StoragePerformance")
   ),
   [Infos.STORAGE_CACHE]: lazy(
     () => import("@/features/part/components/detail/StorageCache")
   ),
-  [Infos.PSU_SPEC]: lazy(() => import("@/features/part/components/detail/PSUSpec")),
-  [Infos.CASE_SPEC]: lazy(() => import("@/features/part/components/detail/CaseSpec")),
+  [Infos.PSU_SPEC]: lazy(
+    () => import("@/features/part/components/detail/PSUSpec")
+  ),
+  [Infos.CASE_SPEC]: lazy(
+    () => import("@/features/part/components/detail/CaseSpec")
+  ),
   [Infos.CASE_MAIN]: lazy(
     () => import("@/features/part/components/detail/CaseMainboardSupport")
   ),
@@ -76,14 +96,18 @@ export const DetailTableComponent: {
   [Infos.CASE_PSU]: lazy(
     () => import("@/features/part/components/detail/CasePSUSupport")
   ),
-  [Infos.FAN_SPEC]: lazy(() => import("@/features/part/components/detail/FanSpec")),
+  [Infos.FAN_SPEC]: lazy(
+    () => import("@/features/part/components/detail/FanSpec")
+  ),
   [Infos.CPU_BLOCK_SPEC]: lazy(
     () => import("@/features/part/components/detail/CPUBlockSpec")
   ),
   [Infos.CPU_BLOCK_SOCKET]: lazy(
     () => import("@/features/part/components/detail/CPUBlockSocketSupport")
   ),
-  [Infos.PUMP_SPEC]: lazy(() => import("@/features/part/components/detail/PumpSpec")),
+  [Infos.PUMP_SPEC]: lazy(
+    () => import("@/features/part/components/detail/PumpSpec")
+  ),
   [Infos.RADIATOR_SPEC]: lazy(
     () => import("@/features/part/components/detail/RadiatorSpec")
   ),
@@ -100,7 +124,7 @@ export function InfoTable({
   defaultValue,
 }: Readonly<{
   info: Infos;
-  defaultValue?: any;
+  defaultValue?: unknown;
 }>) {
   const Component = DetailTableComponent[info];
 

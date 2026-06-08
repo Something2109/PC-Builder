@@ -1,25 +1,24 @@
+import { ZodType } from "zod";
+
 import { SuffixInput, UnitInput } from "@/ui/Input";
 import * as CPUPerformance from "@/utils/part/info/CPUPerformance";
 import { FrequencyUnits } from "@/utils/Units";
 
-import { defaultParse, GenericInputField } from "../utils/Form";
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { InfoComponentObject } from "../utils/TanstackForm";
 
 export const Components: InfoComponentObject<CPUPerformance.DTO> = {
-  base_frequency: (props) => (
+  base_frequency: ({ form: _, ...props }) => (
     <UnitInput Unit={FrequencyUnits} defaultUnit="GHz" {...props} />
   ),
-  turbo_frequency: (props) => (
+  turbo_frequency: ({ form: _, ...props }) => (
     <UnitInput Unit={FrequencyUnits} defaultUnit="GHz" {...props} />
   ),
-  tdp: (props) => <SuffixInput suffix="W" type="number" {...props} />,
+  tdp: ({ form: _, ...props }) => <SuffixInput suffix="W" type="number" {...props} />,
 };
 
-function submit(formData: FormData) {
-  return CPUPerformance.Schemas.DTO.parse(defaultParse(formData));
-}
-
-export default GenericInputField(
-  InfoComponent(Components, CPUPerformance.Label),
-  submit
+export default GenericSingleInputForm<CPUPerformance.DTO>(
+  Components,
+  CPUPerformance.Label,
+  CPUPerformance.Schemas.DTO as ZodType<CPUPerformance.DTO, CPUPerformance.DTO>
 );

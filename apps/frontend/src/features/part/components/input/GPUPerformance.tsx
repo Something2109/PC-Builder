@@ -1,25 +1,24 @@
+import { ZodType } from "zod";
+
 import { SuffixInput, UnitInput } from "@/ui/Input";
 import * as GPUPerformance from "@/utils/part/info/GPUPerformance";
 import { FrequencyUnits } from "@/utils/Units";
 
-import { defaultParse, GenericInputField } from "../utils/Form";
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<GPUPerformance.DTO> = {
-  base_frequency: (props) => (
+  base_frequency: ({ form: _, ...props }) => (
     <UnitInput Unit={FrequencyUnits} defaultUnit="MHz" {...props} />
   ),
-  boost_frequency: (props) => (
+  boost_frequency: ({ form: _, ...props }) => (
     <UnitInput Unit={FrequencyUnits} defaultUnit="MHz" {...props} />
   ),
-  tdp: (props) => <SuffixInput suffix="W" type="number" {...props} />,
+  tdp: ({ form: _, ...props }) => <SuffixInput suffix="W" type="number" {...props} />,
 };
 
-function submit(formData: FormData) {
-  return GPUPerformance.Schemas.DTO.parse(defaultParse(formData));
-}
-
-export default GenericInputField(
-  InfoComponent(Components, GPUPerformance.Label),
-  submit
+export default GenericSingleInputForm<GPUPerformance.DTO>(
+  Components,
+  GPUPerformance.Label,
+  GPUPerformance.Schemas.DTO as ZodType<GPUPerformance.DTO, GPUPerformance.DTO>
 );

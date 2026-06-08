@@ -1,3 +1,5 @@
+import { ZodType } from "zod";
+
 import {
   Input,
   OptionSelect,
@@ -8,35 +10,32 @@ import { InternalConnectors } from "@/utils/interface";
 import * as GraphicCardSpec from "@/utils/part/info/GraphicCardSpec";
 import { LengthUnits } from "@/utils/Units";
 
-import { defaultParse, GenericInputField } from "../utils/Form";
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<GraphicCardSpec.DTO> = {
-  width: (props) => (
+  width: ({ form: _, ...props }) => (
     <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  length: (props) => (
+  length: ({ form: _, ...props }) => (
     <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  height: (props) => (
+  height: ({ form: _, ...props }) => (
     <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
   ),
-  pcie: (props) => <Input type="number" {...props} />,
-  minimum_psu: (props) => <SuffixInput suffix="W" type="number" {...props} />,
-  power_connector: (props) => (
+  pcie: ({ form: _, ...props }) => <Input type="number" {...props} />,
+  minimum_psu: ({ form: _, ...props }) => <SuffixInput suffix="W" type="number" {...props} />,
+  power_connector: ({ form: _, options: __, ...props }) => (
     <OptionSelect
       options={InternalConnectors.Power.GraphicCard.options}
       {...props}
     />
   ),
-  power_connector_count: (props) => <Input type="number" {...props} />,
+  power_connector_count: ({ form: _, ...props }) => <Input type="number" {...props} />,
 };
 
-function submit(formData: FormData) {
-  return GraphicCardSpec.Schemas.DTO.parse(defaultParse(formData));
-}
-
-export default GenericInputField(
-  InfoComponent(Components, GraphicCardSpec.Label),
-  submit
+export default GenericSingleInputForm<GraphicCardSpec.DTO>(
+  Components,
+  GraphicCardSpec.Label,
+  GraphicCardSpec.Schemas.DTO as ZodType<GraphicCardSpec.DTO, GraphicCardSpec.DTO>
 );

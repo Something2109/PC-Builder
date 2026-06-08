@@ -1,22 +1,21 @@
+import { ZodType } from "zod";
+
 import { Input } from "@/ui/Input";
 import * as GPUFeature from "@/utils/part/info/GPUFeature";
 
-import { defaultParse, GenericInputField } from "../utils/Form";
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<GPUFeature.DTO> = {
-  DirectX: (props) => <Input {...props} />,
-  OpenGL: (props) => <Input {...props} />,
-  OpenCL: (props) => <Input {...props} />,
-  Vulkan: (props) => <Input {...props} />,
-  CUDA: (props) => <Input {...props} />,
+  DirectX: ({ form: _, ...props }) => <Input {...props} />,
+  OpenGL: ({ form: _, ...props }) => <Input {...props} />,
+  OpenCL: ({ form: _, ...props }) => <Input {...props} />,
+  Vulkan: ({ form: _, ...props }) => <Input {...props} />,
+  CUDA: ({ form: _, ...props }) => <Input {...props} />,
 };
 
-function submit(formData: FormData) {
-  return GPUFeature.Schemas.DTO.parse(defaultParse(formData));
-}
-
-export default GenericInputField(
-  InfoComponent(Components, GPUFeature.Label),
-  submit
+export default GenericSingleInputForm<GPUFeature.DTO>(
+  Components,
+  GPUFeature.Label,
+  GPUFeature.Schemas.DTO as ZodType<GPUFeature.DTO, GPUFeature.DTO>
 );

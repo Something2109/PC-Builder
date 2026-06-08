@@ -1,32 +1,31 @@
+import { ZodType } from "zod";
+
 import { Input, SuffixInput, OptionSelect } from "@/ui/Input";
 import { FormFactor, InternalConnectors } from "@/utils/interface";
 import * as MainboardSpec from "@/utils/part/info/MainboardSpec";
 
-import { defaultParse, GenericInputField } from "../utils/Form";
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
+import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<MainboardSpec.DTO> = {
-  form_factor: (props) => (
+  form_factor: ({ form: _, options: __, ...props }) => (
     <OptionSelect options={FormFactor.Mainboard.options} {...props} />
   ),
-  socket: (props) => <Input {...props} />,
-  chipset: (props) => <Input {...props} />,
-  ram_form_factor: (props) => (
+  socket: ({ form: _, ...props }) => <Input {...props} />,
+  chipset: ({ form: _, ...props }) => <Input {...props} />,
+  ram_form_factor: ({ form: _, options: __, ...props }) => (
     <OptionSelect options={FormFactor.RAM.options} {...props} />
   ),
-  ram_interface: (props) => (
+  ram_interface: ({ form: _, options: __, ...props }) => (
     <OptionSelect options={InternalConnectors.RAM.options} {...props} />
   ),
-  ram_slot: (props) => (
+  ram_slot: ({ form: _, ...props }) => (
     <SuffixInput suffix="slot(s)" type="number" {...props} />
   ),
 };
 
-function submit(formData: FormData) {
-  return MainboardSpec.Schemas.DTO.parse(defaultParse(formData));
-}
-
-export default GenericInputField(
-  InfoComponent(Components, MainboardSpec.Label),
-  submit
+export default GenericSingleInputForm<MainboardSpec.DTO>(
+  Components,
+  MainboardSpec.Label,
+  MainboardSpec.Schemas.DTO as ZodType<MainboardSpec.DTO, MainboardSpec.DTO>
 );

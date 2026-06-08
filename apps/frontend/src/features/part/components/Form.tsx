@@ -1,4 +1,3 @@
- 
 "use client";
 
 import { lazy, LazyExoticComponent } from "react";
@@ -10,6 +9,7 @@ import { NotificationBar } from "@/ui/NotificationBar";
 import Part, { Information } from "@/utils/part";
 
 const InputComponent: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key in Information.Name]: LazyExoticComponent<React.FC<any>>;
 } = {
   [Information.Name.CPU_SPEC]: lazy(
