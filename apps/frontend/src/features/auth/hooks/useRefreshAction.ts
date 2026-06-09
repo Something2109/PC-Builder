@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useTransition } from "react";
 
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@/utils/axios";
 
 import { AuthContext } from "../components/AuthContext";
 

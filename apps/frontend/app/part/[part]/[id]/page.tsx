@@ -4,7 +4,6 @@ import React from "react";
 import { PartTable } from "@/features/part/components/detail/Part";
 import { InfoTable } from "@/features/part/components/Table";
 import { ResponsiveWrapper } from "@/ui/FlexWrapper";
-import { getBackendPath } from "@/utils/path";
 import Part, { Products, Mapping } from "@/utils/part";
 
 export default async function PartDetailPage({
@@ -15,7 +14,7 @@ export default async function PartDetailPage({
   const { part, id } = await params;
 
   const response = await fetch(
-    getBackendPath(`/api/part/${part}/${id}`)
+    `${process.env.BACKEND_HOST}/api/part/${part}/${id}`
   );
 
   if (!response.ok) return notFound();

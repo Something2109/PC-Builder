@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useActionState, useContext, useState } from "react";
 
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@/utils/axios";
 
 import { AuthContext } from "../components/AuthContext";
 

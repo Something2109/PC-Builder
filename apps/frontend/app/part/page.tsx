@@ -4,7 +4,6 @@ import PartPanel from "@/features/part/components/Panel";
 import { SearchBar } from "@/layout/searchbar";
 import PaginationBar from "@/ui/PaginationBar";
 import * as API from "@/utils/API";
-import { getBackendPath } from "@/utils/path";
 import Part from "@/utils/part";
 
 export default async function ListPage({
@@ -26,7 +25,7 @@ export default async function ListPage({
   const options = new URLSearchParams(queryEntries);
 
   const response = await fetch(
-    getBackendPath(`/api/part?${options}`)
+    `${process.env.BACKEND_HOST}/api/part?${options}`
   );
 
   if (!response) return notFound();

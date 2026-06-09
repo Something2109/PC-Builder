@@ -5,7 +5,6 @@ import React from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
-import { getBackendPath } from "@/utils/path";
 import { Summary } from "@/utils/article";
 
 export default async function TopicPage({
@@ -16,8 +15,8 @@ export default async function TopicPage({
   const { topic } = await params;
   const query = new URLSearchParams({ topic });
   const response = await fetch(
-    getBackendPath(`/api/article?${query}`),
-    { cache: "no-store" }
+    `${process.env.BACKEND_HOST}/api/article?${query}`,
+    { cache: "no-store" },
   );
 
   if (!response.ok) return notFound();

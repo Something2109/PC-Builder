@@ -2,19 +2,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 
-import { getBackendPath } from "@/utils/path";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
 import { Summary } from "@/utils/article";
 
 export default async function ArticleIndexPage() {
-  const response = await fetch(
-    getBackendPath("/api/article"),
-    {
-      cache: "no-store",
-    }
-  );
+  const response = await fetch(`${process.env.BACKEND_HOST}/api/article`, {
+    cache: "no-store",
+  });
 
   if (!response.ok) return notFound();
 
