@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 
+import { getBackendUrl } from "@/utils/path";
 import { Tokens } from "@/utils/API";
 import { JwtPayload } from "@/utils/user";
 
@@ -11,7 +12,7 @@ export async function verifyToken(): Promise<JwtPayload | null> {
 
   try {
     const apiResponse = await fetch(
-      `${process.env.BACKEND_HOST}/api/auth/me`,
+      getBackendUrl("/api/auth/me"),
       {
         method: "GET",
         headers: {

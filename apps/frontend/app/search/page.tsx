@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import PartPanel from "@/features/part/components/Panel";
 import { SearchBar } from "@/layout/searchbar";
 import PaginationBar from "@/ui/PaginationBar";
+import { getBackendUrl } from "@/utils/path";
 import Part from "@/utils/part";
 
 export default async function Page({
@@ -17,7 +18,7 @@ export default async function Page({
   const params = new URLSearchParams(query);
 
   const response = await fetch(
-    `${process.env.BACKEND_HOST}/api/part?${params.toString()}`
+    getBackendUrl(`/api/part?${params.toString()}`)
   );
 
   if (!response.ok) return notFound();

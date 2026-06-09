@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 
 import { verifyToken } from "@/features/auth/server";
+import { getBackendUrl } from "@/utils/path";
 import { Summary } from "@/utils/article";
 import { Roles } from "@/utils/user";
 
@@ -20,7 +21,7 @@ export default async function PartTopicEditPage({
   // Fetch articles matching the topic and part
   const query = new URLSearchParams({ topic, part });
   const response = await fetch(
-    `${process.env.BACKEND_HOST}/api/article?${query}`,
+    getBackendUrl(`/api/article?${query}`),
     { cache: "no-store" },
   );
 

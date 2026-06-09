@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import React from "react";
 
+import { getBackendUrl } from "@/utils/path";
 import { EditableArticle } from "@/features/article/components/Form";
 import { AuthRole } from "@/features/auth";
 import { Article } from "@/utils/article";
@@ -15,7 +16,7 @@ export default async function ArticleEditPage({
 
   // Retrieve with preview=true to load drafts
   const response = await fetch(
-    `${process.env.BACKEND_HOST}/api/article/${id}?preview=true`,
+    getBackendUrl(`/api/article/${id}?preview=true`),
     {
       cache: "no-store",
     },

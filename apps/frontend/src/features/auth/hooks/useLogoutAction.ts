@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useContext, useTransition } from "react";
 
-import axiosInstance from "@/utils/axios";
+import axiosInstance from "@/lib/axios";
 
 import { AuthContext } from "../components/AuthContext";
 
@@ -23,7 +23,11 @@ export function useLogoutAction() {
       } catch (err) {
         const error = err as AxiosError;
         console.error(err);
-        alert(typeof error.response?.data === 'string' ? error.response.data : "Cannot connect to server.");
+        alert(
+          typeof error.response?.data === "string"
+            ? error.response.data
+            : "Cannot connect to server."
+        );
       }
     });
 
