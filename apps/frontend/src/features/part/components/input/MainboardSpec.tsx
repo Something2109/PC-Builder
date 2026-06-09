@@ -4,23 +4,44 @@ import { Input, SuffixInput, OptionSelect } from "@/ui/Input";
 import { FormFactor, InternalConnectors } from "@/utils/interface";
 import * as MainboardSpec from "@/utils/part/info/MainboardSpec";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<MainboardSpec.DTO> = {
-  form_factor: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={FormFactor.Mainboard.options} {...props} />
+  form_factor: (field) => (
+    <OptionSelect
+      options={FormFactor.Mainboard.options}
+      {...mapChange(field, "select")}
+    />
   ),
-  socket: ({ form: _, ...props }) => <Input {...props} />,
-  chipset: ({ form: _, ...props }) => <Input {...props} />,
-  ram_form_factor: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={FormFactor.RAM.options} {...props} />
+  socket: (field) => (
+    <Input
+      {...mapChange(field, "string")}
+    />
   ),
-  ram_interface: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={InternalConnectors.RAM.options} {...props} />
+  chipset: (field) => (
+    <Input
+      {...mapChange(field, "string")}
+    />
   ),
-  ram_slot: ({ form: _, ...props }) => (
-    <SuffixInput suffix="slot(s)" type="number" {...props} />
+  ram_form_factor: (field) => (
+    <OptionSelect
+      options={FormFactor.RAM.options}
+      {...mapChange(field, "select")}
+    />
+  ),
+  ram_interface: (field) => (
+    <OptionSelect
+      options={InternalConnectors.RAM.options}
+      {...mapChange(field, "select")}
+    />
+  ),
+  ram_slot: (field) => (
+    <SuffixInput
+      suffix="slot(s)"
+      type="number"
+      {...mapChange(field, "number")}
+    />
   ),
 };
 

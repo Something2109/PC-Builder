@@ -8,14 +8,29 @@ import { GenericSingleInputForm } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 export const Components: InfoComponentObject<ProcessorCache.DTO> = {
-  L1_cache: ({ form: _, ...props }) => (
-    <UnitInput Unit={MemoryUnits} defaultUnit="MB" {...props} />
+  L1_cache: ({ state, handleChange }) => (
+    <UnitInput
+      Unit={MemoryUnits}
+      defaultUnit="MB"
+      defaultValue={state.value ?? 0}
+      onChange={(e) => handleChange(Number(e.target.value))}
+    />
   ),
-  L2_cache: ({ form: _, ...props }) => (
-    <UnitInput Unit={MemoryUnits} defaultUnit="MB" {...props} />
+  L2_cache: ({ state, handleChange }) => (
+    <UnitInput
+      Unit={MemoryUnits}
+      defaultUnit="MB"
+      defaultValue={state.value ?? 0}
+      onChange={(e) => handleChange(Number(e.target.value))}
+    />
   ),
-  L3_cache: ({ form: _, ...props }) => (
-    <UnitInput Unit={MemoryUnits} defaultUnit="MB" {...props} />
+  L3_cache: ({ state, handleChange }) => (
+    <UnitInput
+      Unit={MemoryUnits}
+      defaultUnit="MB"
+      defaultValue={state.value ?? 0}
+      onChange={(e) => handleChange(Number(e.target.value))}
+    />
   ),
 };
 

@@ -5,28 +5,56 @@ import { FormFactor } from "@/utils/interface";
 import * as CaseSpec from "@/utils/part/info/CaseSpec";
 import { LengthUnits } from "@/utils/Units";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<CaseSpec.DTO> = {
-  form_factor: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={FormFactor.Case.options} {...props} />
+  form_factor: (field) => (
+    <OptionSelect
+      options={FormFactor.Case.options}
+      {...mapChange(field, "select")}
+    />
   ),
-  width: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  width: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
   ),
-  length: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  length: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
   ),
-  height: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  height: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
   ),
-  expansion_slot: ({ form: _, ...props }) => <Input type="number" {...props} />,
-  max_cooler_height: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  expansion_slot: (field) => (
+    <Input
+      type="number"
+      {...mapChange(field, "number")}
+    />
   ),
-  max_psu_length: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  max_cooler_height: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
+  ),
+  max_psu_length: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
   ),
 };
 

@@ -1,4 +1,10 @@
-import { StandardSchemaV1, useForm } from "@tanstack/react-form";
+import {
+  StandardSchemaV1,
+  useForm,
+  DeepKeys,
+  DeepValue,
+  Updater,
+} from "@tanstack/react-form";
 import { ComponentType, FC, TableHTMLAttributes } from "react";
 import { z, ZodType } from "zod";
 
@@ -162,4 +168,65 @@ export function GenericListInputForm<Item extends object>(
   };
 
   return InputField;
+}
+
+export function mapChange<
+  TParentData extends object,
+  TName extends DeepKeys<TParentData>,
+>(
+  field: Pick<FieldApi<TParentData, TName>, "state" | "handleChange">,
+  type: "number"
+): {
+  defaultValue: Exclude<DeepValue<TParentData, TName>, null> | undefined;
+  onChange: (e: { target: { value: string } }) => void;
+};
+
+export function mapChange<
+  TParentData extends object,
+  TName extends DeepKeys<TParentData>,
+>(
+  field: Pick<FieldApi<TParentData, TName>, "state" | "handleChange">,
+  type: "select"
+): {
+  value: Exclude<DeepValue<TParentData, TName>, null> | "";
+  onChange: (e: { target: { value: string } }) => void;
+};
+
+export function mapChange<
+  TParentData extends object,
+  TName extends DeepKeys<TParentData>,
+>(
+  field: Pick<FieldApi<TParentData, TName>, "state" | "handleChange">,
+  type?: "string"
+): {
+  defaultValue: Exclude<DeepValue<TParentData, TName>, null> | undefined;
+  onChange: (e: { target: { value: string } }) => void;
+};
+
+export function mapChange<
+  TParentData extends object,
+  TName extends DeepKeys<TParentData>,
+>(
+  field: Pick<FieldApi<TParentData, TName>, "state" | "handleChange">,
+  type: "number" | "string" | "select" = "string"
+) {
+  if (type === "number") {
+    return {
+      defaultValue: (field.state.value ?? undefined) as any,
+      onChange: (e: { target: { value: string } }) =>
+        field.handleChange((e.target.value === "" ? null : Number(e.target.value)) as any),
+    };
+  }
+  if (type === "select") {
+    return {
+      value: (field.state.value ?? "") as any,
+      onChange: (e: { target: { value: string } }) =>
+        field.handleChange((e.target.value === "" ? null : e.target.value) as any),
+    };
+  }
+  return {
+    defaultValue: (field.state.value ?? undefined) as any,
+    onChange: (e: { target: { value: string } }) =>
+      field.handleChange((e.target.value === "" ? null : e.target.value) as any),
+  };
 }

@@ -5,25 +5,48 @@ import { FormFactor, Material } from "@/utils/interface";
 import * as RadiatorSpec from "@/utils/part/info/RadiatorSpec";
 import { LengthUnits } from "@/utils/Units";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<RadiatorSpec.DTO> = {
-  form_factor: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={FormFactor.Radiator.options} {...props} />
+  form_factor: (field) => (
+    <OptionSelect
+      options={FormFactor.Radiator.options}
+      {...mapChange(field, "select")}
+    />
   ),
-  width: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  width: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
   ),
-  length: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  length: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
   ),
-  height: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  height: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
   ),
-  fpi: ({ form: _, ...props }) => <Input type="number" {...props} />,
-  material: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={Material.Metal.options} {...props} />
+  fpi: (field) => (
+    <Input
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
+  material: (field) => (
+    <OptionSelect
+      options={Material.Metal.options}
+      {...mapChange(field, "select")}
+    />
   ),
 };
 

@@ -5,21 +5,35 @@ import { FormFactor, InternalConnectors } from "@/utils/interface";
 import * as HDDSpec from "@/utils/part/info/HDDSpec";
 import { MemoryUnits } from "@/utils/Units";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<HDDSpec.DTO> = {
-  rotational_speed: ({ form: _, ...props }) => (
-    <SuffixInput suffix="RPM" type="number" {...props} />
+  rotational_speed: (field) => (
+    <SuffixInput
+      suffix="RPM"
+      type="number"
+      {...mapChange(field, "number")}
+    />
   ),
-  capacity: ({ form: _, ...props }) => (
-    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
+  capacity: (field) => (
+    <UnitInput
+      Unit={MemoryUnits}
+      defaultUnit="GB"
+      {...mapChange(field, "number")}
+    />
   ),
-  form_factor: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={FormFactor.HDD.options} {...props} />
+  form_factor: (field) => (
+    <OptionSelect
+      options={FormFactor.HDD.options}
+      {...mapChange(field, "select")}
+    />
   ),
-  interface: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={InternalConnectors.Storage.HDD.options} {...props} />
+  interface: (field) => (
+    <OptionSelect
+      options={InternalConnectors.Storage.HDD.options}
+      {...mapChange(field, "select")}
+    />
   ),
 };
 

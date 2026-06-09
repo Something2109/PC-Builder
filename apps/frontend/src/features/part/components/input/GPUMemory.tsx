@@ -5,23 +5,44 @@ import { InternalConnectors } from "@/utils/interface";
 import * as GPUMemory from "@/utils/part/info/GPUMemory";
 import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<GPUMemory.DTO> = {
-  type: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={InternalConnectors.SGRAM.options} {...props} />
+  type: (field) => (
+    <OptionSelect
+      options={InternalConnectors.SGRAM.options}
+      {...mapChange(field, "select")}
+    />
   ),
-  speed: ({ form: _, ...props }) => (
-    <UnitInput Unit={TransferSpeedUnit} defaultUnit="MT/s" {...props} />
+  speed: (field) => (
+    <UnitInput
+      Unit={TransferSpeedUnit}
+      defaultUnit="MT/s"
+      {...mapChange(field, "number")}
+    />
   ),
-  capacity: ({ form: _, ...props }) => (
-    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
+  capacity: (field) => (
+    <UnitInput
+      Unit={MemoryUnits}
+      defaultUnit="GB"
+      {...mapChange(field, "number")}
+    />
   ),
-  bandwidth: ({ form: _, ...props }) => (
-    <UnitInput Unit={MemorySpeedUnit} defaultUnit="GB/s" {...props} />
+  bandwidth: (field) => (
+    <UnitInput
+      Unit={MemorySpeedUnit}
+      defaultUnit="GB/s"
+      {...mapChange(field, "number")}
+    />
   ),
-  bus_width: ({ form: _, ...props }) => <SuffixInput suffix="bit" type="number" {...props} />,
+  bus_width: (field) => (
+    <SuffixInput
+      suffix="bit"
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
 };
 
 export default GenericSingleInputForm<GPUMemory.DTO>(

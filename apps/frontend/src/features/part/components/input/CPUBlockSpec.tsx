@@ -4,15 +4,21 @@ import { OptionSelect } from "@/ui/Input";
 import { Material, InternalConnectors } from "@/utils/interface";
 import * as CPUBlockSpec from "@/utils/part/info/CPUBlockSpec";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<CPUBlockSpec.DTO> = {
-  plate: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={Material.Metal.options} {...props} />
+  plate: (field) => (
+    <OptionSelect
+      options={Material.Metal.options}
+      {...mapChange(field, "select")}
+    />
   ),
-  rgb: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={InternalConnectors.RGB.options} {...props} />
+  rgb: (field) => (
+    <OptionSelect
+      options={InternalConnectors.RGB.options}
+      {...mapChange(field, "select")}
+    />
   ),
 };
 

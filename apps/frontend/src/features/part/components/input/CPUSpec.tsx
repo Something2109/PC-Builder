@@ -3,20 +3,40 @@ import { ZodType } from "zod";
 import { Input, SuffixInput } from "@/ui/Input";
 import * as CPUSpec from "@/utils/part/info/CPUSpec";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 export const Components: InfoComponentObject<CPUSpec.DTO> = {
-  family: ({ form: _, ...props }) => <Input {...props} />,
-  socket: ({ form: _, ...props }) => <Input {...props} />,
-  total_cores: ({ form: _, ...props }) => (
-    <SuffixInput suffix="Cores" type="number" {...props} />
+  family: (field) => (
+    <Input
+      {...mapChange(field, "string")}
+    />
   ),
-  total_threads: ({ form: _, ...props }) => (
-    <SuffixInput suffix="Threads" type="number" {...props} />
+  socket: (field) => (
+    <Input
+      {...mapChange(field, "string")}
+    />
+  ),
+  total_cores: (field) => (
+    <SuffixInput
+      suffix="Cores"
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
+  total_threads: (field) => (
+    <SuffixInput
+      suffix="Threads"
+      type="number"
+      {...mapChange(field, "number")}
+    />
   ),
 
-  lithography: ({ form: _, ...props }) => <Input {...props} />,
+  lithography: (field) => (
+    <Input
+      {...mapChange(field, "string")}
+    />
+  ),
 };
 
 export default GenericSingleInputForm<CPUSpec.DTO>(

@@ -5,46 +5,84 @@ import { FormFactor, InternalConnectors } from "@/utils/interface";
 import * as PumpSpec from "@/utils/part/info/PumpSpec";
 import { LengthUnits, VolumeSpeedUnit } from "@/utils/Units";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<PumpSpec.DTO> = {
-  form_factor: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={FormFactor.Pump.options} {...props} />
+  form_factor: (field) => (
+    <OptionSelect
+      options={FormFactor.Pump.options}
+      {...mapChange(field, "select")}
+    />
   ),
-  width: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  width: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
   ),
-  length: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  length: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
   ),
-  height: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  height: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
   ),
-  voltage: ({ form: _, ...props }) => (
-    <SuffixInput suffix="V" type="number" step={0.01} {...props} />
+  voltage: (field) => (
+    <SuffixInput
+      suffix="V"
+      type="number"
+      step={0.01}
+      {...mapChange(field, "number")}
+    />
   ),
-  wattage: ({ form: _, ...props }) => <SuffixInput suffix="W" type="number" {...props} />,
-  head_pressure: ({ form: _, ...props }) => (
-    <SuffixInput suffix="m" type="number" step={0.01} {...props} />
+  wattage: (field) => (
+    <SuffixInput
+      suffix="W"
+      type="number"
+      {...mapChange(field, "number")}
+    />
   ),
-  flow_rate: ({ form: _, ...props }) => (
-    <UnitInput Unit={VolumeSpeedUnit} defaultUnit="L/h" {...props} />
+  head_pressure: (field) => (
+    <SuffixInput
+      suffix="m"
+      type="number"
+      step={0.01}
+      {...mapChange(field, "number")}
+    />
   ),
-  power_connector: ({ form: _, options: __, ...props }) => (
+  flow_rate: (field) => (
+    <UnitInput
+      Unit={VolumeSpeedUnit}
+      defaultUnit="L/h"
+      {...mapChange(field, "number")}
+    />
+  ),
+  power_connector: (field) => (
     <OptionSelect
       options={InternalConnectors.Power.Miscellanous.options}
-      {...props}
+      {...mapChange(field, "select")}
     />
   ),
-  control_connector: ({ form: _, options: __, ...props }) => (
+  control_connector: (field) => (
     <OptionSelect
       options={InternalConnectors.Fan.Connector.options}
-      {...props}
+      {...mapChange(field, "select")}
     />
   ),
-  rgb: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={InternalConnectors.RGB.options} {...props} />
+  rgb: (field) => (
+    <OptionSelect
+      options={InternalConnectors.RGB.options}
+      {...mapChange(field, "select")}
+    />
   ),
 };
 

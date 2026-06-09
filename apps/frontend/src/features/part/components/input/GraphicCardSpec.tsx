@@ -1,41 +1,67 @@
 import { ZodType } from "zod";
 
-import {
-  Input,
-  OptionSelect,
-  SuffixInput,
-  UnitInput,
-} from "@/ui/Input";
+import { Input, OptionSelect, SuffixInput, UnitInput } from "@/ui/Input";
 import { InternalConnectors } from "@/utils/interface";
 import * as GraphicCardSpec from "@/utils/part/info/GraphicCardSpec";
 import { LengthUnits } from "@/utils/Units";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<GraphicCardSpec.DTO> = {
-  width: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
-  ),
-  length: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
-  ),
-  height: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
-  ),
-  pcie: ({ form: _, ...props }) => <Input type="number" {...props} />,
-  minimum_psu: ({ form: _, ...props }) => <SuffixInput suffix="W" type="number" {...props} />,
-  power_connector: ({ form: _, options: __, ...props }) => (
-    <OptionSelect
-      options={InternalConnectors.Power.GraphicCard.options}
-      {...props}
+  width: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
     />
   ),
-  power_connector_count: ({ form: _, ...props }) => <Input type="number" {...props} />,
+  length: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
+  ),
+  height: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
+  ),
+  pcie: (field) => (
+    <Input
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
+  minimum_psu: (field) => (
+    <SuffixInput
+      suffix="W"
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
+  power_connector: (field) => (
+    <OptionSelect
+      options={InternalConnectors.Power.GraphicCard.options}
+      {...mapChange(field, "select")}
+    />
+  ),
+  power_connector_count: (field) => (
+    <Input
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
 };
 
 export default GenericSingleInputForm<GraphicCardSpec.DTO>(
   Components,
   GraphicCardSpec.Label,
-  GraphicCardSpec.Schemas.DTO as ZodType<GraphicCardSpec.DTO, GraphicCardSpec.DTO>
+  GraphicCardSpec.Schemas.DTO as ZodType<
+    GraphicCardSpec.DTO,
+    GraphicCardSpec.DTO
+  >
 );

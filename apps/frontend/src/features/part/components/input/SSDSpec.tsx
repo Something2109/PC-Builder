@@ -5,22 +5,41 @@ import { FormFactor, InternalConnectors } from "@/utils/interface";
 import * as SSDSpec from "@/utils/part/info/SSDSpec";
 import { MemoryUnits } from "@/utils/Units";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<SSDSpec.DTO> = {
-  memory_type: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={SSDSpec.MemoryCell.options} {...props} />
+  memory_type: (field) => (
+    <OptionSelect
+      options={SSDSpec.MemoryCell.options}
+      {...mapChange(field, "select")}
+    />
   ),
-  capacity: ({ form: _, ...props }) => (
-    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
+  capacity: (field) => (
+    <UnitInput
+      Unit={MemoryUnits}
+      defaultUnit="GB"
+      {...mapChange(field, "number")}
+    />
   ),
-  tbw: ({ form: _, ...props }) => <UnitInput Unit={MemoryUnits} defaultUnit="TB" {...props} />,
-  form_factor: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={FormFactor.SSD.options} {...props} />
+  tbw: (field) => (
+    <UnitInput
+      Unit={MemoryUnits}
+      defaultUnit="TB"
+      {...mapChange(field, "number")}
+    />
   ),
-  interface: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={InternalConnectors.Storage.SSD.options} {...props} />
+  form_factor: (field) => (
+    <OptionSelect
+      options={FormFactor.SSD.options}
+      {...mapChange(field, "select")}
+    />
+  ),
+  interface: (field) => (
+    <OptionSelect
+      options={InternalConnectors.Storage.SSD.options}
+      {...mapChange(field, "select")}
+    />
   ),
 };
 

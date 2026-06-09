@@ -50,7 +50,7 @@ function Component({
                       {(subField) => (
                         <Input
                           name={subField.name}
-                          value={subField.state.value}
+                          defaultValue={subField.state.value}
                           onChange={(e) =>
                             subField.handleChange(e.target.value)
                           }
@@ -64,7 +64,7 @@ function Component({
                         <Input
                           type="number"
                           name={subField.name}
-                          value={subField.state.value ?? 0}
+                          defaultValue={subField.state.value ?? 0}
                           onChange={(e) =>
                             subField.handleChange(Number(e.target.value))
                           }
@@ -78,7 +78,7 @@ function Component({
                         <UnitInput
                           Unit={FrequencyUnits}
                           name={subField.name}
-                          value={subField.state.value ?? 0}
+                          defaultValue={subField.state.value ?? 0}
                           onChange={(e) =>
                             subField.handleChange(Number(e.target.value))
                           }
@@ -93,7 +93,7 @@ function Component({
                         <UnitInput
                           Unit={FrequencyUnits}
                           name={subField.name}
-                          value={subField.state.value ?? 0}
+                          defaultValue={subField.state.value ?? 0}
                           onChange={(e) =>
                             subField.handleChange(Number(e.target.value))
                           }

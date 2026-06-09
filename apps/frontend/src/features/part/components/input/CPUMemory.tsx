@@ -69,7 +69,7 @@ function Component({
                           name={subField.name}
                           Unit={TransferSpeedUnit}
                           defaultUnit="MT/s"
-                          value={subField.state.value ?? 0}
+                          defaultValue={subField.state.value ?? 0}
                           onChange={(e) =>
                             subField.handleChange(Number(e.target.value))
                           }
@@ -84,7 +84,7 @@ function Component({
                           name={subField.name}
                           Unit={MemoryUnits}
                           defaultUnit="GB"
-                          value={subField.state.value ?? 0}
+                          defaultValue={subField.state.value ?? 0}
                           onChange={(e) =>
                             subField.handleChange(Number(e.target.value))
                           }
@@ -99,7 +99,7 @@ function Component({
                           type="number"
                           name={subField.name}
                           suffix="channel(s)"
-                          value={subField.state.value ?? 0}
+                          defaultValue={subField.state.value ?? 0}
                           onChange={(e) =>
                             subField.handleChange(Number(e.target.value))
                           }
@@ -114,7 +114,7 @@ function Component({
                           Unit={MemorySpeedUnit}
                           defaultUnit="GB/s"
                           name={subField.name}
-                          value={subField.state.value ?? 0}
+                          defaultValue={subField.state.value ?? 0}
                           onChange={(e) =>
                             subField.handleChange(Number(e.target.value))
                           }

@@ -5,28 +5,55 @@ import { FormFactor } from "@/utils/interface";
 import * as PSUSpec from "@/utils/part/info/PSUSpec";
 import { LengthUnits } from "@/utils/Units";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<PSUSpec.DTO> = {
-  wattage: ({ form: _, ...props }) => <SuffixInput suffix="W" type="number" {...props} />,
-  efficiency: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={PSUSpec.Efficiency.options} {...props} />
+  wattage: (field) => (
+    <SuffixInput
+      suffix="W"
+      type="number"
+      {...mapChange(field, "number")}
+    />
   ),
-  form_factor: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={FormFactor.PSU.options} {...props} />
+  efficiency: (field) => (
+    <OptionSelect
+      options={PSUSpec.Efficiency.options}
+      {...mapChange(field, "select")}
+    />
   ),
-  width: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  form_factor: (field) => (
+    <OptionSelect
+      options={FormFactor.PSU.options}
+      {...mapChange(field, "select")}
+    />
   ),
-  length: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  width: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
   ),
-  height: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
+  length: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
   ),
-  modular: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={PSUSpec.Modular.options} {...props} />
+  height: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
+  ),
+  modular: (field) => (
+    <OptionSelect
+      options={PSUSpec.Modular.options}
+      {...mapChange(field, "select")}
+    />
   ),
 };
 

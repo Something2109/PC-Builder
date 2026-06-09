@@ -10,47 +10,99 @@ import { FormFactor, InternalConnectors } from "@/utils/interface";
 import * as FanSpec from "@/utils/part/info/FanSpec";
 import { LengthUnits } from "@/utils/Units";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<FanSpec.DTO> = {
-  form_factor: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={FormFactor.Fan.options} {...props} />
-  ),
-  width: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
-  ),
-  length: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
-  ),
-  height: ({ form: _, ...props }) => (
-    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...props} />
-  ),
-  count: ({ form: _, ...props }) => <Input type="number" {...props} />,
-  voltage: ({ form: _, ...props }) => (
-    <SuffixInput suffix="V" type="number" step={0.01} {...props} />
-  ),
-  speed: ({ form: _, ...props }) => <SuffixInput suffix="RPM" type="number" {...props} />,
-  airflow: ({ form: _, ...props }) => (
-    <SuffixInput suffix="CFM" type="number" step={0.01} {...props} />
-  ),
-  noise: ({ form: _, ...props }) => (
-    <SuffixInput suffix="dBA" type="number" step={0.01} {...props} />
-  ),
-  static_pressure: ({ form: _, ...props }) => (
-    <SuffixInput suffix="mm H₂O" type="number" step={0.01} {...props} />
-  ),
-  bearing: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={FanSpec.Bearing.options} {...props} />
-  ),
-  connector: ({ form: _, options: __, ...props }) => (
+  form_factor: (field) => (
     <OptionSelect
-      options={InternalConnectors.Fan.Connector.options}
-      {...props}
+      options={FormFactor.Fan.options}
+      {...mapChange(field, "select")}
     />
   ),
-  rgb: ({ form: _, options: __, ...props }) => (
-    <OptionSelect options={InternalConnectors.RGB.options} {...props} />
+  width: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
+  ),
+  length: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
+  ),
+  height: (field) => (
+    <UnitInput
+      Unit={LengthUnits}
+      defaultUnit="mm"
+      {...mapChange(field, "number")}
+    />
+  ),
+  count: (field) => (
+    <Input
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
+  voltage: (field) => (
+    <SuffixInput
+      suffix="V"
+      type="number"
+      step={0.01}
+      {...mapChange(field, "number")}
+    />
+  ),
+  speed: (field) => (
+    <SuffixInput
+      suffix="RPM"
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
+  airflow: (field) => (
+    <SuffixInput
+      suffix="CFM"
+      type="number"
+      step={0.01}
+      {...mapChange(field, "number")}
+    />
+  ),
+  noise: (field) => (
+    <SuffixInput
+      suffix="dBA"
+      type="number"
+      step={0.01}
+      {...mapChange(field, "number")}
+    />
+  ),
+  static_pressure: (field) => (
+    <SuffixInput
+      suffix="mm H₂O"
+      type="number"
+      step={0.01}
+      {...mapChange(field, "number")}
+    />
+  ),
+  bearing: (field) => (
+    <OptionSelect
+      options={FanSpec.Bearing.options}
+      {...mapChange(field, "select")}
+    />
+  ),
+  connector: (field) => (
+    <OptionSelect
+      options={InternalConnectors.Fan.Connector.options}
+      {...mapChange(field, "select")}
+    />
+  ),
+  rgb: (field) => (
+    <OptionSelect
+      options={InternalConnectors.RGB.options}
+      {...mapChange(field, "select")}
+    />
   ),
 };
 

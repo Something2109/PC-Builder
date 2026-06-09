@@ -4,17 +4,31 @@ import { SuffixInput, UnitInput } from "@/ui/Input";
 import * as GPUPerformance from "@/utils/part/info/GPUPerformance";
 import { FrequencyUnits } from "@/utils/Units";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<GPUPerformance.DTO> = {
-  base_frequency: ({ form: _, ...props }) => (
-    <UnitInput Unit={FrequencyUnits} defaultUnit="MHz" {...props} />
+  base_frequency: (field) => (
+    <UnitInput
+      Unit={FrequencyUnits}
+      defaultUnit="MHz"
+      {...mapChange(field, "number")}
+    />
   ),
-  boost_frequency: ({ form: _, ...props }) => (
-    <UnitInput Unit={FrequencyUnits} defaultUnit="MHz" {...props} />
+  boost_frequency: (field) => (
+    <UnitInput
+      Unit={FrequencyUnits}
+      defaultUnit="MHz"
+      {...mapChange(field, "number")}
+    />
   ),
-  tdp: ({ form: _, ...props }) => <SuffixInput suffix="W" type="number" {...props} />,
+  tdp: (field) => (
+    <SuffixInput
+      suffix="W"
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
 };
 
 export default GenericSingleInputForm<GPUPerformance.DTO>(

@@ -3,17 +3,51 @@ import { ZodType } from "zod";
 import { Input } from "@/ui/Input";
 import * as GPUSpec from "@/utils/part/info/GPUSpec";
 
-import { GenericSingleInputForm } from "../utils/TanstackForm";
+import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<GPUSpec.DTO> = {
-  family: ({ form: _, ...props }) => <Input {...props} />,
-  core_count: ({ form: _, ...props }) => <Input type="number" {...props} />,
-  execution_unit: ({ form: _, ...props }) => <Input type="number" {...props} />,
-  rops: ({ form: _, ...props }) => <Input type="number" {...props} />,
-  tmus: ({ form: _, ...props }) => <Input type="number" {...props} />,
-  ray_tracing: ({ form: _, ...props }) => <Input type="number" {...props} />,
-  tensor: ({ form: _, ...props }) => <Input type="number" {...props} />,
+  family: (field) => (
+    <Input
+      {...mapChange(field, "string")}
+    />
+  ),
+  core_count: (field) => (
+    <Input
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
+  execution_unit: (field) => (
+    <Input
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
+  rops: (field) => (
+    <Input
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
+  tmus: (field) => (
+    <Input
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
+  ray_tracing: (field) => (
+    <Input
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
+  tensor: (field) => (
+    <Input
+      type="number"
+      {...mapChange(field, "number")}
+    />
+  ),
 };
 
 export default GenericSingleInputForm<GPUSpec.DTO>(
