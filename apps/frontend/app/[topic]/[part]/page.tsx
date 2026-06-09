@@ -5,6 +5,7 @@ import React from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
+import { getBackendPath } from "@/utils/path";
 import { Summary } from "@/utils/article";
 import { Products } from "@/utils/part";
 import { Label } from "@/utils/part/product";
@@ -22,10 +23,9 @@ export default async function PartTopicPage({
   }
 
   const query = new URLSearchParams({ topic, part });
-  const response = await fetch(
-    `${process.env.BACKEND_HOST}/api/article?${query}`,
-    { cache: "no-store" },
-  );
+  const response = await fetch(getBackendPath(`/api/article?${query}`), {
+    cache: "no-store",
+  });
 
   if (!response.ok) return notFound();
 

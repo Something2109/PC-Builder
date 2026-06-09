@@ -15,14 +15,14 @@
 
 ### Data Fetching
 
-- Use `process.env.BACKEND_HOST` to call API: `${BACKEND_HOST}/api/part/...` in server components.
+- Use `process.env.NEXT_PUBLIC_BACKEND_HOST` to call API: `${NEXT_PUBLIC_BACKEND_HOST}/api/part/...` in server components.
 - Transform URLSearchParams from `searchParams` into a flat list of entries to preserve arrays.
 - On not-ok responses, use `notFound()` boundary.
 
 Example pattern (from `apps/frontend/app/part/[part]/page.tsx`):
 
 - Build `URLSearchParams` from `searchParams`.
-- `fetch(`${BACKEND_HOST}/api/part/${part}?${options}`)`.
+- `fetch(`${NEXT_PUBLIC_BACKEND_HOST}/api/part/${part}?${options}`)`.
 - Render `SummaryTable`, `PaginationBar`, and `FilterBar` with same query context.
 
 ### Filtering UX

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import React from "react";
 
+import { getBackendPath } from "@/utils/path";
 import { ArticleComponent } from "@/features/article/components/Article";
 import { verifyToken } from "@/features/auth/server";
 import { Article } from "@/utils/article";
@@ -18,7 +19,9 @@ export default async function ArticlePage({
   const isAdmin =
     user && (user.role === Roles.ADMIN || user.role === Roles.GUEST);
 
-  const url = `${process.env.BACKEND_HOST}/api/article/${id}${isAdmin ? "?preview=true" : ""}`;
+  const url = getBackendPath(
+    `/api/article/${id}${isAdmin ? "?preview=true" : ""}`
+  );
   const response = await fetch(url, {
     cache: "no-store",
   });

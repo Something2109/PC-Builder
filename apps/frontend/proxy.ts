@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 
 import { NextResponse } from "next/server";
 
+import { getBackendPath } from "./src/utils/path";
 import { Tokens } from "@/utils/API";
 
 // Define paths that REQUIRE authentication
@@ -13,7 +14,7 @@ async function validateAccessToken(request: NextRequest) {
 
   try {
     const apiResponse = await fetch(
-      `${process.env.BACKEND_HOST}/api/auth/me`,
+      getBackendPath("/api/auth/me"),
       {
         method: "GET",
         headers: {
@@ -42,7 +43,7 @@ export async function middleware(request: NextRequest) {
   if (refreshToken) {
     try {
       const apiResponse = await fetch(
-        `${process.env.BACKEND_HOST}/api/auth/refresh`,
+        getBackendPath("/api/auth/refresh"),
         {
           method: "POST",
           headers: { Cookie: request.headers.get("cookie") || "" },

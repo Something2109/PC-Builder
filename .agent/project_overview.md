@@ -1,4 +1,3 @@
-
 ## PC-Builder: Project Overview
 
 ### What this project is
@@ -22,7 +21,7 @@
 - `nginx` fronts all traffic.
   - Routes `/<everything-else>` → `nextjs` UI
   - Routes `/api/**` → `nestjs` API (Nest global prefix is `api`)
-- `nextjs` connects to the API using the `BACKEND_HOST` environment variable.
+- `nextjs` connects to the API using the `NEXT_PUBLIC_BACKEND_HOST` environment variable.
 - `nestjs` connects to MySQL via Sequelize and MongoDB via Mongoose.
 
 ### Runtime services (compose)
@@ -39,7 +38,7 @@
 ### Important environment variables
 
 - Frontend (`nextjs`):
-  - `BACKEND_HOST` (e.g., `http://nestjs-dev:3000` or `http://nestjs-prod:3000`)
+  - `NEXT_PUBLIC_BACKEND_HOST` (e.g., `http://nestjs-dev:3000` or `http://nestjs-prod:3000`)
   - `JWT_SECRET`
 - Backend (`nestjs`):
   - `MYSQL_HOST`, `MYSQL_PORT`
@@ -106,6 +105,7 @@
 - API is served under `/api/*` due to `app.setGlobalPrefix("api")`.
 
 ### Key paths
+
 - Frontend app: `apps/frontend/`
 - Backend app: `apps/backend/`
 - Crawler app: `apps/crawler/`

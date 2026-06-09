@@ -46,7 +46,7 @@
 
 ### Data Flow
 
-- API base is provided via `BACKEND_HOST` (in Docker env). Nginx proxies `/api` to NestJS, so the UI can call relative `/api/*` in containerized environments.
+- API base is provided via `NEXT_PUBLIC_BACKEND_HOST` (in Docker env). Nginx proxies `/api` to NestJS, so the UI can call relative `/api/*` in containerized environments.
 - Auth flows use JWT (via cookies/headers) and server/client components as needed.
 
 ### Images

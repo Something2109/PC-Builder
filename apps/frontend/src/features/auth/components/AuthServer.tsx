@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 
 import { Tokens } from "@/utils/API";
 import { JwtPayload } from "@/utils/user";
+import { getBackendPath } from "@/utils/path";
 
 export async function verifyToken(): Promise<JwtPayload | null> {
   const cookie = await cookies();
@@ -10,15 +11,12 @@ export async function verifyToken(): Promise<JwtPayload | null> {
   if (!authCookie) return null;
 
   try {
-    const apiResponse = await fetch(
-      `${process.env.BACKEND_HOST}/api/auth/me`,
-      {
-        method: "GET",
-        headers: {
-          Cookie: `${Tokens.ACCESS}=${authCookie.value}`,
-        },
-      }
-    );
+    const apiResponse = await fetch(getBackendPath("/api/auth/me"), {
+      method: "GET",
+      headers: {
+        Cookie: `${Tokens.ACCESS}=${authCookie.value}`,
+      },
+    });
 
     if (apiResponse.ok) {
       return await apiResponse.json();

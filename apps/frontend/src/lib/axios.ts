@@ -1,7 +1,8 @@
 import axios from "axios";
+import { getBackendPath } from "../utils/path";
 
 const axiosInstance = axios.create({
-  baseURL: "/api",
+  baseURL: getBackendPath("/api").href,
   headers: {
     "Content-Type": "application/json",
   },
@@ -22,7 +23,7 @@ axiosInstance.interceptors.request.use((config) => {
 
   if (method && ["post", "put", "delete", "patch"].includes(method)) {
     const csrfToken = getCookie("CSRF_Token");
-    
+
     if (csrfToken) {
       config.headers["X-CSRF-Token"] = csrfToken;
     }
@@ -38,7 +39,10 @@ axiosInstance.interceptors.response.use(
 
       if (status === 401) {
         // Unauthorized - redirect to login or clear auth context
-        if (typeof window !== "undefined" && !window.location.pathname.startsWith("/auth")) {
+        if (
+          typeof window !== "undefined" &&
+          !window.location.pathname.startsWith("/auth")
+        ) {
           window.location.href = "/auth/login";
         }
       }

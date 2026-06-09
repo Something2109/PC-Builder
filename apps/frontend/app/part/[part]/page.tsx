@@ -6,6 +6,7 @@ import { RedirectButton } from "@/ui/Button";
 import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
 import PaginationBar from "@/ui/PaginationBar";
 import { ToggleButton } from "@/ui/Toggle";
+import { getBackendPath } from "@/utils/path";
 import { Product } from "@/utils/part";
 
 export default async function PartListPage({
@@ -30,7 +31,7 @@ export default async function PartListPage({
   const options = new URLSearchParams(queryEntries);
 
   const response = await fetch(
-    `${process.env.BACKEND_HOST}/api/part/${part}?${options}`
+    getBackendPath(`/api/part/${part}?${options}`)
   );
   if (!response.ok) return notFound();
 

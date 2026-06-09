@@ -4,6 +4,7 @@ import { AuthRole } from "@/features/auth";
 import { InfoForm } from "@/features/part/components/Form";
 import PartForm from "@/features/part/components/input/Part";
 import { ResponsiveWrapper } from "@/ui/FlexWrapper";
+import { getBackendPath } from "@/utils/path";
 import Part, { Products, Mapping } from "@/utils/part";
 import { Roles } from "@/utils/user";
 
@@ -16,9 +17,7 @@ export default async function PartDetailEditPage({
 }) {
   const { part, id } = await params;
 
-  const response = await fetch(
-    `${process.env.BACKEND_HOST}/api/part/${part}/${id}`
-  );
+  const response = await fetch(getBackendPath(`/api/part/${part}/${id}`));
 
   if (!response.ok) return notFound();
 

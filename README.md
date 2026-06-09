@@ -21,7 +21,7 @@ Full‑stack PC parts catalog and builder with articles/guides. This project pro
 - Nginx fronts all traffic
   - `/` → Next.js UI
   - `/api/**` → NestJS API (global prefix is `api`)
-- Next.js connects to API using `BACKEND_HOST` (already set within Docker services)
+- Next.js connects to API using `NEXT_PUBLIC_BACKEND_HOST` (already set within Docker services)
 - NestJS connects to MySQL + MongoDB via environment variables
 
 ## Prerequisites
@@ -96,7 +96,7 @@ Useful URLs (once running):
 
 Frontend (`nextjs`):
 
-- `BACKEND_HOST` (preconfigured in Docker: `http://nestjs-dev:3000` or `http://nestjs-prod:3000`)
+- `NEXT_PUBLIC_BACKEND_HOST` (preconfigured in Docker: `http://nestjs-dev:3000` or `http://nestjs-prod:3000`)
 - `JWT_SECRET`
 
 Backend (`nestjs`):
@@ -127,14 +127,14 @@ All of the above are wired for you in the compose files; you primarily need to s
 
 The project is structured as an **npm workspaces monorepo**:
 
-*   **[apps/](./apps)**: Contains application services.
-    *   **[frontend/](./apps/frontend)**: Next.js frontend application.
-    *   **[backend/](./apps/backend)**: NestJS backend API.
-    *   **[crawler/](./apps/crawler)**: Parts catalog crawler script.
-*   **[packages/](./packages)**: Shared library modules.
-    *   **[shared/](./packages/shared)**: Common schemas (Zod), rules, and interfaces.
-*   **[docker/](./docker)**: Service-specific Docker configurations and profiles.
-*   **[compose.yaml](./compose.yaml)**: Root docker-compose configuration.
+- **[apps/](./apps)**: Contains application services.
+  - **[frontend/](./apps/frontend)**: Next.js frontend application.
+  - **[backend/](./apps/backend)**: NestJS backend API.
+  - **[crawler/](./apps/crawler)**: Parts catalog crawler script.
+- **[packages/](./packages)**: Shared library modules.
+  - **[shared/](./packages/shared)**: Common schemas (Zod), rules, and interfaces.
+- **[docker/](./docker)**: Service-specific Docker configurations and profiles.
+- **[compose.yaml](./compose.yaml)**: Root docker-compose configuration.
 
 For a comprehensive breakdown of files, directories, and architectural components, refer to **[.agent/project_structure.md](./.agent/project_structure.md)**.
 For coding standards, syntax formatting rules, and folder structure guidelines, refer to **[.agent/coding_conventions.md](./.agent/coding_conventions.md)**.

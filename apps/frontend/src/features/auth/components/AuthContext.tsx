@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 
-import axiosInstance from "@/utils/axios";
+import axiosInstance from "@/lib/axios";
 import { JwtPayload as UserJwtPayload, Roles } from "@/utils/user";
 
 const LoginPath = "/auth/login";
