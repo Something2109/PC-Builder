@@ -1,154 +1,156 @@
-import { memo, useRef } from "react";
+import { useRef } from "react";
 
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { OptionSelect, SuffixInput, UnitInput } from "@/ui/Input";
 import { InternalConnectors } from "@/utils/interface";
 import * as CPUMemory from "@/utils/part/info/CPUMemory";
 import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
 
-import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { GenericListInputForm } from "../utils/TanstackForm";
 
 function Component({
-  defaultValue,
+  form,
 }: Readonly<{
-  defaultValue?: CPUMemory.DTO[] | null;
+  form: ArrayFormApi<CPUMemory.DTO>;
 }>) {
-  const [formFactors, addConnector, deleteConnector, existConnector] =
-    useObjectSet(
-      (type: InternalConnectors.RAM) => ({
-        type,
-        speed: 0,
-        capacity: 0,
-        channel_count: 0,
-        bandwidth: 0,
-      }),
-      (info: CPUMemory.DTO) => info.type,
-      defaultValue
-    );
-
-  return (
-    <Table.Component>
-      <Table.Head>
-        <Table.Row>
-          <Table.Cell>{CPUMemory.Label.type}</Table.Cell>
-          <Table.Cell>{CPUMemory.Label.speed}</Table.Cell>
-          <Table.Cell>{CPUMemory.Label.capacity}</Table.Cell>
-          <Table.Cell>{CPUMemory.Label.channel_count}</Table.Cell>
-          <Table.Cell>{CPUMemory.Label.bandwidth}</Table.Cell>
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        {formFactors.map(([type, value]) => (
-          <ValueRow
-            key={type}
-            value={value}
-            deleteConnector={deleteConnector}
-          />
-        ))}
-        <AddRow exist={existConnector} add={addConnector} />
-      </tbody>
-    </Table.Component>
-  );
-}
-
-const UnmemoValueRow = ({
-  value,
-  deleteConnector,
-}: {
-  value: CPUMemory.DTO;
-  deleteConnector: (value: CPUMemory.DTO) => void;
-}) => (
-  <Table.Row>
-    <Table.Cell>
-      <label>{value.type}</label>
-    </Table.Cell>
-    <Table.Cell>
-      <UnitInput
-        name={`${value.type}-speed`}
-        Unit={TransferSpeedUnit}
-        defaultUnit="MT/s"
-        defaultValue={value.speed ?? 0}
-      />
-    </Table.Cell>
-    <Table.Cell>
-      <UnitInput
-        name={`${value.type}-capacity`}
-        Unit={MemoryUnits}
-        defaultUnit="GB"
-        defaultValue={value.capacity ?? 0}
-      />
-    </Table.Cell>
-    <Table.Cell>
-      <SuffixInput
-        type="number"
-        name={`${value.type}-channel_count`}
-        suffix="channel(s)"
-        defaultValue={value.channel_count ?? 0}
-      />
-    </Table.Cell>
-    <Table.Cell className="relative">
-      <UnitInput
-        Unit={MemorySpeedUnit}
-        defaultUnit="GB/s"
-        name={`${value.type}-bandwidth`}
-        defaultValue={value.bandwidth ?? 0}
-      />
-      <DeleteButton onClick={() => deleteConnector(value)} />
-    </Table.Cell>
-  </Table.Row>
-);
-
-const ValueRow = memo(UnmemoValueRow);
-
-function AddRow({
-  exist,
-  add,
-}: {
-  exist: (name: InternalConnectors.RAM) => boolean;
-  add: (value: InternalConnectors.RAM) => void;
-}) {
   const ConnectorInput = useRef<HTMLSelectElement>(null);
-  const onAdd = () => {
-    const form_factor = ConnectorInput.current!.value as InternalConnectors.RAM;
-
-    add(form_factor);
-  };
-
-  const options = InternalConnectors.RAM.options.filter((val) => !exist(val));
 
   return (
-    options.length > 0 && (
-      <Table.Row>
-        <Table.Cell>
-          <OptionSelect ref={ConnectorInput} options={options} required />
-        </Table.Cell>
-        <Table.Cell>
-          <Button type="button" className="w-full p-0 border-0" onClick={onAdd}>
-            Add
-          </Button>
-        </Table.Cell>
-      </Table.Row>
-    )
+    <form.Field name="items" mode="array">
+      {(field) => {
+        const values = field.state.value ?? [];
+
+        const exist = (type: string) => {
+          return values.some((val) => val.type === type);
+        };
+
+        const add = () => {
+          const type = ConnectorInput.current?.value as
+            | InternalConnectors.RAM
+            | undefined;
+          if (!type) return;
+
+          field.pushValue({
+            type,
+            speed: 0,
+            capacity: 0,
+            channel_count: 0,
+            bandwidth: 0,
+          });
+        };
+
+        const options = InternalConnectors.RAM.options.filter(
+          (val) => !exist(val)
+        );
+
+        return (
+          <Table.Component>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>{CPUMemory.Label.type}</Table.Cell>
+                <Table.Cell>{CPUMemory.Label.speed}</Table.Cell>
+                <Table.Cell>{CPUMemory.Label.capacity}</Table.Cell>
+                <Table.Cell>{CPUMemory.Label.channel_count}</Table.Cell>
+                <Table.Cell>{CPUMemory.Label.bandwidth}</Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <tbody>
+              {values.map((item, index) => (
+                <Table.Row key={item.type}>
+                  <Table.Cell>
+                    <label>{item.type}</label>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <form.Field name={`items[${index}].speed`}>
+                      {(subField) => (
+                        <UnitInput
+                          name={subField.name}
+                          Unit={TransferSpeedUnit}
+                          defaultUnit="MT/s"
+                          value={subField.state.value ?? 0}
+                          onChange={(e) =>
+                            subField.handleChange(Number(e.target.value))
+                          }
+                        />
+                      )}
+                    </form.Field>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <form.Field name={`items[${index}].capacity`}>
+                      {(subField) => (
+                        <UnitInput
+                          name={subField.name}
+                          Unit={MemoryUnits}
+                          defaultUnit="GB"
+                          value={subField.state.value ?? 0}
+                          onChange={(e) =>
+                            subField.handleChange(Number(e.target.value))
+                          }
+                        />
+                      )}
+                    </form.Field>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <form.Field name={`items[${index}].channel_count`}>
+                      {(subField) => (
+                        <SuffixInput
+                          type="number"
+                          name={subField.name}
+                          suffix="channel(s)"
+                          value={subField.state.value ?? 0}
+                          onChange={(e) =>
+                            subField.handleChange(Number(e.target.value))
+                          }
+                        />
+                      )}
+                    </form.Field>
+                  </Table.Cell>
+                  <Table.Cell className="relative">
+                    <form.Field name={`items[${index}].bandwidth`}>
+                      {(subField) => (
+                        <UnitInput
+                          Unit={MemorySpeedUnit}
+                          defaultUnit="GB/s"
+                          name={subField.name}
+                          value={subField.state.value ?? 0}
+                          onChange={(e) =>
+                            subField.handleChange(Number(e.target.value))
+                          }
+                        />
+                      )}
+                    </form.Field>
+                    <DeleteButton onClick={() => field.removeValue(index)} />
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+              {options.length > 0 && (
+                <Table.Row>
+                  <Table.Cell>
+                    <OptionSelect
+                      ref={ConnectorInput}
+                      options={options}
+                      required
+                    />
+                  </Table.Cell>
+                  <Table.Cell colSpan={4}>
+                    <Button
+                      type="button"
+                      className="w-full p-0 border-0"
+                      onClick={add}
+                    >
+                      Add
+                    </Button>
+                  </Table.Cell>
+                </Table.Row>
+              )}
+            </tbody>
+          </Table.Component>
+        );
+      }}
+    </form.Field>
   );
 }
 
-type MappingFormdata = {
-  [key in string]: { [key in string]: string | number };
-};
-
-function submit(formData: FormData) {
-  const raw = formData.entries().reduce((acc, [key, value]) => {
-    const [type, attr] = key.split("-");
-    if (!acc[type]) acc[type] = { type };
-
-    acc[type][attr] = Number(value);
-
-    return acc;
-  }, {} as MappingFormdata);
-
-  return Object.values(raw).map((val) => CPUMemory.Schemas.DTO.parse(val));
-}
-
-export default GenericInputField(Component, submit);
+export default GenericListInputForm(Component, CPUMemory.Schemas.DTO);

@@ -1,53 +1,70 @@
+import { ArrayFormApi } from "@/type/form";
 import { ResponsiveWrapper } from "@/ui/FlexWrapper";
 import { ChoiceInput } from "@/ui/Input";
 import { FormFactor } from "@/utils/interface";
 import * as CasePSUSupport from "@/utils/part/info/CasePSUSupport";
 
-import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { GenericListInputForm } from "../utils/TanstackForm";
 
 function Component({
-  defaultValue,
+  form,
 }: Readonly<{
-  defaultValue?: CasePSUSupport.DTO[] | null;
+  form: ArrayFormApi<CasePSUSupport.DTO>;
 }>) {
-  const defaultValueObj = defaultValue?.map((val) => val.psu_support) ?? [];
-
   return (
-    <Table.Component>
-      <Table.Head>
-        <Table.Row>
-          <Table.Cell>{CasePSUSupport.Label.psu_support}</Table.Cell>
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        <Table.Row>
-          <Table.Cell>
-            <ResponsiveWrapper className="flex-wrap gap-x-3 justify-between">
-              {FormFactor.PSU.options.map((val) => (
-                <ChoiceInput
-                  type="checkbox"
-                  key={`psu-${val}`}
-                  name={"psu_support"}
-                  value={val}
-                  defaultChecked={defaultValueObj.includes(val)}
-                />
-              ))}
-            </ResponsiveWrapper>
-          </Table.Cell>
-        </Table.Row>
-      </tbody>
-    </Table.Component>
+    <form.Field name="items" mode="array">
+      {(field) => {
+        const values = field.state.value ?? [];
+
+        const defaultValueObj = values.map((val) => val.psu_support) ?? [];
+
+        const handleToggle = (
+          psu_support: FormFactor.PSU,
+          checked: boolean
+        ) => {
+          if (checked) {
+            field.pushValue({ psu_support });
+          } else {
+            const index = values.findIndex(
+              (val) => val.psu_support === psu_support
+            );
+            if (index !== -1) {
+              field.removeValue(index);
+            }
+          }
+        };
+
+        return (
+          <Table.Component>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>{CasePSUSupport.Label.psu_support}</Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <tbody>
+              <Table.Row>
+                <Table.Cell>
+                  <ResponsiveWrapper className="flex-wrap gap-x-3 justify-between">
+                    {FormFactor.PSU.options.map((val) => (
+                      <ChoiceInput
+                        type="checkbox"
+                        key={`psu-${val}`}
+                        name="psu_support"
+                        value={val}
+                        checked={defaultValueObj.includes(val)}
+                        onChange={(e) => handleToggle(val, e.target.checked)}
+                      />
+                    ))}
+                  </ResponsiveWrapper>
+                </Table.Cell>
+              </Table.Row>
+            </tbody>
+          </Table.Component>
+        );
+      }}
+    </form.Field>
   );
 }
 
-function submit(formData: FormData) {
-  return formData
-    .entries()
-    .map(([_, psu_support]) =>
-      CasePSUSupport.Schemas.DTO.parse({ psu_support })
-    )
-    .toArray();
-}
-
-export default GenericInputField(Component, submit);
+export default GenericListInputForm(Component, CasePSUSupport.Schemas.DTO);

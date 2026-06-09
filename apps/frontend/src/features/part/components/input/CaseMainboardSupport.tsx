@@ -1,53 +1,75 @@
+import { ArrayFormApi } from "@/type/form";
 import { ResponsiveWrapper } from "@/ui/FlexWrapper";
 import { ChoiceInput } from "@/ui/Input";
 import { FormFactor } from "@/utils/interface";
 import * as CaseMainboardSupport from "@/utils/part/info/CaseMainboardSupport";
 
-import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { GenericListInputForm } from "../utils/TanstackForm";
 
 function Component({
-  defaultValue,
+  form,
 }: Readonly<{
-  defaultValue?: CaseMainboardSupport.DTO[] | null;
+  form: ArrayFormApi<CaseMainboardSupport.DTO>;
 }>) {
-  const defaultValueObj = defaultValue?.map((val) => val.form_factor) ?? [];
-
   return (
-    <Table.Component>
-      <Table.Head>
-        <Table.Row>
-          <Table.Cell>{CaseMainboardSupport.Label.form_factor}</Table.Cell>
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        <Table.Row>
-          <Table.Cell>
-            <ResponsiveWrapper className="flex-wrap gap-x-3 justify-between">
-              {FormFactor.Mainboard.options.map((val) => (
-                <ChoiceInput
-                  type="checkbox"
-                  key={`mainboard-${val}`}
-                  name={"form_factor"}
-                  value={val}
-                  defaultChecked={defaultValueObj.includes(val)}
-                />
-              ))}
-            </ResponsiveWrapper>
-          </Table.Cell>
-        </Table.Row>
-      </tbody>
-    </Table.Component>
+    <form.Field name="items" mode="array">
+      {(field) => {
+        const values = field.state.value ?? [];
+
+        const defaultValueObj = values.map((val) => val.form_factor) ?? [];
+
+        const handleToggle = (
+          form_factor: FormFactor.Mainboard,
+          checked: boolean
+        ) => {
+          if (checked) {
+            field.pushValue({ form_factor });
+          } else {
+            const index = values.findIndex(
+              (val) => val.form_factor === form_factor
+            );
+            if (index !== -1) {
+              field.removeValue(index);
+            }
+          }
+        };
+
+        return (
+          <Table.Component>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>
+                  {CaseMainboardSupport.Label.form_factor}
+                </Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <tbody>
+              <Table.Row>
+                <Table.Cell>
+                  <ResponsiveWrapper className="flex-wrap gap-x-3 justify-between">
+                    {FormFactor.Mainboard.options.map((val) => (
+                      <ChoiceInput
+                        type="checkbox"
+                        key={`mainboard-${val}`}
+                        name="form_factor"
+                        value={val}
+                        checked={defaultValueObj.includes(val)}
+                        onChange={(e) => handleToggle(val, e.target.checked)}
+                      />
+                    ))}
+                  </ResponsiveWrapper>
+                </Table.Cell>
+              </Table.Row>
+            </tbody>
+          </Table.Component>
+        );
+      }}
+    </form.Field>
   );
 }
 
-function submit(formData: FormData) {
-  return formData
-    .entries()
-    .map(([_, form_factor]) =>
-      CaseMainboardSupport.Schemas.DTO.parse({ form_factor })
-    )
-    .toArray();
-}
-
-export default GenericInputField(Component, submit);
+export default GenericListInputForm(
+  Component,
+  CaseMainboardSupport.Schemas.DTO
+);

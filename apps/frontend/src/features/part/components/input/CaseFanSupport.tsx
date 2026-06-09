@@ -1,149 +1,139 @@
-import { memo, useRef } from "react";
+import React, { useRef } from "react";
 
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
 import { Case, FormFactor } from "@/utils/interface";
 import * as CaseFanSupport from "@/utils/part/info/CaseFanSupport";
 
-import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { GenericListInputForm } from "../utils/TanstackForm";
 
-function MainComponent({
-  defaultValue,
+function Component({
+  form,
 }: Readonly<{
-  defaultValue?: CaseFanSupport.DTO[] | null;
+  form: ArrayFormApi<CaseFanSupport.DTO>;
 }>) {
-  const groupBySide = Object.groupBy(
-    defaultValue ?? [],
-    (val) => val.case_side
-  );
-
   return (
-    <Table.Component>
-      <Table.Head>
-        <Table.Row>
-          <Table.Cell>{CaseFanSupport.Label.case_side}</Table.Cell>
-          <Table.Cell>{CaseFanSupport.Label.form_factor}</Table.Cell>
-          <Table.Cell>{CaseFanSupport.Label.count}</Table.Cell>
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        {Case.Side.options.map((side) => (
-          <SideRow
-            key={`drive-${side}`}
-            side={side}
-            defaultValue={groupBySide[side]}
-          />
-        ))}
-      </tbody>
-    </Table.Component>
+    <form.Field name="items" mode="array">
+      {(field) => {
+        const values = field.state.value.map((val, index) => ({
+          ...val,
+          index,
+        }));
+
+        const remove = (index: number) => {
+          field.removeValue(index);
+        };
+
+        const add = (case_side: Case.Side, form_factor: FormFactor.Fan) => {
+          field.pushValue({ case_side, form_factor, count: 0 });
+        };
+
+        const groups = Object.groupBy(values, (field) => field.case_side);
+
+        return (
+          <Table.Component>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>{CaseFanSupport.Label.case_side}</Table.Cell>
+                <Table.Cell>{CaseFanSupport.Label.form_factor}</Table.Cell>
+                <Table.Cell>{CaseFanSupport.Label.count}</Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <tbody>
+              {Case.Side.options.map((side) => {
+                const sideItems = groups[side];
+
+                if (!sideItems) return;
+
+                const rowSpan = Math.min(
+                  sideItems.length + 2,
+                  FormFactor.Fan.options.length + 1
+                );
+
+                const options = FormFactor.Fan.options.filter((val) =>
+                  sideItems.some(({ form_factor }) => val === form_factor)
+                );
+
+                return (
+                  <React.Fragment key={side}>
+                    <Table.Row>
+                      <Table.Cell className="font-bold" rowSpan={rowSpan}>
+                        {side}
+                      </Table.Cell>
+                    </Table.Row>
+                    {sideItems.map(({ index, ...item }) => (
+                      <Table.Row className="relative" key={item.form_factor}>
+                        <Table.Cell>
+                          <label>{item.form_factor}</label>
+                        </Table.Cell>
+                        <Table.Cell>
+                          <form.Field name={`items[${index}].count`}>
+                            {(subField) => (
+                              <Input
+                                type="number"
+                                name={subField.name}
+                                value={subField.state.value ?? 0}
+                                onChange={(e) =>
+                                  subField.handleChange(Number(e.target.value))
+                                }
+                              />
+                            )}
+                          </form.Field>
+                        </Table.Cell>
+                        <Table.Cell>
+                          <DeleteButton onClick={() => remove(index)} />
+                        </Table.Cell>
+                      </Table.Row>
+                    ))}
+                    <AddRowOptions side={side} options={options} onAdd={add} />
+                  </React.Fragment>
+                );
+              })}
+            </tbody>
+          </Table.Component>
+        );
+      }}
+    </form.Field>
   );
 }
 
-function SideRow({
-  side: case_side,
-  defaultValue,
-}: Readonly<{
-  side: Case.Side;
-  defaultValue?: CaseFanSupport.DTO[];
-}>) {
-  const [savedInputValues, addName, deleteName, existName] = useObjectSet(
-    (form_factor: FormFactor.Fan) => ({ case_side, form_factor, count: 0 }),
-    (info) => info.form_factor,
-    defaultValue
-  );
-  const rowSpan = Math.min(
-    savedInputValues.length + 2,
-    FormFactor.Fan.options.length + 1
-  );
-
-  return (
-    <>
-      <Table.Row>
-        <Table.Cell className="font-bold" rowSpan={rowSpan}>
-          {case_side}
-        </Table.Cell>
-      </Table.Row>
-      {savedInputValues.map(([key, val]) => (
-        <Table.Row className="relative" key={`fan-${case_side}-${key}`}>
-          <ValueRow value={val} />
-          <Table.Cell>
-            <DeleteButton onClick={() => deleteName(val)} />
-          </Table.Cell>
-        </Table.Row>
-      ))}
-      <AddRow exist={existName} add={addName} />
-    </>
-  );
-}
-
-const UnmemoValueRow = ({ value }: { value: CaseFanSupport.DTO }) => (
-  <>
-    <Table.Cell>
-      <label>{value.form_factor}</label>
-    </Table.Cell>
-    <Table.Cell>
-      <Input
-        type="number"
-        name={`${value.case_side}___${value.form_factor}`}
-        defaultValue={value.count ?? 0}
-      />
-    </Table.Cell>
-  </>
-);
-
-const ValueRow = memo(UnmemoValueRow);
-
-function AddRow({
-  exist,
-  add,
+function AddRowOptions({
+  side,
+  options,
+  onAdd,
 }: {
-  exist: (name: FormFactor.Fan) => boolean;
-  add: (value: FormFactor.Fan) => void;
+  side: Case.Side;
+  options: FormFactor.Fan[];
+  onAdd: (side: Case.Side, form_factor: FormFactor.Fan) => void;
 }) {
   const FormFactorInput = useRef<HTMLSelectElement>(null);
-  const onAdd = () => {
-    const form_factor = FormFactorInput.current!.value as FormFactor.Fan;
-
-    add(form_factor);
+  const handleAdd = () => {
+    const form_factor = FormFactorInput.current?.value;
+    if (form_factor) {
+      onAdd(side, form_factor as FormFactor.Fan);
+    }
   };
 
-  const options = FormFactor.Fan.options.filter((val) => !exist(val));
+  if (options.length === 0) return null;
 
   return (
-    options.length > 0 && (
-      <Table.Row>
-        <Table.Cell>
-          <OptionSelect ref={FormFactorInput} options={options} required />
-        </Table.Cell>
-        <Table.Cell>
-          <Button type="button" className="w-full p-0 border-0" onClick={onAdd}>
-            Add
-          </Button>
-        </Table.Cell>
-      </Table.Row>
-    )
+    <Table.Row>
+      <Table.Cell>
+        <OptionSelect ref={FormFactorInput} options={options} required />
+      </Table.Cell>
+      <Table.Cell colSpan={2}>
+        <Button
+          type="button"
+          className="w-full p-0 border-0"
+          onClick={handleAdd}
+        >
+          Add
+        </Button>
+      </Table.Cell>
+    </Table.Row>
   );
 }
 
-function submit(formData: FormData) {
-  return formData
-    .entries()
-    .filter(([_, value]) => value !== "" || Number(value) !== 0)
-    .map(([key, value]) => {
-      const [case_side, form_factor] = key.split("___") as [
-        Case.Side,
-        FormFactor.Fan
-      ];
-      const count = Number(value);
-      return CaseFanSupport.Schemas.DTO.parse({
-        case_side,
-        form_factor,
-        count,
-      });
-    })
-    .toArray();
-}
-
-export default GenericInputField(MainComponent, submit);
+export default GenericListInputForm(Component, CaseFanSupport.Schemas.DTO);

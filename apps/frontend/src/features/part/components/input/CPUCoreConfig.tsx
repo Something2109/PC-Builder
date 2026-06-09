@@ -1,146 +1,130 @@
-import { memo, useRef } from "react";
+import { useRef } from "react";
 
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
-import useDebounce from "@/ui/Debounce";
 import { Input, UnitInput } from "@/ui/Input";
 import * as CPUCoreConfig from "@/utils/part/info/CPUCoreConfig";
 import { FrequencyUnits } from "@/utils/Units";
 
-import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { GenericListInputForm } from "../utils/TanstackForm";
 
 function Component({
-  defaultValue,
+  form,
 }: Readonly<{
-  defaultValue?: CPUCoreConfig.DTO[] | null;
+  form: ArrayFormApi<CPUCoreConfig.DTO>;
 }>) {
-  const [savedInputValues, addName, deleteName, _, changeName] = useObjectSet(
-    (name: string) => ({
-      name,
-      base_frequency: 0,
-      turbo_frequency: 0,
-      count: 0,
-    }),
-    (info: CPUCoreConfig.DTO) => info.name,
-    defaultValue
-  );
-
   const AddInput = useRef<HTMLInputElement>(null);
 
   return (
-    <Table.Component>
-      <Table.Head>
-        <Table.Row>
-          <Table.Cell>{CPUCoreConfig.Label.name}</Table.Cell>
-          <Table.Cell>{CPUCoreConfig.Label.count}</Table.Cell>
-          <Table.Cell>{CPUCoreConfig.Label.base_frequency}</Table.Cell>
-          <Table.Cell>{CPUCoreConfig.Label.turbo_frequency}</Table.Cell>
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        {savedInputValues.map(([key, value]) => (
-          <ValueRow
-            key={key}
-            value={value}
-            changeName={changeName}
-            deleteName={deleteName}
-          />
-        ))}
-        <Table.Row>
-          <Table.Cell>
-            <Input ref={AddInput} />
-          </Table.Cell>
-          <Table.Cell colSpan={3}>
-            <Button
-              type="button"
-              className="w-full p-0 border-0"
-              onClick={() => addName(AddInput.current!.value)}
-            >
-              Add
-            </Button>
-          </Table.Cell>
-        </Table.Row>
-      </tbody>
-    </Table.Component>
+    <form.Field name="items" mode="array">
+      {(field) => {
+        const add = () => {
+          const name = AddInput.current?.value;
+          if (!name) return;
+
+          field.pushValue({
+            name,
+            base_frequency: 0,
+            turbo_frequency: 0,
+            count: 0,
+          });
+          if (AddInput.current) AddInput.current.value = "";
+        };
+
+        return (
+          <Table.Component>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>{CPUCoreConfig.Label.name}</Table.Cell>
+                <Table.Cell>{CPUCoreConfig.Label.count}</Table.Cell>
+                <Table.Cell>{CPUCoreConfig.Label.base_frequency}</Table.Cell>
+                <Table.Cell>{CPUCoreConfig.Label.turbo_frequency}</Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <tbody>
+              {(field.state.value ?? []).map((_, index) => (
+                <Table.Row key={index}>
+                  <Table.Cell>
+                    <form.Field name={`items[${index}].name`}>
+                      {(subField) => (
+                        <Input
+                          name={subField.name}
+                          value={subField.state.value}
+                          onChange={(e) =>
+                            subField.handleChange(e.target.value)
+                          }
+                        />
+                      )}
+                    </form.Field>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <form.Field name={`items[${index}].count`}>
+                      {(subField) => (
+                        <Input
+                          type="number"
+                          name={subField.name}
+                          value={subField.state.value ?? 0}
+                          onChange={(e) =>
+                            subField.handleChange(Number(e.target.value))
+                          }
+                        />
+                      )}
+                    </form.Field>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <form.Field name={`items[${index}].base_frequency`}>
+                      {(subField) => (
+                        <UnitInput
+                          Unit={FrequencyUnits}
+                          name={subField.name}
+                          value={subField.state.value ?? 0}
+                          onChange={(e) =>
+                            subField.handleChange(Number(e.target.value))
+                          }
+                          defaultUnit="GHz"
+                        />
+                      )}
+                    </form.Field>
+                  </Table.Cell>
+                  <Table.Cell className="relative">
+                    <form.Field name={`items[${index}].turbo_frequency`}>
+                      {(subField) => (
+                        <UnitInput
+                          Unit={FrequencyUnits}
+                          name={subField.name}
+                          value={subField.state.value ?? 0}
+                          onChange={(e) =>
+                            subField.handleChange(Number(e.target.value))
+                          }
+                          defaultUnit="GHz"
+                        />
+                      )}
+                    </form.Field>
+                    <DeleteButton onClick={() => field.removeValue(index)} />
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+              <Table.Row>
+                <Table.Cell>
+                  <Input ref={AddInput} />
+                </Table.Cell>
+                <Table.Cell colSpan={3}>
+                  <Button
+                    type="button"
+                    className="w-full p-0 border-0"
+                    onClick={add}
+                  >
+                    Add
+                  </Button>
+                </Table.Cell>
+              </Table.Row>
+            </tbody>
+          </Table.Component>
+        );
+      }}
+    </form.Field>
   );
 }
 
-type MappingFormdata = {
-  [key in string]: { [key in string]: string | number };
-};
-
-const UnmemoValueRow = ({
-  value,
-  changeName,
-  deleteName,
-}: {
-  value: CPUCoreConfig.DTO;
-  changeName: (
-    value: CPUCoreConfig.DTO,
-    info: CPUCoreConfig.DTO
-  ) => CPUCoreConfig.DTO;
-  deleteName: (value: CPUCoreConfig.DTO) => void;
-}) => {
-  const onChange = useDebounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    const info = changeName(value, { name: e.target.value });
-    e.target.value = info.name;
-  }, 1000);
-
-  const name = value.name;
-
-  return (
-    <Table.Row>
-      <Table.Cell>
-        <Input
-          name={`${name}___name`}
-          defaultValue={value.name}
-          onChange={onChange}
-        />
-      </Table.Cell>
-      <Table.Cell>
-        <Input
-          type="number"
-          name={`${name}___count`}
-          defaultValue={value.count ?? 0}
-        />
-      </Table.Cell>
-      <Table.Cell>
-        <UnitInput
-          Unit={FrequencyUnits}
-          name={`${name}___base_frequency`}
-          defaultValue={value.base_frequency ?? 0}
-          defaultUnit="GHz"
-        />
-      </Table.Cell>
-      <Table.Cell className="relative">
-        <UnitInput
-          Unit={FrequencyUnits}
-          name={`${name}___turbo_frequency`}
-          defaultValue={value.turbo_frequency ?? 0}
-          defaultUnit="GHz"
-        />
-        <DeleteButton onClick={() => deleteName(value)} />
-      </Table.Cell>
-    </Table.Row>
-  );
-};
-
-const ValueRow = memo(UnmemoValueRow);
-
-function submit(formData: FormData) {
-  const raw = formData.entries().reduce((acc, [key, value]) => {
-    const [mapping, attr] = key.split("___");
-    if (!acc[mapping]) acc[mapping] = {};
-
-    acc[mapping][attr] = attr === "name" ? (value as string) : Number(value);
-
-    return acc;
-  }, {} as MappingFormdata);
-
-  return Object.values(raw)
-    .map((val) => CPUCoreConfig.Schemas.DTO.parse(val))
-    .filter((val) => val.count);
-}
-
-export default GenericInputField(Component, submit);
+export default GenericListInputForm(Component, CPUCoreConfig.Schemas.DTO);

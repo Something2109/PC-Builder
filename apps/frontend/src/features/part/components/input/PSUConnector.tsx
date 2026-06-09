@@ -1,87 +1,94 @@
-import { memo } from "react";
+import React from "react";
 
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { ArrayFormApi } from "@/type/form";
 import { DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
 import { InternalConnectors } from "@/utils/interface";
 import * as PSUConnector from "@/utils/part/info/PSUConnector";
 
-import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { GenericListInputForm } from "../utils/TanstackForm";
 
 function Component({
-  defaultValue,
+  form,
 }: Readonly<{
-  defaultValue?: PSUConnector.DTO[] | null;
+  form: ArrayFormApi<PSUConnector.DTO>;
 }>) {
-  const [formFactors, addConnector, deleteConnector, existConnector] =
-    useObjectSet(
-      (type: InternalConnectors.Power) => ({ type, count: 0 }),
-      (info: PSUConnector.DTO) => info.type,
-      defaultValue
-    );
-
   return (
-    <Table.Component>
-      <Table.Head>
-        <Table.Row>
-          <Table.Cell>{PSUConnector.Label.type}</Table.Cell>
-          <Table.Cell>{PSUConnector.Label.count}</Table.Cell>
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        {formFactors.map(([type, value]) => (
-          <ValueRow
-            key={type}
-            value={value}
-            deleteConnector={deleteConnector}
-          />
-        ))}
-        <Table.Row>
-          <Table.Cell colSpan={2}>
-            <label htmlFor="form_factor">Add: </label>
-            <OptionSelect
-              id="form_factor"
-              options={InternalConnectors.Power.Options.filter(
-                (val) => !existConnector(val)
+    <form.Field name="items" mode="array">
+      {(field) => {
+        const values = field.state.value ?? [];
+
+        const exist = (type: InternalConnectors.Power) => {
+          return values.some((val) => val.type === type);
+        };
+
+        const add = (type: InternalConnectors.Power) => {
+          if (!type) return;
+
+          field.pushValue({ type, count: 0 });
+        };
+
+        const remove = (index: number) => {
+          field.removeValue(index);
+        };
+
+        const options = InternalConnectors.Power.Options.filter(
+          (val) => !exist(val)
+        );
+
+        return (
+          <Table.Component>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>{PSUConnector.Label.type}</Table.Cell>
+                <Table.Cell>{PSUConnector.Label.count}</Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <tbody>
+              {values.map((item, index) => (
+                <Table.Row key={item.type}>
+                  <Table.Cell>
+                    <label>{item.type}</label>
+                  </Table.Cell>
+                  <Table.Cell className="relative">
+                    <form.Field name={`items[${index}].count`}>
+                      {(subField) => (
+                        <Input
+                          type="number"
+                          name={subField.name}
+                          value={subField.state.value ?? 0}
+                          onChange={(e) =>
+                            subField.handleChange(Number(e.target.value))
+                          }
+                        />
+                      )}
+                    </form.Field>
+                    <DeleteButton onClick={() => remove(index)} />
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+              {options.length > 0 && (
+                <Table.Row>
+                  <Table.Cell colSpan={2}>
+                    <label htmlFor="form_factor">Add: </label>
+                    <OptionSelect
+                      id="form_factor"
+                      options={options}
+                      value=""
+                      onChange={(e) =>
+                        add(e.target.value as InternalConnectors.Power)
+                      }
+                    />
+                  </Table.Cell>
+                </Table.Row>
               )}
-              onChange={(e) =>
-                addConnector(e.target.value as InternalConnectors.Power)
-              }
-            />
-          </Table.Cell>
-        </Table.Row>
-      </tbody>
-    </Table.Component>
+            </tbody>
+          </Table.Component>
+        );
+      }}
+    </form.Field>
   );
 }
 
-const UnmemoValueRow = ({
-  value,
-  deleteConnector,
-}: {
-  value: PSUConnector.DTO;
-  deleteConnector: (value: PSUConnector.DTO) => void;
-}) => (
-  <Table.Row>
-    <Table.Cell>
-      <label>{value.type}</label>
-    </Table.Cell>
-    <Table.Cell className="relative">
-      <Input type="number" name={value.type} defaultValue={value.count ?? 0} />
-      <DeleteButton onClick={() => deleteConnector(value)} />
-    </Table.Cell>
-  </Table.Row>
-);
-
-const ValueRow = memo(UnmemoValueRow);
-
-function submit(formData: FormData) {
-  return formData
-    .entries()
-    .map(([type, count]) => PSUConnector.Schemas.DTO.parse({ type, count }))
-    .filter((val) => val.count)
-    .toArray();
-}
-
-export default GenericInputField(Component, submit);
+export default GenericListInputForm(Component, PSUConnector.Schemas.DTO);

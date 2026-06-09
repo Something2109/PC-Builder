@@ -1,89 +1,106 @@
-import { memo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
 import { ExternalPorts } from "@/utils/interface";
 import * as GraphicCardPort from "@/utils/part/info/GraphicCardPort";
 
-import { GenericInputField } from "../utils/Form";
 import { PortInputFields } from "../utils/Input";
 import { Table } from "../utils/Table";
+import { GenericListInputForm } from "../utils/TanstackForm";
 
 function Component({
-  defaultValue,
+  form,
 }: Readonly<{
-  defaultValue?: GraphicCardPort.DTO[] | null;
-}>) {
-  const [SavedInputValues, addName, deleteName] = useObjectSet(
-    (type: ExternalPorts.Display.Type, name: ExternalPorts.Display) => ({
-      type,
-      name,
-      count: 0,
-    }),
-    (info: GraphicCardPort.DTO) => info.name,
-    defaultValue
-  );
-  const groupByType = SavedInputValues.reduce((acc, [key, info]) => {
-    if (!acc[info.type]) acc[info.type] = [];
-    acc[info.type].push([key, info]);
-    return acc;
-  }, {} as Record<string, [string, GraphicCardPort.DTO][]>);
-
-  return (
-    <Table.Component>
-      <Table.Head>
-        <Table.Row>
-          <Table.Cell>{GraphicCardPort.Label.type}</Table.Cell>
-          <Table.Cell>{GraphicCardPort.Label.name}</Table.Cell>
-          <Table.Cell>{GraphicCardPort.Label.count}</Table.Cell>
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        {Object.values(groupByType).map((value) =>
-          value.map(([key, value], index, arr) => (
-            <Table.Row key={`port-${key}`}>
-              {index === 0 && (
-                <Table.Cell className="font-bold" rowSpan={arr.length}>
-                  {value.type}
-                </Table.Cell>
-              )}
-              <ValueRow value={value} deleteName={deleteName} />
-            </Table.Row>
-          ))
-        )}
-        <AddRow add={addName} />
-      </tbody>
-    </Table.Component>
-  );
-}
-
-function UnmemoValueRow({
-  value,
-  deleteName,
-}: Readonly<{
-  value: GraphicCardPort.DTO;
-  deleteName: (value: GraphicCardPort.DTO) => void;
+  form: ArrayFormApi<GraphicCardPort.DTO>;
 }>) {
   return (
-    <>
-      <Table.Cell>
-        <Input name={`${value.name}___name`} value={value.name} readOnly />
-      </Table.Cell>
-      <Table.Cell className="relative">
-        <Input type="hidden" name={`${value.name}___type`} value={value.type} />
-        <Input
-          type="number"
-          name={`${value.name}___count`}
-          defaultValue={value.count ?? 0}
-        />
-        <DeleteButton onClick={() => deleteName(value)} />
-      </Table.Cell>
-    </>
+    <form.Field name="items" mode="array">
+      {(field) => {
+        const values = field.state.value.map((val, index) => ({
+          ...val,
+          index,
+        }));
+
+        const remove = (index: number) => {
+          field.removeValue(index);
+        };
+
+        const add = (
+          type: ExternalPorts.Display.Type,
+          name: ExternalPorts.Display
+        ) => {
+          field.pushValue({ type, name, count: 0 });
+        };
+
+        const groupByType = Object.groupBy(values, (val) => val.type);
+
+        return (
+          <Table.Component>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>{GraphicCardPort.Label.type}</Table.Cell>
+                <Table.Cell>{GraphicCardPort.Label.name}</Table.Cell>
+                <Table.Cell>{GraphicCardPort.Label.count}</Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <tbody>
+              {Object.entries(groupByType).map(([typeKey, list]) => {
+                if (!list) return null;
+                return list.map((item, idx) => (
+                  <Table.Row key={`port-${item.name}`}>
+                    {idx === 0 && (
+                      <Table.Cell className="font-bold" rowSpan={list.length}>
+                        {typeKey}
+                      </Table.Cell>
+                    )}
+                    <Table.Cell>
+                      <form.Field name={`items[${item.index}].name`}>
+                        {(subField) => (
+                          <Input
+                            name={subField.name}
+                            value={subField.state.value}
+                            readOnly
+                          />
+                        )}
+                      </form.Field>
+                    </Table.Cell>
+                    <Table.Cell className="relative">
+                      <form.Field name={`items[${item.index}].type`}>
+                        {(subField) => (
+                          <Input
+                            type="hidden"
+                            name={subField.name}
+                            value={subField.state.value}
+                          />
+                        )}
+                      </form.Field>
+                      <form.Field name={`items[${item.index}].count`}>
+                        {(subField) => (
+                          <Input
+                            type="number"
+                            name={subField.name}
+                            value={subField.state.value ?? 0}
+                            onChange={(e) =>
+                              subField.handleChange(Number(e.target.value))
+                            }
+                          />
+                        )}
+                      </form.Field>
+                      <DeleteButton onClick={() => remove(item.index)} />
+                    </Table.Cell>
+                  </Table.Row>
+                ));
+              })}
+              <AddRow add={add} />
+            </tbody>
+          </Table.Component>
+        );
+      }}
+    </form.Field>
   );
 }
-
-const ValueRow = memo(UnmemoValueRow);
 
 function AddRow({
   add,
@@ -94,7 +111,7 @@ function AddRow({
   const [type, setType] = useState<ExternalPorts.Display.Type>(
     ExternalPorts.Display.Type.options[0]
   );
-  const Component = PortInputFields[type];
+  const TargetComponent = PortInputFields[type];
 
   return (
     <Table.Row>
@@ -109,7 +126,7 @@ function AddRow({
         />
       </Table.Cell>
       <Table.Cell>
-        <Component ref={NameInput} />
+        <TargetComponent ref={NameInput} />
       </Table.Cell>
       <Table.Cell>
         <Button
@@ -126,23 +143,4 @@ function AddRow({
   );
 }
 
-type MappingFormdata = {
-  [key in string]: { [key in string]: string | number };
-};
-
-function submit(formData: FormData) {
-  const raw = Array.from(formData.entries()).reduce((acc, [key, value]) => {
-    const [mapping, attr] = key.split("___");
-    if (!acc[mapping]) acc[mapping] = {};
-
-    acc[mapping][attr] = attr === "count" ? Number(value) : (value as string);
-
-    return acc;
-  }, {} as MappingFormdata);
-
-  return Object.values(raw)
-    .map((val) => GraphicCardPort.Schemas.DTO.parse(val))
-    .filter((val) => val.count);
-}
-
-export default GenericInputField(Component, submit);
+export default GenericListInputForm(Component, GraphicCardPort.Schemas.DTO);

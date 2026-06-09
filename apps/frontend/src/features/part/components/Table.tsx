@@ -6,7 +6,7 @@ import { ColumnWrapper } from "@/ui/FlexWrapper";
 import { Infos, Information } from "@/utils/part";
 
 export const DetailTableComponent: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   [key in Infos]: LazyExoticComponent<React.FC<any>>;
 } = {
   [Infos.CPU_SPEC]: lazy(

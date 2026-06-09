@@ -1,55 +1,101 @@
-import { memo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
 import { ExternalPorts } from "@/utils/interface";
 import * as PartExternalPorts from "@/utils/part/info/PartExternalPorts";
 
-import { GenericInputField } from "../utils/Form";
 import { PortInputFields } from "../utils/Input";
 import { Table } from "../utils/Table";
+import { GenericListInputForm } from "../utils/TanstackForm";
 
 function Component({
-  defaultValue,
+  form,
 }: Readonly<{
-  defaultValue?: PartExternalPorts.DTO[] | null;
+  form: ArrayFormApi<PartExternalPorts.DTO>;
 }>) {
-  const [SavedInputValues, addName, deleteName] = useObjectSet(
-    (type: ExternalPorts.Type, name: ExternalPorts) => ({
-      type,
-      name,
-      count: 0,
-    }),
-    (info: PartExternalPorts.DTO) => `${info.type} ${info.name}`,
-    defaultValue
-  );
-  const groupByType = SavedInputValues.reduce((acc, [key, info]) => {
-    if (!acc[info.type]) acc[info.type] = [];
-    acc[info.type].push([key, info]);
-    return acc;
-  }, {} as Record<string, [string, PartExternalPorts.DTO][]>);
-
   return (
-    <Table.Component>
-      <Table.Head>
-        <Table.Row>
-          <Table.Cell>{PartExternalPorts.Label.type}</Table.Cell>
-          <Table.Cell>{PartExternalPorts.Label.name}</Table.Cell>
-          <Table.Cell>{PartExternalPorts.Label.count}</Table.Cell>
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        {ExternalPorts.Type.options.map((type) => (
-          <PortTypeInputField
-            key={`port-${type}`}
-            defaultValue={groupByType[type]}
-            onDelete={deleteName}
-          />
-        ))}
-        <AddRow add={addName} />
-      </tbody>
-    </Table.Component>
+    <form.Field name="items" mode="array">
+      {(field) => {
+        const values = field.state.value.map((val, index) => ({
+          ...val,
+          index,
+        }));
+
+        const remove = (index: number) => {
+          field.removeValue(index);
+        };
+
+        const add = (type: ExternalPorts.Type, name: ExternalPorts) => {
+          field.pushValue({ type, name, count: 0 });
+        };
+
+        const groupByType = Object.groupBy(values, (val) => val.type);
+
+        return (
+          <Table.Component>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>{PartExternalPorts.Label.type}</Table.Cell>
+                <Table.Cell>{PartExternalPorts.Label.name}</Table.Cell>
+                <Table.Cell>{PartExternalPorts.Label.count}</Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <tbody>
+              {ExternalPorts.Type.options.map((type) => {
+                const list = groupByType[type] ?? [];
+                return list.map((item, idx) => (
+                  <Table.Row key={`external-${item.type}-${item.name}`}>
+                    {idx === 0 && (
+                      <Table.Cell className="font-bold" rowSpan={list.length}>
+                        {item.type}
+                      </Table.Cell>
+                    )}
+                    <Table.Cell>
+                      <form.Field name={`items[${item.index}].name`}>
+                        {(subField) => (
+                          <Input
+                            name={subField.name}
+                            value={subField.state.value}
+                            readOnly
+                          />
+                        )}
+                      </form.Field>
+                      <form.Field name={`items[${item.index}].type`}>
+                        {(subField) => (
+                          <Input
+                            type="hidden"
+                            name={subField.name}
+                            value={subField.state.value}
+                          />
+                        )}
+                      </form.Field>
+                    </Table.Cell>
+                    <Table.Cell className="relative">
+                      <form.Field name={`items[${item.index}].count`}>
+                        {(subField) => (
+                          <Input
+                            type="number"
+                            name={subField.name}
+                            value={subField.state.value ?? 0}
+                            onChange={(e) =>
+                              subField.handleChange(Number(e.target.value))
+                            }
+                          />
+                        )}
+                      </form.Field>
+                      <DeleteButton onClick={() => remove(item.index)} />
+                    </Table.Cell>
+                  </Table.Row>
+                ));
+              })}
+              <AddRow add={add} />
+            </tbody>
+          </Table.Component>
+        );
+      }}
+    </form.Field>
   );
 }
 
@@ -59,7 +105,7 @@ const PortTypes = {
   Display: ExternalPorts.Display.Type.options,
   Audio: ExternalPorts.Audio.Type.options,
   Interaction: ExternalPorts.Interaction.Type.options,
-};
+} as const;
 
 function usePortType() {
   const [type, setType] = useState<ExternalPorts.Type>(
@@ -71,7 +117,7 @@ function usePortType() {
 
   const setToType = (newType: ExternalPorts.Type) => {
     setType(newType);
-    setPort(PortTypes[newType][0]);
+    setPort(PortTypes[newType][0] as any);
   };
 
   const setToPort = (newPort: (typeof PortTypes)[typeof type][number]) => {
@@ -89,7 +135,7 @@ function AddRow({
   const NameInput = useRef<HTMLInputElement>(null);
   const [type, port, setType, setPort] = usePortType();
 
-  const Component = PortInputFields[port];
+  const TargetComponent = PortInputFields[port];
 
   return (
     <Table.Row>
@@ -103,22 +149,18 @@ function AddRow({
         <OptionSelect
           options={PortTypes[type]}
           value={port}
-          onChange={(e) =>
-            setPort(e.target.value as (typeof PortTypes)[typeof type][number])
-          }
+          onChange={(e) => setPort(e.target.value as any)}
           required
         />
       </Table.Cell>
       <Table.Cell>
-        <Component ref={NameInput} />
+        <TargetComponent ref={NameInput} />
       </Table.Cell>
       <Table.Cell>
         <Button
           type="button"
           className="w-full p-0 border-0"
-          onClick={() =>
-            add(type, NameInput.current!.value as ExternalPorts.Display)
-          }
+          onClick={() => add(type, NameInput.current!.value as ExternalPorts)}
         >
           Add
         </Button>
@@ -127,71 +169,4 @@ function AddRow({
   );
 }
 
-function PortTypeInputField({
-  defaultValue,
-  onDelete,
-}: {
-  defaultValue?: [string, PartExternalPorts.DTO][];
-  onDelete: (info: PartExternalPorts.DTO) => void;
-}) {
-  return defaultValue?.map(([key, value], index, arr) => (
-    <Table.Row key={`external-${key}`}>
-      {index === 0 && (
-        <Table.Cell className="font-bold" rowSpan={arr.length}>
-          {value.type}
-        </Table.Cell>
-      )}
-      <ValueRow value={value} deleteName={onDelete} />
-    </Table.Row>
-  ));
-}
-
-function UnmemoValueRow({
-  value,
-  deleteName: onDelete,
-}: Readonly<{
-  value: PartExternalPorts.DTO;
-  deleteName: (value: PartExternalPorts.DTO) => void;
-}>) {
-  const key = `${value.type} ${value.name}`;
-
-  return (
-    <>
-      <Table.Cell>
-        <Input name={`${key}___name`} value={value.name} readOnly />
-        <Input type="hidden" name={`${key}___type`} value={value.type} />
-      </Table.Cell>
-      <Table.Cell className="relative">
-        <Input
-          type="number"
-          name={`${key}___count`}
-          defaultValue={value.count ?? 0}
-        />
-        <DeleteButton onClick={() => onDelete(value)} />
-      </Table.Cell>
-    </>
-  );
-}
-
-const ValueRow = memo(UnmemoValueRow);
-
-type MappingFormdata = {
-  [key in string]: { [key in string]: string | number };
-};
-
-function submit(formData: FormData) {
-  const raw = Array.from(formData.entries()).reduce((acc, [key, value]) => {
-    const [mapping, attr] = key.split("___");
-    if (!acc[mapping]) acc[mapping] = {};
-
-    acc[mapping][attr] = attr === "count" ? Number(value) : (value as string);
-
-    return acc;
-  }, {} as MappingFormdata);
-
-  return Object.values(raw)
-    .map((val) => PartExternalPorts.Schemas.DTO.parse(val))
-    .filter((val) => val.count);
-}
-
-export default GenericInputField(Component, submit);
+export default GenericListInputForm(Component, PartExternalPorts.Schemas.DTO);

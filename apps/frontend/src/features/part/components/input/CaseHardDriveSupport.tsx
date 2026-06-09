@@ -1,150 +1,152 @@
-import { memo, useRef } from "react";
+import React, { useRef } from "react";
 
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
 import { Case } from "@/utils/interface";
 import * as CaseHardDriveSupport from "@/utils/part/info/CaseHardDriveSupport";
 
-import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { GenericListInputForm } from "../utils/TanstackForm";
 
-function MainComponent({
-  defaultValue,
+function Component({
+  form,
 }: Readonly<{
-  defaultValue?: CaseHardDriveSupport.DTO[] | null;
+  form: ArrayFormApi<CaseHardDriveSupport.DTO>;
 }>) {
-  const groupByPlace = Object.groupBy(defaultValue ?? [], (val) => val.place);
-
   return (
-    <Table.Component>
-      <Table.Head>
-        <Table.Row>
-          <Table.Cell>{CaseHardDriveSupport.Label.place}</Table.Cell>
-          <Table.Cell>{CaseHardDriveSupport.Label.form_factor}</Table.Cell>
-          <Table.Cell>{CaseHardDriveSupport.Label.count}</Table.Cell>
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        {Case.HardDrivePlace.options.map((side) => (
-          <PlaceRow
-            key={`drive-${side}`}
-            place={side}
-            defaultValue={groupByPlace[side]}
-          />
-        ))}
-      </tbody>
-    </Table.Component>
+    <form.Field name="items" mode="array">
+      {(field) => {
+        const values = field.state.value.map((val, index) => ({
+          ...val,
+          index,
+        }));
+
+        const remove = (index: number) => {
+          field.removeValue(index);
+        };
+
+        const add = (
+          place: Case.HardDrivePlace,
+          form_factor: Case.HardDriveFormFactor
+        ) => {
+          field.pushValue({ place, form_factor, count: 0 });
+        };
+
+        const groups = Object.groupBy(values, (item) => item.place);
+
+        return (
+          <Table.Component>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>{CaseHardDriveSupport.Label.place}</Table.Cell>
+                <Table.Cell>
+                  {CaseHardDriveSupport.Label.form_factor}
+                </Table.Cell>
+                <Table.Cell>{CaseHardDriveSupport.Label.count}</Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <tbody>
+              {Case.HardDrivePlace.options.map((place) => {
+                const placeItems = groups[place] ?? [];
+
+                const rowSpan = Math.min(
+                  placeItems.length + 2,
+                  Case.HardDriveFormFactor.options.length + 1
+                );
+
+                const options = Case.HardDriveFormFactor.options.filter((val) =>
+                  placeItems.some(({ form_factor }) => val === form_factor)
+                );
+
+                return (
+                  <React.Fragment key={place}>
+                    <Table.Row>
+                      <Table.Cell className="font-bold" rowSpan={rowSpan}>
+                        {place}
+                      </Table.Cell>
+                    </Table.Row>
+                    {placeItems.map(({ index, ...item }) => (
+                      <Table.Row className="relative" key={item.form_factor}>
+                        <Table.Cell>
+                          <label>{item.form_factor}</label>
+                        </Table.Cell>
+                        <Table.Cell>
+                          <form.Field name={`items[${index}].count`}>
+                            {(subField) => (
+                              <Input
+                                type="number"
+                                name={subField.name}
+                                value={subField.state.value ?? 0}
+                                onChange={(e) =>
+                                  subField.handleChange(Number(e.target.value))
+                                }
+                              />
+                            )}
+                          </form.Field>
+                        </Table.Cell>
+                        <Table.Cell>
+                          <DeleteButton onClick={() => remove(index)} />
+                        </Table.Cell>
+                      </Table.Row>
+                    ))}
+                    <AddRowOptions
+                      place={place}
+                      options={options}
+                      onAdd={add}
+                    />
+                  </React.Fragment>
+                );
+              })}
+            </tbody>
+          </Table.Component>
+        );
+      }}
+    </form.Field>
   );
 }
 
-function PlaceRow({
+function AddRowOptions({
   place,
-  defaultValue,
-}: Readonly<{
-  place: Case.HardDrivePlace;
-  defaultValue?: CaseHardDriveSupport.DTO[];
-}>) {
-  const [savedInputValues, addName, deleteName, existName] = useObjectSet(
-    (form_factor: Case.HardDriveFormFactor) => ({
-      place,
-      form_factor,
-      count: 0,
-    }),
-    (info) => info.form_factor,
-    defaultValue
-  );
-  const rowSpan = Math.min(
-    savedInputValues.length + 2,
-    Case.HardDriveFormFactor.options.length + 1
-  );
-
-  return (
-    <>
-      <Table.Row>
-        <Table.Cell className="font-bold" rowSpan={rowSpan}>
-          {place}
-        </Table.Cell>
-      </Table.Row>
-      {savedInputValues.map(([key, value]) => (
-        <Table.Row className="relative" key={`drive-${place}-${key}`}>
-          <ValueRow value={value} />
-          <Table.Cell>
-            <DeleteButton onClick={() => deleteName(value)} />
-          </Table.Cell>
-        </Table.Row>
-      ))}
-      <AddRow exist={existName} add={addName} />
-    </>
-  );
-}
-
-const UnmemoValueRow = ({ value }: { value: CaseHardDriveSupport.DTO }) => (
-  <>
-    <Table.Cell>
-      <label>{value.form_factor}</label>
-    </Table.Cell>
-    <Table.Cell>
-      <Input
-        type="number"
-        name={`${value.place}___${value.form_factor}`}
-        defaultValue={value.count ?? 0}
-      />
-    </Table.Cell>
-  </>
-);
-
-const ValueRow = memo(UnmemoValueRow);
-
-function AddRow({
-  exist,
-  add,
+  options,
+  onAdd,
 }: {
-  exist: (name: Case.HardDriveFormFactor) => boolean;
-  add: (value: Case.HardDriveFormFactor) => void;
+  place: Case.HardDrivePlace;
+  options: Case.HardDriveFormFactor[];
+  onAdd: (
+    place: Case.HardDrivePlace,
+    form_factor: Case.HardDriveFormFactor
+  ) => void;
 }) {
   const FormFactorInput = useRef<HTMLSelectElement>(null);
-  const onAdd = () => {
-    const form_factor = FormFactorInput.current!
-      .value as Case.HardDriveFormFactor;
-
-    add(form_factor);
+  const handleAdd = () => {
+    const form_factor = FormFactorInput.current?.value;
+    if (form_factor) {
+      onAdd(place, form_factor as Case.HardDriveFormFactor);
+    }
   };
-  const options = Case.HardDriveFormFactor.options.filter((val) => !exist(val));
+
+  if (options.length === 0) return null;
 
   return (
-    options.length > 0 && (
-      <Table.Row>
-        <Table.Cell>
-          <OptionSelect ref={FormFactorInput} options={options} required />
-        </Table.Cell>
-        <Table.Cell>
-          <Button type="button" className="w-full p-0 border-0" onClick={onAdd}>
-            Add
-          </Button>
-        </Table.Cell>
-      </Table.Row>
-    )
+    <Table.Row>
+      <Table.Cell>
+        <OptionSelect ref={FormFactorInput} options={options} required />
+      </Table.Cell>
+      <Table.Cell colSpan={2}>
+        <Button
+          type="button"
+          className="w-full p-0 border-0"
+          onClick={handleAdd}
+        >
+          Add
+        </Button>
+      </Table.Cell>
+    </Table.Row>
   );
 }
 
-function submit(formData: FormData) {
-  return formData
-    .entries()
-    .filter(([_, value]) => value !== "" || Number(value) !== 0)
-    .map(([key, value]) => {
-      const [place, form_factor] = key.split("___") as [
-        Case.Side,
-        Case.HardDriveFormFactor
-      ];
-      const count = Number(value);
-      return CaseHardDriveSupport.Schemas.DTO.parse({
-        place,
-        form_factor,
-        count,
-      });
-    })
-    .toArray();
-}
-
-export default GenericInputField(MainComponent, submit);
+export default GenericListInputForm(
+  Component,
+  CaseHardDriveSupport.Schemas.DTO
+);

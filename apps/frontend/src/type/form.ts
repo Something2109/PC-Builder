@@ -8,6 +8,7 @@ import {
   DeepValue,
   FieldValidateOrFn,
   FieldAsyncValidateOrFn,
+  StandardSchemaV1,
 } from "@tanstack/react-form";
 
 type FormValidation<Data> = undefined | FormValidateOrFn<Data>;
@@ -28,7 +29,7 @@ export type FormApi<
 > = ReactFormExtendedApi<
   TFormData,
   FormValidation<TFormData>,
-  FormValidation<TFormData>,
+  StandardSchemaV1<TFormData>,
   FormAsyncValidation<TFormData>,
   FormValidation<TFormData>,
   FormAsyncValidation<TFormData>,
@@ -46,7 +47,7 @@ export type FormOptions<
 > = TanstackFormOptions<
   TFormData,
   FormValidation<TFormData>,
-  FormValidation<TFormData>,
+  StandardSchemaV1<TFormData>,
   FormAsyncValidation<TFormData>,
   FormValidation<TFormData>,
   FormAsyncValidation<TFormData>,
@@ -76,7 +77,7 @@ export type FieldApi<
   FieldValidation<TParentData, TName>,
   FieldAsyncValidation<TParentData, TName>,
   FormValidation<TParentData>,
-  FormValidation<TParentData>,
+  StandardSchemaV1<TParentData>,
   FormAsyncValidation<TParentData>,
   FormValidation<TParentData>,
   FormAsyncValidation<TParentData>,
@@ -87,3 +88,12 @@ export type FieldApi<
   FormAsyncValidation<TParentData>,
   TParentSubmitMeta
 >;
+
+export type ArrayForm<Item> = { items: Item[] };
+
+export type ArrayFormApi<
+  TFormData extends object,
+  TSubmitMeta = unknown,
+> = FormApi<ArrayForm<TFormData>, TSubmitMeta>;
+
+export type ArrayFieldApi<T> = FieldApi<ArrayForm<T>, "items">;

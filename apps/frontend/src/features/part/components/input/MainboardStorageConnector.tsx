@@ -1,118 +1,109 @@
-import { memo, useRef } from "react";
+import React, { useRef } from "react";
 
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
 import { InternalConnectors } from "@/utils/interface";
 import * as MainboardStorageConnector from "@/utils/part/info/MainboardStorageConnector";
 
-import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { GenericListInputForm } from "../utils/TanstackForm";
 
 function Component({
-  defaultValue,
-}: {
-  defaultValue?: MainboardStorageConnector.DTO[] | null;
-}) {
-  const [formFactors, addConnector, deleteConnector, existConnector] =
-    useObjectSet(
-      (form_factor: InternalConnectors.Storage) => ({
-        form_factor,
-        count: 0,
-      }),
-      (info: MainboardStorageConnector.DTO) => info.form_factor,
-      defaultValue
-    );
-
-  return (
-    <Table.Component>
-      <Table.Head>
-        <Table.Row>
-          <Table.Cell>{MainboardStorageConnector.Label.form_factor}</Table.Cell>
-          <Table.Cell>{MainboardStorageConnector.Label.count}</Table.Cell>
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        {formFactors.map(([connector, value]) => (
-          <ValueRow
-            key={connector}
-            value={value}
-            deleteConnector={deleteConnector}
-          />
-        ))}
-        <AddRow exist={existConnector} add={addConnector} />
-      </tbody>
-    </Table.Component>
-  );
-}
-
-const UnmemoValueRow = ({
-  value,
-  deleteConnector,
-}: {
-  value: MainboardStorageConnector.DTO;
-  deleteConnector: (value: MainboardStorageConnector.DTO) => void;
-}) => (
-  <Table.Row key={`storage-${value.form_factor}`}>
-    <Table.Cell>
-      <label>{value.form_factor}</label>
-    </Table.Cell>
-    <Table.Cell className="relative">
-      <Input
-        type="number"
-        name={value.form_factor}
-        defaultValue={value.count ?? 0}
-      />
-      <DeleteButton onClick={() => deleteConnector(value)} />
-    </Table.Cell>
-  </Table.Row>
-);
-
-const ValueRow = memo(UnmemoValueRow);
-
-function AddRow({
-  exist,
-  add,
-}: {
-  exist: (name: InternalConnectors.Storage) => boolean;
-  add: (value: InternalConnectors.Storage) => void;
-}) {
+  form,
+}: Readonly<{
+  form: ArrayFormApi<MainboardStorageConnector.DTO>;
+}>) {
   const ConnectorInput = useRef<HTMLSelectElement>(null);
-  const onAdd = () => {
-    const form_factor = ConnectorInput.current!
-      .value as InternalConnectors.Storage;
-
-    add(form_factor);
-  };
-
-  const options = InternalConnectors.Storage.Options.filter(
-    (val) => !exist(val)
-  );
 
   return (
-    options.length > 0 && (
-      <Table.Row>
-        <Table.Cell>
-          <OptionSelect ref={ConnectorInput} options={options} required />
-        </Table.Cell>
-        <Table.Cell>
-          <Button type="button" className="w-full p-0 border-0" onClick={onAdd}>
-            Add
-          </Button>
-        </Table.Cell>
-      </Table.Row>
-    )
+    <form.Field name="items" mode="array">
+      {(field) => {
+        const values = field.state.value ?? [];
+
+        const exist = (form_factor: InternalConnectors.Storage) => {
+          return values.some((val) => val.form_factor === form_factor);
+        };
+
+        const add = () => {
+          const form_factor = ConnectorInput.current?.value as
+            | InternalConnectors.Storage
+            | undefined;
+          if (!form_factor) return;
+
+          field.pushValue({ form_factor, count: 0 });
+        };
+
+        const remove = (index: number) => {
+          field.removeValue(index);
+        };
+
+        const options = InternalConnectors.Storage.Options.filter(
+          (val) => !exist(val)
+        );
+
+        return (
+          <Table.Component>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>
+                  {MainboardStorageConnector.Label.form_factor}
+                </Table.Cell>
+                <Table.Cell>{MainboardStorageConnector.Label.count}</Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <tbody>
+              {values.map((item, index) => (
+                <Table.Row key={item.form_factor}>
+                  <Table.Cell>
+                    <label>{item.form_factor}</label>
+                  </Table.Cell>
+                  <Table.Cell className="relative">
+                    <form.Field name={`items[${index}].count`}>
+                      {(subField) => (
+                        <Input
+                          type="number"
+                          name={subField.name}
+                          value={subField.state.value ?? 0}
+                          onChange={(e) =>
+                            subField.handleChange(Number(e.target.value))
+                          }
+                        />
+                      )}
+                    </form.Field>
+                    <DeleteButton onClick={() => remove(index)} />
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+              {options.length > 0 && (
+                <Table.Row>
+                  <Table.Cell>
+                    <OptionSelect
+                      ref={ConnectorInput}
+                      options={options}
+                      required
+                    />
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Button
+                      type="button"
+                      className="w-full p-0 border-0"
+                      onClick={add}
+                    >
+                      Add
+                    </Button>
+                  </Table.Cell>
+                </Table.Row>
+              )}
+            </tbody>
+          </Table.Component>
+        );
+      }}
+    </form.Field>
   );
 }
 
-function submit(formData: FormData) {
-  return formData
-    .entries()
-    .map(([form_factor, count]) =>
-      MainboardStorageConnector.Schemas.DTO.parse({ form_factor, count })
-    )
-    .filter((val) => val.count)
-    .toArray();
-}
-
-export default GenericInputField(Component, submit);
+export default GenericListInputForm(
+  Component,
+  MainboardStorageConnector.Schemas.DTO
+);

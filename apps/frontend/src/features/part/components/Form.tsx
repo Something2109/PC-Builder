@@ -7,10 +7,13 @@ import { Button } from "@/ui/Button";
 import { VerticalCollapsible } from "@/ui/Collapsible";
 import { NotificationBar } from "@/ui/NotificationBar";
 import Part, { Information } from "@/utils/part";
+import { InputFormComponent } from "./utils/TanstackForm";
+import z from "zod";
 
 const InputComponent: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key in Information.Name]: LazyExoticComponent<React.FC<any>>;
+  [key in Information.Name]: LazyExoticComponent<
+    InputFormComponent<NonNullable<z.infer<Information.DTO[key]>>>
+  >;
 } = {
   [Information.Name.CPU_SPEC]: lazy(
     () => import("@/features/part/components/input/CPUSpec")
@@ -122,13 +125,13 @@ const InputComponent: {
   ),
 };
 
-export function InfoForm({
+export function InfoForm<Info extends Information.Name>({
   path,
   info,
   defaultValue,
 }: Readonly<{
   path: string;
-  info: Information.Name;
+  info: Info;
   defaultValue: Part.DTO;
 }>) {
   const [formValue, save, pending, error, setError] = useInfoAction(
@@ -137,7 +140,9 @@ export function InfoForm({
     defaultValue
   );
 
-  const Component = InputComponent[info];
+  const Component = InputComponent[info] as InputFormComponent<
+    NonNullable<Part.DTO[Information.Name]>
+  >;
 
   if (!Component) return undefined;
 

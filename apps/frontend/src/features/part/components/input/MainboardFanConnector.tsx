@@ -1,78 +1,94 @@
-import { memo, useRef } from "react";
+import React, { useRef } from "react";
 
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
 import { InternalConnectors } from "@/utils/interface";
 import * as MainboardFanConnector from "@/utils/part/info/MainboardFanConnector";
 
-import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { GenericListInputForm } from "../utils/TanstackForm";
 
 function Component({
-  defaultValue,
+  form,
 }: Readonly<{
-  defaultValue?: MainboardFanConnector.DTO[] | null;
+  form: ArrayFormApi<MainboardFanConnector.DTO>;
 }>) {
-  const [SavedInputValues, addName, deleteName] = useObjectSet(
-    (
-      connector: InternalConnectors.Fan.Connector,
-      type: InternalConnectors.Fan.Type
-    ) => ({ connector, type, count: 0 }),
-    (info: MainboardFanConnector.DTO) =>
-      InternalConnectors.Fan.toString(info.connector, info.type),
-    defaultValue
-  );
-
   return (
-    <Table.Component>
-      <Table.Head>
-        <Table.Row>
-          <Table.Cell>{MainboardFanConnector.Label.type}</Table.Cell>
-          <Table.Cell>{MainboardFanConnector.Label.connector}</Table.Cell>
-          <Table.Cell>{MainboardFanConnector.Label.count}</Table.Cell>
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        {SavedInputValues.map(([key, value]) => (
-          <ValueRow key={key} value={value} deleteName={deleteName} />
-        ))}
-        <AddRow add={addName} />
-      </tbody>
-    </Table.Component>
+    <form.Field name="items" mode="array">
+      {(field) => {
+        const values = field.state.value ?? [];
+
+        const remove = (index: number) => {
+          field.removeValue(index);
+        };
+
+        const add = (
+          connector: InternalConnectors.Fan.Connector,
+          type: InternalConnectors.Fan.Type
+        ) => {
+          field.pushValue({ connector, type, count: 0 });
+        };
+
+        return (
+          <Table.Component>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>{MainboardFanConnector.Label.type}</Table.Cell>
+                <Table.Cell>{MainboardFanConnector.Label.connector}</Table.Cell>
+                <Table.Cell>{MainboardFanConnector.Label.count}</Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <tbody>
+              {values.map((item, index) => (
+                <Table.Row key={`${item.connector}-${item.type}`}>
+                  <Table.Cell>
+                    <form.Field name={`items[${index}].type`}>
+                      {(subField) => (
+                        <Input
+                          name={subField.name}
+                          value={subField.state.value}
+                          readOnly
+                        />
+                      )}
+                    </form.Field>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <form.Field name={`items[${index}].connector`}>
+                      {(subField) => (
+                        <Input
+                          name={subField.name}
+                          value={subField.state.value}
+                          readOnly
+                        />
+                      )}
+                    </form.Field>
+                  </Table.Cell>
+                  <Table.Cell className="relative">
+                    <form.Field name={`items[${index}].count`}>
+                      {(subField) => (
+                        <Input
+                          type="number"
+                          name={subField.name}
+                          value={subField.state.value ?? 0}
+                          onChange={(e) =>
+                            subField.handleChange(Number(e.target.value))
+                          }
+                        />
+                      )}
+                    </form.Field>
+                    <DeleteButton onClick={() => remove(index)} />
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+              <AddRow add={add} />
+            </tbody>
+          </Table.Component>
+        );
+      }}
+    </form.Field>
   );
 }
-
-function UnmemoValueRow({
-  value,
-  deleteName,
-}: Readonly<{
-  value: MainboardFanConnector.DTO;
-  deleteName: (value: MainboardFanConnector.DTO) => void;
-}>) {
-  const key = InternalConnectors.Fan.toString(value.connector, value.type);
-
-  return (
-    <Table.Row>
-      <Table.Cell>
-        <Input name={`${key}___type`} value={value.type} readOnly />
-      </Table.Cell>
-      <Table.Cell>
-        <Input name={`${key}___connector`} value={value.connector} readOnly />
-      </Table.Cell>
-      <Table.Cell className="relative">
-        <Input
-          type="number"
-          name={`${key}___count`}
-          defaultValue={value.count ?? 0}
-        />
-        <DeleteButton onClick={() => deleteName(value)} />
-      </Table.Cell>
-    </Table.Row>
-  );
-}
-
-const ValueRow = memo(UnmemoValueRow);
 
 function AddRow({
   add,
@@ -118,23 +134,7 @@ function AddRow({
   );
 }
 
-type MappingFormdata = {
-  [key in string]: { [key in string]: string | number };
-};
-
-function submit(formData: FormData) {
-  const raw = formData.entries().reduce((acc, [key, value]) => {
-    const [mapping, attr] = key.split("___");
-    if (!acc[mapping]) acc[mapping] = {};
-
-    acc[mapping][attr] = attr === "count" ? Number(value) : (value as string);
-
-    return acc;
-  }, {} as MappingFormdata);
-
-  return Object.values(raw)
-    .map((val) => MainboardFanConnector.Schemas.DTO.parse(val))
-    .filter((val) => val.count);
-}
-
-export default GenericInputField(Component, submit);
+export default GenericListInputForm(
+  Component,
+  MainboardFanConnector.Schemas.DTO
+);

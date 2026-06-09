@@ -1,85 +1,96 @@
-import { memo, useRef } from "react";
+import React, { useRef } from "react";
 
-import { useObjectSet } from "@/features/part/hooks/ObjectSet";
+import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
 import { ExternalPorts } from "@/utils/interface";
 import * as MainboardUSBConnector from "@/utils/part/info/MainboardUSBConnector";
 
-import { GenericInputField } from "../utils/Form";
 import { Table } from "../utils/Table";
+import { GenericListInputForm } from "../utils/TanstackForm";
 
 function Component({
-  defaultValue,
+  form,
 }: Readonly<{
-  defaultValue?: MainboardUSBConnector.DTO[] | null;
+  form: ArrayFormApi<MainboardUSBConnector.DTO>;
 }>) {
-  const [SavedInputValues, addName, deleteName] = useObjectSet(
-    (
-      generation: ExternalPorts.Peripheral.USB.Generation,
-      connector: ExternalPorts.Peripheral.USB.Connector
-    ) => ({
-      generation,
-      connector,
-      count: 0,
-    }),
-    (info) =>
-      ExternalPorts.Peripheral.USB.toString(info.generation, info.connector),
-    defaultValue
-  );
-
   return (
-    <Table.Component>
-      <Table.Head>
-        <Table.Row>
-          <Table.Cell>{MainboardUSBConnector.Label.generation}</Table.Cell>
-          <Table.Cell>{MainboardUSBConnector.Label.connector}</Table.Cell>
-          <Table.Cell>{MainboardUSBConnector.Label.count}</Table.Cell>
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        {SavedInputValues.map(([key, value]) => (
-          <ValueRow key={key} value={value} deleteName={deleteName} />
-        ))}
-        <AddRow add={addName} />
-      </tbody>
-    </Table.Component>
+    <form.Field name="items" mode="array">
+      {(field) => {
+        const values = field.state.value ?? [];
+
+        const remove = (index: number) => {
+          field.removeValue(index);
+        };
+
+        const add = (
+          generation: ExternalPorts.Peripheral.USB.Generation,
+          connector: ExternalPorts.Peripheral.USB.Connector
+        ) => {
+          field.pushValue({ generation, connector, count: 0 });
+        };
+
+        return (
+          <Table.Component>
+            <Table.Head>
+              <Table.Row>
+                <Table.Cell>
+                  {MainboardUSBConnector.Label.generation}
+                </Table.Cell>
+                <Table.Cell>{MainboardUSBConnector.Label.connector}</Table.Cell>
+                <Table.Cell>{MainboardUSBConnector.Label.count}</Table.Cell>
+              </Table.Row>
+            </Table.Head>
+            <tbody>
+              {values.map((item, index) => (
+                <Table.Row key={`${item.generation}-${item.connector}`}>
+                  <Table.Cell>
+                    <form.Field name={`items[${index}].generation`}>
+                      {(subField) => (
+                        <Input
+                          name={subField.name}
+                          value={subField.state.value}
+                          readOnly
+                        />
+                      )}
+                    </form.Field>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <form.Field name={`items[${index}].connector`}>
+                      {(subField) => (
+                        <Input
+                          name={subField.name}
+                          value={subField.state.value}
+                          readOnly
+                        />
+                      )}
+                    </form.Field>
+                  </Table.Cell>
+                  <Table.Cell className="relative">
+                    <form.Field name={`items[${index}].count`}>
+                      {(subField) => (
+                        <Input
+                          type="number"
+                          name={subField.name}
+                          value={subField.state.value ?? 0}
+                          onChange={(e) =>
+                            subField.handleChange(Number(e.target.value))
+                          }
+                        />
+                      )}
+                    </form.Field>
+                    <DeleteButton onClick={() => remove(index)} />
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+              <AddRow add={add} />
+            </tbody>
+          </Table.Component>
+        );
+      }}
+    </form.Field>
   );
 }
-
-function UnmemoValueRow({
-  value,
-  deleteName,
-}: Readonly<{
-  value: MainboardUSBConnector.DTO;
-  deleteName: (value: MainboardUSBConnector.DTO) => void;
-}>) {
-  const key = ExternalPorts.Peripheral.USB.toString(
-    value.generation,
-    value.connector
-  );
-
-  return (
-    <Table.Row key={`usb-${key}`}>
-      <Table.Cell>
-        <Input name={`${key}___generation`} value={value.generation} readOnly />
-      </Table.Cell>
-      <Table.Cell>
-        <Input name={`${key}___connector`} value={value.connector} readOnly />
-      </Table.Cell>
-      <Table.Cell className="relative">
-        <Input
-          type="number"
-          name={`${key}___count`}
-          defaultValue={value.count ?? 0}
-        />
-        <DeleteButton onClick={() => deleteName(value)} />
-      </Table.Cell>
-    </Table.Row>
-  );
-}
-
-const ValueRow = memo(UnmemoValueRow);
 
 function AddRow({
   add,
@@ -126,23 +137,7 @@ function AddRow({
   );
 }
 
-type MappingFormdata = {
-  [key in string]: { [key in string]: string | number };
-};
-
-function submit(formData: FormData) {
-  const raw = formData.entries().reduce((acc, [key, value]) => {
-    const [mapping, attr] = key.split("___");
-    if (!acc[mapping]) acc[mapping] = {};
-
-    acc[mapping][attr] = attr === "count" ? Number(value) : (value as string);
-
-    return acc;
-  }, {} as MappingFormdata);
-
-  return Object.values(raw)
-    .map((val) => MainboardUSBConnector.Schemas.DTO.parse(val))
-    .filter((val) => val.count);
-}
-
-export default GenericInputField(Component, submit);
+export default GenericListInputForm(
+  Component,
+  MainboardUSBConnector.Schemas.DTO
+);
