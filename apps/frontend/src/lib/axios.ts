@@ -1,8 +1,7 @@
 import axios from "axios";
-import { getBackendPath } from "../utils/path";
 
 const axiosInstance = axios.create({
-  baseURL: getBackendPath("/api").href,
+  baseURL: "/api",
   headers: {
     "Content-Type": "application/json",
   },
