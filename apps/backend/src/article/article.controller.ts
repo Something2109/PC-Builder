@@ -12,8 +12,8 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { Role } from "controllers/utils/role/role.decorator";
-import { ZodValidationPipe } from "controllers/utils/utils.modules";
+import { Role } from "src/utils/role/role.decorator";
+import { ZodValidationPipe } from "src/utils/utils.modules";
 
 import { CreateArticleDto, UpdateArticleDto } from "@/utils/article";
 import { Roles } from "@/utils/user";

@@ -10,8 +10,8 @@ import {
   ConflictException,
   NotFoundException,
 } from "@nestjs/common";
-import { Role } from "controllers/utils/role/role.decorator";
-import { ZodValidationPipe } from "controllers/utils/utils.modules";
+import { Role } from "src/utils/role/role.decorator";
+import { ZodValidationPipe } from "src/utils/utils.modules";
 
 import * as API from "@/utils/API";
 import * as User from "@/utils/user";

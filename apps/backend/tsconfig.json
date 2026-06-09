@@ -5,7 +5,7 @@
     "paths": {
       "@/models/*": ["./models/*"],
       "@/utils/*": ["../../packages/shared/*"],
-      "controllers/*": ["./controllers/*"]
+      "src/*": ["./src/*"]
     },
     "target": "ES2021",
     "allowJs": true,

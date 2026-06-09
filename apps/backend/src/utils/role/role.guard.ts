@@ -6,7 +6,7 @@ import {
   ForbiddenException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { ROLE_METADATA_KEY } from "controllers/utils/role/role.decorator";
+import { ROLE_METADATA_KEY } from "src/utils/role/role.decorator";
 
 import { Session, Tokens } from "@/utils/API";
 import { Roles } from "@/utils/user";

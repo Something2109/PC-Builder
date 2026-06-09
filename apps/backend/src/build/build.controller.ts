@@ -8,7 +8,7 @@ import {
   ParseEnumPipe,
 } from "@nestjs/common";
 import { BuildService } from "./build.service";
-import { ZodValidationPipe } from "controllers/utils/utils.modules";
+import { ZodValidationPipe } from "src/utils/utils.modules";
 import Build from "@/utils/build";
 import { Products } from "@/utils/part";
 

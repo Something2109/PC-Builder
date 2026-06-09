@@ -1,11 +1,11 @@
 import {
   LIST_INTERFACE,
   DatabaseListInterface,
-} from "controllers/part/interface/database.interface";
+} from "src/part/interface/database.interface";
 import {
   PARSE_INTERFACE,
   ParseServiceInterface,
-} from "controllers/part/interface/part.interface";
+} from "src/part/interface/part.interface";
 import Build from "@/utils/build";
 import Part, { Infos, Products, Information, Mapping } from "@/utils/part";
 import {

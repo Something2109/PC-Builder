@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { UserService } from "controllers/user/user.service";
+import { UserService } from "src/user/user.service";
 
 import { Tokens } from "@/utils/API";
 import { JwtPayload } from "@/utils/user";
