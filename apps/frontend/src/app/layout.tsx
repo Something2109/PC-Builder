@@ -4,7 +4,7 @@ import { ThemeBody } from "@/layout/body";
 import Footer from "@/layout/footer";
 import Header from "@/layout/header";
 
-import "../public/stylesheets/globals.css";
+import "../../public/stylesheets/globals.css";
 
 export default async function RootLayout({
   children,
