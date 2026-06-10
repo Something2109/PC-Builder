@@ -1,6 +1,6 @@
 import { JSDOM } from "jsdom";
 
-import { Products } from "../../../utils/Enum";
+import { Products } from "../../utils/Enum";
 import { APIWebsiteInfo } from "../../interface";
 
 const domain = "https://www.gigabyte.com";

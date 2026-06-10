@@ -16,7 +16,7 @@ import {
   RequestObject,
   RequestOptions,
   isCrawlInfo,
-} from "../interface";
+} from "../../interface";
 import { PipelineTransform } from "../utils/pipeline-transform";
 
 /**
@@ -320,7 +320,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
    */
   private createNextCrawlInfo<
     Prev extends InternalStage,
-    Stage extends InternalStage
+    Stage extends InternalStage,
   >(
     prev: CrawlInfo<Prev, Raw, Final, Fetched>,
     stage: Stage,

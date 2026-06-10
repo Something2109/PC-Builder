@@ -1,10 +1,10 @@
 import { JSDOM } from "jsdom";
 
-import { Products } from "../../../utils/Enum";
+import { Products } from "../../utils/Enum";
 import {
   RetailProductSchema,
   RetailProductType,
-} from "../../../utils/interface/retailer/Product";
+} from "../../utils/interface/retailer/Product";
 import { APIWebsiteInfo } from "../../interface";
 
 const domain = "https://www.anphatpc.com.vn";

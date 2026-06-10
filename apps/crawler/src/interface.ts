@@ -1,4 +1,4 @@
-import { Products } from "../utils/Enum";
+import { Products } from "./utils/Enum";
 
 /** Describe types for the crawl info object */
 
@@ -53,14 +53,14 @@ export type CrawlData<
   S extends InternalStage,
   Raw,
   Final,
-  Fetched
+  Fetched,
 > = CrawlStageResult<Raw, Final, Fetched>[S];
 
 interface CrawlInfo<
   S extends InternalStage = InternalStage,
   Raw = any,
   Final = Raw,
-  Fetched = any
+  Fetched = any,
 > {
   stage: S;
   data: Pick<CrawlStageResult<Raw, Final, Fetched>, CrawlStageDataMap[S]>;
