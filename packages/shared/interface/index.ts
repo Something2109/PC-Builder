@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { Network, Peripheral, Display, Audio, Interaction } from "./ExternalPorts";
+
 export const Primitive = {
   String: z.string(),
 
@@ -13,11 +15,11 @@ export * as InternalConnectors from "./InternalConnectors";
 export * as ExternalPorts from "./ExternalPorts";
 
 export type ExternalPorts =
-  | ExternalPorts.Network
-  | ExternalPorts.Peripheral
-  | ExternalPorts.Display
-  | ExternalPorts.Audio
-  | ExternalPorts.Interaction;
+  | Network
+  | Peripheral
+  | Display
+  | Audio
+  | Interaction;
 
 export * as Material from "./Material";
 

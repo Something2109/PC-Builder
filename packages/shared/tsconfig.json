@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./",
+    "declaration": true,
     "paths": {
       "@/utils/*": ["./*"]
     }

@@ -8,6 +8,6 @@ export type Type = z.infer<typeof Type>;
 
 export * as Ethernet from "./Ethernet";
 
-export type Ethernet = z.infer<typeof Ethernet.Schema>;
+export type Ethernet = z.infer<typeof EthernetSchema>;
 
 export const Schema = EthernetSchema;

@@ -9,11 +9,11 @@ export type Type = z.infer<typeof Type>;
 
 export * as HDMI from "./HDMI";
 
-export type HDMI = z.infer<typeof HDMI.Schema>;
+export type HDMI = z.infer<typeof HDMISchema>;
 
 export * as DisplayPort from "./DisplayPort";
 
-export type DisplayPort = z.infer<typeof DisplayPort.Schema>;
+export type DisplayPort = z.infer<typeof DisplayPortSchema>;
 
 export const DVI = z.enum(["DVI-D", "DVI-I", "DVI-A", "Mini-DVI", "Micro-DVI"]);
 

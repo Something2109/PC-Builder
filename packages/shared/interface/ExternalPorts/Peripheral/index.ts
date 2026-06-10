@@ -9,10 +9,10 @@ export type Type = z.infer<typeof Type>;
 
 export * as USB from "./USB";
 
-export type USB = z.infer<typeof USB.Schema>;
+export type USB = z.infer<typeof USBSchema>;
 
 export * as PS2 from "./PS2";
 
-export type PS2 = z.infer<typeof PS2.Schema>;
+export type PS2 = z.infer<typeof PS2Schema>;
 
 export const Schema = z.union([USBSchema, PS2Schema]);

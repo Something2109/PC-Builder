@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { Primitive } from "../interface";
 import { createDTO, createModel, FilterOptions } from "../utils";
+import { InfoType, AttributeType } from "./infer";
 import * as Information from "./info";
 import * as Product from "./product";
 
@@ -100,4 +101,4 @@ export type DTO = z.infer<typeof DTO>;
 export type Infer<
   I extends Information.Name,
   A extends string = ""
-> = A extends "" ? Infer.InfoType<I> : Infer.AttributeType<I, A>;
+> = A extends "" ? InfoType<I> : AttributeType<I, A>;

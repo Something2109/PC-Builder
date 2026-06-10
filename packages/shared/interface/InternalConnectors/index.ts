@@ -1,12 +1,17 @@
 import { z } from "zod";
 
+import { Schema as FanSchema } from "./Fan";
+import { Schema as PCIeSchema } from "./PCIe";
+import { Mainboard, GraphicCard, Miscellanous as PowerMiscellanous } from "./Power";
+import { SSD, HDD } from "./Storage";
+
 export * as Power from "./Power";
 
-export type Power = Power.Mainboard | Power.GraphicCard | Power.Miscellanous;
+export type Power = Mainboard | GraphicCard | PowerMiscellanous;
 
 export * as PCIe from "./PCIe";
 
-export type PCIe = z.infer<typeof PCIe.Schema>;
+export type PCIe = z.infer<typeof PCIeSchema>;
 
 export const RAM = z.enum([
   "DDR1",
@@ -37,11 +42,11 @@ export type SGRAM = z.infer<typeof SGRAM>;
 
 export * as Storage from "./Storage";
 
-export type Storage = Storage.SSD | Storage.HDD;
+export type Storage = SSD | HDD;
 
 export * as Fan from "./Fan";
 
-export type Fan = z.infer<typeof Fan.Schema>;
+export type Fan = z.infer<typeof FanSchema>;
 
 export const Sound = z.enum(["Front Panel Audio Header", "SPDIF Out Header"]);
 
