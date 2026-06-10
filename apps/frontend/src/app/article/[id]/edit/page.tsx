@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 import React from "react";
 
-import { getBackendUrl } from "@/utils/path";
 import { EditableArticle } from "@/features/article/components/Form";
 import { AuthRole } from "@/features/auth";
 import { Article } from "@/utils/article";
+import { getBackendUrl } from "@/utils/path";
 import { Roles } from "@/utils/user";
 
 export default async function ArticleEditPage({

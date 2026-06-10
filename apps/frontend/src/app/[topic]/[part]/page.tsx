@@ -5,10 +5,10 @@ import React from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
-import { getBackendUrl } from "@/utils/path";
 import { Summary } from "@/utils/article";
 import { Products } from "@/utils/part";
 import { Label } from "@/utils/part/product";
+import { getBackendUrl } from "@/utils/path";
 
 export default async function PartTopicPage({
   params,

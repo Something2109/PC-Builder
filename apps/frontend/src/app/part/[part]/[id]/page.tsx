@@ -4,8 +4,8 @@ import React from "react";
 import { PartTable } from "@/features/part/components/detail/Part";
 import { InfoTable } from "@/features/part/components/Table";
 import { ResponsiveWrapper } from "@/ui/FlexWrapper";
-import { getBackendUrl } from "@/utils/path";
 import Part, { Products, Mapping } from "@/utils/part";
+import { getBackendUrl } from "@/utils/path";
 
 export default async function PartDetailPage({
   params,

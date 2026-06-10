@@ -1,8 +1,8 @@
 import { notFound, redirect } from "next/navigation";
 
 import { verifyToken } from "@/features/auth/server";
-import { getBackendUrl } from "@/utils/path";
 import { Summary } from "@/utils/article";
+import { getBackendUrl } from "@/utils/path";
 import { Roles } from "@/utils/user";
 
 export default async function PartTopicEditPage({

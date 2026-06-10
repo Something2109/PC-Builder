@@ -2,8 +2,9 @@ import type { NextRequest } from "next/server";
 
 import { NextResponse } from "next/server";
 
-import { getBackendUrl } from "./src/utils/path";
 import { Tokens } from "@/utils/API";
+
+import { getBackendUrl } from "./src/utils/path";
 
 // Define paths that REQUIRE authentication
 const PROTECTED_PATHS = ["/admin", "/profile", "/build/save"];

@@ -4,8 +4,8 @@ import { AuthRole } from "@/features/auth";
 import { InfoForm } from "@/features/part/components/Form";
 import PartForm from "@/features/part/components/input/Part";
 import { ResponsiveWrapper } from "@/ui/FlexWrapper";
-import { getBackendUrl } from "@/utils/path";
 import Part, { Products, Mapping } from "@/utils/part";
+import { getBackendUrl } from "@/utils/path";
 import { Roles } from "@/utils/user";
 
 const roles = [Roles.ADMIN];

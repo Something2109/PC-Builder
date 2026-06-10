@@ -2,11 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 
-import { getBackendUrl } from "@/utils/path";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
 import { Summary } from "@/utils/article";
+import { getBackendUrl } from "@/utils/path";
 
 export default async function ArticleIndexPage() {
   const response = await fetch(getBackendUrl("/api/article"), {

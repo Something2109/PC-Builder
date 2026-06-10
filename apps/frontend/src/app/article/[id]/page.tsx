@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 import React from "react";
 
-import { getBackendUrl } from "@/utils/path";
 import { ArticleComponent } from "@/features/article/components/Article";
 import { verifyToken } from "@/features/auth/server";
 import { Article } from "@/utils/article";
+import { getBackendUrl } from "@/utils/path";
 import { Roles } from "@/utils/user";
 
 export default async function ArticlePage({

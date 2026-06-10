@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 
-import { getBackendUrl } from "@/utils/path";
 import { Tokens } from "@/utils/API";
+import { getBackendUrl } from "@/utils/path";
 import { JwtPayload } from "@/utils/user";
 
 export async function verifyToken(): Promise<JwtPayload | null> {

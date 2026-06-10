@@ -6,8 +6,8 @@ import { RedirectButton } from "@/ui/Button";
 import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
 import PaginationBar from "@/ui/PaginationBar";
 import { ToggleButton } from "@/ui/Toggle";
-import { getBackendUrl } from "@/utils/path";
 import { Product } from "@/utils/part";
+import { getBackendUrl } from "@/utils/path";
 
 export default async function PartListPage({
   params,

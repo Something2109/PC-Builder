@@ -10,9 +10,9 @@ import {
   Get,
   UsePipes,
 } from "@nestjs/common";
+import { CookieOptions, Request, Response } from "express";
 import { getRefreshToken } from "src/utils/auth/tokens";
 import { ZodValidationPipe } from "src/utils/utils.modules";
-import { CookieOptions, Request, Response } from "express";
 
 import { Tokens } from "@/utils/API";
 import { LogInOptions } from "@/utils/user";
