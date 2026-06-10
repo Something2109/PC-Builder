@@ -1,0 +1,136 @@
+import { Readable, Writable } from "node:stream";
+
+import { Name as Products } from "@/utils/part/product";
+
+import { APIWebsiteInfo } from "../interface";
+import { ErrorHandler } from "../utils/error-handler";
+import { StreamMonitor } from "../utils/monitor";
+import { CrawlStream } from "./stream";
+
+/**
+ * The main crawler class.
+ * The crawl process comprises many streams, each for a main crawl funtions, piped together
+ * to decrease the block time of each crawl info's process affect the next one's process.
+ * Should be used when dealing with large data of crawl info.
+ */
+class Crawler<Raw, Final = Raw, Fetched = Response> {
+  private readonly info: APIWebsiteInfo<Raw, Final, Fetched>;
+  private readonly input: Readable;
+  private readonly output: Writable;
+  private readonly errorHandler: ErrorHandler;
+  private readonly monitor?: Writable;
+
+  /**
+   * The crawler constructor.
+   * @param info The website api to be used by the crawler.
+   * @param options The options for the crawler. Take output as a {@link Writable}
+   * to customize the output of the crawler.
+   * The output's write function's chunk parameter must implement the output object
+   * to work properly.
+   */
+  constructor(
+    info: APIWebsiteInfo<Raw, Final, Fetched>,
+    options?: {
+      output?: Writable;
+      errorHandler?: ErrorHandler;
+      logPath?: string;
+      monitor?: Writable;
+    }
+  ) {
+    this.info = info;
+
+    this.input = new Readable({
+      objectMode: true,
+      read() {},
+      highWaterMark: 64,
+    });
+    this.output = options?.output ?? this.createDefaultOutput();
+    this.errorHandler =
+      options?.errorHandler ??
+      new ErrorHandler({ path: options?.logPath ?? "./logs" });
+    this.monitor =
+      options?.monitor ??
+      new StreamMonitor({ logPath: options?.logPath ?? "./logs" });
+  }
+  /**
+   * The crawl function.
+   * Initializes the {@link CrawlStream} pipeline, connects it to input/output,
+   * sets up monitoring, and starts the crawl process.
+   * @param products Optional list of products to start crawling with.
+   */
+  async crawl(products?: Products[]) {
+    const crawlStream = new CrawlStream(this.info);
+
+    // 1. Input Piping
+    this.input.pipe(crawlStream, { end: false });
+
+    // 2. Output Piping
+    // CrawlStream readable side now only emits successful results (Final).
+    crawlStream.pipe(this.output, { end: false });
+
+    // 3. Link Handling (Recycle links)
+    crawlStream.on("link", (link) => {
+      this.input.push(link);
+    });
+
+    // 4. Monitoring & Error Handling
+    if (this.monitor) {
+      crawlStream.monitorStream.pipe(this.monitor, { end: false });
+    }
+    crawlStream.monitorStream.pipe(this.errorHandler, { end: false });
+
+    // 5. Error propagation
+    crawlStream.on("error", (err) => {
+      // Log fatal stream errors if needed
+    });
+
+    // Start with seeds
+    this.start(products);
+  }
+
+  /**
+   * Generates initial crawl infos and pushes them to the input stream.
+   * @param products List of products to crawl.
+   */
+  private start(products?: Products[]) {
+    if (!products || !this.info.path) return;
+
+    products.forEach((product) => {
+      // Default to page 1 for now
+      const requestOptions = this.info.path!(product, 1);
+
+      if (requestOptions) {
+        // Normalize RequestOptions to RequestObject
+        let request: any = requestOptions;
+        if (typeof request === "string" || request instanceof URL) {
+          request = { url: new URL(request.toString()) };
+        } else if ("url" in request && !(request.url instanceof URL)) {
+          request = { ...request, url: new URL(request.url) };
+        }
+
+        this.input.push(request);
+      }
+    });
+  }
+
+  /**
+   * Create a writable stream that write the {@link ParseResult}
+   * to the {@link process.stdout} stream.
+   * @returns The created output stream.
+   */
+  private createDefaultOutput() {
+    return new Writable({
+      objectMode: true,
+      write(chunk: any, _, callback) {
+        if (chunk && typeof chunk === "object" && "error" in chunk) {
+          callback();
+          return;
+        }
+        const str = JSON.stringify(chunk);
+        process.stdout.write(str + "\n", callback);
+      },
+    });
+  }
+}
+
+export { Crawler };

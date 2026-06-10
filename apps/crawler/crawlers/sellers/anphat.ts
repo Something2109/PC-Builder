@@ -1,0 +1,79 @@
+import { JSDOM } from "jsdom";
+
+import { Products } from "../../../utils/Enum";
+import {
+  RetailProductSchema,
+  RetailProductType,
+} from "../../../utils/interface/retailer/Product";
+import { APIWebsiteInfo } from "../../interface";
+
+const domain = "https://www.anphatpc.com.vn";
+const mapping: { [key in Products]?: string } = {
+  [Products.CPU]: "cpu-bo-vi-xu-ly.html",
+  [Products.GRAPHIC_CARD]: "vga-card-man-hinh.html",
+  [Products.MAIN]: "bo-mach-chu.html",
+  [Products.RAM]: "bo-nho-trong.html",
+  [Products.SSD]: "o-cung-ssd_dm1030.html",
+  [Products.HDD]: "o-cung-desktop_dm1047.html",
+  [Products.PSU]: "nguon-dien-may-tinh-psu.html",
+  [Products.CASE]: "vo-may-tinh-case.html",
+  [Products.COOLER]: "tan-nhiet-khi-aircooling_dm1392.html",
+  [Products.AIO]: "bo-tan-nhiet-nuoc-all-in-one_dm1390.html",
+  [Products.FAN]: "quat-tan-nhiet_dm1519.html",
+};
+
+const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
+  domain,
+
+  save: "sellers",
+
+  path(product, page = 1) {
+    if (mapping[product]) {
+      const url = new URL(`${domain}/${mapping[product]}`);
+      url.searchParams.set("page", page.toString());
+
+      return { request: url, product };
+    }
+
+    return null;
+  },
+
+  async extract(response, info) {
+    const dom = new JSDOM(await response.text()).window.document;
+    const itemContainer = dom.querySelector(".product-list-container");
+
+    if (itemContainer) {
+      const list = [...itemContainer.querySelectorAll(".p-item")];
+
+      const url = new URL(info.request as string);
+      const page = Number(url.searchParams.get("page"));
+
+      return {
+        raw: list,
+        next: list.length ? [this.path!(info.product, page + 1)!] : [],
+      };
+    }
+
+    throw new Error(`There's possibly a change in the API of ${domain}`);
+  },
+
+  async parse(raw) {
+    const name = raw.querySelector(".p-name")?.textContent?.trim();
+    const price = Number(
+      raw
+        .querySelector(".p-price")
+        ?.textContent?.replaceAll(".", "")
+        ?.match(/\d+/)
+    );
+    const link = `${domain}${raw
+      .querySelector(".p-name")
+      ?.getAttribute("href")}`;
+    const img =
+      raw.querySelector(".fit-img")?.getAttribute("data-src") ?? undefined;
+    const availability = Boolean(raw.querySelector(".btn-in-stock"));
+
+    return RetailProductSchema.parse({ name, price, link, img, availability });
+  },
+};
+
+export default CrawlInfo;
