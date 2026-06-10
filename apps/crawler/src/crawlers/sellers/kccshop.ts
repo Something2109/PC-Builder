@@ -1,11 +1,11 @@
 import { JSDOM } from "jsdom";
 
+import { APIWebsiteInfo } from "../../interface";
 import { Products } from "../../utils/Enum";
 import {
   RetailProductSchema,
   RetailProductType,
 } from "../../utils/interface/retailer/Product";
-import { APIWebsiteInfo } from "../../interface";
 
 const domain = "https://kccshop.vn";
 const mapping: { [key in Products]?: string } = {

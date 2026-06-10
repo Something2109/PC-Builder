@@ -1,7 +1,7 @@
 import { JSDOM } from "jsdom";
 
-import { Products } from "../../utils/Enum";
 import { APIWebsiteInfo } from "../../interface";
+import { Products } from "../../utils/Enum";
 
 const domain = "https://odinapi.asus.com";
 const mapping: { [key in Products]?: string } = {

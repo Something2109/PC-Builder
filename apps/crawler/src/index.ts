@@ -6,7 +6,8 @@ import { Name as Products } from "@/utils/part/product";
 
 import { isCrawlInfo } from "./interface";
 import { Crawler } from "./lib/crawler";
-import { FileWriter, ProcessWriter } from "./utils/writer";
+import { LocalFileStorageAdapter } from "./utils/storage";
+import { ProcessWriter } from "./utils/writer";
 
 /** Create an argument object based on the {@link process.argv} list */
 
@@ -60,6 +61,7 @@ const productList = argumentList["product"]
 /** File path check and output creation */
 
 let output;
+let adapter;
 if (process.connected) {
   output = new ProcessWriter();
 } else if (argumentList["save-path"]?.[0]) {
@@ -69,15 +71,11 @@ if (process.connected) {
     savepath = path.join(dirpath, savepath);
   }
 
-  if (!fs.existsSync(savepath)) {
-    fs.mkdirSync(savepath, { recursive: true });
-  }
-
-  output = new FileWriter({ path: savepath });
+  adapter = new LocalFileStorageAdapter(savepath);
 }
 
 /** Crawl session */
 
-const crawler = new Crawler(websiteInfo, { output });
+const crawler = new Crawler(websiteInfo, { output, adapter });
 
 crawler.crawl(productList);

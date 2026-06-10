@@ -4,7 +4,7 @@
     "outDir": "./dist",
     "rootDir": "./",
     "paths": {
-      "@/utils/*": ["../../packages/shared/*"]
+      "@/utils/*": ["../../packages/shared/dist/*"]
     }
   },
   "include": ["**/*.ts"],

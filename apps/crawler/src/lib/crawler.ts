@@ -5,6 +5,7 @@ import { Name as Products } from "@/utils/part/product";
 import { APIWebsiteInfo } from "../interface";
 import { ErrorHandler } from "../utils/error-handler";
 import { StreamMonitor } from "../utils/monitor";
+import { CrawlStorageAdapter, StreamStorageWriter } from "../utils/storage";
 import { CrawlStream } from "./stream";
 
 /**
@@ -14,7 +15,7 @@ import { CrawlStream } from "./stream";
  * Should be used when dealing with large data of crawl info.
  */
 class Crawler<Raw, Final = Raw, Fetched = Response> {
-  private readonly info: APIWebsiteInfo<Raw, Final, Fetched>;
+  private readonly info?: APIWebsiteInfo<Raw, Final, Fetched>;
   private readonly input: Readable;
   private readonly output: Writable;
   private readonly errorHandler: ErrorHandler;
@@ -22,16 +23,14 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
 
   /**
    * The crawler constructor.
-   * @param info The website api to be used by the crawler.
-   * @param options The options for the crawler. Take output as a {@link Writable}
-   * to customize the output of the crawler.
-   * The output's write function's chunk parameter must implement the output object
-   * to work properly.
+   * @param info Optional website api to be used by the crawler. If omitted, scraper is resolved dynamically.
+   * @param options The options for the crawler. Take output as a {@link Writable} or adapter as {@link CrawlStorageAdapter}.
    */
   constructor(
-    info: APIWebsiteInfo<Raw, Final, Fetched>,
+    info?: APIWebsiteInfo<Raw, Final, Fetched>,
     options?: {
       output?: Writable;
+      adapter?: CrawlStorageAdapter<any>;
       errorHandler?: ErrorHandler;
       logPath?: string;
       monitor?: Writable;
@@ -44,7 +43,8 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
       read() {},
       highWaterMark: 64,
     });
-    this.output = options?.output ?? this.createDefaultOutput();
+    this.output = options?.output ?? 
+                  (options?.adapter ? new StreamStorageWriter(options.adapter) : this.createDefaultOutput());
     this.errorHandler =
       options?.errorHandler ??
       new ErrorHandler({ path: options?.logPath ?? "./logs" });
@@ -93,11 +93,11 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
    * @param products List of products to crawl.
    */
   private start(products?: Products[]) {
-    if (!products || !this.info.path) return;
+    if (!products || !this.info || !this.info.path) return;
 
     products.forEach((product) => {
       // Default to page 1 for now
-      const requestOptions = this.info.path!(product, 1);
+      const requestOptions = this.info!.path!(product, 1);
 
       if (requestOptions) {
         // Normalize RequestOptions to RequestObject
