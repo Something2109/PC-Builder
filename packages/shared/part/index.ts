@@ -6,3 +6,21 @@ export { Name as Infos } from "./info";
 export { Name as Products } from "./product";
 export * as Product from "./product";
 export * as Mapping from "./mapping";
+export { RawPartMapper } from "./mapper";
+export { AliasRegistry } from "./mapper/registry";
+export { AliasLearner } from "./mapper/learner";
+export type {
+  IAliasRegistry,
+  IAliasLearner,
+  ResolvedTarget,
+  ResolvedMapping,
+  BasicMapping,
+  HeuristicConfig,
+} from "./mapper/types";
+export {
+  fuzzyMatch,
+  fuzzyMatchBasic,
+  scoreValueQuality,
+  resolveConflicts,
+  resolveBasicConflicts,
+} from "./mapper/resolver";
