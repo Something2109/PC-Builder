@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { normalizeDomain } from "@/utils/part/mapper/utils";
+
 import { APIWebsiteInfo } from "../interface";
 
 export class ScraperRegistry {
@@ -8,7 +10,7 @@ export class ScraperRegistry {
   private static crawlersDir = path.join(__dirname, "../crawlers");
 
   static async getScraper(domain: string): Promise<APIWebsiteInfo<any, any>> {
-    const key = domain.replaceAll(/(https:\/\/|www.|\.com|\.vn|\.)+/g, "");
+    const key = normalizeDomain(domain);
 
     if (this.cache.has(key)) {
       return this.cache.get(key)!;
@@ -28,15 +30,19 @@ export class ScraperRegistry {
     }
 
     if (!scraperPath) {
-      throw new Error(`Scraper configuration for '${domain}' (key: ${key}) not found in crawlers directory`);
+      throw new Error(
+        `Scraper configuration for '${domain}' (key: ${key}) not found in crawlers directory`
+      );
     }
 
     try {
       const module = await import(scraperPath);
       const scraper = module.default || module.scraper;
-      
+
       if (!scraper) {
-        throw new Error(`Scraper configuration default export missing in ${key}`);
+        throw new Error(
+          `Scraper configuration default export missing in ${key}`
+        );
       }
 
       this.cache.set(key, scraper);
@@ -47,7 +53,7 @@ export class ScraperRegistry {
   }
 
   static register(scraper: APIWebsiteInfo<any, any>) {
-    const key = scraper.domain.replaceAll(/(https:\/\/|www.|\.com|\.vn|\.)+/g, "");
+    const key = normalizeDomain(scraper.domain);
     this.cache.set(key, scraper);
   }
 }

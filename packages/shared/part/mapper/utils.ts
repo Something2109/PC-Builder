@@ -5,6 +5,10 @@ export function normalizeKey(key: string): string {
   return key.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+export function normalizeDomain(url: string) {
+  return url.replaceAll(/(https:\/\/|www.|\.com|\.vn|\.)+/g, "");
+}
+
 // Levenshtein Distance for fuzzy matching typos
 export function getLevenshteinDistance(a: string, b: string): number {
   const tmp: number[][] = [];
