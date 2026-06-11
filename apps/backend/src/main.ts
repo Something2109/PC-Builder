@@ -18,7 +18,9 @@ async function bootstrap() {
     getSecret: () => process.env.CSRF_SECRET!,
     getSessionIdentifier: getAccessToken,
     skipCsrfProtection: (request: Request) =>
-      request.originalUrl.startsWith("/api/auth"),
+      request.originalUrl.startsWith("/api/auth") ||
+      request.originalUrl.includes("/mapper/") ||
+      request.originalUrl.includes("/bulk"),
     cookieName: "CSRF_Token",
     cookieOptions: {
       httpOnly: false,
