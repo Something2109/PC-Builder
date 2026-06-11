@@ -64,7 +64,7 @@ class FileWriter extends Writable {
    * @param callback The callback variable from the parent function.
    */
   _final(callback: (error?: Error | null) => void): void {
-    Object.entries(this.writeStream).forEach(([key, stream]) => {
+    Object.entries(this.writeStream).forEach(([_key, stream]) => {
       if (stream) {
         stream.end();
       }

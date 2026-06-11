@@ -3,7 +3,6 @@ import { z } from "zod";
 import { parseSingleValue } from "./parser";
 import {
   IAliasRegistry,
-  IAliasLearner,
   ResolvedTarget,
   ResolvedMapping,
   BasicMapping,
@@ -343,7 +342,7 @@ export function resolveConflicts(
 
   const resolved: ResolvedMapping[] = [];
 
-  for (const [groupKey, group] of groups) {
+  for (const [_groupKey, group] of groups) {
     // _self entries are never conflicts — keep all
     if (group[0].attribute === "_self") {
       resolved.push(...group);

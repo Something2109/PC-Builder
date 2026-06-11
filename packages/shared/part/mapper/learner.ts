@@ -1,11 +1,7 @@
-import type {
-  IAliasLearner,
-  IAliasRegistry,
-  ResolvedTarget,
-} from "./types";
+import type { IAliasLearner, IAliasRegistry, ResolvedTarget } from "./types";
 
 import { fuzzyMatch, fuzzyMatchBasic } from "./resolver";
-import { normalizeKey, getLevenshteinDistance } from "./utils";
+import { normalizeKey } from "./utils";
 
 /**
  * In-memory implementation of IAliasLearner.
@@ -40,14 +36,24 @@ export class AliasLearner implements IAliasLearner {
       if (match.target.attribute === "_self") {
         await registry.addInfoAlias(product, match.target.info, rawKey);
       } else {
-        await registry.addAlias(product, match.target.info, match.target.attribute, rawKey);
+        await registry.addAlias(
+          product,
+          match.target.info,
+          match.target.attribute,
+          rawKey
+        );
       }
       return match.target;
     }
 
     // Also try BasicInfo targets
     const basicTargets = registry.getBasicTargets();
-    const basicMatch = fuzzyMatchBasic(normalizedKey, basicTargets, registry, config);
+    const basicMatch = fuzzyMatchBasic(
+      normalizedKey,
+      basicTargets,
+      registry,
+      config
+    );
 
     if (basicMatch && basicMatch.score >= 30) {
       await registry.addBasicAlias(basicMatch.attribute, rawKey);
@@ -87,10 +93,19 @@ export class AliasLearner implements IAliasLearner {
     const coveredKeys = new Set<string>();
     const targets = registry.getProductTargets(product);
     for (const target of targets) {
-      coveredKeys.add(normalizeKey(target.attribute === "_self" ? target.info : target.attribute));
-      const aliases = target.attribute === "_self"
-        ? registry.getInfoAliases(product, target.info)
-        : registry.getAttributeAliases(product, target.info, target.attribute);
+      coveredKeys.add(
+        normalizeKey(
+          target.attribute === "_self" ? target.info : target.attribute
+        )
+      );
+      const aliases =
+        target.attribute === "_self"
+          ? registry.getInfoAliases(product, target.info)
+          : registry.getAttributeAliases(
+              product,
+              target.info,
+              target.attribute
+            );
       for (const alias of aliases) {
         coveredKeys.add(normalizeKey(alias));
       }
@@ -113,7 +128,12 @@ export class AliasLearner implements IAliasLearner {
       const normKey = normalizeKey(rawKey);
       if (coveredKeys.has(normKey)) continue;
 
-      const resolved = await this.tryResolve(normKey, rawKey, product, registry);
+      const resolved = await this.tryResolve(
+        normKey,
+        rawKey,
+        product,
+        registry
+      );
 
       if (resolved && resolved.info !== "basic") {
         if (!newlyLearned[resolved.info]) {

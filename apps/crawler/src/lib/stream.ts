@@ -148,7 +148,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
    * Resumes the `resultFilter` if it was paused.
    * @param size Number of bytes to read (ignored for object mode).
    */
-  _read(size: number): void {
+  _read(_size: number): void {
     // Resume pipeline if it was paused
     if (this.outputTransform.isPaused()) {
       this.outputTransform.resume();
@@ -206,7 +206,8 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
       async (info: CrawlInfo<InternalStage.Init, Raw, Final, Fetched>) => {
         // Resolve scraper configuration dynamically
         const url = info.data[InternalStage.Init].url;
-        const api = this.info || await ScraperRegistry.getScraper(url.hostname);
+        const api =
+          this.info || (await ScraperRegistry.getScraper(url.hostname));
 
         const fetcher: FetchFunction<Fetched> =
           (api.fetch as FetchFunction<Fetched> | undefined) ||
@@ -231,7 +232,11 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
         const cacheKey = `response:${info.product}:${info.index}:${Date.now()}:${Math.random()}`;
         await this.cache.set(cacheKey, payload);
 
-        return this.createNextCrawlInfo(info, InternalStage.Fetch, cacheKey as unknown as Fetched);
+        return this.createNextCrawlInfo(
+          info,
+          InternalStage.Fetch,
+          cacheKey as unknown as Fetched
+        );
       },
       {
         concurrency: this.streamOptions?.concurrency ?? 10,
@@ -255,7 +260,8 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
             ? info.request
             : (info.request as any).url || info.request
         );
-        const api = this.info || await ScraperRegistry.getScraper(url.hostname);
+        const api =
+          this.info || (await ScraperRegistry.getScraper(url.hostname));
 
         // Retrieve from cache
         const cacheKey = info.data.fetch as unknown as string;
@@ -305,7 +311,8 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
             ? info.request
             : (info.request as any).url || info.request
         );
-        const api = this.info || await ScraperRegistry.getScraper(url.hostname);
+        const api =
+          this.info || (await ScraperRegistry.getScraper(url.hostname));
 
         let result: Final = info.data.extract as unknown as Final;
         if (api.parse) {

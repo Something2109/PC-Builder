@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 // ─── Resolved Target Types ───────────────────────────────────────────
 
 /**
@@ -43,12 +41,12 @@ export interface HeuristicConfig {
 
 /**
  * Interface for the alias registry.
- * 
+ *
  * The registry stores a product-scoped alias mapping:
  *   product → info → attribute → aliases[]
  * with a "_self" key for info-level aliases
  * and a separate "basic" section for BasicInfo fields.
- * 
+ *
  * Implementations may be backed by JSON files, databases, or in-memory stores.
  */
 export interface IAliasRegistry {
@@ -59,7 +57,10 @@ export interface IAliasRegistry {
    * Returns all matching targets (a key could theoretically match multiple targets,
    * though typically it resolves to one).
    */
-  resolveKey(product: string, normalizedKey: string): ResolvedTarget[] | undefined;
+  resolveKey(
+    product: string,
+    normalizedKey: string
+  ): ResolvedTarget[] | undefined;
 
   /**
    * Resolve a normalized raw key against the BasicInfo alias index.
@@ -73,7 +74,11 @@ export interface IAliasRegistry {
   getInfoAliases(product: string, info: string): string[];
 
   /** Get attribute-level aliases for a specific (product, info, attribute). */
-  getAttributeAliases(product: string, info: string, attribute: string): string[];
+  getAttributeAliases(
+    product: string,
+    info: string,
+    attribute: string
+  ): string[];
 
   /** Get aliases for a BasicInfo attribute. */
   getBasicAliases(attribute: string): string[];
@@ -92,7 +97,12 @@ export interface IAliasRegistry {
   // ── Registration (learner integration) ──
 
   /** Register a new attribute-level alias. */
-  addAlias(product: string, info: string, attribute: string, alias: string): Promise<void>;
+  addAlias(
+    product: string,
+    info: string,
+    attribute: string,
+    alias: string
+  ): Promise<void>;
 
   /** Register a new info-level alias ("_self"). */
   addInfoAlias(product: string, info: string, alias: string): Promise<void>;
@@ -113,10 +123,10 @@ export interface IAliasRegistry {
 
 /**
  * Interface for the alias auto-learner.
- * 
+ *
  * The learner analyzes raw crawled data to discover new aliases
  * and registers them into the registry.
- * 
+ *
  * Implementations may persist learned aliases to databases
  * or keep them in-memory.
  */
@@ -125,10 +135,10 @@ export interface IAliasLearner {
    * Inline learning: called when Phase 2 misses registry.
    * Runs fuzzy analysis against all product targets and returns
    * the best match if confidence is high enough.
-   * 
+   *
    * If a match is found, the learner should register it in the
    * registry so future lookups are instant hits.
-   * 
+   *
    * @param normalizedKey The normalized raw key that missed the registry.
    * @param product The product type being mapped.
    * @param registry The registry to query targets from and register into.
@@ -144,7 +154,7 @@ export interface IAliasLearner {
   /**
    * Batch learning: analyze many raw records to discover recurring
    * unmapped keys and register them as aliases.
-   * 
+   *
    * @param rawRecords Array of raw key-value scraped records.
    * @param product The product type.
    * @param registry The registry to register into.
@@ -158,4 +168,3 @@ export interface IAliasLearner {
     minCount?: number
   ): Promise<Record<string, Record<string, string[]>>>;
 }
-

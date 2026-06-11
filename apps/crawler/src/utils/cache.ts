@@ -46,7 +46,7 @@ export class LocalFileCache implements CrawlCache {
       if (fs.existsSync(filePath)) {
         await fs.promises.unlink(filePath);
       }
-    } catch (err) {
+    } catch {
       // Ignore errors when deleting
     }
   }

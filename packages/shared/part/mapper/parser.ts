@@ -5,15 +5,15 @@ import { getInnerSchema, getEnumOptions } from "./utils";
 
 // Parsers for individual Zod types to keep code modular and readable
 
-function parseNumberValue(val: any, targetKey: string, unwrapped: z.ZodNumber): number | undefined {
+function parseNumberValue(val: any, targetKey: string): number | undefined {
   if (typeof val === "number") return val;
   if (typeof val !== "string") return undefined;
-  
+
   const str = val.trim();
   if (!str) return undefined;
-  
+
   const lowerKey = targetKey.toLowerCase();
-  
+
   // Memory conversions
   if (
     lowerKey.includes("capacity") ||
@@ -35,7 +35,7 @@ function parseNumberValue(val: any, targetKey: string, unwrapped: z.ZodNumber): 
       }
     }
   }
-  
+
   // Frequency conversions
   if (
     lowerKey.includes("frequency") ||
@@ -80,19 +80,20 @@ function parseNumberValue(val: any, targetKey: string, unwrapped: z.ZodNumber): 
 function parseDateValue(val: any): Date | undefined {
   if (val instanceof Date) return val;
   if (typeof val !== "string") return undefined;
-  
+
   const str = val.trim();
   if (!str) return undefined;
-  
+
   const qMatch = str.match(/Q([1-4])[ _']+(\d{2,4})/i);
   if (qMatch) {
     const quarter = parseInt(qMatch[1]);
     const yearStr = qMatch[2];
-    const year = yearStr.length === 2 ? 2000 + parseInt(yearStr) : parseInt(yearStr);
+    const year =
+      yearStr.length === 2 ? 2000 + parseInt(yearStr) : parseInt(yearStr);
     const month = (quarter - 1) * 3;
     return new Date(Date.UTC(year, month, 1));
   }
-  
+
   const timestamp = Date.parse(str);
   if (!isNaN(timestamp)) {
     return new Date(timestamp);
@@ -100,51 +101,79 @@ function parseDateValue(val: any): Date | undefined {
   return undefined;
 }
 
-function parseArrayValue(val: any, targetKey: string, unwrapped: z.ZodArray<any>): any[] | undefined {
+function parseArrayValue(
+  val: any,
+  targetKey: string,
+  unwrapped: z.ZodArray<any>
+): any[] | undefined {
   const elementSchema = unwrapped.element;
   const innerElement = getInnerSchema(elementSchema);
   const innerElementName = innerElement?.constructor?.name;
-  
+
   if (innerElementName === "ZodNumber") {
     if (typeof val === "string") {
       const matches = val.match(/\d+(?:\.\d+)?/g);
       if (matches) return matches.map(Number);
     }
     if (Array.isArray(val)) {
-      return val.map(v => typeof v === "number" ? v : parseFloat(String(v))).filter(v => !isNaN(v));
+      return val
+        .map((v) => (typeof v === "number" ? v : parseFloat(String(v))))
+        .filter((v) => !isNaN(v));
     }
     return undefined;
   }
-  
+
   // Split and map array of other types
   if (typeof val === "string") {
-    const items = val.split(/[|,;\n]+/).map(s => s.trim()).filter(Boolean);
-    return items.map(item => parseSingleValue(item, targetKey, elementSchema)).filter(v => v !== undefined);
+    const items = val
+      .split(/[|,;\n]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    return items
+      .map((item) => parseSingleValue(item, targetKey, elementSchema))
+      .filter((v) => v !== undefined);
   }
   if (Array.isArray(val)) {
-    return val.map(item => parseSingleValue(item, targetKey, elementSchema)).filter(v => v !== undefined);
+    return val
+      .map((item) => parseSingleValue(item, targetKey, elementSchema))
+      .filter((v) => v !== undefined);
   }
   return undefined;
 }
 
-function parseEnumValue(val: any, unwrapped: z.ZodEnum<any>): string | undefined {
+function parseEnumValue(
+  val: any,
+  unwrapped: z.ZodEnum<any>
+): string | undefined {
   const options = getEnumOptions(unwrapped);
   if (typeof val === "string") {
     const cleaned = val.trim();
-    const matched = options.find((opt: string) => opt.toLowerCase() === cleaned.toLowerCase());
+    const matched = options.find(
+      (opt: string) => opt.toLowerCase() === cleaned.toLowerCase()
+    );
     if (matched) return matched;
-    const partialMatched = options.find((opt: string) => cleaned.toLowerCase().includes(opt.toLowerCase()));
+    const partialMatched = options.find((opt: string) =>
+      cleaned.toLowerCase().includes(opt.toLowerCase())
+    );
     if (partialMatched) return partialMatched;
   }
   return undefined;
 }
 
-function parseUnionValue(val: any, targetKey: string, unwrapped: z.ZodUnion<any>): any {
+function parseUnionValue(
+  val: any,
+  targetKey: string,
+  unwrapped: z.ZodUnion<any>
+): any {
   // Special treatment for HDMI names to match strict HDMISchema:
   // "HDMI 2.1a" -> "HDMI 2.1a Type A, Standard"
   if (targetKey === "name" && typeof val === "string") {
     const trimmed = val.trim();
-    if (trimmed.startsWith("HDMI") && !trimmed.includes("Type") && !trimmed.includes("Standard")) {
+    if (
+      trimmed.startsWith("HDMI") &&
+      !trimmed.includes("Type") &&
+      !trimmed.includes("Standard")
+    ) {
       const match = trimmed.match(/HDMI\s*([0-9.]+([a-z])?)/i);
       if (match) {
         val = `HDMI ${match[1]} Type A, Standard`;
@@ -178,13 +207,17 @@ function parseBooleanValue(val: any): boolean | undefined {
 }
 
 // Parse a single raw value using dynamic Zod type target
-export function parseSingleValue(val: any, targetKey: string, schema: z.ZodTypeAny): any {
+export function parseSingleValue(
+  val: any,
+  targetKey: string,
+  schema: z.ZodTypeAny
+): any {
   const unwrapped = getInnerSchema(schema);
   const unwrappedName = unwrapped?.constructor?.name;
 
   switch (unwrappedName) {
     case "ZodNumber":
-      return parseNumberValue(val, targetKey, unwrapped as z.ZodNumber);
+      return parseNumberValue(val, targetKey);
     case "ZodDate":
       return parseDateValue(val);
     case "ZodArray":
@@ -203,15 +236,18 @@ export function parseSingleValue(val: any, targetKey: string, schema: z.ZodTypeA
 }
 
 // Parses count-multiplier connector strings (e.g. "3x DisplayPort 1.4a")
-export function parseConnectorString(itemStr: string, elementShape: Record<string, z.ZodTypeAny>): any {
+export function parseConnectorString(
+  itemStr: string,
+  elementShape: Record<string, z.ZodTypeAny>
+): any {
   const result: any = {};
   const match = itemStr.match(/^\s*(\d+)\s*[xX*]\s*(.+)$/);
   const properties = Object.keys(elementShape);
-  
+
   if (match && properties.includes("count")) {
     result["count"] = parseInt(match[1]);
     const remainingVal = match[2].trim();
-    
+
     // Distribute remaining properties
     for (const prop of properties) {
       if (prop === "count") continue;

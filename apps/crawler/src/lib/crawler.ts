@@ -43,8 +43,11 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
       read() {},
       highWaterMark: 64,
     });
-    this.output = options?.output ?? 
-                  (options?.adapter ? new StreamStorageWriter(options.adapter) : this.createDefaultOutput());
+    this.output =
+      options?.output ??
+      (options?.adapter
+        ? new StreamStorageWriter(options.adapter)
+        : this.createDefaultOutput());
     this.errorHandler =
       options?.errorHandler ??
       new ErrorHandler({ path: options?.logPath ?? "./logs" });
@@ -82,6 +85,7 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
     // 5. Error propagation
     crawlStream.on("error", (err) => {
       // Log fatal stream errors if needed
+      console.error(err);
     });
 
     // Start with seeds
