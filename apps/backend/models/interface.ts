@@ -6,6 +6,8 @@ enum Tables {
   USER = "user",
   PART = "part_information",
   RETAIL_PRODUCT = "retail_product",
+  ALIAS_ENTRY = "alias_entry",
+  ALIAS_LEARNER_LOG = "alias_learner_log",
 }
 
 enum ModelScopes {
