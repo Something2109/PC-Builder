@@ -4,6 +4,7 @@ import { Writable, WritableOptions } from "node:stream";
 
 import { normalizeDomain } from "@/utils/part/mapper/utils";
 import { Name as Products } from "@/utils/part/product";
+
 import { CrawlStorageAdapter } from "../types/interface";
 
 export class LocalFileStorageAdapter<

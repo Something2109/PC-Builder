@@ -18,6 +18,7 @@ import {
   RequestOptions,
   isCrawlInfo,
 } from "../types/interface";
+import { defaultStealthFetch } from "./fetcher";
 import { PipelineTransform } from "./pipeline-transform";
 import { HostRateLimiter } from "./rate-limiter";
 import { ScraperRegistry } from "./registry";
@@ -219,11 +220,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
 
         const fetcher: FetchFunction<Fetched> =
           (api.fetch as FetchFunction<Fetched> | undefined) ||
-          (async (req: RequestObject) => {
-            const res = await fetch(req.url, req);
-            if (!res.ok) throw new Error(`Fetch failed: ${res.statusText}`);
-            return res as Fetched;
-          });
+          (defaultStealthFetch as unknown as FetchFunction<Fetched>);
 
         const response = await fetcher(info.data[InternalStage.Init]);
 
