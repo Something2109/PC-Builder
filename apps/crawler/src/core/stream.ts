@@ -356,9 +356,6 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
             } else {
               this.push(chunk);
             }
-          } else if (chunk && typeof chunk === "object" && chunk.error) {
-            // Forward error chunk downstream to final observers
-            this.push(chunk);
           }
           callback();
         } catch (err: any) {
