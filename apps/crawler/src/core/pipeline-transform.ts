@@ -32,6 +32,7 @@ class PipelineTransform<T, Final> extends Transform {
     callback: TransformCallback
   ) {
     if (this.isErrorOutput(chunk)) {
+      this.push(chunk); // Propagate error down the pipeline
       callback();
     } else {
       this.running++;

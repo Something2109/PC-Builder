@@ -7,7 +7,7 @@ import {
   TransformCallback,
 } from "node:stream";
 
-import { LocalFileCache } from "../storage/cache";
+import { HybridCrawlCache } from "../storage/cache";
 import {
   APIWebsiteInfo,
   CrawlData,
@@ -19,6 +19,7 @@ import {
   isCrawlInfo,
 } from "../types/interface";
 import { PipelineTransform } from "./pipeline-transform";
+import { HostRateLimiter } from "./rate-limiter";
 import { ScraperRegistry } from "./registry";
 
 /**
@@ -31,7 +32,8 @@ import { ScraperRegistry } from "./registry";
  */
 class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   private readonly info?: APIWebsiteInfo<Raw, Final, Fetched>;
-  private readonly cache = new LocalFileCache();
+  private readonly cache = new HybridCrawlCache();
+  private readonly rateLimiter = new HostRateLimiter();
   public readonly monitorStream: PassThrough;
 
   // Pipeline stages
@@ -209,6 +211,12 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
         const api =
           this.info || (await ScraperRegistry.getScraper(url.hostname));
 
+        // Respect scraper rate limit and delay per domain name
+        const delayMs = api.delayMs !== undefined ? api.delayMs : 1000;
+        if (delayMs > 0) {
+          await this.rateLimiter.wait(url, delayMs);
+        }
+
         const fetcher: FetchFunction<Fetched> =
           (api.fetch as FetchFunction<Fetched> | undefined) ||
           (async (req: RequestObject) => {
@@ -351,6 +359,9 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
             } else {
               this.push(chunk);
             }
+          } else if (chunk && typeof chunk === "object" && chunk.error) {
+            // Forward error chunk downstream to final observers
+            this.push(chunk);
           }
           callback();
         } catch (err: any) {

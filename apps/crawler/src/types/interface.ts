@@ -108,6 +108,16 @@ interface APIWebsiteInfo<Raw, Final = Raw, Fetched = Response> {
   save: string;
 
   /**
+   * The minimum sequential delay in milliseconds between requests.
+   */
+  delayMs?: number;
+
+  /**
+   * The list of products supported by this crawler config.
+   */
+  supportedProducts?: Products[];
+
+  /**
    * Create the URL to crawl data from the product enum.
    * @param product The product enum to crawl from.
    * @param page The page number to be created.

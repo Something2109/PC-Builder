@@ -101,7 +101,7 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
 
     const getPath = this.info?.path;
 
-    products ??= Object.values(Products);
+    products ??= this.info.supportedProducts ?? Object.values(Products);
 
     products.forEach((product) => {
       // Default to page 1 for now
