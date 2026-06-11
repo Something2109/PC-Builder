@@ -36,10 +36,17 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
   constructor(private readonly sequelize: Sequelize) {}
 
-  async get(id: string, infos?: Infos[]): Promise<Part.Model | null> {
+  async get(
+    id: string,
+    infos?: Infos[],
+    transaction?: Transaction,
+  ): Promise<Part.Model | null> {
     const include = this.infoToModel(infos);
 
-    const instance = await this.PartModel.findByPk(id, { include });
+    const instance = await this.PartModel.findByPk(id, {
+      include,
+      transaction,
+    });
 
     return instance?.toJSON() ?? null;
   }
@@ -68,7 +75,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
         );
       }
 
-      return await this.get(id, infos);
+      return await this.get(id, infos, transaction);
     });
   }
 
@@ -90,7 +97,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
         );
       }
 
-      return (await this.get(instance.id, infos))!;
+      return (await this.get(instance.id, infos, transaction))!;
     }))!;
   }
 

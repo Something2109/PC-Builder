@@ -6,6 +6,7 @@ import {
   Body,
   Query,
   NotFoundException,
+  BadRequestException,
   ParseUUIDPipe,
   Delete,
   ParseEnumPipe,
@@ -85,6 +86,54 @@ export class PartController {
     }
 
     throw new InternalServerErrorException("Failed to create new product.");
+  }
+
+  @Role(Roles.ADMIN)
+  @Post(":part/bulk")
+  async createPartsBulk(
+    @Param("part", ProductValidator) product: Products,
+    @Body() body: any[],
+  ) {
+    if (!Array.isArray(body)) {
+      throw new BadRequestException("Request body must be an array of parts");
+    }
+    if (body.length === 0) {
+      throw new BadRequestException("At least one part is required");
+    }
+
+    const results: any[] = [];
+    const errors: any[] = [];
+
+    for (let i = 0; i < body.length; i++) {
+      const partData = body[i];
+      const parsed = Part.DTO.safeParse(partData);
+      if (parsed.success) {
+        try {
+          const created = await this.service.create(product, parsed.data);
+          if (created) {
+            results.push({ index: i, id: created.id, name: created.name });
+          } else {
+            errors.push({ index: i, data: partData, error: "Failed to save to database" });
+          }
+        } catch (err: any) {
+          errors.push({ index: i, data: partData, error: err.message });
+        }
+      } else {
+        errors.push({
+          index: i,
+          data: partData,
+          error: parsed.error.issues || parsed.error.message,
+        });
+      }
+    }
+
+    return {
+      success: true,
+      importedCount: results.length,
+      failedCount: errors.length,
+      imported: results,
+      failed: errors,
+    };
   }
 
   @Get(":part/:id")
