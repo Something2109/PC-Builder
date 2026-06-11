@@ -3,8 +3,9 @@ import type {
   IAliasRegistry,
   ResolvedTarget,
 } from "./types";
-import { normalizeKey, getLevenshteinDistance } from "./utils";
+
 import { fuzzyMatch, fuzzyMatchBasic } from "./resolver";
+import { normalizeKey, getLevenshteinDistance } from "./utils";
 
 /**
  * In-memory implementation of IAliasLearner.
@@ -23,12 +24,12 @@ export class AliasLearner implements IAliasLearner {
    * the best match if confidence is high enough (score >= 30).
    * Registers the new alias in the registry for future instant hits.
    */
-  tryResolve(
+  async tryResolve(
     normalizedKey: string,
     rawKey: string,
     product: string,
     registry: IAliasRegistry
-  ): ResolvedTarget | undefined {
+  ): Promise<ResolvedTarget | undefined> {
     const config = registry.getConfig();
     const targets = registry.getProductTargets(product);
 
@@ -37,9 +38,9 @@ export class AliasLearner implements IAliasLearner {
     if (match && match.score >= 30) {
       // Register the alias for future instant hits
       if (match.target.attribute === "_self") {
-        registry.addInfoAlias(product, match.target.info, rawKey);
+        await registry.addInfoAlias(product, match.target.info, rawKey);
       } else {
-        registry.addAlias(product, match.target.info, match.target.attribute, rawKey);
+        await registry.addAlias(product, match.target.info, match.target.attribute, rawKey);
       }
       return match.target;
     }
@@ -49,7 +50,7 @@ export class AliasLearner implements IAliasLearner {
     const basicMatch = fuzzyMatchBasic(normalizedKey, basicTargets, registry, config);
 
     if (basicMatch && basicMatch.score >= 30) {
-      registry.addBasicAlias(basicMatch.attribute, rawKey);
+      await registry.addBasicAlias(basicMatch.attribute, rawKey);
       // Return as a pseudo-target (info = "basic")
       return { info: "basic", attribute: basicMatch.attribute };
     }
@@ -67,12 +68,12 @@ export class AliasLearner implements IAliasLearner {
    * @param minCount Minimum frequency for a key to be considered (default: 5).
    * @returns Newly learned aliases grouped by info → attribute → alias[].
    */
-  learnFromData(
+  async learnFromData(
     rawRecords: Record<string, any>[],
     product: string,
     registry: IAliasRegistry,
     minCount: number = 5
-  ): Record<string, Record<string, string[]>> {
+  ): Promise<Record<string, Record<string, string[]>>> {
     // 1. Count raw key frequencies
     const keyCounts: Record<string, number> = {};
     for (const record of rawRecords) {
@@ -112,7 +113,7 @@ export class AliasLearner implements IAliasLearner {
       const normKey = normalizeKey(rawKey);
       if (coveredKeys.has(normKey)) continue;
 
-      const resolved = this.tryResolve(normKey, rawKey, product, registry);
+      const resolved = await this.tryResolve(normKey, rawKey, product, registry);
 
       if (resolved && resolved.info !== "basic") {
         if (!newlyLearned[resolved.info]) {

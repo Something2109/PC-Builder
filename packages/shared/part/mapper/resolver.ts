@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { parseSingleValue } from "./parser";
 import {
   IAliasRegistry,
   IAliasLearner,
@@ -9,7 +10,6 @@ import {
   HeuristicConfig,
 } from "./types";
 import { normalizeKey, getLevenshteinDistance } from "./utils";
-import { parseSingleValue } from "./parser";
 
 // ─── Fuzzy Matcher ───────────────────────────────────────────────────
 

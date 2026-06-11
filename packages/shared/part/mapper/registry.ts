@@ -3,8 +3,9 @@ import type {
   ResolvedTarget,
   HeuristicConfig,
 } from "./types";
-import { normalizeKey } from "./utils";
+
 import defaultAliases from "./aliases.json";
+import { normalizeKey } from "./utils";
 
 /**
  * In-memory implementation of IAliasRegistry.
@@ -33,7 +34,7 @@ export class AliasRegistry implements IAliasRegistry {
   };
 
   private constructor() {
-    this.reset();
+    this.resetSync();
   }
 
   public static getInstance(): AliasRegistry {
@@ -94,7 +95,7 @@ export class AliasRegistry implements IAliasRegistry {
 
   // ── Registration ─────────────────────────────────────────────────
 
-  public addAlias(product: string, info: string, attribute: string, alias: string): void {
+  public async addAlias(product: string, info: string, attribute: string, alias: string): Promise<void> {
     const normAlias = normalizeKey(alias);
     if (!normAlias) return;
 
@@ -114,11 +115,11 @@ export class AliasRegistry implements IAliasRegistry {
     delete this.productTargetsCache[product];
   }
 
-  public addInfoAlias(product: string, info: string, alias: string): void {
-    this.addAlias(product, info, "_self", alias);
+  public async addInfoAlias(product: string, info: string, alias: string): Promise<void> {
+    await this.addAlias(product, info, "_self", alias);
   }
 
-  public addBasicAlias(attribute: string, alias: string): void {
+  public async addBasicAlias(attribute: string, alias: string): Promise<void> {
     const normAlias = normalizeKey(alias);
     if (!normAlias) return;
 
@@ -144,7 +145,7 @@ export class AliasRegistry implements IAliasRegistry {
 
   // ── Reset & Build ────────────────────────────────────────────────
 
-  public reset(): void {
+  private resetSync(): void {
     this.basicForward = {};
     this.basicReverse = new Map();
     this.productForward = {};
@@ -156,6 +157,10 @@ export class AliasRegistry implements IAliasRegistry {
     };
 
     this.loadFromJson(defaultAliases as Record<string, any>);
+  }
+
+  public async reset(): Promise<void> {
+    this.resetSync();
   }
 
   /**

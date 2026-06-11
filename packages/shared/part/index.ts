@@ -24,3 +24,7 @@ export {
   resolveConflicts,
   resolveBasicConflicts,
 } from "./mapper/resolver";
+export { RawKeyResolver } from "./mapper/pipeline";
+export type { PipelineResult } from "./mapper/pipeline";
+
+

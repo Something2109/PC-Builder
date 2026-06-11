@@ -92,13 +92,13 @@ export interface IAliasRegistry {
   // ── Registration (learner integration) ──
 
   /** Register a new attribute-level alias. */
-  addAlias(product: string, info: string, attribute: string, alias: string): void;
+  addAlias(product: string, info: string, attribute: string, alias: string): Promise<void>;
 
   /** Register a new info-level alias ("_self"). */
-  addInfoAlias(product: string, info: string, alias: string): void;
+  addInfoAlias(product: string, info: string, alias: string): Promise<void>;
 
   /** Register a new BasicInfo alias. */
-  addBasicAlias(attribute: string, alias: string): void;
+  addBasicAlias(attribute: string, alias: string): Promise<void>;
 
   // ── Config ──
 
@@ -106,7 +106,7 @@ export interface IAliasRegistry {
   setConfig(config: Partial<HeuristicConfig>): void;
 
   /** Reload from the underlying data source. */
-  reset(): void;
+  reset(): Promise<void>;
 }
 
 // ─── Learner Interface ───────────────────────────────────────────────
@@ -139,7 +139,7 @@ export interface IAliasLearner {
     rawKey: string,
     product: string,
     registry: IAliasRegistry
-  ): ResolvedTarget | undefined;
+  ): Promise<ResolvedTarget | undefined>;
 
   /**
    * Batch learning: analyze many raw records to discover recurring
@@ -156,5 +156,6 @@ export interface IAliasLearner {
     product: string,
     registry: IAliasRegistry,
     minCount?: number
-  ): Record<string, Record<string, string[]>>;
+  ): Promise<Record<string, Record<string, string[]>>>;
 }
+
