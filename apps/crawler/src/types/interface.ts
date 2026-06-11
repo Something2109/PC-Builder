@@ -1,4 +1,4 @@
-import { Products } from "./utils/Enum";
+import { Products } from "./Enum";
 
 /** Describe types for the crawl info object */
 
@@ -155,6 +155,27 @@ function isCrawlInfo(object?: any): object is APIWebsiteInfo<unknown, unknown> {
     "parse" in object &&
     typeof object.parse == "function"
   );
+}
+
+export interface CrawlStorageAdapter<T = any> {
+  initialize(domain: string, product: Products): Promise<void> | void;
+  write(domain: string, product: Products, items: T[]): Promise<void> | void;
+  finalize(domain: string, product: Products): Promise<void> | void;
+}
+
+export function isCrawlStorageAdapter(object: any): object is CrawlStorageAdapter<any> {
+  return (
+    object &&
+    typeof object.initialize === "function" &&
+    typeof object.write === "function" &&
+    typeof object.finalize === "function"
+  );
+}
+
+export interface CrawlCache {
+  set<T = any>(key: string, value: T): Promise<void> | void;
+  get<T = any>(key: string): Promise<T> | T;
+  delete(key: string): Promise<void> | void;
 }
 
 export type {

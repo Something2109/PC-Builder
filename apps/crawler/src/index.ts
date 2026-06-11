@@ -4,10 +4,10 @@ import { z } from "zod";
 
 import { Name as Products } from "@/utils/part/product";
 
-import { isCrawlInfo } from "./interface";
-import { Crawler } from "./lib/crawler";
-import { LocalFileStorageAdapter } from "./utils/storage";
-import { ProcessWriter } from "./utils/writer";
+import { Crawler } from "./core/crawler";
+import { LocalFileStorageAdapter } from "./storage/storage";
+import { ProcessWriter } from "./telemetry/writer";
+import { isCrawlInfo } from "./types/interface";
 
 /** Create an argument object based on the {@link process.argv} list */
 

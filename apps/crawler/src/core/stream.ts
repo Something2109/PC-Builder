@@ -7,6 +7,7 @@ import {
   TransformCallback,
 } from "node:stream";
 
+import { LocalFileCache } from "../storage/cache";
 import {
   APIWebsiteInfo,
   CrawlData,
@@ -16,10 +17,9 @@ import {
   RequestObject,
   RequestOptions,
   isCrawlInfo,
-} from "../interface";
-import { LocalFileCache } from "../utils/cache";
-import { PipelineTransform } from "../utils/pipeline-transform";
-import { ScraperRegistry } from "../utils/registry";
+} from "../types/interface";
+import { PipelineTransform } from "./pipeline-transform";
+import { ScraperRegistry } from "./registry";
 
 /**
  * The crawl stream extending the Node's {@link Duplex} class.

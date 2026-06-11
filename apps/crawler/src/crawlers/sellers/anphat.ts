@@ -1,11 +1,11 @@
 import { JSDOM } from "jsdom";
 
-import { APIWebsiteInfo } from "../../interface";
-import { Products } from "../../utils/Enum";
+import { Products } from "../../types/Enum";
+import { APIWebsiteInfo } from "../../types/interface";
 import {
   RetailProductSchema,
   RetailProductType,
-} from "../../utils/interface/retailer/Product";
+} from "../../types/retailer/Product";
 
 const domain = "https://www.anphatpc.com.vn";
 const mapping: { [key in Products]?: string } = {

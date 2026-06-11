@@ -2,7 +2,7 @@ import { createWriteStream, WriteStream, existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { Writable, WritableOptions } from "node:stream";
 
-import { ErrorObject } from "../interface";
+import { ErrorObject } from "../types/interface";
 
 export class ErrorHandler extends Writable {
   private readonly logStream: WriteStream;

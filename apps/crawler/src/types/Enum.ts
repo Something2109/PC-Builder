@@ -1,2 +1,2 @@
 export { Products } from "@pc-builder/shared";
-export { InternalStage } from "../interface";
+export { InternalStage } from "./interface";

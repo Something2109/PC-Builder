@@ -4,12 +4,7 @@ import { Writable, WritableOptions } from "node:stream";
 
 import { normalizeDomain } from "@/utils/part/mapper/utils";
 import { Name as Products } from "@/utils/part/product";
-
-export interface CrawlStorageAdapter<T = any> {
-  initialize(domain: string, product: Products): Promise<void> | void;
-  write(domain: string, product: Products, items: T[]): Promise<void> | void;
-  finalize(domain: string, product: Products): Promise<void> | void;
-}
+import { CrawlStorageAdapter } from "../types/interface";
 
 export class LocalFileStorageAdapter<
   T = any,
@@ -106,6 +101,7 @@ export class StreamStorageWriter extends Writable {
     }
   }
 }
+
 export class DatabaseStorageAdapter<T = any> implements CrawlStorageAdapter<T> {
   constructor(private transform: (item: T) => any = (item) => item) {}
 
@@ -128,3 +124,4 @@ export class DatabaseStorageAdapter<T = any> implements CrawlStorageAdapter<T> {
     );
   }
 }
+export { isCrawlStorageAdapter } from "../types/interface";

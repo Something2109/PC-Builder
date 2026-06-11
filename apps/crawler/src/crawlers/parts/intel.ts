@@ -1,7 +1,7 @@
 import { JSDOM } from "jsdom";
 
-import { APIWebsiteInfo } from "../../interface";
-import { Products } from "../../utils/Enum";
+import { Products } from "../../types/Enum";
+import { APIWebsiteInfo } from "../../types/interface";
 
 const domain = "https://ark.intel.com";
 const mapping: { [key in Products]?: string } = {

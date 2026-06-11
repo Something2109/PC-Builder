@@ -1,6 +1,6 @@
 import { Transform, TransformCallback, TransformOptions } from "node:stream";
 
-import { ErrorObject } from "../interface";
+import { ErrorObject } from "../types/interface";
 
 /**
  * A base Transform stream that automatically filters error messages and handles concurrency.

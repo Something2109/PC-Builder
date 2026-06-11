@@ -1,12 +1,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-
-export interface CrawlCache {
-  set<T = any>(key: string, value: T): Promise<void> | void;
-  get<T = any>(key: string): Promise<T> | T;
-  delete(key: string): Promise<void> | void;
-}
+import { CrawlCache } from "../types/interface";
 
 /**
  * High-performance temporary file-based cache to offload heavy web payloads

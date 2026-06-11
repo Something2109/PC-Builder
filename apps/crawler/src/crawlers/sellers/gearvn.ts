@@ -1,9 +1,9 @@
-import { APIWebsiteInfo } from "../../interface";
-import { Products } from "../../utils/Enum";
+import { Products } from "../../types/Enum";
+import { APIWebsiteInfo } from "../../types/interface";
 import {
   RetailProductSchema,
   RetailProductType,
-} from "../../utils/interface/retailer/Product";
+} from "../../types/retailer/Product";
 
 const domain = "https://gearvn.com";
 const mapping: { [key in Products]?: string } = {

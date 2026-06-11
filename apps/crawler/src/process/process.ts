@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { Name as Products } from "@/utils/part/product";
 
-import { CrawlInfo, isCrawlInfo, InternalStage } from "../interface";
+import { CrawlInfo, isCrawlInfo, InternalStage } from "../types/interface";
 
 type ProgressInfo = {
   created: Record<InternalStage, number>;
@@ -66,7 +66,6 @@ class CrawlerChildProcess {
   };
 
   constructor(filepath: string, options?: CrawlerChildProcessOptions) {
-    this.path = this.pathResolver(filepath);
     this.process = null;
     this.progress = null;
     this.resolver = {
@@ -74,6 +73,7 @@ class CrawlerChildProcess {
       output: options?.output ?? DEFAULT_OUTPUT_FUNCTION,
       error: options?.error ?? DEFAULT_ERROR_FUNCTION,
     };
+    this.path = this.pathResolver(filepath);
   }
 
   /**
@@ -145,7 +145,7 @@ class CrawlerChildProcess {
    * @returns The path processed by the function.
    */
   private pathResolver(filepath: string) {
-    if (!filepath.endsWith(".js")) {
+    if (!filepath.endsWith(".js") && !filepath.endsWith(".ts")) {
       throw new Error(`The info path is not the compatible file: ${filepath}`);
     }
 

@@ -2,7 +2,7 @@ import { createWriteStream, WriteStream, existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { Writable, WritableOptions } from "node:stream";
 
-import { CrawlInfo, ErrorObject, InternalStage } from "../interface";
+import { CrawlInfo, ErrorObject, InternalStage } from "../types/interface";
 
 type MonitorOptions = WritableOptions & {
   logPath?: string;

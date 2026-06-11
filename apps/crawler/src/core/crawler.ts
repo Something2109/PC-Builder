@@ -2,10 +2,10 @@ import { Readable, Writable } from "node:stream";
 
 import { Name as Products } from "@/utils/part/product";
 
-import { APIWebsiteInfo } from "../interface";
-import { ErrorHandler } from "../utils/error-handler";
-import { StreamMonitor } from "../utils/monitor";
-import { CrawlStorageAdapter, StreamStorageWriter } from "../utils/storage";
+import { StreamStorageWriter } from "../storage/storage";
+import { ErrorHandler } from "../telemetry/error-handler";
+import { StreamMonitor } from "../telemetry/monitor";
+import { APIWebsiteInfo, CrawlStorageAdapter } from "../types/interface";
 import { CrawlStream } from "./stream";
 
 /**

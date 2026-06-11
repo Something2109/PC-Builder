@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { normalizeDomain } from "@/utils/part/mapper/utils";
 
-import { APIWebsiteInfo } from "../interface";
+import { APIWebsiteInfo } from "../types/interface";
 
 export class ScraperRegistry {
   private static cache = new Map<string, APIWebsiteInfo<unknown, unknown>>();
