@@ -5,18 +5,20 @@ import { Writable, WritableOptions } from "node:stream";
 import { normalizeDomain } from "@/utils/part/mapper/utils";
 import { Name as Products } from "@/utils/part/product";
 
-export interface CrawlStorageAdapter<T = string> {
+export interface CrawlStorageAdapter<T = any> {
   initialize(domain: string, product: Products): Promise<void> | void;
-  write(domain: string, product: Products, items: any[]): Promise<void> | void;
+  write(domain: string, product: Products, items: T[]): Promise<void> | void;
   finalize(domain: string, product: Products): Promise<void> | void;
 }
 
-export class LocalFileStorageAdapter implements CrawlStorageAdapter<string> {
+export class LocalFileStorageAdapter<
+  T = any,
+> implements CrawlStorageAdapter<T> {
   private writeStreams: Record<string, WriteStream> = {};
 
   constructor(
     private saveDir: string,
-    private transform: (item: any) => string = (item) => JSON.stringify(item)
+    private transform: (item: T) => string = (item) => JSON.stringify(item)
   ) {}
 
   private getStreamKey(domain: string, product: Products): string {
@@ -42,7 +44,7 @@ export class LocalFileStorageAdapter implements CrawlStorageAdapter<string> {
     this.writeStreams[key] = createWriteStream(filePath, { flags: "a" });
   }
 
-  async write(domain: string, product: Products, items: any[]): Promise<void> {
+  async write(domain: string, product: Products, items: T[]): Promise<void> {
     const key = this.getStreamKey(domain, product);
     let stream = this.writeStreams[key];
 
@@ -105,7 +107,7 @@ export class StreamStorageWriter extends Writable {
   }
 }
 export class DatabaseStorageAdapter<T = any> implements CrawlStorageAdapter<T> {
-  constructor(private transform: (item: any) => T = (item) => item as T) {}
+  constructor(private transform: (item: T) => any = (item) => item) {}
 
   async initialize(domain: string, product: Products): Promise<void> {
     console.log(
@@ -113,7 +115,7 @@ export class DatabaseStorageAdapter<T = any> implements CrawlStorageAdapter<T> {
     );
   }
 
-  async write(domain: string, product: Products, items: any[]): Promise<void> {
+  async write(domain: string, product: Products, items: T[]): Promise<void> {
     const transformed = items.map(this.transform);
     console.log(
       `[DB STORAGE] Saving ${transformed.length} items to database for ${domain} - ${product}`

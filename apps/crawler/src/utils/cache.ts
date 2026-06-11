@@ -3,14 +3,15 @@ import os from "node:os";
 import path from "node:path";
 
 export interface CrawlCache {
-  set(key: string, value: string): Promise<void> | void;
-  get(key: string): Promise<string> | string;
+  set<T = any>(key: string, value: T): Promise<void> | void;
+  get<T = any>(key: string): Promise<T> | T;
   delete(key: string): Promise<void> | void;
 }
 
 /**
  * High-performance temporary file-based cache to offload heavy web payloads
  * from Node.js RAM to local SSD storage, preventing Out of Memory (OOM) crashes.
+ * Supports universal types (objects, strings, arrays, etc.) via automatic serialization.
  */
 export class LocalFileCache implements CrawlCache {
   private cacheDir: string;
@@ -27,17 +28,23 @@ export class LocalFileCache implements CrawlCache {
     return path.join(this.cacheDir, `${safeKey}.tmp`);
   }
 
-  async set(key: string, value: string): Promise<void> {
+  async set<T = any>(key: string, value: T): Promise<void> {
     const filePath = this.getFilePath(key);
-    await fs.promises.writeFile(filePath, value, "utf-8");
+    const payload = JSON.stringify({
+      type: typeof value,
+      data: value,
+    });
+    await fs.promises.writeFile(filePath, payload, "utf-8");
   }
 
-  async get(key: string): Promise<string> {
+  async get<T = any>(key: string): Promise<T> {
     const filePath = this.getFilePath(key);
     if (!fs.existsSync(filePath)) {
       throw new Error(`Cache miss for key: ${key}`);
     }
-    return await fs.promises.readFile(filePath, "utf-8");
+    const raw = await fs.promises.readFile(filePath, "utf-8");
+    const parsed = JSON.parse(raw);
+    return parsed.data as T;
   }
 
   async delete(key: string): Promise<void> {

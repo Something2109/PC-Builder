@@ -257,7 +257,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
 
         // Retrieve from cache
         const fetchCacheKey = info.data.fetch;
-        const htmlText = await this.cache.get(fetchCacheKey);
+        const htmlText = await this.cache.get<string>(fetchCacheKey);
 
         const mockResponse = {
           text: async () => htmlText,
@@ -283,7 +283,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
         return await Promise.all(
           raw.map(async (item, index) => {
             const extractCacheKey = `extract:${info.product}:${info.index}:${index}:${Date.now()}:${Math.random()}`;
-            await this.cache.set(extractCacheKey, JSON.stringify(item));
+            await this.cache.set(extractCacheKey, item);
             return this.createNextCrawlInfo(info, InternalStage.Extract, extractCacheKey);
           })
         );
@@ -305,8 +305,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
           this.info || (await ScraperRegistry.getScraper(url.hostname));
 
         const extractCacheKey = info.data.extract;
-        const rawText = await this.cache.get(extractCacheKey);
-        const rawData = JSON.parse(rawText);
+        const rawData = await this.cache.get<Raw>(extractCacheKey);
 
         let result: Final = rawData as unknown as Final;
         if (api.parse) {
@@ -315,7 +314,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
         await this.cache.delete(extractCacheKey);
 
         const parseCacheKey = `parse:${info.product}:${info.index}:${Date.now()}:${Math.random()}`;
-        await this.cache.set(parseCacheKey, JSON.stringify(result));
+        await this.cache.set(parseCacheKey, result);
         return this.createNextCrawlInfo(info, InternalStage.Parse, parseCacheKey);
       }
     );
@@ -341,13 +340,13 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
           if (chunk && typeof chunk === "object" && !chunk.error) {
             if (chunk.stage === InternalStage.Parse) {
               const parseCacheKey = chunk.data.parse;
-              const parsedDataText = await self.cache.get(parseCacheKey);
-              this.push(JSON.parse(parsedDataText));
+              const parsedData = await self.cache.get<any>(parseCacheKey);
+              this.push(parsedData);
               await self.cache.delete(parseCacheKey);
             } else if (chunk.stage === InternalStage.Extract) {
               const extractCacheKey = chunk.data.extract;
-              const extractDataText = await self.cache.get(extractCacheKey);
-              this.push(JSON.parse(extractDataText));
+              const extractData = await self.cache.get<any>(extractCacheKey);
+              this.push(extractData);
               await self.cache.delete(extractCacheKey);
             } else {
               this.push(chunk);
