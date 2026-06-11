@@ -97,22 +97,18 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
    * @param products List of products to crawl.
    */
   private start(products?: Products[]) {
-    if (!products || !this.info || !this.info.path) return;
+    if (!this.info?.path) return;
+
+    const getPath = this.info?.path;
+
+    products ??= Object.values(Products);
 
     products.forEach((product) => {
       // Default to page 1 for now
-      const requestOptions = this.info!.path!(product, 1);
+      const requestOptions = getPath(product, 1);
 
       if (requestOptions) {
-        // Normalize RequestOptions to RequestObject
-        let request: any = requestOptions;
-        if (typeof request === "string" || request instanceof URL) {
-          request = { url: new URL(request.toString()) };
-        } else if ("url" in request && !(request.url instanceof URL)) {
-          request = { ...request, url: new URL(request.url) };
-        }
-
-        this.input.push(request);
+        this.input.push(requestOptions);
       }
     });
   }

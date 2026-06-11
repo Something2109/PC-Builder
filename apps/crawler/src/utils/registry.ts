@@ -6,10 +6,12 @@ import { normalizeDomain } from "@/utils/part/mapper/utils";
 import { APIWebsiteInfo } from "../interface";
 
 export class ScraperRegistry {
-  private static cache = new Map<string, APIWebsiteInfo<any, any>>();
+  private static cache = new Map<string, APIWebsiteInfo<unknown, unknown>>();
   private static crawlersDir = path.join(__dirname, "../crawlers");
 
-  static async getScraper(domain: string): Promise<APIWebsiteInfo<any, any>> {
+  static async getScraper(
+    domain: string
+  ): Promise<APIWebsiteInfo<unknown, unknown>> {
     const key = normalizeDomain(domain);
 
     if (this.cache.has(key)) {
@@ -47,12 +49,15 @@ export class ScraperRegistry {
 
       this.cache.set(key, scraper);
       return scraper;
-    } catch (err: any) {
-      throw new Error(`Failed to load scraper for '${domain}': ${err.message}`);
+    } catch (err: unknown) {
+      const error = err as Error;
+      throw new Error(
+        `Failed to load scraper for '${domain}': ${error.message}`
+      );
     }
   }
 
-  static register(scraper: APIWebsiteInfo<any, any>) {
+  static register(scraper: APIWebsiteInfo<unknown, unknown>) {
     const key = normalizeDomain(scraper.domain);
     this.cache.set(key, scraper);
   }

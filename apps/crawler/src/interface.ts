@@ -20,11 +20,11 @@ enum InternalStage {
   Parse = "parse",
 }
 
-type CrawlStageResult<Raw, Final, Fetched> = {
+type CrawlStageResult = {
   [InternalStage.Init]: RequestObject;
-  [InternalStage.Fetch]: Fetched;
-  [InternalStage.Extract]: Raw;
-  [InternalStage.Parse]: Final;
+  [InternalStage.Fetch]: string;
+  [InternalStage.Extract]: string;
+  [InternalStage.Parse]: string;
 };
 
 /**
@@ -49,21 +49,11 @@ type CrawlStageDataMap = {
  * The data attached to the CrawlInfo, strictly typed based on the current stage `S`.
  * It selects the appropriate shape from `CrawlDataMap`.
  */
-export type CrawlData<
-  S extends InternalStage,
-  Raw,
-  Final,
-  Fetched,
-> = CrawlStageResult<Raw, Final, Fetched>[S];
+export type CrawlData<S extends InternalStage> = CrawlStageResult[S];
 
-interface CrawlInfo<
-  S extends InternalStage = InternalStage,
-  Raw = any,
-  Final = Raw,
-  Fetched = any,
-> {
+interface CrawlInfo<S extends InternalStage = InternalStage> {
   stage: S;
-  data: Pick<CrawlStageResult<Raw, Final, Fetched>, CrawlStageDataMap[S]>;
+  data: Pick<CrawlStageResult, CrawlStageDataMap[S]>;
   request: BaseRequestOptions;
   index: number;
   product: Products;
@@ -94,12 +84,12 @@ export type FetchFunction<Fetched> = (
 
 export type ExtractFunction<Raw, Fetched> = (
   source: Fetched,
-  info: CrawlInfo<InternalStage.Fetch, Raw>
+  info: CrawlInfo<InternalStage.Fetch>
 ) => Promise<Raw[] | { raw: Raw[]; next: RequestOptions[] }>;
 
 export type ParseFunction<Raw, Result> = (
   raw: Raw,
-  info: CrawlInfo<InternalStage.Extract, Raw, Result>
+  info: CrawlInfo<InternalStage.Extract>
 ) => Promise<Result>;
 
 /**
