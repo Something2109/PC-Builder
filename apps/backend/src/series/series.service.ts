@@ -1,7 +1,10 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import SeriesModel from "@/models/parts/Series.entity";
+
 import BrandModel from "@/models/parts/Brand.entity";
+import SeriesModel from "@/models/parts/Series.entity";
+import * as API from "@/utils/API";
+
 import { CreateSeriesDto, UpdateSeriesDto } from "./dto/series.dto";
 
 @Injectable()
@@ -13,14 +16,23 @@ export class SeriesService {
     private readonly brandModel: typeof BrandModel,
   ) {}
 
-  async list(brandId?: number) {
+  async list(options: API.PageOptions, brandId?: number) {
     const where: any = {};
     if (brandId !== undefined) {
       where.brandId = brandId;
     }
+
+    const validSortFields = ["id", "name", "brandId"];
+    const order: [string, string][] | undefined = options.sort_key && validSortFields.includes(options.sort_key)
+      ? [[options.sort_key, options.sort_order || "asc"]]
+      : undefined;
+
     return await this.seriesModel.findAll({
       where,
       include: [{ model: this.brandModel, attributes: ["name"] }],
+      offset: (options.page - 1) * options.limit,
+      limit: options.limit,
+      order,
     });
   }
 

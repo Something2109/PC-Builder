@@ -19,6 +19,7 @@ import { ZodValidationPipe } from "src/utils/utils.modules";
 
 import AliasEntry from "@/models/alias/AliasEntry.entity";
 import AliasLearnerLog from "@/models/alias/AliasLearnerLog.entity";
+import * as API from "@/utils/API";
 import {
   CreateAliasSchema,
   CreateAliasDto,
@@ -49,39 +50,52 @@ export class AliasController {
 
   @Get()
   async listAliases(
-    @Query("page") page = "1",
-    @Query("limit") limit = "100",
-    @Query("product") product?: string,
-    @Query("info") info?: string,
-    @Query("attribute") attribute?: string,
-    @Query("alias") alias?: string
+    @Query() params: Record<string, string | string[]>
   ) {
-    const pageNum = Math.max(1, parseInt(page, 10));
-    const limitNum = Math.max(1, Math.min(1000, parseInt(limit, 10)));
-    const offset = (pageNum - 1) * limitNum;
+    const options = API.toPageOptions(params);
+    const { product, info, attribute, alias } = params;
 
     const where: any = {};
-    if (product) where.product = product;
-    if (info !== undefined) where.info = info;
-    if (attribute) where.attribute = attribute;
-    if (alias) {
+    if (typeof product === "string" && product) where.product = product;
+    if (typeof info === "string" && info !== undefined) where.info = info;
+    if (typeof attribute === "string" && attribute) where.attribute = attribute;
+    if (typeof alias === "string" && alias) {
       const normAlias = normalizeKey(alias);
       where.alias = { [Op.like]: `%${normAlias}%` };
     }
 
+    const validSortFields = [
+      "id",
+      "product",
+      "info",
+      "attribute",
+      "alias",
+      "source",
+      "frequency",
+      "confidence",
+      "created_at",
+      "updated_at",
+      "createdAt",
+      "updatedAt",
+    ];
+
+    const order: [string, string][] = options.sort_key && validSortFields.includes(options.sort_key)
+      ? [[options.sort_key, options.sort_order || "asc"]]
+      : [["created_at", "DESC"]];
+
     const { rows, count } = await this.aliasModel.findAndCountAll({
       where,
-      limit: limitNum,
-      offset,
-      order: [["created_at", "DESC"]],
+      limit: options.limit,
+      offset: (options.page - 1) * options.limit,
+      order,
     });
 
     return {
       data: rows,
       total: count,
-      page: pageNum,
-      limit: limitNum,
-      totalPages: Math.ceil(count / limitNum),
+      page: options.page,
+      limit: options.limit,
+      totalPages: Math.ceil(count / options.limit),
     };
   }
 
@@ -200,32 +214,48 @@ export class AliasController {
   @Role(Roles.ADMIN)
   @Get("learner/logs")
   async listLogs(
-    @Query("page") page = "1",
-    @Query("limit") limit = "50",
-    @Query("product") product?: string,
-    @Query("status") status?: string
+    @Query() params: Record<string, string | string[]>
   ) {
-    const pageNum = Math.max(1, parseInt(page, 10));
-    const limitNum = Math.max(1, Math.min(500, parseInt(limit, 10)));
-    const offset = (pageNum - 1) * limitNum;
+    const options = API.toPageOptions(params);
+    const { product, status } = params;
 
     const where: any = {};
-    if (product) where.product = product;
-    if (status) where.status = status;
+    if (typeof product === "string" && product) where.product = product;
+    if (typeof status === "string" && status) where.status = status;
+
+    const validSortFields = [
+      "id",
+      "product",
+      "info",
+      "attribute",
+      "raw_key",
+      "normalized_key",
+      "match_type",
+      "match_score",
+      "status",
+      "created_at",
+      "updated_at",
+      "createdAt",
+      "updatedAt",
+    ];
+
+    const order: [string, string][] = options.sort_key && validSortFields.includes(options.sort_key)
+      ? [[options.sort_key, options.sort_order || "asc"]]
+      : [["created_at", "DESC"]];
 
     const { rows, count } = await this.logModel.findAndCountAll({
       where,
-      limit: limitNum,
-      offset,
-      order: [["created_at", "DESC"]],
+      limit: options.limit,
+      offset: (options.page - 1) * options.limit,
+      order,
     });
 
     return {
       data: rows,
       total: count,
-      page: pageNum,
-      limit: limitNum,
-      totalPages: Math.ceil(count / limitNum),
+      page: options.page,
+      limit: options.limit,
+      totalPages: Math.ceil(count / options.limit),
     };
   }
 

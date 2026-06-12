@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { $ZodIssue } from "zod/v4/core";
 
 import * as User from "./user";
@@ -19,14 +20,44 @@ export type Session = {
   sub: User.JwtPayload;
 };
 
+export const SortKeySchema = z.preprocess((val) => {
+  const first = Array.isArray(val) ? val[0] : val;
+  return typeof first === "string" && first.trim() !== "" ? first : undefined;
+}, z.string().optional());
+
+export const SortOrderSchema = z.preprocess((val) => {
+  const first = Array.isArray(val) ? val[0] : val;
+  if (typeof first === "string" && first.trim() !== "") {
+    const lower = first.toLowerCase();
+    if (lower === "asc" || lower === "desc") return lower;
+  }
+  return undefined;
+}, z.enum(["asc", "desc"]).optional());
+
+export const PaginationAndSortSchema = z.object({
+  page: z.preprocess((val) => {
+    const first = Array.isArray(val) ? val[0] : val;
+    if (first === undefined || first === null || first === "") return DEFAULT_PAGE;
+    const num = Number(first);
+    return isNaN(num) || num <= 0 ? DEFAULT_PAGE : num;
+  }, z.number().int().positive().default(DEFAULT_PAGE)),
+
+  limit: z.preprocess((val) => {
+    const first = Array.isArray(val) ? val[0] : val;
+    if (first === undefined || first === null || first === "") return DEFAULT_ITEM_LIMIT;
+    const num = Number(first);
+    return isNaN(num) || num <= 0 ? DEFAULT_ITEM_LIMIT : num;
+  }, z.number().int().positive().default(DEFAULT_ITEM_LIMIT)),
+
+  sort_key: SortKeySchema,
+  sort_order: SortOrderSchema,
+});
+
 /**
  * The page option interface.
  * Provide the option for pagination querying.
  */
-export type PageOptions = {
-  page: number;
-  limit: number;
-};
+export type PageOptions = z.infer<typeof PaginationAndSortSchema>;
 
 /**
  * The search option interface.
@@ -42,19 +73,9 @@ export type SearchOptions = {
  * @returns The page options.
  */
 export function toPageOptions(
-  query: Record<string, string | string[]>
+  query: Record<string, unknown>
 ): PageOptions {
-  const page = Number(Array.isArray(query.page) ? query.page[0] : query.page);
-  const limit = Number(
-    Array.isArray(query.limit) ? query.limit[0] : query.limit
-  );
-
-  const result: PageOptions = {
-    page: page > 0 ? page : DEFAULT_PAGE,
-    limit: limit > 0 ? limit : DEFAULT_ITEM_LIMIT,
-  };
-
-  return result;
+  return PaginationAndSortSchema.parse(query);
 }
 
 /**

@@ -7,11 +7,15 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UsePipes,
 } from "@nestjs/common";
 import { Role } from "src/utils/role/role.decorator";
 import { ZodValidationPipe } from "src/utils/utils.modules";
+
+import * as API from "@/utils/API";
 import { Roles } from "@/utils/user";
+
 import { BrandService } from "./brand.service";
 import { CreateBrandDto, UpdateBrandDto } from "./dto/brand.dto";
 
@@ -23,8 +27,9 @@ export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
   @Get()
-  async list() {
-    return await this.brandService.list();
+  async list(@Query() params: Record<string, string | string[]>) {
+    const options = API.toPageOptions(params);
+    return await this.brandService.list(options);
   }
 
   @Get(":id")

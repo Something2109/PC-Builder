@@ -79,6 +79,7 @@ class SequelizeContext {
   private readonly InfoModels: InfoModelContext;
   private readonly pageOptions: { limit: number; offset: number };
   private readonly searchOptions: Filterable;
+  private readonly orderOptions?: [string, string][];
 
   constructor(options: ListOptions, attrs?: { [key in Infos]?: string[] }) {
     this.PartModel = PartInformation.scope({
@@ -90,6 +91,10 @@ class SequelizeContext {
       offset: (options.page - 1) * options.limit,
       limit: options.limit,
     };
+
+    if (options.sort_key && Part.BasicAttributes.options.includes(options.sort_key as Part.BasicAttributes)) {
+      this.orderOptions = [[options.sort_key, options.sort_order || "asc"]];
+    }
 
     this.InfoModels = {};
     if (attrs) {
@@ -120,6 +125,7 @@ class SequelizeContext {
     const { count, rows } = await this.PartModel.findAndCountAll({
       ...this.searchOptions,
       ...this.pageOptions,
+      order: this.orderOptions,
       attributes: ["id", ...Part.BasicSummaryAttributes.filter((attr) => attr !== "brand" && attr !== "series")],
       include,
       distinct: true, // prevent multiple id row count if the query returns more than 1 row for an id.

@@ -1,7 +1,9 @@
 import { Module } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
-import SeriesModel from "@/models/parts/Series.entity";
+
 import BrandModel from "@/models/parts/Brand.entity";
+import SeriesModel from "@/models/parts/Series.entity";
+
 import { SeriesController } from "./series.controller";
 import { SeriesService } from "./series.service";
 

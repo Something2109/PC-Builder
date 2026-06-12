@@ -12,9 +12,12 @@ import {
 } from "@nestjs/common";
 import { Role } from "src/utils/role/role.decorator";
 import { ZodValidationPipe } from "src/utils/utils.modules";
+
+import * as API from "@/utils/API";
 import { Roles } from "@/utils/user";
-import { SeriesService } from "./series.service";
+
 import { CreateSeriesDto, UpdateSeriesDto } from "./dto/series.dto";
+import { SeriesService } from "./series.service";
 
 const CreateValidator = new ZodValidationPipe(CreateSeriesDto);
 const UpdateValidator = new ZodValidationPipe(UpdateSeriesDto);
@@ -24,11 +27,13 @@ export class SeriesController {
   constructor(private readonly seriesService: SeriesService) {}
 
   @Get()
-  async list(@Query("brandId") brandId?: string) {
-    const parsedBrandId = brandId !== undefined ? parseInt(brandId, 10) : undefined;
-    return await this.seriesService.list(
-      parsedBrandId !== undefined && !isNaN(parsedBrandId) ? parsedBrandId : undefined
-    );
+  async list(@Query() params: Record<string, string | string[]>) {
+    const options = API.toPageOptions(params);
+    const brandIdStr = Array.isArray(params.brandId) ? params.brandId[0] : params.brandId;
+    const brandId = brandIdStr !== undefined ? parseInt(brandIdStr, 10) : undefined;
+    const parsedBrandId = brandId !== undefined && !isNaN(brandId) ? brandId : undefined;
+
+    return await this.seriesService.list(options, parsedBrandId);
   }
 
   @Get(":id")

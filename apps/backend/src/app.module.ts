@@ -12,13 +12,13 @@ import { AliasModule } from "./alias/alias.module";
 import { AppController } from "./app.controller";
 import { ArticleModule } from "./article/article.module";
 import { AuthModule } from "./auth/auth.module";
+import { BrandModule } from "./brand/brand.module";
 import { BuildModule } from "./build/build.module";
 import { CrawlerModule } from "./crawler/crawler.module";
 import { MapperModule } from "./mapper/mapper.module";
 import { PartModule } from "./part/part.module";
-import { UserModule } from "./user/user.module";
-import { BrandModule } from "./brand/brand.module";
 import { SeriesModule } from "./series/series.module";
+import { UserModule } from "./user/user.module";
 import { AuthGuard } from "./utils/role/role.guard";
 import { SessionExtractionMiddleware } from "./utils/session.middleware";
 

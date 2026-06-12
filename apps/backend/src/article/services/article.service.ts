@@ -22,10 +22,23 @@ export class ArticleService {
     topic?: string;
     part?: Products;
     status?: ArticleStatus;
+    page: number;
+    limit: number;
+    sort_key?: string;
+    sort_order?: "asc" | "desc";
   }): Promise<Summary[]> {
-    const query: Record<string, any> = { ...criteria };
+    const { page, limit, sort_key, sort_order, ...filter } = criteria;
+    const query: Record<string, unknown> = { ...filter };
     if (!query.status) {
       query.status = ArticleStatus.Published;
+    }
+
+    const sortConfig: Record<string, 1 | -1> = {};
+    if (sort_key) {
+      sortConfig[sort_key] = sort_order === "desc" ? -1 : 1;
+    } else {
+      sortConfig.publishedAt = -1;
+      sortConfig.createdAt = -1;
     }
 
     const instances = await this.articleModel.find(query)
@@ -44,7 +57,9 @@ export class ArticleService {
         views: 1,
         publishedAt: 1,
       })
-      .sort({ publishedAt: -1, createdAt: -1 });
+      .sort(sortConfig)
+      .skip((page - 1) * limit)
+      .limit(limit);
 
     return instances.map(this.toArticleType.bind(this));
   }

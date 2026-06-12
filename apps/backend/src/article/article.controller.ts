@@ -15,6 +15,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { Role } from "src/utils/role/role.decorator";
 import { ZodValidationPipe } from "src/utils/utils.modules";
 
+import * as API from "@/utils/API";
 import { CreateArticleDto, UpdateArticleDto } from "@/utils/article";
 import { Roles } from "@/utils/user";
 
@@ -34,7 +35,7 @@ export class ArticleController {
   ) {}
 
   @Get()
-  async listArticles(@Query(QueryValidator) criteria: ArticleFilter) {
+  async listArticles(@Query(QueryValidator) criteria: ArticleFilter & API.PageOptions) {
     return this.articleService.list(criteria);
   }
 

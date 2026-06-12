@@ -1,5 +1,6 @@
 import { ArgumentMetadata, PipeTransform } from "@nestjs/common";
 
+import * as API from "@/utils/API";
 import { ArticleStatus } from "@/utils/article";
 import { Products } from "@/utils/part";
 
@@ -13,7 +14,7 @@ export class QueryFilterPipe implements PipeTransform {
   transform(
     value: Record<string, string | string[]>,
     _metadata: ArgumentMetadata
-  ): ArticleFilter {
+  ): ArticleFilter & API.PageOptions {
     const criteria: ArticleFilter = {};
 
     const topic = typeof value["topic"] === "string" ? value["topic"] : null;
@@ -25,7 +26,9 @@ export class QueryFilterPipe implements PipeTransform {
     const part = this.check(value["part"], Object.values(Products));
     if (part) criteria.part = part;
 
-    return criteria;
+    const pageOptions = API.toPageOptions(value);
+
+    return { ...criteria, ...pageOptions };
   }
 
   private check<T>(value: string | string[], list: T[]): T | null {

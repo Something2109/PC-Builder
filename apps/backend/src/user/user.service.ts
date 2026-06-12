@@ -58,12 +58,20 @@ export class UserService {
   async list({
     page,
     limit,
+    sort_key,
+    sort_order,
     ...options
   }: User.FilterOptions & API.PageOptions): Promise<User.Information[] | null> {
+    const validSortFields = ["id", "username", "name", "role"];
+    const order: [string, string][] | undefined = sort_key && validSortFields.includes(sort_key)
+      ? [[sort_key, sort_order || "asc"]]
+      : undefined;
+
     const userList = await UserModel.scope(UserModelScope.SUMMARY).findAll({
       where: options,
       offset: (page - 1) * limit,
       limit,
+      order,
     });
 
     return userList.map((val) => val.toJSON());
