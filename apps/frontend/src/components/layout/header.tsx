@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-import { UserPanel } from "@/features/auth";
+import { UserPanel, Guard } from "@/features/auth";
 import { RowWrapper } from "@/ui/FlexWrapper";
+import { Roles } from "@/utils/user";
 
 import { DarkModeButton } from "./body";
 
@@ -60,6 +61,9 @@ function NavigationBar({ toggle }: Readonly<{ toggle: boolean }>) {
       <NavigationButton link="/guide" title="Guide" />
       <NavigationButton link="/part" title="Part" />
       <NavigationButton link="/build" title="Build" />
+      <Guard roles={Roles.ADMIN}>
+        <NavigationButton link="/crawler" title="Crawler" />
+      </Guard>
     </nav>
   );
 }
