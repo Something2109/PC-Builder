@@ -61,7 +61,12 @@ export class StreamMonitor extends Writable {
       .join(" ")}]`;
 
     const logLine = `[${timestamp}] ${statsLog} [${type}] ${message}\n`;
-    this.logStream.write(logLine, callback);
+    this.logStream.write(logLine, (err) => {
+      if (process.connected) {
+        process.send?.({ progress: this.stats });
+      }
+      callback(err);
+    });
   }
 
   /**

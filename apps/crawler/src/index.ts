@@ -6,7 +6,7 @@ import { Name as Products } from "@/utils/part/product";
 
 import { Crawler } from "./core/crawler";
 import { LocalFileStorageAdapter } from "./storage/storage";
-import { ProcessWriter } from "./telemetry/writer";
+import { ProcessWriter } from "./telemetry/ipc-writer";
 import { isCrawlInfo } from "./types/interface";
 
 /** Create an argument object based on the {@link process.argv} list */

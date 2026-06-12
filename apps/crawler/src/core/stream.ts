@@ -289,7 +289,11 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
           raw.map(async (item, index) => {
             const extractCacheKey = `extract:${info.product}:${info.index}:${index}:${Date.now()}:${Math.random()}`;
             await this.cache.set(extractCacheKey, item);
-            return this.createNextCrawlInfo(info, InternalStage.Extract, extractCacheKey);
+            return this.createNextCrawlInfo(
+              info,
+              InternalStage.Extract,
+              extractCacheKey
+            );
           })
         );
       }
@@ -320,7 +324,11 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
 
         const parseCacheKey = `parse:${info.product}:${info.index}:${Date.now()}:${Math.random()}`;
         await this.cache.set(parseCacheKey, result);
-        return this.createNextCrawlInfo(info, InternalStage.Parse, parseCacheKey);
+        return this.createNextCrawlInfo(
+          info,
+          InternalStage.Parse,
+          parseCacheKey
+        );
       }
     );
   };
@@ -343,16 +351,18 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
       ) {
         try {
           if (chunk && typeof chunk === "object" && !chunk.error) {
-            if (chunk.stage === InternalStage.Parse) {
-              const parseCacheKey = chunk.data.parse;
-              const parsedData = await self.cache.get<any>(parseCacheKey);
-              this.push(parsedData);
-              await self.cache.delete(parseCacheKey);
-            } else if (chunk.stage === InternalStage.Extract) {
-              const extractCacheKey = chunk.data.extract;
-              const extractData = await self.cache.get<any>(extractCacheKey);
-              this.push(extractData);
-              await self.cache.delete(extractCacheKey);
+            if (
+              chunk.stage === InternalStage.Parse ||
+              chunk.stage === InternalStage.Extract
+            ) {
+              const parseKey = chunk.data[chunk.stage];
+              const parsedData = await self.cache.get<any>(parseKey);
+              if (process.connected) {
+                this.push({ result: parsedData, info: chunk });
+              } else {
+                this.push(parsedData);
+              }
+              await self.cache.delete(parseKey);
             } else {
               this.push(chunk);
             }

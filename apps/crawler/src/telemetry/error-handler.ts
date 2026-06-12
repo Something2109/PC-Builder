@@ -32,7 +32,12 @@ export class ErrorHandler extends Writable {
           stack: chunk.error.stack,
         },
       };
-      this.logStream.write(JSON.stringify(logEntry) + "\n", callback);
+      this.logStream.write(JSON.stringify(logEntry) + "\n", (err) => {
+        if (process.connected) {
+          process.send?.({ error: logEntry.error, info: chunk.info });
+        }
+        callback(err);
+      });
     } else {
       callback();
     }
