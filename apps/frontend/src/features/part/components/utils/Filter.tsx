@@ -1,9 +1,8 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   FunctionComponent,
   InputHTMLAttributes,
   SelectHTMLAttributes,
-  useEffect,
-  useState,
 } from "react";
 
 import { VerticalCollapsible } from "@/ui/Collapsible";
@@ -71,21 +70,19 @@ function FilterAttributeComponent<Value>({
   label: string;
   Component: CustomFilterComponent<Value>;
 }>) {
-  const [state, setState] = useState<Value | null>(null);
+  const { data: state = null, isLoading } = useQuery<Value | null>({
+    queryKey: ["partFilter", product, attribute, context.toString()],
+    queryFn: async () => {
+      const response = await fetch(
+        `/api/part/filter/${product}/${attribute}?${context.toString()}`
+      );
+      if (!response.ok) return [] as unknown as Value;
+      const data = await response.json();
+      return data[attribute];
+    },
+  });
 
-  useEffect(() => {
-    fetch(
-      `/api/part/filter/${product}/${attribute}?${context.toString()}`
-    ).then((response) => {
-      if (response.ok) {
-        response.json().then((data) => setState(data[attribute]));
-      } else {
-        setState([] as Value);
-      }
-    });
-  }, [product, attribute, context]);
-
-  if (!state) return "Loading";
+  if (isLoading || !state) return "Loading";
 
   return (
     <VerticalCollapsible className="w-full">

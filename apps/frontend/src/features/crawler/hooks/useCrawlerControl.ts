@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+
 import axiosInstance from "@/lib/axios";
 import { ScraperInfo, CrawlerSession } from "@/utils/crawler";
 
@@ -13,126 +15,86 @@ interface AxiosErrorLike {
 }
 
 export function useCrawlerControl() {
-  const [scrapers, setScrapers] = useState<ScraperInfo[]>([]);
-  const [sessions, setSessions] = useState<CrawlerSession[]>([]);
-  const [loadingScrapers, setLoadingScrapers] = useState(true);
+  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [pollingActive, setPollingActive] = useState(true);
   const [actionInProgress, setActionInProgress] = useState<string | null>(null);
 
-  // Poll intervals reference to clean up
-  const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // Fetch available scrapers
+  const { data: scrapers = [], isLoading: loadingScrapers } = useQuery<ScraperInfo[]>({
+    queryKey: ["crawlerScrapers"],
+    queryFn: async () => {
+      const response = await axiosInstance.get<ScraperInfo[]>("/crawler/scrapers");
+      return response.data;
+    },
+  });
 
-  // Poll status of active crawler sessions
-  const fetchStatus = async () => {
-    try {
-      const response =
-        await axiosInstance.get<CrawlerSession[]>("/crawler/status");
-      setSessions(response.data);
-    } catch (err) {
-      console.error("Failed to poll crawl status:", err);
-    }
-  };
+  // Poll active crawler sessions
+  const { data: sessions = [] } = useQuery<CrawlerSession[]>({
+    queryKey: ["crawlerSessions"],
+    queryFn: async () => {
+      const response = await axiosInstance.get<CrawlerSession[]>("/crawler/status");
+      return response.data;
+    },
+    refetchInterval: pollingActive ? 3000 : false,
+  });
 
-  // Fetch all available scrapers on mount
-  useEffect(() => {
-    let active = true;
-    const fetchScrapers = async () => {
-      try {
-        setError(null);
-        const response =
-          await axiosInstance.get<ScraperInfo[]>("/crawler/scrapers");
-        if (active) {
-          setScrapers(response.data);
-        }
-      } catch (err: unknown) {
-        console.error("Failed to fetch scrapers:", err);
-        if (active) {
-          const axiosErr = err as AxiosErrorLike;
-          setError(
-            axiosErr.response?.data?.message ||
-              "Failed to load scraper configurations."
-          );
-        }
-      } finally {
-        if (active) {
-          setLoadingScrapers(false);
-        }
-      }
-    };
-
-    fetchScrapers();
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  // Set up polling
-  useEffect(() => {
-    let active = true;
-    const poll = async () => {
-      try {
-        const response =
-          await axiosInstance.get<CrawlerSession[]>("/crawler/status");
-        if (active) {
-          setSessions(response.data);
-        }
-      } catch (err) {
-        console.error("Failed to poll crawl status:", err);
-      }
-    };
-
-    if (pollingActive) {
-      poll();
-      pollTimerRef.current = setInterval(poll, 3000);
-    }
-
-    return () => {
-      active = false;
-      if (pollTimerRef.current) {
-        clearInterval(pollTimerRef.current);
-      }
-    };
-  }, [pollingActive]);
-
-  // Start a crawl session
-  const handleStartCrawl = async (name: string, selectedProducts: string[]) => {
-    try {
-      setActionInProgress(`start-${name}`);
-      setError(null);
+  // Start crawl session mutation
+  const startCrawlMutation = useMutation({
+    mutationFn: async ({ name, selectedProducts }: { name: string; selectedProducts: string[] }) => {
       await axiosInstance.post("/crawler/start", {
         name,
         products: selectedProducts,
       });
-      // Immediately refresh status to show the new crawling state
-      await fetchStatus();
-    } catch (err: unknown) {
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["crawlerSessions"] });
+    },
+    onError: (err: unknown) => {
       console.error("Failed to start crawl:", err);
       const axiosErr = err as AxiosErrorLike;
       setError(
-        axiosErr.response?.data?.message ||
-          `Failed to start crawler for '${name}'.`
+        axiosErr.response?.data?.message || "Failed to start crawler."
       );
+    },
+  });
+
+  // Stop crawl session mutation
+  const stopCrawlMutation = useMutation({
+    mutationFn: async (name: string) => {
+      await axiosInstance.post("/crawler/stop", { name });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["crawlerSessions"] });
+    },
+    onError: (err: unknown) => {
+      console.error("Failed to stop crawl:", err);
+      const axiosErr = err as AxiosErrorLike;
+      setError(
+        axiosErr.response?.data?.message || "Failed to stop crawler."
+      );
+    },
+  });
+
+  const handleStartCrawl = async (name: string, selectedProducts: string[]) => {
+    setActionInProgress(`start-${name}`);
+    setError(null);
+    try {
+      await startCrawlMutation.mutateAsync({ name, selectedProducts });
+    } catch {
+      // Handled in onError of mutation
     } finally {
       setActionInProgress(null);
     }
   };
 
-  // Stop a crawl session
   const handleStopCrawl = async (name: string) => {
+    setActionInProgress(`stop-${name}`);
+    setError(null);
     try {
-      setActionInProgress(`stop-${name}`);
-      setError(null);
-      await axiosInstance.post("/crawler/stop", { name });
-      // Immediately refresh status to show the stopped state
-      await fetchStatus();
-    } catch (err: unknown) {
-      console.error("Failed to stop crawl:", err);
-      const axiosErr = err as AxiosErrorLike;
-      setError(
-        axiosErr.response?.data?.message ||
-          `Failed to stop crawler for '${name}'.`
-      );
+      await stopCrawlMutation.mutateAsync(name);
+    } catch {
+      // Handled in onError of mutation
     } finally {
       setActionInProgress(null);
     }

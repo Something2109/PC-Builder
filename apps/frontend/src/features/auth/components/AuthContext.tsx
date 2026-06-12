@@ -1,14 +1,13 @@
 "use client";
 
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Dispatch,
   SetStateAction,
   createContext,
   useContext,
-  useEffect,
   useLayoutEffect,
-  useState,
 } from "react";
 
 import axiosInstance from "@/lib/axios";
@@ -31,25 +30,33 @@ export function AuthWrapper({
   user: initialUser,
   children,
 }: Readonly<{ user: UserJwtPayload | null; children: React.ReactNode }>) {
-  const [user, setUser] = useState<UserJwtPayload | null>(initialUser);
-  const [loading, setLoading] = useState(!initialUser);
+  const queryClient = useQueryClient();
 
-  const refresh = async () => {
-    try {
-      const response = await axiosInstance.get("/auth/me");
-      setUser(response.data);
-    } catch {
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
+  const { data: user = initialUser, isLoading: loading } = useQuery<UserJwtPayload | null>({
+    queryKey: ["authUser"],
+    queryFn: async () => {
+      try {
+        const response = await axiosInstance.get("/auth/me");
+        return response.data;
+      } catch {
+        return null;
+      }
+    },
+    initialData: initialUser ?? undefined,
+    enabled: !initialUser,
+  });
+
+  const setUser: Dispatch<SetStateAction<UserJwtPayload | null>> = (value) => {
+    queryClient.setQueryData<UserJwtPayload | null>(["authUser"], (oldUser) => {
+      return typeof value === "function"
+        ? (value as (prev: UserJwtPayload | null) => UserJwtPayload | null)(oldUser ?? null)
+        : value;
+    });
   };
 
-  useEffect(() => {
-    if (!initialUser) {
-      refresh();
-    }
-  }, [initialUser]);
+  const refresh = async () => {
+    await queryClient.refetchQueries({ queryKey: ["authUser"] });
+  };
 
   return (
     <AuthContext.Provider value={{ user, setUser, refresh, loading }}>

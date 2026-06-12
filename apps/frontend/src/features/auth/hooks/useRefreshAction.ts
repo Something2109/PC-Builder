@@ -25,7 +25,7 @@ export function useRefreshAction(pathname?: string | null) {
         router.replace(`${LoginPath}?redirect=${redirectPath}`);
       }
     });
-  }, []);
+  }, [context, redirectPath, router]);
 
   return pending;
 }

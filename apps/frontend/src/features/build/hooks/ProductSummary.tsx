@@ -1,7 +1,8 @@
+import { useQuery } from "@tanstack/react-query";
 import { useBuildContext } from "./BuildContext";
 import Part, { Products } from "@/utils/part";
 import * as API from "@/utils/API";
-import { useEffect, useState, useReducer, useTransition } from "react";
+import { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 
 type ProductLoad = {
@@ -17,46 +18,46 @@ type ProductLoad = {
 
 function useProductSummary(product: Products): ProductLoad {
   const { list } = useBuildContext();
-
-  const [loading, startTransition] = useTransition();
-  const [data, setData] = useState<API.Payload<Part.Summary> | null>(null);
   const [page, setPage] = useState(1);
   const [includeBuild, setIncludeBuild] = useState(true);
-  const [params, setParams] = useReducer(
-    (_, formData: FormData) => {
-      setPage(1);
-      return new URLSearchParams(formData.entries().toArray() as string[][]);
+  const [params, setParamsState] = useState(() => new URLSearchParams());
+
+  const setParams = (formData: FormData) => {
+    setPage(1);
+    setParamsState(new URLSearchParams(formData.entries().toArray() as string[][]));
+  };
+
+  const [prevProduct, setPrevProduct] = useState(product);
+  if (product !== prevProduct) {
+    setPrevProduct(product);
+    setPage(1);
+    setParamsState(new URLSearchParams());
+    setIncludeBuild(true);
+  }
+
+  const { data = null, isFetching: loading } = useQuery<API.Payload<Part.Summary> | null>({
+    queryKey: ["productSummary", product, params.toString(), page, includeBuild, list],
+    queryFn: async () => {
+      try {
+        const response = await axios.post<API.Payload<Part.Summary>>(
+          `/api/build/${product}?${params.toString()}&page=${page}`,
+          includeBuild ? list : undefined,
+          { withCredentials: true }
+        );
+        return response.data;
+      } catch (err) {
+        console.error(err as AxiosError);
+        return null;
+      }
     },
-    null,
-    () => new URLSearchParams()
-  );
+    placeholderData: (previousData) => previousData,
+  });
 
   useEffect(() => {
-    setParams(new FormData());
-    setPage(1);
-  }, [product]);
-
-  useEffect(
-    () =>
-      startTransition(async () => {
-        try {
-          const response = await axios.post<API.Payload<Part.Summary>>(
-            `/api/build/${product}?${params.toString()}&page=${page}`,
-            includeBuild ? list : undefined,
-            { withCredentials: true }
-          );
-
-          setData(response.data);
-
-          window.scroll({ top: 0, behavior: "smooth" });
-        } catch (err) {
-          const error = err as AxiosError;
-          console.error(error);
-          setData(null);
-        }
-      }),
-    [list, product, params, page, includeBuild]
-  );
+    if (data) {
+      window.scroll({ top: 0, behavior: "smooth" });
+    }
+  }, [data]);
 
   return {
     loading,

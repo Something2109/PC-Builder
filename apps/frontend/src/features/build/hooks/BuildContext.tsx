@@ -2,7 +2,7 @@
 
 import Build from "@/utils/build";
 import Part, { Products } from "@/utils/part";
-import { createContext, useContext, useReducer, useRef } from "react";
+import { createContext, useContext, useReducer, useState } from "react";
 
 type DetailMapping<T = Part.DTO> = {
   [key in Products]?: T[];
@@ -94,19 +94,20 @@ class BuildDetailBuilder {
 }
 
 function useBuildDetails(defaultValue: Build.Details<Part.Summary>) {
-  const builder = useRef(new BuildDetailBuilder(defaultValue));
+  const [builder] = useState(() => new BuildDetailBuilder(defaultValue));
   const [{ details, list }, setDetails] = useReducer(
-    () => ({ details: builder.current.detail(), list: builder.current.list() }),
-    { details: builder.current.detail(), list: builder.current.list() }
+    () => ({ details: builder.detail(), list: builder.list() }),
+    null,
+    () => ({ details: builder.detail(), list: builder.list() })
   );
 
   const add = (summary: Part.Summary) => {
-    const result = builder.current.add(summary.part, summary);
+    const result = builder.add(summary.part, summary);
     if (result) setDetails();
   };
 
   const remove = (summary: Part.Summary) => {
-    const result = builder.current.remove(summary.part, summary);
+    const result = builder.remove(summary.part, summary);
     if (result) setDetails();
   };
 
