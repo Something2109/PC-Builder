@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { CdnModule } from "src/cdn/cdn.module";
 
 import { CRUD_INTERFACE, LIST_INTERFACE } from "./interface/database.interface";
 import { PARSE_INTERFACE, PART_INTERFACE } from "./interface/part.interface";
@@ -9,6 +10,7 @@ import { SequelizeCRUDService } from "./service/SequelizeCRUD.service";
 import { SequelizeListService } from "./service/SequelizeList.service";
 
 @Module({
+  imports: [CdnModule],
   controllers: [PartController],
   providers: [
     { provide: PART_INTERFACE, useClass: PartService },
