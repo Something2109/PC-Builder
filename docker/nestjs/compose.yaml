@@ -24,6 +24,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    volumes:
+      - ../../.cdn-data:/usr/local/app/apps/backend/cdn
   nestjs-dev:
     build:
       context: ../../
@@ -49,6 +51,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    volumes:
+      - ../../.cdn-data:/usr/local/app/apps/backend/cdn
     develop:
       watch:
         - action: sync

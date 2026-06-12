@@ -12,6 +12,8 @@ services:
         condition: service_healthy
       nextjs-prod:
         condition: service_healthy
+    volumes:
+      - ../../.cdn-data:/usr/share/nginx/html/cdn:ro
   nginx-dev:
     build:
       context: .
@@ -25,3 +27,5 @@ services:
         condition: service_healthy
       nextjs-dev:
         condition: service_healthy
+    volumes:
+      - ../../.cdn-data:/usr/share/nginx/html/cdn:ro
