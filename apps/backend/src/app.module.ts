@@ -13,6 +13,7 @@ import { AppController } from "./app.controller";
 import { ArticleModule } from "./article/article.module";
 import { AuthModule } from "./auth/auth.module";
 import { BuildModule } from "./build/build.module";
+import { CrawlerModule } from "./crawler/crawler.module";
 import { MapperModule } from "./mapper/mapper.module";
 import { PartModule } from "./part/part.module";
 import { UserModule } from "./user/user.module";
@@ -95,6 +96,7 @@ import { SessionExtractionMiddleware } from "./utils/session.middleware";
     UserModule,
     AliasModule,
     MapperModule,
+    CrawlerModule,
   ],
   providers: [
     {
