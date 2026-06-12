@@ -16,8 +16,8 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <AuthWrapper user={user}>
-        <QueryProvider>
+      <QueryProvider>
+        <AuthWrapper user={user}>
           <ThemeBody>
             <Header />
             <main className="container w-11/12 min-h-screen mx-auto *:my-2">
@@ -25,8 +25,8 @@ export default async function RootLayout({
             </main>
             <Footer />
           </ThemeBody>
-        </QueryProvider>
-      </AuthWrapper>
+        </AuthWrapper>
+      </QueryProvider>
     </html>
   );
 }
