@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-import { useAuth } from "@/features/auth";
+import { Guard } from "@/features/auth";
 import { mergeClass } from "@/ui/mergeClass";
 import { Article, Content, ContentName } from "@/utils/article";
 import { Roles } from "@/utils/user";
@@ -98,7 +98,6 @@ function extractSections(
 }
 
 function ArticleComponent({ article }: { article: Article }) {
-  const user = useAuth();
   const router = useRouter();
   const [activeSectionId, setActiveSectionId] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -106,8 +105,6 @@ function ArticleComponent({ article }: { article: Article }) {
 
   const sections = extractSections(article.content);
   const readingTime = calculateReadingTime(article.content);
-  const isAdmin =
-    user && (user.role === Roles.ADMIN || user.role === Roles.GUEST);
 
   // Scroll Spy Observer to track active section in viewport
   useEffect(() => {
@@ -326,7 +323,7 @@ function ArticleComponent({ article }: { article: Article }) {
               </div>
 
               {/* Admin Actions Panel */}
-              {isAdmin && (
+              <Guard roles={[Roles.ADMIN, Roles.GUEST]}>
                 <div className="flex flex-col gap-2 pt-4 border-t border-slate-100 dark:border-slate-800/50">
                   <Link
                     href={`/article/${article.id}/edit`}
@@ -355,7 +352,7 @@ function ArticleComponent({ article }: { article: Article }) {
                     {isDeleting ? "Deleting..." : "Delete Article"}
                   </button>
                 </div>
-              )}
+              </Guard>
             </div>
 
             {/* Table of Contents Sidebar */}

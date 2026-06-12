@@ -4,7 +4,7 @@
 import Link from "next/link";
 import React from "react";
 
-import { useAuth } from "@/features/auth";
+import { Guard } from "@/features/auth";
 import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
 import { mergeClass } from "@/ui/mergeClass";
 import { Summary } from "@/utils/article";
@@ -17,10 +17,6 @@ function ArticleLink({
   summary,
   ...rest
 }: Omit<Parameters<typeof Link>[0], "href"> & { summary: Summary }) {
-  const user = useAuth();
-  const isAdmin =
-    user && (user.role === Roles.ADMIN || user.role === Roles.GUEST);
-
   const href = `/article/${summary.slug || summary.id}`;
 
   const formattedDate = new Date(summary.createdAt).toLocaleDateString(
@@ -66,17 +62,19 @@ function ArticleLink({
         )}
 
         {/* Floating status badge for Admins */}
-        {isAdmin && summary.status !== "published" && (
-          <span
-            className={mergeClass(
-              "absolute top-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-bold border uppercase tracking-wider",
-              summary.status === "draft"
-                ? "bg-amber-500 text-white border-amber-500"
-                : "bg-red-500 text-white border-red-500",
-            )}
-          >
-            {summary.status}
-          </span>
+        {summary.status !== "published" && (
+          <Guard roles={[Roles.ADMIN, Roles.GUEST]}>
+            <span
+              className={mergeClass(
+                "absolute top-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-bold border uppercase tracking-wider",
+                summary.status === "draft"
+                  ? "bg-amber-500 text-white border-amber-500"
+                  : "bg-red-500 text-white border-red-500",
+              )}
+            >
+              {summary.status}
+            </span>
+          </Guard>
         )}
       </div>
 
