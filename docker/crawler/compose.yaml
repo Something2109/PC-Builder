@@ -1,0 +1,40 @@
+services:
+  crawler-prod:
+    build:
+      context: ../../
+      dockerfile: ./docker/crawler/Dockerfile
+      target: prod
+    ports:
+      - 5001:5001
+    environment:
+      - PORT=5001
+      - BACKEND_URL=http://nestjs-prod:3000
+    profiles:
+      - production
+
+  crawler-dev:
+    build:
+      context: ../../
+      dockerfile: ./docker/crawler/Dockerfile
+      target: dev
+    ports:
+      - 5001:5001
+    environment:
+      - PORT=5001
+      - BACKEND_URL=http://nestjs-dev:3000
+    profiles:
+      - development
+    develop:
+      watch:
+        - action: sync
+          path: ../../apps/crawler
+          target: /usr/local/app/apps/crawler
+        - action: sync
+          path: ../../packages/shared
+          target: /usr/local/app/packages/shared
+        - action: rebuild
+          path: ../../package.json
+        - action: rebuild
+          path: ../../apps/crawler/package.json
+        - action: rebuild
+          path: ../../package-lock.json

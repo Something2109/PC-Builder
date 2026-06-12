@@ -3,3 +3,4 @@ include:
   - ./docker/nestjs/compose.yaml
   - ./docker/nextjs/compose.yaml
   - ./docker/nginx/compose.yaml
+  - ./docker/crawler/compose.yaml

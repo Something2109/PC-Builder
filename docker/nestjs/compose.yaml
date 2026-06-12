@@ -15,6 +15,7 @@ services:
       - DATABASE_PASSWORD=${DATABASE_PASSWORD:?error}
       - JWT_SECRET=${JWT_SECRET:?error}
       - CSRF_SECRET=${CSRF_SECRET:?error}
+      - CRAWLER_SERVICE_URL=http://crawler-prod:5001
     profiles:
       - production
     healthcheck:
@@ -39,6 +40,7 @@ services:
       - DATABASE_PASSWORD=${DATABASE_PASSWORD:?error}
       - JWT_SECRET=${JWT_SECRET:?error}
       - CSRF_SECRET=${CSRF_SECRET:?error}
+      - CRAWLER_SERVICE_URL=http://crawler-dev:5001
     profiles:
       - development
     healthcheck:
