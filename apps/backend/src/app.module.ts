@@ -17,6 +17,8 @@ import { CrawlerModule } from "./crawler/crawler.module";
 import { MapperModule } from "./mapper/mapper.module";
 import { PartModule } from "./part/part.module";
 import { UserModule } from "./user/user.module";
+import { BrandModule } from "./brand/brand.module";
+import { SeriesModule } from "./series/series.module";
 import { AuthGuard } from "./utils/role/role.guard";
 import { SessionExtractionMiddleware } from "./utils/session.middleware";
 
@@ -97,6 +99,8 @@ import { SessionExtractionMiddleware } from "./utils/session.middleware";
     AliasModule,
     MapperModule,
     CrawlerModule,
+    BrandModule,
+    SeriesModule,
   ],
   providers: [
     {

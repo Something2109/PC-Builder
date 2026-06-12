@@ -120,7 +120,7 @@ class SequelizeContext {
     const { count, rows } = await this.PartModel.findAndCountAll({
       ...this.searchOptions,
       ...this.pageOptions,
-      attributes: ["id", ...Part.BasicSummaryAttributes],
+      attributes: ["id", ...Part.BasicSummaryAttributes.filter((attr) => attr !== "brand" && attr !== "series")],
       include,
       distinct: true, // prevent multiple id row count if the query returns more than 1 row for an id.
     });

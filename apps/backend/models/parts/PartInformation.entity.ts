@@ -12,6 +12,9 @@ import {
   Scopes,
   Table,
   Unique,
+  ForeignKey,
+  BelongsTo,
+  BeforeSave,
 } from "sequelize-typescript";
 
 import {
@@ -22,6 +25,7 @@ import {
 } from "@/models/interface";
 import Part, { Products, Infos } from "@/utils/part";
 
+import BrandModel from "./Brand.entity";
 import CaseFanSupportModel from "./info/CaseFanSupport.entity";
 import CaseHardDriveSupportModel from "./info/CaseHardDriveSupport.entity";
 import CaseMainboardSupportModel from "./info/CaseMainboardSupport.entity";
@@ -58,20 +62,45 @@ import RAMSpecModel from "./info/RAMSpec.entity";
 import SSDSpecModel from "./info/SSDSpec.entity";
 import StorageCacheModel from "./info/StorageCache.entity";
 import StoragePerformanceModel from "./info/StoragePerformance.entity";
+import SeriesModel from "./Series.entity";
 
-@DefaultScope(() => PartDefaultScope)
+@DefaultScope(() => ({
+  include: [
+    { model: BrandModel, attributes: ["name"] },
+    { model: SeriesModel, attributes: ["name"] },
+  ],
+  attributes: {
+    exclude: ["createdAt", "updatedAt"],
+  },
+}))
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
-    attributes: attributes?.length ? ["id", ...attributes] : [],
+    attributes: attributes?.length
+      ? ["id", ...attributes.filter((attr) => attr !== "brand" && attr !== "series")]
+      : [],
+    include: [
+      { model: BrandModel, attributes: ["name"] },
+      { model: SeriesModel, attributes: ["name"] },
+    ],
   }),
   [ModelScopes.FILTER]: (
     options: Part.Filter["part"],
     ...include: Includeable[]
   ) => ({
     where: defaultFilter(options),
-    include,
+    include: [
+      { model: BrandModel, attributes: ["name"] },
+      { model: SeriesModel, attributes: ["name"] },
+      ...include,
+    ],
   }),
-  [ModelScopes.DETAIL]: { attributes: { exclude: ["createdAt", "updatedAt"] } },
+  [ModelScopes.DETAIL]: {
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+    include: [
+      { model: BrandModel, attributes: ["name"] },
+      { model: SeriesModel, attributes: ["name"] },
+    ],
+  },
 }))
 @Table({
   modelName: Tables.PART,
@@ -82,19 +111,19 @@ import StoragePerformanceModel from "./info/StoragePerformance.entity";
     },
     {
       name: "brand_idx",
-      fields: ["brand"],
+      fields: ["brand_id"],
     },
     {
       name: "series_idx",
-      fields: ["series"],
+      fields: ["series_id"],
     },
     {
       name: "part_brand_idx",
-      fields: ["part", "brand"],
+      fields: ["part", "brand_id"],
     },
     {
       name: "part_series_idx",
-      fields: ["part", "series"],
+      fields: ["part", "series_id"],
     },
   ],
 })
@@ -118,11 +147,73 @@ export default class PartInformation extends Model implements Part.Model {
   @Column(DataType.STRING)
   declare code_name: string;
 
-  @Column(DataType.STRING)
-  declare brand: string | null;
+  @ForeignKey(() => BrandModel)
+  @AllowNull(true)
+  @Column({
+    type: DataType.INTEGER,
+    field: "brand_id",
+  })
+  declare brandId: number | null;
 
-  @Column(DataType.STRING)
-  declare series: string | null;
+  @BelongsTo(() => BrandModel, "brandId")
+  declare brandRelation: BrandModel | null;
+
+  @ForeignKey(() => SeriesModel)
+  @AllowNull(true)
+  @Column({
+    type: DataType.INTEGER,
+    field: "series_id",
+  })
+  declare seriesId: number | null;
+
+  @BelongsTo(() => SeriesModel, "seriesId")
+  declare seriesRelation: SeriesModel | null;
+
+  private _tempBrand: string | null = null;
+  private _tempSeries: string | null = null;
+
+  @Column(DataType.VIRTUAL)
+  get brand(): string | null {
+    return this.brandRelation ? this.brandRelation.name : this._tempBrand;
+  }
+  set brand(val: string | null) {
+    this._tempBrand = val;
+  }
+
+  @Column(DataType.VIRTUAL)
+  get series(): string | null {
+    return this.seriesRelation ? this.seriesRelation.name : this._tempSeries;
+  }
+  set series(val: string | null) {
+    this._tempSeries = val;
+  }
+
+  @BeforeSave
+  static async normalizeBrandAndSeries(instance: PartInformation, options: any) {
+    const transaction = options?.transaction;
+
+    // 1. Resolve Brand
+    if (instance._tempBrand) {
+      const [brandRecord] = await BrandModel.findOrCreate({
+        where: { name: instance._tempBrand },
+        defaults: { name: instance._tempBrand },
+        transaction,
+      });
+      instance.brandId = brandRecord.id;
+      instance._tempBrand = null;
+    }
+
+    // 2. Resolve Series
+    if (instance._tempSeries && instance.brandId) {
+      const [seriesRecord] = await SeriesModel.findOrCreate({
+        where: { name: instance._tempSeries, brandId: instance.brandId },
+        defaults: { name: instance._tempSeries, brandId: instance.brandId },
+        transaction,
+      });
+      instance.seriesId = seriesRecord.id;
+      instance._tempSeries = null;
+    }
+  }
 
   @Column(DataType.DATE)
   declare launch_date: Date | null;
@@ -130,7 +221,7 @@ export default class PartInformation extends Model implements Part.Model {
   @Column({ type: DataType.STRING, validate: { isUrl: true } })
   declare url: string | null;
 
-  @Column({ type: DataType.STRING, validate: { isUrl: true } })
+  @Column(DataType.STRING)
   declare image_url: string | null;
 
   @HasOne(() => CPUSpecModel)

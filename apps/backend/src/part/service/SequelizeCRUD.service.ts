@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Includeable, Model, ModelStatic, Transaction } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
+import { CdnService } from "src/cdn/cdn.service";
 
 import { ModelScopes } from "@/models/interface";
 import { PartInformation } from "@/models/parts";
@@ -34,7 +35,10 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     return this._InfoModels;
   }
 
-  constructor(private readonly sequelize: Sequelize) {}
+  constructor(
+    private readonly sequelize: Sequelize,
+    private readonly cdnService: CdnService,
+  ) {}
 
   async get(
     id: string,
@@ -65,6 +69,8 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
       instance.set(data);
       if (!instance.part) instance.part = part as Products;
 
+      await this.processImage(instance, { part, ...data } as Part.DTO);
+
       await instance.save({ transaction });
 
       if (infos) {
@@ -87,6 +93,8 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
       instance.set(data);
 
+      await this.processImage(instance, data);
+
       instance = await instance.save({ transaction });
 
       if (infos) {
@@ -99,6 +107,19 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
       return (await this.get(instance.id, infos, transaction))!;
     }))!;
+  }
+
+  private async processImage(instance: PartInformation, data: Part.DTO) {
+    if (data.image_url && data.image_url.startsWith("http")) {
+      const localUrl = await this.cdnService.downloadAndOptimize(
+        data.image_url,
+        instance.part || data.part,
+        instance.id,
+      );
+      if (localUrl) {
+        instance.image_url = localUrl;
+      }
+    }
   }
 
   async delete(id: string, infos?: Infos[]): Promise<Part.Model | null> {
