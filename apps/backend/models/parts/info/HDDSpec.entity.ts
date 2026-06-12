@@ -25,7 +25,23 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.HDD_SPEC })
+@Table({
+  modelName: Infos.HDD_SPEC,
+  indexes: [
+    {
+      name: "hdd_spec_capacity_idx",
+      fields: ["capacity"],
+    },
+    {
+      name: "hdd_spec_interface_idx",
+      fields: ["interface"],
+    },
+    {
+      name: "hdd_spec_rpm_idx",
+      fields: ["rotational_speed"],
+    },
+  ],
+})
 export default class HDDSpecModel extends Model implements HDDSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

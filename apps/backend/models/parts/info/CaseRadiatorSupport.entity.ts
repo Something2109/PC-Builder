@@ -29,7 +29,15 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.CASE_RADIATOR })
+@Table({
+  modelName: Infos.CASE_RADIATOR,
+  indexes: [
+    {
+      name: "case_rad_form_idx",
+      fields: ["form_factor"],
+    },
+  ],
+})
 export default class CaseRadiatorSupportModel extends Model
   implements CaseRadiatorSupport.Model
 {

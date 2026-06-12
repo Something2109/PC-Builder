@@ -25,7 +25,15 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.CASE_SPEC })
+@Table({
+  modelName: Infos.CASE_SPEC,
+  indexes: [
+    {
+      name: "case_spec_form_idx",
+      fields: ["form_factor"],
+    },
+  ],
+})
 export default class CaseSpecModel extends Model implements CaseSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

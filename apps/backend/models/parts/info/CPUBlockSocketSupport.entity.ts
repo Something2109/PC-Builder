@@ -24,7 +24,15 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.CPU_BLOCK_SOCKET })
+@Table({
+  modelName: Infos.CPU_BLOCK_SOCKET,
+  indexes: [
+    {
+      name: "cpu_block_socket_idx",
+      fields: ["socket"],
+    },
+  ],
+})
 export default class CPUBlockSocketModel extends Model implements CPUBlockSocketSupport.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

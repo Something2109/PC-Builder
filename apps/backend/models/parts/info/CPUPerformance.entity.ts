@@ -24,7 +24,15 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.CPU_PERF })
+@Table({
+  modelName: Infos.CPU_PERF,
+  indexes: [
+    {
+      name: "cpu_perf_tdp_idx",
+      fields: ["tdp"],
+    },
+  ],
+})
 export default class CPUPerformanceModel extends Model implements CPUPerformance.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

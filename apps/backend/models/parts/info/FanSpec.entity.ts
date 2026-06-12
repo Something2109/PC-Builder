@@ -25,7 +25,19 @@ import { ModelScopes, PartDefaultScope, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.FAN_SPEC })
+@Table({
+  modelName: Infos.FAN_SPEC,
+  indexes: [
+    {
+      name: "fan_spec_form_idx",
+      fields: ["form_factor"],
+    },
+    {
+      name: "fan_spec_speed_idx",
+      fields: ["speed"],
+    },
+  ],
+})
 export default class FanSpecModel extends Model implements FanSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

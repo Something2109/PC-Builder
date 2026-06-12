@@ -25,7 +25,19 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.SSD_SPEC })
+@Table({
+  modelName: Infos.SSD_SPEC,
+  indexes: [
+    {
+      name: "ssd_spec_capacity_idx",
+      fields: ["capacity"],
+    },
+    {
+      name: "ssd_spec_interface_idx",
+      fields: ["interface"],
+    },
+  ],
+})
 export default class SSDSpecModel extends Model implements SSDSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

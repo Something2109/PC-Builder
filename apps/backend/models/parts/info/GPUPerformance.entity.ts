@@ -24,7 +24,15 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.GPU_PERF })
+@Table({
+  modelName: Infos.GPU_PERF,
+  indexes: [
+    {
+      name: "gpu_perf_tdp_idx",
+      fields: ["tdp"],
+    },
+  ],
+})
 export default class GPUPerformanceModel extends Model implements GPUPerformance.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

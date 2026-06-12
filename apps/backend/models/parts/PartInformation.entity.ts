@@ -73,7 +73,31 @@ import StoragePerformanceModel from "./info/StoragePerformance.entity";
   }),
   [ModelScopes.DETAIL]: { attributes: { exclude: ["createdAt", "updatedAt"] } },
 }))
-@Table({ modelName: Tables.PART })
+@Table({
+  modelName: Tables.PART,
+  indexes: [
+    {
+      name: "part_idx",
+      fields: ["part"],
+    },
+    {
+      name: "brand_idx",
+      fields: ["brand"],
+    },
+    {
+      name: "series_idx",
+      fields: ["series"],
+    },
+    {
+      name: "part_brand_idx",
+      fields: ["part", "brand"],
+    },
+    {
+      name: "part_series_idx",
+      fields: ["part", "series"],
+    },
+  ],
+})
 export default class PartInformation extends Model implements Part.Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)

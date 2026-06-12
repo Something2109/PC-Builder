@@ -25,7 +25,27 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.PSU_SPEC })
+@Table({
+  modelName: Infos.PSU_SPEC,
+  indexes: [
+    {
+      name: "psu_spec_form_idx",
+      fields: ["form_factor"],
+    },
+    {
+      name: "psu_spec_wattage_idx",
+      fields: ["wattage"],
+    },
+    {
+      name: "psu_spec_eff_idx",
+      fields: ["efficiency"],
+    },
+    {
+      name: "psu_spec_modular_idx",
+      fields: ["modular"],
+    },
+  ],
+})
 export default class PSUSpecModel extends Model implements PSUSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

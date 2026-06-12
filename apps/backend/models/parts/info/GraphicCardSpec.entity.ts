@@ -25,7 +25,15 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.GRAPHIC_CARD_SPEC })
+@Table({
+  modelName: Infos.GRAPHIC_CARD_SPEC,
+  indexes: [
+    {
+      name: "gc_spec_min_psu_idx",
+      fields: ["minimum_psu"],
+    },
+  ],
+})
 export default class GraphicCardSpecModel extends Model implements GraphicCardSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

@@ -24,7 +24,15 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.GPU_SPEC })
+@Table({
+  modelName: Infos.GPU_SPEC,
+  indexes: [
+    {
+      name: "gpu_spec_cores_idx",
+      fields: ["core_count"],
+    },
+  ],
+})
 export default class GPUSpecModel extends Model implements GPUSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

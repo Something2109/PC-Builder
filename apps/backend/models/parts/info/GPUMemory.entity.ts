@@ -27,7 +27,19 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
     ...PartDefaultScope,
   },
 }))
-@Table({ modelName: Infos.GPU_MEMORY })
+@Table({
+  modelName: Infos.GPU_MEMORY,
+  indexes: [
+    {
+      name: "gpu_mem_capacity_idx",
+      fields: ["capacity"],
+    },
+    {
+      name: "gpu_mem_type_idx",
+      fields: ["type"],
+    },
+  ],
+})
 export default class GPUMemoryModel extends Model implements GPUMemory.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

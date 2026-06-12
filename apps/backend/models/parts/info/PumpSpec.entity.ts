@@ -25,7 +25,15 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.PUMP_SPEC })
+@Table({
+  modelName: Infos.PUMP_SPEC,
+  indexes: [
+    {
+      name: "pump_spec_form_idx",
+      fields: ["form_factor"],
+    },
+  ],
+})
 export default class PumpSpecModel extends Model implements PumpSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

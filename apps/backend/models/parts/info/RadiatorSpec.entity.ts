@@ -25,7 +25,15 @@ import { ModelScopes, PartDefaultScope, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.RADIATOR_SPEC })
+@Table({
+  modelName: Infos.RADIATOR_SPEC,
+  indexes: [
+    {
+      name: "rad_spec_form_idx",
+      fields: ["form_factor"],
+    },
+  ],
+})
 export default class RadiatorSpecModel extends Model implements RadiatorSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

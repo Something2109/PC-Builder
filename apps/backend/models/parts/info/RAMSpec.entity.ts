@@ -25,7 +25,27 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.RAM_SPEC })
+@Table({
+  modelName: Infos.RAM_SPEC,
+  indexes: [
+    {
+      name: "ram_spec_speed_idx",
+      fields: ["speed"],
+    },
+    {
+      name: "ram_spec_form_idx",
+      fields: ["form_factor"],
+    },
+    {
+      name: "ram_spec_capacity_idx",
+      fields: ["capacity"],
+    },
+    {
+      name: "ram_spec_interface_idx",
+      fields: ["interface"],
+    },
+  ],
+})
 export default class RAMSpecModel extends Model implements RAMSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

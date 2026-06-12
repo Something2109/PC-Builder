@@ -29,7 +29,15 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   }),
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
-@Table({ modelName: Infos.CASE_MAIN })
+@Table({
+  modelName: Infos.CASE_MAIN,
+  indexes: [
+    {
+      name: "case_mb_form_idx",
+      fields: ["form_factor"],
+    },
+  ],
+})
 export default class CaseMainboardSupportModel extends Model
   implements CaseMainboardSupport.Model
 {

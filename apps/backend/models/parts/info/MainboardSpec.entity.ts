@@ -27,7 +27,27 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
     ...PartDefaultScope,
   },
 }))
-@Table({ modelName: Infos.MAIN_SPEC })
+@Table({
+  modelName: Infos.MAIN_SPEC,
+  indexes: [
+    {
+      name: "mb_spec_socket_idx",
+      fields: ["socket"],
+    },
+    {
+      name: "mb_spec_form_idx",
+      fields: ["form_factor"],
+    },
+    {
+      name: "mb_spec_ram_form_idx",
+      fields: ["ram_form_factor"],
+    },
+    {
+      name: "mb_spec_ram_interface_idx",
+      fields: ["ram_interface"],
+    },
+  ],
+})
 export default class MainboardSpecModel extends Model implements MainboardSpec.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)

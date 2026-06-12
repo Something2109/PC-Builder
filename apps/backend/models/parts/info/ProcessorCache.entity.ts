@@ -26,7 +26,15 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
     ...PartDefaultScope,
   },
 }))
-@Table({ modelName: Infos.PROCESSOR_CACHE })
+@Table({
+  modelName: Infos.PROCESSOR_CACHE,
+  indexes: [
+    {
+      name: "proc_cache_L3_idx",
+      fields: ["L3_cache"],
+    },
+  ],
+})
 export default class ProcessorCacheModel extends Model implements ProcessorCache.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
