@@ -1,6 +1,19 @@
-import { Controller, Get, Post, Body, Query, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, UsePipes } from "@nestjs/common";
 import { Role } from "src/utils/role/role.decorator";
+import { ZodValidationPipe } from "src/utils/utils.modules";
 
+import {
+  CrawlStartPayload,
+  CrawlStopPayload,
+  CrawlTestPayload,
+  CrawlExtractPayload,
+  CrawlIngestPayload,
+  CrawlStartSchema,
+  CrawlStopSchema,
+  CrawlTestSchema,
+  CrawlExtractSchema,
+  CrawlIngestSchema,
+} from "@/utils/crawler";
 import { Roles } from "@/utils/user";
 
 import { CrawlerService } from "./crawler.service";
@@ -12,7 +25,8 @@ export class CrawlerController {
   // 1. Ingest crawled results (Private / Internal endpoint)
   // No Role decorator means it's accessible without auth (used internally by Express crawler service)
   @Post("ingest")
-  async ingest(@Body() body: { items: any[] }) {
+  @UsePipes(new ZodValidationPipe(CrawlIngestSchema))
+  async ingest(@Body() body: CrawlIngestPayload) {
     return this.crawlerService.ingestProducts(body.items);
   }
 
@@ -26,14 +40,16 @@ export class CrawlerController {
   // 3. POST /crawler/start - Start crawling
   @Post("start")
   @Role(Roles.ADMIN)
-  async startCrawl(@Body() body: { name: string; products?: string[] }) {
+  @UsePipes(new ZodValidationPipe(CrawlStartSchema))
+  async startCrawl(@Body() body: CrawlStartPayload) {
     return this.crawlerService.startCrawl(body.name, body.products);
   }
 
   // 4. POST /crawler/stop - Stop crawling
   @Post("stop")
   @Role(Roles.ADMIN)
-  async stopCrawl(@Body() body: { name: string }) {
+  @UsePipes(new ZodValidationPipe(CrawlStopSchema))
+  async stopCrawl(@Body() body: CrawlStopPayload) {
     return this.crawlerService.stopCrawl(body.name);
   }
 
@@ -47,14 +63,16 @@ export class CrawlerController {
   // 6. POST /crawler/test - Test a scraper on page 1
   @Post("test")
   @Role(Roles.ADMIN)
-  async testCrawl(@Body() body: { name: string; product: string }) {
+  @UsePipes(new ZodValidationPipe(CrawlTestSchema))
+  async testCrawl(@Body() body: CrawlTestPayload) {
     return this.crawlerService.testCrawl(body.name, body.product);
   }
 
   // 7. POST /crawler/extract - Extract manually from URL
   @Post("extract")
   @Role(Roles.ADMIN)
-  async extractUrl(@Body() body: { name: string; url: string; product: string }) {
+  @UsePipes(new ZodValidationPipe(CrawlExtractSchema))
+  async extractUrl(@Body() body: CrawlExtractPayload) {
     return this.crawlerService.extractUrl(body.name, body.url, body.product);
   }
 }

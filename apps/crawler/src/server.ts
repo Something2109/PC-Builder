@@ -3,6 +3,19 @@ import express, { Request, Response } from "express";
 import { fork, ChildProcess } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { ZodError } from "zod";
+
+import {
+  CrawlerSession,
+  CrawlIngestItem,
+  ScraperType,
+  CrawlState,
+  CrawlStartSchema,
+  CrawlStopSchema,
+  CrawlTestSchema,
+  CrawlExtractSchema,
+} from "@/utils/crawler";
+import { Name as Products } from "@/utils/part/product";
 
 import { defaultStealthFetch } from "./core/fetcher";
 import { APIWebsiteInfo, InternalStage } from "./types/interface";
@@ -14,26 +27,22 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
 app.use(cors());
 app.use(express.json());
 
-// Session structure
-interface CrawlerSession {
-  name: string;
-  domain: string;
-  type: "sellers" | "parts";
-  products: string[];
-  state: "crawling" | "idle" | "stopped" | "failed" | "completed";
-  progress: any;
-  errors: any[];
-  startTime: Date;
-  endTime?: Date;
-}
-
-const activeSessions = new Map<string, { child: ChildProcess; session: CrawlerSession }>();
+const activeSessions = new Map<
+  string,
+  { child: ChildProcess; session: CrawlerSession }
+>();
 
 // Helper to resolve scraper configurations
 const crawlersDir = path.join(__dirname, "crawlers");
 
 function getScrapersList() {
-  const scrapers: Array<{ name: string; domain: string; type: "sellers" | "parts"; path: string; supportedProducts?: string[] }> = [];
+  const scrapers: Array<{
+    name: string;
+    domain: string;
+    type: ScraperType;
+    path: string;
+    supportedProducts?: Products[];
+  }> = [];
   const subdirs = ["sellers", "parts"] as const;
 
   for (const dir of subdirs) {
@@ -42,7 +51,10 @@ function getScrapersList() {
 
     const files = fs.readdirSync(dirPath);
     for (const file of files) {
-      if ((file.endsWith(".ts") || file.endsWith(".js")) && !file.endsWith(".d.ts")) {
+      if (
+        (file.endsWith(".ts") || file.endsWith(".js")) &&
+        !file.endsWith(".d.ts")
+      ) {
         const name = path.basename(file, path.extname(file));
         const filePath = path.join(dirPath, file);
         try {
@@ -51,7 +63,7 @@ function getScrapersList() {
             scrapers.push({
               name,
               domain: config.domain,
-              type: dir,
+              type: dir === "sellers" ? ScraperType.SELLERS : ScraperType.PARTS,
               path: filePath,
               supportedProducts: config.supportedProducts || [],
             });
@@ -68,12 +80,14 @@ function getScrapersList() {
 // 1. GET /scrapers - List available scrapers
 app.get("/scrapers", (req: Request, res: Response) => {
   try {
-    const list = getScrapersList().map(({ name, domain, type, supportedProducts }) => ({
-      name,
-      domain,
-      type,
-      supportedProducts,
-    }));
+    const list = getScrapersList().map(
+      ({ name, domain, type, supportedProducts }) => ({
+        name,
+        domain,
+        type,
+        supportedProducts,
+      })
+    );
     res.json(list);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -82,28 +96,30 @@ app.get("/scrapers", (req: Request, res: Response) => {
 
 // 2. POST /start - Start crawling session
 app.post("/start", (req: Request, res: Response) => {
-  const { name, products } = req.body;
+  try {
+    const { name, products } = CrawlStartSchema.parse(req.body);
 
-  if (!name) {
-    return res.status(400).json({ error: "Scraper name is required" });
-  }
+    const scrapers = getScrapersList();
+    const scraper = scrapers.find((s) => s.name === name);
 
-  const scrapers = getScrapersList();
-  const scraper = scrapers.find((s) => s.name === name);
-
-  if (!scraper) {
-    return res.status(404).json({ error: `Scraper '${name}' not found` });
-  }
-
-  if (activeSessions.has(name)) {
-    const existing = activeSessions.get(name);
-    if (existing?.session.state === "crawling") {
-      return res.status(400).json({ error: `Scraper '${name}' is already crawling` });
+    if (!scraper) {
+      return res.status(404).json({ error: `Scraper '${name}' not found` });
     }
-  }
+
+    if (activeSessions.has(name)) {
+      const existing = activeSessions.get(name);
+      if (existing?.session.state === CrawlState.CRAWLING) {
+        return res
+          .status(400)
+          .json({ error: `Scraper '${name}' is already crawling` });
+      }
+    }
 
   // Determine products to crawl
-  const productsToCrawl = products && Array.isArray(products) ? products : scraper.supportedProducts || [];
+  const productsToCrawl =
+    products && Array.isArray(products)
+      ? products
+      : scraper.supportedProducts || [];
 
   // Spawn child process
   const indexScript = fs.existsSync(path.join(__dirname, "index.ts"))
@@ -121,8 +137,15 @@ app.post("/start", (req: Request, res: Response) => {
     domain: scraper.domain,
     type: scraper.type,
     products: productsToCrawl,
-    state: "crawling",
-    progress: { init: 0, fetch: 0, extract: 0, parse: 0, success: 0, failed: 0 },
+    state: CrawlState.CRAWLING,
+    progress: {
+      init: 0,
+      fetch: 0,
+      extract: 0,
+      parse: 0,
+      success: 0,
+      failed: 0,
+    },
     errors: [],
     startTime: new Date(),
   };
@@ -130,7 +153,7 @@ app.post("/start", (req: Request, res: Response) => {
   activeSessions.set(name, { child, session });
 
   // Ingestion buffer
-  let buffer: any[] = [];
+  let buffer: CrawlIngestItem[] = [];
   let bufferTimeout: NodeJS.Timeout | null = null;
 
   const flushBuffer = async () => {
@@ -149,7 +172,9 @@ app.post("/start", (req: Request, res: Response) => {
         body: JSON.stringify({ items: batch }),
       });
       if (!response.ok) {
-        console.error(`[Crawler Server] Failed to ingest batch: ${response.statusText}`);
+        console.error(
+          `[Crawler Server] Failed to ingest batch: ${response.statusText}`
+        );
       }
     } catch (err) {
       console.error(`[Crawler Server] Error sending batch to backend:`, err);
@@ -165,7 +190,10 @@ app.post("/start", (req: Request, res: Response) => {
         result: message.result,
         info: {
           product: message.info.product,
-          url: message.info.data.init?.url || message.info.request?.url || message.info.request,
+          url:
+            message.info.data.init?.url ||
+            message.info.request?.url ||
+            message.info.request,
         },
       });
 
@@ -181,42 +209,61 @@ app.post("/start", (req: Request, res: Response) => {
 
   child.on("exit", (code) => {
     flushBuffer();
-    session.state = code === 0 ? "completed" : "failed";
+    session.state = code === 0 ? CrawlState.COMPLETED : CrawlState.FAILED;
     session.endTime = new Date();
     console.log(`[Crawler Server] Scraper '${name}' exited with code ${code}`);
   });
 
-  res.json({ message: `Crawl session for '${name}' started`, session });
+  } catch (err: any) {
+    if (err instanceof ZodError) {
+      return res.status(400).json({ error: "Validation failed", details: err.issues });
+    }
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // 3. POST /stop - Stop a crawl session
 app.post("/stop", (req: Request, res: Response) => {
-  const { name } = req.body;
+  try {
+    const { name } = CrawlStopSchema.parse(req.body);
 
-  if (!name) {
-    return res.status(400).json({ error: "Scraper name is required" });
+    const active = activeSessions.get(name);
+    if (!active || active.session.state !== CrawlState.CRAWLING) {
+      return res
+        .status(400)
+        .json({ error: `No active crawling session found for '${name}'` });
+    }
+
+    active.child.kill("SIGINT");
+    active.session.state = CrawlState.STOPPED;
+    active.session.endTime = new Date();
+
+    res.json({
+      message: `Crawl session for '${name}' stopped`,
+      session: active.session,
+    });
+  } catch (err: any) {
+    if (err instanceof ZodError) {
+      return res.status(400).json({ error: "Validation failed", details: err.issues });
+    }
+    res.status(500).json({ error: err.message });
   }
-
-  const active = activeSessions.get(name);
-  if (!active || active.session.state !== "crawling") {
-    return res.status(400).json({ error: `No active crawling session found for '${name}'` });
-  }
-
-  active.child.kill("SIGINT");
-  active.session.state = "stopped";
-  active.session.endTime = new Date();
-
-  res.json({ message: `Crawl session for '${name}' stopped`, session: active.session });
 });
 
 // 4. GET /status - Get status of all sessions
 app.get("/status", (req: Request, res: Response) => {
-  const list = Array.from(activeSessions.values()).map(({ session }) => session);
+  const list = Array.from(activeSessions.values()).map(
+    ({ session }) => session
+  );
   res.json(list);
 });
 
-// In-process manual extraction helper
-async function runManualExtraction(scraper: APIWebsiteInfo<any, any>, urlStr: string, product: any) {
+// Inprocess manual extraction helper
+async function runManualExtraction(
+  scraper: APIWebsiteInfo<unknown, unknown>,
+  urlStr: string,
+  product: Products
+) {
   const url = new URL(urlStr);
   const fetcher = scraper.fetch || defaultStealthFetch;
 
@@ -243,15 +290,16 @@ async function runManualExtraction(scraper: APIWebsiteInfo<any, any>, urlStr: st
     request: requestObject,
     product,
     stage: InternalStage.Fetch,
-    data: { [InternalStage.Init]: requestObject, [InternalStage.Fetch]: payload },
+    data: {
+      [InternalStage.Init]: requestObject,
+      [InternalStage.Fetch]: payload,
+    },
     index: 0,
   };
 
   const extractResult = await scraper.extract(mockResponse, info);
 
-  const raw = Array.isArray(extractResult)
-    ? extractResult
-    : extractResult.raw;
+  const raw = Array.isArray(extractResult) ? extractResult : extractResult.raw;
 
   const parsedItems: any[] = [];
 
@@ -274,13 +322,8 @@ async function runManualExtraction(scraper: APIWebsiteInfo<any, any>, urlStr: st
 
 // 5. POST /test - Test a crawl on the first page in-process (does not save to DB)
 app.post("/test", async (req: Request, res: Response) => {
-  const { name, product } = req.body;
-
-  if (!name || !product) {
-    return res.status(400).json({ error: "Scraper name and product are required" });
-  }
-
   try {
+    const { name, product } = CrawlTestSchema.parse(req.body);
     const scrapers = getScrapersList();
     const scraperConfig = scrapers.find((s) => s.name === name);
 
@@ -288,41 +331,49 @@ app.post("/test", async (req: Request, res: Response) => {
       return res.status(404).json({ error: `Scraper '${name}' not found` });
     }
 
-    const scraper: APIWebsiteInfo<any, any> = require(scraperConfig.path).default;
+    const scraper: APIWebsiteInfo<any, any> = require(
+      scraperConfig.path
+    ).default;
     if (!scraper.path) {
-      return res.status(400).json({ error: `Scraper '${name}' does not support path generation` });
+      return res
+        .status(400)
+        .json({ error: `Scraper '${name}' does not support path generation` });
     }
 
     const requestOptions = scraper.path(product, 1);
     if (!requestOptions) {
-      return res.status(400).json({ error: `Product '${product}' not supported by scraper '${name}'` });
+      return res.status(400).json({
+        error: `Product '${product}' not supported by scraper '${name}'`,
+      });
     }
 
-    const url = typeof requestOptions.request === "string" || requestOptions.request instanceof URL
-      ? requestOptions.request.toString()
-      : (requestOptions.request as any).url?.toString();
+    const url =
+      typeof requestOptions.request === "string" ||
+      requestOptions.request instanceof URL
+        ? requestOptions.request.toString()
+        : (requestOptions.request as any).url?.toString();
 
     if (!url) {
-      return res.status(400).json({ error: "Could not resolve URL from scraper config" });
+      return res
+        .status(400)
+        .json({ error: "Could not resolve URL from scraper config" });
     }
 
     const results = await runManualExtraction(scraper, url, product);
     res.json({ success: true, count: results.length, items: results });
   } catch (err: any) {
-    console.error(`Error testing scraper ${name}:`, err);
+    if (err instanceof ZodError) {
+      return res.status(400).json({ error: "Validation failed", details: err.issues });
+    }
+    console.error("Error testing scraper:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 // 6. POST /extract - Manually extract from a specific URL in-process (saves to DB via backend ingest)
 app.post("/extract", async (req: Request, res: Response) => {
-  const { url, product, name } = req.body;
-
-  if (!url || !product || !name) {
-    return res.status(400).json({ error: "URL, product, and scraper name are required" });
-  }
-
   try {
+    const { url, product, name } = CrawlExtractSchema.parse(req.body);
     const scrapers = getScrapersList();
     const scraperConfig = scrapers.find((s) => s.name === name);
 
@@ -330,11 +381,16 @@ app.post("/extract", async (req: Request, res: Response) => {
       return res.status(404).json({ error: `Scraper '${name}' not found` });
     }
 
-    const scraper: APIWebsiteInfo<any, any> = require(scraperConfig.path).default;
+    const scraper: APIWebsiteInfo<any, any> = require(
+      scraperConfig.path
+    ).default;
 
     // Check if the domain matches the URL domain
     const urlHostname = new URL(url).hostname.replace("www.", "");
-    const scraperHostname = new URL(scraper.domain).hostname.replace("www.", "");
+    const scraperHostname = new URL(scraper.domain).hostname.replace(
+      "www.",
+      ""
+    );
 
     if (urlHostname !== scraperHostname) {
       return res.status(400).json({
@@ -345,7 +401,7 @@ app.post("/extract", async (req: Request, res: Response) => {
     const results = await runManualExtraction(scraper, url, product);
 
     // Save results to DB via ingestion endpoint if we found items and it's a seller scraper
-    if (results.length > 0 && scraperConfig.type === "sellers") {
+    if (results.length > 0 && scraperConfig.type === ScraperType.SELLERS) {
       const itemsToIngest = results.map((item) => ({
         result: item,
         info: { product, url },
@@ -364,11 +420,16 @@ app.post("/extract", async (req: Request, res: Response) => {
 
     res.json({ success: true, count: results.length, items: results });
   } catch (err: any) {
-    console.error(`Error during manual extract for URL ${url}:`, err);
+    if (err instanceof ZodError) {
+      return res.status(400).json({ error: "Validation failed", details: err.issues });
+    }
+    console.error("Error during manual extract:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`[Crawler Server] Isolated Express.js crawler server running on port ${PORT}`);
+  console.log(
+    `[Crawler Server] Isolated Express.js crawler server running on port ${PORT}`
+  );
 });

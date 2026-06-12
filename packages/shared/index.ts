@@ -7,4 +7,5 @@ export * as Build from "./build";
 export * as Interface from "./interface";
 export * as Retailer from "./retailer";
 export * as User from "./user";
+export * as Crawler from "./crawler";
 export * from "./utils";

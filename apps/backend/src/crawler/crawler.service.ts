@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { InjectModel } from "@nestjs/sequelize";
 
 import RetailProduct from "@/models/sellers/SellerProduct.entity";
+import { CrawlIngestItem, ScraperInfo, CrawlerSession, Products } from "@/utils/crawler";
 import { normalizeDomain } from "@/utils/part/mapper/utils";
 
 @Injectable()
@@ -19,7 +20,7 @@ export class CrawlerService {
   }
 
   // Bulk save crawled results to database
-  async ingestProducts(items: any[]): Promise<{ count: number }> {
+  async ingestProducts(items: CrawlIngestItem[]): Promise<{ count: number }> {
     if (!items || !Array.isArray(items) || items.length === 0) {
       return { count: 0 };
     }
@@ -28,7 +29,7 @@ export class CrawlerService {
 
     const records = items.map((item) => {
       const { result, info } = item;
-      const url = info.url || info.request?.url || info.request || "";
+      const url = info.url || "";
       
       let retailer = "default";
       if (url) {
@@ -88,27 +89,27 @@ export class CrawlerService {
     }
   }
 
-  async listScrapers() {
+  async listScrapers(): Promise<ScraperInfo[]> {
     return this.callCrawler("/scrapers", "GET");
   }
 
-  async startCrawl(name: string, products?: string[]) {
+  async startCrawl(name: string, products?: Products[]): Promise<{ message: string; session: CrawlerSession }> {
     return this.callCrawler("/start", "POST", { name, products });
   }
 
-  async stopCrawl(name: string) {
+  async stopCrawl(name: string): Promise<{ message: string; session: CrawlerSession }> {
     return this.callCrawler("/stop", "POST", { name });
   }
 
-  async getCrawlStatus() {
+  async getCrawlStatus(): Promise<CrawlerSession[]> {
     return this.callCrawler("/status", "GET");
   }
 
-  async testCrawl(name: string, product: string) {
+  async testCrawl(name: string, product: Products): Promise<{ success: boolean; count: number; items: any[] }> {
     return this.callCrawler("/test", "POST", { name, product });
   }
 
-  async extractUrl(name: string, url: string, product: string) {
+  async extractUrl(name: string, url: string, product: Products): Promise<{ success: boolean; count: number; items: any[] }> {
     return this.callCrawler("/extract", "POST", { name, url, product });
   }
 }
