@@ -24,7 +24,7 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
   },
 
   async extract(response) {
-    const htmlText = await new Response(response.body).text();
+    const htmlText = await response.text();
 
     const document = new JSDOM(htmlText).window.document;
     const list = [...document.getElementsByTagName("table")];

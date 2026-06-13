@@ -129,7 +129,9 @@ app.post("/start", (req: Request, res: Response) => {
   const args = ["--path", scraper.path, "--product", ...productsToCrawl];
 
   const child = fork(indexScript, args, {
-    execArgv: indexScript.endsWith(".ts") ? ["-r", "ts-node/register"] : [],
+    execArgv: indexScript.endsWith(".ts")
+      ? ["-r", "ts-node/register", "-r", "tsconfig-paths/register"]
+      : [],
   });
 
   const session: CrawlerSession = {
@@ -287,7 +289,7 @@ async function runManualExtraction(
   } as any;
 
   const info: any = {
-    request: requestObject,
+    request: url,
     product,
     stage: InternalStage.Fetch,
     data: {

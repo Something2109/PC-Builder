@@ -131,29 +131,17 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
     const result: Record<string, string> = {};
     if (raw.requestUrl) {
       const url = new URL(raw.requestUrl);
-      // We can't easily put result properties into result object here?
-      // Wait, parse returns one object.
-      // We need to extract metadata from url and put into result?
-      // raw in parse is what we pushed in extract.
-      // I pushed { raw: data.ProductSpecList[0], requestUrl }.
-      // But APIWebsiteInfo<Raw> implies Raw is the type of parsed Input?
-      // CrawlInfo<... Extract, Raw ...>
-      // The Raw type in `gigabyte.ts` is `any`.
-      // So { raw: ..., requestUrl: ... } is fine.
-
-      // Actually, let's fix the start of parse.
+      result["url"] = url.searchParams.get("productUrl") || "";
+      result["img"] = url.searchParams.get("img") || "";
     }
     const productSpec = raw.raw || raw; // Handle wrapper or direct
 
-    // ... logic ...
-
-    // We need to extract 'img' and 'productUrl' (which was 'url' in result)
-    // from requestUrl search params.
-
-    result["Model"] = raw["Name"];
-    raw.ProductSpecData.forEach((row: any) => {
-      result[row["Name"]] = row["Description"];
-    });
+    result["Model"] = productSpec["Name"];
+    if (productSpec.ProductSpecData) {
+      productSpec.ProductSpecData.forEach((row: any) => {
+        result[row["Name"]] = row["Description"];
+      });
+    }
 
     return result;
   },
