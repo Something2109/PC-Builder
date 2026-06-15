@@ -4,3 +4,4 @@ include:
   - ./docker/nextjs/compose.yaml
   - ./docker/nginx/compose.yaml
   - ./docker/crawler/compose.yaml
+  - ./docker/mcp-server/compose.yaml

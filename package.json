@@ -13,6 +13,9 @@
     "build:frontend": "npm run build --workspace=apps/frontend",
     "build:backend": "npm run build --workspace=apps/backend",
     "build:shared": "npm run build --workspace=packages/shared",
+    "build:mcp": "npm run build --workspace=apps/mcp-server",
+    "start:mcp": "npm run start --workspace=apps/mcp-server",
+    "serve:mcp": "npm run serve --workspace=apps/mcp-server",
     "crawl": "npm run crawl --workspace=apps/crawler",
     "install:all": "npm install",
     "lint:fix": "eslint . --fix"

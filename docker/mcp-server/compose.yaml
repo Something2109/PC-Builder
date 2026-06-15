@@ -1,0 +1,42 @@
+services:
+  mcp-server-prod:
+    build:
+      context: ../../
+      dockerfile: ./docker/mcp-server/Dockerfile
+      target: prod
+    ports:
+      - 5002:3012
+    environment:
+      - PORT=3012
+      - TRANSPORT=sse
+      - BACKEND_URL=http://nestjs-prod:3000/api
+    profiles:
+      - production
+
+  mcp-server-dev:
+    build:
+      context: ../../
+      dockerfile: ./docker/mcp-server/Dockerfile
+      target: dev
+    ports:
+      - 5002:3012
+    environment:
+      - PORT=3012
+      - TRANSPORT=sse
+      - BACKEND_URL=http://nestjs-dev:3000/api
+    profiles:
+      - development
+    develop:
+      watch:
+        - action: sync
+          path: ../../apps/mcp-server
+          target: /usr/local/app/apps/mcp-server
+        - action: sync
+          path: ../../packages/shared
+          target: /usr/local/app/packages/shared
+        - action: rebuild
+          path: ../../package.json
+        - action: rebuild
+          path: ../../apps/mcp-server/package.json
+        - action: rebuild
+          path: ../../package-lock.json
