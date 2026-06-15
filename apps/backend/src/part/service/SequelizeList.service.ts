@@ -5,11 +5,14 @@ import {
   Filterable,
   fn,
   IncludeOptions,
+  Model,
   ModelStatic,
   Op,
+  Order,
+  WhereOptions,
 } from "sequelize";
 
-import { ModelScopes } from "@/models/interface";
+import { ModelScopes, defaultFilter } from "@/models/interface";
 import { PartInformation } from "@/models/parts";
 import * as API from "@/utils/API";
 import Part, { Infos } from "@/utils/part";
@@ -20,6 +23,11 @@ import {
 } from "../interface/database.interface";
 
 type ListOptions = Part.Filter & API.PageOptions & API.SearchOptions;
+
+const filterToWhereMap: Record<string, ReturnType<typeof col>> = {
+  brand: col("brandRelation.name"),
+  series: col("seriesRelation.name"),
+};
 
 @Injectable()
 class SequelizeListService implements DatabaseListInterface {
@@ -63,7 +71,7 @@ class SequelizeListService implements DatabaseListInterface {
 
 type InfoModelContext = {
   [key in Infos]?: {
-    model: ModelStatic<any>;
+    model: ModelStatic<Model>;
     summary: string[];
     required: boolean;
   };
@@ -78,22 +86,27 @@ class SequelizeContext {
   private readonly PartModel: ModelStatic<PartInformation>;
   private readonly InfoModels: InfoModelContext;
   private readonly pageOptions: { limit: number; offset: number };
-  private readonly searchOptions: Filterable;
-  private readonly orderOptions?: [string, string][];
+  private readonly orderOptions?: Order;
+  private readonly partWhere?: WhereOptions<PartInformation>;
+  private readonly partFilter?: Part.Filter["part"];
+  private readonly q?: string;
 
   constructor(options: ListOptions, attrs?: { [key in Infos]?: string[] }) {
+    this.q = options.q;
+    this.partFilter = options.part;
     this.PartModel = PartInformation.scope({
       method: [ModelScopes.FILTER, options.part],
     });
 
-    this.searchOptions = { where: this.createWhereOption(options.q) };
+    this.partWhere = this.createPartWhereOption(options.q);
     this.pageOptions = {
       offset: (options.page - 1) * options.limit,
       limit: options.limit,
     };
 
     if (options.sort_key && Part.BasicAttributes.options.includes(options.sort_key as Part.BasicAttributes)) {
-      this.orderOptions = [[options.sort_key, options.sort_order || "asc"]];
+      const orderCol = filterToWhereMap[options.sort_key] || options.sort_key;
+      this.orderOptions = [[orderCol, options.sort_order || "asc"]];
     }
 
     this.InfoModels = {};
@@ -123,7 +136,7 @@ class SequelizeContext {
       : [];
 
     const { count, rows } = await this.PartModel.findAndCountAll({
-      ...this.searchOptions,
+      where: this.partWhere,
       ...this.pageOptions,
       order: this.orderOptions,
       attributes: ["id", ...Part.BasicSummaryAttributes.filter((attr) => attr !== "brand" && attr !== "series")],
@@ -135,23 +148,57 @@ class SequelizeContext {
   }
 
   async filter(attribute: string, info?: Infos) {
-    const MainModel = info ? this.InfoModels[info]?.model : this.PartModel;
+    const cleanPartModel = PartInformation.unscoped();
+
+    const MainModel = info ? this.InfoModels[info]?.model : cleanPartModel;
     if (!MainModel) return [];
 
     const infoIncludeOptions: IncludeOptions[] = Object.entries(this.InfoModels)
       .filter(([key]) => key !== info)
       .map(([_, { model, required }]) => ({ model, attributes: [], required }));
 
-    const options: IncludeOptions[] = info
-      ? [
-          {
-            model: this.PartModel,
-            attributes: [],
-            include: infoIncludeOptions,
-            required: true,
-          },
-        ]
-      : infoIncludeOptions;
+    const brandInclude = {
+      model: PartInformation.associations.brandRelation.target,
+      attributes: [],
+      required: false,
+    };
+    const seriesInclude = {
+      model: PartInformation.associations.seriesRelation.target,
+      attributes: [],
+      required: false,
+    };
+
+    let where: WhereOptions<PartInformation> | undefined = undefined;
+    let options: IncludeOptions[] = [];
+
+    if (info) {
+      where = this.createPartWhereOption(this.q, "part.");
+      options = [
+        {
+          model: cleanPartModel,
+          attributes: [],
+          required: true,
+          where: defaultFilter(this.partFilter),
+          include: [
+            brandInclude,
+            seriesInclude,
+            ...infoIncludeOptions.map((inc) => ({ ...inc, attributes: [] })),
+          ],
+        },
+      ];
+    } else {
+      where = {
+        [Op.and]: [
+          this.createPartWhereOption(this.q, ""),
+          defaultFilter(this.partFilter),
+        ].filter(Boolean) as WhereOptions<PartInformation>[],
+      };
+      options = [
+        brandInclude,
+        seriesInclude,
+        ...infoIncludeOptions.map((inc) => ({ ...inc, attributes: [] })),
+      ];
+    }
 
     const AttrType = MainModel.getAttributes()[attribute];
 
@@ -159,8 +206,8 @@ class SequelizeContext {
       throw new Error(`No attribute named ${attribute} in ${MainModel.name}`);
 
     const result = await (AttrType instanceof DataTypes.NUMBER
-      ? this.filterNumberAttribute(MainModel, attribute, ...options)
-      : this.filterStringAttribute(MainModel, attribute, ...options));
+      ? this.filterNumberAttribute(MainModel, attribute, where, ...options)
+      : this.filterStringAttribute(MainModel, attribute, where, ...options));
 
     return result;
   }
@@ -174,20 +221,23 @@ class SequelizeContext {
    * @returns The created string array of the {@link attribute}.
    */
   protected async filterStringAttribute(
-    model: ModelStatic<any>,
+    model: ModelStatic<Model>,
     attribute: string,
+    where: WhereOptions | undefined,
     ...include: IncludeOptions[]
   ): Promise<string[]> {
-    const query = await model.findAll({
-      ...this.searchOptions,
+    const attrExpr = filterToWhereMap[attribute] || col(`${model.name}.${attribute}`);
+
+    const query = (await model.findAll({
+      where,
       ...this.pageOptions,
-      attributes: [attribute.toString()],
-      group: attribute.toString(),
-      order: [attribute.toString()],
+      attributes: [[attrExpr, attribute]],
+      group: [attrExpr],
+      order: [attrExpr],
       include,
       raw: true,
       subQuery: false,
-    });
+    })) as unknown as Record<string, any>[];
 
     return query.map((value) => value[attribute]).filter(Boolean);
   }
@@ -201,22 +251,25 @@ class SequelizeContext {
    * @returns The created number array of the {@link attribute}.
    */
   protected async filterNumberAttribute(
-    model: ModelStatic<any>,
+    model: ModelStatic<Model>,
     attribute: string,
+    where: WhereOptions | undefined,
     ...include: IncludeOptions[]
   ): Promise<number[]> {
+    const attrExpr = filterToWhereMap[attribute] || col(`${model.name}.${attribute}`);
+
     const query = (await model.findOne({
-      ...this.searchOptions,
+      where,
       ...this.pageOptions,
       attributes: [
-        [fn("min", col(attribute)), "min"],
-        [fn("max", col(attribute)), "max"],
+        [fn("min", attrExpr), "min"],
+        [fn("max", attrExpr), "max"],
       ],
       include,
       raw: true,
-    })) as { min: number; max: number };
+    })) as unknown as { min: number; max: number } | null;
 
-    return [query.min, query.max];
+    return query ? [query.min, query.max] : [0, 0];
   }
 
   /**
@@ -224,15 +277,20 @@ class SequelizeContext {
    * @param query The query string to search.
    * @returns The option for the query.
    */
-  protected createWhereOption(query?: string) {
+  protected createPartWhereOption(query?: string, prefix: string = ""): WhereOptions<PartInformation> | undefined {
     if (!query) return undefined;
+
+    const nameKey = prefix ? `$${prefix}name$` : "name";
+    const codeNameKey = prefix ? `$${prefix}code_name$` : "code_name";
+    const brandKey = `$${prefix}brandRelation.name$`;
+    const seriesKey = `$${prefix}seriesRelation.name$`;
 
     const where = {
       [Op.or]: {
-        name: { [Op.like]: `%${query}%` },
-        code_name: { [Op.like]: `${query}%` },
-        brand: { [Op.like]: `%${query}%` },
-        series: { [Op.like]: `%${query}%` },
+        [nameKey]: { [Op.like]: `%${query}%` },
+        [codeNameKey]: { [Op.like]: `${query}%` },
+        [brandKey]: { [Op.like]: `%${query}%` },
+        [seriesKey]: { [Op.like]: `%${query}%` },
       },
     };
 
