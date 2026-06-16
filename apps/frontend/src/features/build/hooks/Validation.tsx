@@ -2,7 +2,7 @@
 
 import Build from "@/utils/build";
 import { createContext, useActionState, useContext } from "react";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 
 const DefaultResult = { missing: {}, rules: {}, products: {} };
 
@@ -24,10 +24,9 @@ function useValidateAction() {
   const [state, setState, pending] = useActionState<Build.Result, Build.List>(
     async (_, list) => {
       try {
-        const response = await axios.post<Build.Result>(
-          `/api/build/validate`,
-          list,
-          { withCredentials: true }
+        const response = await axiosInstance.post<Build.Result>(
+          `/build/validate`,
+          list
         );
 
         return response.data;

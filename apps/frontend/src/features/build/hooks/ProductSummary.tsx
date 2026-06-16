@@ -3,7 +3,8 @@ import { useBuildContext } from "./BuildContext";
 import Part, { Products } from "@/utils/part";
 import * as API from "@/utils/API";
 import { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
+import axiosInstance from "@/lib/axios";
+import { AxiosError } from "axios";
 
 type ProductLoad = {
   loading: boolean;
@@ -39,10 +40,9 @@ function useProductSummary(product: Products): ProductLoad {
     queryKey: ["productSummary", product, params.toString(), page, includeBuild, list],
     queryFn: async () => {
       try {
-        const response = await axios.post<API.Payload<Part.Summary>>(
-          `/api/build/${product}?${params.toString()}&page=${page}`,
-          includeBuild ? list : undefined,
-          { withCredentials: true }
+        const response = await axiosInstance.post<API.Payload<Part.Summary>>(
+          `/build/${product}?${params.toString()}&page=${page}`,
+          includeBuild ? list : undefined
         );
         return response.data;
       } catch (err) {
