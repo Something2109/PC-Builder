@@ -1,0 +1,38 @@
+# Agent Instructions & Conventions
+
+This file defines the mandatory constraints and coding standards that any AI Agent (including Antigravity, Cursor, Cline, Roo Code, etc.) **MUST** read, follow, and verify before starting and upon completing any task in the **PC-Builder** monorepo.
+
+---
+
+## 1. Read Before Working (Mandatory)
+* **Pre-Flight Requirement**: Before making any code modifications or proposing command executions, the agent **MUST** read this instruction file and the existing conventions located in:
+  - [.agent/coding_conventions.md](file:///home/ubuntu/Documents/PC-Builder/.agent/coding_conventions.md)
+  - [.agent/project_overview.md](file:///home/ubuntu/Documents/PC-Builder/.agent/project_overview.md)
+  - [.agent/project_structure.md](file:///home/ubuntu/Documents/PC-Builder/.agent/project_structure.md)
+* **Acknowledgment**: The agent's first message or internal thought block must confirm that these files have been read and their constraints are understood.
+
+## 2. Dependency & Syntax Standards
+* **Latest Syntax**: Write all code using the latest syntax supported by the project's dependencies:
+  - **React 19**: Use modern React 19 patterns (e.g., standard hooks, avoiding deprecated lifecycle/context methods, clean functional components).
+  - **Next.js 15**: Use App Router patterns, async routing hooks, and Turbopack-compatible configuration.
+  - **NestJS 11**: Use modern NestJS dependency injection, decorators, and modular controllers/services.
+  - **TypeScript 5.x**: Use advanced TS features like satisfies operator, const modifiers, etc.
+  - **Zod 4**: Use modern Zod 4 schema syntax, avoiding deprecated Zod 3 helper patterns, and leveraging correct schema parsing and type inference.
+* **No Deprecated Syntax**: Do not use deprecated methods, options, or patterns. Always check if a method is deprecated (e.g., deprecated Express methods, outdated Sequelize decoration, or deprecated Mongoose model options).
+* **Modern JavaScript**: Enforce ES Modules (ESM) where configured, modern array helper methods, object destructuring, and async/await syntax.
+
+## 3. Strict Typing
+* **No Implicit `any`**: All variables, parameters, and function return types must be explicitly typed. The `any` type is strictly forbidden. Use `unknown` or custom generics if types are dynamic.
+* **Strict Null Checks**: `"strictNullChecks": true` is enforced across the workspace. Use optional chaining (`?.`), nullish coalescing (`??`), or explicit conditional checks instead of the non-null assertion operator (`!`).
+* **Strong Type Definitions**: Provide interface/type definitions for all API endpoints, database queries, components, and props.
+* **Schema Synchronization**: Validate input data using Zod schemas defined in `packages/shared`.
+
+## 4. Verification & Linting
+* **Pre-completion Linting**: Before completing any task, the agent **MUST** run the linting command to ensure code quality and style compliance.
+  - To lint and autofix the repository: `npm run lint:fix` (runs `eslint . --fix`)
+  - Ensure all ESLint warnings and errors are resolved. Unused variables/imports are not allowed.
+* **Build Verification**: Verify that the project builds successfully by running the relevant build script before declaring a task complete (e.g., `npm run build:frontend` or `npm run build:shared`).
+
+---
+
+*Note: Any agent failing to adhere to these guidelines will be rejected. Always run `npm run lint:fix` before finalizing your work.*
