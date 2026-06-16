@@ -17,18 +17,21 @@ const DarkChanger = createContext<Dispatch<SetStateAction<boolean>> | null>(
 export function ThemeBody({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const [dark, setDark] = useState(true);
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDark(
-      globalThis.window.matchMedia &&
-        globalThis.window.matchMedia("(prefers-color-scheme: dark)").matches
-    );
+    if (typeof window !== "undefined" && window.matchMedia) {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (isDark) {
+        queueMicrotask(() => setDark(true));
+      }
+    }
   }, []);
 
   return (
-    <body className={`${dark ? "dark" : ""} min-h-screen flex flex-col overflow-y-scroll`}>
+    <body
+      className={`${dark ? "dark" : ""} min-h-screen flex flex-col overflow-y-scroll`}
+    >
       <DarkChanger value={setDark}>{children}</DarkChanger>
     </body>
   );
