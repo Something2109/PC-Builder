@@ -25,7 +25,7 @@ export const SummaryTable = {
   Head: ({ className, ...attr }: HTMLAttributes<HTMLTableSectionElement>) => (
     <thead
       className={mergeClass(
-        "hidden z-100 lg:table-header-group font-bold sticky top-32 bg-white dark:bg-background transition-bg",
+        "hidden z-100 lg:table-header-group font-bold sticky bg-white dark:bg-background transition-bg",
         className
       )}
       {...attr}

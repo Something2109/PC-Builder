@@ -13,20 +13,30 @@ export const SummaryInfoComponent = {
   [Products.GRAPHIC_CARD]: lazy(
     () => import("@/features/part/components/summary/GraphicCard")
   ),
-  [Products.MAIN]: lazy(() => import("@/features/part/components/summary/Mainboard")),
+  [Products.MAIN]: lazy(
+    () => import("@/features/part/components/summary/Mainboard")
+  ),
   [Products.RAM]: lazy(() => import("@/features/part/components/summary/RAM")),
   [Products.HDD]: lazy(() => import("@/features/part/components/summary/HDD")),
   [Products.PSU]: lazy(() => import("@/features/part/components/summary/PSU")),
-  [Products.CASE]: lazy(() => import("@/features/part/components/summary/Case")),
-  [Products.COOLER]: lazy(() => import("@/features/part/components/summary/Cooler")),
+  [Products.CASE]: lazy(
+    () => import("@/features/part/components/summary/Case")
+  ),
+  [Products.COOLER]: lazy(
+    () => import("@/features/part/components/summary/Cooler")
+  ),
   [Products.AIO]: lazy(() => import("@/features/part/components/summary/AIO")),
   [Products.FAN]: lazy(() => import("@/features/part/components/summary/Fan")),
   [Products.SSD]: lazy(() => import("@/features/part/components/summary/SSD")),
   [Products.CPU_BLOCK]: lazy(
     () => import("@/features/part/components/summary/CPUBlock")
   ),
-  [Products.PUMP]: lazy(() => import("@/features/part/components/summary/Pump")),
-  [Products.RADIATOR]: lazy(() => import("@/features/part/components/summary/Radiator")),
+  [Products.PUMP]: lazy(
+    () => import("@/features/part/components/summary/Pump")
+  ),
+  [Products.RADIATOR]: lazy(
+    () => import("@/features/part/components/summary/Radiator")
+  ),
 };
 
 export default function SummaryTable({

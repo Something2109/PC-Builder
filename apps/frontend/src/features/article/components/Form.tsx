@@ -1,5 +1,4 @@
 "use client";
- 
 
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
@@ -8,7 +7,6 @@ import { useState, useRef } from "react";
 import { useCreateArticle } from "@/features/article/hooks/useCreateArticle";
 import { useDeleteArticle } from "@/features/article/hooks/useDeleteArticle";
 import { useUpdateArticle } from "@/features/article/hooks/useUpdateArticle";
-
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { RowWrapper } from "@/ui/FlexWrapper";
 import { Input, Select, AutoGrowingTextArea } from "@/ui/Input";
@@ -90,7 +88,8 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
 
   const isSaving = isCreating || isUpdating || isDeleting;
 
-  const { upload: uploadCover, isUploading: isCoverUploading } = useImageUpload();
+  const { upload: uploadCover, isUploading: isCoverUploading } =
+    useImageUpload();
 
   const coverFileInputRef = useRef<HTMLInputElement>(null);
   const submitStatusRef = useRef<ArticleStatus>(ArticleStatus.Draft);
@@ -157,7 +156,7 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
   return (
     <div className="w-full max-w-4xl mx-auto my-6 px-1 md:px-4 pb-24">
       {/* Editor Cover area */}
-      <div className="relative w-full h-[200px] md:h-[260px] rounded-3xl overflow-hidden bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-inner group">
+      <div className="relative w-full h-50 md:h-65 rounded-3xl overflow-hidden bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-inner group">
         <form.Subscribe selector={(state) => state.values.cover}>
           {(cover) => (
             <>
