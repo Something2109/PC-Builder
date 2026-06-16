@@ -6,10 +6,12 @@ import { ColumnWrapper } from "@/ui/FlexWrapper";
 import Part from "@/utils/part";
 import { Infos, Information } from "@/utils/part";
 
+type InfoTableComponent<T extends Infos> = React.FC<{
+  defaultValue: Part.Model[T];
+}>;
+
 export const DetailTableComponent: {
-  [key in Infos]: LazyExoticComponent<
-    React.FC<{ defaultValue: Part.Model[key] }>
-  >;
+  [key in Infos]: LazyExoticComponent<InfoTableComponent<key>>;
 } = {
   [Infos.CPU_SPEC]: lazy(
     () => import("@/features/part/components/detail/CPUSpec")
@@ -128,9 +130,7 @@ export function InfoTable<Info extends Infos>({
   info: Infos;
   defaultValue?: Part.Model[Info];
 }>) {
-  const Component = DetailTableComponent[info] as React.FC<{
-    defaultValue: Part.Model[Info];
-  }>;
+  const Component = DetailTableComponent[info] as InfoTableComponent<Info>;
 
   if (
     !defaultValue ||
