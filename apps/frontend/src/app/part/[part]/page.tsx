@@ -30,9 +30,7 @@ export default async function PartListPage({
   }, [] as string[][]);
   const options = new URLSearchParams(queryEntries);
 
-  const response = await fetch(
-    getBackendUrl(`/api/part/${part}?${options}`)
-  );
+  const response = await fetch(getBackendUrl(`/api/part/${part}?${options}`));
   if (!response.ok) return notFound();
 
   const data = await response.json();

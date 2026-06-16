@@ -1,9 +1,8 @@
-"use client";
-
+import Image from "next/image";
+import Link from "next/link";
 import { useBuildContext } from "@/features/build/hooks/BuildContext";
 import { useValidation } from "@/features/build/hooks/Validation";
 import SummaryTable from "@/features/part/components/Summary";
-import { Button, RedirectButton } from "@/ui/Button";
 import Part, { Product, Products } from "@/utils/part";
 
 const ProductRenderOrder = [
@@ -25,11 +24,11 @@ const ProductRenderOrder = [
 
 export default function BuildProductList() {
   return (
-    <>
+    <div className="space-y-6">
       {ProductRenderOrder.map((product) => (
         <ProductTypeComponent key={product} product={product} />
       ))}
-    </>
+    </div>
   );
 }
 
@@ -49,33 +48,76 @@ function ProductTypeComponent({ product }: { product: Products }) {
   }: {
     defaultValue?: Part.Summary;
   }) => (
-    <td className="relative">
+    <td className="text-right p-3">
       {defaultValue && (
-        <Button onClick={() => removeProduct(defaultValue)}>Remove</Button>
+        <button
+          type="button"
+          onClick={() => removeProduct(defaultValue)}
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-500/10 text-red-500 hover:bg-red-600 hover:text-white transition-all duration-200"
+        >
+          Remove
+        </button>
       )}
     </td>
   );
 
   return (
-    <div className="w-full space-y-2 px-4 py-1 rounded-lg border-2">
-      <h1 className="text-xl font-bold">{`${Product.Label[product]}`}</h1>
-      <ul className="*:mt-2">
-        {!details || details.length === 0 ? (
-          <li>No product selected</li>
-        ) : (
-          <SummaryTable
-            part={product}
-            data={details}
-            Cells={[RemoveButtonCell]}
+    <div className="w-full rounded-2xl border border-border bg-card p-5 shadow-sm hover:shadow-md transition-all duration-300">
+      {/* Category Header */}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="size-9 rounded-xl bg-accentIndigo/10 flex items-center justify-center">
+          <Image
+            src={`/images/icons/${product}.png`}
+            alt=""
+            width={20}
+            height={20}
+            className="dark:invert"
           />
+        </div>
+        <h3 className="text-lg font-bold tracking-tight text-text">
+          {Product.Label[product]}
+        </h3>
+      </div>
+
+      {/* Component Selection / Table */}
+      <div className="w-full">
+        {!details || details.length === 0 ? (
+          <Link
+            href={`/build/${product}`}
+            className="flex items-center justify-center gap-2 w-full py-5 border border-dashed border-border hover:border-accentCyan rounded-xl text-text/50 hover:text-accentCyan bg-slate-50/5 hover:bg-slate-50/10 transition-all duration-200 text-sm font-semibold"
+          >
+            + Choose {Product.Label[product]}
+          </Link>
+        ) : (
+          <div className="border border-border rounded-xl overflow-hidden bg-slate-50/5">
+            <SummaryTable
+              part={product}
+              data={details}
+              Cells={[RemoveButtonCell]}
+            />
+          </div>
         )}
-        {errors[product] && <li className="text-red-500">{errors[product]}</li>}
-        {addable && (
-          <li>
-            <RedirectButton href={`/build/${product}`}>Add</RedirectButton>
-          </li>
+
+        {/* Error Messages */}
+        {errors[product] && (
+          <div className="mt-3 px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-500 font-semibold flex items-center gap-2">
+            <span className="size-1.5 rounded-full bg-red-500" />
+            {errors[product]}
+          </div>
         )}
-      </ul>
+
+        {/* Add Another (for multiple items support) */}
+        {addable && details && details.length > 0 && (
+          <div className="mt-3">
+            <Link
+              href={`/build/${product}`}
+              className="inline-flex items-center gap-1.5 px-4 py-2 border border-border bg-card hover:bg-line/10 rounded-xl text-xs font-semibold transition-colors text-text/80 hover:text-text"
+            >
+              + Add another {Product.Label[product]}
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

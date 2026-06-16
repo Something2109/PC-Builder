@@ -1,3 +1,5 @@
+import { Inter, Outfit } from "next/font/google";
+
 import { AuthWrapper } from "@/features/auth";
 import { verifyToken } from "@/features/auth/server";
 import { ThemeBody } from "@/layout/body";
@@ -7,6 +9,18 @@ import QueryProvider from "@/layout/QueryProvider";
 
 import "../../public/stylesheets/globals.css";
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  display: "swap",
+});
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -15,12 +29,12 @@ export default async function RootLayout({
   const user = await verifyToken();
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
       <QueryProvider>
         <AuthWrapper user={user}>
           <ThemeBody>
             <Header />
-            <main className="container w-11/12 min-h-screen mx-auto *:my-2">
+            <main className="container w-11/12 min-h-screen mx-auto *:my-4">
               {children}
             </main>
             <Footer />

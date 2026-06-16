@@ -11,11 +11,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        line: "#cbd5e1",
-        header: "#2563eb",
-        navigation: "#3b82f6",
-        background: "#0f172a",
-        price: "#dc2626"
+        background: "var(--background)",
+        card: "var(--card)",
+        border: "var(--border)",
+        text: "var(--text)",
+        line: "var(--line-color)",
+        header: "var(--header-bg)",
+        navigation: "var(--border)",
+        price: "var(--price-color)",
+        mint: "var(--accent-mint)",
+        accentCyan: "var(--accent-cyan)",
+        accentIndigo: "var(--accent-indigo)",
+      },
+      fontFamily: {
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        heading: ["var(--font-outfit)", "system-ui", "sans-serif"],
       }
     },
   },

@@ -11,73 +11,129 @@ import { Roles } from "@/utils/user";
 import { DarkModeButton } from "./body";
 
 export default function Header() {
-  const [prevPathname, setPrevPathname] = useState("");
   const [navbar, setNavbar] = useState(false);
   const pathname = usePathname();
 
-  if (pathname !== prevPathname) {
-    setNavbar(false); // Close the navigation panel
-    setPrevPathname(pathname);
-  }
+  const navItems = [
+    { title: "Introduction", link: "/introduction" },
+    { title: "Guide", link: "/guide" },
+    { title: "Parts", link: "/part" },
+    { title: "Build PC", link: "/build" },
+  ];
 
   return (
     <>
-      <header className="sticky top-0 z-50 flex flex-row h-16 place-items-center justify-between bg-header md:h-20">
-        <Link
-          className="font-bold text-xl m-10 md:text-2xl text-yellow-400"
-          href={"/"}
-        >
-          PC Builder
-        </Link>
-        <RowWrapper className="gap-4 m-10 items-center">
-          <DarkModeButton />
-          <UserPanel />
-          <button
-            type="button"
-            className="md:hidden"
-            onClick={() => setNavbar(!navbar)}
+      <header className="sticky top-0 z-50 w-full glassmorphism transition-all duration-300">
+        <div className="container mx-auto px-6 h-16 md:h-20 flex flex-row items-center justify-between">
+          <Link
+            className="font-bold text-xl md:text-2xl tracking-wider bg-gradient-to-r from-accentIndigo via-purple-500 to-accentCyan bg-clip-text text-transparent hover:opacity-85 transition-opacity"
+            href={"/"}
           >
-            Menu
-          </button>
-        </RowWrapper>
+            PC BUILDER
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex flex-row items-center gap-1">
+            {navItems.map((item) => (
+              <NavigationButton
+                key={item.link}
+                link={item.link}
+                title={item.title}
+                active={pathname.startsWith(item.link)}
+              />
+            ))}
+            <Guard roles={Roles.ADMIN}>
+              <NavigationButton
+                link="/crawler"
+                title="Crawler"
+                active={pathname.startsWith("/crawler")}
+              />
+            </Guard>
+          </nav>
+
+          <RowWrapper className="gap-3 items-center">
+            <DarkModeButton />
+            <div className="hidden sm:block">
+              <UserPanel />
+            </div>
+            <button
+              type="button"
+              className="md:hidden px-3 py-1.5 rounded-xl border border-border hover:bg-line transition-props text-sm font-semibold"
+              onClick={() => setNavbar(!navbar)}
+            >
+              Menu
+            </button>
+          </RowWrapper>
+        </div>
       </header>
-      <NavigationBar toggle={navbar} />
+
+      {/* Mobile Navigation Dropdown */}
+      <div
+        className={`md:hidden fixed top-16 left-0 right-0 z-40 glassmorphism border-b border-border shadow-xl transition-all duration-300 overflow-hidden ${
+          navbar ? "max-h-96 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="p-4 flex flex-col gap-2">
+          {navItems.map((item) => (
+            <MobileNavigationButton
+              key={item.link}
+              link={item.link}
+              title={item.title}
+              active={pathname.startsWith(item.link)}
+              onClick={() => setNavbar(false)}
+            />
+          ))}
+          <Guard roles={Roles.ADMIN}>
+            <MobileNavigationButton
+              link="/crawler"
+              title="Crawler"
+              active={pathname.startsWith("/crawler")}
+              onClick={() => setNavbar(false)}
+            />
+          </Guard>
+          <div className="sm:hidden pt-2 border-t border-border mt-2">
+            <UserPanel />
+          </div>
+        </div>
+      </div>
     </>
-  );
-}
-
-const smallScreen =
-  "sticky z-10 mx-auto top-16 md:top-20 flex flex-row flex-wrap overflow-y-hidden bg-navigation h-fit";
-const mediumScreen = "md:justify-evenly md:max-h-fit";
-
-function NavigationBar({ toggle }: Readonly<{ toggle: boolean }>) {
-  return (
-    <nav
-      className={`transition-nav ${smallScreen} ${mediumScreen} ${
-        toggle ? "max-h-9" : "max-h-0"
-      }`}
-    >
-      <NavigationButton link="/introduction" title="Introduction" />
-      <NavigationButton link="/guide" title="Guide" />
-      <NavigationButton link="/part" title="Part" />
-      <NavigationButton link="/build" title="Build" />
-      <Guard roles={Roles.ADMIN}>
-        <NavigationButton link="/crawler" title="Crawler" />
-      </Guard>
-    </nav>
   );
 }
 
 function NavigationButton({
   title,
   link,
-}: Readonly<{ title: string; link: string }>) {
+  active,
+}: Readonly<{ title: string; link: string; active: boolean }>) {
   return (
     <Link
       href={link}
-      className={
-        "m-0.5 px-4 py-1 font-medium md:text-2xl hover:m-0 hover:bg-header hover:border-blue-700 hover:border-2"
-      }
+      className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 hover:text-accentCyan ${
+        active
+          ? "bg-accentIndigo/10 text-accentIndigo border border-accentIndigo/20"
+          : "text-text/80 hover:bg-line/20"
+      }`}
+    >
+      {title}
+    </Link>
+  );
+}
+
+function MobileNavigationButton({
+  title,
+  link,
+  active,
+  onClick,
+}: Readonly<{ title: string; link: string; active: boolean; onClick: () => void }>) {
+  return (
+    <Link
+      href={link}
+      onClick={onClick}
+      className={`px-4 py-3 rounded-xl text-base font-semibold transition-all duration-200 block ${
+        active
+          ? "bg-accentIndigo/10 text-accentIndigo"
+          : "text-text/80 hover:bg-line/20"
+      }`}
     >
       {title}
     </Link>

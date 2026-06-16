@@ -6,7 +6,7 @@ import {
   Dispatch,
   SetStateAction,
   useContext,
-  useLayoutEffect,
+  useEffect,
   useState,
 } from "react";
 
@@ -19,7 +19,8 @@ export function ThemeBody({
 }: Readonly<{ children: React.ReactNode }>) {
   const [dark, setDark] = useState(true);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDark(
       globalThis.window.matchMedia &&
         globalThis.window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -27,11 +28,7 @@ export function ThemeBody({
   }, []);
 
   return (
-    <body
-      className={`${
-        dark ? "dark" : ""
-      } transition-props dark:text-line bg-w dark:bg-background overflow-y-scroll`}
-    >
+    <body className={`${dark ? "dark" : ""} min-h-screen flex flex-col overflow-y-scroll`}>
       <DarkChanger value={setDark}>{children}</DarkChanger>
     </body>
   );
@@ -43,24 +40,26 @@ export function DarkModeButton() {
   return (
     <button
       type="button"
-      title="dark-mode"
-      className=" h-1/2"
+      title="Toggle dark mode"
+      className="relative aspect-square size-10 rounded-xl flex items-center justify-center border border-border bg-card text-text hover:border-accentIndigo transition-all duration-300 hover:shadow-lg shadow-sm"
       onClick={() => setDark!((val) => !val)}
     >
-      <picture className="aspect-square size-7 flex flex-col">
-        <Image
-          src="/images/icons/night-mode.png"
-          width={40}
-          height={40}
-          alt="dark"
-          className="dark:w-0 transition-all transition-props"
-        />
+      <picture className="size-6 relative flex items-center justify-center">
+        {/* Sun Icon (shown in dark mode, switches to light) */}
         <Image
           src="/images/icons/light-mode.png"
-          width={40}
-          height={40}
+          width={24}
+          height={24}
           alt="light"
-          className="w-0 dark:w-12 transition-all transition-props"
+          className="absolute transition-all duration-500 ease-out transform dark:scale-100 dark:opacity-100 scale-0 opacity-0 rotate-90 dark:rotate-0"
+        />
+        {/* Moon Icon (shown in light mode, switches to dark) */}
+        <Image
+          src="/images/icons/night-mode.png"
+          width={24}
+          height={24}
+          alt="dark"
+          className="absolute transition-all duration-500 ease-out transform dark:scale-0 dark:opacity-0 scale-100 opacity-100 dark:-rotate-90 rotate-0"
         />
       </picture>
     </button>

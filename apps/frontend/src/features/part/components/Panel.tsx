@@ -1,30 +1,38 @@
-import { RedirectButton } from "@/ui/Button";
+import Link from "next/link";
+
 import Part, { Product } from "@/utils/part";
 
 import PartPicture from "./Picture";
 
 export default function PartPanel({ item }: { item: Part.Summary }) {
   return (
-    <RedirectButton
+    <Link
       href={`/part/${item.part}/${item.id}`}
-      className="flex flex-row lg:flex-col p-3"
+      className="group flex flex-col rounded-2xl border border-border bg-card p-4 transition-all duration-300 hover:border-accentIndigo hover:shadow-xl hover:-translate-y-1"
     >
-      <PartPicture
-        part={item.part}
-        src={item.image_url ?? undefined}
-        className="w-full"
-      />
-      <div className="size-full ml-3 flex flex-col justify-between text-left lg:ml-0 lg:mt-2">
-        <h3 className="mb-2 text-xs sm:text-sm md:text-md font-bold">
-          {item.name}
-        </h3>
-        <div className="font-normal">
-          <p className="text-xs md:text-sm">{`Part: ${
-            Product.Label[item.part as Product.Name]
-          }`}</p>
-          <p className="text-xs md:text-sm">{`Brand: ${item.brand}`}</p>
+      <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-white/5 flex items-center justify-center p-2 mb-4">
+        <PartPicture
+          part={item.part}
+          src={item.image_url ?? undefined}
+          className="max-h-full max-w-full object-contain"
+        />
+      </div>
+
+      <div className="flex flex-col flex-grow justify-between text-left">
+        <div>
+          <span className="inline-block text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-accentIndigo/10 text-accentIndigo">
+            {Product.Label[item.part as Product.Name]}
+          </span>
+          <h3 className="mt-2 text-sm font-bold text-text leading-snug line-clamp-2 group-hover:text-accentIndigo transition-colors duration-200">
+            {item.name}
+          </h3>
+        </div>
+
+        <div className="mt-4 pt-3 border-t border-border/50 flex flex-row justify-between items-center text-xs text-text/50">
+          <span>Brand: <strong className="text-text/80">{item.brand}</strong></span>
+          <span className="text-accentCyan font-semibold group-hover:underline">Details &rarr;</span>
         </div>
       </div>
-    </RedirectButton>
+    </Link>
   );
 }
