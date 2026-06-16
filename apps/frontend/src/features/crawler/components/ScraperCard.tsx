@@ -42,7 +42,7 @@ export default function ScraperCard({
   return (
     <div className="flex flex-col justify-between bg-slate-800/40 border border-slate-700/60 hover:border-slate-600 rounded-xl p-5 transition-all shadow-md relative overflow-hidden group">
       {/* Background Hover Accent */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
       <div>
         {/* Scraper Card Header */}

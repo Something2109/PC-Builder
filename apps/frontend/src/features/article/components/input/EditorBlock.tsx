@@ -168,7 +168,7 @@ export function EditorBlock({
             />
           </svg>
         </button>
-        <div className="w-[1px] h-4 bg-slate-100 dark:bg-slate-800 mx-0.5" />
+        <div className="w-px h-4 bg-slate-100 dark:bg-slate-800 mx-0.5" />
         <button
           type="button"
           onClick={() => onInsertBelow(ContentName.Paragraph)}

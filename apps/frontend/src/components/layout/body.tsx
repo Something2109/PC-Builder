@@ -41,7 +41,7 @@ export function DarkModeButton() {
     <button
       type="button"
       title="Toggle dark mode"
-      className="relative aspect-square size-10 rounded-xl flex items-center justify-center border border-border bg-card text-text hover:border-accentIndigo transition-all duration-300 hover:shadow-lg shadow-sm"
+      className="relative aspect-square size-10 rounded-xl flex items-center justify-center border border-border bg-card text-text hover:border-accent-indigo transition-all duration-300 hover:shadow-lg shadow-sm"
       onClick={() => setDark!((val) => !val)}
     >
       <picture className="size-6 relative flex items-center justify-center">

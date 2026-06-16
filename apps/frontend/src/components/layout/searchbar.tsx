@@ -9,7 +9,7 @@ export function SearchBar({ q, part }: { q?: string; part?: Products }) {
 
   return (
     <div className="relative w-full">
-      <div className="flex flex-row items-center border border-border bg-card rounded-2xl px-4 py-3 gap-3 transition-all duration-300 focus-within:border-accentIndigo focus-within:ring-2 focus-within:ring-accentIndigo/20 shadow-lg">
+      <div className="flex flex-row items-center border border-border bg-card rounded-2xl px-4 py-3 gap-3 transition-all duration-300 focus-within:border-accent-indigo focus-within:ring-2 focus-within:ring-accent-indigo/20 shadow-lg">
         {/* Search Icon SVG */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +42,7 @@ export function SearchBar({ q, part }: { q?: string; part?: Products }) {
         <button
           type="button"
           onClick={onEnter}
-          className="px-4 py-1.5 bg-accentIndigo text-white rounded-xl text-sm font-semibold hover:opacity-90 active:scale-95 transition-all duration-200 shrink-0"
+          className="px-4 py-1.5 bg-accent-indigo text-white rounded-xl text-sm font-semibold hover:opacity-90 active:scale-95 transition-all duration-200 shrink-0"
         >
           Search
         </button>
@@ -53,7 +53,7 @@ export function SearchBar({ q, part }: { q?: string; part?: Products }) {
         {pending && (
           <div className="px-4 py-3 text-sm text-text/50 flex items-center gap-2">
             <svg
-              className="animate-spin h-4 w-4 text-accentCyan"
+              className="animate-spin h-4 w-4 text-accent-cyan"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -80,7 +80,7 @@ export function SearchBar({ q, part }: { q?: string; part?: Products }) {
             <a
               href={`/part/${value.part}/${value.id}`}
               key={`search-${value.id}`}
-              className="px-4 py-2.5 rounded-xl text-sm text-text/80 hover:bg-accentIndigo/10 hover:text-accentIndigo hover:translate-x-1 transition-all duration-200"
+              className="px-4 py-2.5 rounded-xl text-sm text-text/80 hover:bg-accent-indigo/10 hover:text-accent-indigo hover:translate-x-1 transition-all duration-200"
             >
               {value.name}
             </a>

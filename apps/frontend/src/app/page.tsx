@@ -22,16 +22,16 @@ export default function Page() {
       {/* Hero Section */}
       <section className="relative text-center max-w-4xl mx-auto space-y-6 px-4">
         {/* Glow backdrop */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accentIndigo/10 rounded-full blur-[120px] pointer-events-none -z-10" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent-indigo/10 rounded-full blur-[120px] pointer-events-none -z-10" />
 
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accentCyan/30 bg-accentCyan/5 text-xs text-accentCyan font-semibold tracking-wide uppercase">
-          <span className="size-1.5 rounded-full bg-accentCyan animate-pulse" />
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent-cyan/30 bg-accent-cyan/5 text-xs text-accent-cyan font-semibold tracking-wide uppercase">
+          <span className="size-1.5 rounded-full bg-accent-cyan animate-pulse" />
           Real-time Compatibility Engine Active
         </div>
 
         <h1 className="text-4xl md:text-7xl font-extrabold tracking-tight leading-none">
           Build Your Ultimate{" "}
-          <span className="bg-gradient-to-r from-accentIndigo via-purple-500 to-accentCyan bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-accent-indigo via-purple-500 to-accent-cyan bg-clip-text text-transparent">
             Dream PC
           </span>
         </h1>
@@ -50,10 +50,10 @@ export default function Page() {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto px-4">
         <Link
           href="/build"
-          className="group relative rounded-2xl border border-border bg-card p-8 transition-all duration-300 hover:border-accentIndigo hover:shadow-xl hover:shadow-accentIndigo/5 overflow-hidden"
+          className="group relative rounded-2xl border border-border bg-card p-8 transition-all duration-300 hover:border-accent-indigo hover:shadow-xl hover:shadow-accent-indigo/5 overflow-hidden"
         >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-accentIndigo/5 rounded-bl-full transition-all duration-300 group-hover:scale-110" />
-          <h3 className="text-xl font-bold mb-2 group-hover:text-accentIndigo transition-colors">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-accent-indigo/5 rounded-bl-full transition-all duration-300 group-hover:scale-110" />
+          <h3 className="text-xl font-bold mb-2 group-hover:text-accent-indigo transition-colors">
             Start A New Build &rarr;
           </h3>
           <p className="text-sm text-text/60 leading-relaxed">
@@ -63,10 +63,10 @@ export default function Page() {
 
         <Link
           href="/part"
-          className="group relative rounded-2xl border border-border bg-card p-8 transition-all duration-300 hover:border-accentCyan hover:shadow-xl hover:shadow-accentCyan/5 overflow-hidden"
+          className="group relative rounded-2xl border border-border bg-card p-8 transition-all duration-300 hover:border-accent-cyan hover:shadow-xl hover:shadow-accent-cyan/5 overflow-hidden"
         >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-accentCyan/5 rounded-bl-full transition-all duration-300 group-hover:scale-110" />
-          <h3 className="text-xl font-bold mb-2 group-hover:text-accentCyan transition-colors">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-accent-cyan/5 rounded-bl-full transition-all duration-300 group-hover:scale-110" />
+          <h3 className="text-xl font-bold mb-2 group-hover:text-accent-cyan transition-colors">
             Explore Hardware Directory &rarr;
           </h3>
           <p className="text-sm text-text/60 leading-relaxed">
@@ -97,7 +97,7 @@ export default function Page() {
           </div>
           <Link
             href="/part"
-            className="text-sm text-accentIndigo hover:text-accentCyan font-semibold transition-colors"
+            className="text-sm text-accent-indigo hover:text-accent-cyan font-semibold transition-colors"
           >
             All Parts &rarr;
           </Link>
@@ -108,10 +108,10 @@ export default function Page() {
             <Link
               key={cat.part}
               href={`/part/${cat.part}`}
-              className="group flex flex-col p-5 rounded-2xl border border-border bg-card hover:border-accentCyan transition-all duration-300 hover:shadow-lg hover:scale-[1.01]"
+              className="group flex flex-col p-5 rounded-2xl border border-border bg-card hover:border-accent-cyan transition-all duration-300 hover:shadow-lg hover:scale-[1.01]"
             >
               <div className="flex items-center gap-3 mb-3">
-                <div className="size-10 rounded-xl bg-accentIndigo/10 flex items-center justify-center group-hover:bg-accentCyan/10 transition-colors">
+                <div className="size-10 rounded-xl bg-accent-indigo/10 flex items-center justify-center group-hover:bg-accent-cyan/10 transition-colors">
                   <Image
                     src={`/images/icons/${cat.icon}.png`}
                     alt={cat.name}
@@ -120,7 +120,7 @@ export default function Page() {
                     className="dark:invert group-hover:scale-110 transition-transform duration-300"
                   />
                 </div>
-                <h4 className="font-bold text-text group-hover:text-accentCyan transition-colors">
+                <h4 className="font-bold text-text group-hover:text-accent-cyan transition-colors">
                   {cat.name}
                 </h4>
               </div>

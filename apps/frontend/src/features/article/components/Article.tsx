@@ -191,14 +191,14 @@ function ArticleComponent({ article }: { article: Article }) {
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-tr from-slate-900 via-indigo-950 to-slate-900 flex items-center justify-center">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent opacity-60" />
+          <div className="w-full h-full bg-linear-to-tr from-slate-900 via-indigo-950 to-slate-900 flex items-center justify-center">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent opacity-60" />
             <span className="text-slate-700 dark:text-slate-600 font-mono tracking-widest text-xs select-none">
               PC BUILDER HUB
             </span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
 
         {/* Page Icon (Emoji Overlay) */}
         {article.icon && (
@@ -367,7 +367,7 @@ function ArticleComponent({ article }: { article: Article }) {
                       key={sec.id}
                       href={`#${sec.id}`}
                       className={mergeClass(
-                        "py-1.5 pr-4 pl-4 text-sm transition-all border-l-2 -ml-[1px]",
+                        "py-1.5 pr-4 pl-4 text-sm transition-all border-l-2 -ml-px",
                         `${
                           sec.depth === 0
                             ? "font-semibold"

@@ -46,7 +46,7 @@ function ArticleLink({
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-tr from-slate-900 via-indigo-950 to-slate-900 flex items-center justify-center">
+          <div className="w-full h-full bg-linear-to-tr from-slate-900 via-indigo-950 to-slate-900 flex items-center justify-center">
             <span className="text-[10px] text-slate-700 dark:text-slate-600 font-mono tracking-wider select-none">
               PC BUILDER
             </span>

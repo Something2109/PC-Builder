@@ -65,7 +65,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
     <div className="w-full rounded-2xl border border-border bg-card p-5 shadow-sm hover:shadow-md transition-all duration-300">
       {/* Category Header */}
       <div className="flex items-center gap-3 mb-4">
-        <div className="size-9 rounded-xl bg-accentIndigo/10 flex items-center justify-center">
+        <div className="size-9 rounded-xl bg-accent-indigo/10 flex items-center justify-center">
           <Image
             src={`/images/icons/${product}.png`}
             alt=""
@@ -84,7 +84,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
         {!details || details.length === 0 ? (
           <Link
             href={`/build/${product}`}
-            className="flex items-center justify-center gap-2 w-full py-5 border border-dashed border-border hover:border-accentCyan rounded-xl text-text/50 hover:text-accentCyan bg-slate-50/5 hover:bg-slate-50/10 transition-all duration-200 text-sm font-semibold"
+            className="flex items-center justify-center gap-2 w-full py-5 border border-dashed border-border hover:border-accent-cyan rounded-xl text-text/50 hover:text-accent-cyan bg-slate-50/5 hover:bg-slate-50/10 transition-all duration-200 text-sm font-semibold"
           >
             + Choose {Product.Label[product]}
           </Link>

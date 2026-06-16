@@ -39,8 +39,8 @@ export default async function PartTopicPage({
   return (
     <div className="w-full max-w-6xl mx-auto my-6 px-4">
       {/* Dynamic Visual Banner */}
-      <div className="relative rounded-3xl overflow-hidden mb-8 bg-gradient-to-r from-blue-600 via-violet-600 to-indigo-600 p-8 md:p-12 text-white shadow-lg">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent opacity-60" />
+      <div className="relative rounded-3xl overflow-hidden mb-8 bg-linear-to-r from-blue-600 via-violet-600 to-indigo-600 p-8 md:p-12 text-white shadow-lg">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent opacity-60" />
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-wider bg-white/15 px-3 py-1 rounded-full w-fit">

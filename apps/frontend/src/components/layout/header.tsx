@@ -26,7 +26,7 @@ export default function Header() {
       <header className="sticky top-0 z-50 w-full glassmorphism transition-all duration-300">
         <div className="container mx-auto px-6 h-16 md:h-20 flex flex-row items-center justify-between">
           <Link
-            className="font-bold text-xl md:text-2xl tracking-wider bg-gradient-to-r from-accentIndigo via-purple-500 to-accentCyan bg-clip-text text-transparent hover:opacity-85 transition-opacity"
+            className="font-bold text-xl md:text-2xl tracking-wider bg-linear-to-r from-accent-indigo via-purple-500 to-accent-cyan bg-clip-text text-transparent hover:opacity-85 transition-opacity"
             href={"/"}
           >
             PC BUILDER
@@ -108,9 +108,9 @@ function NavigationButton({
   return (
     <Link
       href={link}
-      className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 hover:text-accentCyan ${
+      className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 hover:text-accent-cyan ${
         active
-          ? "bg-accentIndigo/10 text-accentIndigo border border-accentIndigo/20"
+          ? "bg-accent-indigo/10 text-accent-indigo border border-accent-indigo/20"
           : "text-text/80 hover:bg-line/20"
       }`}
     >
@@ -131,7 +131,7 @@ function MobileNavigationButton({
       onClick={onClick}
       className={`px-4 py-3 rounded-xl text-base font-semibold transition-all duration-200 block ${
         active
-          ? "bg-accentIndigo/10 text-accentIndigo"
+          ? "bg-accent-indigo/10 text-accent-indigo"
           : "text-text/80 hover:bg-line/20"
       }`}
     >

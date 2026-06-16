@@ -31,8 +31,8 @@ export default async function TopicPage({
   return (
     <div className="w-full max-w-6xl mx-auto my-6 px-4">
       {/* Dynamic Visual Banner */}
-      <div className="relative rounded-3xl overflow-hidden mb-8 bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 p-8 md:p-12 text-white shadow-lg">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent opacity-60" />
+      <div className="relative rounded-3xl overflow-hidden mb-8 bg-linear-to-r from-indigo-600 via-violet-600 to-purple-600 p-8 md:p-12 text-white shadow-lg">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent opacity-60" />
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
             <h1 className="text-3xl md:text-5xl font-black tracking-tight font-sans capitalize">
