@@ -17,12 +17,7 @@ import {
   BeforeSave,
 } from "sequelize-typescript";
 
-import {
-  ModelScopes,
-  PartDefaultScope,
-  Tables,
-  defaultFilter,
-} from "@/models/interface";
+import { ModelScopes, Tables, defaultFilter } from "@/models/interface";
 import Part, { Products, Infos } from "@/utils/part";
 
 import BrandModel from "./Brand.entity";
@@ -76,7 +71,10 @@ import SeriesModel from "./Series.entity";
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
     attributes: attributes?.length
-      ? ["id", ...attributes.filter((attr) => attr !== "brand" && attr !== "series")]
+      ? [
+          "id",
+          ...attributes.filter((attr) => attr !== "brand" && attr !== "series"),
+        ]
       : [],
     include: [
       { model: BrandModel, attributes: ["name"] },
@@ -189,7 +187,10 @@ export default class PartInformation extends Model implements Part.Model {
   }
 
   @BeforeSave
-  static async normalizeBrandAndSeries(instance: PartInformation, options: any) {
+  static async normalizeBrandAndSeries(
+    instance: PartInformation,
+    options: any
+  ) {
     const transaction = options?.transaction;
 
     // 1. Resolve Brand
@@ -332,5 +333,3 @@ export default class PartInformation extends Model implements Part.Model {
   @HasMany(() => PartExternalPortModel)
   declare [Infos.EXTERNAL_PORTS]: PartExternalPortModel[];
 }
-
-

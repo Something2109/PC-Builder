@@ -29,7 +29,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
           acc[info] = association.target.scope(ModelScopes.DETAIL);
           return acc;
         },
-        {} as { [key in Infos]: ModelStatic<any> },
+        {} as { [key in Infos]: ModelStatic<any> }
       );
     }
     return this._InfoModels;
@@ -37,13 +37,13 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
   constructor(
     private readonly sequelize: Sequelize,
-    private readonly cdnService: CdnService,
+    private readonly cdnService: CdnService
   ) {}
 
   async get(
     id: string,
     infos?: Infos[],
-    transaction?: Transaction,
+    transaction?: Transaction
   ): Promise<Part.Model | null> {
     const include = this.infoToModel(infos);
 
@@ -58,7 +58,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
   async set(
     id: string,
     { part, ...data }: Part.DTO,
-    infos?: Infos[],
+    infos?: Infos[]
   ): Promise<Part.Model | null> {
     return await this.sequelize.transaction(async (transaction) => {
       const instance =
@@ -75,9 +75,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
       if (infos) {
         await Promise.all(
-          infos.map((info) =>
-            this.setInfo(id, info, data[info], transaction),
-          ),
+          infos.map((info) => this.setInfo(id, info, data[info], transaction))
         );
       }
 
@@ -100,8 +98,8 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
       if (infos) {
         await Promise.all(
           infos.map((info) =>
-            this.setInfo(instance.id, info, data[info], transaction),
-          ),
+            this.setInfo(instance.id, info, data[info], transaction)
+          )
         );
       }
 
@@ -114,7 +112,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
       const localUrl = await this.cdnService.downloadAndOptimize(
         data.image_url,
         instance.part || data.part,
-        instance.id,
+        instance.id
       );
       if (localUrl) {
         instance.image_url = localUrl;
@@ -158,7 +156,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
   protected async validateCodename(
     code_name: string,
     id?: string,
-    transaction?: Transaction,
+    transaction?: Transaction
   ) {
     if (!code_name) return undefined;
 
@@ -188,7 +186,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     id: string,
     info: Infos,
     data: Part.DTO[typeof info],
-    transaction?: Transaction,
+    transaction?: Transaction
   ): Promise<void> {
     // If data is undefined (no operation specified)
     if (data === undefined) return;
@@ -238,7 +236,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     // destroy the unused old data and save the new data
     await Promise.all([
       ...Object.values(oldInstances).map((value) =>
-        value.destroy({ transaction }),
+        value.destroy({ transaction })
       ),
       ...newInstances.map((value) => value.save({ transaction })),
     ]);
@@ -252,7 +250,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
    */
   protected hashByAttributes<T extends string>(
     instance: { [key in T]: any },
-    attrs: readonly T[],
+    attrs: readonly T[]
   ) {
     return attrs.map((value) => instance[value]).join("-");
   }

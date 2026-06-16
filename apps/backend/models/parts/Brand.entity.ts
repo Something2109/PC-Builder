@@ -6,11 +6,17 @@ import {
   PrimaryKey,
   AutoIncrement,
   Table,
+  Scopes,
 } from "sequelize-typescript";
+
+import { ModelScopes } from "@/models/interface";
 
 import PartInformation from "./PartInformation.entity";
 import SeriesModel from "./Series.entity";
 
+@Scopes(() => ({
+  [ModelScopes.DETAIL]: {},
+}))
 @Table({
   modelName: "brand",
   tableName: "brands",

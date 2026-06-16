@@ -39,7 +39,7 @@ class SequelizeListService implements DatabaseListInterface {
 
   async filter(
     options: ListOptions,
-    attrs: ModelAttributeList,
+    attrs: ModelAttributeList
   ): Promise<Part.Filter> {
     const { part, ...infos } = attrs;
     const Context = new SequelizeContext(options, infos);
@@ -104,7 +104,12 @@ class SequelizeContext {
       limit: options.limit,
     };
 
-    if (options.sort_key && Part.BasicAttributes.options.includes(options.sort_key as Part.BasicAttributes)) {
+    if (
+      options.sort_key &&
+      Part.BasicAttributes.options.includes(
+        options.sort_key as Part.BasicAttributes
+      )
+    ) {
       const orderCol = filterToWhereMap[options.sort_key] || options.sort_key;
       this.orderOptions = [[orderCol, options.sort_order || "asc"]];
     }
@@ -139,9 +144,15 @@ class SequelizeContext {
       where: this.partWhere,
       ...this.pageOptions,
       order: this.orderOptions,
-      attributes: ["id", ...Part.BasicSummaryAttributes.filter((attr) => attr !== "brand" && attr !== "series")],
+      attributes: [
+        "id",
+        ...Part.BasicSummaryAttributes.filter(
+          (attr) => attr !== "brand" && attr !== "series"
+        ),
+      ],
       include,
       distinct: true, // prevent multiple id row count if the query returns more than 1 row for an id.
+      col: `${this.PartModel.tableName}.id`,
     });
 
     return { total: count, list: rows.map((value) => value.toJSON()) };
@@ -226,7 +237,8 @@ class SequelizeContext {
     where: WhereOptions | undefined,
     ...include: IncludeOptions[]
   ): Promise<string[]> {
-    const attrExpr = filterToWhereMap[attribute] || col(`${model.name}.${attribute}`);
+    const attrExpr =
+      filterToWhereMap[attribute] || col(`${model.name}.${attribute}`);
 
     const query = (await model.findAll({
       where,
@@ -256,7 +268,8 @@ class SequelizeContext {
     where: WhereOptions | undefined,
     ...include: IncludeOptions[]
   ): Promise<number[]> {
-    const attrExpr = filterToWhereMap[attribute] || col(`${model.name}.${attribute}`);
+    const attrExpr =
+      filterToWhereMap[attribute] || col(`${model.name}.${attribute}`);
 
     const query = (await model.findOne({
       where,
@@ -277,7 +290,10 @@ class SequelizeContext {
    * @param query The query string to search.
    * @returns The option for the query.
    */
-  protected createPartWhereOption(query?: string, prefix: string = ""): WhereOptions<PartInformation> | undefined {
+  protected createPartWhereOption(
+    query?: string,
+    prefix: string = ""
+  ): WhereOptions<PartInformation> | undefined {
     if (!query) return undefined;
 
     const nameKey = prefix ? `$${prefix}name$` : "name";
