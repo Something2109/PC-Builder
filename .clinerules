@@ -10,6 +10,7 @@ This file defines the mandatory constraints and coding standards that any AI Age
   - [.agent/project_overview.md](file:///home/ubuntu/Documents/PC-Builder/.agent/project_overview.md)
   - [.agent/project_structure.md](file:///home/ubuntu/Documents/PC-Builder/.agent/project_structure.md)
 * **Acknowledgment**: The agent's first message or internal thought block must confirm that these files have been read and their constraints are understood.
+* **Check Dependencies**: The agent **MUST** inspect all current project dependencies and version constraints (in the root `package.json` and any relevant package/app `package.json` files) before writing or changing any code. This guarantees syntax compatibility and prevents mismatching package expectations.
 
 ## 2. Dependency & Syntax Standards
 * **Latest Syntax**: Write all code using the latest syntax supported by the project's dependencies:
