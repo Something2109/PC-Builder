@@ -52,7 +52,7 @@ import { SessionExtractionMiddleware } from "./utils/session.middleware";
         database: config.get<string>("DATABASE_NAME") || "PC_Builder",
         autoLoadModels: true,
         synchronize: true,
-        sync: { alter: true },
+        sync: config.get<string>("DB_ALTER") === "true" ? { alter: true } : undefined,
         logging: (
           (logger: Logger) => (sql: string, timeout: any) =>
             setTimeout(() => logger.verbose(sql), timeout ?? 0)
