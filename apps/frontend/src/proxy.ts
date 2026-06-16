@@ -3,8 +3,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { Tokens } from "@/utils/API";
-
-import { getBackendUrl } from "./src/utils/path";
+import { getBackendUrl } from "@/utils/path";
 
 // Define paths that REQUIRE authentication
 const PROTECTED_PATHS = ["/admin", "/profile", "/build/save"];
@@ -31,7 +30,7 @@ async function validateAccessToken(request: NextRequest) {
   }
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const accessToken = request.cookies.get(Tokens.ACCESS);
@@ -52,22 +51,48 @@ export async function middleware(request: NextRequest) {
       );
 
       if (apiResponse.ok) {
-        const data = await apiResponse.json();
-        const newAccessToken = data.access_token;
+        let newAccessToken = "";
+        const backendCookies = apiResponse.headers.getSetCookie();
+
+        // Extract the new access token from the backend's Set-Cookie headers
+        for (const cookieStr of backendCookies) {
+          if (cookieStr.startsWith(`${Tokens.ACCESS}=`)) {
+            const parts = cookieStr.split(";")[0].split("=");
+            if (parts.length === 2) {
+              const cookieValue = decodeURIComponent(parts[1]);
+              if (cookieValue.startsWith("Bearer ")) {
+                newAccessToken = cookieValue.substring("Bearer ".length);
+              } else {
+                newAccessToken = cookieValue;
+              }
+            }
+            break;
+          }
+        }
 
         const requestHeaders = new Headers(request.headers);
-        requestHeaders.set(
-          "Cookie",
-          `${Tokens.ACCESS}=Bearer ${newAccessToken}; ${request.headers.get(
-            "cookie"
-          )}`
+        const originalCookies = request.headers.get("cookie") || "";
+        const cookieList = originalCookies.split(";").map((c) => c.trim());
+        // Remove old access token cookie from headers to prevent duplicates
+        const otherCookies = cookieList.filter(
+          (c) => !c.startsWith(`${Tokens.ACCESS}=`)
         );
+
+        if (newAccessToken) {
+          const updatedCookieHeader = [
+            `${Tokens.ACCESS}=Bearer%20${newAccessToken}`,
+            ...otherCookies,
+          ]
+            .filter(Boolean)
+            .join("; ");
+          requestHeaders.set("Cookie", updatedCookieHeader);
+        }
 
         const response = NextResponse.next({
           request: { headers: requestHeaders },
         });
 
-        const backendCookies = apiResponse.headers.getSetCookie();
+        // Set the new cookies back to the browser
         backendCookies.forEach((cookie) =>
           response.headers.append("Set-Cookie", cookie)
         );
