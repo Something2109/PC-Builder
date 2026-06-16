@@ -1,12 +1,7 @@
 import { ZodType } from "zod";
 
 import { RowWrapper } from "@/ui/FlexWrapper";
-import {
-  SuffixInput,
-  UnitInput,
-  OptionSelect,
-  Input,
-} from "@/ui/Input";
+import { SuffixInput, UnitInput, OptionSelect, Input } from "@/ui/Input";
 import { FormFactor, InternalConnectors } from "@/utils/interface";
 import * as RAMSpec from "@/utils/part/info/RAMSpec";
 import { MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
@@ -38,11 +33,11 @@ const Components: InfoComponentObject<RAMSpec.DTO> = {
     />
   ),
   latency: ({ state, handleChange, handleBlur }) => {
-    const arr = Array.isArray(state.value) ? state.value : ["", "", "", ""];
+    const arr = Array.isArray(state.value) ? state.value : [0, 0, 0, 0];
     const handleChangeIdx = (idx: number, val: string) => {
       const next = [...arr];
-      next[idx] = val === "" ? "" : Number(val);
-      handleChange(next as any);
+      next[idx] = val === "" ? 0 : Number(val);
+      handleChange(next);
     };
 
     return (

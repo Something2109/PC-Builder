@@ -107,6 +107,8 @@ const PortTypes = {
   Interaction: ExternalPorts.Interaction.Type.options,
 } as const;
 
+type PortSubtypes = (typeof PortTypes)[ExternalPorts.Type][number];
+
 function usePortType() {
   const [type, setType] = useState<ExternalPorts.Type>(
     ExternalPorts.Type.options[0]
@@ -117,7 +119,7 @@ function usePortType() {
 
   const setToType = (newType: ExternalPorts.Type) => {
     setType(newType);
-    setPort(PortTypes[newType][0] as any);
+    setPort(PortTypes[newType][0]);
   };
 
   const setToPort = (newPort: (typeof PortTypes)[typeof type][number]) => {
@@ -149,7 +151,7 @@ function AddRow({
         <OptionSelect
           options={PortTypes[type]}
           value={port}
-          onChange={(e) => setPort(e.target.value as any)}
+          onChange={(e) => setPort(e.target.value as PortSubtypes)}
           required
         />
       </Table.Cell>

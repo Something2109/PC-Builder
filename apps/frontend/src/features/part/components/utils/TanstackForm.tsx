@@ -212,21 +212,30 @@ export function mapChange<
 ) {
   if (type === "number") {
     return {
-      defaultValue: (field.state.value ?? undefined) as any,
-      onChange: (e: { target: { value: string } }) =>
-        field.handleChange((e.target.value === "" ? null : Number(e.target.value)) as any),
+      defaultValue: field.state.value ?? undefined,
+      onChange: (e: { target: { value: string } }) => {
+        const value = e.target.value as Updater<DeepValue<TParentData, TName>>;
+
+        field.handleChange(value);
+      },
     };
   }
   if (type === "select") {
     return {
-      value: (field.state.value ?? "") as any,
-      onChange: (e: { target: { value: string } }) =>
-        field.handleChange((e.target.value === "" ? null : e.target.value) as any),
+      value: field.state.value ?? "",
+      onChange: (e: { target: { value: string } }) => {
+        const value = e.target.value as Updater<DeepValue<TParentData, TName>>;
+
+        field.handleChange(value);
+      },
     };
   }
   return {
-    defaultValue: (field.state.value ?? undefined) as any,
-    onChange: (e: { target: { value: string } }) =>
-      field.handleChange((e.target.value === "" ? null : e.target.value) as any),
+    defaultValue: field.state.value ?? undefined,
+    onChange: (e: { target: { value: string } }) => {
+      const value = e.target.value as Updater<DeepValue<TParentData, TName>>;
+
+      field.handleChange(value);
+    },
   };
 }
