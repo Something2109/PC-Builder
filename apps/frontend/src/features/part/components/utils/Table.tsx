@@ -37,7 +37,7 @@ export const Table = {
   Cell: ({ className, ...attr }: TdHTMLAttributes<HTMLTableCellElement>) => (
     <td
       className={mergeClass(
-        "border-r-2 not-only:last:border-r-0 p-2 [&:has(table)]:p-0",
+        "border-r-2 not-only:last:border-r-0 p-2 has-[table]:p-0",
         className
       )}
       {...attr}

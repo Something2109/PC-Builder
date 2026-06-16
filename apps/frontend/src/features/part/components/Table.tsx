@@ -3,11 +3,13 @@
 import { lazy, LazyExoticComponent } from "react";
 
 import { ColumnWrapper } from "@/ui/FlexWrapper";
+import Part from "@/utils/part";
 import { Infos, Information } from "@/utils/part";
 
 export const DetailTableComponent: {
-   
-  [key in Infos]: LazyExoticComponent<React.FC<any>>;
+  [key in Infos]: LazyExoticComponent<
+    React.FC<{ defaultValue: Part.Model[key] }>
+  >;
 } = {
   [Infos.CPU_SPEC]: lazy(
     () => import("@/features/part/components/detail/CPUSpec")
@@ -119,14 +121,16 @@ export const DetailTableComponent: {
   ),
 } as const;
 
-export function InfoTable({
+export function InfoTable<Info extends Infos>({
   info,
   defaultValue,
 }: Readonly<{
   info: Infos;
-  defaultValue?: unknown;
+  defaultValue?: Part.Model[Info];
 }>) {
-  const Component = DetailTableComponent[info];
+  const Component = DetailTableComponent[info] as React.FC<{
+    defaultValue: Part.Model[Info];
+  }>;
 
   if (
     !defaultValue ||
@@ -136,8 +140,8 @@ export function InfoTable({
     return undefined;
 
   return (
-    <ColumnWrapper className="text-wrap">
-      <h1 className="text-4xl font-bold">{Information.Label[info]}</h1>
+    <ColumnWrapper className="gap-4 text-wrap rounded-2xl border border-border bg-card p-4">
+      <h1 className="text-2xl font-bold">{Information.Label[info]}</h1>
       <Component key={info} defaultValue={defaultValue} />
     </ColumnWrapper>
   );
