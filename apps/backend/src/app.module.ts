@@ -14,6 +14,7 @@ import { ArticleModule } from "./article/article.module";
 import { AuthModule } from "./auth/auth.module";
 import { BrandModule } from "./brand/brand.module";
 import { BuildModule } from "./build/build.module";
+import { CdnModule } from "./cdn/cdn.module";
 import { CrawlerModule } from "./crawler/crawler.module";
 import { MapperModule } from "./mapper/mapper.module";
 import { PartModule } from "./part/part.module";
@@ -93,6 +94,7 @@ import { SessionExtractionMiddleware } from "./utils/session.middleware";
     }),
     ArticleModule,
     AuthModule,
+    CdnModule,
     PartModule,
     BuildModule,
     UserModule,
