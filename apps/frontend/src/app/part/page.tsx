@@ -25,9 +25,7 @@ export default async function ListPage({
   }, [] as string[][]);
   const options = new URLSearchParams(queryEntries);
 
-  const response = await fetch(
-    getBackendUrl(`/api/part?${options}`)
-  );
+  const response = await fetch(getBackendUrl(`/api/part?${options}`));
 
   if (!response) return notFound();
 
@@ -42,7 +40,7 @@ export default async function ListPage({
       <h1 className="font-bold text-2xl my-2">
         {`${data.total} Product${data.total > 1 ? "s" : ""}`}
       </h1>
-      <div className="grid grid-cols-1 lg:grid-cols-5 xl:grid-flow-col-6 gap-1 xl:gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-col-3 lg:grid-cols-5 xl:grid-flow-col-6 gap-1 xl:gap-3">
         {data.list.map((value) => {
           return <PartPanel item={value} key={value.name} />;
         })}

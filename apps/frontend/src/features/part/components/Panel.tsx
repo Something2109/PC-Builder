@@ -14,7 +14,7 @@ export default function PartPanel({ item }: { item: Part.Summary }) {
         <PartPicture
           part={item.part}
           src={item.image_url ?? undefined}
-          className="max-h-full max-w-full object-contain"
+          className="min-h-full min-w-full object-contain"
         />
       </div>
 
@@ -29,8 +29,12 @@ export default function PartPanel({ item }: { item: Part.Summary }) {
         </div>
 
         <div className="mt-4 pt-3 border-t border-border/50 flex flex-row justify-between items-center text-xs text-text/50">
-          <span>Brand: <strong className="text-text/80">{item.brand}</strong></span>
-          <span className="text-accent-cyan font-semibold group-hover:underline">Details &rarr;</span>
+          <span>
+            Brand: <strong className="text-text/80">{item.brand}</strong>
+          </span>
+          <span className="text-accent-cyan font-semibold group-hover:underline">
+            Details &rarr;
+          </span>
         </div>
       </div>
     </Link>

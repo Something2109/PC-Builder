@@ -26,7 +26,7 @@ export default function PartPicture({
       <img
         src={src ?? defaultUrl}
         alt={`${part}`}
-        className="mx-auto object-cover object-center overflow-hidden"
+        className="min-h-full min-w-full object-cover object-center overflow-hidden"
         onError={(e) => {
           if (onError) onError(e);
           e.currentTarget.onerror = null;
