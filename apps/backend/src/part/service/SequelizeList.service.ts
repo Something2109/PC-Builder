@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import {
   col,
   DataTypes,
-  Filterable,
   fn,
   IncludeOptions,
   Model,
@@ -144,15 +143,9 @@ class SequelizeContext {
       where: this.partWhere,
       ...this.pageOptions,
       order: this.orderOptions,
-      attributes: [
-        "id",
-        ...Part.BasicSummaryAttributes.filter(
-          (attr) => attr !== "brand" && attr !== "series"
-        ),
-      ],
       include,
       distinct: true, // prevent multiple id row count if the query returns more than 1 row for an id.
-      col: `${this.PartModel.tableName}.id`,
+      col: include.length === 0 ? `${this.PartModel.tableName}.id` : undefined,
     });
 
     return { total: count, list: rows.map((value) => value.toJSON()) };
