@@ -11,7 +11,7 @@ export async function uploadFile(file: File, subfolder?: string): Promise<string
   const formData = new FormData();
   formData.append("file", file);
   
-  let url = "/api/article/media/upload";
+  let url = "/api/media/upload";
   if (subfolder) {
     url += `?subfolder=${encodeURIComponent(subfolder)}`;
   }

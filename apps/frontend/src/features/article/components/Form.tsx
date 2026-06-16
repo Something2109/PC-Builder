@@ -2,10 +2,14 @@
  
 
 import { useForm } from "@tanstack/react-form";
-import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 
+import { useCreateArticle } from "@/features/article/hooks/useCreateArticle";
+import { useDeleteArticle } from "@/features/article/hooks/useDeleteArticle";
+import { useUpdateArticle } from "@/features/article/hooks/useUpdateArticle";
+
+import { useImageUpload } from "@/hooks/useImageUpload";
 import { RowWrapper } from "@/ui/FlexWrapper";
 import { Input, Select, AutoGrowingTextArea } from "@/ui/Input";
 import { mergeClass } from "@/ui/mergeClass";
@@ -22,7 +26,6 @@ import {
 } from "@/utils/part/product";
 
 import { ContentListComponent } from "./input";
-import { uploadFile } from "./utils";
 
 const articleFormSchema = BaseEditArticleDto;
 
@@ -80,8 +83,14 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showCoverSelector, setShowCoverSelector] = useState(false);
-  const [isCoverUploading, setIsCoverUploading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+
+  const { createArticle, isCreating } = useCreateArticle();
+  const { updateArticle, isUpdating } = useUpdateArticle();
+  const { deleteArticle, isDeleting } = useDeleteArticle();
+
+  const isSaving = isCreating || isUpdating || isDeleting;
+
+  const { upload: uploadCover, isUploading: isCoverUploading } = useImageUpload();
 
   const coverFileInputRef = useRef<HTMLInputElement>(null);
   const submitStatusRef = useRef<ArticleStatus>(ArticleStatus.Draft);
@@ -99,50 +108,19 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
     },
     onSubmit: async ({ value }) => {
       if (isSaving) return;
-      setIsSaving(true);
-
       const submitStatus = submitStatusRef.current;
-
       const payload = {
         ...value,
         status: submitStatus,
       };
 
-      try {
-        let response;
-        if (isNew) {
-          let createUrl = "/api/article";
-          const queryParams = new URLSearchParams();
-          if (value.topic) queryParams.set("topic", value.topic);
-          if (value.part) queryParams.set("part", value.part);
-          if (queryParams.toString()) {
-            createUrl += `?${queryParams.toString()}`;
-          }
-
-          response = await axios.post(createUrl, payload, {
-            withCredentials: true,
-          });
-
-          const createdArticle = response.data;
-          router.push(`/article/${createdArticle.slug || createdArticle.id}`);
-        } else {
-          response = await axios.put(`/api/article/${articleId}`, payload, {
-            withCredentials: true,
-          });
-
-          const updatedArticle = response.data;
-          router.push(`/article/${updatedArticle.slug || updatedArticle.id}`);
-        }
-
-        router.refresh();
-      } catch (err) {
-        const error = err as AxiosError<{ message: string }>;
-        const message =
-          error.response?.data?.message ||
-          "An error occurred while saving the article.";
-        alert(message);
-      } finally {
-        setIsSaving(false);
+      if (isNew) {
+        const queryParams = new URLSearchParams();
+        if (value.topic) queryParams.set("topic", value.topic);
+        if (value.part) queryParams.set("part", value.part);
+        await createArticle({ payload, queryParams });
+      } else {
+        await updateArticle({ id: articleId, payload });
       }
     },
   });
@@ -155,16 +133,13 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
   const handleCustomCover = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setIsCoverUploading(true);
     try {
-      const url = await uploadFile(file, "covers");
+      const url = await uploadCover(file, "covers");
       form.setFieldValue("cover", url);
       setShowCoverSelector(false);
     } catch (err) {
       console.error("Failed to upload cover:", err);
       alert("Cover image upload failed.");
-    } finally {
-      setIsCoverUploading(false);
     }
   };
 
@@ -176,18 +151,7 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
   const handleDelete = async () => {
     if (isNew) return;
     if (!confirm("Are you sure you want to delete this article?")) return;
-    setIsSaving(true);
-    try {
-      await axios.delete(`/api/article/${articleId}`, {
-        withCredentials: true,
-      });
-      router.push("/article");
-      router.refresh();
-    } catch (error) {
-      console.error("Failed to delete article:", error);
-      alert("Failed to delete article.");
-      setIsSaving(false);
-    }
+    await deleteArticle(articleId);
   };
 
   return (

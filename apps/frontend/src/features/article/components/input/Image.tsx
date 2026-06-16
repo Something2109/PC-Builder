@@ -1,11 +1,10 @@
 "use client";
  
 
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 
+import { useImageUpload } from "@/hooks/useImageUpload";
 import { Image as ImageType } from "@/utils/article";
-
-import { uploadFile } from "../utils";
 
 interface ImageInputProps {
   content: ImageType;
@@ -13,21 +12,18 @@ interface ImageInputProps {
 }
 
 export function ImageInput({ content, onChange }: ImageInputProps) {
-  const [isUploading, setIsUploading] = useState(false);
+  const { upload: uploadImage, isUploading } = useImageUpload();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setIsUploading(true);
     try {
-      const url = await uploadFile(file, "articles");
+      const url = await uploadImage(file, "articles");
       onChange({ src: url, caption: content.caption });
     } catch (err) {
       console.error("Failed to upload image:", err);
       alert("Image upload failed. Please try again.");
-    } finally {
-      setIsUploading(false);
     }
   };
 
