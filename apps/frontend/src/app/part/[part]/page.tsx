@@ -53,7 +53,8 @@ export default async function PartListPage({
               {Product.Label[part]} Directory
             </h1>
             <p className="text-sm text-text/60 mt-1">
-              Explore specifications, brands, and compatibility metrics for all {Product.Label[part].toLowerCase()} models.
+              Explore specifications, brands, and compatibility metrics for all{" "}
+              {Product.Label[part].toLowerCase()} models.
             </p>
           </div>
           <Link
@@ -72,17 +73,13 @@ export default async function PartListPage({
         </span>
         <ToggleButton label="Filters">
           <div className="w-full mt-4 p-4 border border-border rounded-xl bg-card/50 text-left">
-            <FilterBar
-              className="w-full"
-              part={part}
-              context={options}
-            />
+            <FilterBar className="w-full" part={part} context={options} />
           </div>
         </ToggleButton>
       </div>
 
       {/* Part List Table */}
-      <div className="border border-border rounded-2xl overflow-hidden bg-card shadow-sm">
+      <div className="border border-border rounded-2xl overflow-x-scroll bg-card shadow-sm">
         <SummaryTable part={part} data={data.list} />
       </div>
 

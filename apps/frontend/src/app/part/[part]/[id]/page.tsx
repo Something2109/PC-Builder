@@ -30,9 +30,7 @@ export default async function PartDetailPage({
         >
           &larr; Back to {Product.Label[part]} Directory
         </Link>
-        <h1 className="text-3xl font-extrabold tracking-tight text-text">
-          Hardware Showcase
-        </h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-text">Hardware Showcase</h1>
       </div>
 
       {/* Two-Column Details Layout */}
@@ -45,7 +43,9 @@ export default async function PartDetailPage({
         {/* Right Column (Detailed Specs Tables) */}
         <div className="lg:col-span-2 space-y-6">
           <div className="border-b border-border/60 pb-2 mb-4">
-            <h2 className="text-xl font-bold tracking-tight text-text">Detailed Technical Specifications</h2>
+            <h2 className="text-xl font-bold tracking-tight text-text">
+              Detailed Technical Specifications
+            </h2>
           </div>
           <div className="space-y-4">
             {Mapping.Info[part].map((info) => (

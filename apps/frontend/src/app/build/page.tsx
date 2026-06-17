@@ -22,9 +22,11 @@ export default function BuildPage() {
 
   let maxMinPsu = 0;
   if (details[Products.GRAPHIC_CARD]) {
-    const gpus = (Array.isArray(details[Products.GRAPHIC_CARD])
-      ? details[Products.GRAPHIC_CARD]
-      : [details[Products.GRAPHIC_CARD]]) as Part.Summary<Products.GRAPHIC_CARD>[];
+    const gpus = (
+      Array.isArray(details[Products.GRAPHIC_CARD])
+        ? details[Products.GRAPHIC_CARD]
+        : [details[Products.GRAPHIC_CARD]]
+    ) as Part.Summary<Products.GRAPHIC_CARD>[];
     gpus.forEach((gpu) => {
       if (gpu.minimum_psu) {
         maxMinPsu = Math.max(maxMinPsu, Number(gpu.minimum_psu));
@@ -62,16 +64,18 @@ export default function BuildPage() {
           {/* Build Overview Card */}
           <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
             <h2 className="text-xl font-bold tracking-tight mb-4 text-text">Build Summary</h2>
-            
+
             <div className="space-y-4">
               {/* Progress Bar */}
               <div>
                 <div className="flex justify-between text-xs font-semibold text-text/75 mb-1.5">
                   <span>Selected Parts</span>
-                  <span>{selectedCount} / {totalCategories}</span>
+                  <span>
+                    {selectedCount} / {totalCategories}
+                  </span>
                 </div>
                 <div className="w-full h-2 rounded-full bg-border overflow-hidden">
-                  <div 
+                  <div
                     className="h-full bg-accent-indigo transition-all duration-500 rounded-full"
                     style={{ width: `${(selectedCount / totalCategories) * 100}%` }}
                   />
@@ -84,9 +88,7 @@ export default function BuildPage() {
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="p-3 rounded-xl border border-border/40 bg-slate-50/5">
                   <span className="text-xs text-text/50 block mb-0.5">CPU TDP</span>
-                  <span className="font-bold text-text">
-                    {cpuTdp > 0 ? `${cpuTdp} W` : "—"}
-                  </span>
+                  <span className="font-bold text-text">{cpuTdp > 0 ? `${cpuTdp} W` : "—"}</span>
                 </div>
                 <div className="p-3 rounded-xl border border-border/40 bg-slate-50/5">
                   <span className="text-xs text-text/50 block mb-0.5">Min. PSU Required</span>

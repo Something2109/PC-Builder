@@ -65,7 +65,9 @@ function ProductTypeComponent({ product }: { product: Products }) {
   );
 
   return (
-    <div className={`w-full rounded-2xl border p-5 shadow-xs transition-all duration-300 bg-card ${cardBorderClass}`}>
+    <div
+      className={`w-full rounded-2xl border p-5 shadow-xs transition-all duration-300 bg-card ${cardBorderClass}`}
+    >
       {/* Category Header */}
       <div className="flex items-center gap-3 mb-4">
         <div className="size-9 rounded-xl bg-accent-indigo/10 flex items-center justify-center">
@@ -87,7 +89,10 @@ function ProductTypeComponent({ product }: { product: Products }) {
             href={`/build/${product}`}
             className="flex items-center justify-center gap-2 w-full py-6 border border-dashed border-border/80 hover:border-accent-indigo hover:text-accent-indigo rounded-2xl text-text/40 hover:text-accent-indigo bg-slate-500/2 hover:bg-accent-indigo/5 transition-all duration-250 text-sm font-bold cursor-pointer group"
           >
-            <span className="text-base group-hover:scale-120 transition-transform duration-250">+</span> Choose {Product.Label[product]}
+            <span className="text-base group-hover:scale-120 transition-transform duration-250">
+              +
+            </span>{" "}
+            Choose {Product.Label[product]}
           </Link>
         ) : (
           <div className="border border-border/60 rounded-xl overflow-hidden bg-slate-50/5">

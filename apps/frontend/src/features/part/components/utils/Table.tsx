@@ -19,7 +19,13 @@ export const Table = {
   ),
 
   Head: ({ className, ...attr }: HTMLAttributes<HTMLTableSectionElement>) => (
-    <thead className={mergeClass("bg-slate-50/50 dark:bg-slate-800/10 font-bold border-b border-border/60 text-text/80", className)} {...attr} />
+    <thead
+      className={mergeClass(
+        "bg-slate-50/50 dark:bg-slate-800/10 font-bold border-b border-border/60 text-text/80",
+        className
+      )}
+      {...attr}
+    />
   ),
 
   Row: ({ className, ...attr }: HTMLAttributes<HTMLTableRowElement>) => (
@@ -34,7 +40,10 @@ export const Table = {
 
   Cell: ({ className, ...attr }: TdHTMLAttributes<HTMLTableCellElement>) => (
     <td
-      className={mergeClass("border-r border-border/40 last:border-r-0 p-3 text-sm text-text/85 align-middle has-[table]:p-0", className)}
+      className={mergeClass(
+        "border-r border-border/40 last:border-r-0 p-3 text-sm text-text/85 align-middle has-[table]:p-0",
+        className
+      )}
       {...attr}
     />
   ),

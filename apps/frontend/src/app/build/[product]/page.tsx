@@ -24,7 +24,8 @@ export default function BuildProductSummary({
   const { loading, data, params, page, includeBuild, setParams, setPage, setIncludeBuild } =
     useProductSummary(product);
 
-  if (loading) return <LoadingPanel className="h-[70vh]" text={`Loading ${Product.Label[product]}s`} />;
+  if (loading)
+    return <LoadingPanel className="h-[70vh]" text={`Loading ${Product.Label[product]}s`} />;
 
   if (!data)
     return (

@@ -12,10 +12,7 @@ import PartFilter from "./filter/Part";
 
 const FilterComponents: {
   [key in Products]: LazyExoticComponent<
-    FunctionComponent<{
-      product: Products;
-      context: URLSearchParams;
-    }>
+    FunctionComponent<{ product: Products; context: URLSearchParams }>
   >;
 } = {
   [Products.CPU]: lazy(() => import("@/features/part/components/filter/CPU")),
@@ -51,8 +48,22 @@ export function FilterBar({
   const Component = FilterComponents[part];
   const options = new URLSearchParams(context);
 
+  const defaultAction = (formData: FormData) => {
+    const searchParams = new URLSearchParams();
+
+    formData.forEach((value, key) => {
+      if (typeof value === "string" && value.trim() !== "") {
+        searchParams.append(key, value);
+      }
+    });
+
+    router.push(`/part/${part}?${searchParams.toString()}`);
+  };
+
+  const actionHandler = rest.action ?? (rest.onSubmit ? undefined : defaultAction);
+
   return (
-    <form className={`flex flex-col gap-1 ${className}`} {...rest}>
+    <form className={`flex flex-col gap-1 ${className}`} action={actionHandler} {...rest}>
       <RowWrapper className="flex-wrap justify-between gap-2 mb-10">
         <RowWrapper className="w-full px-4 py-1 rounded-2xl border-2">
           <Input
