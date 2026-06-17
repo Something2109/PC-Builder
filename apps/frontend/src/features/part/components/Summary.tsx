@@ -48,10 +48,7 @@ export default function SummaryTable({
       </Table.Head>
       <tbody>
         {data.map((product) => (
-          <Table.Row
-            key={`Row-${product.id}`}
-            className="hover:rounded-lg hover:bg-line hover:dark:text-background"
-          >
+          <Table.Row key={`Row-${product.id}`} className="hover:rounded-lg hover:bg-line">
             {Components.map((Component) => (
               <Component key={`Row-${Component.name}-${product.id}`} defaultValue={product} />
             ))}
