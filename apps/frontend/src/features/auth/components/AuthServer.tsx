@@ -19,7 +19,8 @@ export async function verifyToken(): Promise<JwtPayload | null> {
     });
 
     if (apiResponse.ok) {
-      return await apiResponse.json();
+      const data = (await apiResponse.json()) as { user: JwtPayload | null };
+      return data.user;
     }
   } catch (err) {
     console.error("Token verification failed:", err);

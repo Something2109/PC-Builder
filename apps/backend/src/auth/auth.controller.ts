@@ -11,10 +11,10 @@ import {
   UsePipes,
 } from "@nestjs/common";
 import { CookieOptions, Request, Response } from "express";
-import { getRefreshToken } from "src/utils/auth/tokens";
+import { getAccessToken, getRefreshToken } from "src/utils/auth/tokens";
 import { ZodValidationPipe } from "src/utils/utils.modules";
 
-import { Tokens } from "@/utils/API";
+import { Session, Tokens } from "@/utils/API";
 import { LogInOptions } from "@/utils/user";
 
 import { LoginAuthorizationGuard } from "./auth.guard";
@@ -55,10 +55,20 @@ export class AuthController {
     res.json(user);
   }
 
-  @UseGuards(new LoginAuthorizationGuard(true))
   @Get("me")
-  async getMe(@Req() req: Request) {
-    return (req as any).session.sub;
+  async getMe(@Req() req: Request & { session?: Session }) {
+    const accessToken = getAccessToken(req);
+
+    if (!accessToken) {
+      return { user: null };
+    }
+
+    const session = req.session;
+    if (!session) {
+      throw new UnauthorizedException("Invalid or expired session");
+    }
+
+    return { user: session.sub };
   }
 
   @HttpCode(200)
@@ -79,8 +89,11 @@ export class AuthController {
 
   @HttpCode(200)
   @Post("logout")
-  async logOut(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    const user = (req as any).session?.sub;
+  async logOut(
+    @Req() req: Request & { session?: Session },
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const user = req.session?.sub;
     if (user) {
       await this.authService.logOut(user.username);
     }

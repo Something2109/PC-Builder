@@ -1,8 +1,8 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { redirect, usePathname, useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, createContext, useContext, useLayoutEffect } from "react";
+import { redirect, usePathname } from "next/navigation";
+import { Dispatch, SetStateAction, createContext, useContext } from "react";
 
 import axiosInstance from "@/lib/axios";
 import { JwtPayload as UserJwtPayload, Roles } from "@/utils/user";
@@ -28,8 +28,8 @@ export function AuthWrapper({
     queryKey: ["authUser"],
     queryFn: async () => {
       try {
-        const response = await axiosInstance.get("/auth/me");
-        return response.data;
+        const response = await axiosInstance.get<{ user: UserJwtPayload | null }>("/auth/me");
+        return response.data.user;
       } catch {
         return null;
       }
