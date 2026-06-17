@@ -17,9 +17,7 @@ export default async function Page({
 
   const params = new URLSearchParams(query);
 
-  const response = await fetch(
-    getBackendUrl(`/api/part?${params.toString()}`)
-  );
+  const response = await fetch(getBackendUrl(`/api/part?${params.toString()}`));
 
   if (!response.ok) return notFound();
 

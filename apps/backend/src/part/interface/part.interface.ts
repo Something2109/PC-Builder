@@ -121,11 +121,7 @@ export interface PartServiceInterface {
    * @param data - Partial details to update the part with.
    * @returns A promise resolving to the updated part detail, or null if update failed.
    */
-  set(
-    id: string,
-    part: Products,
-    data: Partial<Part.DTO>
-  ): Promise<Part.Model | null>;
+  set(id: string, part: Products, data: Partial<Part.DTO>): Promise<Part.Model | null>;
 
   /**
    * Deletes a part identified by its ID and product type.

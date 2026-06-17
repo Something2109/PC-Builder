@@ -10,18 +10,17 @@ export default function CaseRadiatorSupportDisplay({
 }: {
   defaultValue: CaseRadiatorSupport.DTO[];
 }) {
-  const value: CaseSideRadiatorObject =
-    defaultValue.reduce<CaseSideRadiatorObject>(
-      (acc: CaseSideRadiatorObject, curr: CaseRadiatorSupport.Info) => {
-        const side = curr.case_side;
-        if (!acc[side]) acc[side] = [];
+  const value: CaseSideRadiatorObject = defaultValue.reduce<CaseSideRadiatorObject>(
+    (acc: CaseSideRadiatorObject, curr: CaseRadiatorSupport.Info) => {
+      const side = curr.case_side;
+      if (!acc[side]) acc[side] = [];
 
-        acc[side].push(curr.form_factor);
+      acc[side].push(curr.form_factor);
 
-        return acc;
-      },
-      {}
-    );
+      return acc;
+    },
+    {}
+  );
 
   return (
     <Table.Component>

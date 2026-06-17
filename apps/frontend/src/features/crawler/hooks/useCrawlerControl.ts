@@ -41,7 +41,13 @@ export function useCrawlerControl() {
 
   // Start crawl session mutation
   const startCrawlMutation = useMutation({
-    mutationFn: async ({ name, selectedProducts }: { name: string; selectedProducts: string[] }) => {
+    mutationFn: async ({
+      name,
+      selectedProducts,
+    }: {
+      name: string;
+      selectedProducts: string[];
+    }) => {
       await axiosInstance.post("/crawler/start", {
         name,
         products: selectedProducts,
@@ -53,9 +59,7 @@ export function useCrawlerControl() {
     onError: (err: unknown) => {
       console.error("Failed to start crawl:", err);
       const axiosErr = err as AxiosErrorLike;
-      setError(
-        axiosErr.response?.data?.message || "Failed to start crawler."
-      );
+      setError(axiosErr.response?.data?.message || "Failed to start crawler.");
     },
   });
 
@@ -70,9 +74,7 @@ export function useCrawlerControl() {
     onError: (err: unknown) => {
       console.error("Failed to stop crawl:", err);
       const axiosErr = err as AxiosErrorLike;
-      setError(
-        axiosErr.response?.data?.message || "Failed to stop crawler."
-      );
+      setError(axiosErr.response?.data?.message || "Failed to stop crawler.");
     },
   });
 

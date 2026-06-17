@@ -12,10 +12,7 @@ import { AliasSeedService } from "./alias-seed.service";
 export class DbAliasRegistry implements IAliasRegistry, OnModuleInit {
   // In-memory cache
   private basicForward: Record<string, string[]> = {};
-  private productForward: Record<
-    string,
-    Record<string, Record<string, string[]>>
-  > = {};
+  private productForward: Record<string, Record<string, Record<string, string[]>>> = {};
 
   private basicReverse: Map<string, string> = new Map();
   private productReverse: Record<string, Map<string, ResolvedTarget[]>> = {};
@@ -43,10 +40,7 @@ export class DbAliasRegistry implements IAliasRegistry, OnModuleInit {
 
   // ── Phase 2 Lookups ──────────────────────────────────────────────
 
-  public resolveKey(
-    product: string,
-    normalizedKey: string
-  ): ResolvedTarget[] | undefined {
+  public resolveKey(product: string, normalizedKey: string): ResolvedTarget[] | undefined {
     const index = this.productReverse[product];
     if (!index) return undefined;
     return index.get(normalizedKey);
@@ -62,11 +56,7 @@ export class DbAliasRegistry implements IAliasRegistry, OnModuleInit {
     return this.productForward[product]?.[info]?.["_self"] || [];
   }
 
-  public getAttributeAliases(
-    product: string,
-    info: string,
-    attribute: string
-  ): string[] {
+  public getAttributeAliases(product: string, info: string, attribute: string): string[] {
     return this.productForward[product]?.[info]?.[attribute] || [];
   }
 
@@ -121,8 +111,7 @@ export class DbAliasRegistry implements IAliasRegistry, OnModuleInit {
 
     // 2. Update in-memory cache
     if (!this.productForward[product]) this.productForward[product] = {};
-    if (!this.productForward[product][info])
-      this.productForward[product][info] = {};
+    if (!this.productForward[product][info]) this.productForward[product][info] = {};
     if (!this.productForward[product][info][attribute])
       this.productForward[product][info][attribute] = [];
 
@@ -134,11 +123,7 @@ export class DbAliasRegistry implements IAliasRegistry, OnModuleInit {
     delete this.productTargetsCache[product];
   }
 
-  public async addInfoAlias(
-    product: string,
-    info: string,
-    alias: string
-  ): Promise<void> {
+  public async addInfoAlias(product: string, info: string, alias: string): Promise<void> {
     await this.addAlias(product, info, "_self", alias);
   }
 
@@ -208,8 +193,7 @@ export class DbAliasRegistry implements IAliasRegistry, OnModuleInit {
         this.basicReverse.set(normalizeKey(attribute), attribute);
       } else {
         if (!this.productForward[product]) this.productForward[product] = {};
-        if (!this.productForward[product][info])
-          this.productForward[product][info] = {};
+        if (!this.productForward[product][info]) this.productForward[product][info] = {};
         if (!this.productForward[product][info][attribute]) {
           this.productForward[product][info][attribute] = [];
         }
@@ -220,18 +204,13 @@ export class DbAliasRegistry implements IAliasRegistry, OnModuleInit {
         const target = { info, attribute };
         this.addToReverseIndex(product, normAlias, target);
 
-        const normAttr =
-          attribute === "_self" ? normalizeKey(info) : normalizeKey(attribute);
+        const normAttr = attribute === "_self" ? normalizeKey(info) : normalizeKey(attribute);
         this.addToReverseIndex(product, normAttr, target);
       }
     }
   }
 
-  private addToReverseIndex(
-    product: string,
-    normAlias: string,
-    target: ResolvedTarget
-  ): void {
+  private addToReverseIndex(product: string, normAlias: string, target: ResolvedTarget): void {
     if (!this.productReverse[product]) {
       this.productReverse[product] = new Map();
     }

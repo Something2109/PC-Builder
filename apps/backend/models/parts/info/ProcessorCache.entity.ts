@@ -53,5 +53,3 @@ export default class ProcessorCacheModel extends Model implements ProcessorCache
   @Column(DataType.FLOAT)
   declare L3_cache: number | null;
 }
-
-

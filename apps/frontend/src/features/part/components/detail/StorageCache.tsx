@@ -7,11 +7,7 @@ import { InfoComponent, InfoComponentObject } from "../utils/Table";
 const Components: InfoComponentObject<StorageCache.DTO> = {
   type: ({ defaultValue }) => defaultValue,
   capacity: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={MemoryUnits}
-      defaultUnit="GB"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={MemoryUnits} defaultUnit="GB" defaultValue={defaultValue} />
   ),
 };
 

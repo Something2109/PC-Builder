@@ -21,36 +21,24 @@ const ValidationContext = createContext<Validation>({
 });
 
 function useValidateAction() {
-  const [state, setState, pending] = useActionState<Build.Result, Build.List>(
-    async (_, list) => {
-      try {
-        const response = await axiosInstance.post<Build.Result>(
-          `/build/validate`,
-          list
-        );
+  const [state, setState, pending] = useActionState<Build.Result, Build.List>(async (_, list) => {
+    try {
+      const response = await axiosInstance.post<Build.Result>(`/build/validate`, list);
 
-        return response.data;
-      } catch (err) {
-        console.error(err);
-      }
-      return DefaultResult;
-    },
-    DefaultResult
-  );
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+    return DefaultResult;
+  }, DefaultResult);
 
   return { result: state, validate: setState, pending } as const;
 }
 
-function ValidationProvider({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+function ValidationProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const validation = useValidateAction();
 
-  return (
-    <ValidationContext.Provider value={validation}>
-      {children}
-    </ValidationContext.Provider>
-  );
+  return <ValidationContext.Provider value={validation}>{children}</ValidationContext.Provider>;
 }
 
 function useValidation() {

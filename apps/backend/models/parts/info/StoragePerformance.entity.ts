@@ -25,9 +25,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.STORAGE_PERF })
-export default class StoragePerformanceModel extends Model
-  implements StoragePerformance.Model
-{
+export default class StoragePerformanceModel extends Model implements StoragePerformance.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -42,6 +40,3 @@ export default class StoragePerformanceModel extends Model
   @Column(DataType.INTEGER)
   declare write_speed: number | null;
 }
-
-
-

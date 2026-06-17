@@ -7,8 +7,7 @@ import * as User from "@/utils/user";
 @Injectable()
 export class UserFilterPipe implements PipeTransform {
   transform(value: Record<string, string | string[]>) {
-    const result: User.FilterOptions & API.PageOptions =
-      API.toPageOptions(value);
+    const result: User.FilterOptions & API.PageOptions = API.toPageOptions(value);
 
     let role = Array.isArray(value["role"]) ? value["role"] : [value["role"]];
     role = role.filter((val) => Object.values(Roles).includes(val as Roles));

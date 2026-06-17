@@ -16,10 +16,7 @@ import { PartInformation } from "@/models/parts";
 import * as API from "@/utils/API";
 import Part, { Infos } from "@/utils/part";
 
-import {
-  DatabaseListInterface,
-  ModelAttributeList,
-} from "../interface/database.interface";
+import { DatabaseListInterface, ModelAttributeList } from "../interface/database.interface";
 
 type ListOptions = Part.Filter & API.PageOptions & API.SearchOptions;
 
@@ -36,10 +33,7 @@ class SequelizeListService implements DatabaseListInterface {
     return await Context.list();
   }
 
-  async filter(
-    options: ListOptions,
-    attrs: ModelAttributeList
-  ): Promise<Part.Filter> {
+  async filter(options: ListOptions, attrs: ModelAttributeList): Promise<Part.Filter> {
     const { part, ...infos } = attrs;
     const Context = new SequelizeContext(options, infos);
     const filter: Part.Filter = {};
@@ -53,9 +47,7 @@ class SequelizeListService implements DatabaseListInterface {
     const infoPromises = Object.entries(infos).map(([key, attributes]) => {
       const info = key as Infos;
       return attributes.map(async (attribute) => {
-        const value =
-          options[info]?.[attribute] ??
-          (await Context.filter(attribute, key as Infos));
+        const value = options[info]?.[attribute] ?? (await Context.filter(attribute, key as Infos));
 
         filter[info] ??= {};
         filter[info][attribute] = value;
@@ -105,9 +97,7 @@ class SequelizeContext {
 
     if (
       options.sort_key &&
-      Part.BasicAttributes.options.includes(
-        options.sort_key as Part.BasicAttributes
-      )
+      Part.BasicAttributes.options.includes(options.sort_key as Part.BasicAttributes)
     ) {
       const orderCol = filterToWhereMap[options.sort_key] || options.sort_key;
       this.orderOptions = [[orderCol, options.sort_order || "asc"]];
@@ -192,10 +182,9 @@ class SequelizeContext {
       ];
     } else {
       where = {
-        [Op.and]: [
-          this.createPartWhereOption(this.q, ""),
-          defaultFilter(this.partFilter),
-        ].filter(Boolean) as WhereOptions<PartInformation>[],
+        [Op.and]: [this.createPartWhereOption(this.q, ""), defaultFilter(this.partFilter)].filter(
+          Boolean
+        ) as WhereOptions<PartInformation>[],
       };
       options = [
         brandInclude,
@@ -206,8 +195,7 @@ class SequelizeContext {
 
     const AttrType = MainModel.getAttributes()[attribute];
 
-    if (!AttrType)
-      throw new Error(`No attribute named ${attribute} in ${MainModel.name}`);
+    if (!AttrType) throw new Error(`No attribute named ${attribute} in ${MainModel.name}`);
 
     const result = await (AttrType instanceof DataTypes.NUMBER
       ? this.filterNumberAttribute(MainModel, attribute, where, ...options)
@@ -230,8 +218,7 @@ class SequelizeContext {
     where: WhereOptions | undefined,
     ...include: IncludeOptions[]
   ): Promise<string[]> {
-    const attrExpr =
-      filterToWhereMap[attribute] || col(`${model.name}.${attribute}`);
+    const attrExpr = filterToWhereMap[attribute] || col(`${model.name}.${attribute}`);
 
     const query = (await model.findAll({
       where,
@@ -261,8 +248,7 @@ class SequelizeContext {
     where: WhereOptions | undefined,
     ...include: IncludeOptions[]
   ): Promise<number[]> {
-    const attrExpr =
-      filterToWhereMap[attribute] || col(`${model.name}.${attribute}`);
+    const attrExpr = filterToWhereMap[attribute] || col(`${model.name}.${attribute}`);
 
     const query = (await model.findOne({
       where,

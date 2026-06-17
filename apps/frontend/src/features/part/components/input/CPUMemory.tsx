@@ -27,9 +27,7 @@ function Component({
         };
 
         const add = () => {
-          const type = ConnectorInput.current?.value as
-            | InternalConnectors.RAM
-            | undefined;
+          const type = ConnectorInput.current?.value as InternalConnectors.RAM | undefined;
           if (!type) return;
 
           field.pushValue({
@@ -41,9 +39,7 @@ function Component({
           });
         };
 
-        const options = InternalConnectors.RAM.options.filter(
-          (val) => !exist(val)
-        );
+        const options = InternalConnectors.RAM.options.filter((val) => !exist(val));
 
         return (
           <Table.Component>
@@ -70,9 +66,7 @@ function Component({
                           Unit={TransferSpeedUnit}
                           defaultUnit="MT/s"
                           defaultValue={subField.state.value ?? 0}
-                          onChange={(e) =>
-                            subField.handleChange(Number(e.target.value))
-                          }
+                          onChange={(e) => subField.handleChange(Number(e.target.value))}
                         />
                       )}
                     </form.Field>
@@ -85,9 +79,7 @@ function Component({
                           Unit={MemoryUnits}
                           defaultUnit="GB"
                           defaultValue={subField.state.value ?? 0}
-                          onChange={(e) =>
-                            subField.handleChange(Number(e.target.value))
-                          }
+                          onChange={(e) => subField.handleChange(Number(e.target.value))}
                         />
                       )}
                     </form.Field>
@@ -100,9 +92,7 @@ function Component({
                           name={subField.name}
                           suffix="channel(s)"
                           defaultValue={subField.state.value ?? 0}
-                          onChange={(e) =>
-                            subField.handleChange(Number(e.target.value))
-                          }
+                          onChange={(e) => subField.handleChange(Number(e.target.value))}
                         />
                       )}
                     </form.Field>
@@ -115,9 +105,7 @@ function Component({
                           defaultUnit="GB/s"
                           name={subField.name}
                           defaultValue={subField.state.value ?? 0}
-                          onChange={(e) =>
-                            subField.handleChange(Number(e.target.value))
-                          }
+                          onChange={(e) => subField.handleChange(Number(e.target.value))}
                         />
                       )}
                     </form.Field>
@@ -128,18 +116,10 @@ function Component({
               {options.length > 0 && (
                 <Table.Row>
                   <Table.Cell>
-                    <OptionSelect
-                      ref={ConnectorInput}
-                      options={options}
-                      required
-                    />
+                    <OptionSelect ref={ConnectorInput} options={options} required />
                   </Table.Cell>
                   <Table.Cell colSpan={4}>
-                    <Button
-                      type="button"
-                      className="w-full p-0 border-0"
-                      onClick={add}
-                    >
+                    <Button type="button" className="w-full p-0 border-0" onClick={add}>
                       Add
                     </Button>
                   </Table.Cell>

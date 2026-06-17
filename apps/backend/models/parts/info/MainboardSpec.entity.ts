@@ -84,5 +84,3 @@ export default class MainboardSpecModel extends Model implements MainboardSpec.M
   @Column(DataType.TINYINT)
   declare ram_slot: number | null;
 }
-
-

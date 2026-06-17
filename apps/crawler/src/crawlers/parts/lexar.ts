@@ -16,9 +16,7 @@ const CrawlInfo: APIWebsiteInfo<Element[], Record<string, string>[]> = {
 
   path(product: Products, page = 1) {
     if (mapping[product]) {
-      const url = new URL(
-        `${domain}/product-category/${mapping[product]}/page/${page}`
-      );
+      const url = new URL(`${domain}/product-category/${mapping[product]}/page/${page}`);
 
       return { request: { url }, product };
     }
@@ -30,28 +28,22 @@ const CrawlInfo: APIWebsiteInfo<Element[], Record<string, string>[]> = {
     const dom = new JSDOM(await response.text()).window.document;
 
     const requestUrl = new URL(
-      typeof info.request === "string"
-        ? info.request
-        : (info.request as any).url || info.request
+      typeof info.request === "string" ? info.request : (info.request as any).url || info.request
     );
 
     if (requestUrl.toString().includes("product-category")) {
-      const next = [...dom.querySelectorAll(".product.type-product")].map(
-        (element) => {
-          const url = new URL(
-            element.querySelector("a")!.getAttribute("href")!
-          );
+      const next = [...dom.querySelectorAll(".product.type-product")].map((element) => {
+        const url = new URL(element.querySelector("a")!.getAttribute("href")!);
 
-          url.searchParams.set("originalUrl", url.toString());
-          const img = element.querySelector("img")?.getAttribute("src");
-          if (img) url.searchParams.set("img", img);
+        url.searchParams.set("originalUrl", url.toString());
+        const img = element.querySelector("img")?.getAttribute("src");
+        if (img) url.searchParams.set("img", img);
 
-          return {
-            request: { url },
-            product: info.product,
-          };
-        }
-      );
+        return {
+          request: { url },
+          product: info.product,
+        };
+      });
 
       return { raw: [], next };
     }
@@ -89,9 +81,7 @@ const CrawlInfo: APIWebsiteInfo<Element[], Record<string, string>[]> = {
 
     // We need to fetch metadata from URL.
     const url = new URL(
-      typeof info.request === "string"
-        ? info.request
-        : (info.request as any).url || info.request
+      typeof info.request === "string" ? info.request : (info.request as any).url || info.request
     );
 
     // But parse logic populates `data` map inside `result`.
@@ -114,17 +104,14 @@ const CrawlInfo: APIWebsiteInfo<Element[], Record<string, string>[]> = {
     if (url.searchParams.has("originalUrl")) {
       const meta: Record<string, string> = {};
       meta["url"] = url.searchParams.get("originalUrl")!;
-      if (url.searchParams.has("img"))
-        meta["img"] = url.searchParams.get("img")!;
+      if (url.searchParams.has("img")) meta["img"] = url.searchParams.get("img")!;
       result.push(meta);
     }
 
     result.push(
       ...raw.map((table) => {
         const data: Record<string, string> = {};
-        const rows = table.querySelectorAll(
-          ".wpb_text_column.wpb_content_element"
-        );
+        const rows = table.querySelectorAll(".wpb_text_column.wpb_content_element");
 
         for (let i = 0; i < rows.length; i += 2) {
           const title = rows.item(i).textContent;

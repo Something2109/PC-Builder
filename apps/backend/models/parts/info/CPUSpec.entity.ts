@@ -61,5 +61,3 @@ export default class CPUSpecModel extends Model implements CPUSpec.Model {
   @Column(DataType.STRING)
   declare lithography: string | null;
 }
-
-

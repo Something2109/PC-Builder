@@ -21,10 +21,7 @@ export class CdnController {
   @Role(Roles.ADMIN, Roles.GUEST)
   @Post("upload")
   @UseInterceptors(FileInterceptor("file"))
-  async uploadFile(
-    @UploadedFile() file: any,
-    @Req() req: Request,
-  ) {
+  async uploadFile(@UploadedFile() file: any, @Req() req: Request) {
     if (!file) {
       throw new BadRequestException("No file uploaded");
     }

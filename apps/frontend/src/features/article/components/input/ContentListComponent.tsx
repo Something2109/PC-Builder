@@ -50,18 +50,12 @@ const defaultValue: { [key in ContentName]: () => ArticleContent } = {
 };
 
 // Helper to find the parent list of a given ID in the tree
-function findParentList(
-  list: ArticleContent[],
-  id: string,
-): ArticleContent[] | null {
+function findParentList(list: ArticleContent[], id: string): ArticleContent[] | null {
   if (list.some((item) => item.id === id)) {
     return list;
   }
   for (const item of list) {
-    if (
-      (item.type === ContentName.Section || item.type === ContentName.List) &&
-      item.content
-    ) {
+    if ((item.type === ContentName.Section || item.type === ContentName.List) && item.content) {
       const res = findParentList(item.content, id);
       if (res) return res;
     }
@@ -73,16 +67,13 @@ function findParentList(
 function updateTreeArray(
   tree: ArticleContent[],
   targetArray: ArticleContent[],
-  newArray: ArticleContent[],
+  newArray: ArticleContent[]
 ): ArticleContent[] {
   if (tree === targetArray) {
     return newArray;
   }
   return tree.map((item) => {
-    if (
-      (item.type === ContentName.Section || item.type === ContentName.List) &&
-      item.content
-    ) {
+    if ((item.type === ContentName.Section || item.type === ContentName.List) && item.content) {
       if (item.content === targetArray) {
         return { ...item, content: newArray };
       }
@@ -99,7 +90,7 @@ function updateTreeArray(
 function moveItemInTree(
   tree: ArticleContent[],
   activeId: string,
-  overId: string,
+  overId: string
 ): ArticleContent[] {
   // 1. Find the parent list of the active item
   const activeParent = findParentList(tree, activeId);
@@ -133,16 +124,11 @@ function moveItemInTree(
   const nextOverParent = findParentList(tempTree, overId);
   if (!nextOverParent) {
     // Check if overId is a Section/List block container in the tree
-    const findContainerAndInsert = (
-      list: ArticleContent[],
-    ): ArticleContent[] | null => {
+    const findContainerAndInsert = (list: ArticleContent[]): ArticleContent[] | null => {
       const idx = list.findIndex((item) => item.id === overId);
       if (idx !== -1) {
         const item = list[idx];
-        if (
-          item.type === ContentName.Section ||
-          item.type === ContentName.List
-        ) {
+        if (item.type === ContentName.Section || item.type === ContentName.List) {
           const nextList = [...list];
           nextList[idx] = {
             ...item,
@@ -153,11 +139,7 @@ function moveItemInTree(
       }
       for (let i = 0; i < list.length; i++) {
         const item = list[i];
-        if (
-          (item.type === ContentName.Section ||
-            item.type === ContentName.List) &&
-          item.content
-        ) {
+        if ((item.type === ContentName.Section || item.type === ContentName.List) && item.content) {
           const res = findContainerAndInsert(item.content);
           if (res) {
             const nextList = [...list];
@@ -183,10 +165,7 @@ function moveItemInTree(
   const updatedOverParent = [...nextOverParent];
 
   // If the target is a Section/List block, we insert the dragged item inside it as the first item
-  if (
-    overItem.type === ContentName.Section ||
-    overItem.type === ContentName.List
-  ) {
+  if (overItem.type === ContentName.Section || overItem.type === ContentName.List) {
     updatedOverParent[overIdx] = {
       ...overItem,
       content: [activeItem, ...(overItem.content || [])],
@@ -224,17 +203,13 @@ export function ContentListComponent({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      const newContents = moveItemInTree(
-        contents,
-        active.id as string,
-        over.id as string,
-      );
+      const newContents = moveItemInTree(contents, active.id as string, over.id as string);
       onUpdate(newContents);
     }
   };
@@ -283,9 +258,7 @@ export function ContentListComponent({
     onUpdate([...contents, defaultValue[type]()]);
   };
 
-  const items = contents.map(
-    (item, index) => item.id || `${item.type}-${index}`,
-  );
+  const items = contents.map((item, index) => item.id || `${item.type}-${index}`);
 
   const renderList = () => (
     <SortableContext items={items} strategy={verticalListSortingStrategy}>
@@ -321,11 +294,7 @@ export function ContentListComponent({
   return (
     <div className="w-full">
       {isRoot ? (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           {renderList()}
         </DndContext>
       ) : (

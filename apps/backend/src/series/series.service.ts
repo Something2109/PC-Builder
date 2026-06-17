@@ -13,7 +13,7 @@ export class SeriesService {
     @InjectModel(SeriesModel)
     private readonly seriesModel: typeof SeriesModel,
     @InjectModel(BrandModel)
-    private readonly brandModel: typeof BrandModel,
+    private readonly brandModel: typeof BrandModel
   ) {}
 
   async list(options: API.PageOptions, brandId?: number) {
@@ -23,9 +23,10 @@ export class SeriesService {
     }
 
     const validSortFields = ["id", "name", "brandId"];
-    const order: [string, string][] | undefined = options.sort_key && validSortFields.includes(options.sort_key)
-      ? [[options.sort_key, options.sort_order || "asc"]]
-      : undefined;
+    const order: [string, string][] | undefined =
+      options.sort_key && validSortFields.includes(options.sort_key)
+        ? [[options.sort_key, options.sort_order || "asc"]]
+        : undefined;
 
     return await this.seriesModel.findAll({
       where,

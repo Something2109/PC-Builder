@@ -18,10 +18,7 @@ export default function ErrorPanel({
   reset: () => void;
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) {
   return (
-    <ColumnWrapper
-      className={mergeClass("justify-center items-center gap-4", className)}
-      {...rest}
-    >
+    <ColumnWrapper className={mergeClass("justify-center items-center gap-4", className)} {...rest}>
       <picture className="">
         <Image
           src={`/images/icons/error.png`}

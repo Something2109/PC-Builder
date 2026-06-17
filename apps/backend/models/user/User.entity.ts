@@ -25,7 +25,9 @@ enum UserModelScope {
   DETAIL = "detail",
 }
 
-@DefaultScope(() => ({ attributes: { exclude: ["password", "refreshTokenHash"] } }))
+@DefaultScope(() => ({
+  attributes: { exclude: ["password", "refreshTokenHash"] },
+}))
 @Scopes(() => ({
   [UserModelScope.VERIFY]: () => ({
     attributes: ["id", "username", "password", "role", "refreshTokenHash"],
@@ -49,11 +51,19 @@ export default class UserModel extends Model implements Type {
 
   @Index
   @NotNull
-  @Column({ type: DataType.STRING, allowNull: false, validate: { len: [8, 255] } })
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    validate: { len: [8, 255] },
+  })
   declare username: string;
 
   @NotNull
-  @Column({ type: DataType.STRING, allowNull: false, validate: { len: [8, 255] } })
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    validate: { len: [8, 255] },
+  })
   declare password: string;
 
   @Column(DataType.STRING)
@@ -72,7 +82,7 @@ export default class UserModel extends Model implements Type {
     validate: { isIn: [Object.values(Roles)] },
   })
   declare role: Roles;
- 
+
   @BeforeSave
   static async hashPassword(instance: UserModel) {
     if (instance.changed("password")) {

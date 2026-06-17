@@ -17,12 +17,8 @@ export class AliasSeedService {
   async seedIfNeeded() {
     const count = await this.aliasModel.count();
     if (count === 0) {
-      this.logger.log(
-        "Alias registry table is empty. Seeding from aliases.json..."
-      );
-      const entries = this.flattenAliasJson(
-        defaultAliases as Record<string, any>
-      );
+      this.logger.log("Alias registry table is empty. Seeding from aliases.json...");
+      const entries = this.flattenAliasJson(defaultAliases as Record<string, any>);
 
       // Insert in chunks of 100 to prevent database driver hangs on large payloads
       const chunkSize = 100;
@@ -39,12 +35,7 @@ export class AliasSeedService {
     const entries: any[] = [];
     const seen = new Set<string>();
 
-    const addEntry = (
-      product: string,
-      info: string,
-      attribute: string,
-      alias: string
-    ) => {
+    const addEntry = (product: string, info: string, attribute: string, alias: string) => {
       const normAlias = normalizeKey(alias);
       if (!normAlias) return;
       const key = `${product}::${info}::${attribute}::${normAlias}`;
@@ -63,9 +54,7 @@ export class AliasSeedService {
 
     for (const [topKey, topValue] of Object.entries(data)) {
       if (topKey === "basic") {
-        for (const [attr, aliases] of Object.entries(
-          topValue as Record<string, string[]>
-        )) {
+        for (const [attr, aliases] of Object.entries(topValue as Record<string, string[]>)) {
           addEntry("basic", "", attr, attr);
           for (const alias of aliases) {
             addEntry("basic", "", attr, alias);

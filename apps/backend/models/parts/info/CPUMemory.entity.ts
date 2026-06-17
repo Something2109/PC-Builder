@@ -56,5 +56,3 @@ export default class CPUMemoryModel extends Model implements CPUMemory.Model {
   @Column(DataType.FLOAT)
   declare bandwidth: number | null;
 }
-
-

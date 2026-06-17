@@ -1,7 +1,4 @@
-import {
-  MinMaxRangeInput,
-  UnitMinMaxRangeInput,
-} from "@/ui/Input";
+import { MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
 import * as GraphicCard from "@/utils/part/product/GraphicCard";
 import { FrequencyUnits, LengthUnits } from "@/utils/Units";
 

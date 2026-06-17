@@ -13,15 +13,12 @@ async function validateAccessToken(request: NextRequest) {
   if (!accessToken) return false;
 
   try {
-    const apiResponse = await fetch(
-      getBackendUrl("/api/auth/me"),
-      {
-        method: "GET",
-        headers: {
-          Cookie: `${Tokens.ACCESS}=${accessToken.value}`,
-        },
-      }
-    );
+    const apiResponse = await fetch(getBackendUrl("/api/auth/me"), {
+      method: "GET",
+      headers: {
+        Cookie: `${Tokens.ACCESS}=${accessToken.value}`,
+      },
+    });
 
     return apiResponse.ok;
   } catch (error) {
@@ -42,13 +39,10 @@ export async function proxy(request: NextRequest) {
 
   if (refreshToken) {
     try {
-      const apiResponse = await fetch(
-        getBackendUrl("/api/auth/refresh"),
-        {
-          method: "POST",
-          headers: { Cookie: request.headers.get("cookie") || "" },
-        }
-      );
+      const apiResponse = await fetch(getBackendUrl("/api/auth/refresh"), {
+        method: "POST",
+        headers: { Cookie: request.headers.get("cookie") || "" },
+      });
 
       if (apiResponse.ok) {
         let newAccessToken = "";
@@ -74,9 +68,7 @@ export async function proxy(request: NextRequest) {
         const originalCookies = request.headers.get("cookie") || "";
         const cookieList = originalCookies.split(";").map((c) => c.trim());
         // Remove old access token cookie from headers to prevent duplicates
-        const otherCookies = cookieList.filter(
-          (c) => !c.startsWith(`${Tokens.ACCESS}=`)
-        );
+        const otherCookies = cookieList.filter((c) => !c.startsWith(`${Tokens.ACCESS}=`));
 
         if (newAccessToken) {
           const updatedCookieHeader = [
@@ -93,9 +85,7 @@ export async function proxy(request: NextRequest) {
         });
 
         // Set the new cookies back to the browser
-        backendCookies.forEach((cookie) =>
-          response.headers.append("Set-Cookie", cookie)
-        );
+        backendCookies.forEach((cookie) => response.headers.append("Set-Cookie", cookie));
 
         return response;
       }

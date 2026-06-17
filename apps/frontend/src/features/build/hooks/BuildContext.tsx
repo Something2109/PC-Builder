@@ -32,11 +32,7 @@ class BuildDetailBuilder {
   }
 
   add(product: Products, summary: Part.Summary) {
-    if (
-      !ArrayProducts.has(product) &&
-      this.details[product] &&
-      this.details[product].length > 1
-    ) {
+    if (!ArrayProducts.has(product) && this.details[product] && this.details[product].length > 1) {
       return undefined;
     }
 
@@ -71,9 +67,7 @@ class BuildDetailBuilder {
 
         return [key, list[0]];
       })
-      .filter(
-        ([, list]) => list && (Array.isArray(list) ? list.length > 0 : true)
-      );
+      .filter(([, list]) => list && (Array.isArray(list) ? list.length > 0 : true));
 
     return Object.fromEntries(entries);
   }
@@ -85,9 +79,7 @@ class BuildDetailBuilder {
 
         return [key, list[0]];
       })
-      .filter(
-        ([, list]) => list && (Array.isArray(list) ? list.length > 0 : true)
-      );
+      .filter(([, list]) => list && (Array.isArray(list) ? list.length > 0 : true));
 
     return Object.fromEntries(entries);
   }
@@ -131,11 +123,7 @@ const BuildPartContext = createContext<BuildContext>({
 function BuildProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const buildDetail = useBuildDetails({});
 
-  return (
-    <BuildPartContext.Provider value={buildDetail}>
-      {children}
-    </BuildPartContext.Provider>
-  );
+  return <BuildPartContext.Provider value={buildDetail}>{children}</BuildPartContext.Provider>;
 }
 
 function useBuildContext() {

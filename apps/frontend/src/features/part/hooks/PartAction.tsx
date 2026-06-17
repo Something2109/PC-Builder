@@ -11,10 +11,7 @@ function createPayload(formData: FormData | null) {
   };
 
   if (formData) {
-    const raw = Object.fromEntries(formData.entries()) as Record<
-      string,
-      string | undefined
-    >;
+    const raw = Object.fromEntries(formData.entries()) as Record<string, string | undefined>;
     if (!raw.url) raw.url = undefined;
     if (!raw.image_url) raw.image_url = undefined;
 
@@ -30,34 +27,32 @@ function createPayload(formData: FormData | null) {
 
 export default function usePartAction(path: string, defaultValue?: Part.DTO) {
   const [error, setError] = useState<string | null>(null);
-  const [formValue, save, pending] = useActionState<
-    Part.DTO | undefined,
-    FormData | null
-  >(async (prev, formData) => {
-    let operation = "add";
-    if (!prev) operation = formData ? "save" : "delete";
+  const [formValue, save, pending] = useActionState<Part.DTO | undefined, FormData | null>(
+    async (prev, formData) => {
+      let operation = "add";
+      if (!prev) operation = formData ? "save" : "delete";
 
-    const RequestPayload = { ...createPayload(formData), url: path };
+      const RequestPayload = { ...createPayload(formData), url: path };
 
-    setError(null);
-    if (!confirm(`Are you sure you want to ${operation} basic info?`))
-      return prev;
+      setError(null);
+      if (!confirm(`Are you sure you want to ${operation} basic info?`)) return prev;
 
-    try {
-      const response = await axios.request<Part.BasicInfo>(RequestPayload);
+      try {
+        const response = await axios.request<Part.BasicInfo>(RequestPayload);
 
-      alert(`Successfully ${operation} part info.`);
+        alert(`Successfully ${operation} part info.`);
 
-      return response.data;
-    } catch (err) {
-      const error = err as AxiosError<{ message: string }>;
-      const message =
-        error.response?.data.message ?? "Cannot connect to server.";
+        return response.data;
+      } catch (err) {
+        const error = err as AxiosError<{ message: string }>;
+        const message = error.response?.data.message ?? "Cannot connect to server.";
 
-      setError(message);
-      return prev;
-    }
-  }, defaultValue);
+        setError(message);
+        return prev;
+      }
+    },
+    defaultValue
+  );
 
   return [formValue, save, pending, error, setError] as const;
 }

@@ -16,8 +16,7 @@ const CasePSURule: AttributeRule<typeof attributes> = {
 
   validate(build) {
     const result: ReturnType<typeof this.validate> = {};
-    const { psu_form_factor, psu_length, case_psu_support, case_psu_length } =
-      build;
+    const { psu_form_factor, psu_length, case_psu_support, case_psu_length } = build;
 
     if (!psu_form_factor) {
       result.psu_form_factor = "PSU form factor is not specified.";
@@ -35,10 +34,7 @@ const CasePSURule: AttributeRule<typeof attributes> = {
       result.case_psu_length = "Case PSU length support is not specified.";
     }
 
-    if (
-      (!psu_form_factor || case_psu_support.length === 0) &&
-      (!psu_length || !case_psu_length)
-    )
+    if ((!psu_form_factor || case_psu_support.length === 0) && (!psu_length || !case_psu_length))
       return result;
 
     if (
@@ -57,8 +53,7 @@ const CasePSURule: AttributeRule<typeof attributes> = {
   },
 
   filter(build) {
-    const { psu_form_factor, psu_length, case_psu_support, case_psu_length } =
-      build;
+    const { psu_form_factor, psu_length, case_psu_support, case_psu_length } = build;
     const result: ReturnType<typeof this.filter> = {};
 
     if (psu_length) {
@@ -70,9 +65,7 @@ const CasePSURule: AttributeRule<typeof attributes> = {
     }
 
     if (case_psu_support && case_psu_support.length > 0) {
-      result.psu_form_factor = case_psu_support.filter(
-        (formFactor) => formFactor !== undefined
-      );
+      result.psu_form_factor = case_psu_support.filter((formFactor) => formFactor !== undefined);
     }
 
     if (case_psu_length) {

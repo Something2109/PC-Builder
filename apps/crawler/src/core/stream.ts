@@ -84,10 +84,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     this.extractStream = this.initStage(this.createExtractStream);
     this.outputTransform = this.createResultFilter();
 
-    const streams: PipelineTransform<any, any>[] = [
-      this.fetchStream,
-      this.extractStream,
-    ];
+    const streams: PipelineTransform<any, any>[] = [this.fetchStream, this.extractStream];
 
     if (!this.info || this.info.parse) {
       this.parseStream = this.initStage(this.createParseStream);
@@ -123,11 +120,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
    * @param encoding The encoding (ignored for object mode).
    * @param callback Callback when write is complete.
    */
-  _write(
-    chunk: any,
-    encoding: BufferEncoding,
-    callback: (error?: Error | null) => void
-  ): void {
+  _write(chunk: any, encoding: BufferEncoding, callback: (error?: Error | null) => void): void {
     if (this.inputTransform.write(chunk, encoding)) {
       callback();
     } else {
@@ -209,8 +202,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
       async (info: CrawlInfo<InternalStage.Init>) => {
         // Resolve scraper configuration dynamically
         const url = info.data[InternalStage.Init].url;
-        const api =
-          this.info || (await ScraperRegistry.getScraper(url.hostname));
+        const api = this.info || (await ScraperRegistry.getScraper(url.hostname));
 
         // Respect scraper rate limit and delay per domain name
         const delayMs = api.delayMs !== undefined ? api.delayMs : 1000;
@@ -253,51 +245,40 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
    * @returns The configured extract stream.
    */
   private readonly createExtractStream = () => {
-    return new PipelineTransform(
-      async (info: CrawlInfo<InternalStage.Fetch>) => {
-        // Resolve scraper configuration dynamically
-        const url = info.data[InternalStage.Init].url;
-        const api =
-          this.info || (await ScraperRegistry.getScraper(url.hostname));
+    return new PipelineTransform(async (info: CrawlInfo<InternalStage.Fetch>) => {
+      // Resolve scraper configuration dynamically
+      const url = info.data[InternalStage.Init].url;
+      const api = this.info || (await ScraperRegistry.getScraper(url.hostname));
 
-        // Retrieve from cache
-        const fetchCacheKey = info.data.fetch;
-        const htmlText = await this.cache.get<string>(fetchCacheKey);
+      // Retrieve from cache
+      const fetchCacheKey = info.data.fetch;
+      const htmlText = await this.cache.get<string>(fetchCacheKey);
 
-        const mockResponse = {
-          text: async () => htmlText,
-          json: async () => JSON.parse(htmlText),
-          ok: true,
-          status: 200,
-        } as any;
+      const mockResponse = {
+        text: async () => htmlText,
+        json: async () => JSON.parse(htmlText),
+        ok: true,
+        status: 200,
+      } as any;
 
-        // Corrected arguments order: response first, info second
-        const result = await api.extract(mockResponse, info);
-        await this.cache.delete(fetchCacheKey);
+      // Corrected arguments order: response first, info second
+      const result = await api.extract(mockResponse, info);
+      await this.cache.delete(fetchCacheKey);
 
-        const { raw, next } = Array.isArray(result)
-          ? { raw: result, next: [] }
-          : result;
+      const { raw, next } = Array.isArray(result) ? { raw: result, next: [] } : result;
 
-        if (next) {
-          next.forEach((item: RequestOptions) =>
-            this.inputTransform.write(item)
-          );
-        }
-
-        return await Promise.all(
-          raw.map(async (item, index) => {
-            const extractCacheKey = `extract:${info.product}:${info.index}:${index}:${Date.now()}:${Math.random()}`;
-            await this.cache.set(extractCacheKey, item);
-            return this.createNextCrawlInfo(
-              info,
-              InternalStage.Extract,
-              extractCacheKey
-            );
-          })
-        );
+      if (next) {
+        next.forEach((item: RequestOptions) => this.inputTransform.write(item));
       }
-    );
+
+      return await Promise.all(
+        raw.map(async (item, index) => {
+          const extractCacheKey = `extract:${info.product}:${info.index}:${index}:${Date.now()}:${Math.random()}`;
+          await this.cache.set(extractCacheKey, item);
+          return this.createNextCrawlInfo(info, InternalStage.Extract, extractCacheKey);
+        })
+      );
+    });
   };
 
   /**
@@ -306,31 +287,24 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
    * @returns The configured parse stream, or undefined if api.parse is irrelevant.
    */
   private readonly createParseStream = () => {
-    return new PipelineTransform(
-      async (info: CrawlInfo<InternalStage.Extract>) => {
-        // Resolve scraper configuration dynamically
-        const url = info.data[InternalStage.Init].url;
-        const api =
-          this.info || (await ScraperRegistry.getScraper(url.hostname));
+    return new PipelineTransform(async (info: CrawlInfo<InternalStage.Extract>) => {
+      // Resolve scraper configuration dynamically
+      const url = info.data[InternalStage.Init].url;
+      const api = this.info || (await ScraperRegistry.getScraper(url.hostname));
 
-        const extractCacheKey = info.data.extract;
-        const rawData = await this.cache.get<Raw>(extractCacheKey);
+      const extractCacheKey = info.data.extract;
+      const rawData = await this.cache.get<Raw>(extractCacheKey);
 
-        let result: Final = rawData as unknown as Final;
-        if (api.parse) {
-          result = (await api.parse(rawData, info)) as Final;
-        }
-        await this.cache.delete(extractCacheKey);
-
-        const parseCacheKey = `parse:${info.product}:${info.index}:${Date.now()}:${Math.random()}`;
-        await this.cache.set(parseCacheKey, result);
-        return this.createNextCrawlInfo(
-          info,
-          InternalStage.Parse,
-          parseCacheKey
-        );
+      let result: Final = rawData as unknown as Final;
+      if (api.parse) {
+        result = (await api.parse(rawData, info)) as Final;
       }
-    );
+      await this.cache.delete(extractCacheKey);
+
+      const parseCacheKey = `parse:${info.product}:${info.index}:${Date.now()}:${Math.random()}`;
+      await this.cache.set(parseCacheKey, result);
+      return this.createNextCrawlInfo(info, InternalStage.Parse, parseCacheKey);
+    });
   };
 
   /**
@@ -344,17 +318,10 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     const self = this;
     return new Transform({
       objectMode: true,
-      async transform(
-        chunk: any,
-        _encoding: BufferEncoding,
-        callback: TransformCallback
-      ) {
+      async transform(chunk: any, _encoding: BufferEncoding, callback: TransformCallback) {
         try {
           if (chunk && typeof chunk === "object" && !chunk.error) {
-            if (
-              chunk.stage === InternalStage.Parse ||
-              chunk.stage === InternalStage.Extract
-            ) {
+            if (chunk.stage === InternalStage.Parse || chunk.stage === InternalStage.Extract) {
               const parseKey = chunk.data[chunk.stage];
               const parsedData = await self.cache.get<any>(parseKey);
               if (process.connected) {
@@ -393,10 +360,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
    * @param result The result from the process function.
    * @returns The new `CrawlInfo`.
    */
-  private createNextCrawlInfo<
-    Prev extends InternalStage,
-    Stage extends InternalStage,
-  >(
+  private createNextCrawlInfo<Prev extends InternalStage, Stage extends InternalStage>(
     prev: CrawlInfo<Prev>,
     stage: Stage,
     result: CrawlData<Stage>

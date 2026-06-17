@@ -4,11 +4,7 @@ import axios from "axios";
 import { uploadFile } from "@/features/article/components/utils";
 
 export function useImageUpload() {
-  const uploadMutation = useMutation<
-    string,
-    unknown,
-    { file: File; subfolder?: string }
-  >({
+  const uploadMutation = useMutation<string, unknown, { file: File; subfolder?: string }>({
     mutationFn: async ({ file, subfolder }) => {
       return uploadFile(file, subfolder);
     },
@@ -22,8 +18,7 @@ export function useImageUpload() {
   if (uploadMutation.error) {
     const err = uploadMutation.error;
     if (axios.isAxiosError(err)) {
-      errorMsg =
-        err.response?.data?.message || err.message || "Failed to upload image";
+      errorMsg = err.response?.data?.message || err.message || "Failed to upload image";
     } else if (err instanceof Error) {
       errorMsg = err.message;
     } else {

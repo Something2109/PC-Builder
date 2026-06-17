@@ -27,11 +27,7 @@ export function PartSummaryCells({
       <td className="col-span-2">
         <a href={`/part/${part}/${id}`}>
           <RowWrapper className="align-middle items-center font-bold">
-            <PartPicture
-              part={part}
-              src={image_url ?? undefined}
-              className="h-16 m-2"
-            />
+            <PartPicture part={part} src={image_url ?? undefined} className="h-16 m-2" />
             {name}
           </RowWrapper>
         </a>

@@ -55,5 +55,3 @@ export default class CPUBlockSpecModel extends Model implements CPUBlockSpec.Mod
   })
   declare rgb: InternalConnectors.RGB | null;
 }
-
-

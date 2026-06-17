@@ -43,9 +43,7 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
 
   async extract(response, info) {
     const requestUrl = new URL(
-      typeof info.request === "string"
-        ? info.request
-        : (info.request as any).url || info.request
+      typeof info.request === "string" ? info.request : (info.request as any).url || info.request
     );
 
     if (requestUrl.pathname.includes("GetConsumerListPageInfo")) {
@@ -53,9 +51,7 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
       const dom = new JSDOM(data).window.document;
 
       let next = [...dom.querySelectorAll(".product_list_box")].map((raw) => {
-        const productId = raw
-          .querySelector(".WTB_button")!
-          .getAttribute("data-ProductId");
+        const productId = raw.querySelector(".WTB_button")!.getAttribute("data-ProductId");
         const nextUrl = new URL(`${domain}/api/ProductSpec/${productId}`);
 
         const productUrl = `${domain}${raw
@@ -93,9 +89,7 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
       // `gigabyte.ts` `path` accepts `page`.
       // We need to return `next` request for page+1.
 
-      const totalPages = Number(
-        dom.querySelector(".pageMaximumPage")?.textContent
-      );
+      const totalPages = Number(dom.querySelector(".pageMaximumPage")?.textContent);
       // We can try to guess current page from `info.index`? No.
       // We should encode page number in the initial URL query param too even if unused by API, just for state tracking?
       // Or we can rely on `gigabyte.ts` path implementation.
@@ -111,11 +105,7 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
 
     const list = [];
     const data = await response.json();
-    if (
-      !data ||
-      !Array.isArray(data.ProductSpecList) ||
-      !data.ProductSpecList[0]
-    ) {
+    if (!data || !Array.isArray(data.ProductSpecList) || !data.ProductSpecList[0]) {
       throw new Error(`There's possibly a change in the API of ${domain}`);
     }
 

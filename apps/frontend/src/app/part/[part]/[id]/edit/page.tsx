@@ -17,9 +17,7 @@ export default async function PartDetailEditPage({
 }) {
   const { part, id } = await params;
 
-  const response = await fetch(
-    getBackendUrl(`/api/part/${part}/${id}`)
-  );
+  const response = await fetch(getBackendUrl(`/api/part/${part}/${id}`));
 
   if (!response.ok) return notFound();
 
@@ -31,12 +29,7 @@ export default async function PartDetailEditPage({
       <PartForm path={SaveLink} part={part} defaultValue={data} />
       <ResponsiveWrapper className="w-full align-top flex-wrap">
         {Mapping.Info[part].map((info) => (
-          <InfoForm
-            key={info}
-            path={SaveLink}
-            info={info}
-            defaultValue={data}
-          />
+          <InfoForm key={info} path={SaveLink} info={info} defaultValue={data} />
         ))}
       </ResponsiveWrapper>
     </AuthRole>

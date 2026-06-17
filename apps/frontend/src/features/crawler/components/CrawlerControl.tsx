@@ -68,9 +68,7 @@ export default function CrawlerControl() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {scrapers.map((scraper) => {
                   // Find running session for this scraper to determine action states
-                  const runningSession = sessions.find(
-                    (s) => s.name === scraper.name
-                  );
+                  const runningSession = sessions.find((s) => s.name === scraper.name);
                   return (
                     <ScraperCard
                       key={scraper.name}

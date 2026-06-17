@@ -23,10 +23,7 @@ type FieldAsyncValidation<Data extends object, Name extends DeepKeys<Data>> =
   | undefined
   | FieldAsyncValidateOrFn<Data, Name, DeepValue<Data, Name>>;
 
-export type FormApi<
-  TFormData extends object,
-  TSubmitMeta = unknown,
-> = ReactFormExtendedApi<
+export type FormApi<TFormData extends object, TSubmitMeta = unknown> = ReactFormExtendedApi<
   TFormData,
   FormValidation<TFormData>,
   StandardSchemaV1<TFormData>,
@@ -41,10 +38,7 @@ export type FormApi<
   TSubmitMeta
 >;
 
-export type FormOptions<
-  TFormData extends object,
-  TSubmitMeta = unknown,
-> = TanstackFormOptions<
+export type FormOptions<TFormData extends object, TSubmitMeta = unknown> = TanstackFormOptions<
   TFormData,
   FormValidation<TFormData>,
   StandardSchemaV1<TFormData>,
@@ -91,9 +85,9 @@ export type FieldApi<
 
 export type ArrayForm<Item> = { items: Item[] };
 
-export type ArrayFormApi<
-  TFormData extends object,
-  TSubmitMeta = unknown,
-> = FormApi<ArrayForm<TFormData>, TSubmitMeta>;
+export type ArrayFormApi<TFormData extends object, TSubmitMeta = unknown> = FormApi<
+  ArrayForm<TFormData>,
+  TSubmitMeta
+>;
 
 export type ArrayFieldApi<T> = FieldApi<ArrayForm<T>, "items">;

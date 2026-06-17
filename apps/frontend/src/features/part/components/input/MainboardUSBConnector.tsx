@@ -34,9 +34,7 @@ function Component({
           <Table.Component>
             <Table.Head>
               <Table.Row>
-                <Table.Cell>
-                  {MainboardUSBConnector.Label.generation}
-                </Table.Cell>
+                <Table.Cell>{MainboardUSBConnector.Label.generation}</Table.Cell>
                 <Table.Cell>{MainboardUSBConnector.Label.connector}</Table.Cell>
                 <Table.Cell>{MainboardUSBConnector.Label.count}</Table.Cell>
               </Table.Row>
@@ -47,22 +45,14 @@ function Component({
                   <Table.Cell>
                     <form.Field name={`items[${index}].generation`}>
                       {(subField) => (
-                        <Input
-                          name={subField.name}
-                          value={subField.state.value}
-                          readOnly
-                        />
+                        <Input name={subField.name} value={subField.state.value} readOnly />
                       )}
                     </form.Field>
                   </Table.Cell>
                   <Table.Cell>
                     <form.Field name={`items[${index}].connector`}>
                       {(subField) => (
-                        <Input
-                          name={subField.name}
-                          value={subField.state.value}
-                          readOnly
-                        />
+                        <Input name={subField.name} value={subField.state.value} readOnly />
                       )}
                     </form.Field>
                   </Table.Cell>
@@ -73,9 +63,7 @@ function Component({
                           type="number"
                           name={subField.name}
                           value={subField.state.value ?? 0}
-                          onChange={(e) =>
-                            subField.handleChange(Number(e.target.value))
-                          }
+                          onChange={(e) => subField.handleChange(Number(e.target.value))}
                         />
                       )}
                     </form.Field>
@@ -104,10 +92,8 @@ function AddRow({
   const ConnectorInput = useRef<HTMLSelectElement>(null);
 
   const onAdd = () => {
-    const generation = GenerationInput.current!
-      .value as ExternalPorts.Peripheral.USB.Generation;
-    const connector = ConnectorInput.current!
-      .value as ExternalPorts.Peripheral.USB.Connector;
+    const generation = GenerationInput.current!.value as ExternalPorts.Peripheral.USB.Generation;
+    const connector = ConnectorInput.current!.value as ExternalPorts.Peripheral.USB.Connector;
 
     add(generation, connector);
   };
@@ -137,7 +123,4 @@ function AddRow({
   );
 }
 
-export default GenericListInputForm(
-  Component,
-  MainboardUSBConnector.Schemas.DTO
-);
+export default GenericListInputForm(Component, MainboardUSBConnector.Schemas.DTO);

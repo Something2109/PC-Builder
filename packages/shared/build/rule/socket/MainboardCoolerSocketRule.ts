@@ -41,9 +41,7 @@ const MainboardCoolerSocketRule: AttributeRule<typeof attributes> = {
     }
 
     if (cooler_socket && cooler_socket.length > 0) {
-      result.mainboard_socket = cooler_socket.filter(
-        (socket) => socket !== undefined
-      );
+      result.mainboard_socket = cooler_socket.filter((socket) => socket !== undefined);
     }
 
     return result;

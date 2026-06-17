@@ -38,17 +38,13 @@ function Component({
           field.removeValue(index);
         };
 
-        const options = InternalConnectors.Storage.Options.filter(
-          (val) => !exist(val)
-        );
+        const options = InternalConnectors.Storage.Options.filter((val) => !exist(val));
 
         return (
           <Table.Component>
             <Table.Head>
               <Table.Row>
-                <Table.Cell>
-                  {MainboardStorageConnector.Label.form_factor}
-                </Table.Cell>
+                <Table.Cell>{MainboardStorageConnector.Label.form_factor}</Table.Cell>
                 <Table.Cell>{MainboardStorageConnector.Label.count}</Table.Cell>
               </Table.Row>
             </Table.Head>
@@ -65,9 +61,7 @@ function Component({
                           type="number"
                           name={subField.name}
                           value={subField.state.value ?? 0}
-                          onChange={(e) =>
-                            subField.handleChange(Number(e.target.value))
-                          }
+                          onChange={(e) => subField.handleChange(Number(e.target.value))}
                         />
                       )}
                     </form.Field>
@@ -78,18 +72,10 @@ function Component({
               {options.length > 0 && (
                 <Table.Row>
                   <Table.Cell>
-                    <OptionSelect
-                      ref={ConnectorInput}
-                      options={options}
-                      required
-                    />
+                    <OptionSelect ref={ConnectorInput} options={options} required />
                   </Table.Cell>
                   <Table.Cell>
-                    <Button
-                      type="button"
-                      className="w-full p-0 border-0"
-                      onClick={add}
-                    >
+                    <Button type="button" className="w-full p-0 border-0" onClick={add}>
                       Add
                     </Button>
                   </Table.Cell>
@@ -103,7 +89,4 @@ function Component({
   );
 }
 
-export default GenericListInputForm(
-  Component,
-  MainboardStorageConnector.Schemas.DTO
-);
+export default GenericListInputForm(Component, MainboardStorageConnector.Schemas.DTO);

@@ -42,10 +42,7 @@ export default async function PartListPage({
     <ColumnWrapper className="w-full">
       <ColumnWrapper>
         <RowWrapper className="flex-wrap justify-between place-items-center">
-          <h1
-            className="text-xl font-bold"
-            id="list"
-          >{`${data.total} ${Product.Label[part]}`}</h1>
+          <h1 className="text-xl font-bold" id="list">{`${data.total} ${Product.Label[part]}`}</h1>
           <ToggleButton label="Filter">
             <FilterBar
               className="w-full border-2 border-line rounded-xl p-2"

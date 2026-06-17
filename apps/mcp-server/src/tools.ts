@@ -74,9 +74,7 @@ export function registerAllTools(server: McpServer) {
       try {
         const response = await axios.get(url);
         return {
-          content: [
-            { type: "text", text: JSON.stringify(response.data, null, 2) },
-          ],
+          content: [{ type: "text", text: JSON.stringify(response.data, null, 2) }],
         };
       } catch (error: any) {
         const errorMessage = error.response?.data
@@ -148,9 +146,7 @@ export function registerAllTools(server: McpServer) {
       try {
         const response = await axios.post(url, build_list, { params });
         return {
-          content: [
-            { type: "text", text: JSON.stringify(response.data, null, 2) },
-          ],
+          content: [{ type: "text", text: JSON.stringify(response.data, null, 2) }],
         };
       } catch (error: any) {
         const errorMessage = error.response?.data

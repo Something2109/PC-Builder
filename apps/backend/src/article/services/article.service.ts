@@ -2,16 +2,20 @@ import { Injectable, ConflictException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Document, Model } from "mongoose";
 
-import { Article, ArticleStatus, Summary, CreateArticleDto, UpdateArticleDto } from "@/utils/article";
+import {
+  Article,
+  ArticleStatus,
+  Summary,
+  CreateArticleDto,
+  UpdateArticleDto,
+} from "@/utils/article";
 import { Products } from "@/utils/part";
 
 import { ArticleClass } from "../entities/Article.entity";
 
 @Injectable()
 export class ArticleService {
-  constructor(
-    @InjectModel("article") private articleModel: Model<ArticleClass>,
-  ) {}
+  constructor(@InjectModel("article") private articleModel: Model<ArticleClass>) {}
 
   /**
    * List the articles that match the criteria.
@@ -41,7 +45,8 @@ export class ArticleService {
       sortConfig.createdAt = -1;
     }
 
-    const instances = await this.articleModel.find(query)
+    const instances = await this.articleModel
+      .find(query)
       .select({
         _id: 1,
         slug: 1,
@@ -73,7 +78,7 @@ export class ArticleService {
   async getByIdOrSlug(idOrSlug: string, isPreview = false): Promise<Article | null> {
     const isId = idOrSlug.match(/^[0-9a-fA-F]{24}$/);
     const query = isId ? { _id: idOrSlug } : { slug: idOrSlug };
-    
+
     const instance = await this.articleModel.findOne(query);
     if (!instance) return null;
 
@@ -83,9 +88,10 @@ export class ArticleService {
 
     // Safely increment view count asynchronously if accessed as published article
     if (instance.status === ArticleStatus.Published) {
-      this.articleModel.updateOne(query, { $inc: { views: 1 } }).exec().catch((e) =>
-        console.error("Failed to increment views:", e),
-      );
+      this.articleModel
+        .updateOne(query, { $inc: { views: 1 } })
+        .exec()
+        .catch((e) => console.error("Failed to increment views:", e));
     }
 
     return this.toArticleType(instance);
@@ -98,7 +104,7 @@ export class ArticleService {
    */
   async create(dto: CreateArticleDto): Promise<Article> {
     let slug = dto.slug;
-    
+
     // Ensure slug uniqueness in the database
     let suffix = 1;
     const originalSlug = slug;
@@ -131,7 +137,10 @@ export class ArticleService {
 
     if (dto.slug && dto.slug !== instance.slug) {
       // Check duplicate slug for other records
-      const duplicate = await this.articleModel.findOne({ slug: dto.slug, _id: { $ne: id } });
+      const duplicate = await this.articleModel.findOne({
+        slug: dto.slug,
+        _id: { $ne: id },
+      });
       if (duplicate) {
         throw new ConflictException("Slug is already taken by another article");
       }
@@ -180,9 +189,7 @@ export class ArticleService {
    * @param instance The mongodb article class to transform.
    * @returns The corresponding article type object.
    */
-  private toArticleType(
-    instance: Document<unknown, {}, ArticleClass>,
-  ): Article {
+  private toArticleType(instance: Document<unknown, {}, ArticleClass>): Article {
     const json = instance.toJSON();
     const { _id, __v, ...obj } = json;
 

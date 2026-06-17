@@ -26,11 +26,7 @@ class PipelineTransform<T, Final> extends Transform {
     this.processFn = processFn;
   }
 
-  _transform(
-    chunk: T | ErrorObject,
-    _: BufferEncoding,
-    callback: TransformCallback
-  ) {
+  _transform(chunk: T | ErrorObject, _: BufferEncoding, callback: TransformCallback) {
     if (this.isErrorOutput(chunk)) {
       callback();
     } else {

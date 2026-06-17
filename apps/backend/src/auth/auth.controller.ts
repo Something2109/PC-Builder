@@ -32,10 +32,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() payload: LogInOptions
   ) {
-    const { user, tokens } = await this.authService.signUp(
-      payload.username,
-      payload.password
-    );
+    const { user, tokens } = await this.authService.signUp(payload.username, payload.password);
 
     this.setTokens(req, res, tokens);
 
@@ -51,10 +48,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() payload: LogInOptions
   ) {
-    const { user, tokens } = await this.authService.logIn(
-      payload.username,
-      payload.password
-    );
+    const { user, tokens } = await this.authService.logIn(payload.username, payload.password);
 
     this.setTokens(req, res, tokens);
 
@@ -69,10 +63,7 @@ export class AuthController {
 
   @HttpCode(200)
   @Post("refresh")
-  async refreshToken(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response
-  ) {
+  async refreshToken(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const refresh_token = getRefreshToken(req);
 
     if (!refresh_token) {

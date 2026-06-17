@@ -9,10 +9,7 @@ export default function LoadingPanel({
   text,
   className,
   ...rest
-}: { text: string } & DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->) {
+}: { text: string } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) {
   const LoadingText = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -28,10 +25,7 @@ export default function LoadingPanel({
   }, [text]);
 
   return (
-    <ColumnWrapper
-      className={mergeClass("justify-center items-center gap-4", className)}
-      {...rest}
-    >
+    <ColumnWrapper className={mergeClass("justify-center items-center gap-4", className)} {...rest}>
       <h1 ref={LoadingText} className="block text-bold text-2xl">
         {text}
       </h1>

@@ -50,10 +50,7 @@ export class SeriesController {
 
   @Role(Roles.ADMIN)
   @Put(":id")
-  async update(
-    @Param("id", ParseIntPipe) id: number,
-    @Body(UpdateValidator) dto: UpdateSeriesDto,
-  ) {
+  async update(@Param("id", ParseIntPipe) id: number, @Body(UpdateValidator) dto: UpdateSeriesDto) {
     return await this.seriesService.update(id, dto);
   }
 

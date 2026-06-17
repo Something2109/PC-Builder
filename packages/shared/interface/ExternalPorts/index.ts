@@ -11,13 +11,7 @@ import { Ethernet } from "./Network";
 import { Schema as PeripheralSchema } from "./Peripheral";
 import { USB, PS2 } from "./Peripheral";
 
-export const Type = z.enum([
-  "Network",
-  "Peripheral",
-  "Display",
-  "Audio",
-  "Interaction",
-]);
+export const Type = z.enum(["Network", "Peripheral", "Display", "Audio", "Interaction"]);
 
 export type Type = z.infer<typeof Type>;
 
@@ -31,11 +25,7 @@ export type Peripheral = USB | PS2;
 
 export * as Display from "./Display";
 
-export type Display =
-  | HDMI
-  | DisplayPort
-  | DVI
-  | VGA;
+export type Display = HDMI | DisplayPort | DVI | VGA;
 
 export * as Audio from "./Audio";
 

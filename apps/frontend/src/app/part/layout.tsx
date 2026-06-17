@@ -2,11 +2,7 @@ import React from "react";
 
 import { PartList } from "@/features/part";
 
-export default function ListLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ListLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <PartList path="part" />

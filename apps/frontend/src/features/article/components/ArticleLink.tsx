@@ -1,5 +1,4 @@
 "use client";
- 
 
 import Link from "next/link";
 import React from "react";
@@ -19,21 +18,18 @@ function ArticleLink({
 }: Omit<Parameters<typeof Link>[0], "href"> & { summary: Summary }) {
   const href = `/article/${summary.slug || summary.id}`;
 
-  const formattedDate = new Date(summary.createdAt).toLocaleDateString(
-    "en-US",
-    {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    },
-  );
+  const formattedDate = new Date(summary.createdAt).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 
   return (
     <Link
       href={href}
       className={mergeClass(
         "group flex flex-col md:flex-row gap-5 p-4 border border-slate-100 dark:border-slate-800/80 rounded-2xl bg-white dark:bg-slate-900/30 hover:border-blue-500/50 hover:bg-blue-50/10 dark:hover:bg-blue-950/5 hover:shadow-lg dark:hover:shadow-blue-950/20 transition-all duration-300",
-        className,
+        className
       )}
       {...rest}
     >
@@ -69,7 +65,7 @@ function ArticleLink({
                 "absolute top-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-bold border uppercase tracking-wider",
                 summary.status === "draft"
                   ? "bg-amber-500 text-white border-amber-500"
-                  : "bg-red-500 text-white border-red-500",
+                  : "bg-red-500 text-white border-red-500"
               )}
             >
               {summary.status}
@@ -84,15 +80,11 @@ function ArticleLink({
           {/* Tag Badges */}
           <div className="flex flex-wrap gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
             {summary.topic && (
-              <span className="text-slate-500 dark:text-slate-400">
-                {summary.topic}
-              </span>
+              <span className="text-slate-500 dark:text-slate-400">{summary.topic}</span>
             )}
             {summary.topic && summary.part && <span>•</span>}
             {summary.part && (
-              <span className="text-blue-600 dark:text-blue-400">
-                {summary.part}
-              </span>
+              <span className="text-blue-600 dark:text-blue-400">{summary.part}</span>
             )}
           </div>
 

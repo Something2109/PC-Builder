@@ -10,39 +10,18 @@ import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<GPUMemory.DTO> = {
   type: (field) => (
-    <OptionSelect
-      options={InternalConnectors.SGRAM.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={InternalConnectors.SGRAM.options} {...mapChange(field, "select")} />
   ),
   speed: (field) => (
-    <UnitInput
-      Unit={TransferSpeedUnit}
-      defaultUnit="MT/s"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={TransferSpeedUnit} defaultUnit="MT/s" {...mapChange(field, "number")} />
   ),
   capacity: (field) => (
-    <UnitInput
-      Unit={MemoryUnits}
-      defaultUnit="GB"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...mapChange(field, "number")} />
   ),
   bandwidth: (field) => (
-    <UnitInput
-      Unit={MemorySpeedUnit}
-      defaultUnit="GB/s"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={MemorySpeedUnit} defaultUnit="GB/s" {...mapChange(field, "number")} />
   ),
-  bus_width: (field) => (
-    <SuffixInput
-      suffix="bit"
-      type="number"
-      {...mapChange(field, "number")}
-    />
-  ),
+  bus_width: (field) => <SuffixInput suffix="bit" type="number" {...mapChange(field, "number")} />,
 };
 
 export default GenericSingleInputForm<GPUMemory.DTO>(

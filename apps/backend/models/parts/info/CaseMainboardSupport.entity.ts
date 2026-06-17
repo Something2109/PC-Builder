@@ -38,9 +38,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
     },
   ],
 })
-export default class CaseMainboardSupportModel extends Model
-  implements CaseMainboardSupport.Model
-{
+export default class CaseMainboardSupportModel extends Model implements CaseMainboardSupport.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -56,6 +54,3 @@ export default class CaseMainboardSupportModel extends Model
   })
   declare form_factor: FormFactor.Mainboard;
 }
-
-
-

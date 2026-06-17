@@ -9,16 +9,10 @@ import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<CPUBlockSpec.DTO> = {
   plate: (field) => (
-    <OptionSelect
-      options={Material.Metal.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={Material.Metal.options} {...mapChange(field, "select")} />
   ),
   rgb: (field) => (
-    <OptionSelect
-      options={InternalConnectors.RGB.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={InternalConnectors.RGB.options} {...mapChange(field, "select")} />
   ),
 };
 

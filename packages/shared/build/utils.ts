@@ -6,9 +6,7 @@ import { Infos, Products } from "@/utils/part";
 import { z } from "zod";
 
 namespace Info {
-  export type Tuple<P extends Products, I extends Infos> =
-    | [P, I]
-    | readonly [P, I];
+  export type Tuple<P extends Products, I extends Infos> = [P, I] | readonly [P, I];
 
   export type Validate<I extends Infos> = Part.Infer.InfoType<I>;
 
@@ -24,10 +22,7 @@ namespace Attribute {
     | [P, I, A]
     | readonly [P, I, A];
 
-  export type Validate<
-    I extends Infos,
-    A extends string
-  > = Part.Infer.AttributeType<I, A>;
+  export type Validate<I extends Infos, A extends string> = Part.Infer.AttributeType<I, A>;
 
   export type Result = string | undefined;
 
@@ -60,71 +55,62 @@ type BuildPartDetails<T = Part.Model> = {
   [key in keyof Required<BuildPartList>]?: Required<BuildPartList>[key] extends string[]
     ? T[]
     : Required<BuildPartList>[key] extends string
-    ? T
-    : never;
+      ? T
+      : never;
 };
 
-type BuildListInferValue<
-  P extends Products,
-  V
-> = Required<BuildPartList>[P] extends string[] ? V[] : V;
+type BuildListInferValue<P extends Products, V> = Required<BuildPartList>[P] extends string[]
+  ? V[]
+  : V;
 
 type BuildAttributeMapping = {
-  [key in string]:
-    | Info.Tuple<Products, Infos>
-    | Attribute.Tuple<Products, Infos, string>;
+  [key in string]: Info.Tuple<Products, Infos> | Attribute.Tuple<Products, Infos, string>;
 };
 
 type BuildValidateAttributes<T extends BuildAttributeMapping> = {
   -readonly [key in keyof T]: T[key] extends Info.Tuple<infer P, infer I>
     ? BuildListInferValue<P, Info.Validate<I>>
     : T[key] extends Attribute.Tuple<infer P, infer I, infer A>
-    ? BuildListInferValue<P, Attribute.Validate<I, A>>
-    : undefined;
+      ? BuildListInferValue<P, Attribute.Validate<I, A>>
+      : undefined;
 };
 
-type BuildAttributeValue<
-  T extends BuildAttributeMapping,
-  A extends keyof T
-> = T[A] extends Info.Tuple<Products, infer I>
-  ? Info.Validate<I>
-  : T[A] extends Attribute.Tuple<Products, infer I, infer A>
-  ? Attribute.Validate<I, A>
-  : undefined;
+type BuildAttributeValue<T extends BuildAttributeMapping, A extends keyof T> =
+  T[A] extends Info.Tuple<Products, infer I>
+    ? Info.Validate<I>
+    : T[A] extends Attribute.Tuple<Products, infer I, infer A>
+      ? Attribute.Validate<I, A>
+      : undefined;
 
 type BuildValidateResult<T extends BuildAttributeMapping> = {
   -readonly [key in keyof T]?: T[key] extends Info.Tuple<infer P, Infos>
     ? BuildListInferValue<P, Info.Result>
     : T[key] extends Attribute.Tuple<infer P, Infos, string>
-    ? BuildListInferValue<P, Attribute.Result>
-    : undefined;
+      ? BuildListInferValue<P, Attribute.Result>
+      : undefined;
 };
 
-type BuildResultValue<
-  T extends BuildAttributeMapping,
-  A extends keyof T
-> = T[A] extends Info.Tuple<Products, Infos>
-  ? Info.Result
-  : T[A] extends Attribute.Tuple<Products, Infos, string>
-  ? Attribute.Result
-  : undefined;
+type BuildResultValue<T extends BuildAttributeMapping, A extends keyof T> =
+  T[A] extends Info.Tuple<Products, Infos>
+    ? Info.Result
+    : T[A] extends Attribute.Tuple<Products, Infos, string>
+      ? Attribute.Result
+      : undefined;
 
 type BuildFilterAttributes<T extends BuildAttributeMapping> = {
   -readonly [key in keyof T]?: T[key] extends Info.Tuple<Products, infer I>
     ? Info.Filter<I>
     : T[key] extends Attribute.Tuple<Products, Infos, string>
-    ? Attribute.Filter
-    : undefined;
+      ? Attribute.Filter
+      : undefined;
 };
 
-type BuildFilterValue<
-  T extends BuildAttributeMapping,
-  A extends keyof T
-> = T[A] extends Info.Tuple<Products, infer I>
-  ? Info.Filter<I>
-  : T[A] extends Attribute.Tuple<Products, Infos, string>
-  ? Attribute.Filter
-  : undefined;
+type BuildFilterValue<T extends BuildAttributeMapping, A extends keyof T> =
+  T[A] extends Info.Tuple<Products, infer I>
+    ? Info.Filter<I>
+    : T[A] extends Attribute.Tuple<Products, Infos, string>
+      ? Attribute.Filter
+      : undefined;
 
 interface ProductRule {
   name: string;

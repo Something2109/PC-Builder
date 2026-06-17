@@ -1,7 +1,4 @@
-import {
-  MultipleChoiceInput,
-  UnitMinMaxRangeInput,
-} from "@/ui/Input";
+import { MultipleChoiceInput, UnitMinMaxRangeInput } from "@/ui/Input";
 import * as RAM from "@/utils/part/product/RAM";
 import { MemoryUnits } from "@/utils/Units";
 

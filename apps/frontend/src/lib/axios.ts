@@ -56,11 +56,11 @@ axiosInstance.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       // If the failed request was the refresh token request itself, redirect to login
-      if (originalRequest.url === "/auth/refresh" || originalRequest.url?.endsWith("/auth/refresh")) {
-        if (
-          typeof window !== "undefined" &&
-          !window.location.pathname.startsWith("/auth")
-        ) {
+      if (
+        originalRequest.url === "/auth/refresh" ||
+        originalRequest.url?.endsWith("/auth/refresh")
+      ) {
+        if (typeof window !== "undefined" && !window.location.pathname.startsWith("/auth")) {
           window.location.href = "/auth/login";
         }
         return Promise.reject(error);
@@ -90,10 +90,7 @@ axiosInstance.interceptors.response.use(
         processQueue(refreshError);
         isRefreshing = false;
 
-        if (
-          typeof window !== "undefined" &&
-          !window.location.pathname.startsWith("/auth")
-        ) {
+        if (typeof window !== "undefined" && !window.location.pathname.startsWith("/auth")) {
           window.location.href = "/auth/login";
         }
         return Promise.reject(refreshError);

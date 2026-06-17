@@ -9,8 +9,4 @@ const Components: InfoSummaryMapping<Fan.Summary> = {
   bearing: ({ value }) => value,
 };
 
-export default GenericSummaryCells(
-  Components,
-  Fan.AttributeLabels,
-  Fan.Summary.keyof().options
-);
+export default GenericSummaryCells(Components, Fan.AttributeLabels, Fan.Summary.keyof().options);

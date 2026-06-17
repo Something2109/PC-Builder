@@ -4,11 +4,7 @@ import { FrequencyUnits } from "@/utils/Units";
 
 import { Table } from "../utils/Table";
 
-const CPUCoreConfigTable = ({
-  defaultValue,
-}: {
-  defaultValue: CPUCoreConfig.DTO[];
-}) => (
+const CPUCoreConfigTable = ({ defaultValue }: { defaultValue: CPUCoreConfig.DTO[] }) => (
   <Table.Component>
     <Table.Head>
       <Table.Row>

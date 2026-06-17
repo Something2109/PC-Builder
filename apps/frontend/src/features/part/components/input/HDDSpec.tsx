@@ -10,24 +10,13 @@ import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<HDDSpec.DTO> = {
   rotational_speed: (field) => (
-    <SuffixInput
-      suffix="RPM"
-      type="number"
-      {...mapChange(field, "number")}
-    />
+    <SuffixInput suffix="RPM" type="number" {...mapChange(field, "number")} />
   ),
   capacity: (field) => (
-    <UnitInput
-      Unit={MemoryUnits}
-      defaultUnit="GB"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...mapChange(field, "number")} />
   ),
   form_factor: (field) => (
-    <OptionSelect
-      options={FormFactor.HDD.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={FormFactor.HDD.options} {...mapChange(field, "select")} />
   ),
   interface: (field) => (
     <OptionSelect

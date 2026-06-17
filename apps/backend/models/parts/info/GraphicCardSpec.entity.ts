@@ -67,5 +67,3 @@ export default class GraphicCardSpecModel extends Model implements GraphicCardSp
   @Column(DataType.TINYINT)
   declare power_connector_count: number | null;
 }
-
-

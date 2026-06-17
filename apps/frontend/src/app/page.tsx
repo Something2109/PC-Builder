@@ -6,14 +6,54 @@ import { SearchBar } from "@/layout/searchbar";
 import { Products } from "@/utils/part";
 
 const categories = [
-  { name: "Processors", part: Products.CPU, icon: "cpu", desc: "Intel Core & AMD Ryzen CPUs" },
-  { name: "Graphics Cards", part: Products.GRAPHIC_CARD, icon: "graphic_card", desc: "NVIDIA RTX & AMD Radeon GPUs" },
-  { name: "Motherboards", part: Products.MAIN, icon: "mainboard", desc: "AM4, AM5, LGA 1700 boards" },
-  { name: "Memory (RAM)", part: Products.RAM, icon: "ram", desc: "DDR4 & DDR5 memory kits" },
-  { name: "Solid State Drives", part: Products.SSD, icon: "ssd", desc: "High-speed NVMe & SATA SSDs" },
-  { name: "Power Supplies", part: Products.PSU, icon: "psu", desc: "80+ Gold, Platinum power units" },
-  { name: "PC Cases", part: Products.CASE, icon: "case", desc: "ATX, Micro-ATX, and ITX cases" },
-  { name: "Coolers", part: Products.COOLER, icon: "cooler", desc: "Air coolers & liquid AIOs" },
+  {
+    name: "Processors",
+    part: Products.CPU,
+    icon: "cpu",
+    desc: "Intel Core & AMD Ryzen CPUs",
+  },
+  {
+    name: "Graphics Cards",
+    part: Products.GRAPHIC_CARD,
+    icon: "graphic_card",
+    desc: "NVIDIA RTX & AMD Radeon GPUs",
+  },
+  {
+    name: "Motherboards",
+    part: Products.MAIN,
+    icon: "mainboard",
+    desc: "AM4, AM5, LGA 1700 boards",
+  },
+  {
+    name: "Memory (RAM)",
+    part: Products.RAM,
+    icon: "ram",
+    desc: "DDR4 & DDR5 memory kits",
+  },
+  {
+    name: "Solid State Drives",
+    part: Products.SSD,
+    icon: "ssd",
+    desc: "High-speed NVMe & SATA SSDs",
+  },
+  {
+    name: "Power Supplies",
+    part: Products.PSU,
+    icon: "psu",
+    desc: "80+ Gold, Platinum power units",
+  },
+  {
+    name: "PC Cases",
+    part: Products.CASE,
+    icon: "case",
+    desc: "ATX, Micro-ATX, and ITX cases",
+  },
+  {
+    name: "Coolers",
+    part: Products.COOLER,
+    icon: "cooler",
+    desc: "Air coolers & liquid AIOs",
+  },
 ];
 
 export default function Page() {
@@ -37,7 +77,8 @@ export default function Page() {
         </h1>
 
         <p className="text-lg md:text-xl text-text/60 max-w-2xl mx-auto leading-relaxed">
-          Create, customize, and check compatibility for your next custom computer build with our intelligent planning system.
+          Create, customize, and check compatibility for your next custom computer build with our
+          intelligent planning system.
         </p>
 
         {/* Floating Glassmorphic Search Bar */}
@@ -57,7 +98,8 @@ export default function Page() {
             Start A New Build &rarr;
           </h3>
           <p className="text-sm text-text/60 leading-relaxed">
-            Jump into our step-by-step system builder. Select CPU, GPU, motherboard, and see compatibility flags.
+            Jump into our step-by-step system builder. Select CPU, GPU, motherboard, and see
+            compatibility flags.
           </p>
         </Link>
 
@@ -70,7 +112,8 @@ export default function Page() {
             Explore Hardware Directory &rarr;
           </h3>
           <p className="text-sm text-text/60 leading-relaxed">
-            Browse through hundreds of individual parts with deep spec listings, price analysis, and details.
+            Browse through hundreds of individual parts with deep spec listings, price analysis, and
+            details.
           </p>
         </Link>
 
@@ -83,7 +126,8 @@ export default function Page() {
             Builder Guides &rarr;
           </h3>
           <p className="text-sm text-text/60 leading-relaxed">
-            New to PC building? Read expert guides, curated configuration recommendations, and building tutorials.
+            New to PC building? Read expert guides, curated configuration recommendations, and
+            building tutorials.
           </p>
         </Link>
       </section>
@@ -93,7 +137,9 @@ export default function Page() {
         <div className="flex flex-row justify-between items-end">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Browse by Category</h2>
-            <p className="text-sm text-text/60 mt-1">Select a component class to inspect details and specifications</p>
+            <p className="text-sm text-text/60 mt-1">
+              Select a component class to inspect details and specifications
+            </p>
           </div>
           <Link
             href="/part"
@@ -124,9 +170,7 @@ export default function Page() {
                   {cat.name}
                 </h4>
               </div>
-              <p className="text-xs text-text/50 leading-normal mt-auto">
-                {cat.desc}
-              </p>
+              <p className="text-xs text-text/50 leading-normal mt-auto">{cat.desc}</p>
             </Link>
           ))}
         </div>

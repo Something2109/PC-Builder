@@ -24,10 +24,10 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // Extract the role required by the context (controller and handler function).
-    const requiredRoles = this.reflector.getAllAndOverride<Roles[]>(
-      ROLE_METADATA_KEY,
-      [context.getHandler(), context.getClass()]
-    );
+    const requiredRoles = this.reflector.getAllAndOverride<Roles[]>(ROLE_METADATA_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
     if (!requiredRoles) return true; // No role required.
 
     const request = context.switchToHttp().getRequest();
@@ -39,9 +39,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException("You must log in to do this action!");
 
     if (!requiredRoles.includes(session.sub.role))
-      throw new ForbiddenException(
-        "You are not authorized to do this action!"
-      );
+      throw new ForbiddenException("You are not authorized to do this action!");
 
     return true;
   }

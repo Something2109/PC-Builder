@@ -51,9 +51,7 @@ function Component({
                         <Input
                           name={subField.name}
                           defaultValue={subField.state.value}
-                          onChange={(e) =>
-                            subField.handleChange(e.target.value)
-                          }
+                          onChange={(e) => subField.handleChange(e.target.value)}
                         />
                       )}
                     </form.Field>
@@ -65,9 +63,7 @@ function Component({
                           type="number"
                           name={subField.name}
                           defaultValue={subField.state.value ?? 0}
-                          onChange={(e) =>
-                            subField.handleChange(Number(e.target.value))
-                          }
+                          onChange={(e) => subField.handleChange(Number(e.target.value))}
                         />
                       )}
                     </form.Field>
@@ -79,9 +75,7 @@ function Component({
                           Unit={FrequencyUnits}
                           name={subField.name}
                           defaultValue={subField.state.value ?? 0}
-                          onChange={(e) =>
-                            subField.handleChange(Number(e.target.value))
-                          }
+                          onChange={(e) => subField.handleChange(Number(e.target.value))}
                           defaultUnit="GHz"
                         />
                       )}
@@ -94,9 +88,7 @@ function Component({
                           Unit={FrequencyUnits}
                           name={subField.name}
                           defaultValue={subField.state.value ?? 0}
-                          onChange={(e) =>
-                            subField.handleChange(Number(e.target.value))
-                          }
+                          onChange={(e) => subField.handleChange(Number(e.target.value))}
                           defaultUnit="GHz"
                         />
                       )}
@@ -110,11 +102,7 @@ function Component({
                   <Input ref={AddInput} />
                 </Table.Cell>
                 <Table.Cell colSpan={3}>
-                  <Button
-                    type="button"
-                    className="w-full p-0 border-0"
-                    onClick={add}
-                  >
+                  <Button type="button" className="w-full p-0 border-0" onClick={add}>
                     Add
                   </Button>
                 </Table.Cell>

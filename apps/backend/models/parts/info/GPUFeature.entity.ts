@@ -49,5 +49,3 @@ export default class GPUFeatureModel extends Model implements GPUFeature.Model {
   @Column(DataType.STRING)
   declare CUDA: string | null;
 }
-
-

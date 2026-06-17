@@ -38,8 +38,7 @@ function Component({
             field.pushValue({ case_side, form_factor });
           } else {
             const index = values.findIndex(
-              (val) =>
-                val.case_side === case_side && val.form_factor === form_factor
+              (val) => val.case_side === case_side && val.form_factor === form_factor
             );
             if (index !== -1) {
               field.removeValue(index);
@@ -68,9 +67,7 @@ function Component({
                           name={side}
                           value={val}
                           checked={defaultValueObj[side]?.includes(val)}
-                          onChange={(e) =>
-                            handleToggle(side, val, e.target.checked)
-                          }
+                          onChange={(e) => handleToggle(side, val, e.target.checked)}
                         />
                       ))}
                     </ResponsiveWrapper>

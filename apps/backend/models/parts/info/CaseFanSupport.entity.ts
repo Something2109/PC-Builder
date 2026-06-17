@@ -53,5 +53,3 @@ export default class CaseFanSupportModel extends Model implements CaseFanSupport
   @Column(DataType.TINYINT)
   declare count: number | null;
 }
-
-

@@ -48,8 +48,7 @@ const CrawlInfo: APIWebsiteInfo<HTMLTableElement, any> = {
         } else {
           result[header] = {};
           for (let j = 1; j < raw.rows.length; j++) {
-            const property =
-              raw.rows[j].cells[property_idx].textContent?.trim();
+            const property = raw.rows[j].cells[property_idx].textContent?.trim();
             const value = raw.rows[j].cells[i];
 
             if (property && value) {

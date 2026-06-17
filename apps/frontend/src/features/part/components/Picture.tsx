@@ -18,10 +18,7 @@ export default function PartPicture({
 
   return (
     <picture
-      className={mergeClass(
-        "aspect-square rounded-lg content-center bg-white p-1",
-        className
-      )}
+      className={mergeClass("aspect-square rounded-lg content-center bg-white p-1", className)}
     >
       <img
         src={src ?? defaultUrl}

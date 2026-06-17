@@ -32,7 +32,8 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   },
 }))
 @Table({ modelName: Infos.MAIN_USB })
-export default class MainboardUSBConnectorModel extends Model
+export default class MainboardUSBConnectorModel
+  extends Model
   implements MainboardUSBConnector.Model
 {
   @PrimaryKey
@@ -60,6 +61,3 @@ export default class MainboardUSBConnectorModel extends Model
   @Column(DataType.TINYINT)
   declare count: number | null;
 }
-
-
-

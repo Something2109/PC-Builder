@@ -9,8 +9,4 @@ const Components: InfoSummaryMapping<Case.Summary> = {
   psu_support: ({ value }) => value?.join(", "),
 };
 
-export default GenericSummaryCells(
-  Components,
-  Case.AttributeLabels,
-  Case.Summary.keyof().options
-);
+export default GenericSummaryCells(Components, Case.AttributeLabels, Case.Summary.keyof().options);

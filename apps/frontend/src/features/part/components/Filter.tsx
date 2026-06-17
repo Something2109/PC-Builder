@@ -1,12 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import {
-  lazy,
-  FormHTMLAttributes,
-  LazyExoticComponent,
-  FunctionComponent,
-} from "react";
+import { lazy, FormHTMLAttributes, LazyExoticComponent, FunctionComponent } from "react";
 
 import { Button } from "@/ui/Button";
 import { RowWrapper } from "@/ui/FlexWrapper";
@@ -25,9 +20,7 @@ const FilterComponents: {
 } = {
   [Products.CPU]: lazy(() => import("@/features/part/components/filter/CPU")),
   [Products.GPU]: lazy(() => import("@/features/part/components/filter/GPU")),
-  [Products.GRAPHIC_CARD]: lazy(
-    () => import("@/features/part/components/filter/GraphicCard")
-  ),
+  [Products.GRAPHIC_CARD]: lazy(() => import("@/features/part/components/filter/GraphicCard")),
   [Products.MAIN]: lazy(() => import("@/features/part/components/filter/Mainboard")),
   [Products.RAM]: lazy(() => import("@/features/part/components/filter/RAM")),
   [Products.HDD]: lazy(() => import("@/features/part/components/filter/HDD")),

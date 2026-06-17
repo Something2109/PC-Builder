@@ -1,7 +1,4 @@
-import {
-  MultipleChoiceInput,
-  MinMaxRangeInput,
-} from "@/ui/Input";
+import { MultipleChoiceInput, MinMaxRangeInput } from "@/ui/Input";
 import * as PSU from "@/utils/part/product/PSU";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";

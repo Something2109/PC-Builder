@@ -2,10 +2,7 @@ import { JSDOM } from "jsdom";
 
 import { Products } from "../../types/Enum";
 import { APIWebsiteInfo } from "../../types/interface";
-import {
-  RetailProductSchema,
-  RetailProductType,
-} from "../../types/retailer/Product";
+import { RetailProductSchema, RetailProductType } from "../../types/retailer/Product";
 
 const domain = "https://kccshop.vn";
 const mapping: { [key in Products]?: string } = {
@@ -44,9 +41,7 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
 
     if (itemContainer) {
       const raw = [...dom.querySelectorAll(".p-item")];
-      const currentPage = Number(
-        dom.querySelector(".paging-link.active")?.textContent
-      );
+      const currentPage = Number(dom.querySelector(".paging-link.active")?.textContent);
 
       return { raw, next: [this.path!(info.product, currentPage + 1)!] };
     }
@@ -59,18 +54,9 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
   async parse(raw) {
     const name = raw.querySelector(".p-name")?.textContent!;
     const price =
-      Number(
-        raw
-          .querySelector(".p-price")
-          ?.textContent?.replaceAll(".", "")
-          .match(/\d+/)
-      ) ?? 0;
-    const link = `https://kccshop.vn${raw
-      .querySelector(".p-img")
-      ?.getAttribute("href")}`;
-    const img = `https://kccshop.vn${raw
-      .querySelector(".p-img")
-      ?.children[0].getAttribute("src")}`;
+      Number(raw.querySelector(".p-price")?.textContent?.replaceAll(".", "").match(/\d+/)) ?? 0;
+    const link = `https://kccshop.vn${raw.querySelector(".p-img")?.getAttribute("href")}`;
+    const img = `https://kccshop.vn${raw.querySelector(".p-img")?.children[0].getAttribute("src")}`;
     const availability = Boolean(raw.querySelector(".color-green"));
 
     return RetailProductSchema.parse({ name, price, link, img, availability });

@@ -10,11 +10,7 @@ const Components: InfoComponentObject<HDDSpec.DTO> = {
   ),
 
   capacity: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={MemoryUnits}
-      defaultUnit="GB"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={MemoryUnits} defaultUnit="GB" defaultValue={defaultValue} />
   ),
   form_factor: ({ defaultValue }) => defaultValue,
   interface: ({ defaultValue }) => defaultValue,

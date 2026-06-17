@@ -51,5 +51,3 @@ export default class GPUPerformanceModel extends Model implements GPUPerformance
   @Column(DataType.INTEGER)
   declare tdp: number | null;
 }
-
-

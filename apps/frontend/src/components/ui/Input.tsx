@@ -23,9 +23,10 @@ const rangeInputStyle = "absolute w-full first:bg-range-input";
 
 // Intercepts the default onChange event and proxies its target value
 // to return undefined instead of empty string.
-function cleanEvent<
-  T extends HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
->(e: ChangeEvent<T>, onChange?: (e: ChangeEvent<T>) => void) {
+function cleanEvent<T extends HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
+  e: ChangeEvent<T>,
+  onChange?: (e: ChangeEvent<T>) => void
+) {
   if (!onChange) return;
   const proxyTarget = new Proxy(e.target, {
     get(target, prop) {
@@ -76,10 +77,7 @@ export function TextArea({ className, onChange, ...rest }: TextAreaProps) {
   );
 }
 
-type InputProps = DetailedHTMLProps<
-  InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
->;
+type InputProps = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
 export function Input({ className, onChange, ...rest }: InputProps) {
   return (
@@ -91,10 +89,7 @@ export function Input({ className, onChange, ...rest }: InputProps) {
   );
 }
 
-export function SuffixInput({
-  suffix,
-  ...rest
-}: { suffix: string } & InputProps) {
+export function SuffixInput({ suffix, ...rest }: { suffix: string } & InputProps) {
   return (
     <RowWrapper className="items-baseline">
       <Input {...rest} />
@@ -158,19 +153,12 @@ export function UnitInput<T extends string>({
   return (
     <>
       <input type="hidden" ref={SubmitInput} name={name} value={defaultValue} />
-      <Input
-        defaultValue={`${defaultValue} ${defaultUnit}`}
-        onChange={onChangeInput}
-        {...rest}
-      />
+      <Input defaultValue={`${defaultValue} ${defaultUnit}`} onChange={onChangeInput} {...rest} />
     </>
   );
 }
 
-type SelectProps = DetailedHTMLProps<
-  SelectHTMLAttributes<HTMLSelectElement>,
-  HTMLSelectElement
->;
+type SelectProps = DetailedHTMLProps<SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
 
 export function Select({ className, onChange, ...rest }: SelectProps) {
   return (
@@ -182,10 +170,7 @@ export function Select({ className, onChange, ...rest }: SelectProps) {
   );
 }
 
-export function OptionSelect({
-  options,
-  ...rest
-}: { options: string[] | number[] } & SelectProps) {
+export function OptionSelect({ options, ...rest }: { options: string[] | number[] } & SelectProps) {
   return (
     <Select {...rest}>
       {!rest.required && (
@@ -194,11 +179,7 @@ export function OptionSelect({
         </option>
       )}
       {options.map((value) => (
-        <option
-          className="text-background"
-          key={`options-${rest.name}-${value}`}
-          value={value}
-        >
+        <option className="text-background" key={`options-${rest.name}-${value}`} value={value}>
           {value}
         </option>
       ))}
@@ -350,16 +331,8 @@ export function UnitMinMaxRangeInput<T extends string>({
     const value = [min, max];
     value.sort((a, b) => a[0]! - Unit.exchange(b[0]!, b[1], a[1]));
 
-    minRangeInput.current!.value = Unit.exchange(
-      value[0][0]!,
-      value[0][1],
-      defaultUnit
-    ).toString();
-    maxRangeInput.current!.value = Unit.exchange(
-      value[1][0]!,
-      value[1][1],
-      defaultUnit
-    ).toString();
+    minRangeInput.current!.value = Unit.exchange(value[0][0]!, value[0][1], defaultUnit).toString();
+    maxRangeInput.current!.value = Unit.exchange(value[1][0]!, value[1][1], defaultUnit).toString();
     minInput.current!.value = `${value[0][0]} ${value[0][1]}`;
     maxInput.current!.value = `${value[1][0]} ${value[1][1]}`;
   }, [Unit, defaultUnit]);

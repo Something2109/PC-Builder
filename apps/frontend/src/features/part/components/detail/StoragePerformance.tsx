@@ -6,18 +6,10 @@ import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<StoragePerformance.DTO> = {
   read_speed: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={MemorySpeedUnit}
-      defaultUnit="MB/s"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={MemorySpeedUnit} defaultUnit="MB/s" defaultValue={defaultValue} />
   ),
   write_speed: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={MemorySpeedUnit}
-      defaultUnit="MB/s"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={MemorySpeedUnit} defaultUnit="MB/s" defaultValue={defaultValue} />
   ),
 };
 

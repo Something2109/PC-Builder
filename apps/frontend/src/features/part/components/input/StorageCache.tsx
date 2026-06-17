@@ -12,9 +12,7 @@ const Components: InfoComponentObject<StorageCache.DTO> = {
   type: ({ form: _, options: __, ...props }) => (
     <OptionSelect options={InternalConnectors.RAM.options} {...props} />
   ),
-  capacity: ({ form: _, ...props }) => (
-    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />
-  ),
+  capacity: ({ form: _, ...props }) => <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...props} />,
 };
 
 export default GenericSingleInputForm<StorageCache.DTO>(

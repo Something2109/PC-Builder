@@ -40,22 +40,16 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
 
   async extract(response, info) {
     const requestUrl = new URL(
-      typeof info.request === "string"
-        ? info.request
-        : (info.request as any).url || info.request
+      typeof info.request === "string" ? info.request : (info.request as any).url || info.request
     );
     if (requestUrl.toString().includes("ajax.php")) {
       const data = await response.json();
 
       const html = new JSDOM(data["html"]).window.document;
       const next = [...html.querySelectorAll(".list")].map((raw) => {
-        const url = `${domain}${raw
-          .querySelector(".item")!
-          .getAttribute("href")}`;
+        const url = `${domain}${raw.querySelector(".item")!.getAttribute("href")}`;
 
-        const nextUrl = new URL(
-          `${url.replace("product", "specification")}-Specification`
-        );
+        const nextUrl = new URL(`${url.replace("product", "specification")}-Specification`);
         nextUrl.searchParams.set("originalUrl", url);
         const img = raw.querySelector(".block-img img")?.getAttribute("src");
         if (img) nextUrl.searchParams.set("img", `${domain}${img}`);
@@ -124,14 +118,10 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
 
     // Also metadata (img, url) from URL params.
     const url = new URL(
-      typeof info.request === "string"
-        ? info.request
-        : (info.request as any).url || info.request
+      typeof info.request === "string" ? info.request : (info.request as any).url || info.request
     );
-    if (url.searchParams.has("img"))
-      result["img"] = url.searchParams.get("img")!;
-    if (url.searchParams.has("originalUrl"))
-      result["url"] = url.searchParams.get("originalUrl")!;
+    if (url.searchParams.has("img")) result["img"] = url.searchParams.get("img")!;
+    if (url.searchParams.has("originalUrl")) result["url"] = url.searchParams.get("originalUrl")!;
 
     // Recover Model / Code Name from document if possible, or just accept they are lost if I don't change Raw.
     // The old code extracted them in `product` (Extract stage).
@@ -142,10 +132,7 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
       if (code_name) result["Code Name"] = code_name.innerHTML;
       const model = doc.querySelector(".sub-title");
       if (model && model.innerHTML) {
-        result["Model"] = model.innerHTML.slice(
-          0,
-          model.innerHTML.indexOf("<br>")
-        );
+        result["Model"] = model.innerHTML.slice(0, model.innerHTML.indexOf("<br>"));
       }
     }
 

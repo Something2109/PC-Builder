@@ -11,5 +11,3 @@ export function List({ children }: { children: React.ReactNode }) {
     </ul>
   );
 }
-
-

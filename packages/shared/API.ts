@@ -25,14 +25,17 @@ export const SortKeySchema = z.preprocess((val) => {
   return typeof first === "string" && first.trim() !== "" ? first : undefined;
 }, z.string().optional());
 
-export const SortOrderSchema = z.preprocess((val) => {
-  const first = Array.isArray(val) ? val[0] : val;
-  if (typeof first === "string" && first.trim() !== "") {
-    const lower = first.toLowerCase();
-    if (lower === "asc" || lower === "desc") return lower;
-  }
-  return undefined;
-}, z.enum(["asc", "desc"]).optional());
+export const SortOrderSchema = z.preprocess(
+  (val) => {
+    const first = Array.isArray(val) ? val[0] : val;
+    if (typeof first === "string" && first.trim() !== "") {
+      const lower = first.toLowerCase();
+      if (lower === "asc" || lower === "desc") return lower;
+    }
+    return undefined;
+  },
+  z.enum(["asc", "desc"]).optional()
+);
 
 export const PaginationAndSortSchema = z.object({
   page: z.preprocess((val) => {
@@ -72,9 +75,7 @@ export type SearchOptions = {
  * @param query The query to extract options from.
  * @returns The page options.
  */
-export function toPageOptions(
-  query: Record<string, unknown>
-): PageOptions {
+export function toPageOptions(query: Record<string, unknown>): PageOptions {
   return PaginationAndSortSchema.parse(query);
 }
 
@@ -92,15 +93,7 @@ export type Payload<T> = {
  * The default type that are guaranteed to not have any inner path.
  * Contains the primitive type and some atomic object.
  */
-type DefaultType =
-  | string
-  | number
-  | bigint
-  | boolean
-  | Function
-  | Date
-  | null
-  | undefined;
+type DefaultType = string | number | bigint | boolean | Function | Date | null | undefined;
 
 /**
  * The error message mapping of an array.
@@ -172,19 +165,13 @@ export type Error<T> = T extends DefaultType
 export function toError<_T extends DefaultType>(issues: $ZodIssue[]): string;
 
 // 2. Overload for when we expect an array error structure
-export function toError<T extends Array<unknown>>(
-  issues: $ZodIssue[]
-): ArrayError<T>;
+export function toError<T extends Array<unknown>>(issues: $ZodIssue[]): ArrayError<T>;
 
 // 3. Overload for when we expect a Map error structure
-export function toError<T extends Map<any, any>>(
-  issues: $ZodIssue[]
-): MapError<T>;
+export function toError<T extends Map<any, any>>(issues: $ZodIssue[]): MapError<T>;
 
 // 4. Overload for when we expect a Set error structure
-export function toError<T extends Set<unknown>>(
-  issues: $ZodIssue[]
-): SetError<T>;
+export function toError<T extends Set<unknown>>(issues: $ZodIssue[]): SetError<T>;
 
 // 5. Overload for standard objects
 export function toError<T extends object>(issues: $ZodIssue[]): ObjectError<T>;

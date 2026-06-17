@@ -40,11 +40,7 @@ export class MapperController {
 
     for (let i = 0; i < rawRecords.length; i++) {
       const raw = rawRecords[i];
-      const mappedResult = await this.mapperService.safeMapRawPart(
-        raw,
-        product,
-        fallbackBrand
-      );
+      const mappedResult = await this.mapperService.safeMapRawPart(raw, product, fallbackBrand);
       if (mappedResult.success) {
         results.push({ index: i, data: mappedResult.data });
       } else {

@@ -15,14 +15,9 @@ const CrawlInfo: APIWebsiteInfo<Document, any> = {
 
   path(product: Products, page = 1) {
     if (mapping[product]) {
-      const url = new URL(
-        `${domain}/libs/apps/intel/support/ark/advancedFilterSearch`
-      );
+      const url = new URL(`${domain}/libs/apps/intel/support/ark/advancedFilterSearch`);
       url.searchParams.set("productType", mapping[product]);
-      url.searchParams.set(
-        "forwardPath",
-        "/content/www/us/en/ark/search/featurefilter.html"
-      );
+      url.searchParams.set("forwardPath", "/content/www/us/en/ark/search/featurefilter.html");
       url.searchParams.set("pageNo", page.toString());
 
       return { request: { url }, product };
@@ -36,19 +31,12 @@ const CrawlInfo: APIWebsiteInfo<Document, any> = {
     const dom = new JSDOM(text).window.document;
 
     // Check if it's a search page
-    const productList = dom.querySelectorAll(
-      ".ark-product-name.ark-accessible-color.component a"
-    );
+    const productList = dom.querySelectorAll(".ark-product-name.ark-accessible-color.component a");
     const requestUrl = new URL(
-      typeof info.request === "string"
-        ? info.request
-        : (info.request as any).url || info.request
+      typeof info.request === "string" ? info.request : (info.request as any).url || info.request
     );
 
-    if (
-      productList.length > 0 &&
-      requestUrl.toString().includes("advancedFilterSearch")
-    ) {
+    if (productList.length > 0 && requestUrl.toString().includes("advancedFilterSearch")) {
       const next = [...productList].map((element) => {
         return {
           request: { url: new URL(`${domain}${element.getAttribute("href")}`) },

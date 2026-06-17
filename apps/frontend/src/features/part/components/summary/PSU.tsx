@@ -10,8 +10,4 @@ const Components: InfoSummaryMapping<PSU.Summary> = {
   modular: ({ value }) => value,
 };
 
-export default GenericSummaryCells(
-  Components,
-  PSU.AttributeLabels,
-  PSU.Summary.keyof().options
-);
+export default GenericSummaryCells(Components, PSU.AttributeLabels, PSU.Summary.keyof().options);

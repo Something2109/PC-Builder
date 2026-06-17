@@ -15,11 +15,5 @@ export default function Error({
     console.error(error);
   }, [error]);
 
-  return (
-    <ErrorPanel
-      className="h-[60vh]"
-      text="Cannot find any part right now..."
-      reset={reset}
-    />
-  );
+  return <ErrorPanel className="h-[60vh]" text="Cannot find any part right now..." reset={reset} />;
 }

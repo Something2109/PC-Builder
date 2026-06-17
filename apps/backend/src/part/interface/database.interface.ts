@@ -66,11 +66,7 @@ export interface DatabaseCRUDInterface {
    * @param infos - Optional array of `Infos` specifying which details to return.
    * @returns A promise resolving to the updated part details or null if not found.
    */
-  set(
-    id: string,
-    data: Part.DTO,
-    infos?: readonly Infos[]
-  ): Promise<Part.Model | null>;
+  set(id: string, data: Part.DTO, infos?: readonly Infos[]): Promise<Part.Model | null>;
 
   /**
    * Creates a new part in the database.

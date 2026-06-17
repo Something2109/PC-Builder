@@ -7,39 +7,19 @@ import { InfoComponent, InfoComponentObject } from "../utils/Table";
 const Components: InfoComponentObject<FanSpec.DTO> = {
   form_factor: ({ defaultValue }) => defaultValue,
   width: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={defaultValue} />
   ),
   length: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={defaultValue} />
   ),
   height: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={defaultValue} />
   ),
   count: ({ defaultValue }) => defaultValue,
-  voltage: ({ defaultValue }) => (
-    <SuffixDisplay suffix="V">{defaultValue}</SuffixDisplay>
-  ),
-  speed: ({ defaultValue }) => (
-    <SuffixDisplay suffix="RPM">{defaultValue}</SuffixDisplay>
-  ),
-  airflow: ({ defaultValue }) => (
-    <SuffixDisplay suffix="CFM">{defaultValue}</SuffixDisplay>
-  ),
-  noise: ({ defaultValue }) => (
-    <SuffixDisplay suffix="dBA">{defaultValue}</SuffixDisplay>
-  ),
+  voltage: ({ defaultValue }) => <SuffixDisplay suffix="V">{defaultValue}</SuffixDisplay>,
+  speed: ({ defaultValue }) => <SuffixDisplay suffix="RPM">{defaultValue}</SuffixDisplay>,
+  airflow: ({ defaultValue }) => <SuffixDisplay suffix="CFM">{defaultValue}</SuffixDisplay>,
+  noise: ({ defaultValue }) => <SuffixDisplay suffix="dBA">{defaultValue}</SuffixDisplay>,
   static_pressure: ({ defaultValue }) => (
     <SuffixDisplay suffix="mm H₂O">{defaultValue}</SuffixDisplay>
   ),

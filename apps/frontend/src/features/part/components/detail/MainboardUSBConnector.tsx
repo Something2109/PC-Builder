@@ -13,10 +13,7 @@ const MainboardUSBConnectorTable = ({
       {defaultValue.map((val) => (
         <Table.Row key={`usb-${val.generation}-${val.connector}`}>
           <Table.Cell>
-            {ExternalPorts.Peripheral.USB.toString(
-              val.generation,
-              val.connector
-            )}
+            {ExternalPorts.Peripheral.USB.toString(val.generation, val.connector)}
           </Table.Cell>
           <Table.Cell>{val.count}</Table.Cell>
         </Table.Row>

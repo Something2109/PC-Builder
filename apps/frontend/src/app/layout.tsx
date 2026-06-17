@@ -34,9 +34,7 @@ export default async function RootLayout({
         <AuthWrapper user={user}>
           <ThemeBody>
             <Header />
-            <main className="container w-11/12 min-h-screen mx-auto *:my-4">
-              {children}
-            </main>
+            <main className="container w-11/12 min-h-screen mx-auto *:my-4">{children}</main>
             <Footer />
           </ThemeBody>
         </AuthWrapper>

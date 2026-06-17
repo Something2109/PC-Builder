@@ -98,5 +98,3 @@ export default class FanSpecModel extends Model implements FanSpec.Model {
   })
   declare rgb: InternalConnectors.RGB | null;
 }
-
-

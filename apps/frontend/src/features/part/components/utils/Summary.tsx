@@ -6,18 +6,8 @@ import { mergeClass } from "@/ui/mergeClass";
 import { InfoLabel } from "./Table";
 
 export const SummaryTable = {
-  Component: ({
-    className,
-    children,
-    ...rest
-  }: HTMLAttributes<HTMLTableElement>) => (
-    <table
-      className={mergeClass(
-        "w-full border-separate border-spacing-0",
-        className
-      )}
-      {...rest}
-    >
+  Component: ({ className, children, ...rest }: HTMLAttributes<HTMLTableElement>) => (
+    <table className={mergeClass("w-full border-separate border-spacing-0", className)} {...rest}>
       {children}
     </table>
   ),
@@ -54,9 +44,7 @@ export function GenericSummaryCells<T extends Record<string, unknown>>(
 ) {
   return ({ defaultValue }: { defaultValue?: Partial<T> }) => {
     if (!defaultValue)
-      return Attributes.map((attr) => (
-        <td key={`Header-${attr}`}>{Labels[attr]}</td>
-      ));
+      return Attributes.map((attr) => <td key={`Header-${attr}`}>{Labels[attr]}</td>);
 
     return Attributes.map((attr) => {
       const Component = Components[attr];

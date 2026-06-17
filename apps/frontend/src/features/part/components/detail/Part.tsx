@@ -1,10 +1,7 @@
 import { TableHTMLAttributes } from "react";
 
 import { RedirectButton } from "@/ui/Button";
-import {
-  ColumnWrapper,
-  ResponsiveWrapper,
-} from "@/ui/FlexWrapper";
+import { ColumnWrapper, ResponsiveWrapper } from "@/ui/FlexWrapper";
 import Part, { Infos } from "@/utils/part";
 
 import PartPicture from "../Picture";

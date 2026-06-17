@@ -27,10 +27,7 @@ function Component({
           field.removeValue(index);
         };
 
-        const add = (
-          type: ExternalPorts.Display.Type,
-          name: ExternalPorts.Display
-        ) => {
+        const add = (type: ExternalPorts.Display.Type, name: ExternalPorts.Display) => {
           field.pushValue({ type, name, count: 0 });
         };
 
@@ -58,22 +55,14 @@ function Component({
                     <Table.Cell>
                       <form.Field name={`items[${item.index}].name`}>
                         {(subField) => (
-                          <Input
-                            name={subField.name}
-                            value={subField.state.value}
-                            readOnly
-                          />
+                          <Input name={subField.name} value={subField.state.value} readOnly />
                         )}
                       </form.Field>
                     </Table.Cell>
                     <Table.Cell className="relative">
                       <form.Field name={`items[${item.index}].type`}>
                         {(subField) => (
-                          <Input
-                            type="hidden"
-                            name={subField.name}
-                            value={subField.state.value}
-                          />
+                          <Input type="hidden" name={subField.name} value={subField.state.value} />
                         )}
                       </form.Field>
                       <form.Field name={`items[${item.index}].count`}>
@@ -82,9 +71,7 @@ function Component({
                             type="number"
                             name={subField.name}
                             value={subField.state.value ?? 0}
-                            onChange={(e) =>
-                              subField.handleChange(Number(e.target.value))
-                            }
+                            onChange={(e) => subField.handleChange(Number(e.target.value))}
                           />
                         )}
                       </form.Field>
@@ -119,9 +106,7 @@ function AddRow({
         <OptionSelect
           options={ExternalPorts.Display.Type.options}
           value={type}
-          onChange={(e) =>
-            setType(e.target.value as ExternalPorts.Display.Type)
-          }
+          onChange={(e) => setType(e.target.value as ExternalPorts.Display.Type)}
           required
         />
       </Table.Cell>
@@ -132,9 +117,7 @@ function AddRow({
         <Button
           type="button"
           className="w-full p-0 border-0"
-          onClick={() =>
-            add(type, NameInput.current!.value as ExternalPorts.Display)
-          }
+          onClick={() => add(type, NameInput.current!.value as ExternalPorts.Display)}
         >
           Add
         </Button>

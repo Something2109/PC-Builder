@@ -2,10 +2,7 @@ import { JSDOM } from "jsdom";
 
 import { Products } from "../../types/Enum";
 import { APIWebsiteInfo } from "../../types/interface";
-import {
-  RetailProductSchema,
-  RetailProductType,
-} from "../../types/retailer/Product";
+import { RetailProductSchema, RetailProductType } from "../../types/retailer/Product";
 
 const domain = "https://memoryzone.com.vn";
 const mapping: { [key in Products]?: string } = {
@@ -61,22 +58,13 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
 
   async parse(raw) {
     const name = raw.querySelector(".product-name")?.textContent!;
-    const link = `${domain}${raw
-      .querySelector(".image_thumb")
-      ?.getAttribute("href")}`;
-    const img = `https:${raw
-      .querySelector(".product-thumbnail__img")
-      ?.getAttribute("src")}`;
+    const link = `${domain}${raw.querySelector(".image_thumb")?.getAttribute("href")}`;
+    const img = `https:${raw.querySelector(".product-thumbnail__img")?.getAttribute("src")}`;
     let price = 0;
     const availability = Boolean(raw.querySelector(".price"));
 
     if (availability) {
-      price = Number(
-        raw
-          .querySelector(".price")!
-          .textContent?.replaceAll(".", "")
-          .match(/\d+/)
-      );
+      price = Number(raw.querySelector(".price")!.textContent?.replaceAll(".", "").match(/\d+/));
     }
 
     return RetailProductSchema.parse({ name, price, link, img, availability });

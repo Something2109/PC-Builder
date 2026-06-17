@@ -40,11 +40,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     private readonly cdnService: CdnService
   ) {}
 
-  async get(
-    id: string,
-    infos?: Infos[],
-    transaction?: Transaction
-  ): Promise<Part.Model | null> {
+  async get(id: string, infos?: Infos[], transaction?: Transaction): Promise<Part.Model | null> {
     const include = this.infoToModel(infos);
 
     const instance = await this.PartModel.findByPk(id, {
@@ -55,11 +51,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     return instance?.toJSON() ?? null;
   }
 
-  async set(
-    id: string,
-    { part, ...data }: Part.DTO,
-    infos?: Infos[]
-  ): Promise<Part.Model | null> {
+  async set(id: string, { part, ...data }: Part.DTO, infos?: Infos[]): Promise<Part.Model | null> {
     return await this.sequelize.transaction(async (transaction) => {
       const instance =
         (await this.validateCodename(data.code_name, id, transaction)) ||
@@ -74,9 +66,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
       await instance.save({ transaction });
 
       if (infos) {
-        await Promise.all(
-          infos.map((info) => this.setInfo(id, info, data[info], transaction))
-        );
+        await Promise.all(infos.map((info) => this.setInfo(id, info, data[info], transaction)));
       }
 
       return await this.get(id, infos, transaction);
@@ -97,9 +87,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
       if (infos) {
         await Promise.all(
-          infos.map((info) =>
-            this.setInfo(instance.id, info, data[info], transaction)
-          )
+          infos.map((info) => this.setInfo(instance.id, info, data[info], transaction))
         );
       }
 
@@ -153,11 +141,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
    * @param id The optional id for validating if the model
    * @returns The part instance if the code name and id mapped to one object else null.
    */
-  protected async validateCodename(
-    code_name: string,
-    id?: string,
-    transaction?: Transaction
-  ) {
+  protected async validateCodename(code_name: string, id?: string, transaction?: Transaction) {
     if (!code_name) return undefined;
 
     const instance = await this.PartModel.findOne({
@@ -220,8 +204,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
       const key = this.hashByAttributes({ id, ...value }, primaryKeys);
 
       // if no old data existed
-      if (!oldInstances[key])
-        return this.InfoModels[info].build({ id, ...value });
+      if (!oldInstances[key]) return this.InfoModels[info].build({ id, ...value });
 
       // if old data existed
       const infoInstance = oldInstances[key];
@@ -235,9 +218,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
     // destroy the unused old data and save the new data
     await Promise.all([
-      ...Object.values(oldInstances).map((value) =>
-        value.destroy({ transaction })
-      ),
+      ...Object.values(oldInstances).map((value) => value.destroy({ transaction })),
       ...newInstances.map((value) => value.save({ transaction })),
     ]);
   }
@@ -248,10 +229,7 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
    * @param attrs The attributes used in the hash.
    * @returns The hashed string.
    */
-  protected hashByAttributes<T extends string>(
-    instance: { [key in T]: any },
-    attrs: readonly T[]
-  ) {
+  protected hashByAttributes<T extends string>(instance: { [key in T]: any }, attrs: readonly T[]) {
     return attrs.map((value) => instance[value]).join("-");
   }
 }

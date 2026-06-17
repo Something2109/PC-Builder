@@ -11,17 +11,8 @@ import { useImageUpload } from "@/hooks/useImageUpload";
 import { RowWrapper } from "@/ui/FlexWrapper";
 import { Input, Select, AutoGrowingTextArea } from "@/ui/Input";
 import { mergeClass } from "@/ui/mergeClass";
-import {
-  Article,
-  Content,
-  ContentName,
-  ArticleStatus,
-  BaseEditArticleDto,
-} from "@/utils/article";
-import {
-  Name as ProductName,
-  Label as ProductLabel,
-} from "@/utils/part/product";
+import { Article, Content, ContentName, ArticleStatus, BaseEditArticleDto } from "@/utils/article";
+import { Name as ProductName, Label as ProductLabel } from "@/utils/part/product";
 
 import { ContentListComponent } from "./input";
 
@@ -88,8 +79,7 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
 
   const isSaving = isCreating || isUpdating || isDeleting;
 
-  const { upload: uploadCover, isUploading: isCoverUploading } =
-    useImageUpload();
+  const { upload: uploadCover, isUploading: isCoverUploading } = useImageUpload();
 
   const coverFileInputRef = useRef<HTMLInputElement>(null);
   const submitStatusRef = useRef<ArticleStatus>(ArticleStatus.Draft);
@@ -162,16 +152,9 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
             <>
               {cover ? (
                 cover.startsWith("linear-gradient") ? (
-                  <div
-                    className="w-full h-full"
-                    style={{ background: cover }}
-                  />
+                  <div className="w-full h-full" style={{ background: cover }} />
                 ) : (
-                  <img
-                    src={cover}
-                    alt="Cover"
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={cover} alt="Cover" className="w-full h-full object-cover" />
                 )
               ) : (
                 <div className="w-full h-full bg-slate-100/50 dark:bg-slate-950/20 flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800">
@@ -234,9 +217,7 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
                   onClick={() => coverFileInputRef.current?.click()}
                   className="w-full text-center py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold text-xs rounded-xl transition-colors disabled:opacity-50"
                 >
-                  {isCoverUploading
-                    ? "Uploading cover..."
-                    : "Upload custom photo"}
+                  {isCoverUploading ? "Uploading cover..." : "Upload custom photo"}
                 </button>
                 <button
                   type="button"
@@ -322,9 +303,7 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
       {/* Editing Canvas */}
       <form.Subscribe selector={(state) => state.values.icon}>
         {(icon) => (
-          <div
-            className={mergeClass("pt-16 px-4 md:px-12", !icon ? "pt-8" : "")}
-          >
+          <div className={mergeClass("pt-16 px-4 md:px-12", !icon ? "pt-8" : "")}>
             {/* Topic and part metadata inputs */}
             <div className="flex flex-wrap items-center gap-3 mb-6 text-xs bg-slate-50 dark:bg-slate-900/20 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-4">
               <div className="flex items-center gap-1.5">
@@ -333,8 +312,7 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
                   name="topic"
                   validators={{
                     onChange: ({ value }) => {
-                      const res =
-                        articleFormSchema.shape.topic.safeParse(value);
+                      const res = articleFormSchema.shape.topic.safeParse(value);
                       if (!res.success) {
                         return res.error.issues[0]?.message;
                       }
@@ -364,9 +342,7 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
               </div>
 
               <div className="flex items-center gap-1.5">
-                <span className="text-slate-400 font-semibold">
-                  Part Category:
-                </span>
+                <span className="text-slate-400 font-semibold">Part Category:</span>
                 <form.Field
                   name="part"
                   validators={{
@@ -443,8 +419,7 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
               name="standfirst"
               validators={{
                 onChange: ({ value }) => {
-                  const res =
-                    articleFormSchema.shape.standfirst.safeParse(value);
+                  const res = articleFormSchema.shape.standfirst.safeParse(value);
                   if (!res.success) {
                     return res.error.issues[0]?.message;
                   }
@@ -479,8 +454,7 @@ function EditableArticle({ article, isNew = false }: EditableArticleProps) {
                 name="content"
                 validators={{
                   onChange: ({ value }) => {
-                    const res =
-                      articleFormSchema.shape.content.safeParse(value);
+                    const res = articleFormSchema.shape.content.safeParse(value);
                     if (!res.success) {
                       return res.error.issues[0]?.message;
                     }

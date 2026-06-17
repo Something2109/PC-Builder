@@ -38,9 +38,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
     },
   ],
 })
-export default class CaseRadiatorSupportModel extends Model
-  implements CaseRadiatorSupport.Model
-{
+export default class CaseRadiatorSupportModel extends Model implements CaseRadiatorSupport.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -57,6 +55,3 @@ export default class CaseRadiatorSupportModel extends Model
   @Column(DataType.STRING)
   declare form_factor: FormFactor.Radiator;
 }
-
-
-

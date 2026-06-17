@@ -62,5 +62,3 @@ export default class MainboardPCIeModel extends Model implements MainboardPCIe.M
   @Column(DataType.TINYINT)
   declare count: number | null;
 }
-
-

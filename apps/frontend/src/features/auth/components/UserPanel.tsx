@@ -18,18 +18,11 @@ export function UserPanel() {
   if (pathname === LoginPath) return;
 
   if (!user)
-    return (
-      <RedirectButton href={`${LoginPath}?redirect=${pathname}`}>
-        Log in
-      </RedirectButton>
-    );
+    return <RedirectButton href={`${LoginPath}?redirect=${pathname}`}>Log in</RedirectButton>;
 
   return (
     <div className="relative text-center">
-      <Button
-        className="w-28 border-2 py-1"
-        onClick={() => setDisplay(!display)}
-      >
+      <Button className="w-28 border-2 py-1" onClick={() => setDisplay(!display)}>
         {user.username}
       </Button>
       <ColumnWrapper

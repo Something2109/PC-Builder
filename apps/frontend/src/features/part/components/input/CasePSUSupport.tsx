@@ -19,16 +19,11 @@ function Component({
 
         const defaultValueObj = values.map((val) => val.psu_support) ?? [];
 
-        const handleToggle = (
-          psu_support: FormFactor.PSU,
-          checked: boolean
-        ) => {
+        const handleToggle = (psu_support: FormFactor.PSU, checked: boolean) => {
           if (checked) {
             field.pushValue({ psu_support });
           } else {
-            const index = values.findIndex(
-              (val) => val.psu_support === psu_support
-            );
+            const index = values.findIndex((val) => val.psu_support === psu_support);
             if (index !== -1) {
               field.removeValue(index);
             }

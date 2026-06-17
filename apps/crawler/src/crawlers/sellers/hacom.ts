@@ -1,9 +1,6 @@
 import { Products } from "../../types/Enum";
 import { APIWebsiteInfo } from "../../types/interface";
-import {
-  RetailProductSchema,
-  RetailProductType,
-} from "../../types/retailer/Product";
+import { RetailProductSchema, RetailProductType } from "../../types/retailer/Product";
 
 const domain = "https://apis-web.hacom.vn";
 const mapping: { [key in Products]?: string } = {

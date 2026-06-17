@@ -7,17 +7,12 @@ import { Article } from "@/utils/article";
 import { getBackendUrl } from "@/utils/path";
 import { Roles } from "@/utils/user";
 
-export default async function ArticlePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
   // Retrieve user for admin preview authorization checks
   const user = await verifyToken();
-  const isAdmin =
-    user && (user.role === Roles.ADMIN || user.role === Roles.GUEST);
+  const isAdmin = user && (user.role === Roles.ADMIN || user.role === Roles.GUEST);
 
   const url = getBackendUrl(`/api/article/${id}${isAdmin ? "?preview=true" : ""}`);
   const response = await fetch(url, {

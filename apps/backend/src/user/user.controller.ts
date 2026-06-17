@@ -31,9 +31,7 @@ export class UserController {
 
   @Role(Roles.ADMIN)
   @Get()
-  async listUser(
-    @Query(UserFilterPipe) options: API.PageOptions & User.FilterOptions
-  ) {
+  async listUser(@Query(UserFilterPipe) options: API.PageOptions & User.FilterOptions) {
     const informations = await this.userService.list(options);
 
     return informations;
@@ -43,8 +41,7 @@ export class UserController {
   async createUser(@Body(SignUpValidator) payload: User.LogInOptions) {
     const user = await this.userService.create(payload);
 
-    if (!user)
-      throw new ConflictException(`Username ${payload.username} has been used`);
+    if (!user) throw new ConflictException(`Username ${payload.username} has been used`);
 
     return user;
   }
@@ -55,9 +52,7 @@ export class UserController {
     const information = await this.userService.get(username);
 
     if (!information)
-      throw new NotFoundException(
-        `Cannot find the user with the username: ${username}.`
-      );
+      throw new NotFoundException(`Cannot find the user with the username: ${username}.`);
 
     return information;
   }
@@ -71,9 +66,7 @@ export class UserController {
     const information = await this.userService.set(options, username);
 
     if (!information)
-      throw new NotFoundException(
-        `Cannot find the user with the username: ${username}.`
-      );
+      throw new NotFoundException(`Cannot find the user with the username: ${username}.`);
 
     return information;
   }
@@ -84,9 +77,7 @@ export class UserController {
     const information = await this.userService.delete(username);
 
     if (!information)
-      throw new NotFoundException(
-        `Cannot find the user with the username: ${username}.`
-      );
+      throw new NotFoundException(`Cannot find the user with the username: ${username}.`);
 
     return information;
   }

@@ -1,4 +1,3 @@
-
 ## PC-Builder: Project Overview
 
 ### What this project is
@@ -106,6 +105,7 @@
 - API is served under `/api/*` due to `app.setGlobalPrefix("api")`.
 
 ### Key paths
+
 - Frontend app: `apps/frontend/`
 - Backend app: `apps/backend/`
 - Crawler app: `apps/crawler/`

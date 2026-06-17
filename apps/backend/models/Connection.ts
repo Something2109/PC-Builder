@@ -19,7 +19,7 @@ const Connection = new Sequelize(getConnectionOptions());
 
 export function IdSubQuery<T extends InferAttributes<any>>(
   name: string,
-  options?: WhereOptions<T>,
+  options?: WhereOptions<T>
 ): string {
   return (Connection.getQueryInterface().queryGenerator as any)
     .selectQuery(name, { attributes: ["id"], where: options ?? {} })

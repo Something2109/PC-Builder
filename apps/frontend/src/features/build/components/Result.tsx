@@ -16,8 +16,7 @@ export default function BuildResultList() {
         <h2>Rules</h2>
         <ul>
           {Object.entries(rules).map(
-            ([name, { error }]) =>
-              error && <li key={`Rule-${name}`}>{`${name}: ${error}`}</li>
+            ([name, { error }]) => error && <li key={`Rule-${name}`}>{`${name}: ${error}`}</li>
           )}
         </ul>
       </ColumnWrapper>

@@ -27,10 +27,7 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
 app.use(cors());
 app.use(express.json());
 
-const activeSessions = new Map<
-  string,
-  { child: ChildProcess; session: CrawlerSession }
->();
+const activeSessions = new Map<string, { child: ChildProcess; session: CrawlerSession }>();
 
 // Helper to resolve scraper configurations
 const crawlersDir = path.join(__dirname, "crawlers");
@@ -51,10 +48,7 @@ function getScrapersList() {
 
     const files = fs.readdirSync(dirPath);
     for (const file of files) {
-      if (
-        (file.endsWith(".ts") || file.endsWith(".js")) &&
-        !file.endsWith(".d.ts")
-      ) {
+      if ((file.endsWith(".ts") || file.endsWith(".js")) && !file.endsWith(".d.ts")) {
         const name = path.basename(file, path.extname(file));
         const filePath = path.join(dirPath, file);
         try {
@@ -80,14 +74,12 @@ function getScrapersList() {
 // 1. GET /scrapers - List available scrapers
 app.get("/scrapers", (req: Request, res: Response) => {
   try {
-    const list = getScrapersList().map(
-      ({ name, domain, type, supportedProducts }) => ({
-        name,
-        domain,
-        type,
-        supportedProducts,
-      })
-    );
+    const list = getScrapersList().map(({ name, domain, type, supportedProducts }) => ({
+      name,
+      domain,
+      type,
+      supportedProducts,
+    }));
     res.json(list);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -109,113 +101,103 @@ app.post("/start", (req: Request, res: Response) => {
     if (activeSessions.has(name)) {
       const existing = activeSessions.get(name);
       if (existing?.session.state === CrawlState.CRAWLING) {
-        return res
-          .status(400)
-          .json({ error: `Scraper '${name}' is already crawling` });
+        return res.status(400).json({ error: `Scraper '${name}' is already crawling` });
       }
     }
 
-  // Determine products to crawl
-  const productsToCrawl =
-    products && Array.isArray(products)
-      ? products
-      : scraper.supportedProducts || [];
+    // Determine products to crawl
+    const productsToCrawl =
+      products && Array.isArray(products) ? products : scraper.supportedProducts || [];
 
-  // Spawn child process
-  const indexScript = fs.existsSync(path.join(__dirname, "index.ts"))
-    ? path.join(__dirname, "index.ts")
-    : path.join(__dirname, "index.js");
+    // Spawn child process
+    const indexScript = fs.existsSync(path.join(__dirname, "index.ts"))
+      ? path.join(__dirname, "index.ts")
+      : path.join(__dirname, "index.js");
 
-  const args = ["--path", scraper.path, "--product", ...productsToCrawl];
+    const args = ["--path", scraper.path, "--product", ...productsToCrawl];
 
-  const child = fork(indexScript, args, {
-    execArgv: indexScript.endsWith(".ts")
-      ? ["-r", "ts-node/register", "-r", "tsconfig-paths/register"]
-      : [],
-  });
+    const child = fork(indexScript, args, {
+      execArgv: indexScript.endsWith(".ts")
+        ? ["-r", "ts-node/register", "-r", "tsconfig-paths/register"]
+        : [],
+    });
 
-  const session: CrawlerSession = {
-    name,
-    domain: scraper.domain,
-    type: scraper.type,
-    products: productsToCrawl,
-    state: CrawlState.CRAWLING,
-    progress: {
-      init: 0,
-      fetch: 0,
-      extract: 0,
-      parse: 0,
-      success: 0,
-      failed: 0,
-    },
-    errors: [],
-    startTime: new Date(),
-  };
+    const session: CrawlerSession = {
+      name,
+      domain: scraper.domain,
+      type: scraper.type,
+      products: productsToCrawl,
+      state: CrawlState.CRAWLING,
+      progress: {
+        init: 0,
+        fetch: 0,
+        extract: 0,
+        parse: 0,
+        success: 0,
+        failed: 0,
+      },
+      errors: [],
+      startTime: new Date(),
+    };
 
-  activeSessions.set(name, { child, session });
+    activeSessions.set(name, { child, session });
 
-  // Ingestion buffer
-  let buffer: CrawlIngestItem[] = [];
-  let bufferTimeout: NodeJS.Timeout | null = null;
+    // Ingestion buffer
+    let buffer: CrawlIngestItem[] = [];
+    let bufferTimeout: NodeJS.Timeout | null = null;
 
-  const flushBuffer = async () => {
-    if (buffer.length === 0) return;
-    const batch = [...buffer];
-    buffer = [];
-    if (bufferTimeout) {
-      clearTimeout(bufferTimeout);
-      bufferTimeout = null;
-    }
-
-    try {
-      const response = await fetch(`${BACKEND_URL}/crawler/ingest`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: batch }),
-      });
-      if (!response.ok) {
-        console.error(
-          `[Crawler Server] Failed to ingest batch: ${response.statusText}`
-        );
+    const flushBuffer = async () => {
+      if (buffer.length === 0) return;
+      const batch = [...buffer];
+      buffer = [];
+      if (bufferTimeout) {
+        clearTimeout(bufferTimeout);
+        bufferTimeout = null;
       }
-    } catch (err) {
-      console.error(`[Crawler Server] Error sending batch to backend:`, err);
-    }
-  };
 
-  child.on("message", (message: any) => {
-    if (message.progress) {
-      session.progress = message.progress;
-    } else if (message.result) {
-      // Add result to buffer
-      buffer.push({
-        result: message.result,
-        info: {
-          product: message.info.product,
-          url:
-            message.info.data.init?.url ||
-            message.info.request?.url ||
-            message.info.request,
-        },
-      });
-
-      if (buffer.length >= 100) {
-        flushBuffer();
-      } else if (!bufferTimeout) {
-        bufferTimeout = setTimeout(flushBuffer, 1500);
+      try {
+        const response = await fetch(`${BACKEND_URL}/crawler/ingest`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ items: batch }),
+        });
+        if (!response.ok) {
+          console.error(`[Crawler Server] Failed to ingest batch: ${response.statusText}`);
+        }
+      } catch (err) {
+        console.error(`[Crawler Server] Error sending batch to backend:`, err);
       }
-    } else if (message.error) {
-      session.errors.push(message.error);
-    }
-  });
+    };
 
-  child.on("exit", (code) => {
-    flushBuffer();
-    session.state = code === 0 ? CrawlState.COMPLETED : CrawlState.FAILED;
-    session.endTime = new Date();
-    console.log(`[Crawler Server] Scraper '${name}' exited with code ${code}`);
-  });
+    child.on("message", (message: any) => {
+      if (message.progress) {
+        session.progress = message.progress;
+      } else if (message.result) {
+        // Add result to buffer
+        buffer.push({
+          result: message.result,
+          info: {
+            product: message.info.product,
+            url: message.info.data.init?.url || message.info.request?.url || message.info.request,
+          },
+        });
 
+        if (buffer.length >= 100) {
+          flushBuffer();
+        } else if (!bufferTimeout) {
+          bufferTimeout = setTimeout(flushBuffer, 1500);
+        }
+      } else if (message.error) {
+        session.errors.push(message.error);
+      }
+    });
+
+    child.on("exit", (code) => {
+      flushBuffer();
+      session.state = code === 0 ? CrawlState.COMPLETED : CrawlState.FAILED;
+      session.endTime = new Date();
+      console.log(`[Crawler Server] Scraper '${name}' exited with code ${code}`);
+    });
   } catch (err: any) {
     if (err instanceof ZodError) {
       return res.status(400).json({ error: "Validation failed", details: err.issues });
@@ -231,9 +213,7 @@ app.post("/stop", (req: Request, res: Response) => {
 
     const active = activeSessions.get(name);
     if (!active || active.session.state !== CrawlState.CRAWLING) {
-      return res
-        .status(400)
-        .json({ error: `No active crawling session found for '${name}'` });
+      return res.status(400).json({ error: `No active crawling session found for '${name}'` });
     }
 
     active.child.kill("SIGINT");
@@ -254,9 +234,7 @@ app.post("/stop", (req: Request, res: Response) => {
 
 // 4. GET /status - Get status of all sessions
 app.get("/status", (req: Request, res: Response) => {
-  const list = Array.from(activeSessions.values()).map(
-    ({ session }) => session
-  );
+  const list = Array.from(activeSessions.values()).map(({ session }) => session);
   res.json(list);
 });
 
@@ -333,13 +311,9 @@ app.post("/test", async (req: Request, res: Response) => {
       return res.status(404).json({ error: `Scraper '${name}' not found` });
     }
 
-    const scraper: APIWebsiteInfo<any, any> = require(
-      scraperConfig.path
-    ).default;
+    const scraper: APIWebsiteInfo<any, any> = require(scraperConfig.path).default;
     if (!scraper.path) {
-      return res
-        .status(400)
-        .json({ error: `Scraper '${name}' does not support path generation` });
+      return res.status(400).json({ error: `Scraper '${name}' does not support path generation` });
     }
 
     const requestOptions = scraper.path(product, 1);
@@ -350,15 +324,12 @@ app.post("/test", async (req: Request, res: Response) => {
     }
 
     const url =
-      typeof requestOptions.request === "string" ||
-      requestOptions.request instanceof URL
+      typeof requestOptions.request === "string" || requestOptions.request instanceof URL
         ? requestOptions.request.toString()
         : (requestOptions.request as any).url?.toString();
 
     if (!url) {
-      return res
-        .status(400)
-        .json({ error: "Could not resolve URL from scraper config" });
+      return res.status(400).json({ error: "Could not resolve URL from scraper config" });
     }
 
     const results = await runManualExtraction(scraper, url, product);
@@ -383,16 +354,11 @@ app.post("/extract", async (req: Request, res: Response) => {
       return res.status(404).json({ error: `Scraper '${name}' not found` });
     }
 
-    const scraper: APIWebsiteInfo<any, any> = require(
-      scraperConfig.path
-    ).default;
+    const scraper: APIWebsiteInfo<any, any> = require(scraperConfig.path).default;
 
     // Check if the domain matches the URL domain
     const urlHostname = new URL(url).hostname.replace("www.", "");
-    const scraperHostname = new URL(scraper.domain).hostname.replace(
-      "www.",
-      ""
-    );
+    const scraperHostname = new URL(scraper.domain).hostname.replace("www.", "");
 
     if (urlHostname !== scraperHostname) {
       return res.status(400).json({
@@ -431,7 +397,5 @@ app.post("/extract", async (req: Request, res: Response) => {
 });
 
 app.listen(PORT, () => {
-  console.log(
-    `[Crawler Server] Isolated Express.js crawler server running on port ${PORT}`
-  );
+  console.log(`[Crawler Server] Isolated Express.js crawler server running on port ${PORT}`);
 });

@@ -36,14 +36,12 @@ class ParseService implements ParseServiceInterface {
     const basicOptions = options.part;
     if (basicOptions) {
       Part.BasicFilterAttributes.forEach((key) => {
-        if (attributes.length === 0 || attributes.includes(key))
-          filter[key] = basicOptions[key]!;
+        if (attributes.length === 0 || attributes.includes(key)) filter[key] = basicOptions[key]!;
       });
     }
 
     if (part) {
-      if (attributes.length === 0)
-        attributes = Object.keys(Mapping.ProductToInfo[part]);
+      if (attributes.length === 0) attributes = Object.keys(Mapping.ProductToInfo[part]);
 
       attributes.forEach((attr) => {
         if (!Mapping.ProductToInfo[part][attr]) return;
@@ -59,10 +57,9 @@ class ParseService implements ParseServiceInterface {
 
   options(
     params: Record<string, string | string[]>,
-    part?: Products,
+    part?: Products
   ): Part.Filter & API.PageOptions & API.SearchOptions {
-    const pageOptions: API.PageOptions & API.SearchOptions =
-      API.toPageOptions(params);
+    const pageOptions: API.PageOptions & API.SearchOptions = API.toPageOptions(params);
 
     if (params.q) {
       pageOptions.q = Array.isArray(params.q) ? params.q.join("|") : params.q;
@@ -78,9 +75,7 @@ class ParseService implements ParseServiceInterface {
       part:
         attributes.length === 0
           ? Part.BasicFilterAttributes
-          : Part.BasicFilterAttributes.filter((attr) =>
-              attributes.includes(attr),
-            ),
+          : Part.BasicFilterAttributes.filter((attr) => attributes.includes(attr)),
     };
 
     if (product) {
@@ -113,7 +108,7 @@ class ParseService implements ParseServiceInterface {
    */
   protected buildFilterOptions(
     params: Record<string, string | string[]>,
-    part?: Products,
+    part?: Products
   ): FilterOptionBuilder {
     const builder = new FilterOptionBuilder();
 

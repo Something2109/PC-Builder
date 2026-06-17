@@ -53,10 +53,12 @@ export default function InteractiveTools({ scrapers }: InteractiveToolsProps) {
 
   // Find supported products for selected scrapers
   const selectedExtractScraperObj = scrapers.find((s) => s.name === extractScraper);
-  const extractSupportedProducts = selectedExtractScraperObj?.supportedProducts || Object.values(Products);
+  const extractSupportedProducts =
+    selectedExtractScraperObj?.supportedProducts || Object.values(Products);
 
   const selectedTestScraperObj = scrapers.find((s) => s.name === testScraper);
-  const testSupportedProducts = selectedTestScraperObj?.supportedProducts || Object.values(Products);
+  const testSupportedProducts =
+    selectedTestScraperObj?.supportedProducts || Object.values(Products);
 
   // Handle Manual Extraction
   const handleExtract = async (e: React.FormEvent) => {
@@ -81,7 +83,9 @@ export default function InteractiveTools({ scrapers }: InteractiveToolsProps) {
     } catch (err: unknown) {
       console.error("Manual extraction failed:", err);
       const axiosErr = err as AxiosErrorLike;
-      setExtractError(axiosErr.response?.data?.message || "Extraction failed. Check url or crawler logs.");
+      setExtractError(
+        axiosErr.response?.data?.message || "Extraction failed. Check url or crawler logs."
+      );
     } finally {
       setExtractLoading(false);
     }

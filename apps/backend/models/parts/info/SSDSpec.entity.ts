@@ -71,5 +71,3 @@ export default class SSDSpecModel extends Model implements SSDSpec.Model {
   })
   declare interface: InternalConnectors.Storage.SSD | null;
 }
-
-

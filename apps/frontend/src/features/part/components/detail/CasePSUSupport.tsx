@@ -2,11 +2,7 @@ import * as CasePSUSupport from "@/utils/part/info/CasePSUSupport";
 
 import { Table } from "../utils/Table";
 
-const CasePSUSupportTable = ({
-  defaultValue,
-}: {
-  defaultValue: CasePSUSupport.DTO[];
-}) => (
+const CasePSUSupportTable = ({ defaultValue }: { defaultValue: CasePSUSupport.DTO[] }) => (
   <Table.Component>
     <Table.Head>
       <Table.Row>
@@ -15,9 +11,7 @@ const CasePSUSupportTable = ({
     </Table.Head>
     <tbody>
       <Table.Row>
-        <Table.Cell>
-          {defaultValue.map((val) => val.psu_support).join(", ")}
-        </Table.Cell>
+        <Table.Cell>{defaultValue.map((val) => val.psu_support).join(", ")}</Table.Cell>
       </Table.Row>
     </tbody>
   </Table.Component>

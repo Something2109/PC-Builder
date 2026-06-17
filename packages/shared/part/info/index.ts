@@ -135,8 +135,8 @@ const MultipleValueInfo = [
 ] as const;
 
 function objectMap<
-  Obj extends Record<string, any>,  
-  Map extends (arg: [keyof Obj, Obj[keyof Obj]]) => [keyof Obj, unknown]
+  Obj extends Record<string, any>,
+  Map extends (arg: [keyof Obj, Obj[keyof Obj]]) => [keyof Obj, unknown],
 >(obj: Obj, map: Map) {
   return Object.fromEntries(Object.entries(obj).map(map)) as {
     [key in keyof Obj]: ReturnType<Map>[1];

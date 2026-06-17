@@ -45,11 +45,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
 
   const addable = !context[product] || Array.isArray(context[product]);
 
-  const RemoveButtonCell = ({
-    defaultValue,
-  }: {
-    defaultValue?: Part.Summary;
-  }) => (
+  const RemoveButtonCell = ({ defaultValue }: { defaultValue?: Part.Summary }) => (
     <td className="text-right p-3">
       {defaultValue && (
         <button
@@ -76,9 +72,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
             className="dark:invert"
           />
         </div>
-        <h3 className="text-lg font-bold tracking-tight text-text">
-          {Product.Label[product]}
-        </h3>
+        <h3 className="text-lg font-bold tracking-tight text-text">{Product.Label[product]}</h3>
       </div>
 
       {/* Component Selection / Table */}
@@ -92,11 +86,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
           </Link>
         ) : (
           <div className="border border-border rounded-xl overflow-hidden bg-slate-50/5">
-            <SummaryTable
-              part={product}
-              data={details}
-              Cells={[RemoveButtonCell]}
-            />
+            <SummaryTable part={product} data={details} Cells={[RemoveButtonCell]} />
           </div>
         )}
 

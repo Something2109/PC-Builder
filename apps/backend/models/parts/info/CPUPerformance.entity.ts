@@ -51,5 +51,3 @@ export default class CPUPerformanceModel extends Model implements CPUPerformance
   @Column(DataType.INTEGER)
   declare tdp: number | null;
 }
-
-

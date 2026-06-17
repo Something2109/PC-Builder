@@ -67,5 +67,3 @@ export default class GPUMemoryModel extends Model implements GPUMemory.Model {
   @Column(DataType.INTEGER)
   declare bus_width: number | null;
 }
-
-

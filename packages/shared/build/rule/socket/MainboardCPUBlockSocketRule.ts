@@ -41,9 +41,7 @@ const MainboardCPUBlockSocketRule: AttributeRule<typeof attributes> = {
     }
 
     if (cpu_block_socket && cpu_block_socket.length > 0) {
-      result.mainboard_socket = cpu_block_socket.filter(
-        (socket) => socket !== undefined
-      );
+      result.mainboard_socket = cpu_block_socket.filter((socket) => socket !== undefined);
     }
 
     return result;

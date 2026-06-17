@@ -1,8 +1,4 @@
-import {
-  createParamDecorator,
-  ExecutionContext,
-  SetMetadata,
-} from "@nestjs/common";
+import { createParamDecorator, ExecutionContext, SetMetadata } from "@nestjs/common";
 
 import { Tokens } from "@/utils/API";
 import { JwtPayload, Roles } from "@/utils/user";
@@ -16,8 +12,7 @@ export const ROLE_METADATA_KEY = "roles";
  * Role metadata decorator.
  * Map the role that can use the route or controller.
  */
-export const Role = (...roles: Roles[]) =>
-  SetMetadata(ROLE_METADATA_KEY, roles);
+export const Role = (...roles: Roles[]) => SetMetadata(ROLE_METADATA_KEY, roles);
 
 /**
  * User param decorator.

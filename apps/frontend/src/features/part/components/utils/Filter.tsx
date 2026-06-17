@@ -1,9 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  FunctionComponent,
-  InputHTMLAttributes,
-  SelectHTMLAttributes,
-} from "react";
+import { FunctionComponent, InputHTMLAttributes, SelectHTMLAttributes } from "react";
 
 import { VerticalCollapsible } from "@/ui/Collapsible";
 import { Toggler } from "@/ui/Toggle";
@@ -13,8 +9,7 @@ import { InfoLabel } from "../utils/Table";
 
 type CustomFilterComponent<Value> = FunctionComponent<
   { value: NonNullable<Value>; defaultValue?: Value } & Omit<
-    InputHTMLAttributes<HTMLInputElement> &
-      SelectHTMLAttributes<HTMLSelectElement>,
+    InputHTMLAttributes<HTMLInputElement> & SelectHTMLAttributes<HTMLSelectElement>,
     "defaultValue" | "value"
   >
 >;
@@ -27,13 +22,7 @@ export function GenericFilterBar<T extends Record<string, string[] | number[]>>(
   Components: FilterMapping<T>,
   Labels: InfoLabel<T>
 ) {
-  const FilterBar = ({
-    product,
-    context,
-  }: {
-    product: Products;
-    context: URLSearchParams;
-  }) => (
+  const FilterBar = ({ product, context }: { product: Products; context: URLSearchParams }) => (
     <>
       {Object.entries(Components).map(([key, Component]) => (
         <Toggler

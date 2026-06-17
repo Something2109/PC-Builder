@@ -47,5 +47,3 @@ export default class CPUCoreConfigModel extends Model implements CPUCoreConfig.M
   @Column(DataType.FLOAT)
   declare turbo_frequency: number | null;
 }
-
-

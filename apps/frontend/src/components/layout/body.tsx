@@ -1,22 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 
-const DarkChanger = createContext<Dispatch<SetStateAction<boolean>> | null>(
-  null
-);
+const DarkChanger = createContext<Dispatch<SetStateAction<boolean>> | null>(null);
 
-export function ThemeBody({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export function ThemeBody({ children }: Readonly<{ children: React.ReactNode }>) {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
@@ -29,9 +18,7 @@ export function ThemeBody({
   }, []);
 
   return (
-    <body
-      className={`${dark ? "dark" : ""} min-h-screen flex flex-col overflow-y-scroll`}
-    >
+    <body className={`${dark ? "dark" : ""} min-h-screen flex flex-col overflow-y-scroll`}>
       <DarkChanger value={setDark}>{children}</DarkChanger>
     </body>
   );

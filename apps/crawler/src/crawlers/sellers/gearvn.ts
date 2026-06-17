@@ -1,9 +1,6 @@
 import { Products } from "../../types/Enum";
 import { APIWebsiteInfo } from "../../types/interface";
-import {
-  RetailProductSchema,
-  RetailProductType,
-} from "../../types/retailer/Product";
+import { RetailProductSchema, RetailProductType } from "../../types/retailer/Product";
 
 const domain = "https://gearvn.com";
 const mapping: { [key in Products]?: string } = {
@@ -45,9 +42,7 @@ const CrawlInfo: APIWebsiteInfo<GearvnPartDataAPI, RetailProductType> = {
 
   path(product: Products, page = 1) {
     if (mapping[product]) {
-      const url = new URL(
-        `${domain}/collections/${mapping[product]}/products.json`
-      );
+      const url = new URL(`${domain}/collections/${mapping[product]}/products.json`);
       url.searchParams.set("include", "metafields[product]");
       url.searchParams.set("page", page.toString());
       url.searchParams.set("limit", "500");

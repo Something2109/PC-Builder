@@ -10,51 +10,23 @@ import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<CaseSpec.DTO> = {
   form_factor: (field) => (
-    <OptionSelect
-      options={FormFactor.Case.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={FormFactor.Case.options} {...mapChange(field, "select")} />
   ),
   width: (field) => (
-    <UnitInput
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...mapChange(field, "number")} />
   ),
   length: (field) => (
-    <UnitInput
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...mapChange(field, "number")} />
   ),
   height: (field) => (
-    <UnitInput
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...mapChange(field, "number")} />
   ),
-  expansion_slot: (field) => (
-    <Input
-      type="number"
-      {...mapChange(field, "number")}
-    />
-  ),
+  expansion_slot: (field) => <Input type="number" {...mapChange(field, "number")} />,
   max_cooler_height: (field) => (
-    <UnitInput
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...mapChange(field, "number")} />
   ),
   max_psu_length: (field) => (
-    <UnitInput
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...mapChange(field, "number")} />
   ),
 };
 

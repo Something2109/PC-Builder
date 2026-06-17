@@ -14,18 +14,8 @@ export default function PaginationBar({
   if (total > 0) {
     if (current > 1) {
       components.push(
-        <PaginationButton
-          key="Pagination-Begin"
-          path={path}
-          title={"<<"}
-          num={1}
-        />,
-        <PaginationButton
-          key="Pagination-Back"
-          path={path}
-          title={"<"}
-          num={current - 1}
-        />
+        <PaginationButton key="Pagination-Begin" path={path} title={"<<"} num={1} />,
+        <PaginationButton key="Pagination-Back" path={path} title={"<"} num={current - 1} />
       );
     }
 
@@ -34,37 +24,20 @@ export default function PaginationBar({
     for (let i = min; i <= max; i++) {
       if (i !== current) {
         components.push(
-          <PaginationButton
-            key={`Pagination-${i}`}
-            path={path}
-            title={String(i)}
-            num={i}
-          />
+          <PaginationButton key={`Pagination-${i}`} path={path} title={String(i)} num={i} />
         );
       }
     }
 
     if (current < total) {
       components.push(
-        <PaginationButton
-          key="Pagination-Forward"
-          path={path}
-          title={">"}
-          num={current + 1}
-        />,
-        <PaginationButton
-          key="Pagination-End"
-          path={path}
-          title={">>"}
-          num={total}
-        />
+        <PaginationButton key="Pagination-Forward" path={path} title={">"} num={current + 1} />,
+        <PaginationButton key="Pagination-End" path={path} title={">>"} num={total} />
       );
     }
   }
 
-  return (
-    <nav className="flex flex-row justify-center my-2 gap-2">{components}</nav>
-  );
+  return <nav className="flex flex-row justify-center my-2 gap-2">{components}</nav>;
 }
 
 const PaginationButtonStyle =
@@ -90,11 +63,7 @@ function PaginationButton({
     );
   }
   return (
-    <button
-      type="button"
-      onClick={() => path(num)}
-      className={PaginationButtonStyle}
-    >
+    <button type="button" onClick={() => path(num)} className={PaginationButtonStyle}>
       <p className="m-auto size-fit font-bold">{title}</p>
     </button>
   );

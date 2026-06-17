@@ -46,20 +46,14 @@ const RAMRule: AttributeRule<typeof attributes> = {
 
   validate(build) {
     const result: ReturnType<typeof this.validate> = {};
-    const {
-      main_board_interface,
-      main_board_form_factor,
-      main_board_slot,
-      rams,
-    } = build;
+    const { main_board_interface, main_board_form_factor, main_board_slot, rams } = build;
 
     if (!main_board_interface) {
       result.main_board_interface = "Mainboard ram interface is not specified.";
     }
 
     if (!main_board_form_factor) {
-      result.main_board_form_factor =
-        "Mainboard ram form factor is not specified.";
+      result.main_board_form_factor = "Mainboard ram form factor is not specified.";
     }
 
     if (!main_board_slot) {
@@ -79,8 +73,7 @@ const RAMRule: AttributeRule<typeof attributes> = {
         RAMValidate(ram, main_board_interface, main_board_form_factor)
       );
 
-    const totalRAMKits =
-      rams?.reduce((acc, ram) => acc + (ram?.kit ?? 0), 0) ?? 0;
+    const totalRAMKits = rams?.reduce((acc, ram) => acc + (ram?.kit ?? 0), 0) ?? 0;
     if (main_board_slot && totalRAMKits > main_board_slot)
       result.main_board_slot = `The total RAM stick(s): ${totalRAMKits} exceed the mainboard's ${main_board_slot} RAM slot capacity.`;
 
@@ -88,12 +81,7 @@ const RAMRule: AttributeRule<typeof attributes> = {
   },
 
   filter(build) {
-    const {
-      main_board_interface,
-      main_board_form_factor,
-      main_board_slot,
-      rams,
-    } = build;
+    const { main_board_interface, main_board_form_factor, main_board_slot, rams } = build;
     const result: ReturnType<typeof this.filter> = {};
 
     if (main_board_interface) {
@@ -106,8 +94,7 @@ const RAMRule: AttributeRule<typeof attributes> = {
 
     if (main_board_slot) {
       const vacantSlots =
-        rams?.reduce((acc, curr) => acc - (curr?.kit ?? 0), main_board_slot) ??
-        main_board_slot;
+        rams?.reduce((acc, curr) => acc - (curr?.kit ?? 0), main_board_slot) ?? main_board_slot;
 
       if (vacantSlots > 0) {
         result.rams = { ...result.rams, kit: [0, main_board_slot] };
@@ -119,17 +106,13 @@ const RAMRule: AttributeRule<typeof attributes> = {
         .map((ram) => ram && ram.form_factor)
         .filter((val) => val !== undefined);
       if (ram_form_factors.length > 0)
-        result.main_board_form_factor = ram_form_factors.filter(
-          (val) => val !== undefined
-        );
+        result.main_board_form_factor = ram_form_factors.filter((val) => val !== undefined);
 
       const ram_interfaces = rams
         .map((ram) => ram && ram.interface)
         .filter((val) => val !== undefined);
       if (ram_interfaces.length > 0)
-        result.main_board_interface = ram_interfaces.filter(
-          (val) => val !== undefined
-        );
+        result.main_board_interface = ram_interfaces.filter((val) => val !== undefined);
 
       const ram_kits = rams.reduce((acc, ram) => acc + (ram?.kit ?? 0), 0);
       if (ram_kits > 0) result.main_board_slot = [0, ram_kits];

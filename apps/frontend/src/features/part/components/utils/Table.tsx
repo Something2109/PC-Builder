@@ -10,11 +10,7 @@ import {
 import { mergeClass } from "@/ui/mergeClass";
 
 export const Table = {
-  Component: ({
-    className,
-    children,
-    ...rest
-  }: HTMLAttributes<HTMLTableElement>) => (
+  Component: ({ className, children, ...rest }: HTMLAttributes<HTMLTableElement>) => (
     <table className={mergeClass("w-full border-2", className)} {...rest}>
       {children}
     </table>
@@ -36,10 +32,7 @@ export const Table = {
 
   Cell: ({ className, ...attr }: TdHTMLAttributes<HTMLTableCellElement>) => (
     <td
-      className={mergeClass(
-        "border-r-2 not-only:last:border-r-0 p-2 has-[table]:p-0",
-        className
-      )}
+      className={mergeClass("border-r-2 not-only:last:border-r-0 p-2 has-[table]:p-0", className)}
       {...attr}
     />
   ),
@@ -47,8 +40,7 @@ export const Table = {
 
 type InfoAttributeComponent<Value> = FunctionComponent<
   { value?: NonNullable<Value>; defaultValue?: Exclude<Value, null> } & Omit<
-    InputHTMLAttributes<HTMLInputElement> &
-      SelectHTMLAttributes<HTMLSelectElement>,
+    InputHTMLAttributes<HTMLInputElement> & SelectHTMLAttributes<HTMLSelectElement>,
     "defaultValue" | "value"
   >
 >;

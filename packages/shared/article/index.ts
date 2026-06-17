@@ -34,7 +34,7 @@ export function slugify(text: string): string {
 
 export const IdSchema = z.preprocess(
   (val) => (typeof val === "string" && val.trim() ? val : generateId()),
-  z.string(),
+  z.string()
 );
 
 export const BaseContentSchema = z.object({
@@ -43,7 +43,7 @@ export const BaseContentSchema = z.object({
 });
 
 export const ContentArray: z.ZodType<Content[], z.ZodType, any> = z.lazy(() =>
-  z.union([Section, List, Paragraph, Image]).array(),
+  z.union([Section, List, Paragraph, Image]).array()
 );
 
 export type Section = {
@@ -53,12 +53,11 @@ export type Section = {
   content: Content[];
 };
 
-export const Section: z.ZodType<Section, z.ZodType, any> =
-  BaseContentSchema.extend({
-    type: z.literal(ContentName.Section),
-    title: Primitive.String,
-    content: ContentArray,
-  });
+export const Section: z.ZodType<Section, z.ZodType, any> = BaseContentSchema.extend({
+  type: z.literal(ContentName.Section),
+  title: Primitive.String,
+  content: ContentArray,
+});
 
 export type List = {
   id: string;
@@ -139,16 +138,14 @@ export const CreateArticleDto = BaseEditArticleDto.transform((data) => {
 
 export type CreateArticleDto = z.infer<typeof CreateArticleDto>;
 
-export const UpdateArticleDto = BaseEditArticleDto.partial().transform(
-  (data) => {
-    const result = { ...data };
-    if (data.slug) {
-      result.slug = slugify(data.slug);
-    } else if (data.title) {
-      result.slug = slugify(data.title);
-    }
-    return result;
-  },
-);
+export const UpdateArticleDto = BaseEditArticleDto.partial().transform((data) => {
+  const result = { ...data };
+  if (data.slug) {
+    result.slug = slugify(data.slug);
+  } else if (data.title) {
+    result.slug = slugify(data.title);
+  }
+  return result;
+});
 
 export type UpdateArticleDto = z.infer<typeof UpdateArticleDto>;

@@ -57,10 +57,7 @@ export interface IAliasRegistry {
    * Returns all matching targets (a key could theoretically match multiple targets,
    * though typically it resolves to one).
    */
-  resolveKey(
-    product: string,
-    normalizedKey: string
-  ): ResolvedTarget[] | undefined;
+  resolveKey(product: string, normalizedKey: string): ResolvedTarget[] | undefined;
 
   /**
    * Resolve a normalized raw key against the BasicInfo alias index.
@@ -74,11 +71,7 @@ export interface IAliasRegistry {
   getInfoAliases(product: string, info: string): string[];
 
   /** Get attribute-level aliases for a specific (product, info, attribute). */
-  getAttributeAliases(
-    product: string,
-    info: string,
-    attribute: string
-  ): string[];
+  getAttributeAliases(product: string, info: string, attribute: string): string[];
 
   /** Get aliases for a BasicInfo attribute. */
   getBasicAliases(attribute: string): string[];
@@ -97,12 +90,7 @@ export interface IAliasRegistry {
   // ── Registration (learner integration) ──
 
   /** Register a new attribute-level alias. */
-  addAlias(
-    product: string,
-    info: string,
-    attribute: string,
-    alias: string
-  ): Promise<void>;
+  addAlias(product: string, info: string, attribute: string, alias: string): Promise<void>;
 
   /** Register a new info-level alias ("_self"). */
   addInfoAlias(product: string, info: string, alias: string): Promise<void>;

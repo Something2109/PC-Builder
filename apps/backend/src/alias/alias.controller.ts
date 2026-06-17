@@ -34,7 +34,6 @@ import { Roles } from "@/utils/user";
 import { DbAliasLearner } from "./db-alias-learner.service";
 import { DbAliasRegistry } from "./db-alias-registry.service";
 
-
 @Controller("alias")
 export class AliasController {
   constructor(
@@ -49,9 +48,7 @@ export class AliasController {
   // ── Alias Entries CRUD ─────────────────────────────────────────────
 
   @Get()
-  async listAliases(
-    @Query() params: Record<string, string | string[]>
-  ) {
+  async listAliases(@Query() params: Record<string, string | string[]>) {
     const options = API.toPageOptions(params);
     const { product, info, attribute, alias } = params;
 
@@ -79,9 +76,10 @@ export class AliasController {
       "updatedAt",
     ];
 
-    const order: [string, string][] = options.sort_key && validSortFields.includes(options.sort_key)
-      ? [[options.sort_key, options.sort_order || "asc"]]
-      : [["created_at", "DESC"]];
+    const order: [string, string][] =
+      options.sort_key && validSortFields.includes(options.sort_key)
+        ? [[options.sort_key, options.sort_order || "asc"]]
+        : [["created_at", "DESC"]];
 
     const { rows, count } = await this.aliasModel.findAndCountAll({
       where,
@@ -148,17 +146,14 @@ export class AliasController {
   @Role(Roles.ADMIN)
   @Put(":id")
   @UsePipes(new ZodValidationPipe(UpdateAliasSchema))
-  async updateAlias(
-    @Param("id", ParseIntPipe) id: number,
-    @Body() body: UpdateAliasDto
-  ) {
+  async updateAlias(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateAliasDto) {
     const entry = await this.aliasModel.findByPk(id);
     if (!entry) {
       throw new NotFoundException("Alias entry not found");
     }
 
     const product = body.product ?? entry.product;
-    const info = body.info !== undefined ? (body.info || "") : entry.info;
+    const info = body.info !== undefined ? body.info || "" : entry.info;
     const attribute = body.attribute ?? entry.attribute;
     const alias = body.alias ? normalizeKey(body.alias) : entry.alias;
 
@@ -213,9 +208,7 @@ export class AliasController {
 
   @Role(Roles.ADMIN)
   @Get("learner/logs")
-  async listLogs(
-    @Query() params: Record<string, string | string[]>
-  ) {
+  async listLogs(@Query() params: Record<string, string | string[]>) {
     const options = API.toPageOptions(params);
     const { product, status } = params;
 
@@ -239,9 +232,10 @@ export class AliasController {
       "updatedAt",
     ];
 
-    const order: [string, string][] = options.sort_key && validSortFields.includes(options.sort_key)
-      ? [[options.sort_key, options.sort_order || "asc"]]
-      : [["created_at", "DESC"]];
+    const order: [string, string][] =
+      options.sort_key && validSortFields.includes(options.sort_key)
+        ? [[options.sort_key, options.sort_order || "asc"]]
+        : [["created_at", "DESC"]];
 
     const { rows, count } = await this.logModel.findAndCountAll({
       where,

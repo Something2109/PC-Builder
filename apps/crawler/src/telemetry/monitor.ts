@@ -48,11 +48,7 @@ export class StreamMonitor extends Writable {
    * @param encoding Encoding (ignored).
    * @param callback Callback when write is complete.
    */
-  _write(
-    chunk: any,
-    encoding: BufferEncoding,
-    callback: (error?: Error | null) => void
-  ): void {
+  _write(chunk: any, encoding: BufferEncoding, callback: (error?: Error | null) => void): void {
     const timestamp = new Date().toISOString();
     const { type, message } = this.getLogDetails(chunk); // This will now also update stats
 
@@ -101,9 +97,7 @@ export class StreamMonitor extends Writable {
         break;
       }
       case InternalStage.Extract: {
-        message = `Extracted raw item from ${
-          chunk.data[InternalStage.Init].url
-        }`;
+        message = `Extracted raw item from ${chunk.data[InternalStage.Init].url}`;
         break;
       }
       case InternalStage.Parse:

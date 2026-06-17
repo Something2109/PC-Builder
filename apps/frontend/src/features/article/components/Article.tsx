@@ -1,5 +1,4 @@
 "use client";
- 
 
 import axios from "axios";
 import Link from "next/link";
@@ -53,9 +52,7 @@ function ContentListComponent({
           <ContentListComponent
             parent={content.type}
             contents={content.content}
-            prefix={
-              content.type === ContentName.List ? content.symbol : sectionPrefix
-            }
+            prefix={content.type === ContentName.List ? content.symbol : sectionPrefix}
           />
         )}
       </Component>
@@ -83,7 +80,7 @@ function calculateReadingTime(contents: Content[]): number {
 
 function extractSections(
   contents: Content[],
-  depth = 0,
+  depth = 0
 ): { id: string; title: string; depth: number }[] {
   let sections: { id: string; title: string; depth: number }[] = [];
   for (const item of contents) {
@@ -171,14 +168,11 @@ function ArticleComponent({ article }: { article: Article }) {
     }
   };
 
-  const formattedDate = new Date(article.createdAt).toLocaleDateString(
-    "en-US",
-    {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    },
-  );
+  const formattedDate = new Date(article.createdAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <article className="w-full max-w-6xl mx-auto my-6 px-1 md:px-4">
@@ -209,12 +203,7 @@ function ArticleComponent({ article }: { article: Article }) {
       </div>
 
       {/* Main Container */}
-      <div
-        className={mergeClass(
-          "pt-16 pb-6 px-4 md:px-12",
-          !article.icon ? "pt-8" : "",
-        )}
-      >
+      <div className={mergeClass("pt-16 pb-6 px-4 md:px-12", !article.icon ? "pt-8" : "")}>
         {/* Breadcrumb / Topic Badge */}
         <div className="flex flex-wrap items-center gap-2 mb-4 text-xs font-semibold text-slate-500 dark:text-slate-400">
           {article.topic && (
@@ -238,7 +227,7 @@ function ArticleComponent({ article }: { article: Article }) {
                 "ml-auto px-2.5 py-0.5 text-xs font-bold rounded-full border uppercase tracking-wider",
                 article.status === "draft"
                   ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/30"
-                  : "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900/30",
+                  : "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900/30"
               )}
             >
               {article.status}
@@ -264,10 +253,7 @@ function ArticleComponent({ article }: { article: Article }) {
           {/* Left Column: Article Body Content */}
           <div className="lg:col-span-8 space-y-4">
             {article.content.length > 0 ? (
-              <ContentListComponent
-                parent={ContentName.Section}
-                contents={article.content}
-              />
+              <ContentListComponent parent={ContentName.Section} contents={article.content} />
             ) : (
               <div className="py-12 text-center text-slate-400">
                 This article has no content yet.
@@ -376,7 +362,7 @@ function ArticleComponent({ article }: { article: Article }) {
                           activeSectionId === sec.id
                             ? "border-blue-500 text-blue-600 dark:text-blue-400 font-bold"
                             : "border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700"
-                        }`,
+                        }`
                       )}
                     >
                       {sec.title}

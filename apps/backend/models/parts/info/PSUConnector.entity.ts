@@ -51,5 +51,3 @@ export default class PSUConnectorModel extends Model implements PSUConnector.Mod
   @Column(DataType.TINYINT)
   declare count: number | null;
 }
-
-

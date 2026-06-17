@@ -34,9 +34,7 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
 
   async extract(response, info) {
     const requestUrl = new URL(
-      typeof info.request === "string"
-        ? info.request
-        : (info.request as any).url || info.request
+      typeof info.request === "string" ? info.request : (info.request as any).url || info.request
     );
 
     if (requestUrl.toString().includes("SeriesFilterResult")) {
@@ -45,22 +43,18 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
         throw new Error(`There's possibly a change in the API of ${domain}`);
       }
 
-      const next = data.Result.ProductList.map(
-        (raw: { ProductURL: string }) => {
-          const url: string = raw.ProductURL;
-          const requestUrl = new URL(
-            `${url}${url.includes("rog") ? "" : "tech"}spec`
-          );
-          requestUrl.searchParams.set("originalUrl", url);
+      const next = data.Result.ProductList.map((raw: { ProductURL: string }) => {
+        const url: string = raw.ProductURL;
+        const requestUrl = new URL(`${url}${url.includes("rog") ? "" : "tech"}spec`);
+        requestUrl.searchParams.set("originalUrl", url);
 
-          return {
-            request: {
-              url: requestUrl,
-            },
-            product: info.product,
-          };
-        }
-      );
+        return {
+          request: {
+            url: requestUrl,
+          },
+          product: info.product,
+        };
+      });
 
       return { raw: [], next };
     }
@@ -69,9 +63,7 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
 
     const dom = new JSDOM(await response.text()).window.document;
     const url = new URL(
-      typeof info.request === "string"
-        ? info.request
-        : (info.request as any).url || info.request
+      typeof info.request === "string" ? info.request : (info.request as any).url || info.request
     );
     let table = dom.getElementById("productTableBody");
     if (url.hostname.includes("rog")) {
@@ -92,9 +84,7 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
       Model: "",
     };
     const url = new URL(
-      typeof info.request === "string"
-        ? info.request
-        : (info.request as any).url || info.request
+      typeof info.request === "string" ? info.request : (info.request as any).url || info.request
     );
     if (url.searchParams.has("originalUrl")) {
       // url might be in result? No, we used it for link presumably?
@@ -110,8 +100,7 @@ const CrawlInfo: APIWebsiteInfo<Element, Record<string, string>> = {
     let rowClass = ".TechSpec__rowTable__1LR9D",
       titleClass = ".rowTableTitle",
       contentClass = ".rowTableItemViewBox",
-      imgClass =
-        ".TechSpec__rowTableItems__KYWXp.TechSpec__rowImage__35vd6 img";
+      imgClass = ".TechSpec__rowTableItems__KYWXp.TechSpec__rowImage__35vd6 img";
 
     if (raw.id !== "productTableBody") {
       rowClass = ".ProductSpecSingle__productSpecItemRow__BKwUK";

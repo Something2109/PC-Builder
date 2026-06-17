@@ -9,26 +9,12 @@ import { InfoComponentObject } from "../utils/TanstackForm";
 
 export const Components: InfoComponentObject<CPUPerformance.DTO> = {
   base_frequency: (field) => (
-    <UnitInput
-      Unit={FrequencyUnits}
-      defaultUnit="GHz"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={FrequencyUnits} defaultUnit="GHz" {...mapChange(field, "number")} />
   ),
   turbo_frequency: (field) => (
-    <UnitInput
-      Unit={FrequencyUnits}
-      defaultUnit="GHz"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={FrequencyUnits} defaultUnit="GHz" {...mapChange(field, "number")} />
   ),
-  tdp: (field) => (
-    <SuffixInput
-      suffix="W"
-      type="number"
-      {...mapChange(field, "number")}
-    />
-  ),
+  tdp: (field) => <SuffixInput suffix="W" type="number" {...mapChange(field, "number")} />,
 };
 
 export default GenericSingleInputForm<CPUPerformance.DTO>(

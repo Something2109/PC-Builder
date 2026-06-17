@@ -36,7 +36,7 @@ export class CdnService {
   async downloadAndOptimize(
     imageUrl: string,
     productCategory: string,
-    partId: string,
+    partId: string
   ): Promise<string | null> {
     try {
       // Create subdirectory for product category (e.g. cpu, mainboard)
@@ -57,9 +57,7 @@ export class CdnService {
       });
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to fetch image. Status: ${response.status} ${response.statusText}`,
-        );
+        throw new Error(`Failed to fetch image. Status: ${response.status} ${response.statusText}`);
       }
 
       const buffer = Buffer.from(await response.arrayBuffer());
@@ -75,9 +73,7 @@ export class CdnService {
       // Return the public web URL
       return `/cdn/${productCategory}/${fileName}`;
     } catch (error: any) {
-      this.logger.error(
-        `Failed to download and optimize image ${imageUrl}: ${error.message}`,
-      );
+      this.logger.error(`Failed to download and optimize image ${imageUrl}: ${error.message}`);
       return null; // Return null so we fallback to original image url if download fails
     }
   }

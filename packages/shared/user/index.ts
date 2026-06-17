@@ -43,9 +43,7 @@ export const Detail = Schema.omit({ password: true });
 
 export type Detail = z.infer<typeof Detail>;
 
-export const FilterOptions = z
-  .object({ role: z.array(z.nativeEnum(Roles)) })
-  .partial();
+export const FilterOptions = z.object({ role: z.array(z.nativeEnum(Roles)) }).partial();
 
 export type FilterOptions = z.infer<typeof FilterOptions>;
 

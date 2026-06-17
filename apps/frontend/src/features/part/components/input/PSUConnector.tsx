@@ -33,9 +33,7 @@ function Component({
           field.removeValue(index);
         };
 
-        const options = InternalConnectors.Power.Options.filter(
-          (val) => !exist(val)
-        );
+        const options = InternalConnectors.Power.Options.filter((val) => !exist(val));
 
         return (
           <Table.Component>
@@ -58,9 +56,7 @@ function Component({
                           type="number"
                           name={subField.name}
                           value={subField.state.value ?? 0}
-                          onChange={(e) =>
-                            subField.handleChange(Number(e.target.value))
-                          }
+                          onChange={(e) => subField.handleChange(Number(e.target.value))}
                         />
                       )}
                     </form.Field>
@@ -76,9 +72,7 @@ function Component({
                       id="form_factor"
                       options={options}
                       value=""
-                      onChange={(e) =>
-                        add(e.target.value as InternalConnectors.Power)
-                      }
+                      onChange={(e) => add(e.target.value as InternalConnectors.Power)}
                     />
                   </Table.Cell>
                 </Table.Row>

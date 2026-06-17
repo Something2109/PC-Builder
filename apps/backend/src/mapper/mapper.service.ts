@@ -17,13 +17,7 @@ export class MapperService {
     product: Products,
     fallbackBrand?: string
   ): Promise<any> {
-    return RawPartMapper.map(
-      raw,
-      product,
-      this.registry,
-      this.learner,
-      fallbackBrand
-    );
+    return RawPartMapper.map(raw, product, this.registry, this.learner, fallbackBrand);
   }
 
   async safeMapRawPart(
@@ -31,12 +25,6 @@ export class MapperService {
     product: Products,
     fallbackBrand?: string
   ): Promise<any> {
-    return RawPartMapper.safeMap(
-      raw,
-      product,
-      this.registry,
-      this.learner,
-      fallbackBrand
-    );
+    return RawPartMapper.safeMap(raw, product, this.registry, this.learner, fallbackBrand);
   }
 }

@@ -23,10 +23,9 @@ export default async function PartTopicPage({
   }
 
   const query = new URLSearchParams({ topic, part });
-  const response = await fetch(
-    getBackendUrl(`/api/article?${query}`),
-    { cache: "no-store" },
-  );
+  const response = await fetch(getBackendUrl(`/api/article?${query}`), {
+    cache: "no-store",
+  });
 
   if (!response.ok) return notFound();
 
@@ -52,8 +51,8 @@ export default async function PartTopicPage({
               {Label[part]}&apos;s {topic}
             </h1>
             <p className="text-sm md:text-base text-blue-100 font-serif max-w-xl mt-3 leading-relaxed">
-              A compilation of {topic} articles providing instructions on
-              assembling, configuring, and optimizing for the {Label[part]}.
+              A compilation of {topic} articles providing instructions on assembling, configuring,
+              and optimizing for the {Label[part]}.
             </p>
           </div>
 

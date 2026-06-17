@@ -42,9 +42,7 @@ export default function MainboardPCIeDisplay({
                   {controller}
                 </Table.Cell>
               )}
-              <Table.Cell>
-                {InternalConnectors.PCIe.toString(version, width)}
-              </Table.Cell>
+              <Table.Cell>{InternalConnectors.PCIe.toString(version, width)}</Table.Cell>
               <Table.Cell>{count}</Table.Cell>
             </Table.Row>
           ))

@@ -55,7 +55,4 @@ function Component({
   );
 }
 
-export default GenericListInputForm(
-  Component,
-  CPUBlockSocketSupport.Schemas.DTO
-);
+export default GenericListInputForm(Component, CPUBlockSocketSupport.Schemas.DTO);

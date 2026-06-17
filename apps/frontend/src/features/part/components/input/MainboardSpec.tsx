@@ -9,39 +9,18 @@ import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<MainboardSpec.DTO> = {
   form_factor: (field) => (
-    <OptionSelect
-      options={FormFactor.Mainboard.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={FormFactor.Mainboard.options} {...mapChange(field, "select")} />
   ),
-  socket: (field) => (
-    <Input
-      {...mapChange(field, "string")}
-    />
-  ),
-  chipset: (field) => (
-    <Input
-      {...mapChange(field, "string")}
-    />
-  ),
+  socket: (field) => <Input {...mapChange(field, "string")} />,
+  chipset: (field) => <Input {...mapChange(field, "string")} />,
   ram_form_factor: (field) => (
-    <OptionSelect
-      options={FormFactor.RAM.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={FormFactor.RAM.options} {...mapChange(field, "select")} />
   ),
   ram_interface: (field) => (
-    <OptionSelect
-      options={InternalConnectors.RAM.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={InternalConnectors.RAM.options} {...mapChange(field, "select")} />
   ),
   ram_slot: (field) => (
-    <SuffixInput
-      suffix="slot(s)"
-      type="number"
-      {...mapChange(field, "number")}
-    />
+    <SuffixInput suffix="slot(s)" type="number" {...mapChange(field, "number")} />
   ),
 };
 

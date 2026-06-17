@@ -38,9 +38,7 @@ function Component({
           field.removeValue(index);
         };
 
-        const options = InternalConnectors.Power.Mainboard.options.filter(
-          (val) => !exist(val)
-        );
+        const options = InternalConnectors.Power.Mainboard.options.filter((val) => !exist(val));
 
         return (
           <Table.Component>
@@ -63,9 +61,7 @@ function Component({
                           type="number"
                           name={subField.name}
                           value={subField.state.value ?? 0}
-                          onChange={(e) =>
-                            subField.handleChange(Number(e.target.value))
-                          }
+                          onChange={(e) => subField.handleChange(Number(e.target.value))}
                         />
                       )}
                     </form.Field>
@@ -76,18 +72,10 @@ function Component({
               {options.length > 0 && (
                 <Table.Row>
                   <Table.Cell>
-                    <OptionSelect
-                      ref={ConnectorInput}
-                      options={options}
-                      required
-                    />
+                    <OptionSelect ref={ConnectorInput} options={options} required />
                   </Table.Cell>
                   <Table.Cell>
-                    <Button
-                      type="button"
-                      className="w-full p-0 border-0"
-                      onClick={add}
-                    >
+                    <Button type="button" className="w-full p-0 border-0" onClick={add}>
                       Add
                     </Button>
                   </Table.Cell>
@@ -101,7 +89,4 @@ function Component({
   );
 }
 
-export default GenericListInputForm(
-  Component,
-  MainboardPowerConnector.Schemas.DTO
-);
+export default GenericListInputForm(Component, MainboardPowerConnector.Schemas.DTO);

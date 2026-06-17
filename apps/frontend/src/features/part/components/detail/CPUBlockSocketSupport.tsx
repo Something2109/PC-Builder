@@ -15,9 +15,7 @@ const CPUBlockSocketSupportTable = ({
     </Table.Head>
     <tbody>
       <Table.Row>
-        <Table.Cell>
-          {defaultValue.map((val) => val.socket).join(", ")}
-        </Table.Cell>
+        <Table.Cell>{defaultValue.map((val) => val.socket).join(", ")}</Table.Cell>
       </Table.Row>
     </tbody>
   </Table.Component>

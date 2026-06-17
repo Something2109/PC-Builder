@@ -1,8 +1,4 @@
-import {
-  MultipleChoiceInput,
-  MinMaxRangeInput,
-  UnitMinMaxRangeInput,
-} from "@/ui/Input";
+import { MultipleChoiceInput, MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
 import * as HDD from "@/utils/part/product/HDD";
 import { MemorySpeedUnit, MemoryUnits } from "@/utils/Units";
 

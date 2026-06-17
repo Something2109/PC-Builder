@@ -5,20 +5,10 @@ import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 
 const Components: InfoSummaryMapping<GPU.Summary> = {
   core_count: ({ value }) => value,
-  base_frequency: ({ value }) => (
-    <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>
-  ),
-  boost_frequency: ({ value }) => (
-    <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>
-  ),
-  memory_size: ({ value }) => (
-    <SuffixDisplay suffix="GB">{value}</SuffixDisplay>
-  ),
+  base_frequency: ({ value }) => <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>,
+  boost_frequency: ({ value }) => <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>,
+  memory_size: ({ value }) => <SuffixDisplay suffix="GB">{value}</SuffixDisplay>,
   tdp: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
 };
 
-export default GenericSummaryCells(
-  Components,
-  GPU.AttributeLabels,
-  GPU.Summary.keyof().options
-);
+export default GenericSummaryCells(Components, GPU.AttributeLabels, GPU.Summary.keyof().options);

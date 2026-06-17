@@ -6,22 +6,12 @@ import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<GPUPerformance.DTO> = {
   base_frequency: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={FrequencyUnits}
-      defaultUnit="MHz"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={FrequencyUnits} defaultUnit="MHz" defaultValue={defaultValue} />
   ),
   boost_frequency: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={FrequencyUnits}
-      defaultUnit="MHz"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={FrequencyUnits} defaultUnit="MHz" defaultValue={defaultValue} />
   ),
-  tdp: ({ defaultValue }) => (
-    <SuffixDisplay suffix="W">{defaultValue}</SuffixDisplay>
-  ),
+  tdp: ({ defaultValue }) => <SuffixDisplay suffix="W">{defaultValue}</SuffixDisplay>,
 };
 
 export default InfoComponent(Components, GPUPerformance.Label, {

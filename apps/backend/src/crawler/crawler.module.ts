@@ -8,10 +8,7 @@ import { CrawlerController } from "./crawler.controller";
 import { CrawlerService } from "./crawler.service";
 
 @Module({
-  imports: [
-    SequelizeModule.forFeature([RetailProduct]),
-    ConfigModule,
-  ],
+  imports: [SequelizeModule.forFeature([RetailProduct]), ConfigModule],
   controllers: [CrawlerController],
   providers: [CrawlerService],
 })

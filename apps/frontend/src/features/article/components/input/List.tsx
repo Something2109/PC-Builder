@@ -13,11 +13,7 @@ interface ListInputProps {
   onUpdateContent: (val: ArticleContent[]) => void;
 }
 
-export function ListInput({
-  content,
-  onChangeSymbol,
-  onUpdateContent,
-}: ListInputProps) {
+export function ListInput({ content, onChangeSymbol, onUpdateContent }: ListInputProps) {
   return (
     <div className="flex flex-col gap-2 w-full border border-slate-100 dark:border-slate-800 rounded-xl p-3 my-2 bg-slate-50/20 dark:bg-slate-950/5">
       <RowWrapper className="items-center gap-2 text-xs text-slate-400 dark:text-slate-500 mb-2">

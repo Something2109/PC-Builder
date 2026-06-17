@@ -88,5 +88,3 @@ export default class PumpSpecModel extends Model implements PumpSpec.Model {
   })
   declare rgb: InternalConnectors.RGB | null;
 }
-
-

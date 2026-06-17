@@ -15,20 +15,12 @@ export const GraphicCard = z.enum(["PCIe 6 pin", "PCIe 6 + 2 pin", "12VHPWR"]);
 
 export type GraphicCard = z.infer<typeof GraphicCard>;
 
-export const Miscellanous = z.enum([
-  "SATA",
-  "Molex 4 pin",
-  "Floppy Disk 4 pin",
-]);
+export const Miscellanous = z.enum(["SATA", "Molex 4 pin", "Floppy Disk 4 pin"]);
 
 export type Miscellanous = z.infer<typeof Miscellanous>;
 
 export const Options = [
-  ...new Set([
-    ...Mainboard.options,
-    ...GraphicCard.options,
-    ...Miscellanous.options,
-  ]).values(),
+  ...new Set([...Mainboard.options, ...GraphicCard.options, ...Miscellanous.options]).values(),
 ];
 
 export const Schema = z.union([Mainboard, GraphicCard, Miscellanous]);

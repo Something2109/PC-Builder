@@ -85,5 +85,3 @@ export default class PSUSpecModel extends Model implements PSUSpec.Model {
   })
   declare modular: PSUSpec.Modular | null;
 }
-
-

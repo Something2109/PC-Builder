@@ -11,15 +11,12 @@ export async function verifyToken(): Promise<JwtPayload | null> {
   if (!authCookie) return null;
 
   try {
-    const apiResponse = await fetch(
-      getBackendUrl("/api/auth/me"),
-      {
-        method: "GET",
-        headers: {
-          Cookie: `${Tokens.ACCESS}=${authCookie.value}`,
-        },
-      }
-    );
+    const apiResponse = await fetch(getBackendUrl("/api/auth/me"), {
+      method: "GET",
+      headers: {
+        Cookie: `${Tokens.ACCESS}=${authCookie.value}`,
+      },
+    });
 
     if (apiResponse.ok) {
       return await apiResponse.json();

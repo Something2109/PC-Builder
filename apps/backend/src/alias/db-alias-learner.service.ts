@@ -93,9 +93,10 @@ export class DbAliasLearner implements IAliasLearner {
     const targets = registry.getProductTargets(product);
     for (const target of targets) {
       coveredKeys.add(normalizeKey(target.attribute === "_self" ? target.info : target.attribute));
-      const aliases = target.attribute === "_self"
-        ? registry.getInfoAliases(product, target.info)
-        : registry.getAttributeAliases(product, target.info, target.attribute);
+      const aliases =
+        target.attribute === "_self"
+          ? registry.getInfoAliases(product, target.info)
+          : registry.getAttributeAliases(product, target.info, target.attribute);
       for (const alias of aliases) {
         coveredKeys.add(normalizeKey(alias));
       }

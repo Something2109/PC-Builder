@@ -1,8 +1,4 @@
-import {
-  MultipleChoiceInput,
-  MinMaxRangeInput,
-  UnitMinMaxRangeInput,
-} from "@/ui/Input";
+import { MultipleChoiceInput, MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
 import * as CPU from "@/utils/part/product/CPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/Units";
 

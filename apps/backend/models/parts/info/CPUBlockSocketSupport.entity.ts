@@ -46,5 +46,3 @@ export default class CPUBlockSocketModel extends Model implements CPUBlockSocket
   @Column(DataType.STRING)
   declare socket: string;
 }
-
-

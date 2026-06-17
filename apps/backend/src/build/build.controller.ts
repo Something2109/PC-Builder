@@ -35,7 +35,7 @@ export class BuildController {
   async getSuitablePart(
     @Param("product", ProductValidator) part: Products,
     @Body(BuildListValidationPipe) buildList: Build.List,
-    @Query() params: Record<string, string | string[]>,
+    @Query() params: Record<string, string | string[]>
   ) {
     return await this.service.getSuitablePart(part, buildList, params);
   }

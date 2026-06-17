@@ -7,9 +7,7 @@ import { ArticleService } from "./services/article.service";
 import { ImageService } from "./services/image.service";
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: "article", schema: ArticleSchema }]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: "article", schema: ArticleSchema }])],
   controllers: [ArticleController],
   providers: [ArticleService, ImageService],
 })

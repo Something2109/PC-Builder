@@ -26,10 +26,7 @@ function Component({
           field.removeValue(index);
         };
 
-        const add = (
-          place: Case.HardDrivePlace,
-          form_factor: Case.HardDriveFormFactor
-        ) => {
+        const add = (place: Case.HardDrivePlace, form_factor: Case.HardDriveFormFactor) => {
           field.pushValue({ place, form_factor, count: 0 });
         };
 
@@ -40,9 +37,7 @@ function Component({
             <Table.Head>
               <Table.Row>
                 <Table.Cell>{CaseHardDriveSupport.Label.place}</Table.Cell>
-                <Table.Cell>
-                  {CaseHardDriveSupport.Label.form_factor}
-                </Table.Cell>
+                <Table.Cell>{CaseHardDriveSupport.Label.form_factor}</Table.Cell>
                 <Table.Cell>{CaseHardDriveSupport.Label.count}</Table.Cell>
               </Table.Row>
             </Table.Head>
@@ -78,9 +73,7 @@ function Component({
                                 type="number"
                                 name={subField.name}
                                 value={subField.state.value ?? 0}
-                                onChange={(e) =>
-                                  subField.handleChange(Number(e.target.value))
-                                }
+                                onChange={(e) => subField.handleChange(Number(e.target.value))}
                               />
                             )}
                           </form.Field>
@@ -90,11 +83,7 @@ function Component({
                         </Table.Cell>
                       </Table.Row>
                     ))}
-                    <AddRowOptions
-                      place={place}
-                      options={options}
-                      onAdd={add}
-                    />
+                    <AddRowOptions place={place} options={options} onAdd={add} />
                   </React.Fragment>
                 );
               })}
@@ -113,10 +102,7 @@ function AddRowOptions({
 }: {
   place: Case.HardDrivePlace;
   options: Case.HardDriveFormFactor[];
-  onAdd: (
-    place: Case.HardDrivePlace,
-    form_factor: Case.HardDriveFormFactor
-  ) => void;
+  onAdd: (place: Case.HardDrivePlace, form_factor: Case.HardDriveFormFactor) => void;
 }) {
   const FormFactorInput = useRef<HTMLSelectElement>(null);
   const handleAdd = () => {
@@ -134,11 +120,7 @@ function AddRowOptions({
         <OptionSelect ref={FormFactorInput} options={options} required />
       </Table.Cell>
       <Table.Cell colSpan={2}>
-        <Button
-          type="button"
-          className="w-full p-0 border-0"
-          onClick={handleAdd}
-        >
+        <Button type="button" className="w-full p-0 border-0" onClick={handleAdd}>
           Add
         </Button>
       </Table.Cell>
@@ -146,7 +128,4 @@ function AddRowOptions({
   );
 }
 
-export default GenericListInputForm(
-  Component,
-  CaseHardDriveSupport.Schemas.DTO
-);
+export default GenericListInputForm(Component, CaseHardDriveSupport.Schemas.DTO);

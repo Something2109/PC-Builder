@@ -14,12 +14,7 @@ export * as InternalConnectors from "./InternalConnectors";
 
 export * as ExternalPorts from "./ExternalPorts";
 
-export type ExternalPorts =
-  | Network
-  | Peripheral
-  | Display
-  | Audio
-  | Interaction;
+export type ExternalPorts = Network | Peripheral | Display | Audio | Interaction;
 
 export * as Material from "./Material";
 

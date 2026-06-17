@@ -5,10 +5,7 @@ import { mergeClass } from "./mergeClass";
 
 const normal = "button dark:hover:bg-blue-500";
 
-type ButtonProps = DetailedHTMLProps<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->;
+type ButtonProps = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
 
 function Button({ className, ...rest }: ButtonProps) {
   return <button className={mergeClass(normal, className)} {...rest} />;

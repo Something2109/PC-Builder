@@ -14,9 +14,7 @@ export default async function PartDetailPage({
 }) {
   const { part, id } = await params;
 
-  const response = await fetch(
-    getBackendUrl(`/api/part/${part}/${id}`)
-  );
+  const response = await fetch(getBackendUrl(`/api/part/${part}/${id}`));
 
   if (!response.ok) return notFound();
 

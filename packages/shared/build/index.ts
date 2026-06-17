@@ -91,16 +91,19 @@ namespace Build {
      *   PCIeRule,...
      * ]
      */
-    export const Rule = ProductRuleList.reduce((acc, rule) => {
-      for (const v of Object.values(rule.attributes)) {
-        const [product] = v;
+    export const Rule = ProductRuleList.reduce(
+      (acc, rule) => {
+        for (const v of Object.values(rule.attributes)) {
+          const [product] = v;
 
-        acc[product] ??= [];
-        acc[product].push(rule);
-      }
+          acc[product] ??= [];
+          acc[product].push(rule);
+        }
 
-      return acc;
-    }, {} as { [key in Products]?: AttributeRule<BuildAttributeMapping>[] });
+        return acc;
+      },
+      {} as { [key in Products]?: AttributeRule<BuildAttributeMapping>[] }
+    );
 
     /**
      * A mapping of each product type to the information filters
@@ -111,23 +114,23 @@ namespace Build {
      * This is used to filter the product list based on the selected build
      * and prevent unnecessary information be queried.
      */
-    export const ValidateAttributes = ProductRuleList.reduce((acc, rule) => {
-      for (const v of Object.values(rule.attributes)) {
-        const [filterProduct, info, attr] = v;
+    export const ValidateAttributes = ProductRuleList.reduce(
+      (acc, rule) => {
+        for (const v of Object.values(rule.attributes)) {
+          const [filterProduct, info, attr] = v;
 
-        acc[filterProduct] ??= {};
+          acc[filterProduct] ??= {};
 
-        if (!attr)
-          acc[filterProduct][info] =
-            Information.Info.shape[info].keyof().options;
+          if (!attr) acc[filterProduct][info] = Information.Info.shape[info].keyof().options;
 
-        acc[filterProduct][info] ??= [];
+          acc[filterProduct][info] ??= [];
 
-        if (attr && !acc[filterProduct][info].includes(attr))
-          acc[filterProduct][info].push(attr);
-      }
-      return acc;
-    }, {} as { [key in Products]?: { [info in Infos]?: string[] } });
+          if (attr && !acc[filterProduct][info].includes(attr)) acc[filterProduct][info].push(attr);
+        }
+        return acc;
+      },
+      {} as { [key in Products]?: { [info in Infos]?: string[] } }
+    );
 
     /**
      * A mapping of each product type to the information filters
@@ -150,25 +153,26 @@ namespace Build {
       Object.entries(Rule).map(([key, rules]) => {
         const product = key as Products;
 
-        const productInfoMapping = rules.reduce((acc, rule) => {
-          for (const v of Object.values(rule.attributes)) {
-            const [filterProduct, info, attr] = v;
+        const productInfoMapping = rules.reduce(
+          (acc, rule) => {
+            for (const v of Object.values(rule.attributes)) {
+              const [filterProduct, info, attr] = v;
 
-            if (filterProduct === product) continue;
+              if (filterProduct === product) continue;
 
-            acc[filterProduct] ??= {};
+              acc[filterProduct] ??= {};
 
-            if (!attr)
-              acc[filterProduct][info] =
-                Information.Info.shape[info].keyof().options;
+              if (!attr) acc[filterProduct][info] = Information.Info.shape[info].keyof().options;
 
-            acc[filterProduct][info] ??= [];
+              acc[filterProduct][info] ??= [];
 
-            if (attr && !acc[filterProduct][info].includes(attr))
-              acc[filterProduct][info].push(attr);
-          }
-          return acc;
-        }, {} as { [key in Products]?: { [info in Infos]?: string[] } });
+              if (attr && !acc[filterProduct][info].includes(attr))
+                acc[filterProduct][info].push(attr);
+            }
+            return acc;
+          },
+          {} as { [key in Products]?: { [info in Infos]?: string[] } }
+        );
 
         return [product, productInfoMapping];
       })

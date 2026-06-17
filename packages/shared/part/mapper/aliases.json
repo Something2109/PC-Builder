@@ -21,7 +21,13 @@
     "cpu_performance": {
       "_self": [],
       "base_frequency": ["basefrequency", "processorbasefrequency", "clockspeed", "baseclock"],
-      "turbo_frequency": ["turbofrequency", "maxturbofrequency", "boostclock", "maxboostclock", "boostclockspeed"],
+      "turbo_frequency": [
+        "turbofrequency",
+        "maxturbofrequency",
+        "boostclock",
+        "maxboostclock",
+        "boostclockspeed"
+      ],
       "tdp": ["maxtdp", "thermaldesignpower", "powerconsumption", "powerlimit"]
     },
     "cpu_core_config": {
@@ -119,7 +125,13 @@
       "length": ["cardlength"],
       "height": ["cardheight", "slotwidth"],
       "pcie": ["pcieversion", "pcieinterface"],
-      "minimum_psu": ["minimumpsu", "recommendedpsu", "minpsu", "psurequirement", "recommendedpower"],
+      "minimum_psu": [
+        "minimumpsu",
+        "recommendedpsu",
+        "minpsu",
+        "psurequirement",
+        "recommendedpower"
+      ],
       "power_connector": ["powerconnector"],
       "power_connector_count": ["powerconnectorcount"]
     },

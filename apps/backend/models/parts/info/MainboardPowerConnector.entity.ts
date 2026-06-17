@@ -32,7 +32,8 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   },
 }))
 @Table({ modelName: Infos.MAIN_POWER })
-export default class MainboardPowerConnectorModel extends Model
+export default class MainboardPowerConnectorModel
+  extends Model
   implements MainboardPowerConnector.Model
 {
   @PrimaryKey
@@ -53,6 +54,3 @@ export default class MainboardPowerConnectorModel extends Model
   @Column(DataType.TINYINT)
   declare count: number | null;
 }
-
-
-

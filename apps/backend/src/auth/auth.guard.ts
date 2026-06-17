@@ -31,9 +31,7 @@ export class LoginAuthorizationGuard implements CanActivate {
 
     // If the user is required to be not logged in but is.
     if (!this.requiredSession && session) {
-      throw new ForbiddenException(
-        `You have logged in as ${session.sub.username}`
-      );
+      throw new ForbiddenException(`You have logged in as ${session.sub.username}`);
     }
 
     return false;

@@ -10,61 +10,26 @@ import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<PumpSpec.DTO> = {
   form_factor: (field) => (
-    <OptionSelect
-      options={FormFactor.Pump.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={FormFactor.Pump.options} {...mapChange(field, "select")} />
   ),
   width: (field) => (
-    <UnitInput
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...mapChange(field, "number")} />
   ),
   length: (field) => (
-    <UnitInput
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...mapChange(field, "number")} />
   ),
   height: (field) => (
-    <UnitInput
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={LengthUnits} defaultUnit="mm" {...mapChange(field, "number")} />
   ),
   voltage: (field) => (
-    <SuffixInput
-      suffix="V"
-      type="number"
-      step={0.01}
-      {...mapChange(field, "number")}
-    />
+    <SuffixInput suffix="V" type="number" step={0.01} {...mapChange(field, "number")} />
   ),
-  wattage: (field) => (
-    <SuffixInput
-      suffix="W"
-      type="number"
-      {...mapChange(field, "number")}
-    />
-  ),
+  wattage: (field) => <SuffixInput suffix="W" type="number" {...mapChange(field, "number")} />,
   head_pressure: (field) => (
-    <SuffixInput
-      suffix="m"
-      type="number"
-      step={0.01}
-      {...mapChange(field, "number")}
-    />
+    <SuffixInput suffix="m" type="number" step={0.01} {...mapChange(field, "number")} />
   ),
   flow_rate: (field) => (
-    <UnitInput
-      Unit={VolumeSpeedUnit}
-      defaultUnit="L/h"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={VolumeSpeedUnit} defaultUnit="L/h" {...mapChange(field, "number")} />
   ),
   power_connector: (field) => (
     <OptionSelect
@@ -79,10 +44,7 @@ const Components: InfoComponentObject<PumpSpec.DTO> = {
     />
   ),
   rgb: (field) => (
-    <OptionSelect
-      options={InternalConnectors.RGB.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={InternalConnectors.RGB.options} {...mapChange(field, "select")} />
   ),
 };
 

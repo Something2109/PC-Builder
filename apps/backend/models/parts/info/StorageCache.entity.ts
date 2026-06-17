@@ -44,5 +44,3 @@ export default class StorageCacheModel extends Model implements StorageCache.Mod
   @Column(DataType.FLOAT)
   declare capacity: number | null;
 }
-
-

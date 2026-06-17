@@ -30,9 +30,7 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   [ModelScopes.DETAIL]: PartDefaultScope,
 }))
 @Table({ modelName: Infos.CASE_HARD_DRIVE })
-export default class CaseHardDriveSupportModel extends Model
-  implements CaseHardDriveSupport.Model
-{
+export default class CaseHardDriveSupportModel extends Model implements CaseHardDriveSupport.Model {
   @PrimaryKey
   @ForeignKey(() => PartInformation)
   @Column(DataType.UUID)
@@ -58,6 +56,3 @@ export default class CaseHardDriveSupportModel extends Model
   @Column(DataType.TINYINT)
   declare count: number | null;
 }
-
-
-

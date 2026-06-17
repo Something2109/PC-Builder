@@ -29,24 +29,19 @@ const CrawlInfo: APIWebsiteInfo<Document, Record<string, string>> = {
 
     // Check for listing page
     if (dom.querySelector(".c-productCard4__image")) {
-      const next = [...dom.querySelectorAll(".c-productCard4__image")].map(
-        (raw) => {
-          const url = new URL(`${domain}${raw.getAttribute("href")}`);
-          url.searchParams.set(
-            "originalUrl",
-            `${domain}${raw.getAttribute("href")}`
-          );
-          const img = raw.querySelector("img")?.getAttribute("src");
-          if (img) url.searchParams.set("img", img);
+      const next = [...dom.querySelectorAll(".c-productCard4__image")].map((raw) => {
+        const url = new URL(`${domain}${raw.getAttribute("href")}`);
+        url.searchParams.set("originalUrl", `${domain}${raw.getAttribute("href")}`);
+        const img = raw.querySelector("img")?.getAttribute("src");
+        if (img) url.searchParams.set("img", img);
 
-          return {
-            request: {
-              url,
-            },
-            product: info.product,
-          };
-        }
-      );
+        return {
+          request: {
+            url,
+          },
+          product: info.product,
+        };
+      });
       return { raw: [], next };
     }
 
@@ -56,14 +51,10 @@ const CrawlInfo: APIWebsiteInfo<Document, Record<string, string>> = {
   async parse(raw, info) {
     const result: Record<string, string> = {};
     const url = new URL(
-      typeof info.request === "string"
-        ? info.request
-        : (info.request as any).url || info.request
+      typeof info.request === "string" ? info.request : (info.request as any).url || info.request
     );
-    if (url.searchParams.has("originalUrl"))
-      result["url"] = url.searchParams.get("originalUrl")!;
-    if (url.searchParams.has("img"))
-      result["img"] = url.searchParams.get("img")!;
+    if (url.searchParams.has("originalUrl")) result["url"] = url.searchParams.get("originalUrl")!;
+    if (url.searchParams.has("img")) result["img"] = url.searchParams.get("img")!;
     let table = raw.querySelector(".c-table__main");
 
     if (!table) {

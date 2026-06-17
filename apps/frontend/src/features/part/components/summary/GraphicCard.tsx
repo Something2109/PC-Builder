@@ -5,12 +5,8 @@ import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 
 const Components: InfoSummaryMapping<GraphicCard.Summary> = {
   length: ({ value }) => <SuffixDisplay suffix="mm">{value}</SuffixDisplay>,
-  base_frequency: ({ value }) => (
-    <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>
-  ),
-  boost_frequency: ({ value }) => (
-    <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>
-  ),
+  base_frequency: ({ value }) => <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>,
+  boost_frequency: ({ value }) => <SuffixDisplay suffix="MHz">{value}</SuffixDisplay>,
   minimum_psu: ({ value }) => value,
 };
 

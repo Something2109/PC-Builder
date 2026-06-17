@@ -4,8 +4,7 @@ import useSearchAction from "@/hooks/useSearchAction";
 import { Products } from "@/utils/part";
 
 export function SearchBar({ q, part }: { q?: string; part?: Products }) {
-  const [input, result, pending, onChange, onBlur, onEnter] =
-    useSearchAction(part);
+  const [input, result, pending, onChange, onBlur, onEnter] = useSearchAction(part);
 
   return (
     <div className="relative w-full">
@@ -75,7 +74,8 @@ export function SearchBar({ q, part }: { q?: string; part?: Products }) {
             Searching Database...
           </div>
         )}
-        {!pending && result.length > 0 &&
+        {!pending &&
+          result.length > 0 &&
           result.map((value) => (
             <a
               href={`/part/${value.part}/${value.id}`}
@@ -84,8 +84,7 @@ export function SearchBar({ q, part }: { q?: string; part?: Products }) {
             >
               {value.name}
             </a>
-          ))
-        }
+          ))}
       </div>
     </div>
   );

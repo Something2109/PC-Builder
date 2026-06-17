@@ -2,11 +2,7 @@ import * as PSUConnector from "@/utils/part/info/PSUConnector";
 
 import { Table } from "../utils/Table";
 
-const PSUConnectorTable = ({
-  defaultValue,
-}: {
-  defaultValue: PSUConnector.DTO[];
-}) => (
+const PSUConnectorTable = ({ defaultValue }: { defaultValue: PSUConnector.DTO[] }) => (
   <Table.Component>
     <Table.Head>
       <Table.Row>

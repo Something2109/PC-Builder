@@ -90,5 +90,3 @@ export default class RAMSpecModel extends Model implements RAMSpec.Model {
   })
   declare interface: InternalConnectors.RAM | null;
 }
-
-

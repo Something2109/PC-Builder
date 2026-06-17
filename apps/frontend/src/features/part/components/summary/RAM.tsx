@@ -10,8 +10,4 @@ const Components: InfoSummaryMapping<RAM.Summary> = {
   interface: ({ value }) => value,
 };
 
-export default GenericSummaryCells(
-  Components,
-  RAM.AttributeLabels,
-  RAM.Summary.keyof().options
-);
+export default GenericSummaryCells(Components, RAM.AttributeLabels, RAM.Summary.keyof().options);

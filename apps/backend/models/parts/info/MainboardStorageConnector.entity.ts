@@ -32,7 +32,8 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   },
 }))
 @Table({ modelName: Infos.MAIN_STORAGE })
-export default class MainboardStorageConnectorModel extends Model
+export default class MainboardStorageConnectorModel
+  extends Model
   implements MainboardStorageConnector.Model
 {
   @PrimaryKey
@@ -55,6 +56,3 @@ export default class MainboardStorageConnectorModel extends Model
   @Column(DataType.TINYINT)
   declare count: number | null;
 }
-
-
-

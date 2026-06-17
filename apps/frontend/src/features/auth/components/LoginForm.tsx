@@ -16,8 +16,7 @@ const loginSchema = z.object({
 });
 
 export function LoginForm({ pathname }: Readonly<{ pathname?: string }>) {
-  const [state, formAction, pending, error, setError] =
-    useLoginAction(pathname);
+  const [state, formAction, pending, error, setError] = useLoginAction(pathname);
 
   const form = useForm({
     defaultValues: {
@@ -42,11 +41,7 @@ export function LoginForm({ pathname }: Readonly<{ pathname?: string }>) {
       }}
     >
       {error.message && (
-        <NotificationBar
-          message={error.message}
-          remove={() => setError({})}
-          alert
-        />
+        <NotificationBar message={error.message} remove={() => setError({})} alert />
       )}
       <form.Field
         name="username"
@@ -78,11 +73,7 @@ export function LoginForm({ pathname }: Readonly<{ pathname?: string }>) {
         )}
       </form.Field>
       {error.username && (
-        <NotificationBar
-          message={error.username}
-          remove={() => setError({})}
-          alert
-        />
+        <NotificationBar message={error.username} remove={() => setError({})} alert />
       )}
       <form.Field
         name="password"
@@ -114,11 +105,7 @@ export function LoginForm({ pathname }: Readonly<{ pathname?: string }>) {
         )}
       </form.Field>
       {error.password && (
-        <NotificationBar
-          message={error.password}
-          remove={() => setError({})}
-          alert
-        />
+        <NotificationBar message={error.password} remove={() => setError({})} alert />
       )}
       <Button type="submit" disabled={pending}>
         {pending ? "Logging in..." : "Log in"}
@@ -149,10 +136,7 @@ function LoginField({
         onChange={onChange}
         onBlur={onBlur}
         id={name}
-        className={mergeClass(
-          "border-2 rounded-xl px-2 py-1 text-medium",
-          className
-        )}
+        className={mergeClass("border-2 rounded-xl px-2 py-1 text-medium", className)}
         {...rest}
       />
     </>

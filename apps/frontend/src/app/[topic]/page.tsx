@@ -8,17 +8,12 @@ import { verifyToken } from "@/features/auth/server";
 import { Summary } from "@/utils/article";
 import { getBackendUrl } from "@/utils/path";
 
-export default async function TopicPage({
-  params,
-}: {
-  params: Promise<{ topic: string }>;
-}) {
+export default async function TopicPage({ params }: { params: Promise<{ topic: string }> }) {
   const { topic } = await params;
   const query = new URLSearchParams({ topic });
-  const response = await fetch(
-    getBackendUrl(`/api/article?${query}`),
-    { cache: "no-store" },
-  );
+  const response = await fetch(getBackendUrl(`/api/article?${query}`), {
+    cache: "no-store",
+  });
 
   if (!response.ok) return notFound();
 
@@ -39,8 +34,8 @@ export default async function TopicPage({
               Topic: {topic}
             </h1>
             <p className="text-sm md:text-base text-violet-100 font-serif max-w-xl mt-3 leading-relaxed">
-              A compilation of detailed tutorials and knowledge-sharing articles
-              related to the {topic} topic.
+              A compilation of detailed tutorials and knowledge-sharing articles related to the{" "}
+              {topic} topic.
             </p>
           </div>
 

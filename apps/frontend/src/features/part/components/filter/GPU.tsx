@@ -1,8 +1,4 @@
-import {
-  MinMaxRangeInput,
-  MultipleChoiceInput,
-  UnitMinMaxRangeInput,
-} from "@/ui/Input";
+import { MinMaxRangeInput, MultipleChoiceInput, UnitMinMaxRangeInput } from "@/ui/Input";
 import * as GPU from "@/utils/part/product/GPU";
 import { FrequencyUnits, MemoryUnits } from "@/utils/Units";
 

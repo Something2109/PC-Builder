@@ -12,12 +12,6 @@ export const Metal = z.enum([
 
 export type Metal = z.infer<typeof Metal>;
 
-export const Plastic = z.enum([
-  "Acetal",
-  "Acrylic",
-  "Nylon",
-  "Plexi",
-  "PPS-GF40",
-]);
+export const Plastic = z.enum(["Acetal", "Acrylic", "Nylon", "Plexi", "PPS-GF40"]);
 
 export type Plastic = z.infer<typeof Plastic>;

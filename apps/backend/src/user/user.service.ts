@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 import { Sequelize } from "sequelize-typescript";
 
@@ -35,10 +31,7 @@ export class UserService {
     return info as User.JwtPayload;
   }
 
-  async create({
-    username,
-    password,
-  }: User.LogInOptions): Promise<User.Detail | null> {
+  async create({ username, password }: User.LogInOptions): Promise<User.Detail | null> {
     const [user, created] = await UserModel.findOrBuild({
       where: { username },
       defaults: { password },
@@ -46,9 +39,7 @@ export class UserService {
 
     if (!created) return null;
 
-    await this.sequelize.transaction(
-      async (transaction) => await user.save({ transaction }),
-    );
+    await this.sequelize.transaction(async (transaction) => await user.save({ transaction }));
 
     const { password: _, ...result } = user.toJSON();
 
@@ -63,9 +54,10 @@ export class UserService {
     ...options
   }: User.FilterOptions & API.PageOptions): Promise<User.Information[] | null> {
     const validSortFields = ["id", "username", "name", "role"];
-    const order: [string, string][] | undefined = sort_key && validSortFields.includes(sort_key)
-      ? [[sort_key, sort_order || "asc"]]
-      : undefined;
+    const order: [string, string][] | undefined =
+      sort_key && validSortFields.includes(sort_key)
+        ? [[sort_key, sort_order || "asc"]]
+        : undefined;
 
     const userList = await UserModel.scope(UserModelScope.SUMMARY).findAll({
       where: options,
@@ -94,9 +86,7 @@ export class UserService {
 
     user.set(options);
 
-    await this.sequelize.transaction(
-      async (transaction) => await user.save({ transaction }),
-    );
+    await this.sequelize.transaction(async (transaction) => await user.save({ transaction }));
 
     return user.toJSON();
   }
@@ -106,9 +96,7 @@ export class UserService {
 
     if (!user) return null;
 
-    await this.sequelize.transaction(
-      async (transaction) => await user.destroy({ transaction }),
-    );
+    await this.sequelize.transaction(async (transaction) => await user.destroy({ transaction }));
 
     return user.toJSON();
   }
@@ -126,13 +114,13 @@ export class UserService {
       user.refreshTokenHash = null;
     }
 
-    await this.sequelize.transaction(
-      async (transaction) => await user.save({ transaction }),
-    );
+    await this.sequelize.transaction(async (transaction) => await user.save({ transaction }));
   }
 
   async verifyRefreshToken(username: string, refreshToken: string): Promise<boolean> {
-    const user = await UserModel.scope(UserModelScope.VERIFY).findOne({ where: { username } });
+    const user = await UserModel.scope(UserModelScope.VERIFY).findOne({
+      where: { username },
+    });
 
     if (!user || !user.refreshTokenHash) return false;
 

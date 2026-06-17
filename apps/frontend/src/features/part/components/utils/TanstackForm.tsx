@@ -1,20 +1,8 @@
-import {
-  StandardSchemaV1,
-  useForm,
-  DeepKeys,
-  DeepValue,
-  Updater,
-} from "@tanstack/react-form";
+import { StandardSchemaV1, useForm, DeepKeys, DeepValue, Updater } from "@tanstack/react-form";
 import { ComponentType, FC, TableHTMLAttributes } from "react";
 import { z, ZodType } from "zod";
 
-import {
-  ArrayForm,
-  ArrayFormApi,
-  FieldApi,
-  FormApi,
-  FormOptions,
-} from "@/type/form";
+import { ArrayForm, ArrayFormApi, FieldApi, FormApi, FormOptions } from "@/type/form";
 import { Button } from "@/ui/Button";
 import { RowWrapper } from "@/ui/FlexWrapper";
 
@@ -51,12 +39,7 @@ export function GenericInputForm<Form extends object>(
   InputComponent: InputFieldComponent<Form>,
   Schema: StandardSchemaV1<Form>
 ): InputFormComponent<Form> {
-  const InputField = ({
-    pending,
-    defaultValue,
-    onSubmit,
-    ...props
-  }: InputFormProps<Form>) => {
+  const InputField = ({ pending, defaultValue, onSubmit, ...props }: InputFormProps<Form>) => {
     const form = useGenericForm({
       defaultValues: defaultValue,
       onSubmit: ({ value }) => onSubmit(value),
@@ -64,10 +47,7 @@ export function GenericInputForm<Form extends object>(
     });
 
     return (
-      <form
-        action={() => form.handleSubmit()}
-        className="flex flex-col gap-1 w-full"
-      >
+      <form action={() => form.handleSubmit()} className="flex flex-col gap-1 w-full">
         <InputComponent form={form} {...props} />
         {pending ? (
           <p className="button border-0">Saving...</p>
@@ -108,9 +88,7 @@ export function GenericSingleInputForm<T extends Record<string, unknown>>(
                 <Table.Cell className="font-bold">{Labels[key]}</Table.Cell>
                 <Table.Cell>
                   <form.Field name={key}>
-                    {(field) => (
-                      <Component placeholder={Labels[key]} {...field} />
-                    )}
+                    {(field) => <Component placeholder={Labels[key]} {...field} />}
                   </form.Field>
                 </Table.Cell>
               </Table.Row>
@@ -133,12 +111,7 @@ export function GenericListInputForm<Item extends object>(
     ArrayForm<Item>
   >;
 
-  const InputField = ({
-    pending,
-    defaultValue,
-    onSubmit,
-    ..._props
-  }: InputFormProps<Item[]>) => {
+  const InputField = ({ pending, defaultValue, onSubmit, ..._props }: InputFormProps<Item[]>) => {
     const form = useGenericForm<ArrayForm<Item>>({
       defaultValues: { items: defaultValue },
       onSubmit: ({ value }) => onSubmit(value.items),
@@ -146,10 +119,7 @@ export function GenericListInputForm<Item extends object>(
     });
 
     return (
-      <form
-        action={() => form.handleSubmit()}
-        className="flex flex-col gap-1 w-full"
-      >
+      <form action={() => form.handleSubmit()} className="flex flex-col gap-1 w-full">
         <InputComponent form={form} />
         {pending ? (
           <p className="button border-0">Saving...</p>
@@ -170,10 +140,7 @@ export function GenericListInputForm<Item extends object>(
   return InputField;
 }
 
-export function mapChange<
-  TParentData extends object,
-  TName extends DeepKeys<TParentData>,
->(
+export function mapChange<TParentData extends object, TName extends DeepKeys<TParentData>>(
   field: Pick<FieldApi<TParentData, TName>, "state" | "handleChange">,
   type: "number"
 ): {
@@ -181,10 +148,7 @@ export function mapChange<
   onChange: (e: { target: { value: string } }) => void;
 };
 
-export function mapChange<
-  TParentData extends object,
-  TName extends DeepKeys<TParentData>,
->(
+export function mapChange<TParentData extends object, TName extends DeepKeys<TParentData>>(
   field: Pick<FieldApi<TParentData, TName>, "state" | "handleChange">,
   type: "select"
 ): {
@@ -192,10 +156,7 @@ export function mapChange<
   onChange: (e: { target: { value: string } }) => void;
 };
 
-export function mapChange<
-  TParentData extends object,
-  TName extends DeepKeys<TParentData>,
->(
+export function mapChange<TParentData extends object, TName extends DeepKeys<TParentData>>(
   field: Pick<FieldApi<TParentData, TName>, "state" | "handleChange">,
   type?: "string"
 ): {
@@ -203,10 +164,7 @@ export function mapChange<
   onChange: (e: { target: { value: string } }) => void;
 };
 
-export function mapChange<
-  TParentData extends object,
-  TName extends DeepKeys<TParentData>,
->(
+export function mapChange<TParentData extends object, TName extends DeepKeys<TParentData>>(
   field: Pick<FieldApi<TParentData, TName>, "state" | "handleChange">,
   type: "number" | "string" | "select" = "string"
 ) {

@@ -8,8 +8,4 @@ const Components: InfoSummaryMapping<AIO.Summary> = {
   cpu_plate: ({ value }) => value,
 };
 
-export default GenericSummaryCells(
-  Components,
-  AIO.AttributeLabels,
-  AIO.Summary.keyof().options
-);
+export default GenericSummaryCells(Components, AIO.AttributeLabels, AIO.Summary.keyof().options);

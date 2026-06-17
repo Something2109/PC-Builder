@@ -14,12 +14,7 @@ interface ParagraphInputProps {
   onInsertBelow: (type: ContentName) => void;
 }
 
-export function ParagraphInput({
-  content,
-  prefix,
-  onChange,
-  onInsertBelow,
-}: ParagraphInputProps) {
+export function ParagraphInput({ content, prefix, onChange, onInsertBelow }: ParagraphInputProps) {
   const [showSlashMenu, setShowSlashMenu] = useState(false);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -50,10 +45,7 @@ export function ParagraphInput({
         className="font-serif text-lg leading-relaxed text-slate-800 dark:text-slate-200 tracking-wide"
       />
       {showSlashMenu && (
-        <SlashMenu
-          onSelect={handleSelectSlash}
-          onClose={() => setShowSlashMenu(false)}
-        />
+        <SlashMenu onSelect={handleSelectSlash} onClose={() => setShowSlashMenu(false)} />
       )}
     </div>
   );

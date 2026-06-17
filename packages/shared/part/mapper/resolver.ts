@@ -46,18 +46,9 @@ export function fuzzyMatch(
 
   for (const target of targets) {
     const normTarget =
-      target.attribute === "_self"
-        ? normalizeKey(target.info)
-        : normalizeKey(target.attribute);
+      target.attribute === "_self" ? normalizeKey(target.info) : normalizeKey(target.attribute);
 
-    const score = computeFuzzyScore(
-      normalizedKey,
-      normTarget,
-      target,
-      registry,
-      product,
-      config
-    );
+    const score = computeFuzzyScore(normalizedKey, normTarget, target, registry, product, config);
 
     if (score > 0 && (!bestMatch || score > bestMatch.score)) {
       bestMatch = { target, score };
@@ -80,13 +71,7 @@ export function fuzzyMatchBasic(
 
   for (const attribute of basicTargets) {
     const normTarget = normalizeKey(attribute);
-    const score = computeBasicFuzzyScore(
-      normalizedKey,
-      normTarget,
-      attribute,
-      registry,
-      config
-    );
+    const score = computeBasicFuzzyScore(normalizedKey, normTarget, attribute, registry, config);
 
     if (score > 0 && (!bestMatch || score > bestMatch.score)) {
       bestMatch = { attribute, score };
@@ -364,11 +349,7 @@ export function resolveConflicts(
       const rawValue = raw[candidate.rawKey];
 
       // Combine match score and value quality
-      const valueQuality = scoreValueQuality(
-        rawValue,
-        candidate.attribute,
-        attrSchema
-      );
+      const valueQuality = scoreValueQuality(rawValue, candidate.attribute, attrSchema);
       const totalScore = candidate.matchScore + valueQuality;
 
       if (totalScore > bestScore) {
@@ -417,11 +398,7 @@ export function resolveBasicConflicts(
 
     for (const candidate of group) {
       const rawValue = raw[candidate.rawKey];
-      const valueQuality = scoreValueQuality(
-        rawValue,
-        candidate.attribute,
-        basicSchema
-      );
+      const valueQuality = scoreValueQuality(rawValue, candidate.attribute, basicSchema);
       const totalScore = candidate.matchScore + valueQuality;
 
       if (totalScore > bestScore) {

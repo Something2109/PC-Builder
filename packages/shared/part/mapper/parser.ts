@@ -37,11 +37,7 @@ function parseNumberValue(val: any, targetKey: string): number | undefined {
   }
 
   // Frequency conversions
-  if (
-    lowerKey.includes("frequency") ||
-    lowerKey.includes("speed") ||
-    lowerKey.includes("clock")
-  ) {
+  if (lowerKey.includes("frequency") || lowerKey.includes("speed") || lowerKey.includes("clock")) {
     const parsed = FrequencyUnits.parse(str);
     if (parsed) {
       const [num, unit] = parsed;
@@ -88,8 +84,7 @@ function parseDateValue(val: any): Date | undefined {
   if (qMatch) {
     const quarter = parseInt(qMatch[1]);
     const yearStr = qMatch[2];
-    const year =
-      yearStr.length === 2 ? 2000 + parseInt(yearStr) : parseInt(yearStr);
+    const year = yearStr.length === 2 ? 2000 + parseInt(yearStr) : parseInt(yearStr);
     const month = (quarter - 1) * 3;
     return new Date(Date.UTC(year, month, 1));
   }
@@ -141,16 +136,11 @@ function parseArrayValue(
   return undefined;
 }
 
-function parseEnumValue(
-  val: any,
-  unwrapped: z.ZodEnum<any>
-): string | undefined {
+function parseEnumValue(val: any, unwrapped: z.ZodEnum<any>): string | undefined {
   const options = getEnumOptions(unwrapped);
   if (typeof val === "string") {
     const cleaned = val.trim();
-    const matched = options.find(
-      (opt: string) => opt.toLowerCase() === cleaned.toLowerCase()
-    );
+    const matched = options.find((opt: string) => opt.toLowerCase() === cleaned.toLowerCase());
     if (matched) return matched;
     const partialMatched = options.find((opt: string) =>
       cleaned.toLowerCase().includes(opt.toLowerCase())
@@ -160,20 +150,12 @@ function parseEnumValue(
   return undefined;
 }
 
-function parseUnionValue(
-  val: any,
-  targetKey: string,
-  unwrapped: z.ZodUnion<any>
-): any {
+function parseUnionValue(val: any, targetKey: string, unwrapped: z.ZodUnion<any>): any {
   // Special treatment for HDMI names to match strict HDMISchema:
   // "HDMI 2.1a" -> "HDMI 2.1a Type A, Standard"
   if (targetKey === "name" && typeof val === "string") {
     const trimmed = val.trim();
-    if (
-      trimmed.startsWith("HDMI") &&
-      !trimmed.includes("Type") &&
-      !trimmed.includes("Standard")
-    ) {
+    if (trimmed.startsWith("HDMI") && !trimmed.includes("Type") && !trimmed.includes("Standard")) {
       const match = trimmed.match(/HDMI\s*([0-9.]+([a-z])?)/i);
       if (match) {
         val = `HDMI ${match[1]} Type A, Standard`;
@@ -207,11 +189,7 @@ function parseBooleanValue(val: any): boolean | undefined {
 }
 
 // Parse a single raw value using dynamic Zod type target
-export function parseSingleValue(
-  val: any,
-  targetKey: string,
-  schema: z.ZodTypeAny
-): any {
+export function parseSingleValue(val: any, targetKey: string, schema: z.ZodTypeAny): any {
   const unwrapped = getInnerSchema(schema);
   const unwrappedName = unwrapped?.constructor?.name;
 

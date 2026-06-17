@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, Logger } from "@nestjs/common";
 
 import Part, { Products, Mapping } from "@/utils/part";
 
@@ -35,9 +30,7 @@ class PartService implements PartServiceInterface {
   async list(params: Record<string, string | string[]>, product?: Products) {
     const options = this.parseService.options(params, product);
 
-    const infoMapping = product
-      ? Mapping.SummaryAttributeMapping[product]
-      : undefined;
+    const infoMapping = product ? Mapping.SummaryAttributeMapping[product] : undefined;
 
     const { list, total } = await this.ListService.list(options, infoMapping);
 
@@ -78,10 +71,7 @@ class PartService implements PartServiceInterface {
   }
 
   async get(id: string, product?: Products) {
-    const data = await this.CRUDService.get(
-      id,
-      product ? Mapping.Info[product] : undefined
-    );
+    const data = await this.CRUDService.get(id, product ? Mapping.Info[product] : undefined);
 
     if (!data) return null;
 

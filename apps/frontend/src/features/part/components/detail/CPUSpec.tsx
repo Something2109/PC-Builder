@@ -6,9 +6,7 @@ import { InfoComponent, InfoComponentObject } from "../utils/Table";
 const Components: InfoComponentObject<CPUSpec.DTO> = {
   family: ({ defaultValue }) => defaultValue,
   socket: ({ defaultValue }) => defaultValue,
-  total_cores: ({ defaultValue }) => (
-    <SuffixDisplay suffix="Cores">{defaultValue}</SuffixDisplay>
-  ),
+  total_cores: ({ defaultValue }) => <SuffixDisplay suffix="Cores">{defaultValue}</SuffixDisplay>,
   total_threads: ({ defaultValue }) => (
     <SuffixDisplay suffix="Threads">{defaultValue}</SuffixDisplay>
   ),

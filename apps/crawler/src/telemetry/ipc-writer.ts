@@ -15,11 +15,7 @@ export class ProcessWriter extends Writable {
    * @param encoding The encoding variable of the write function.
    * @param callback The callback variable of the write function.
    */
-  _write(
-    chunk: any,
-    encoding: BufferEncoding,
-    callback: (error?: Error | null) => void
-  ): void {
+  _write(chunk: any, encoding: BufferEncoding, callback: (error?: Error | null) => void): void {
     if (process.send) {
       process.send(chunk, undefined, undefined, callback);
     } else {

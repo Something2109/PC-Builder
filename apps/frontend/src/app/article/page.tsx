@@ -32,9 +32,8 @@ export default async function ArticleIndexPage() {
               Introductions & Guides
             </h1>
             <p className="text-sm md:text-base text-blue-100 font-serif max-w-xl mt-3 leading-relaxed">
-              Explore in-depth PC build guides, reviews of the latest hardware,
-              and shared experiences on assembling computers for optimized
-              performance.
+              Explore in-depth PC build guides, reviews of the latest hardware, and shared
+              experiences on assembling computers for optimized performance.
             </p>
           </div>
 

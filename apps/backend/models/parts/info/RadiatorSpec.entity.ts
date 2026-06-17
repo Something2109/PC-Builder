@@ -67,5 +67,3 @@ export default class RadiatorSpecModel extends Model implements RadiatorSpec.Mod
   })
   declare material: Material.Metal | null;
 }
-
-

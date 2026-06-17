@@ -69,5 +69,3 @@ export default class HDDSpecModel extends Model implements HDDSpec.Model {
   })
   declare interface: InternalConnectors.Storage.HDD | null;
 }
-
-

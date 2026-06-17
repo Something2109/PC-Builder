@@ -55,5 +55,3 @@ export default class GraphicCardPortModel extends Model implements GraphicCardPo
   @Column(DataType.TINYINT)
   declare count: number | null;
 }
-
-

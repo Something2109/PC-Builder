@@ -4,11 +4,7 @@ import { useState } from "react";
 
 import usePartAction from "@/features/part/hooks/PartAction";
 import { Button, RedirectButton } from "@/ui/Button";
-import {
-  ColumnWrapper,
-  ResponsiveWrapper,
-  RowWrapper,
-} from "@/ui/FlexWrapper";
+import { ColumnWrapper, ResponsiveWrapper, RowWrapper } from "@/ui/FlexWrapper";
 import { Input, TextArea } from "@/ui/Input";
 import { NotificationBar } from "@/ui/NotificationBar";
 import Part, { Infos, Products } from "@/utils/part";
@@ -28,9 +24,7 @@ const Components: InfoComponentObject<
   launch_date: ({ defaultValue, value: _, ...props }) => (
     <Input
       type="date"
-      defaultValue={new Date(defaultValue ?? new Date())
-        .toISOString()
-        .slice(0, 10)}
+      defaultValue={new Date(defaultValue ?? new Date()).toISOString().slice(0, 10)}
       {...props}
     />
   ),
@@ -47,21 +41,14 @@ export default function PartForm({
   part: Products;
   defaultValue?: Part.DTO;
 }>) {
-  const [formValue, save, pending, error, setError] = usePartAction(
-    path,
-    defaultValue
-  );
+  const [formValue, save, pending, error, setError] = usePartAction(path, defaultValue);
 
   const { name } = formValue ?? {};
 
   return (
     <form action={save}>
       <ResponsiveWrapper className="w-full">
-        <PictureInput
-          className="w-full lg:w-1/3"
-          part={part}
-          defaultValue={defaultValue}
-        />
+        <PictureInput className="w-full lg:w-1/3" part={part} defaultValue={defaultValue} />
 
         <ColumnWrapper className="w-full lg:w-2/3 px-5 justify-center">
           <TextArea
@@ -79,11 +66,7 @@ export default function PartForm({
           )}
           <RowWrapper>
             {!pending && formValue && (
-              <Button
-                type="submit"
-                className="px-2 flex-1"
-                formAction={() => save(null)}
-              >
+              <Button type="submit" className="px-2 flex-1" formAction={() => save(null)}>
                 Delete
               </Button>
             )}
@@ -91,13 +74,7 @@ export default function PartForm({
               {pending ? "Saving..." : "Save"}
             </Button>
           </RowWrapper>
-          {error && (
-            <NotificationBar
-              message={error}
-              remove={() => setError(null)}
-              alert
-            />
-          )}
+          {error && <NotificationBar message={error} remove={() => setError(null)} alert />}
         </ColumnWrapper>
       </ResponsiveWrapper>
     </form>
@@ -113,18 +90,11 @@ function PictureInput({
   className?: string;
   defaultValue?: Part.DTO;
 }>) {
-  const [image, setImage] = useState<string | undefined>(
-    defaultValue?.image_url ?? undefined
-  );
+  const [image, setImage] = useState<string | undefined>(defaultValue?.image_url ?? undefined);
 
   return (
     <ColumnWrapper className={className}>
-      <PartPicture
-        className="w-full"
-        part={part}
-        src={image}
-        onError={() => setImage(undefined)}
-      />
+      <PartPicture className="w-full" part={part} src={image} onError={() => setImage(undefined)} />
       <Input
         type="url"
         name="image_url"

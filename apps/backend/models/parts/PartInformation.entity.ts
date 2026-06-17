@@ -71,20 +71,14 @@ import SeriesModel from "./Series.entity";
 @Scopes(() => ({
   [ModelScopes.SUMMARY]: (attributes?: string[]) => ({
     attributes: attributes?.length
-      ? [
-          "id",
-          ...attributes.filter((attr) => attr !== "brand" && attr !== "series"),
-        ]
+      ? ["id", ...attributes.filter((attr) => attr !== "brand" && attr !== "series")]
       : [],
     include: [
       { model: BrandModel, attributes: ["name"] },
       { model: SeriesModel, attributes: ["name"] },
     ],
   }),
-  [ModelScopes.FILTER]: (
-    options: Part.Filter["part"],
-    ...include: Includeable[]
-  ) => ({
+  [ModelScopes.FILTER]: (options: Part.Filter["part"], ...include: Includeable[]) => ({
     where: defaultFilter(options),
     include: [
       { model: BrandModel, attributes: ["name"] },
@@ -187,10 +181,7 @@ export default class PartInformation extends Model implements Part.Model {
   }
 
   @BeforeSave
-  static async normalizeBrandAndSeries(
-    instance: PartInformation,
-    options: any
-  ) {
+  static async normalizeBrandAndSeries(instance: PartInformation, options: any) {
     const transaction = options?.transaction;
 
     // 1. Resolve Brand

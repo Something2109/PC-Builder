@@ -2,11 +2,7 @@ import * as GraphicCardPort from "@/utils/part/info/GraphicCardPort";
 
 import { Table } from "../utils/Table";
 
-const GraphicCardPortTable = ({
-  defaultValue,
-}: {
-  defaultValue: GraphicCardPort.DTO[];
-}) => (
+const GraphicCardPortTable = ({ defaultValue }: { defaultValue: GraphicCardPort.DTO[] }) => (
   <Table.Component>
     <Table.Head>
       <Table.Row>

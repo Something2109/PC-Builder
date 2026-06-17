@@ -55,5 +55,3 @@ export default class PartExternalPortModel extends Model implements PartExternal
   @Column(DataType.TINYINT)
   declare count: number | null;
 }
-
-

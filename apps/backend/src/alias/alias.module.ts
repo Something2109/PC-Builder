@@ -10,18 +10,9 @@ import { DbAliasLearner } from "./db-alias-learner.service";
 import { DbAliasRegistry } from "./db-alias-registry.service";
 
 @Module({
-  imports: [
-    SequelizeModule.forFeature([AliasEntry, AliasLearnerLog]),
-  ],
+  imports: [SequelizeModule.forFeature([AliasEntry, AliasLearnerLog])],
   controllers: [AliasController],
-  providers: [
-    DbAliasRegistry,
-    DbAliasLearner,
-    AliasSeedService,
-  ],
-  exports: [
-    DbAliasRegistry,
-    DbAliasLearner,
-  ],
+  providers: [DbAliasRegistry, DbAliasLearner, AliasSeedService],
+  exports: [DbAliasRegistry, DbAliasLearner],
 })
 export class AliasModule {}

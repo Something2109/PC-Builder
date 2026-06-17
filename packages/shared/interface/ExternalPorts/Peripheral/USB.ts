@@ -4,14 +4,7 @@ export const Generation = z.enum(["1.0", "2.0", "3.0", "3.1", "3.2", "4"]);
 
 export type Generation = z.infer<typeof Generation>;
 
-export const Connector = z.enum([
-  "Type-A",
-  "Type-B",
-  "Micro-A",
-  "Micro-AB",
-  "Micro-B",
-  "Type-C",
-]);
+export const Connector = z.enum(["Type-A", "Type-B", "Micro-A", "Micro-AB", "Micro-B", "Type-C"]);
 
 export type Connector = z.infer<typeof Connector>;
 

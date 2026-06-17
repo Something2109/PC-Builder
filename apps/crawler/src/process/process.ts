@@ -39,13 +39,10 @@ type CrawlerChildProcessOptions = {
 };
 
 const EXEC_DIRECTORY = path.dirname(__dirname);
-const DEFAULT_LOG_FUNCTION = (msg: string) =>
-  console.log(`[${new Date().toISOString()}]: ${msg}`);
+const DEFAULT_LOG_FUNCTION = (msg: string) => console.log(`[${new Date().toISOString()}]: ${msg}`);
 const DEFAULT_OUTPUT_FUNCTION = (result: any) => console.log(result);
 const DEFAULT_ERROR_FUNCTION = (error: Error, info?: CrawlInfo<any>) => {
-  const errorMsg = error.stack
-    ? error.stack
-    : `${error.name}: ${error.message}`;
+  const errorMsg = error.stack ? error.stack : `${error.name}: ${error.message}`;
 
   console.error(
     `[${new Date().toISOString()}]: ${errorMsg}\n\tWhen crawling: ${
@@ -159,9 +156,7 @@ class CrawlerChildProcess {
 
     const info = require(filepath).default;
     if (!isCrawlInfo(info)) {
-      throw new Error(
-        `The object in the file is not implemented the crawler Website API.`
-      );
+      throw new Error(`The object in the file is not implemented the crawler Website API.`);
     }
 
     return filepath;
@@ -199,8 +194,7 @@ class CrawlerChildProcess {
       this.resolver.error(chunk.error, chunk.info);
     }
 
-    const productType =
-      "error" in chunk ? "error" : (chunk.info?.product as Products);
+    const productType = "error" in chunk ? "error" : (chunk.info?.product as Products);
 
     this.summary ??= {};
 

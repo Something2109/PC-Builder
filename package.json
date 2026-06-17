@@ -18,7 +18,8 @@
     "serve:mcp": "npm run serve --workspace=apps/mcp-server",
     "crawl": "npm run crawl --workspace=apps/crawler",
     "install:all": "npm install",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "eslint": "^9.39.4",

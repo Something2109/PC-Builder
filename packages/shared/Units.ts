@@ -77,9 +77,7 @@ class Unit<Units extends string> implements UnitInterface<Units> {
 
     const NumberRegex = String.raw`-?\d+\.?\d*|-?\d*\.?\d+`;
     const UnitRegex = Order.join("|");
-    this.Regexp = new RegExp(
-      String.raw`(^|\W)(${NumberRegex})?[ _-]*(${UnitRegex})(\W|$)`
-    );
+    this.Regexp = new RegExp(String.raw`(^|\W)(${NumberRegex})?[ _-]*(${UnitRegex})(\W|$)`);
   }
 
   list() {
@@ -137,9 +135,7 @@ class Unit<Units extends string> implements UnitInterface<Units> {
    * @param result The regex match result.
    * @returns The result tuple of {@link parse} and {@link parseAll}.
    */
-  private extractRegexResult(
-    result: RegExpMatchArray | RegExpExecArray
-  ): [number | null, Units] {
+  private extractRegexResult(result: RegExpMatchArray | RegExpExecArray): [number | null, Units] {
     const [, , num, unit] = result;
 
     return [num ? Number(num) : null, unit as Units];
@@ -154,10 +150,13 @@ class Unit<Units extends string> implements UnitInterface<Units> {
    * @returns The required attributes.
    */
   private attributeFromArray(units: Units[], step: number) {
-    const exchanger = units.reduce((acc, curr, index) => {
-      acc[curr] = Math.pow(step, index);
-      return acc;
-    }, {} as Record<Units, number>);
+    const exchanger = units.reduce(
+      (acc, curr, index) => {
+        acc[curr] = Math.pow(step, index);
+        return acc;
+      },
+      {} as Record<Units, number>
+    );
 
     return [exchanger, units, step] as const;
   }
@@ -186,10 +185,7 @@ class Unit<Units extends string> implements UnitInterface<Units> {
   }
 }
 
-type DerivedUnitName<
-  Unit1 extends string,
-  Unit2 extends string
-> = `${Unit1}/${Unit2}`;
+type DerivedUnitName<Unit1 extends string, Unit2 extends string> = `${Unit1}/${Unit2}`;
 
 /**
  * Create the ratio object of the derived unit from the 2 unit objects.
@@ -209,24 +205,24 @@ function ratioFromUnits<Unit1 extends string, Unit2 extends string>(
   const BaseUnit1 = Unit1Order[0];
   const BaseUnit2 = Unit2Order[Unit2Order.length - 1];
 
-  const ratio = Unit1Order.reduce((acc, curr1) => {
-    for (const curr2 of Unit2Order) {
-      const unit = `${curr1}/${curr2}` as const;
-      acc[unit] = unit1.ratio(curr1, BaseUnit1) / unit2.ratio(curr2, BaseUnit2);
-    }
+  const ratio = Unit1Order.reduce(
+    (acc, curr1) => {
+      for (const curr2 of Unit2Order) {
+        const unit = `${curr1}/${curr2}` as const;
+        acc[unit] = unit1.ratio(curr1, BaseUnit1) / unit2.ratio(curr2, BaseUnit2);
+      }
 
-    return acc;
-  }, {} as Record<DerivedUnitName<Unit1, Unit2>, number>);
+      return acc;
+    },
+    {} as Record<DerivedUnitName<Unit1, Unit2>, number>
+  );
 
   return ratio;
 }
 
 const MemoryUnits = new Unit(["B", "KB", "MB", "GB", "TB", "PB"], 1024);
 
-const FrequencyUnits = new Unit(
-  ["Hz", "KHz", "MHz", "GHz", "THz", "PHz"],
-  1000
-);
+const FrequencyUnits = new Unit(["Hz", "KHz", "MHz", "GHz", "THz", "PHz"], 1000);
 
 const LengthUnits = new Unit(["mm", "cm", "dm", "m", "km"], 10);
 

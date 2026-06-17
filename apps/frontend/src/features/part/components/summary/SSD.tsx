@@ -5,18 +5,10 @@ import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 
 const Components: InfoSummaryMapping<SSD.Summary> = {
   capacity: ({ value }) => <SuffixDisplay suffix="GB">{value}</SuffixDisplay>,
-  read_speed: ({ value }) => (
-    <SuffixDisplay suffix="MB/s">{value}</SuffixDisplay>
-  ),
-  write_speed: ({ value }) => (
-    <SuffixDisplay suffix="MB/s">{value}</SuffixDisplay>
-  ),
+  read_speed: ({ value }) => <SuffixDisplay suffix="MB/s">{value}</SuffixDisplay>,
+  write_speed: ({ value }) => <SuffixDisplay suffix="MB/s">{value}</SuffixDisplay>,
   form_factor: ({ value }) => value,
   interface: ({ value }) => value,
 };
 
-export default GenericSummaryCells(
-  Components,
-  SSD.AttributeLabels,
-  SSD.Summary.keyof().options
-);
+export default GenericSummaryCells(Components, SSD.AttributeLabels, SSD.Summary.keyof().options);

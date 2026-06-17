@@ -10,30 +10,14 @@ import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<SSDSpec.DTO> = {
   memory_type: (field) => (
-    <OptionSelect
-      options={SSDSpec.MemoryCell.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={SSDSpec.MemoryCell.options} {...mapChange(field, "select")} />
   ),
   capacity: (field) => (
-    <UnitInput
-      Unit={MemoryUnits}
-      defaultUnit="GB"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...mapChange(field, "number")} />
   ),
-  tbw: (field) => (
-    <UnitInput
-      Unit={MemoryUnits}
-      defaultUnit="TB"
-      {...mapChange(field, "number")}
-    />
-  ),
+  tbw: (field) => <UnitInput Unit={MemoryUnits} defaultUnit="TB" {...mapChange(field, "number")} />,
   form_factor: (field) => (
-    <OptionSelect
-      options={FormFactor.SSD.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={FormFactor.SSD.options} {...mapChange(field, "select")} />
   ),
   interface: (field) => (
     <OptionSelect

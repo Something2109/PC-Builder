@@ -1,9 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from "@nestjs/common";
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 
 import * as User from "@/utils/user";
 
@@ -26,8 +21,7 @@ export class UsernameAuthorizationGuard implements CanActivate {
     const authUser = request.user as User.JwtPayload | undefined;
 
     // Check username
-    if (!authUser)
-      throw new UnauthorizedException("You must login to do this function");
+    if (!authUser) throw new UnauthorizedException("You must login to do this function");
 
     if (authUser.username !== username)
       throw new UnauthorizedException(

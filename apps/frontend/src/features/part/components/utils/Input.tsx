@@ -1,18 +1,9 @@
-import {
-  ChangeEventHandler,
-  FunctionComponent,
-  RefObject,
-  useRef,
-} from "react";
+import { ChangeEventHandler, FunctionComponent, RefObject, useRef } from "react";
 
 import { Input, OptionSelect } from "@/ui/Input";
 import { ExternalPorts } from "@/utils/interface";
 
-function LanEthernetInput({
-  ref,
-}: {
-  ref: RefObject<HTMLInputElement | null>;
-}) {
+function LanEthernetInput({ ref }: { ref: RefObject<HTMLInputElement | null> }) {
   const SpeedRef = useRef<HTMLSelectElement>(null);
   const InterfaceRef = useRef<HTMLSelectElement>(null);
 
@@ -69,8 +60,7 @@ const PeripheralInputFields: Record<
     );
     const onChange = () =>
       (ref.current!.value = ExternalPorts.Peripheral.USB.toString(
-        GenerationInput.current!
-          .value as ExternalPorts.Peripheral.USB.Generation,
+        GenerationInput.current!.value as ExternalPorts.Peripheral.USB.Generation,
         ConnectorInput.current!.value as ExternalPorts.Peripheral.USB.Connector
       ));
 
@@ -187,11 +177,7 @@ const DisplayInputFields: Record<
         onChange={(e) => (ref.current!.value = e.target.value)}
         required
       />
-      <Input
-        type="hidden"
-        ref={ref}
-        value={ExternalPorts.Display.DVI.options[0]}
-      />
+      <Input type="hidden" ref={ref} value={ExternalPorts.Display.DVI.options[0]} />
     </>
   ),
   VGA: ({ ref }) => (
@@ -202,11 +188,7 @@ const DisplayInputFields: Record<
         onChange={(e) => (ref.current!.value = e.target.value)}
         required
       />
-      <Input
-        type="hidden"
-        ref={ref}
-        value={ExternalPorts.Display.VGA.options[0]}
-      />
+      <Input type="hidden" ref={ref} value={ExternalPorts.Display.VGA.options[0]} />
     </>
   ),
 };

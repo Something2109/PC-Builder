@@ -7,9 +7,7 @@ import { Name as Products } from "@/utils/part/product";
 
 import { CrawlStorageAdapter } from "../types/interface";
 
-export class LocalFileStorageAdapter<
-  T = any,
-> implements CrawlStorageAdapter<T> {
+export class LocalFileStorageAdapter<T = any> implements CrawlStorageAdapter<T> {
   private writeStreams: Record<string, WriteStream> = {};
 
   constructor(
@@ -107,9 +105,7 @@ export class DatabaseStorageAdapter<T = any> implements CrawlStorageAdapter<T> {
   constructor(private transform: (item: T) => any = (item) => item) {}
 
   async initialize(domain: string, product: Products): Promise<void> {
-    console.log(
-      `[DB STORAGE] Initializing database connection for ${domain} - ${product}`
-    );
+    console.log(`[DB STORAGE] Initializing database connection for ${domain} - ${product}`);
   }
 
   async write(domain: string, product: Products, items: T[]): Promise<void> {
@@ -120,9 +116,7 @@ export class DatabaseStorageAdapter<T = any> implements CrawlStorageAdapter<T> {
   }
 
   async finalize(domain: string, product: Products): Promise<void> {
-    console.log(
-      `[DB STORAGE] Finalizing database connection for ${domain} - ${product}`
-    );
+    console.log(`[DB STORAGE] Finalizing database connection for ${domain} - ${product}`);
   }
 }
 export { isCrawlStorageAdapter } from "../types/interface";

@@ -55,20 +55,12 @@ function Component({
                     <Table.Cell>
                       <form.Field name={`items[${item.index}].name`}>
                         {(subField) => (
-                          <Input
-                            name={subField.name}
-                            value={subField.state.value}
-                            readOnly
-                          />
+                          <Input name={subField.name} value={subField.state.value} readOnly />
                         )}
                       </form.Field>
                       <form.Field name={`items[${item.index}].type`}>
                         {(subField) => (
-                          <Input
-                            type="hidden"
-                            name={subField.name}
-                            value={subField.state.value}
-                          />
+                          <Input type="hidden" name={subField.name} value={subField.state.value} />
                         )}
                       </form.Field>
                     </Table.Cell>
@@ -79,9 +71,7 @@ function Component({
                             type="number"
                             name={subField.name}
                             value={subField.state.value ?? 0}
-                            onChange={(e) =>
-                              subField.handleChange(Number(e.target.value))
-                            }
+                            onChange={(e) => subField.handleChange(Number(e.target.value))}
                           />
                         )}
                       </form.Field>
@@ -110,12 +100,8 @@ const PortTypes = {
 type PortSubtypes = (typeof PortTypes)[ExternalPorts.Type][number];
 
 function usePortType() {
-  const [type, setType] = useState<ExternalPorts.Type>(
-    ExternalPorts.Type.options[0]
-  );
-  const [port, setPort] = useState<(typeof PortTypes)[typeof type][number]>(
-    PortTypes[type][0]
-  );
+  const [type, setType] = useState<ExternalPorts.Type>(ExternalPorts.Type.options[0]);
+  const [port, setPort] = useState<(typeof PortTypes)[typeof type][number]>(PortTypes[type][0]);
 
   const setToType = (newType: ExternalPorts.Type) => {
     setType(newType);

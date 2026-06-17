@@ -20,10 +20,9 @@ export default async function PartTopicEditPage({
 
   // Fetch articles matching the topic and part
   const query = new URLSearchParams({ topic, part });
-  const response = await fetch(
-    getBackendUrl(`/api/article?${query}`),
-    { cache: "no-store" },
-  );
+  const response = await fetch(getBackendUrl(`/api/article?${query}`), {
+    cache: "no-store",
+  });
 
   if (!response.ok) return notFound();
 
@@ -35,8 +34,6 @@ export default async function PartTopicEditPage({
     redirect(`/article/${targetArticle.id}/edit`);
   } else {
     // If no article exists, redirect to creation page with pre-filled parameters
-    redirect(
-      `/article/new?topic=${encodeURIComponent(topic)}&part=${encodeURIComponent(part)}`,
-    );
+    redirect(`/article/new?topic=${encodeURIComponent(topic)}&part=${encodeURIComponent(part)}`);
   }
 }

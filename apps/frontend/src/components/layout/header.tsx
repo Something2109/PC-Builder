@@ -124,15 +124,18 @@ function MobileNavigationButton({
   link,
   active,
   onClick,
-}: Readonly<{ title: string; link: string; active: boolean; onClick: () => void }>) {
+}: Readonly<{
+  title: string;
+  link: string;
+  active: boolean;
+  onClick: () => void;
+}>) {
   return (
     <Link
       href={link}
       onClick={onClick}
       className={`px-4 py-3 rounded-xl text-base font-semibold transition-all duration-200 block ${
-        active
-          ? "bg-accent-indigo/10 text-accent-indigo"
-          : "text-text/80 hover:bg-line/20"
+        active ? "bg-accent-indigo/10 text-accent-indigo" : "text-text/80 hover:bg-line/20"
       }`}
     >
       {title}

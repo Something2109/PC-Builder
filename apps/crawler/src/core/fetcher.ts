@@ -17,9 +17,7 @@ function getRandomUserAgent(): string {
  * Automatically injects randomized User-Agents and typical desktop browser
  * request headers to mimic legitimate user requests and bypass simple bot-detection filters.
  */
-export async function defaultStealthFetch(
-  req: RequestObject
-): Promise<Response> {
+export async function defaultStealthFetch(req: RequestObject): Promise<Response> {
   const url = new URL(req.url.toString());
   const host = url.hostname;
 
@@ -52,9 +50,7 @@ export async function defaultStealthFetch(
 
   const res = await fetch(req.url, fetchOptions);
   if (!res.ok) {
-    throw new Error(
-      `Fetch failed for URL: ${req.url} - Status: ${res.status} ${res.statusText}`
-    );
+    throw new Error(`Fetch failed for URL: ${req.url} - Status: ${res.status} ${res.statusText}`);
   }
   return res;
 }

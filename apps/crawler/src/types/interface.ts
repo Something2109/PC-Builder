@@ -34,10 +34,7 @@ type CrawlStageResult = {
 type CrawlStageDataMap = {
   [InternalStage.Init]: InternalStage.Init;
   [InternalStage.Fetch]: InternalStage.Init | InternalStage.Fetch;
-  [InternalStage.Extract]:
-    | InternalStage.Init
-    | InternalStage.Fetch
-    | InternalStage.Extract;
+  [InternalStage.Extract]: InternalStage.Init | InternalStage.Fetch | InternalStage.Extract;
   [InternalStage.Parse]:
     | InternalStage.Init
     | InternalStage.Fetch
@@ -78,9 +75,7 @@ type ErrorObject = {
 
 /** Describe required types for the crawl API inferface */
 
-export type FetchFunction<Fetched> = (
-  request: RequestObject
-) => Promise<Fetched>;
+export type FetchFunction<Fetched> = (request: RequestObject) => Promise<Fetched>;
 
 export type ExtractFunction<Raw, Fetched> = (
   source: Fetched,
@@ -188,12 +183,6 @@ export interface CrawlCache {
   delete(key: string): Promise<void> | void;
 }
 
-export type {
-  APIWebsiteInfo,
-  CrawlInfo,
-  RequestObject,
-  RequestOptions,
-  ErrorObject,
-};
+export type { APIWebsiteInfo, CrawlInfo, RequestObject, RequestOptions, ErrorObject };
 
 export { InternalStage, isCrawlInfo };

@@ -7,20 +7,13 @@ import { Article } from "@/utils/article";
 import { getBackendUrl } from "@/utils/path";
 import { Roles } from "@/utils/user";
 
-export default async function ArticleEditPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function ArticleEditPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
   // Retrieve with preview=true to load drafts
-  const response = await fetch(
-    getBackendUrl(`/api/article/${id}?preview=true`),
-    {
-      cache: "no-store",
-    },
-  );
+  const response = await fetch(getBackendUrl(`/api/article/${id}?preview=true`), {
+    cache: "no-store",
+  });
 
   if (!response.ok) return notFound();
 

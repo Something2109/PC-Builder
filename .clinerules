@@ -29,6 +29,9 @@ This file defines the mandatory constraints and coding standards that any AI Age
 * **Schema Synchronization**: Validate input data using Zod schemas defined in `packages/shared`.
 
 ## 4. Verification & Linting
+* **Pre-completion Formatting (Prettier)**: Before completing any task, the agent **MUST** run Prettier to ensure code formatting consistency.
+  - To format the repository: `npm run format` (runs `prettier --write .`)
+  - Ensure all modified files are properly formatted before submitting work.
 * **Pre-completion Linting**: Before completing any task, the agent **MUST** run the linting command to ensure code quality and style compliance.
   - To lint and autofix the repository: `npm run lint:fix` (runs `eslint . --fix`)
   - Ensure all ESLint warnings and errors are resolved. Unused variables/imports are not allowed.
@@ -36,4 +39,4 @@ This file defines the mandatory constraints and coding standards that any AI Age
 
 ---
 
-*Note: Any agent failing to adhere to these guidelines will be rejected. Always run `npm run lint:fix` before finalizing your work.*
+*Note: Any agent failing to adhere to these guidelines will be rejected. Always run `npm run format` and `npm run lint:fix` before finalizing your work.*

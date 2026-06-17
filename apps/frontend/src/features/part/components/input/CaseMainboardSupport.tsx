@@ -19,16 +19,11 @@ function Component({
 
         const defaultValueObj = values.map((val) => val.form_factor) ?? [];
 
-        const handleToggle = (
-          form_factor: FormFactor.Mainboard,
-          checked: boolean
-        ) => {
+        const handleToggle = (form_factor: FormFactor.Mainboard, checked: boolean) => {
           if (checked) {
             field.pushValue({ form_factor });
           } else {
-            const index = values.findIndex(
-              (val) => val.form_factor === form_factor
-            );
+            const index = values.findIndex((val) => val.form_factor === form_factor);
             if (index !== -1) {
               field.removeValue(index);
             }
@@ -39,9 +34,7 @@ function Component({
           <Table.Component>
             <Table.Head>
               <Table.Row>
-                <Table.Cell>
-                  {CaseMainboardSupport.Label.form_factor}
-                </Table.Cell>
+                <Table.Cell>{CaseMainboardSupport.Label.form_factor}</Table.Cell>
               </Table.Row>
             </Table.Head>
             <tbody>
@@ -69,7 +62,4 @@ function Component({
   );
 }
 
-export default GenericListInputForm(
-  Component,
-  CaseMainboardSupport.Schemas.DTO
-);
+export default GenericListInputForm(Component, CaseMainboardSupport.Schemas.DTO);

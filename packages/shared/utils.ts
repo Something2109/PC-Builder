@@ -24,39 +24,31 @@ const NumberFilterOptions = FilterOptions(z.number()).transform((arg) => {
   return [arg[0], arg[arg.length - 1]];
 });
 
-function createModel<
-  T extends { [key: string]: z.ZodSchema },
-  Required extends keyof T = never,
->(schema: z.ZodObject<T>, required?: Required[]) {
+function createModel<T extends { [key: string]: z.ZodSchema }, Required extends keyof T = never>(
+  schema: z.ZodObject<T>,
+  required?: Required[]
+) {
   const newSchema = Object.fromEntries(
     Object.entries(schema.shape).map(([key, value]) =>
-      required?.includes(key as Required)
-        ? [key, value]
-        : [key, value.nullable()],
-    ),
+      required?.includes(key as Required) ? [key, value] : [key, value.nullable()]
+    )
   ) as {
-    [key in keyof T]: key extends Required
-      ? T[key]
-      : ReturnType<T[key]["nullable"]>;
+    [key in keyof T]: key extends Required ? T[key] : ReturnType<T[key]["nullable"]>;
   };
 
   return z.object(newSchema);
 }
 
-function createDTO<
-  T extends { [key: string]: z.ZodSchema },
-  Required extends keyof T = never,
->(schema: z.ZodObject<T>, required?: Required[]) {
+function createDTO<T extends { [key: string]: z.ZodSchema }, Required extends keyof T = never>(
+  schema: z.ZodObject<T>,
+  required?: Required[]
+) {
   const newSchema = Object.fromEntries(
     Object.entries(schema.shape).map(([key, value]) =>
-      required?.includes(key as Required)
-        ? [key, value]
-        : [key, value.nullish()],
-    ),
+      required?.includes(key as Required) ? [key, value] : [key, value.nullish()]
+    )
   ) as {
-    [key in keyof T]: key extends Required
-      ? T[key]
-      : ReturnType<T[key]["nullish"]>;
+    [key in keyof T]: key extends Required ? T[key] : ReturnType<T[key]["nullish"]>;
   };
 
   return z.object(newSchema);

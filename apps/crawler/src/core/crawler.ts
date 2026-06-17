@@ -45,15 +45,10 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
     });
     this.output =
       options?.output ??
-      (options?.adapter
-        ? new StreamStorageWriter(options.adapter)
-        : this.createDefaultOutput());
+      (options?.adapter ? new StreamStorageWriter(options.adapter) : this.createDefaultOutput());
     this.errorHandler =
-      options?.errorHandler ??
-      new ErrorHandler({ path: options?.logPath ?? "./logs" });
-    this.monitor =
-      options?.monitor ??
-      new StreamMonitor({ logPath: options?.logPath ?? "./logs" });
+      options?.errorHandler ?? new ErrorHandler({ path: options?.logPath ?? "./logs" });
+    this.monitor = options?.monitor ?? new StreamMonitor({ logPath: options?.logPath ?? "./logs" });
   }
   /**
    * The crawl function.

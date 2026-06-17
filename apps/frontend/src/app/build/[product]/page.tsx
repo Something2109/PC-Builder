@@ -23,19 +23,10 @@ export default function BuildProductSummary({
   const router = useRouter();
   const { product } = use(productParams);
   const { details, add: addDetails } = useBuildContext();
-  const {
-    loading,
-    data,
-    params,
-    page,
-    includeBuild,
-    setParams,
-    setPage,
-    setIncludeBuild,
-  } = useProductSummary(product);
+  const { loading, data, params, page, includeBuild, setParams, setPage, setIncludeBuild } =
+    useProductSummary(product);
 
-  if (loading)
-    return <LoadingPanel className="h-[70vh]" text="Loading Product" />;
+  if (loading) return <LoadingPanel className="h-[70vh]" text="Loading Product" />;
 
   if (!data)
     return (
@@ -66,10 +57,7 @@ export default function BuildProductSummary({
   return (
     <ColumnWrapper>
       <RowWrapper className="flex-wrap justify-between place-items-center">
-        <h1
-          className="text-xl font-bold"
-          id="list"
-        >{`${data.total} ${Product.Label[product]}`}</h1>
+        <h1 className="text-xl font-bold" id="list">{`${data.total} ${Product.Label[product]}`}</h1>
         <RowWrapper>
           <ChoiceInput
             type="checkbox"

@@ -7,18 +7,10 @@ import { InfoComponent, InfoComponentObject } from "../utils/Table";
 const Components: InfoComponentObject<SSDSpec.DTO> = {
   memory_type: ({ defaultValue }) => defaultValue,
   capacity: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={MemoryUnits}
-      defaultUnit="GB"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={MemoryUnits} defaultUnit="GB" defaultValue={defaultValue} />
   ),
   tbw: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={MemoryUnits}
-      defaultUnit="TB"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={MemoryUnits} defaultUnit="TB" defaultValue={defaultValue} />
   ),
   form_factor: ({ defaultValue }) => defaultValue,
   interface: ({ defaultValue }) => defaultValue,

@@ -13,15 +13,7 @@ export * as PCIe from "./PCIe";
 
 export type PCIe = z.infer<typeof PCIeSchema>;
 
-export const RAM = z.enum([
-  "DDR1",
-  "DDR2",
-  "DDR3",
-  "LPDDR3",
-  "DDR4",
-  "LPDDR4",
-  "DDR5",
-]);
+export const RAM = z.enum(["DDR1", "DDR2", "DDR3", "LPDDR3", "DDR4", "LPDDR4", "DDR5"]);
 
 export type RAM = z.infer<typeof RAM>;
 

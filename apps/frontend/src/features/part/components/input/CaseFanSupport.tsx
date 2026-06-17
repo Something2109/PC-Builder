@@ -47,10 +47,7 @@ function Component({
 
                 if (!sideItems) return;
 
-                const rowSpan = Math.min(
-                  sideItems.length + 2,
-                  FormFactor.Fan.options.length + 1
-                );
+                const rowSpan = Math.min(sideItems.length + 2, FormFactor.Fan.options.length + 1);
 
                 const options = FormFactor.Fan.options.filter((val) =>
                   sideItems.some(({ form_factor }) => val === form_factor)
@@ -75,9 +72,7 @@ function Component({
                                 type="number"
                                 name={subField.name}
                                 value={subField.state.value ?? 0}
-                                onChange={(e) =>
-                                  subField.handleChange(Number(e.target.value))
-                                }
+                                onChange={(e) => subField.handleChange(Number(e.target.value))}
                               />
                             )}
                           </form.Field>
@@ -124,11 +119,7 @@ function AddRowOptions({
         <OptionSelect ref={FormFactorInput} options={options} required />
       </Table.Cell>
       <Table.Cell colSpan={2}>
-        <Button
-          type="button"
-          className="w-full p-0 border-0"
-          onClick={handleAdd}
-        >
+        <Button type="button" className="w-full p-0 border-0" onClick={handleAdd}>
           Add
         </Button>
       </Table.Cell>

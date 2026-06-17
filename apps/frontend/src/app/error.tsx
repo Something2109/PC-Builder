@@ -15,11 +15,5 @@ export default function Error({
     console.error(error);
   }, [error]);
 
-  return (
-    <ErrorPanel
-      className="h-[70vh]"
-      text="Something went wrong!"
-      reset={reset}
-    />
-  );
+  return <ErrorPanel className="h-[70vh]" text="Something went wrong!" reset={reset} />;
 }

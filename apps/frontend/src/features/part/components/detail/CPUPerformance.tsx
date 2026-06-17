@@ -6,22 +6,12 @@ import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<CPUPerformance.DTO> = {
   base_frequency: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={FrequencyUnits}
-      defaultUnit="GHz"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={FrequencyUnits} defaultUnit="GHz" defaultValue={defaultValue} />
   ),
   turbo_frequency: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={FrequencyUnits}
-      defaultUnit="GHz"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={FrequencyUnits} defaultUnit="GHz" defaultValue={defaultValue} />
   ),
-  tdp: ({ defaultValue }) => (
-    <SuffixDisplay suffix="W">{defaultValue}</SuffixDisplay>
-  ),
+  tdp: ({ defaultValue }) => <SuffixDisplay suffix="W">{defaultValue}</SuffixDisplay>,
 };
 
 export default InfoComponent(Components, CPUPerformance.Label, {

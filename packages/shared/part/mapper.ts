@@ -163,8 +163,8 @@ export class RawPartMapper {
                         .map((s: string) => s.trim())
                         .filter(Boolean)
                     : Array.isArray(rawVal)
-                    ? rawVal
-                    : [rawVal];
+                      ? rawVal
+                      : [rawVal];
 
                 const propSchema = elementShape[prop];
                 const parsedItems = items

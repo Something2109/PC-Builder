@@ -5,10 +5,7 @@ interface CrawlerHeaderProps {
   onTogglePolling: () => void;
 }
 
-export default function CrawlerHeader({
-  pollingActive,
-  onTogglePolling,
-}: CrawlerHeaderProps) {
+export default function CrawlerHeader({ pollingActive, onTogglePolling }: CrawlerHeaderProps) {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
       <div>

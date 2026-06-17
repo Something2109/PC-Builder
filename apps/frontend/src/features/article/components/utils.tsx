@@ -9,12 +9,12 @@ export type ContentProps<T extends ArticleContent> = Readonly<{
 export async function uploadFile(file: File, subfolder?: string): Promise<string> {
   const formData = new FormData();
   formData.append("file", file);
-  
+
   let url = "/media/upload";
   if (subfolder) {
     url += `?subfolder=${encodeURIComponent(subfolder)}`;
   }
-  
+
   const response = await axiosInstance.post(url, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -22,4 +22,3 @@ export async function uploadFile(file: File, subfolder?: string): Promise<string
   });
   return response.data.url;
 }
-

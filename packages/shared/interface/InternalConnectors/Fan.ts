@@ -1,14 +1,6 @@
 import { z } from "zod";
 
-export const Type = z.enum([
-  "CPU",
-  "CPU OPT",
-  "AIO Pump",
-  "Radiator",
-  "Q Fan",
-  "H AMP",
-  "Chassis",
-]);
+export const Type = z.enum(["CPU", "CPU OPT", "AIO Pump", "Radiator", "Q Fan", "H AMP", "Chassis"]);
 
 export type Type = z.infer<typeof Type>;
 

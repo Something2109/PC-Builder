@@ -1,12 +1,7 @@
 import { z } from "zod";
 
 import { resolveConflicts, resolveBasicConflicts } from "./resolver";
-import {
-  IAliasRegistry,
-  IAliasLearner,
-  ResolvedMapping,
-  BasicMapping,
-} from "./types";
+import { IAliasRegistry, IAliasLearner, ResolvedMapping, BasicMapping } from "./types";
 import { normalizeKey } from "./utils";
 
 export interface PipelineResult {

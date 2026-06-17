@@ -22,10 +22,9 @@ const PartDefaultScope = {
   },
 };
 
-function defaultFilter<
-  T extends Model<Attributes, any>,
-  Attributes extends {},
->(options?: { [key in keyof Attributes]?: string[] | number[] }) {
+function defaultFilter<T extends Model<Attributes, any>, Attributes extends {}>(options?: {
+  [key in keyof Attributes]?: string[] | number[];
+}) {
   if (!options) return {};
 
   const where = Object.entries(options).reduce((acc, [key, entries]) => {

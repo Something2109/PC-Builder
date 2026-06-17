@@ -49,10 +49,7 @@ export const Info = {
     Information.Name.STORAGE_PERF,
     Information.Name.STORAGE_CACHE,
   ],
-  [Product.Name.PSU]: [
-    Information.Name.PSU_SPEC,
-    Information.Name.PSU_CONNECTOR,
-  ],
+  [Product.Name.PSU]: [Information.Name.PSU_SPEC, Information.Name.PSU_CONNECTOR],
   [Product.Name.CASE]: [
     Information.Name.CASE_SPEC,
     Information.Name.CASE_MAIN,
@@ -76,10 +73,7 @@ export const Info = {
     Information.Name.RADIATOR_SPEC,
   ],
   [Product.Name.FAN]: [Information.Name.FAN_SPEC],
-  [Product.Name.CPU_BLOCK]: [
-    Information.Name.CPU_BLOCK_SPEC,
-    Information.Name.CPU_BLOCK_SOCKET,
-  ],
+  [Product.Name.CPU_BLOCK]: [Information.Name.CPU_BLOCK_SPEC, Information.Name.CPU_BLOCK_SOCKET],
   [Product.Name.PUMP]: [Information.Name.PUMP_SPEC],
   [Product.Name.RADIATOR]: [Information.Name.RADIATOR_SPEC],
 } as const;
@@ -255,14 +249,17 @@ export const SummaryAttributeMapping = Object.values(Product.Name).reduce(
     const product = key as Product.Name;
     const productAttrs = Product.Summary[product].keyof().options;
 
-    mapping[key] = productAttrs.reduce((productMapping, attr) => {
-      const [info, key] = ProductToInfo[product][attr];
+    mapping[key] = productAttrs.reduce(
+      (productMapping, attr) => {
+        const [info, key] = ProductToInfo[product][attr];
 
-      productMapping[info] ??= [];
+        productMapping[info] ??= [];
 
-      productMapping[info].push(key);
-      return productMapping;
-    }, {} as { [key in Information.Name]?: string[] });
+        productMapping[info].push(key);
+        return productMapping;
+      },
+      {} as { [key in Information.Name]?: string[] }
+    );
     return mapping;
   },
   {} as { [key in Product.Name]: { [key in Information.Name]?: string[] } }

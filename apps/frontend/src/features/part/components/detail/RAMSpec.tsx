@@ -6,27 +6,14 @@ import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<RAMSpec.DTO> = {
   speed: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={TransferSpeedUnit}
-      defaultUnit="MT/s"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={TransferSpeedUnit} defaultUnit="MT/s" defaultValue={defaultValue} />
   ),
   capacity: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={MemoryUnits}
-      defaultUnit="GB"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={MemoryUnits} defaultUnit="GB" defaultValue={defaultValue} />
   ),
-  voltage: ({ defaultValue }) => (
-    <SuffixDisplay suffix="V">{defaultValue}</SuffixDisplay>
-  ),
-  latency: ({ defaultValue }) =>
-    defaultValue?.map((val) => val.toString()).join(" - "),
-  kit: ({ defaultValue }) => (
-    <SuffixDisplay suffix="stick(s)">{defaultValue}</SuffixDisplay>
-  ),
+  voltage: ({ defaultValue }) => <SuffixDisplay suffix="V">{defaultValue}</SuffixDisplay>,
+  latency: ({ defaultValue }) => defaultValue?.map((val) => val.toString()).join(" - "),
+  kit: ({ defaultValue }) => <SuffixDisplay suffix="stick(s)">{defaultValue}</SuffixDisplay>,
   form_factor: ({ defaultValue }) => defaultValue,
   interface: ({ defaultValue }) => defaultValue,
 };

@@ -32,7 +32,8 @@ import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";
   },
 }))
 @Table({ modelName: Infos.MAIN_FAN })
-export default class MainboardFanConnectorModel extends Model
+export default class MainboardFanConnectorModel
+  extends Model
   implements MainboardFanConnector.Model
 {
   @PrimaryKey
@@ -60,6 +61,3 @@ export default class MainboardFanConnectorModel extends Model
   @Column(DataType.TINYINT)
   declare count: number | null;
 }
-
-
-

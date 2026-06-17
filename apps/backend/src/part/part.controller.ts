@@ -20,21 +20,17 @@ import { ZodValidationPipe } from "src/utils/utils.modules";
 import Part, { Products } from "@/utils/part";
 import { Roles } from "@/utils/user";
 
-import {
-  PART_INTERFACE,
-  PartServiceInterface,
-} from "./interface/part.interface";
+import { PART_INTERFACE, PartServiceInterface } from "./interface/part.interface";
 
 const ProductValidator = new ParseEnumPipe(Products, {
   exceptionFactory: () => new NotFoundException("Product's not found"),
 });
- 
 
 @Controller("part")
 export class PartController {
   constructor(
     @Inject(PART_INTERFACE)
-    private readonly service: PartServiceInterface,
+    private readonly service: PartServiceInterface
   ) {}
 
   @Get("filter")
@@ -45,7 +41,7 @@ export class PartController {
   @Get("filter/:part")
   async getPartFilter(
     @Param("part", ProductValidator) part: Products,
-    @Query() params: Record<string, string | string[]>,
+    @Query() params: Record<string, string | string[]>
   ) {
     return await this.service.filter(params, part);
   }
@@ -54,7 +50,7 @@ export class PartController {
   async getPartFilterAttribute(
     @Param("part", ProductValidator) part: Products,
     @Param("attribute") attribute: string,
-    @Query() params: Record<string, string | string[]>,
+    @Query() params: Record<string, string | string[]>
   ) {
     return await this.service.filter(params, part, attribute);
   }
@@ -67,7 +63,7 @@ export class PartController {
   @Get(":part")
   async partList(
     @Param("part", ProductValidator) part: Products,
-    @Query() params: Record<string, string | string[]>,
+    @Query() params: Record<string, string | string[]>
   ) {
     return await this.service.list(params, part);
   }
@@ -75,10 +71,7 @@ export class PartController {
   @Role(Roles.ADMIN)
   @Post(":part")
   @UsePipes(new ZodValidationPipe(Part.DTO))
-  async createPart(
-    @Param("part", ProductValidator) part: Products,
-    @Body() body: Part.DTO,
-  ) {
+  async createPart(@Param("part", ProductValidator) part: Products, @Body() body: Part.DTO) {
     const partInfo = await this.service.create(part, body);
 
     if (typeof partInfo !== "string") {
@@ -90,10 +83,7 @@ export class PartController {
 
   @Role(Roles.ADMIN)
   @Post(":part/bulk")
-  async createPartsBulk(
-    @Param("part", ProductValidator) product: Products,
-    @Body() body: any[],
-  ) {
+  async createPartsBulk(@Param("part", ProductValidator) product: Products, @Body() body: any[]) {
     if (!Array.isArray(body)) {
       throw new BadRequestException("Request body must be an array of parts");
     }
@@ -113,7 +103,11 @@ export class PartController {
           if (created) {
             results.push({ index: i, id: created.id, name: created.name });
           } else {
-            errors.push({ index: i, data: partData, error: "Failed to save to database" });
+            errors.push({
+              index: i,
+              data: partData,
+              error: "Failed to save to database",
+            });
           }
         } catch (err: any) {
           errors.push({ index: i, data: partData, error: err.message });
@@ -139,7 +133,7 @@ export class PartController {
   @Get(":part/:id")
   async getPart(
     @Param("part", ProductValidator) part: Products,
-    @Param("id", ParseUUIDPipe) id: string,
+    @Param("id", ParseUUIDPipe) id: string
   ) {
     const partInfo = await this.service.get(id, part);
 
@@ -154,7 +148,7 @@ export class PartController {
   async setPart(
     @Param("part", ProductValidator) part: Products,
     @Param("id", ParseUUIDPipe) id: string,
-    @Body() body: Part.DTO,
+    @Body() body: Part.DTO
   ) {
     const partInfo = await this.service.set(id, part, body);
 
@@ -167,7 +161,7 @@ export class PartController {
   @Delete(":part/:id")
   async deletePart(
     @Param("part", ProductValidator) part: Products,
-    @Param("id", ParseUUIDPipe) id: string,
+    @Param("id", ParseUUIDPipe) id: string
   ) {
     const partInfo = await this.service.delete(id, part);
 

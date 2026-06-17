@@ -15,9 +15,7 @@ const CaseMainboardSupportTable = ({
     </Table.Head>
     <tbody>
       <Table.Row>
-        <Table.Cell>
-          {defaultValue.map((val) => val.form_factor).join(", ")}
-        </Table.Cell>
+        <Table.Cell>{defaultValue.map((val) => val.form_factor).join(", ")}</Table.Cell>
       </Table.Row>
     </tbody>
   </Table.Component>

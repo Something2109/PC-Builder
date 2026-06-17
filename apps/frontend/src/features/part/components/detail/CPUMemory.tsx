@@ -4,11 +4,7 @@ import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
 
 import { Table } from "../utils/Table";
 
-const CPUMemoryTable = ({
-  defaultValue,
-}: {
-  defaultValue: CPUMemory.DTO[];
-}) => (
+const CPUMemoryTable = ({ defaultValue }: { defaultValue: CPUMemory.DTO[] }) => (
   <Table.Component>
     <Table.Head>
       <Table.Row>
@@ -24,30 +20,16 @@ const CPUMemoryTable = ({
         <Table.Row key={`memory-${val.type}-${val.speed}`}>
           <Table.Cell>{val.type}</Table.Cell>
           <Table.Cell>
-            <UnitDisplay
-              Unit={TransferSpeedUnit}
-              defaultUnit="MT/s"
-              defaultValue={val.speed}
-            />
+            <UnitDisplay Unit={TransferSpeedUnit} defaultUnit="MT/s" defaultValue={val.speed} />
           </Table.Cell>
           <Table.Cell>
-            <UnitDisplay
-              Unit={MemoryUnits}
-              defaultUnit="GB"
-              defaultValue={val.capacity}
-            />
+            <UnitDisplay Unit={MemoryUnits} defaultUnit="GB" defaultValue={val.capacity} />
           </Table.Cell>
           <Table.Cell>
-            <SuffixDisplay suffix="channel(s)">
-              {val.channel_count}
-            </SuffixDisplay>
+            <SuffixDisplay suffix="channel(s)">{val.channel_count}</SuffixDisplay>
           </Table.Cell>
           <Table.Cell>
-            <UnitDisplay
-              Unit={MemorySpeedUnit}
-              defaultUnit="GB/s"
-              defaultValue={val.bandwidth}
-            />
+            <UnitDisplay Unit={MemorySpeedUnit} defaultUnit="GB/s" defaultValue={val.bandwidth} />
           </Table.Cell>
         </Table.Row>
       ))}

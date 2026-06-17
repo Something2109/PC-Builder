@@ -7,25 +7,13 @@ import { InfoComponent, InfoComponentObject } from "../utils/Table";
 const Components: InfoComponentObject<RadiatorSpec.DTO> = {
   form_factor: ({ defaultValue }) => defaultValue,
   width: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={defaultValue} />
   ),
   length: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={defaultValue} />
   ),
   height: ({ defaultValue }) => (
-    <UnitDisplay
-      Unit={LengthUnits}
-      defaultUnit="mm"
-      defaultValue={defaultValue}
-    />
+    <UnitDisplay Unit={LengthUnits} defaultUnit="mm" defaultValue={defaultValue} />
   ),
   fpi: ({ defaultValue }) => defaultValue,
   material: ({ defaultValue }) => defaultValue,

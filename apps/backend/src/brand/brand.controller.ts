@@ -46,10 +46,7 @@ export class BrandController {
 
   @Role(Roles.ADMIN)
   @Put(":id")
-  async update(
-    @Param("id", ParseIntPipe) id: number,
-    @Body(UpdateValidator) dto: UpdateBrandDto,
-  ) {
+  async update(@Param("id", ParseIntPipe) id: number, @Body(UpdateValidator) dto: UpdateBrandDto) {
     return await this.brandService.update(id, dto);
   }
 

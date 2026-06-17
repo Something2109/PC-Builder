@@ -11,26 +11,13 @@ import { InfoComponentObject } from "../utils/TanstackForm";
 
 const Components: InfoComponentObject<RAMSpec.DTO> = {
   speed: (field) => (
-    <UnitInput
-      Unit={TransferSpeedUnit}
-      defaultUnit="MT/s"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={TransferSpeedUnit} defaultUnit="MT/s" {...mapChange(field, "number")} />
   ),
   capacity: (field) => (
-    <UnitInput
-      Unit={MemoryUnits}
-      defaultUnit="GB"
-      {...mapChange(field, "number")}
-    />
+    <UnitInput Unit={MemoryUnits} defaultUnit="GB" {...mapChange(field, "number")} />
   ),
   voltage: (field) => (
-    <SuffixInput
-      suffix="V"
-      type="number"
-      step={0.01}
-      {...mapChange(field, "number")}
-    />
+    <SuffixInput suffix="V" type="number" step={0.01} {...mapChange(field, "number")} />
   ),
   latency: ({ state, handleChange, handleBlur }) => {
     const arr = Array.isArray(state.value) ? state.value : [0, 0, 0, 0];
@@ -56,24 +43,13 @@ const Components: InfoComponentObject<RAMSpec.DTO> = {
     );
   },
   kit: (field) => (
-    <SuffixInput
-      suffix="stick(s)"
-      type="number"
-      step={0.01}
-      {...mapChange(field, "number")}
-    />
+    <SuffixInput suffix="stick(s)" type="number" step={0.01} {...mapChange(field, "number")} />
   ),
   form_factor: (field) => (
-    <OptionSelect
-      options={FormFactor.RAM.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={FormFactor.RAM.options} {...mapChange(field, "select")} />
   ),
   interface: (field) => (
-    <OptionSelect
-      options={InternalConnectors.RAM.options}
-      {...mapChange(field, "select")}
-    />
+    <OptionSelect options={InternalConnectors.RAM.options} {...mapChange(field, "select")} />
   ),
 };
 

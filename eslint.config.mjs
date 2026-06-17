@@ -4,13 +4,7 @@ import typescriptEslint from "typescript-eslint";
 
 export default typescriptEslint.config(
   {
-    ignores: [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/.next/**",
-      "**/build/**",
-      "**/out/**",
-    ],
+    ignores: ["**/node_modules/**", "**/dist/**", "**/.next/**", "**/build/**", "**/out/**"],
   },
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],

@@ -10,14 +10,15 @@ import { CreateBrandDto, UpdateBrandDto } from "./dto/brand.dto";
 export class BrandService {
   constructor(
     @InjectModel(BrandModel)
-    private readonly brandModel: typeof BrandModel,
+    private readonly brandModel: typeof BrandModel
   ) {}
 
   async list(options: API.PageOptions) {
     const validSortFields = ["id", "name", "logo_url"];
-    const order: [string, string][] | undefined = options.sort_key && validSortFields.includes(options.sort_key)
-      ? [[options.sort_key, options.sort_order || "asc"]]
-      : undefined;
+    const order: [string, string][] | undefined =
+      options.sort_key && validSortFields.includes(options.sort_key)
+        ? [[options.sort_key, options.sort_order || "asc"]]
+        : undefined;
 
     return await this.brandModel.findAll({
       offset: (options.page - 1) * options.limit,

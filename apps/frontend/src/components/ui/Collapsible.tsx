@@ -24,9 +24,7 @@ function VerticalCollapsible({
         <span className="font-bold">{collapse ? "+" : "-"}</span>
       </button>
 
-      <ColumnWrapper
-        className={`${collapse ? "h-0" : "h-fit"} mx-2 overflow-auto`}
-      >
+      <ColumnWrapper className={`${collapse ? "h-0" : "h-fit"} mx-2 overflow-auto`}>
         {rest}
       </ColumnWrapper>
     </ColumnWrapper>

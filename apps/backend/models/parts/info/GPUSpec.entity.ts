@@ -63,5 +63,3 @@ export default class GPUSpecModel extends Model implements GPUSpec.Model {
   @Column(DataType.INTEGER)
   declare tensor: number | null;
 }
-
-

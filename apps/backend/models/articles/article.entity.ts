@@ -1,12 +1,4 @@
-import {
-  Column,
-  DataType,
-  Default,
-  Model,
-  NotNull,
-  PrimaryKey,
-  Table,
-} from "sequelize-typescript";
+import { Column, DataType, Default, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 
 import { Article, Content, ArticleStatus } from "@/utils/article";
 

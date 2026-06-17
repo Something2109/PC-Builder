@@ -45,22 +45,14 @@ function Component({
                   <Table.Cell>
                     <form.Field name={`items[${index}].type`}>
                       {(subField) => (
-                        <Input
-                          name={subField.name}
-                          value={subField.state.value}
-                          readOnly
-                        />
+                        <Input name={subField.name} value={subField.state.value} readOnly />
                       )}
                     </form.Field>
                   </Table.Cell>
                   <Table.Cell>
                     <form.Field name={`items[${index}].connector`}>
                       {(subField) => (
-                        <Input
-                          name={subField.name}
-                          value={subField.state.value}
-                          readOnly
-                        />
+                        <Input name={subField.name} value={subField.state.value} readOnly />
                       )}
                     </form.Field>
                   </Table.Cell>
@@ -71,9 +63,7 @@ function Component({
                           type="number"
                           name={subField.name}
                           value={subField.state.value ?? 0}
-                          onChange={(e) =>
-                            subField.handleChange(Number(e.target.value))
-                          }
+                          onChange={(e) => subField.handleChange(Number(e.target.value))}
                         />
                       )}
                     </form.Field>
@@ -93,17 +83,13 @@ function Component({
 function AddRow({
   add,
 }: Readonly<{
-  add: (
-    connector: InternalConnectors.Fan.Connector,
-    type: InternalConnectors.Fan.Type
-  ) => void;
+  add: (connector: InternalConnectors.Fan.Connector, type: InternalConnectors.Fan.Type) => void;
 }>) {
   const ConnectorInput = useRef<HTMLSelectElement>(null);
   const TypeInput = useRef<HTMLSelectElement>(null);
 
   const onAdd = () => {
-    const connector = ConnectorInput.current!
-      .value as InternalConnectors.Fan.Connector;
+    const connector = ConnectorInput.current!.value as InternalConnectors.Fan.Connector;
     const type = TypeInput.current!.value as InternalConnectors.Fan.Type;
 
     add(connector, type);
@@ -112,11 +98,7 @@ function AddRow({
   return (
     <Table.Row>
       <Table.Cell>
-        <OptionSelect
-          ref={TypeInput}
-          options={InternalConnectors.Fan.Type.options}
-          required
-        />
+        <OptionSelect ref={TypeInput} options={InternalConnectors.Fan.Type.options} required />
       </Table.Cell>
       <Table.Cell>
         <OptionSelect
@@ -134,7 +116,4 @@ function AddRow({
   );
 }
 
-export default GenericListInputForm(
-  Component,
-  MainboardFanConnector.Schemas.DTO
-);
+export default GenericListInputForm(Component, MainboardFanConnector.Schemas.DTO);

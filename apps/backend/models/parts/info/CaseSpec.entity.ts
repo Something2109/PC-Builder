@@ -67,5 +67,3 @@ export default class CaseSpecModel extends Model implements CaseSpec.Model {
   @Column(DataType.FLOAT)
   declare max_psu_length: number | null;
 }
-
-

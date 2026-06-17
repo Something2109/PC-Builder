@@ -43,7 +43,8 @@ async function main() {
 
     // Message handler endpoint
     app.post("/sse", async (req, res) => {
-      const sessionId = (req.query.sessionId as string) || (req.headers["mcp-session-id"] as string);
+      const sessionId =
+        (req.query.sessionId as string) || (req.headers["mcp-session-id"] as string);
       if (!sessionId) {
         res.status(400).send("Missing sessionId query parameter or mcp-session-id header.");
         return;

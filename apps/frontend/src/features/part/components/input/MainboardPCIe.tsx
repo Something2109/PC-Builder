@@ -60,29 +60,18 @@ function Component({
                       </Table.Cell>
                     </Table.Row>
                     {controllerItems.map((item) => (
-                      <Table.Row
-                        className="relative"
-                        key={`${item.version}-${item.width}`}
-                      >
+                      <Table.Row className="relative" key={`${item.version}-${item.width}`}>
                         <Table.Cell>
                           <form.Field name={`items[${item.index}].version`}>
                             {(subField) => (
-                              <Input
-                                name={subField.name}
-                                value={subField.state.value}
-                                readOnly
-                              />
+                              <Input name={subField.name} value={subField.state.value} readOnly />
                             )}
                           </form.Field>
                         </Table.Cell>
                         <Table.Cell>
                           <form.Field name={`items[${item.index}].width`}>
                             {(subField) => (
-                              <Input
-                                name={subField.name}
-                                value={subField.state.value}
-                                readOnly
-                              />
+                              <Input name={subField.name} value={subField.state.value} readOnly />
                             )}
                           </form.Field>
                         </Table.Cell>
@@ -102,9 +91,7 @@ function Component({
                                 type="number"
                                 name={subField.name}
                                 value={subField.state.value ?? 0}
-                                onChange={(e) =>
-                                  subField.handleChange(Number(e.target.value))
-                                }
+                                onChange={(e) => subField.handleChange(Number(e.target.value))}
                               />
                             )}
                           </form.Field>
@@ -115,9 +102,7 @@ function Component({
                       </Table.Row>
                     ))}
                     <AddRow
-                      controller={
-                        controller as InternalConnectors.PCIe.Controller
-                      }
+                      controller={controller as InternalConnectors.PCIe.Controller}
                       onAdd={add}
                     />
                   </React.Fragment>
@@ -157,18 +142,10 @@ function AddRow({
         <Input ref={VersionInput} type="number" defaultValue={0} />
       </Table.Cell>
       <Table.Cell>
-        <OptionSelect
-          ref={WidthInput}
-          options={InternalConnectors.PCIe.Width.options}
-          required
-        />
+        <OptionSelect ref={WidthInput} options={InternalConnectors.PCIe.Width.options} required />
       </Table.Cell>
       <Table.Cell>
-        <Button
-          type="button"
-          className="w-full p-0 border-0"
-          onClick={handleAdd}
-        >
+        <Button type="button" className="w-full p-0 border-0" onClick={handleAdd}>
           Add
         </Button>
       </Table.Cell>

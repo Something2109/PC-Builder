@@ -54,5 +54,3 @@ export default class CasePSUSupportModel extends Model implements CasePSUSupport
   })
   declare psu_support: FormFactor.PSU;
 }
-
-

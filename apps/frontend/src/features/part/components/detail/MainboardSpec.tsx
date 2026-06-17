@@ -9,9 +9,7 @@ const Components: InfoComponentObject<MainboardSpec.DTO> = {
   chipset: ({ defaultValue }) => defaultValue,
   ram_form_factor: ({ defaultValue }) => defaultValue,
   ram_interface: ({ defaultValue }) => defaultValue,
-  ram_slot: ({ defaultValue }) => (
-    <SuffixDisplay suffix="slot(s)">{defaultValue}</SuffixDisplay>
-  ),
+  ram_slot: ({ defaultValue }) => <SuffixDisplay suffix="slot(s)">{defaultValue}</SuffixDisplay>,
 };
 
 export default InfoComponent(Components, MainboardSpec.Label, { strict: true });

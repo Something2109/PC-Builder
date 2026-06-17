@@ -20,16 +20,28 @@ export default function Footer() {
             Platform
           </h4>
           <div className="flex flex-col gap-2">
-            <Link href="/introduction" className="text-sm text-text/70 hover:text-accent-indigo transition-colors">
+            <Link
+              href="/introduction"
+              className="text-sm text-text/70 hover:text-accent-indigo transition-colors"
+            >
               Introduction
             </Link>
-            <Link href="/guide" className="text-sm text-text/70 hover:text-accent-indigo transition-colors">
+            <Link
+              href="/guide"
+              className="text-sm text-text/70 hover:text-accent-indigo transition-colors"
+            >
               Builder Guide
             </Link>
-            <Link href="/part" className="text-sm text-text/70 hover:text-accent-indigo transition-colors">
+            <Link
+              href="/part"
+              className="text-sm text-text/70 hover:text-accent-indigo transition-colors"
+            >
               Parts Directory
             </Link>
-            <Link href="/build" className="text-sm text-text/70 hover:text-accent-indigo transition-colors">
+            <Link
+              href="/build"
+              className="text-sm text-text/70 hover:text-accent-indigo transition-colors"
+            >
               System Builder
             </Link>
           </div>
@@ -39,12 +51,42 @@ export default function Footer() {
             Categories
           </h4>
           <div className="grid grid-cols-2 gap-2">
-            <Link href="/part/cpu" className="text-sm text-text/70 hover:text-accent-indigo transition-colors">CPU</Link>
-            <Link href="/part/graphic_card" className="text-sm text-text/70 hover:text-accent-indigo transition-colors">GPU</Link>
-            <Link href="/part/main" className="text-sm text-text/70 hover:text-accent-indigo transition-colors">Motherboard</Link>
-            <Link href="/part/ram" className="text-sm text-text/70 hover:text-accent-indigo transition-colors">RAM</Link>
-            <Link href="/part/ssd" className="text-sm text-text/70 hover:text-accent-indigo transition-colors">SSD</Link>
-            <Link href="/part/case" className="text-sm text-text/70 hover:text-accent-indigo transition-colors">Case</Link>
+            <Link
+              href="/part/cpu"
+              className="text-sm text-text/70 hover:text-accent-indigo transition-colors"
+            >
+              CPU
+            </Link>
+            <Link
+              href="/part/graphic_card"
+              className="text-sm text-text/70 hover:text-accent-indigo transition-colors"
+            >
+              GPU
+            </Link>
+            <Link
+              href="/part/main"
+              className="text-sm text-text/70 hover:text-accent-indigo transition-colors"
+            >
+              Motherboard
+            </Link>
+            <Link
+              href="/part/ram"
+              className="text-sm text-text/70 hover:text-accent-indigo transition-colors"
+            >
+              RAM
+            </Link>
+            <Link
+              href="/part/ssd"
+              className="text-sm text-text/70 hover:text-accent-indigo transition-colors"
+            >
+              SSD
+            </Link>
+            <Link
+              href="/part/case"
+              className="text-sm text-text/70 hover:text-accent-indigo transition-colors"
+            >
+              Case
+            </Link>
           </div>
         </div>
         <div>

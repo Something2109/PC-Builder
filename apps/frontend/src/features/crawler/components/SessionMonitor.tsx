@@ -66,8 +66,18 @@ export default function SessionMonitor({ sessions }: SessionMonitorProps) {
   if (sessions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-slate-500 border border-dashed border-slate-800 rounded-xl">
-        <svg className="w-10 h-10 text-slate-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        <svg
+          className="w-10 h-10 text-slate-600 mb-2"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M13 10V3L4 14h7v7l9-11h-7z"
+          />
         </svg>
         <span className="text-sm">No crawling sessions recorded. Start a scraper to begin.</span>
       </div>
@@ -99,7 +109,10 @@ export default function SessionMonitor({ sessions }: SessionMonitorProps) {
                 <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-400 mt-1">
                   <span>Targets:</span>
                   {products.map((p) => (
-                    <span key={p} className="px-1.5 py-0.2 bg-slate-800 border border-slate-700 rounded text-slate-300 font-mono text-[10px]">
+                    <span
+                      key={p}
+                      className="px-1.5 py-0.2 bg-slate-800 border border-slate-700 rounded text-slate-300 font-mono text-[10px]"
+                    >
                       {p}
                     </span>
                   ))}
@@ -129,8 +142,8 @@ export default function SessionMonitor({ sessions }: SessionMonitorProps) {
                     state === CrawlState.CRAWLING
                       ? "bg-blue-500"
                       : state === CrawlState.FAILED
-                      ? "bg-rose-500"
-                      : "bg-emerald-500"
+                        ? "bg-rose-500"
+                        : "bg-emerald-500"
                   }`}
                   style={{ width: `${percent}%` }}
                 />
@@ -146,27 +159,39 @@ export default function SessionMonitor({ sessions }: SessionMonitorProps) {
             {/* Core Metrics Grid */}
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 bg-slate-950/40 p-3 rounded-lg border border-slate-800/50">
               <div className="flex flex-col text-center">
-                <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Init</span>
+                <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">
+                  Init
+                </span>
                 <span className="text-sm font-semibold text-slate-300">{progress.init}</span>
               </div>
               <div className="flex flex-col text-center border-l border-slate-800/60">
-                <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Fetch</span>
+                <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">
+                  Fetch
+                </span>
                 <span className="text-sm font-semibold text-slate-300">{progress.fetch}</span>
               </div>
               <div className="flex flex-col text-center border-l border-slate-800/60">
-                <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Extract</span>
+                <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">
+                  Extract
+                </span>
                 <span className="text-sm font-semibold text-slate-300">{progress.extract}</span>
               </div>
               <div className="flex flex-col text-center border-l border-slate-800/60">
-                <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Parse</span>
+                <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">
+                  Parse
+                </span>
                 <span className="text-sm font-semibold text-slate-300">{progress.parse}</span>
               </div>
               <div className="flex flex-col text-center border-l border-slate-800/60">
-                <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Success</span>
+                <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">
+                  Success
+                </span>
                 <span className="text-sm font-semibold text-emerald-400">{progress.success}</span>
               </div>
               <div className="flex flex-col text-center border-l border-slate-800/60">
-                <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Failed</span>
+                <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">
+                  Failed
+                </span>
                 <span className="text-sm font-semibold text-rose-400">{progress.failed}</span>
               </div>
             </div>
@@ -185,10 +210,16 @@ export default function SessionMonitor({ sessions }: SessionMonitorProps) {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                   <span>
-                    Show {errors.length} Execution Error{errors.length > 1 ? "s" : ""}
+                    Show {errors.length} Execution Error
+                    {errors.length > 1 ? "s" : ""}
                   </span>
                 </button>
 

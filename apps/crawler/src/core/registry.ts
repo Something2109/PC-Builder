@@ -9,9 +9,7 @@ export class ScraperRegistry {
   private static cache = new Map<string, APIWebsiteInfo<unknown, unknown>>();
   private static crawlersDir = path.join(__dirname, "../crawlers");
 
-  static async getScraper(
-    domain: string
-  ): Promise<APIWebsiteInfo<unknown, unknown>> {
+  static async getScraper(domain: string): Promise<APIWebsiteInfo<unknown, unknown>> {
     const key = normalizeDomain(domain);
 
     if (this.cache.has(key)) {
@@ -42,18 +40,14 @@ export class ScraperRegistry {
       const scraper = module.default || module.scraper;
 
       if (!scraper) {
-        throw new Error(
-          `Scraper configuration default export missing in ${key}`
-        );
+        throw new Error(`Scraper configuration default export missing in ${key}`);
       }
 
       this.cache.set(key, scraper);
       return scraper;
     } catch (err: unknown) {
       const error = err as Error;
-      throw new Error(
-        `Failed to load scraper for '${domain}': ${error.message}`
-      );
+      throw new Error(`Failed to load scraper for '${domain}': ${error.message}`);
     }
   }
 

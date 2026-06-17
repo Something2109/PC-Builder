@@ -75,8 +75,7 @@ export const BasicFilterAttributes = BasicFilterSchema.pick({
 
 export type Summary<product extends Product.Name | undefined = undefined> =
   product extends Product.Name
-    ? z.infer<typeof BasicSummarySchema> &
-        z.infer<(typeof Product.Summary)[product]>
+    ? z.infer<typeof BasicSummarySchema> & z.infer<(typeof Product.Summary)[product]>
     : z.infer<typeof BasicSummarySchema>;
 
 export type Filter = {
@@ -91,14 +90,12 @@ export const Model = createModel(BasicInfo, ["id", "name", "code_name"]).merge(
 
 export type Model = z.infer<typeof Model>;
 
-export const DTO = createDTO(BasicInfo.omit({ id: true }), [
-  "name",
-  "code_name",
-]).merge(z.object(Information.DTO).partial());
+export const DTO = createDTO(BasicInfo.omit({ id: true }), ["name", "code_name"]).merge(
+  z.object(Information.DTO).partial()
+);
 
 export type DTO = z.infer<typeof DTO>;
 
-export type Infer<
-  I extends Information.Name,
-  A extends string = ""
-> = A extends "" ? InfoType<I> : AttributeType<I, A>;
+export type Infer<I extends Information.Name, A extends string = ""> = A extends ""
+  ? InfoType<I>
+  : AttributeType<I, A>;

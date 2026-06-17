@@ -2,10 +2,7 @@ import { JSDOM } from "jsdom";
 
 import { Products } from "../../types/Enum";
 import { APIWebsiteInfo } from "../../types/interface";
-import {
-  RetailProductSchema,
-  RetailProductType,
-} from "../../types/retailer/Product";
+import { RetailProductSchema, RetailProductType } from "../../types/retailer/Product";
 
 const domain = "https://www.anphatpc.com.vn";
 const mapping: { [key in Products]?: string } = {
@@ -60,16 +57,10 @@ const CrawlInfo: APIWebsiteInfo<Element, RetailProductType> = {
   async parse(raw) {
     const name = raw.querySelector(".p-name")?.textContent?.trim();
     const price = Number(
-      raw
-        .querySelector(".p-price")
-        ?.textContent?.replaceAll(".", "")
-        ?.match(/\d+/)
+      raw.querySelector(".p-price")?.textContent?.replaceAll(".", "")?.match(/\d+/)
     );
-    const link = `${domain}${raw
-      .querySelector(".p-name")
-      ?.getAttribute("href")}`;
-    const img =
-      raw.querySelector(".fit-img")?.getAttribute("data-src") ?? undefined;
+    const link = `${domain}${raw.querySelector(".p-name")?.getAttribute("href")}`;
+    const img = raw.querySelector(".fit-img")?.getAttribute("data-src") ?? undefined;
     const availability = Boolean(raw.querySelector(".btn-in-stock"));
 
     return RetailProductSchema.parse({ name, price, link, img, availability });

@@ -1,15 +1,11 @@
-import type {
-  IAliasRegistry,
-  ResolvedTarget,
-  HeuristicConfig,
-} from "./types";
+import type { IAliasRegistry, ResolvedTarget, HeuristicConfig } from "./types";
 
 import defaultAliases from "./aliases.json";
 import { normalizeKey } from "./utils";
 
 /**
  * In-memory implementation of IAliasRegistry.
- * 
+ *
  * Loads aliases from the JSON config and builds a reverse index
  * for O(1) key resolution. This implementation stores everything in memory;
  * a future DB-backed implementation will conform to the same IAliasRegistry interface.
@@ -95,14 +91,20 @@ export class AliasRegistry implements IAliasRegistry {
 
   // ── Registration ─────────────────────────────────────────────────
 
-  public async addAlias(product: string, info: string, attribute: string, alias: string): Promise<void> {
+  public async addAlias(
+    product: string,
+    info: string,
+    attribute: string,
+    alias: string
+  ): Promise<void> {
     const normAlias = normalizeKey(alias);
     if (!normAlias) return;
 
     // Forward
     if (!this.productForward[product]) this.productForward[product] = {};
     if (!this.productForward[product][info]) this.productForward[product][info] = {};
-    if (!this.productForward[product][info][attribute]) this.productForward[product][info][attribute] = [];
+    if (!this.productForward[product][info][attribute])
+      this.productForward[product][info][attribute] = [];
 
     if (!this.productForward[product][info][attribute].includes(alias)) {
       this.productForward[product][info][attribute].push(alias);
@@ -190,7 +192,9 @@ export class AliasRegistry implements IAliasRegistry {
         this.productForward[product] = {};
         this.productReverse[product] = new Map();
 
-        for (const [infoName, infoValue] of Object.entries(topValue as Record<string, Record<string, string[]>>)) {
+        for (const [infoName, infoValue] of Object.entries(
+          topValue as Record<string, Record<string, string[]>>
+        )) {
           this.productForward[product][infoName] = {};
 
           for (const [attrName, aliases] of Object.entries(infoValue)) {
@@ -198,15 +202,19 @@ export class AliasRegistry implements IAliasRegistry {
 
             // Add target attribute name itself to reverse index
             // (so "total_cores" matches "total_cores" exactly)
-            const normAttr = attrName === "_self"
-              ? normalizeKey(infoName)
-              : normalizeKey(attrName);
-            this.addToReverseIndex(product, normAttr, { info: infoName, attribute: attrName });
+            const normAttr = attrName === "_self" ? normalizeKey(infoName) : normalizeKey(attrName);
+            this.addToReverseIndex(product, normAttr, {
+              info: infoName,
+              attribute: attrName,
+            });
 
             // Add each alias to reverse index
             for (const alias of aliases) {
               const normAlias = normalizeKey(alias);
-              this.addToReverseIndex(product, normAlias, { info: infoName, attribute: attrName });
+              this.addToReverseIndex(product, normAlias, {
+                info: infoName,
+                attribute: attrName,
+              });
             }
           }
         }

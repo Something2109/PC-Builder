@@ -2,13 +2,7 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Dispatch,
-  SetStateAction,
-  createContext,
-  useContext,
-  useLayoutEffect,
-} from "react";
+import { Dispatch, SetStateAction, createContext, useContext, useLayoutEffect } from "react";
 
 import axiosInstance from "@/lib/axios";
 import { JwtPayload as UserJwtPayload, Roles } from "@/utils/user";
@@ -22,9 +16,7 @@ interface AuthContextType {
   loading: boolean;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
-);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthWrapper({
   user: initialUser,
@@ -78,14 +70,12 @@ export function AuthRole({
   const pathname = usePathname();
 
   useLayoutEffect(() => {
-    if (!user && !context?.loading)
-      router.push(`${LoginPath}?redirect=${pathname}`);
+    if (!user && !context?.loading) router.push(`${LoginPath}?redirect=${pathname}`);
   });
 
   if (!user) return;
 
-  if (!roles.includes(user.role))
-    return <h1>You are not authorized to access this page</h1>;
+  if (!roles.includes(user.role)) return <h1>You are not authorized to access this page</h1>;
 
   return children;
 }
