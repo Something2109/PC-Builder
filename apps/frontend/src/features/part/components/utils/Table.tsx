@@ -11,19 +11,21 @@ import { mergeClass } from "@/ui/mergeClass";
 
 export const Table = {
   Component: ({ className, children, ...rest }: HTMLAttributes<HTMLTableElement>) => (
-    <table className={mergeClass("w-full border-2", className)} {...rest}>
-      {children}
-    </table>
+    <div className="w-full border border-border/60 rounded-xl overflow-hidden bg-card shadow-xs">
+      <table className={mergeClass("w-full border-collapse", className)} {...rest}>
+        {children}
+      </table>
+    </div>
   ),
 
   Head: ({ className, ...attr }: HTMLAttributes<HTMLTableSectionElement>) => (
-    <thead className={mergeClass("font-bold", className)} {...attr} />
+    <thead className={mergeClass("bg-slate-50/50 dark:bg-slate-800/10 font-bold border-b border-border/60 text-text/80", className)} {...attr} />
   ),
 
   Row: ({ className, ...attr }: HTMLAttributes<HTMLTableRowElement>) => (
     <tr
       className={mergeClass(
-        "border-b-2 only:last:border-b-2 last:border-b-0 *:rounded-sm",
+        "border-b border-border/40 last:border-b-0 hover:bg-slate-500/2 dark:hover:bg-slate-500/5 transition-colors",
         className
       )}
       {...attr}
@@ -32,7 +34,7 @@ export const Table = {
 
   Cell: ({ className, ...attr }: TdHTMLAttributes<HTMLTableCellElement>) => (
     <td
-      className={mergeClass("border-r-2 not-only:last:border-r-0 p-2 has-[table]:p-0", className)}
+      className={mergeClass("border-r border-border/40 last:border-r-0 p-3 text-sm text-text/85 align-middle has-[table]:p-0", className)}
       {...attr}
     />
   ),

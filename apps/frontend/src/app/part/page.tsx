@@ -35,21 +35,42 @@ export default async function ListPage({
   options.delete("page");
 
   return (
-    <>
-      <SearchBar />
-      <h1 className="font-bold text-2xl my-2">
-        {`${data.total} Product${data.total > 1 ? "s" : ""}`}
-      </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-col-3 lg:grid-cols-5 xl:grid-flow-col-6 gap-1 xl:gap-3">
+    <div className="w-full space-y-6">
+      {/* Header */}
+      <div className="border-b border-border pb-5">
+        <h1 className="text-3xl font-extrabold tracking-tight text-text">Hardware Directory</h1>
+        <p className="text-sm text-text/60 mt-1">
+          Browse through our comprehensive directory of PC components, specs, and details.
+        </p>
+      </div>
+
+      {/* Floating Search Bar */}
+      <div className="max-w-2xl">
+        <SearchBar />
+      </div>
+
+      <hr className="border-border/60" />
+
+      {/* Search Result Count */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold text-text">
+          {`${data.total.toLocaleString()} Component${data.total !== 1 ? "s" : ""} Available`}
+        </h2>
+      </div>
+
+      {/* Grid List */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
         {data.list.map((value) => {
-          return <PartPanel item={value} key={value.name} />;
+          return <PartPanel item={value} key={value.id} />;
         })}
       </div>
+
+      {/* Pagination */}
       <PaginationBar
         path={`/part`}
         current={Number(page)}
         total={Math.ceil(data.total / Number(process.env.PageSize))}
       />
-    </>
+    </div>
   );
 }

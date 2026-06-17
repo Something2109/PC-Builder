@@ -1,9 +1,8 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { FilterBar } from "@/features/part/components/Filter";
 import SummaryTable from "@/features/part/components/Summary";
-import { RedirectButton } from "@/ui/Button";
-import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
 import PaginationBar from "@/ui/PaginationBar";
 import { ToggleButton } from "@/ui/Toggle";
 import { Product } from "@/utils/part";
@@ -39,26 +38,60 @@ export default async function PartListPage({
   options.delete("page");
 
   return (
-    <ColumnWrapper className="w-full">
-      <ColumnWrapper>
-        <RowWrapper className="flex-wrap justify-between place-items-center">
-          <h1 className="text-xl font-bold" id="list">{`${data.total} ${Product.Label[part]}`}</h1>
-          <ToggleButton label="Filter">
+    <div className="w-full space-y-6">
+      {/* Header / Navigation */}
+      <div className="border-b border-border pb-5">
+        <Link
+          href="/part"
+          className="text-xs font-bold text-accent-indigo hover:text-accent-indigo/80 flex items-center gap-1 mb-2 transition-colors uppercase tracking-wider"
+        >
+          &larr; Back to Hardware Directory
+        </Link>
+        <div className="flex items-center justify-between flex-wrap gap-4 mt-1">
+          <div>
+            <h1 className="text-3xl font-extrabold tracking-tight text-text">
+              {Product.Label[part]} Directory
+            </h1>
+            <p className="text-sm text-text/60 mt-1">
+              Explore specifications, brands, and compatibility metrics for all {Product.Label[part].toLowerCase()} models.
+            </p>
+          </div>
+          <Link
+            href={`/part/${part}/new`}
+            className="px-4 py-2.5 text-xs font-bold text-white bg-accent-indigo hover:bg-accent-indigo/90 rounded-xl transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-0.5"
+          >
+            + Add New {Product.Label[part]}
+          </Link>
+        </div>
+      </div>
+
+      {/* Control Bar (Filters & results count) */}
+      <div className="flex justify-between items-center p-4 rounded-2xl border border-border bg-card shadow-sm">
+        <span className="text-sm font-semibold text-text/50">
+          Showing {data.total} item{data.total !== 1 ? "s" : ""}
+        </span>
+        <ToggleButton label="Filters">
+          <div className="w-full mt-4 p-4 border border-border rounded-xl bg-card/50 text-left">
             <FilterBar
-              className="w-full border-2 border-line rounded-xl p-2"
+              className="w-full"
               part={part}
               context={options}
             />
-          </ToggleButton>
-        </RowWrapper>
+          </div>
+        </ToggleButton>
+      </div>
+
+      {/* Part List Table */}
+      <div className="border border-border rounded-2xl overflow-hidden bg-card shadow-sm">
         <SummaryTable part={part} data={data.list} />
-        <RedirectButton href={`/part/${part}/new`}>New</RedirectButton>
-        <PaginationBar
-          path={`/part/${part}?${options}`}
-          current={Number(page)}
-          total={Math.ceil(data.total / Number(process.env.PageSize))}
-        />
-      </ColumnWrapper>
-    </ColumnWrapper>
+      </div>
+
+      {/* Pagination */}
+      <PaginationBar
+        path={`/part/${part}?${options}`}
+        current={Number(page)}
+        total={Math.ceil(data.total / Number(process.env.PageSize))}
+      />
+    </div>
   );
 }
