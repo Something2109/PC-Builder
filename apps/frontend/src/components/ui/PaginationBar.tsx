@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function PaginationBar({
   path,
   current,
@@ -63,12 +65,12 @@ function PaginationButton({
 }) {
   if (typeof path === "string") {
     return (
-      <a
+      <Link
         href={`${path}${path.includes("?") ? "&" : "?"}page=${num}`}
         className={PaginationButtonStyle}
       >
         <span className="font-bold text-xs">{title}</span>
-      </a>
+      </Link>
     );
   }
   return (

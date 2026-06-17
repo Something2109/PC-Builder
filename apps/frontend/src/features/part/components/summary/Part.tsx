@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { TableHTMLAttributes } from "react";
 
 import { RowWrapper } from "@/ui/FlexWrapper";
@@ -25,12 +26,12 @@ export function PartSummaryCells({
   return (
     <>
       <td className="col-span-2">
-        <a href={`/part/${part}/${id}`}>
+        <Link href={`/part/${part}/${id}`}>
           <RowWrapper className="align-middle items-center font-bold">
             <PartPicture part={part} src={image_url ?? undefined} className="h-16 m-2" />
             {name}
           </RowWrapper>
-        </a>
+        </Link>
       </td>
       <td>
         <RowWrapper>

@@ -349,7 +349,7 @@ function ArticleComponent({ article }: { article: Article }) {
                 </h3>
                 <nav className="flex flex-col border-l border-slate-100 dark:border-slate-800/80">
                   {sections.map((sec) => (
-                    <a
+                    <Link
                       key={sec.id}
                       href={`#${sec.id}`}
                       className={mergeClass(
@@ -366,7 +366,7 @@ function ArticleComponent({ article }: { article: Article }) {
                       )}
                     >
                       {sec.title}
-                    </a>
+                    </Link>
                   ))}
                 </nav>
               </div>

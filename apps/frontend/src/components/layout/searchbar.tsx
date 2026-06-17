@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import useSearchAction from "@/hooks/useSearchAction";
 import { Products } from "@/utils/part";
 
@@ -77,13 +79,13 @@ export function SearchBar({ q, part }: { q?: string; part?: Products }) {
         {!pending &&
           result.length > 0 &&
           result.map((value) => (
-            <a
+            <Link
               href={`/part/${value.part}/${value.id}`}
               key={`search-${value.id}`}
               className="px-4 py-2.5 rounded-xl text-sm text-text/80 hover:bg-accent-indigo/10 hover:text-accent-indigo hover:translate-x-1 transition-all duration-200"
             >
               {value.name}
-            </a>
+            </Link>
           ))}
       </div>
     </div>

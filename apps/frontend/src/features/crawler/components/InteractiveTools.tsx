@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import axiosInstance from "@/lib/axios";
@@ -236,14 +237,14 @@ export default function InteractiveTools({ scrapers }: InteractiveToolsProps) {
                   </div>
                   <div className="truncate text-slate-500">
                     Link:{" "}
-                    <a
+                    <Link
                       href={extractResult.items[0].link}
                       target="_blank"
                       rel="noreferrer"
                       className="text-blue-500 hover:underline"
                     >
                       {extractResult.items[0].link}
-                    </a>
+                    </Link>
                   </div>
                 </div>
               )}
