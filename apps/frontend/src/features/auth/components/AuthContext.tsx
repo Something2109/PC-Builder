@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, createContext, useContext, useLayoutEffect } from "react";
 
 import axiosInstance from "@/lib/axios";
@@ -66,14 +66,11 @@ export function AuthRole({
 }>) {
   const context = useContext(AuthContext);
   const user = context?.user;
-  const router = useRouter();
   const pathname = usePathname();
 
-  useLayoutEffect(() => {
-    if (!user && !context?.loading) router.push(`${LoginPath}?redirect=${pathname}`);
-  });
+  if (context?.loading) return;
 
-  if (!user) return;
+  if (!user) redirect(`${LoginPath}?redirect=${pathname}`);
 
   if (!roles.includes(user.role)) return <h1>You are not authorized to access this page</h1>;
 
