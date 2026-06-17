@@ -1,11 +1,12 @@
 "use client";
 
-import { lazy, LazyExoticComponent } from "react";
 import z from "zod";
+import { lazy, LazyExoticComponent, Suspense } from "react";
 
 import { useInfoAction } from "@/features/part/hooks/InfoAction";
 import { Button } from "@/ui/Button";
 import { VerticalCollapsible } from "@/ui/Collapsible";
+import { LoadingSpinner } from "@/ui/LoadingSpinner";
 import { NotificationBar } from "@/ui/NotificationBar";
 import Part, { Information } from "@/utils/part";
 
@@ -124,7 +125,9 @@ export function InfoForm<Info extends Information.Name>({
       {formValue ? (
         <VerticalCollapsible className="sticky top-32">
           <h1 className="text-4xl font-bold">{Information.Label[info]}</h1>
-          <Component pending={pending} onSubmit={save} defaultValue={formValue} />
+          <Suspense fallback={<LoadingSpinner text="loading form specifications..." />}>
+            <Component pending={pending} onSubmit={save} defaultValue={formValue} />
+          </Suspense>
         </VerticalCollapsible>
       ) : (
         <Button type="button" className="w-full" onClick={() => save({})} disabled={pending}>

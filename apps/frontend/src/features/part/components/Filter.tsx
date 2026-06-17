@@ -1,11 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { lazy, FormHTMLAttributes, LazyExoticComponent, FunctionComponent } from "react";
+import { lazy, FormHTMLAttributes, LazyExoticComponent, FunctionComponent, Suspense } from "react";
 
 import { Button } from "@/ui/Button";
 import { RowWrapper } from "@/ui/FlexWrapper";
 import { Input } from "@/ui/Input";
+import { LoadingSpinner } from "@/ui/LoadingSpinner";
 import { Products } from "@/utils/part";
 
 import PartFilter from "./filter/Part";
@@ -74,7 +75,9 @@ export function FilterBar({
           />
         </RowWrapper>
         <PartFilter product={part} context={options} />
-        <Component product={part} context={options} />
+        <Suspense fallback={<LoadingSpinner text="loading filter options..." />}>
+          <Component product={part} context={options} />
+        </Suspense>
       </RowWrapper>
       <hr />
       <RowWrapper className="justify-end">
