@@ -58,6 +58,12 @@ class BuildDetailBuilder {
     return undefined;
   }
 
+  clear() {
+    Object.values(Products).forEach((product) => {
+      delete this.details[product];
+    });
+  }
+
   list(): Build.List {
     const entries = Object.entries(this.details)
       .map(([key, values]) => {
@@ -103,7 +109,12 @@ function useBuildDetails(defaultValue: Build.Details<Part.Summary>) {
     if (result) setDetails();
   };
 
-  return { details, list, add, remove } as const;
+  const clear = () => {
+    builder.clear();
+    setDetails();
+  };
+
+  return { details, list, add, remove, clear } as const;
 }
 
 type BuildContext = {
@@ -111,6 +122,7 @@ type BuildContext = {
   list: Build.List;
   add: (p: Part.Summary) => void;
   remove: (p: Part.Summary) => void;
+  clear: () => void;
 };
 
 const BuildPartContext = createContext<BuildContext>({
@@ -118,6 +130,7 @@ const BuildPartContext = createContext<BuildContext>({
   list: {},
   add: () => {},
   remove: () => {},
+  clear: () => {},
 });
 
 function BuildProvider({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -26,7 +26,7 @@ const ProductRenderOrder = [
 
 export default function BuildProductList() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {ProductRenderOrder.map((product) => (
         <ProductTypeComponent key={product} product={product} />
       ))}
@@ -44,6 +44,11 @@ function ProductTypeComponent({ product }: { product: Products }) {
   if (!Array.isArray(details) && details) details = [details];
 
   const addable = !context[product] || Array.isArray(context[product]);
+  const hasError = Boolean(errors[product]);
+
+  const cardBorderClass = hasError
+    ? "border-red-500/30 ring-1 ring-red-500/10 bg-red-500/2 shadow-xs shadow-red-500/5"
+    : "border-border hover:border-accent-indigo/40 hover:shadow-md";
 
   const RemoveButtonCell = ({ defaultValue }: { defaultValue?: Part.Summary }) => (
     <td className="text-right p-3">
@@ -51,7 +56,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
         <button
           type="button"
           onClick={() => removeProduct(defaultValue)}
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-500/10 text-red-500 hover:bg-red-600 hover:text-white transition-all duration-200"
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"
         >
           Remove
         </button>
@@ -60,7 +65,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
   );
 
   return (
-    <div className="w-full rounded-2xl border border-border bg-card p-5 shadow-sm hover:shadow-md transition-all duration-300">
+    <div className={`w-full rounded-2xl border p-5 shadow-xs transition-all duration-300 bg-card ${cardBorderClass}`}>
       {/* Category Header */}
       <div className="flex items-center gap-3 mb-4">
         <div className="size-9 rounded-xl bg-accent-indigo/10 flex items-center justify-center">
@@ -80,21 +85,21 @@ function ProductTypeComponent({ product }: { product: Products }) {
         {!details || details.length === 0 ? (
           <Link
             href={`/build/${product}`}
-            className="flex items-center justify-center gap-2 w-full py-5 border border-dashed border-border hover:border-accent-cyan rounded-xl text-text/50 hover:text-accent-cyan bg-slate-50/5 hover:bg-slate-50/10 transition-all duration-200 text-sm font-semibold"
+            className="flex items-center justify-center gap-2 w-full py-6 border border-dashed border-border/80 hover:border-accent-indigo hover:text-accent-indigo rounded-2xl text-text/40 hover:text-accent-indigo bg-slate-500/2 hover:bg-accent-indigo/5 transition-all duration-250 text-sm font-bold cursor-pointer group"
           >
-            + Choose {Product.Label[product]}
+            <span className="text-base group-hover:scale-120 transition-transform duration-250">+</span> Choose {Product.Label[product]}
           </Link>
         ) : (
-          <div className="border border-border rounded-xl overflow-hidden bg-slate-50/5">
+          <div className="border border-border/60 rounded-xl overflow-hidden bg-slate-50/5">
             <SummaryTable part={product} data={details} Cells={[RemoveButtonCell]} />
           </div>
         )}
 
         {/* Error Messages */}
-        {errors[product] && (
-          <div className="mt-3 px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-500 font-semibold flex items-center gap-2">
-            <span className="size-1.5 rounded-full bg-red-500" />
-            {errors[product]}
+        {hasError && errors[product] && (
+          <div className="mt-3 px-3 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-500 font-semibold flex items-center gap-2">
+            <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
+            <span>{errors[product]}</span>
           </div>
         )}
 
@@ -103,7 +108,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
           <div className="mt-3">
             <Link
               href={`/build/${product}`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 border border-border bg-card hover:bg-line/10 rounded-xl text-xs font-semibold transition-colors text-text/80 hover:text-text"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border bg-card hover:bg-accent-indigo/5 hover:text-accent-indigo rounded-lg text-xs font-bold transition-all text-text/70 hover:border-accent-indigo/40 cursor-pointer"
             >
               + Add another {Product.Label[product]}
             </Link>

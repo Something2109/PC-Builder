@@ -22,7 +22,16 @@ export default function PaginationBar({
     const min = Math.max(1, current - 3);
     const max = Math.min(total, current + 3);
     for (let i = min; i <= max; i++) {
-      if (i !== current) {
+      if (i === current) {
+        components.push(
+          <span
+            key={`Pagination-${i}`}
+            className="flex items-center justify-center size-9 rounded-full bg-accent-indigo text-white font-bold shadow-sm shadow-accent-indigo/20"
+          >
+            {i}
+          </span>
+        );
+      } else {
         components.push(
           <PaginationButton key={`Pagination-${i}`} path={path} title={String(i)} num={i} />
         );
@@ -37,11 +46,11 @@ export default function PaginationBar({
     }
   }
 
-  return <nav className="flex flex-row justify-center my-2 gap-2">{components}</nav>;
+  return <nav className="flex flex-row justify-center my-6 gap-2 items-center">{components}</nav>;
 }
 
 const PaginationButtonStyle =
-  "block size-8 aspect-square content-center rounded-full border-2 border-line hover:bg-line hover:text-background";
+  "flex items-center justify-center size-9 rounded-full border border-border bg-card text-text/70 font-semibold hover:border-accent-indigo hover:text-accent-indigo hover:shadow-xs transition-all duration-200";
 
 function PaginationButton({
   path,
@@ -58,13 +67,13 @@ function PaginationButton({
         href={`${path}${path.includes("?") ? "&" : "?"}page=${num}`}
         className={PaginationButtonStyle}
       >
-        <p className="m-auto size-fit font-bold">{title}</p>
+        <span className="font-bold text-xs">{title}</span>
       </a>
     );
   }
   return (
     <button type="button" onClick={() => path(num)} className={PaginationButtonStyle}>
-      <p className="m-auto size-fit font-bold">{title}</p>
+      <span className="font-bold text-xs">{title}</span>
     </button>
   );
 }
