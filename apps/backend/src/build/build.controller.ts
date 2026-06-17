@@ -12,7 +12,7 @@ import { ZodValidationPipe } from "src/utils/utils.modules";
 import Build from "@/utils/build";
 import { Products } from "@/utils/part";
 
-const BuildListValidationPipe = new ZodValidationPipe(Build.Schema);
+const BuildListValidationPipe = new ZodValidationPipe(Build.Schema.nullish());
 const ProductValidator = new ParseEnumPipe(Products, {
   exceptionFactory: () => new NotFoundException("Product's not found"),
 });
@@ -34,7 +34,7 @@ export class BuildController {
   @Post(":product")
   async getSuitablePart(
     @Param("product", ProductValidator) part: Products,
-    @Body(BuildListValidationPipe) buildList: Build.List,
+    @Body(BuildListValidationPipe) buildList: Build.List = {},
     @Query() params: Record<string, string | string[]>
   ) {
     return await this.service.getSuitablePart(part, buildList, params);
