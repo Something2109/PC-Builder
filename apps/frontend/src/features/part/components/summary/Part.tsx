@@ -14,9 +14,9 @@ export function PartSummaryCells({
   if (!defaultValue) {
     return (
       <>
-        <td>{Part.Label.name}</td>
-        <td>{Part.Label.brand}</td>
-        <td>{Part.Label.series}</td>
+        <td className="lg:w-1/3 lg:min-w-72">{Part.Label.name}</td>
+        <td className="lg:w-32 lg:min-w-24">{Part.Label.brand}</td>
+        <td className="lg:w-36 lg:min-w-28">{Part.Label.series}</td>
       </>
     );
   }
@@ -25,7 +25,7 @@ export function PartSummaryCells({
 
   return (
     <>
-      <td className="col-span-2">
+      <td className="col-span-2 lg:w-1/3 lg:min-w-72">
         <Link href={`/part/${part}/${id}`}>
           <RowWrapper className="align-middle items-center font-bold">
             <PartPicture part={part} src={image_url ?? undefined} className="h-16 m-2" />
@@ -33,13 +33,13 @@ export function PartSummaryCells({
           </RowWrapper>
         </Link>
       </td>
-      <td>
+      <td className="lg:w-32 lg:min-w-24">
         <RowWrapper>
           <p className="lg:hidden">Brand:</p>
           {brand}
         </RowWrapper>
       </td>
-      <td>
+      <td className="lg:w-36 lg:min-w-28">
         <RowWrapper>
           <p className="lg:hidden">Series:</p>
           {series}

@@ -9,4 +9,15 @@ const Components: InfoSummaryMapping<Fan.Summary> = {
   bearing: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, Fan.AttributeLabels, Fan.Summary.keyof().options);
+const Classes: Partial<Record<keyof Fan.Summary, string>> = {
+  form_factor: "lg:w-32 lg:min-w-24",
+  speed: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  bearing: "lg:w-32 lg:min-w-24",
+};
+
+export default GenericSummaryCells(
+  Components,
+  Fan.AttributeLabels,
+  Fan.Summary.keyof().options,
+  Classes
+);

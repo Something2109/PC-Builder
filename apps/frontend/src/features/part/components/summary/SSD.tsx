@@ -11,4 +11,17 @@ const Components: InfoSummaryMapping<SSD.Summary> = {
   interface: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, SSD.AttributeLabels, SSD.Summary.keyof().options);
+const Classes: Partial<Record<keyof SSD.Summary, string>> = {
+  capacity: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  read_speed: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  write_speed: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  form_factor: "lg:w-32 lg:min-w-24",
+  interface: "lg:w-32 lg:min-w-24",
+};
+
+export default GenericSummaryCells(
+  Components,
+  SSD.AttributeLabels,
+  SSD.Summary.keyof().options,
+  Classes
+);

@@ -10,4 +10,16 @@ const Components: InfoSummaryMapping<RAM.Summary> = {
   interface: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, RAM.AttributeLabels, RAM.Summary.keyof().options);
+const Classes: Partial<Record<keyof RAM.Summary, string>> = {
+  speed: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  capacity: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  form_factor: "lg:w-32 lg:min-w-24",
+  interface: "lg:w-32 lg:min-w-24",
+};
+
+export default GenericSummaryCells(
+  Components,
+  RAM.AttributeLabels,
+  RAM.Summary.keyof().options,
+  Classes
+);

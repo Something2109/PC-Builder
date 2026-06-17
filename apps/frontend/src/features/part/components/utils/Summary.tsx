@@ -40,17 +40,22 @@ export type InfoSummaryMapping<T extends Record<string, unknown>> = {
 export function GenericSummaryCells<T extends Record<string, unknown>>(
   Components: InfoSummaryMapping<T>,
   Labels: InfoLabel<T>,
-  Attributes: string[]
+  Attributes: string[],
+  Classes?: Partial<Record<keyof T, string>>
 ) {
   return ({ defaultValue }: { defaultValue?: Partial<T> }) => {
     if (!defaultValue)
-      return Attributes.map((attr) => <td key={`Header-${attr}`}>{Labels[attr]}</td>);
+      return Attributes.map((attr) => (
+        <td key={`Header-${attr}`} className={Classes?.[attr]}>
+          {Labels[attr]}
+        </td>
+      ));
 
     return Attributes.map((attr) => {
       const Component = Components[attr];
 
       return (
-        <td key={`Row-${defaultValue.id}-${attr}`}>
+        <td key={`Row-${defaultValue.id}-${attr}`} className={Classes?.[attr]}>
           {Components[attr] && defaultValue[attr] && (
             <RowWrapper>
               <p className="lg:hidden">{Labels[attr]}:</p>

@@ -12,4 +12,17 @@ const Components: InfoSummaryMapping<CPU.Summary> = {
   tdp: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
 };
 
-export default GenericSummaryCells(Components, CPU.AttributeLabels, CPU.Summary.keyof().options);
+const Classes: Partial<Record<keyof CPU.Summary, string>> = {
+  total_cores: "text-center font-mono tabular-nums lg:w-24 lg:min-w-20",
+  total_threads: "text-center font-mono tabular-nums lg:w-24 lg:min-w-20",
+  base_frequency: "text-right font-mono tabular-nums lg:w-32 lg:min-w-24",
+  turbo_frequency: "text-right font-mono tabular-nums lg:w-32 lg:min-w-24",
+  tdp: "text-right font-mono tabular-nums lg:w-24 lg:min-w-20",
+};
+
+export default GenericSummaryCells(
+  Components,
+  CPU.AttributeLabels,
+  CPU.Summary.keyof().options,
+  Classes
+);

@@ -11,8 +11,14 @@ const Components: InfoSummaryMapping<CPUBlock.Summary> = {
   plate: ({ value }) => value,
 };
 
+const Classes: Partial<Record<keyof CPUBlock.Summary, string>> = {
+  socket: "lg:w-48 lg:min-w-40",
+  plate: "lg:w-32 lg:min-w-24",
+};
+
 export default GenericSummaryCells(
   Components,
   CPUBlock.AttributeLabels,
-  CPUBlock.Summary.keyof().options
+  CPUBlock.Summary.keyof().options,
+  Classes
 );

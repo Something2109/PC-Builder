@@ -10,8 +10,16 @@ const Components: InfoSummaryMapping<GraphicCard.Summary> = {
   minimum_psu: ({ value }) => value,
 };
 
+const Classes: Partial<Record<keyof GraphicCard.Summary, string>> = {
+  length: "text-right font-mono tabular-nums lg:w-24 lg:min-w-20",
+  base_frequency: "text-right font-mono tabular-nums lg:w-32 lg:min-w-24",
+  boost_frequency: "text-right font-mono tabular-nums lg:w-32 lg:min-w-24",
+  minimum_psu: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+};
+
 export default GenericSummaryCells(
   Components,
   GraphicCard.AttributeLabels,
-  GraphicCard.Summary.keyof().options
+  GraphicCard.Summary.keyof().options,
+  Classes
 );

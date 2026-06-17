@@ -11,4 +11,17 @@ const Components: InfoSummaryMapping<GPU.Summary> = {
   tdp: ({ value }) => <SuffixDisplay suffix="W">{value}</SuffixDisplay>,
 };
 
-export default GenericSummaryCells(Components, GPU.AttributeLabels, GPU.Summary.keyof().options);
+const Classes: Partial<Record<keyof GPU.Summary, string>> = {
+  core_count: "text-center font-mono tabular-nums lg:w-24 lg:min-w-20",
+  base_frequency: "text-right font-mono tabular-nums lg:w-32 lg:min-w-24",
+  boost_frequency: "text-right font-mono tabular-nums lg:w-32 lg:min-w-24",
+  memory_size: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  tdp: "text-right font-mono tabular-nums lg:w-24 lg:min-w-20",
+};
+
+export default GenericSummaryCells(
+  Components,
+  GPU.AttributeLabels,
+  GPU.Summary.keyof().options,
+  Classes
+);

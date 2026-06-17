@@ -11,4 +11,17 @@ const Components: InfoSummaryMapping<HDD.Summary> = {
   write_speed: ({ value }) => <SuffixDisplay suffix="MB/s">{value}</SuffixDisplay>,
 };
 
-export default GenericSummaryCells(Components, HDD.AttributeLabels, HDD.Summary.keyof().options);
+const Classes: Partial<Record<keyof HDD.Summary, string>> = {
+  capacity: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  read_speed: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  write_speed: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  form_factor: "lg:w-32 lg:min-w-24",
+  interface: "lg:w-32 lg:min-w-24",
+};
+
+export default GenericSummaryCells(
+  Components,
+  HDD.AttributeLabels,
+  HDD.Summary.keyof().options,
+  Classes
+);

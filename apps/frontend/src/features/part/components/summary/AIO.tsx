@@ -8,4 +8,15 @@ const Components: InfoSummaryMapping<AIO.Summary> = {
   cpu_plate: ({ value }) => value,
 };
 
-export default GenericSummaryCells(Components, AIO.AttributeLabels, AIO.Summary.keyof().options);
+const Classes: Partial<Record<keyof AIO.Summary, string>> = {
+  form_factor: "lg:w-32 lg:min-w-24",
+  socket: "lg:w-48 lg:min-w-40",
+  cpu_plate: "lg:w-32 lg:min-w-24",
+};
+
+export default GenericSummaryCells(
+  Components,
+  AIO.AttributeLabels,
+  AIO.Summary.keyof().options,
+  Classes
+);

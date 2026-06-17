@@ -7,8 +7,14 @@ const Components: InfoSummaryMapping<Radiator.Summary> = {
   material: ({ value }) => value,
 };
 
+const Classes: Partial<Record<keyof Radiator.Summary, string>> = {
+  form_factor: "lg:w-32 lg:min-w-24",
+  material: "lg:w-32 lg:min-w-24",
+};
+
 export default GenericSummaryCells(
   Components,
   Radiator.AttributeLabels,
-  Radiator.Summary.keyof().options
+  Radiator.Summary.keyof().options,
+  Classes
 );
