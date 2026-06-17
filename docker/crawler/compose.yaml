@@ -6,6 +6,9 @@ services:
       target: prod
     ports:
       - 5001:5001
+    depends_on:
+      nestjs-prod:
+        condition: service_healthy
     environment:
       - PORT=5001
       - BACKEND_URL=http://nestjs-prod:3000
@@ -19,6 +22,9 @@ services:
       target: dev
     ports:
       - 5001:5001
+    depends_on:
+      nestjs-dev:
+        condition: service_healthy
     environment:
       - PORT=5001
       - BACKEND_URL=http://nestjs-dev:3000

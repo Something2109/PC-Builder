@@ -6,6 +6,9 @@ services:
       target: prod
     ports:
       - 5002:3012
+    depends_on:
+      nestjs-prod:
+        condition: service_healthy
     environment:
       - PORT=3012
       - TRANSPORT=sse
@@ -20,6 +23,9 @@ services:
       target: dev
     ports:
       - 5002:3012
+    depends_on:
+      nestjs-dev:
+        condition: service_healthy
     environment:
       - PORT=3012
       - TRANSPORT=sse

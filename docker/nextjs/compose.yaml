@@ -6,6 +6,9 @@ services:
       target: prod
     ports:
       - 4000:3000
+    depends_on:
+      nestjs-prod:
+        condition: service_healthy
     environment:
       - BACKEND_HOST=http://nestjs-prod:3000
       - JWT_SECRET=${JWT_SECRET:?error}
@@ -31,6 +34,9 @@ services:
       target: dev
     ports:
       - 4000:3000
+    depends_on:
+      nestjs-dev:
+        condition: service_healthy
     environment:
       - BACKEND_HOST=http://nestjs-dev:3000
       - JWT_SECRET=${JWT_SECRET:?error}
