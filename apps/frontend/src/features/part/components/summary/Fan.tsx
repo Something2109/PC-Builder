@@ -10,9 +10,9 @@ const Components: InfoSummaryMapping<Fan.Summary> = {
 };
 
 const Classes: Partial<Record<keyof Fan.Summary, string>> = {
-  form_factor: "lg:w-32 lg:min-w-24",
-  speed: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
-  bearing: "lg:w-32 lg:min-w-24",
+  form_factor: "lg:w-36 lg:min-w-32",
+  speed: "text-right font-mono tabular-nums lg:w-32 lg:min-w-28",
+  bearing: "lg:w-36 lg:min-w-32",
 };
 
 export default GenericSummaryCells(

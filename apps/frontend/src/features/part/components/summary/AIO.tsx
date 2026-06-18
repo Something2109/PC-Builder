@@ -9,9 +9,9 @@ const Components: InfoSummaryMapping<AIO.Summary> = {
 };
 
 const Classes: Partial<Record<keyof AIO.Summary, string>> = {
-  form_factor: "lg:w-32 lg:min-w-24",
-  socket: "lg:w-48 lg:min-w-40",
-  cpu_plate: "lg:w-32 lg:min-w-24",
+  form_factor: "lg:w-36 lg:min-w-32",
+  socket: "lg:w-56 lg:min-w-48",
+  cpu_plate: "lg:w-36 lg:min-w-32",
 };
 
 export default GenericSummaryCells(

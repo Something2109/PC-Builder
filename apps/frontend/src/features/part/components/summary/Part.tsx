@@ -25,22 +25,22 @@ export function PartSummaryCells({
 
   return (
     <>
-      <td className="col-span-2 lg:w-1/3 lg:min-w-72">
-        <Link href={`/part/${part}/${id}`}>
-          <RowWrapper className="align-middle items-center font-bold">
-            <PartPicture part={part} src={image_url ?? undefined} className="h-16 m-2" />
-            {name}
+      <td className="col-span-2 lg:w-1/3 lg:min-w-72 lg:max-w-xs" title={name}>
+        <Link href={`/part/${part}/${id}`} className="block w-full max-w-full">
+          <RowWrapper className="align-middle items-center font-bold lg:max-w-full lg:overflow-hidden lg:truncate">
+            <PartPicture part={part} src={image_url ?? undefined} className="h-16 m-2 shrink-0" />
+            <span className="lg:truncate">{name}</span>
           </RowWrapper>
         </Link>
       </td>
-      <td className="lg:w-32 lg:min-w-24">
-        <RowWrapper>
+      <td className="lg:w-32 lg:min-w-24 lg:max-w-32 lg:truncate" title={brand || undefined}>
+        <RowWrapper className="lg:max-w-full lg:overflow-hidden lg:truncate">
           <p className="lg:hidden">Brand:</p>
           {brand}
         </RowWrapper>
       </td>
-      <td className="lg:w-36 lg:min-w-28">
-        <RowWrapper>
+      <td className="lg:w-36 lg:min-w-28 lg:max-w-36 lg:truncate" title={series || undefined}>
+        <RowWrapper className="lg:max-w-full lg:overflow-hidden lg:truncate">
           <p className="lg:hidden">Series:</p>
           {series}
         </RowWrapper>

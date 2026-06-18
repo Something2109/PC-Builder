@@ -11,10 +11,10 @@ const Components: InfoSummaryMapping<Pump.Summary> = {
 };
 
 const Classes: Partial<Record<keyof Pump.Summary, string>> = {
-  form_factor: "lg:w-32 lg:min-w-24",
-  head_pressure: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
-  flow_rate: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
-  power_connector: "lg:w-32 lg:min-w-24",
+  form_factor: "lg:w-36 lg:min-w-32",
+  head_pressure: "text-right font-mono tabular-nums lg:w-36 lg:min-w-32",
+  flow_rate: "text-right font-mono tabular-nums lg:w-32 lg:min-w-28",
+  power_connector: "lg:w-40 lg:min-w-36",
 };
 
 export default GenericSummaryCells(

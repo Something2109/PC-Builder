@@ -12,11 +12,11 @@ const Components: InfoSummaryMapping<HDD.Summary> = {
 };
 
 const Classes: Partial<Record<keyof HDD.Summary, string>> = {
-  capacity: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
-  read_speed: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
-  write_speed: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
-  form_factor: "lg:w-32 lg:min-w-24",
-  interface: "lg:w-32 lg:min-w-24",
+  capacity: "text-right font-mono tabular-nums lg:w-32 lg:min-w-28",
+  read_speed: "text-right font-mono tabular-nums lg:w-36 lg:min-w-32",
+  write_speed: "text-right font-mono tabular-nums lg:w-36 lg:min-w-32",
+  form_factor: "lg:w-36 lg:min-w-32",
+  interface: "lg:w-36 lg:min-w-32",
 };
 
 export default GenericSummaryCells(

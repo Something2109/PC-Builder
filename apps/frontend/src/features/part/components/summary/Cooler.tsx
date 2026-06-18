@@ -10,9 +10,9 @@ const Components: InfoSummaryMapping<Cooler.Summary> = {
 };
 
 const Classes: Partial<Record<keyof Cooler.Summary, string>> = {
-  socket: "lg:w-32 lg:min-w-24",
-  cpu_plate: "lg:w-32 lg:min-w-24",
-  height: "text-right font-mono tabular-nums lg:w-24 lg:min-w-20",
+  socket: "lg:w-36 lg:min-w-32",
+  cpu_plate: "lg:w-36 lg:min-w-32",
+  height: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
 };
 
 export default GenericSummaryCells(

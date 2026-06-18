@@ -95,7 +95,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
             Choose {Product.Label[product]}
           </Link>
         ) : (
-          <div className="border border-border/60 rounded-xl overflow-hidden bg-slate-50/5">
+          <div className="border border-border/60 rounded-xl overflow-x-auto bg-slate-50/5">
             <SummaryTable part={product} data={details} Cells={[RemoveButtonCell]} />
           </div>
         )}

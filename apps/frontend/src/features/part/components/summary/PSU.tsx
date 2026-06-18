@@ -11,10 +11,10 @@ const Components: InfoSummaryMapping<PSU.Summary> = {
 };
 
 const Classes: Partial<Record<keyof PSU.Summary, string>> = {
-  wattage: "text-right font-mono tabular-nums lg:w-24 lg:min-w-20",
-  efficiency: "lg:w-32 lg:min-w-24",
-  form_factor: "lg:w-32 lg:min-w-24",
-  modular: "lg:w-28 lg:min-w-24",
+  wattage: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  efficiency: "lg:w-36 lg:min-w-32",
+  form_factor: "lg:w-36 lg:min-w-32",
+  modular: "lg:w-32 lg:min-w-28",
 };
 
 export default GenericSummaryCells(

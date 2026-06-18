@@ -11,10 +11,10 @@ const Components: InfoSummaryMapping<RAM.Summary> = {
 };
 
 const Classes: Partial<Record<keyof RAM.Summary, string>> = {
-  speed: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
-  capacity: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
-  form_factor: "lg:w-32 lg:min-w-24",
-  interface: "lg:w-32 lg:min-w-24",
+  speed: "text-right font-mono tabular-nums lg:w-36 lg:min-w-32",
+  capacity: "text-right font-mono tabular-nums lg:w-32 lg:min-w-28",
+  form_factor: "lg:w-36 lg:min-w-32",
+  interface: "lg:w-36 lg:min-w-32",
 };
 
 export default GenericSummaryCells(

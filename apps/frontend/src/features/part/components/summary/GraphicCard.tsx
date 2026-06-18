@@ -11,10 +11,10 @@ const Components: InfoSummaryMapping<GraphicCard.Summary> = {
 };
 
 const Classes: Partial<Record<keyof GraphicCard.Summary, string>> = {
-  length: "text-right font-mono tabular-nums lg:w-24 lg:min-w-20",
-  base_frequency: "text-right font-mono tabular-nums lg:w-32 lg:min-w-24",
-  boost_frequency: "text-right font-mono tabular-nums lg:w-32 lg:min-w-24",
-  minimum_psu: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  length: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
+  base_frequency: "text-right font-mono tabular-nums lg:w-40 lg:min-w-36",
+  boost_frequency: "text-right font-mono tabular-nums lg:w-40 lg:min-w-36",
+  minimum_psu: "text-right font-mono tabular-nums lg:w-36 lg:min-w-32",
 };
 
 export default GenericSummaryCells(

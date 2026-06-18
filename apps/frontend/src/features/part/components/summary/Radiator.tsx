@@ -8,8 +8,8 @@ const Components: InfoSummaryMapping<Radiator.Summary> = {
 };
 
 const Classes: Partial<Record<keyof Radiator.Summary, string>> = {
-  form_factor: "lg:w-32 lg:min-w-24",
-  material: "lg:w-32 lg:min-w-24",
+  form_factor: "lg:w-36 lg:min-w-32",
+  material: "lg:w-36 lg:min-w-32",
 };
 
 export default GenericSummaryCells(

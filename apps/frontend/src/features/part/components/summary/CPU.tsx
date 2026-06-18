@@ -13,11 +13,12 @@ const Components: InfoSummaryMapping<CPU.Summary> = {
 };
 
 const Classes: Partial<Record<keyof CPU.Summary, string>> = {
-  total_cores: "text-center font-mono tabular-nums lg:w-24 lg:min-w-20",
-  total_threads: "text-center font-mono tabular-nums lg:w-24 lg:min-w-20",
-  base_frequency: "text-right font-mono tabular-nums lg:w-32 lg:min-w-24",
-  turbo_frequency: "text-right font-mono tabular-nums lg:w-32 lg:min-w-24",
-  tdp: "text-right font-mono tabular-nums lg:w-24 lg:min-w-20",
+  socket: "lg:w-32 lg:min-w-24",
+  total_cores: "text-center font-mono tabular-nums lg:w-36 lg:min-w-32",
+  total_threads: "text-center font-mono tabular-nums lg:w-36 lg:min-w-32",
+  base_frequency: "text-right font-mono tabular-nums lg:w-40 lg:min-w-36",
+  turbo_frequency: "text-right font-mono tabular-nums lg:w-40 lg:min-w-36",
+  tdp: "text-right font-mono tabular-nums lg:w-28 lg:min-w-24",
 };
 
 export default GenericSummaryCells(

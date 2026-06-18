@@ -10,10 +10,10 @@ const Components: InfoSummaryMapping<Mainboard.Summary> = {
 };
 
 const Classes: Partial<Record<keyof Mainboard.Summary, string>> = {
-  form_factor: "lg:w-32 lg:min-w-24",
-  socket: "lg:w-32 lg:min-w-24",
-  ram_form_factor: "lg:w-32 lg:min-w-24",
-  ram_interface: "lg:w-32 lg:min-w-24",
+  form_factor: "lg:w-36 lg:min-w-32",
+  socket: "lg:w-36 lg:min-w-32",
+  ram_form_factor: "lg:w-40 lg:min-w-36",
+  ram_interface: "lg:w-40 lg:min-w-36",
 };
 
 export default GenericSummaryCells(

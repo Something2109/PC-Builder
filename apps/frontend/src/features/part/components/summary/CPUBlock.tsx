@@ -3,17 +3,13 @@ import * as CPUBlock from "@/utils/part/product/CPUBlock";
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 
 const Components: InfoSummaryMapping<CPUBlock.Summary> = {
-  socket: ({ value }) => {
-    const sockets = value?.join(", ");
-
-    return sockets && sockets?.length > 20 ? `${sockets.slice(0, 20)}...` : sockets;
-  },
+  socket: ({ value }) => value?.join(", "),
   plate: ({ value }) => value,
 };
 
 const Classes: Partial<Record<keyof CPUBlock.Summary, string>> = {
-  socket: "lg:w-48 lg:min-w-40",
-  plate: "lg:w-32 lg:min-w-24",
+  socket: "lg:w-56 lg:min-w-48",
+  plate: "lg:w-36 lg:min-w-32",
 };
 
 export default GenericSummaryCells(

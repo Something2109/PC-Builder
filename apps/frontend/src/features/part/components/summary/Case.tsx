@@ -10,10 +10,10 @@ const Components: InfoSummaryMapping<Case.Summary> = {
 };
 
 const Classes: Partial<Record<keyof Case.Summary, string>> = {
-  form_factor: "lg:w-32 lg:min-w-24",
-  mainboard_support: "lg:w-48 lg:min-w-40",
-  radiator_support: "lg:w-48 lg:min-w-40",
-  psu_support: "lg:w-48 lg:min-w-40",
+  form_factor: "lg:w-36 lg:min-w-32",
+  mainboard_support: "lg:w-56 lg:min-w-48",
+  radiator_support: "lg:w-56 lg:min-w-48",
+  psu_support: "lg:w-56 lg:min-w-48",
 };
 
 export default GenericSummaryCells(

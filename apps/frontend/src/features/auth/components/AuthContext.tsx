@@ -34,7 +34,7 @@ export function AuthWrapper({
         return null;
       }
     },
-    initialData: initialUser ?? undefined,
+    initialData: initialUser,
     enabled: !initialUser,
   });
 

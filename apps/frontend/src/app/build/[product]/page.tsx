@@ -117,7 +117,7 @@ export default function BuildProductSummary({
       </div>
 
       {/* Product Table */}
-      <div className="border border-border rounded-2xl overflow-hidden bg-card shadow-sm">
+      <div className="border border-border rounded-2xl overflow-x-auto bg-card shadow-sm">
         <SummaryTable part={product} data={data.list} Cells={[AddButton]} />
       </div>
 
