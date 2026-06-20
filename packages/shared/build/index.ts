@@ -22,7 +22,7 @@ import {
   AttributeRule,
 } from "./utils";
 import Part, { Information } from "../part";
-import { Infos, Products } from "@/utils/part";
+import { Infos, Products } from "../part";
 
 const ProductRuleList: AttributeRule<BuildAttributeMapping>[] = [
   CPUMainboardSocketRule,

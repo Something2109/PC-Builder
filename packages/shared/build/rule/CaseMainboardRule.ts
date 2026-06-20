@@ -1,5 +1,5 @@
 import { AttributeRule } from "../utils";
-import { Infos, Products } from "@/utils/part";
+import { Infos, Products } from "../../part";
 
 const attributes = {
   mainboard_form_factor: [Products.MAIN, Infos.MAIN_SPEC, "form_factor"],

@@ -1,5 +1,5 @@
 import { BuildAttributeValue, BuildResultValue, AttributeRule } from "../utils";
-import { Infos, Products } from "@/utils/part";
+import { Infos, Products } from "../../part";
 
 const attributes = {
   main_board_interface: [Products.MAIN, Infos.MAIN_SPEC, "ram_interface"],

@@ -2,7 +2,7 @@ import { ChildProcess, fork } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
-import { Name as Products } from "@/utils/part/product";
+import { Products } from "@pc-builder/shared";
 
 import { CrawlInfo, isCrawlInfo, InternalStage } from "../types/interface";
 

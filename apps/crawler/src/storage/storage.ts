@@ -2,8 +2,7 @@ import { createWriteStream, existsSync, mkdirSync, WriteStream } from "node:fs";
 import path from "node:path";
 import { Writable, WritableOptions } from "node:stream";
 
-import { normalizeDomain } from "@/utils/part/mapper/utils";
-import { Name as Products } from "@/utils/part/product";
+import { normalizeDomain, Products } from "@pc-builder/shared";
 
 import { CrawlStorageAdapter } from "../types/interface";
 

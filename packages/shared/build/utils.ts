@@ -2,7 +2,7 @@
 
 import Part, { Information } from "../part";
 import { Primitive } from "../interface";
-import { Infos, Products } from "@/utils/part";
+import { Infos, Products } from "../part";
 import { z } from "zod";
 
 namespace Info {

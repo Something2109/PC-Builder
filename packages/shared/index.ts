@@ -1,11 +1,12 @@
 export * from "./API";
 export * from "./Units";
 export * as Part from "./part";
-export { Products } from "./part";
+export * from "./crawler";
+export * as Crawler from "./crawler";
 export * as Article from "./article";
 export * as Build from "./build";
 export * as Interface from "./interface";
 export * as Retailer from "./retailer";
 export * as User from "./user";
-export * as Crawler from "./crawler";
 export * from "./utils";
+export { normalizeDomain } from "./part/mapper/utils";

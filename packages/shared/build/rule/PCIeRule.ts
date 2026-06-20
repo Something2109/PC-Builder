@@ -1,5 +1,5 @@
 import { AttributeRule } from "../utils";
-import { Infos, Products } from "@/utils/part";
+import { Infos, Products } from "../../part";
 
 const attributes = {
   graphic_card_pcie: [Products.GRAPHIC_CARD, Infos.GRAPHIC_CARD_SPEC, "pcie"],

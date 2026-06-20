@@ -1,5 +1,5 @@
 import { AttributeRule } from "../../utils";
-import { Infos, Products } from "@/utils/part";
+import { Infos, Products } from "../../../part";
 
 const attributes = {
   cpu_socket: [Products.CPU, Infos.CPU_SPEC, "socket"],

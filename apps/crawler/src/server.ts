@@ -14,8 +14,8 @@ import {
   CrawlStopSchema,
   CrawlTestSchema,
   CrawlExtractSchema,
-} from "@/utils/crawler";
-import { Name as Products } from "@/utils/part/product";
+  Products,
+} from "@pc-builder/shared";
 
 import { defaultStealthFetch } from "./core/fetcher";
 import { APIWebsiteInfo, InternalStage } from "./types/interface";

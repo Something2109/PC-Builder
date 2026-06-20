@@ -1,6 +1,6 @@
 import { Readable, Writable } from "node:stream";
 
-import { Name as Products } from "@/utils/part/product";
+import { Products } from "@pc-builder/shared";
 
 import { StreamStorageWriter } from "../storage/storage";
 import { ErrorHandler } from "../telemetry/error-handler";

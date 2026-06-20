@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { z } from "zod";
 
-import { Name as Products } from "@/utils/part/product";
+import { Products } from "@pc-builder/shared";
 
 import { Crawler } from "./core/crawler";
 import { LocalFileStorageAdapter } from "./storage/storage";
