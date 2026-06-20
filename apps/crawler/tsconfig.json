@@ -6,7 +6,8 @@
     "module": "node16",
     "moduleResolution": "node16",
     "paths": {
-      "@/utils/*": ["../../packages/shared/*"]
+      "@/utils/*": ["../../packages/shared/*"],
+      "@pc-builder/shared": ["../../packages/shared"]
     }
   },
   "include": ["**/*.ts", "../../packages/shared/**/*.ts"],

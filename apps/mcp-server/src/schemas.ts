@@ -1,10 +1,10 @@
-import { Products } from "@pc-builder/shared";
+import { Products } from "@/utils/part";
 import { z } from "zod";
 
 // 1. Schema for list_parts
 export const ListPartsSchema = z.object({
   product: z
-    .nativeEnum(Products)
+    .enum(Products)
     .optional()
     .describe("The product category (e.g., cpu, mainboard, etc.)"),
   q: z.string().optional().describe("Search query string to filter parts by name or brand"),
@@ -24,7 +24,7 @@ export type ListPartsInput = z.infer<typeof ListPartsSchema>;
 
 // 2. Schema for get_part_details
 export const GetPartDetailsSchema = z.object({
-  product: z.nativeEnum(Products).describe("The product category"),
+  product: z.enum(Products).describe("The product category"),
   id: z.uuid().describe("The unique UUID of the PC part"),
 });
 
@@ -61,7 +61,7 @@ export type ValidateBuildInput = z.infer<typeof ValidateBuildSchema>;
 
 // 4. Schema for get_suitable_parts
 export const GetSuitablePartsSchema = z.object({
-  product: z.nativeEnum(Products).describe("The product category to find suitable parts for"),
+  product: z.enum(Products).describe("The product category to find suitable parts for"),
   build_list: BuildListSchema.describe(
     "The current list of selected component UUIDs (same format as validate_build)"
   ),

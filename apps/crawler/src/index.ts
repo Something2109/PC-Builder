@@ -55,7 +55,7 @@ if (!isCrawlInfo(websiteInfo)) {
 /** Product argument check */
 
 const productList = argumentList["product"]
-  ? z.array(z.nativeEnum(Products)).parse(argumentList["product"])
+  ? z.array(z.enum(Products)).parse(argumentList["product"])
   : Object.values(Products);
 
 /** File path check and output creation */
