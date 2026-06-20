@@ -4,7 +4,8 @@
     "outDir": "dist",
     "paths": {
       "@/models/*": ["./models/*"],
-      "@/utils/*": ["../../packages/shared/*"],
+      "@pc-builder/shared": ["../../packages/shared"],
+      "@pc-builder/shared/*": ["../../packages/shared/*"],
       "src/*": ["./src/*"]
     },
     "target": "ES2021",

@@ -8,7 +8,8 @@
       "@/ui/*": ["./src/components/ui/*"],
       "@/layout/*": ["./src/components/layout/*"],
       "@/hooks/*": ["./src/hooks/*"],
-      "@/utils/*": ["./src/utils/*", "../../packages/shared/*"],
+      "@pc-builder/shared": ["../../packages/shared"],
+      "@pc-builder/shared/*": ["../../packages/shared/*"],
       "@/images/*": ["./public/images/*"]
     },
     "target": "ES2015",

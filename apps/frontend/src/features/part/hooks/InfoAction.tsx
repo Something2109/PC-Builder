@@ -3,7 +3,7 @@
 import axios, { AxiosError } from "axios";
 import { useRef, useActionState, useState } from "react";
 
-import Part, { Information } from "@/utils/part";
+import Part, { Information } from "@pc-builder/shared/part";
 
 export function useInfoAction(path: string, info: Information.Name, defaultValue: Part.DTO) {
   const label = useRef(Information.Label[info]);

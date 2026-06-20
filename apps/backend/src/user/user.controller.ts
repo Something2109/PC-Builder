@@ -13,9 +13,9 @@ import {
 import { Role } from "src/utils/role/role.decorator";
 import { ZodValidationPipe } from "src/utils/utils.modules";
 
-import * as API from "@/utils/API";
-import * as User from "@/utils/user";
-import { Roles } from "@/utils/user";
+import * as API from "@pc-builder/shared/API";
+import * as User from "@pc-builder/shared/user";
+import { Roles } from "@pc-builder/shared/user";
 
 import { UsernameAuthorizationGuard } from "./user.guard";
 import { UserFilterPipe } from "./user.pipe";

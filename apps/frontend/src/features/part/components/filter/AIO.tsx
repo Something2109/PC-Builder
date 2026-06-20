@@ -1,5 +1,5 @@
 import { MultipleChoiceInput } from "@/ui/Input";
-import * as AIO from "@/utils/part/product/AIO";
+import * as AIO from "@pc-builder/shared/part/product/AIO";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

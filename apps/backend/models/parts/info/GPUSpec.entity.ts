@@ -9,8 +9,8 @@ import {
   Table,
 } from "sequelize-typescript";
 
-import { Infos } from "@/utils/part";
-import * as GPUSpec from "@/utils/part/info/GPUSpec";
+import { Infos } from "@pc-builder/shared/part";
+import * as GPUSpec from "@pc-builder/shared/part/info/GPUSpec";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

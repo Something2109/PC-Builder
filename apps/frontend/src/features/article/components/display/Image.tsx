@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { Image as ImageType } from "@/utils/article";
+import { Image as ImageType } from "@pc-builder/shared/article";
 
 import { ContentProps } from "../utils";
 

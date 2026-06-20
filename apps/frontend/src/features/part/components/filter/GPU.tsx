@@ -1,6 +1,6 @@
 import { MinMaxRangeInput, MultipleChoiceInput, UnitMinMaxRangeInput } from "@/ui/Input";
-import * as GPU from "@/utils/part/product/GPU";
-import { FrequencyUnits, MemoryUnits } from "@/utils/Units";
+import * as GPU from "@pc-builder/shared/part/product/GPU";
+import { FrequencyUnits, MemoryUnits } from "@pc-builder/shared/Units";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

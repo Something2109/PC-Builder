@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useBuildContext } from "@/features/build/hooks/BuildContext";
 import { useValidation } from "@/features/build/hooks/Validation";
 import SummaryTable from "@/features/part/components/Summary";
-import Part, { Product, Products } from "@/utils/part";
+import Part, { Product, Products } from "@pc-builder/shared/part";
 
 const ProductRenderOrder = [
   Products.CPU,

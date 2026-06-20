@@ -1,7 +1,7 @@
 import { LIST_INTERFACE, DatabaseListInterface } from "src/part/interface/database.interface";
 import { PARSE_INTERFACE, ParseServiceInterface } from "src/part/interface/part.interface";
-import Build from "@/utils/build";
-import Part, { Infos, Products, Information, Mapping } from "@/utils/part";
+import Build from "@pc-builder/shared/build";
+import Part, { Infos, Products, Information, Mapping } from "@pc-builder/shared/part";
 import { Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
 
 @Injectable()

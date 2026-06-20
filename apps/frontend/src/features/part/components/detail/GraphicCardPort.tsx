@@ -1,4 +1,4 @@
-import * as GraphicCardPort from "@/utils/part/info/GraphicCardPort";
+import * as GraphicCardPort from "@pc-builder/shared/part/info/GraphicCardPort";
 
 import { Table } from "../utils/Table";
 

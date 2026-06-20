@@ -1,5 +1,5 @@
-import { Case, FormFactor } from "@/utils/interface";
-import * as CaseRadiatorSupport from "@/utils/part/info/CaseRadiatorSupport";
+import { Case, FormFactor } from "@pc-builder/shared/interface";
+import * as CaseRadiatorSupport from "@pc-builder/shared/part/info/CaseRadiatorSupport";
 
 import { Table } from "../utils/Table";
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { TableHTMLAttributes } from "react";
 
 import { RowWrapper } from "@/ui/FlexWrapper";
-import Part from "@/utils/part";
+import Part from "@pc-builder/shared/part";
 
 import PartPicture from "../Picture";
 

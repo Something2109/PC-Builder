@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 
 import { SearchBar } from "@/layout/searchbar";
-import { Products } from "@/utils/part";
+import { Products } from "@pc-builder/shared/part";
 
 const categories = [
   {

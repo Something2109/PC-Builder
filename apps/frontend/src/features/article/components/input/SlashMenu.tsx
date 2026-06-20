@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 
-import { ContentName } from "@/utils/article";
+import { ContentName } from "@pc-builder/shared/article";
 
 interface SlashMenuProps {
   onSelect: (type: ContentName) => void;

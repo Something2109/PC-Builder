@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/axios";
-import { Content as ArticleContent } from "@/utils/article";
+import { Content as ArticleContent } from "@pc-builder/shared/article";
 
 export type ContentProps<T extends ArticleContent> = Readonly<{
   content: T;

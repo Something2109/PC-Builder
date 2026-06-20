@@ -1,4 +1,4 @@
-import * as CaseHardDriveSupport from "@/utils/part/info/CaseHardDriveSupport";
+import * as CaseHardDriveSupport from "@pc-builder/shared/part/info/CaseHardDriveSupport";
 
 import { Table } from "../utils/Table";
 

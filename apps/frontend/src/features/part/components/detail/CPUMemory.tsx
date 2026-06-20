@@ -1,6 +1,6 @@
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
-import * as CPUMemory from "@/utils/part/info/CPUMemory";
-import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
+import * as CPUMemory from "@pc-builder/shared/part/info/CPUMemory";
+import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@pc-builder/shared/Units";
 
 import { Table } from "../utils/Table";
 

@@ -3,9 +3,9 @@ import React from "react";
 
 import { EditableArticle } from "@/features/article/components/Form";
 import { AuthRole } from "@/features/auth";
-import { Article } from "@/utils/article";
+import { Article } from "@pc-builder/shared/article";
 import { getBackendUrl } from "@/utils/path";
-import { Roles } from "@/utils/user";
+import { Roles } from "@pc-builder/shared/user";
 
 export default async function ArticleEditPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

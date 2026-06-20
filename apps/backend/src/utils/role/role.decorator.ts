@@ -1,7 +1,7 @@
 import { createParamDecorator, ExecutionContext, SetMetadata } from "@nestjs/common";
 
-import { Tokens } from "@/utils/API";
-import { JwtPayload, Roles } from "@/utils/user";
+import { Tokens } from "@pc-builder/shared/API";
+import { JwtPayload, Roles } from "@pc-builder/shared/user";
 
 /**
  * The key to extract the role metadata key in the reflector from the decorator.

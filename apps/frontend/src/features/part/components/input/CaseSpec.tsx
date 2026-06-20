@@ -1,9 +1,9 @@
 import { ZodType } from "zod";
 
 import { Input, UnitInput, OptionSelect } from "@/ui/Input";
-import { FormFactor } from "@/utils/interface";
-import * as CaseSpec from "@/utils/part/info/CaseSpec";
-import { LengthUnits } from "@/utils/Units";
+import { FormFactor } from "@pc-builder/shared/interface";
+import * as CaseSpec from "@pc-builder/shared/part/info/CaseSpec";
+import { LengthUnits } from "@pc-builder/shared/Units";
 
 import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

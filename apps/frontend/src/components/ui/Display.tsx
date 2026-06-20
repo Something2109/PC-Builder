@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { UnitInterface } from "@/utils/Units";
+import { UnitInterface } from "@pc-builder/shared/Units";
 
 import { RowWrapper } from "./FlexWrapper";
 import { OptionSelect } from "./Input";

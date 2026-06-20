@@ -1,4 +1,4 @@
-import * as PSUConnector from "@/utils/part/info/PSUConnector";
+import * as PSUConnector from "@pc-builder/shared/part/info/PSUConnector";
 
 import { Table } from "../utils/Table";
 

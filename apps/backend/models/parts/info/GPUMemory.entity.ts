@@ -9,9 +9,9 @@ import {
   Table,
 } from "sequelize-typescript";
 
-import { InternalConnectors } from "@/utils/interface";
-import { Infos } from "@/utils/part";
-import * as GPUMemory from "@/utils/part/info/GPUMemory";
+import { InternalConnectors } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as GPUMemory from "@pc-builder/shared/part/info/GPUMemory";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

@@ -1,6 +1,6 @@
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
-import * as PumpSpec from "@/utils/part/info/PumpSpec";
-import { LengthUnits, VolumeSpeedUnit } from "@/utils/Units";
+import * as PumpSpec from "@pc-builder/shared/part/info/PumpSpec";
+import { LengthUnits, VolumeSpeedUnit } from "@pc-builder/shared/Units";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

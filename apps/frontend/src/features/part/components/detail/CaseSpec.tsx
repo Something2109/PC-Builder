@@ -1,6 +1,6 @@
 import { UnitDisplay } from "@/ui/Display";
-import * as CaseSpec from "@/utils/part/info/CaseSpec";
-import { LengthUnits } from "@/utils/Units";
+import * as CaseSpec from "@pc-builder/shared/part/info/CaseSpec";
+import { LengthUnits } from "@pc-builder/shared/Units";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

@@ -12,7 +12,7 @@ import {
   useEffect,
 } from "react";
 
-import { UnitInterface } from "@/utils/Units";
+import { UnitInterface } from "@pc-builder/shared/Units";
 
 import { RowWrapper } from "./FlexWrapper";
 import { mergeClass } from "./mergeClass";

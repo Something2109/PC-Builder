@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 
-import * as User from "@/utils/user";
+import * as User from "@pc-builder/shared/user";
 
 /**
  * Inspect if the user is the correct user to access the user info api.

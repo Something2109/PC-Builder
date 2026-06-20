@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import Part, { Infos, Product } from "@/utils/part";
+import Part, { Infos, Product } from "@pc-builder/shared/part";
 
 import PartPicture from "../Picture";
 import { InfoComponent, InfoComponentObject } from "../utils/Table";

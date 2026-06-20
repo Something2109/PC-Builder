@@ -1,4 +1,4 @@
-import { Products } from "@/utils/part";
+import { Products } from "@pc-builder/shared";
 import { z } from "zod";
 
 // 1. Schema for list_parts

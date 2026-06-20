@@ -1,5 +1,5 @@
 import { SuffixDisplay } from "@/ui/Display";
-import * as GraphicCard from "@/utils/part/product/GraphicCard";
+import * as GraphicCard from "@pc-builder/shared/part/product/GraphicCard";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

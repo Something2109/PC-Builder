@@ -3,8 +3,8 @@ import * as bcrypt from "bcrypt";
 import { Sequelize } from "sequelize-typescript";
 
 import UserModel, { UserModelScope } from "@/models/user/User.entity";
-import * as API from "@/utils/API";
-import * as User from "@/utils/user";
+import * as API from "@pc-builder/shared/API";
+import * as User from "@pc-builder/shared/user";
 
 @Injectable()
 export class UserService {

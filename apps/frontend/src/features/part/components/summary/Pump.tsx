@@ -1,5 +1,5 @@
 import { SuffixDisplay } from "@/ui/Display";
-import * as Pump from "@/utils/part/product/Pump";
+import * as Pump from "@pc-builder/shared/part/product/Pump";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

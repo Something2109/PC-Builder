@@ -1,4 +1,4 @@
-import * as CasePSUSupport from "@/utils/part/info/CasePSUSupport";
+import * as CasePSUSupport from "@pc-builder/shared/part/info/CasePSUSupport";
 
 import { Table } from "../utils/Table";
 

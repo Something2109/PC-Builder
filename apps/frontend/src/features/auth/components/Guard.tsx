@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { Roles } from "@/utils/user";
+import { Roles } from "@pc-builder/shared/user";
 
 import { useAuth } from "../hooks/useAuth";
 

@@ -1,5 +1,5 @@
 import { SuffixDisplay } from "@/ui/Display";
-import * as CPU from "@/utils/part/product/CPU";
+import * as CPU from "@pc-builder/shared/part/product/CPU";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

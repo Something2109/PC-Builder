@@ -3,7 +3,7 @@ import { FunctionComponent, InputHTMLAttributes, SelectHTMLAttributes } from "re
 
 import { VerticalCollapsible } from "@/ui/Collapsible";
 import { Toggler } from "@/ui/Toggle";
-import { Products } from "@/utils/part";
+import { Products } from "@pc-builder/shared/part";
 
 import { InfoLabel } from "../utils/Table";
 

@@ -1,5 +1,5 @@
 import { SuffixDisplay } from "@/ui/Display";
-import * as Cooler from "@/utils/part/product/Cooler";
+import * as Cooler from "@pc-builder/shared/part/product/Cooler";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

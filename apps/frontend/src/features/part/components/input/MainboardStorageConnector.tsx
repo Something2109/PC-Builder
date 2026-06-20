@@ -3,8 +3,8 @@ import React, { useRef } from "react";
 import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
-import { InternalConnectors } from "@/utils/interface";
-import * as MainboardStorageConnector from "@/utils/part/info/MainboardStorageConnector";
+import { InternalConnectors } from "@pc-builder/shared/interface";
+import * as MainboardStorageConnector from "@pc-builder/shared/part/info/MainboardStorageConnector";
 
 import { Table } from "../utils/Table";
 import { GenericListInputForm } from "../utils/TanstackForm";

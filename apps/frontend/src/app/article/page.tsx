@@ -5,7 +5,7 @@ import React from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
-import { Summary } from "@/utils/article";
+import { Summary } from "@pc-builder/shared/article";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function ArticleIndexPage() {

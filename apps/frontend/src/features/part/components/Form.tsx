@@ -8,7 +8,7 @@ import { Button } from "@/ui/Button";
 import { VerticalCollapsible } from "@/ui/Collapsible";
 import { LoadingSpinner } from "@/ui/LoadingSpinner";
 import { NotificationBar } from "@/ui/NotificationBar";
-import Part, { Information } from "@/utils/part";
+import Part, { Information } from "@pc-builder/shared/part";
 
 import { InputFormComponent } from "./utils/TanstackForm";
 

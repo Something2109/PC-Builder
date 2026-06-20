@@ -9,8 +9,8 @@ import {
   Table,
 } from "sequelize-typescript";
 
-import { Infos } from "@/utils/part";
-import * as CPUBlockSocketSupport from "@/utils/part/info/CPUBlockSocketSupport";
+import { Infos } from "@pc-builder/shared/part";
+import * as CPUBlockSocketSupport from "@pc-builder/shared/part/info/CPUBlockSocketSupport";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

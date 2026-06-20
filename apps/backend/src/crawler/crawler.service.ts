@@ -8,8 +8,8 @@ import { ConfigService } from "@nestjs/config";
 import { InjectModel } from "@nestjs/sequelize";
 
 import RetailProduct from "@/models/sellers/SellerProduct.entity";
-import { CrawlIngestItem, ScraperInfo, CrawlerSession, Products } from "@/utils/crawler";
-import { normalizeDomain } from "@/utils/part/mapper/utils";
+import { CrawlIngestItem, ScraperInfo, CrawlerSession, Products } from "@pc-builder/shared/crawler";
+import { normalizeDomain } from "@pc-builder/shared/part/mapper/utils";
 
 @Injectable()
 export class CrawlerService {

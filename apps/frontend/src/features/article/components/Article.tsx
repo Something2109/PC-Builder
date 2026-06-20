@@ -7,8 +7,8 @@ import React, { useEffect, useState } from "react";
 
 import { Guard } from "@/features/auth";
 import { mergeClass } from "@/ui/mergeClass";
-import { Article, Content, ContentName } from "@/utils/article";
-import { Roles } from "@/utils/user";
+import { Article, Content, ContentName } from "@pc-builder/shared/article";
+import { Roles } from "@pc-builder/shared/user";
 
 import { Picture } from "./display/Image";
 import { List } from "./display/List";

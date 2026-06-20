@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { RawPartMapper, Products } from "@/utils/part";
+import { RawPartMapper, Products } from "@pc-builder/shared/part";
 
 import { DbAliasLearner } from "../alias/db-alias-learner.service";
 import { DbAliasRegistry } from "../alias/db-alias-registry.service";

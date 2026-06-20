@@ -9,9 +9,9 @@ import {
   Table,
 } from "sequelize-typescript";
 
-import { FormFactor, InternalConnectors } from "@/utils/interface";
-import { Infos } from "@/utils/part";
-import * as PumpSpec from "@/utils/part/info/PumpSpec";
+import { FormFactor, InternalConnectors } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as PumpSpec from "@pc-builder/shared/part/info/PumpSpec";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

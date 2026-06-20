@@ -3,8 +3,8 @@ import { ModuleRef } from "@nestjs/core";
 import { InjectModel } from "@nestjs/sequelize";
 
 import AliasEntry from "@/models/alias/AliasEntry.entity";
-import { IAliasRegistry, ResolvedTarget, HeuristicConfig } from "@/utils/part";
-import { normalizeKey } from "@/utils/part/mapper/utils";
+import { IAliasRegistry, ResolvedTarget, HeuristicConfig } from "@pc-builder/shared/part";
+import { normalizeKey } from "@pc-builder/shared/part/mapper/utils";
 
 import { AliasSeedService } from "./alias-seed.service";
 

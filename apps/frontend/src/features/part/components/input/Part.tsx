@@ -7,7 +7,7 @@ import { Button, RedirectButton } from "@/ui/Button";
 import { ColumnWrapper, ResponsiveWrapper, RowWrapper } from "@/ui/FlexWrapper";
 import { Input, TextArea } from "@/ui/Input";
 import { NotificationBar } from "@/ui/NotificationBar";
-import Part, { Infos, Products } from "@/utils/part";
+import Part, { Infos, Products } from "@pc-builder/shared/part";
 
 import PartPicture from "../Picture";
 import { InfoComponent, InfoComponentObject } from "../utils/Table";

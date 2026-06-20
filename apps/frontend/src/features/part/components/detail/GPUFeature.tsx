@@ -1,4 +1,4 @@
-import * as GPUFeature from "@/utils/part/info/GPUFeature";
+import * as GPUFeature from "@pc-builder/shared/part/info/GPUFeature";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

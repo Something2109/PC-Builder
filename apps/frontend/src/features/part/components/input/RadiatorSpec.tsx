@@ -1,9 +1,9 @@
 import { ZodType } from "zod";
 
 import { Input, UnitInput, OptionSelect } from "@/ui/Input";
-import { FormFactor, Material } from "@/utils/interface";
-import * as RadiatorSpec from "@/utils/part/info/RadiatorSpec";
-import { LengthUnits } from "@/utils/Units";
+import { FormFactor, Material } from "@pc-builder/shared/interface";
+import * as RadiatorSpec from "@pc-builder/shared/part/info/RadiatorSpec";
+import { LengthUnits } from "@pc-builder/shared/Units";
 
 import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

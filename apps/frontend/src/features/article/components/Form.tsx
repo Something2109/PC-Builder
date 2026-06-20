@@ -11,8 +11,8 @@ import { useImageUpload } from "@/hooks/useImageUpload";
 import { RowWrapper } from "@/ui/FlexWrapper";
 import { Input, Select, AutoGrowingTextArea } from "@/ui/Input";
 import { mergeClass } from "@/ui/mergeClass";
-import { Article, Content, ContentName, ArticleStatus, BaseEditArticleDto } from "@/utils/article";
-import { Name as ProductName, Label as ProductLabel } from "@/utils/part/product";
+import { Article, Content, ContentName, ArticleStatus, BaseEditArticleDto } from "@pc-builder/shared/article";
+import { Name as ProductName, Label as ProductLabel } from "@pc-builder/shared/part/product";
 
 import { ContentListComponent } from "./input";
 

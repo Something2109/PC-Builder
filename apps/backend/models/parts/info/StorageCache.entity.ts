@@ -9,9 +9,9 @@ import {
   Table,
 } from "sequelize-typescript";
 
-import { InternalConnectors } from "@/utils/interface";
-import { Infos } from "@/utils/part";
-import * as StorageCache from "@/utils/part/info/StorageCache";
+import { InternalConnectors } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as StorageCache from "@pc-builder/shared/part/info/StorageCache";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

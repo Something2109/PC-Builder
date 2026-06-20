@@ -4,7 +4,7 @@ import React from "react";
 
 import { PartTable } from "@/features/part/components/detail/Part";
 import { InfoTable } from "@/features/part/components/Table";
-import Part, { Products, Mapping, Product } from "@/utils/part";
+import Part, { Products, Mapping, Product } from "@pc-builder/shared/part";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function PartDetailPage({

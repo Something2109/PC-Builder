@@ -1,5 +1,5 @@
 import { SuffixDisplay } from "@/ui/Display";
-import * as HDD from "@/utils/part/product/HDD";
+import * as HDD from "@pc-builder/shared/part/product/HDD";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

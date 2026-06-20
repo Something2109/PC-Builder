@@ -6,8 +6,8 @@ import React from "react";
 import { Guard } from "@/features/auth";
 import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
 import { mergeClass } from "@/ui/mergeClass";
-import { Summary } from "@/utils/article";
-import { Roles } from "@/utils/user";
+import { Summary } from "@pc-builder/shared/article";
+import { Roles } from "@pc-builder/shared/user";
 
 const max_char = 180;
 

@@ -4,7 +4,7 @@ import React from "react";
 
 import { RowWrapper } from "@/ui/FlexWrapper";
 import { AutoGrowingTextArea } from "@/ui/Input";
-import { Section as SectionType, Content as ArticleContent, ContentName } from "@/utils/article";
+import { Section as SectionType, Content as ArticleContent, ContentName } from "@pc-builder/shared/article";
 
 import { ContentListComponent } from "./ContentListComponent";
 

@@ -9,8 +9,8 @@ import {
   Table,
 } from "sequelize-typescript";
 
-import { Infos } from "@/utils/part";
-import * as ProcessorCache from "@/utils/part/info/ProcessorCache";
+import { Infos } from "@pc-builder/shared/part";
+import * as ProcessorCache from "@pc-builder/shared/part/info/ProcessorCache";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

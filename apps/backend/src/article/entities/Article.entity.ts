@@ -1,9 +1,9 @@
-import type { Article, Content } from "@/utils/article";
+import type { Article, Content } from "@pc-builder/shared/article";
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-import { ArticleStatus } from "@/utils/article";
-import { Products } from "@/utils/part";
+import { ArticleStatus } from "@pc-builder/shared/article";
+import { Products } from "@pc-builder/shared/part";
 
 @Schema({ timestamps: true })
 export class ArticleClass implements Omit<Article, "id"> {

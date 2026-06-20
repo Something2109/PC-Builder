@@ -1,4 +1,4 @@
-import * as MainboardStorageConnector from "@/utils/part/info/MainboardStorageConnector";
+import * as MainboardStorageConnector from "@pc-builder/shared/part/info/MainboardStorageConnector";
 
 import { Table } from "../utils/Table";
 

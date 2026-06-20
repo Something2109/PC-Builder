@@ -1,5 +1,5 @@
 import { SuffixDisplay } from "@/ui/Display";
-import * as SSD from "@/utils/part/product/SSD";
+import * as SSD from "@pc-builder/shared/part/product/SSD";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

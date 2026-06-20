@@ -13,8 +13,8 @@ import {
 import { Role } from "src/utils/role/role.decorator";
 import { ZodValidationPipe } from "src/utils/utils.modules";
 
-import * as API from "@/utils/API";
-import { Roles } from "@/utils/user";
+import * as API from "@pc-builder/shared/API";
+import { Roles } from "@pc-builder/shared/user";
 
 import { BrandService } from "./brand.service";
 import { CreateBrandDto, UpdateBrandDto } from "./dto/brand.dto";

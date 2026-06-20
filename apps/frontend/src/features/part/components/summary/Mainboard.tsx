@@ -1,4 +1,4 @@
-import * as Mainboard from "@/utils/part/product/Mainboard";
+import * as Mainboard from "@pc-builder/shared/part/product/Mainboard";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

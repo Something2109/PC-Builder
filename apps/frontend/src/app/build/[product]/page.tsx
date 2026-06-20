@@ -6,7 +6,7 @@ import SummaryTable from "@/features/part/components/Summary";
 import { FilterBar } from "@/features/part/components/Filter";
 import { ToggleButton } from "@/ui/Toggle";
 import PaginationBar from "@/ui/PaginationBar";
-import Part, { Product } from "@/utils/part";
+import Part, { Product } from "@pc-builder/shared/part";
 import { use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";

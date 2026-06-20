@@ -5,7 +5,7 @@ import { redirect, usePathname } from "next/navigation";
 import { Dispatch, SetStateAction, createContext, useContext } from "react";
 
 import axiosInstance from "@/lib/axios";
-import { JwtPayload as UserJwtPayload, Roles } from "@/utils/user";
+import { JwtPayload as UserJwtPayload, Roles } from "@pc-builder/shared/user";
 
 const LoginPath = "/auth/login";
 

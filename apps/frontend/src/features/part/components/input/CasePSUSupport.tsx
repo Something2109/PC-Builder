@@ -1,8 +1,8 @@
 import { ArrayFormApi } from "@/type/form";
 import { ResponsiveWrapper } from "@/ui/FlexWrapper";
 import { ChoiceInput } from "@/ui/Input";
-import { FormFactor } from "@/utils/interface";
-import * as CasePSUSupport from "@/utils/part/info/CasePSUSupport";
+import { FormFactor } from "@pc-builder/shared/interface";
+import * as CasePSUSupport from "@pc-builder/shared/part/info/CasePSUSupport";
 
 import { Table } from "../utils/Table";
 import { GenericListInputForm } from "../utils/TanstackForm";

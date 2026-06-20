@@ -14,7 +14,7 @@ import {
   BeforeSave,
 } from "sequelize-typescript";
 
-import { Type, Roles, FilterOptions } from "@/utils/user";
+import { Type, Roles, FilterOptions } from "@pc-builder/shared/user";
 
 import { defaultFilter, Tables } from "../interface";
 

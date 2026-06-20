@@ -1,6 +1,6 @@
 import { UnitDisplay, SuffixDisplay } from "@/ui/Display";
-import * as GPUPerformance from "@/utils/part/info/GPUPerformance";
-import { FrequencyUnits } from "@/utils/Units";
+import * as GPUPerformance from "@pc-builder/shared/part/info/GPUPerformance";
+import { FrequencyUnits } from "@pc-builder/shared/Units";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

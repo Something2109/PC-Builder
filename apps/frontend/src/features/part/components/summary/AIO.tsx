@@ -1,4 +1,4 @@
-import * as AIO from "@/utils/part/product/AIO";
+import * as AIO from "@pc-builder/shared/part/product/AIO";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

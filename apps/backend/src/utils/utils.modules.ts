@@ -8,7 +8,7 @@ import {
 } from "@nestjs/common";
 import { ZodError, ZodSchema } from "zod";
 
-import * as API from "@/utils/API";
+import * as API from "@pc-builder/shared/API";
 
 @Injectable()
 export class ZodValidationPipe implements PipeTransform {

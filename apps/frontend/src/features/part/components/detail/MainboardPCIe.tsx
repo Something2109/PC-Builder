@@ -1,5 +1,5 @@
-import { InternalConnectors } from "@/utils/interface";
-import * as MainboardPCIe from "@/utils/part/info/MainboardPCIe";
+import { InternalConnectors } from "@pc-builder/shared/interface";
+import * as MainboardPCIe from "@pc-builder/shared/part/info/MainboardPCIe";
 
 import { Table } from "../utils/Table";
 

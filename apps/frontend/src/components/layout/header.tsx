@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { UserPanel, Guard } from "@/features/auth";
 import { RowWrapper } from "@/ui/FlexWrapper";
-import { Roles } from "@/utils/user";
+import { Roles } from "@pc-builder/shared/user";
 
 import { DarkModeButton } from "./body";
 

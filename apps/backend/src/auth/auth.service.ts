@@ -2,8 +2,8 @@ import { ConflictException, Injectable, UnauthorizedException } from "@nestjs/co
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "src/user/user.service";
 
-import { Tokens } from "@/utils/API";
-import { JwtPayload } from "@/utils/user";
+import { Tokens } from "@pc-builder/shared/API";
+import { JwtPayload } from "@pc-builder/shared/user";
 
 @Injectable()
 export class AuthService {

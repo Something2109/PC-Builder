@@ -1,6 +1,6 @@
 import { MultipleChoiceInput, MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
-import * as CPU from "@/utils/part/product/CPU";
-import { FrequencyUnits, MemoryUnits } from "@/utils/Units";
+import * as CPU from "@pc-builder/shared/part/product/CPU";
+import { FrequencyUnits, MemoryUnits } from "@pc-builder/shared/Units";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

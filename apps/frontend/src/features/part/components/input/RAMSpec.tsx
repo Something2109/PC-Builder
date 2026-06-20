@@ -2,9 +2,9 @@ import { ZodType } from "zod";
 
 import { RowWrapper } from "@/ui/FlexWrapper";
 import { SuffixInput, UnitInput, OptionSelect, Input } from "@/ui/Input";
-import { FormFactor, InternalConnectors } from "@/utils/interface";
-import * as RAMSpec from "@/utils/part/info/RAMSpec";
-import { MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
+import { FormFactor, InternalConnectors } from "@pc-builder/shared/interface";
+import * as RAMSpec from "@pc-builder/shared/part/info/RAMSpec";
+import { MemoryUnits, TransferSpeedUnit } from "@pc-builder/shared/Units";
 
 import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

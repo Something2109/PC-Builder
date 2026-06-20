@@ -1,6 +1,6 @@
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
-import * as RAMSpec from "@/utils/part/info/RAMSpec";
-import { MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
+import * as RAMSpec from "@pc-builder/shared/part/info/RAMSpec";
+import { MemoryUnits, TransferSpeedUnit } from "@pc-builder/shared/Units";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

@@ -1,4 +1,4 @@
-import * as Case from "@/utils/part/product/Case";
+import * as Case from "@pc-builder/shared/part/product/Case";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

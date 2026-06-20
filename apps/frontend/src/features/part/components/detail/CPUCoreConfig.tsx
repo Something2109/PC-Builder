@@ -1,6 +1,6 @@
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
-import * as CPUCoreConfig from "@/utils/part/info/CPUCoreConfig";
-import { FrequencyUnits } from "@/utils/Units";
+import * as CPUCoreConfig from "@pc-builder/shared/part/info/CPUCoreConfig";
+import { FrequencyUnits } from "@pc-builder/shared/Units";
 
 import { Table } from "../utils/Table";
 

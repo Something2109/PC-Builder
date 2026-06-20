@@ -9,9 +9,9 @@ import {
   Table,
 } from "sequelize-typescript";
 
-import { InternalConnectors } from "@/utils/interface";
-import { Infos } from "@/utils/part";
-import * as MainboardPCIe from "@/utils/part/info/MainboardPCIe";
+import { InternalConnectors } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as MainboardPCIe from "@pc-builder/shared/part/info/MainboardPCIe";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

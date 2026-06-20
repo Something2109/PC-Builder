@@ -9,9 +9,9 @@ import {
   Table,
 } from "sequelize-typescript";
 
-import { Case } from "@/utils/interface";
-import { Infos } from "@/utils/part";
-import * as CaseHardDriveSupport from "@/utils/part/info/CaseHardDriveSupport";
+import { Case } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as CaseHardDriveSupport from "@pc-builder/shared/part/info/CaseHardDriveSupport";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

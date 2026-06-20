@@ -1,4 +1,4 @@
-import * as CPUBlockSpec from "@/utils/part/info/CPUBlockSpec";
+import * as CPUBlockSpec from "@pc-builder/shared/part/info/CPUBlockSpec";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

@@ -13,8 +13,8 @@ import {
   CrawlTestSchema,
   CrawlExtractSchema,
   CrawlIngestSchema,
-} from "@/utils/crawler";
-import { Roles } from "@/utils/user";
+} from "@pc-builder/shared/crawler";
+import { Roles } from "@pc-builder/shared/user";
 
 import { CrawlerService } from "./crawler.service";
 

@@ -13,8 +13,8 @@ import {
 
 import { ModelScopes, defaultFilter } from "@/models/interface";
 import { PartInformation } from "@/models/parts";
-import * as API from "@/utils/API";
-import Part, { Infos } from "@/utils/part";
+import * as API from "@pc-builder/shared/API";
+import Part, { Infos } from "@pc-builder/shared/part";
 
 import { DatabaseListInterface, ModelAttributeList } from "../interface/database.interface";
 

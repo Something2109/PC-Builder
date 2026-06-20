@@ -3,8 +3,8 @@ import React, { useRef, useState } from "react";
 import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
-import { ExternalPorts } from "@/utils/interface";
-import * as PartExternalPorts from "@/utils/part/info/PartExternalPorts";
+import { ExternalPorts } from "@pc-builder/shared/interface";
+import * as PartExternalPorts from "@pc-builder/shared/part/info/PartExternalPorts";
 
 import { PortInputFields } from "../utils/Input";
 import { Table } from "../utils/Table";

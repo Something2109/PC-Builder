@@ -1,4 +1,4 @@
-import * as CaseMainboardSupport from "@/utils/part/info/CaseMainboardSupport";
+import * as CaseMainboardSupport from "@pc-builder/shared/part/info/CaseMainboardSupport";
 
 import { Table } from "../utils/Table";
 

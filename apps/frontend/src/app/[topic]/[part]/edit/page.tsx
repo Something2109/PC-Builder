@@ -1,9 +1,9 @@
 import { notFound, redirect } from "next/navigation";
 
 import { verifyToken } from "@/features/auth/server";
-import { Summary } from "@/utils/article";
+import { Summary } from "@pc-builder/shared/article";
 import { getBackendUrl } from "@/utils/path";
-import { Roles } from "@/utils/user";
+import { Roles } from "@pc-builder/shared/user";
 
 export default async function PartTopicEditPage({
   params,

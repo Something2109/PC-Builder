@@ -3,8 +3,8 @@ import React, { useRef } from "react";
 import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
-import { Case } from "@/utils/interface";
-import * as CaseHardDriveSupport from "@/utils/part/info/CaseHardDriveSupport";
+import { Case } from "@pc-builder/shared/interface";
+import * as CaseHardDriveSupport from "@pc-builder/shared/part/info/CaseHardDriveSupport";
 
 import { Table } from "../utils/Table";
 import { GenericListInputForm } from "../utils/TanstackForm";

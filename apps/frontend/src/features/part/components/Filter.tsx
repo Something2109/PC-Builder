@@ -7,7 +7,7 @@ import { Button } from "@/ui/Button";
 import { RowWrapper } from "@/ui/FlexWrapper";
 import { Input } from "@/ui/Input";
 import { LoadingSpinner } from "@/ui/LoadingSpinner";
-import { Products } from "@/utils/part";
+import { Products } from "@pc-builder/shared/part";
 
 import PartFilter from "./filter/Part";
 

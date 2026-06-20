@@ -1,5 +1,5 @@
 import { MultipleChoiceInput, MinMaxRangeInput } from "@/ui/Input";
-import * as Pump from "@/utils/part/product/Pump";
+import * as Pump from "@pc-builder/shared/part/product/Pump";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import PartPanel from "@/features/part/components/Panel";
 import { SearchBar } from "@/layout/searchbar";
 import PaginationBar from "@/ui/PaginationBar";
-import Part from "@/utils/part";
+import Part from "@pc-builder/shared/part";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function Page({

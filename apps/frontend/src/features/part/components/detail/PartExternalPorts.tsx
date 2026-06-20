@@ -1,5 +1,5 @@
-import { ExternalPorts } from "@/utils/interface";
-import * as PartExternalPorts from "@/utils/part/info/PartExternalPorts";
+import { ExternalPorts } from "@pc-builder/shared/interface";
+import * as PartExternalPorts from "@pc-builder/shared/part/info/PartExternalPorts";
 
 import { Table } from "../utils/Table";
 

@@ -3,7 +3,7 @@
 import React from "react";
 
 import { RowWrapper } from "@/ui/FlexWrapper";
-import { List as ListType, Content as ArticleContent, ContentName } from "@/utils/article";
+import { List as ListType, Content as ArticleContent, ContentName } from "@pc-builder/shared/article";
 
 import { ContentListComponent } from "./ContentListComponent";
 

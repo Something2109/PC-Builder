@@ -8,8 +8,8 @@ import {
   Summary,
   CreateArticleDto,
   UpdateArticleDto,
-} from "@/utils/article";
-import { Products } from "@/utils/part";
+} from "@pc-builder/shared/article";
+import { Products } from "@pc-builder/shared/part";
 
 import { ArticleClass } from "../entities/Article.entity";
 

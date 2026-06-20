@@ -19,7 +19,7 @@ import { ZodValidationPipe } from "src/utils/utils.modules";
 
 import AliasEntry from "@/models/alias/AliasEntry.entity";
 import AliasLearnerLog from "@/models/alias/AliasLearnerLog.entity";
-import * as API from "@/utils/API";
+import * as API from "@pc-builder/shared/API";
 import {
   CreateAliasSchema,
   CreateAliasDto,
@@ -27,9 +27,9 @@ import {
   UpdateAliasDto,
   BulkLearnSchema,
   BulkLearnDto,
-} from "@/utils/part";
-import { normalizeKey } from "@/utils/part/mapper/utils";
-import { Roles } from "@/utils/user";
+} from "@pc-builder/shared/part";
+import { normalizeKey } from "@pc-builder/shared/part/mapper/utils";
+import { Roles } from "@pc-builder/shared/user";
 
 import { DbAliasLearner } from "./db-alias-learner.service";
 import { DbAliasRegistry } from "./db-alias-registry.service";

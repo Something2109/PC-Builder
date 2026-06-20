@@ -1,5 +1,5 @@
-import * as API from "@/utils/API";
-import Part, { Products } from "@/utils/part";
+import * as API from "@pc-builder/shared/API";
+import Part, { Products } from "@pc-builder/shared/part";
 
 import { ModelAttributeList } from "./database.interface";
 

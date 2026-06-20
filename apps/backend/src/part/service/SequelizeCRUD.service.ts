@@ -5,7 +5,7 @@ import { CdnService } from "src/cdn/cdn.service";
 
 import { ModelScopes } from "@/models/interface";
 import { PartInformation } from "@/models/parts";
-import Part, { Infos, Products } from "@/utils/part";
+import Part, { Infos, Products } from "@pc-builder/shared/part";
 
 import { DatabaseCRUDInterface } from "../interface/database.interface";
 

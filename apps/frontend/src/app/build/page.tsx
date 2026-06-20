@@ -4,7 +4,7 @@ import BuildProductList from "@/features/build/components/List";
 import BuildValidateForm from "@/features/build/components/Form";
 import BuildResultList from "@/features/build/components/Result";
 import { useBuildContext } from "@/features/build/hooks/BuildContext";
-import Part, { Products } from "@/utils/part";
+import Part, { Products } from "@pc-builder/shared/part";
 
 export default function BuildPage() {
   const { details, clear } = useBuildContext();

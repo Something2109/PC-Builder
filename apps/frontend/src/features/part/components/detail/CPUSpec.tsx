@@ -1,5 +1,5 @@
 import { SuffixDisplay } from "@/ui/Display";
-import * as CPUSpec from "@/utils/part/info/CPUSpec";
+import * as CPUSpec from "@pc-builder/shared/part/info/CPUSpec";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

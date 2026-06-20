@@ -1,4 +1,4 @@
-import * as CaseFanSupport from "@/utils/part/info/CaseFanSupport";
+import * as CaseFanSupport from "@pc-builder/shared/part/info/CaseFanSupport";
 
 import { Table } from "../utils/Table";
 

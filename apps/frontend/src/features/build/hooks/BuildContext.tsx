@@ -1,7 +1,7 @@
 "use client";
 
-import Build from "@/utils/build";
-import Part, { Products } from "@/utils/part";
+import Build from "@pc-builder/shared/build";
+import Part, { Products } from "@pc-builder/shared/part";
 import { createContext, useContext, useReducer, useState } from "react";
 
 type DetailMapping<T = Part.DTO> = {

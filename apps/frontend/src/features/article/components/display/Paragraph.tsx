@@ -1,5 +1,5 @@
 import { RowWrapper } from "@/ui/FlexWrapper";
-import { Paragraph as ParagraphType } from "@/utils/article";
+import { Paragraph as ParagraphType } from "@pc-builder/shared/article";
 
 import { ContentProps } from "../utils";
 

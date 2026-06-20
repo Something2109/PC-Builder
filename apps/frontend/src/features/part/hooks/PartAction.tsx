@@ -3,7 +3,7 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { useActionState, useState } from "react";
 
-import Part from "@/utils/part";
+import Part from "@pc-builder/shared/part";
 
 function createPayload(formData: FormData | null) {
   const RequestPayload: Omit<AxiosRequestConfig, "url"> = {

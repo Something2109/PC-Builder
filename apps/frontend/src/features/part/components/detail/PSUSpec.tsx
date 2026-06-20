@@ -1,6 +1,6 @@
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
-import * as PSUSpec from "@/utils/part/info/PSUSpec";
-import { LengthUnits } from "@/utils/Units";
+import * as PSUSpec from "@pc-builder/shared/part/info/PSUSpec";
+import { LengthUnits } from "@pc-builder/shared/Units";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

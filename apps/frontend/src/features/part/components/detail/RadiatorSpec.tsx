@@ -1,6 +1,6 @@
 import { UnitDisplay } from "@/ui/Display";
-import * as RadiatorSpec from "@/utils/part/info/RadiatorSpec";
-import { LengthUnits } from "@/utils/Units";
+import * as RadiatorSpec from "@pc-builder/shared/part/info/RadiatorSpec";
+import { LengthUnits } from "@pc-builder/shared/Units";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

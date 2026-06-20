@@ -15,9 +15,9 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { Role } from "src/utils/role/role.decorator";
 import { ZodValidationPipe } from "src/utils/utils.modules";
 
-import * as API from "@/utils/API";
-import { CreateArticleDto, UpdateArticleDto } from "@/utils/article";
-import { Roles } from "@/utils/user";
+import * as API from "@pc-builder/shared/API";
+import { CreateArticleDto, UpdateArticleDto } from "@pc-builder/shared/article";
+import { Roles } from "@pc-builder/shared/user";
 
 import { QueryFilterPipe, ArticleFilter } from "./article.pipe";
 import { ArticleService } from "./services/article.service";

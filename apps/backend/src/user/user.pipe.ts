@@ -1,8 +1,8 @@
 import { Injectable, PipeTransform } from "@nestjs/common";
 
-import * as API from "@/utils/API";
-import { Roles } from "@/utils/user";
-import * as User from "@/utils/user";
+import * as API from "@pc-builder/shared/API";
+import { Roles } from "@pc-builder/shared/user";
+import * as User from "@pc-builder/shared/user";
 
 @Injectable()
 export class UserFilterPipe implements PipeTransform {

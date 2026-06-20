@@ -1,8 +1,8 @@
 import { ZodType } from "zod";
 
 import { SuffixInput, UnitInput } from "@/ui/Input";
-import * as GPUPerformance from "@/utils/part/info/GPUPerformance";
-import { FrequencyUnits } from "@/utils/Units";
+import * as GPUPerformance from "@pc-builder/shared/part/info/GPUPerformance";
+import { FrequencyUnits } from "@pc-builder/shared/Units";
 
 import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

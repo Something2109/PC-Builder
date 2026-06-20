@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { CrawlerSession, CrawlState, SerializedError } from "@/utils/crawler";
+import { CrawlerSession, CrawlState, SerializedError } from "@pc-builder/shared/crawler";
 
 interface SessionMonitorProps {
   sessions: CrawlerSession[];

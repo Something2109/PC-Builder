@@ -17,7 +17,7 @@ import {
 } from "@dnd-kit/sortable";
 import React from "react";
 
-import { Content as ArticleContent, ContentName } from "@/utils/article";
+import { Content as ArticleContent, ContentName } from "@pc-builder/shared/article";
 
 import { EditorBlock } from "./EditorBlock";
 

@@ -1,4 +1,4 @@
-import * as GPUSpec from "@/utils/part/info/GPUSpec";
+import * as GPUSpec from "@pc-builder/shared/part/info/GPUSpec";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

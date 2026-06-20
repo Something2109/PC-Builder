@@ -4,9 +4,9 @@ import { AuthRole } from "@/features/auth";
 import { InfoForm } from "@/features/part/components/Form";
 import PartForm from "@/features/part/components/input/Part";
 import { ResponsiveWrapper } from "@/ui/FlexWrapper";
-import Part, { Products, Mapping } from "@/utils/part";
+import Part, { Products, Mapping } from "@pc-builder/shared/part";
 import { getBackendUrl } from "@/utils/path";
-import { Roles } from "@/utils/user";
+import { Roles } from "@pc-builder/shared/user";
 
 const roles = [Roles.ADMIN];
 

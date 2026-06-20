@@ -1,9 +1,9 @@
 import { ZodType } from "zod";
 
 import { Input, UnitInput, OptionSelect, SuffixInput } from "@/ui/Input";
-import { FormFactor, InternalConnectors } from "@/utils/interface";
-import * as FanSpec from "@/utils/part/info/FanSpec";
-import { LengthUnits } from "@/utils/Units";
+import { FormFactor, InternalConnectors } from "@pc-builder/shared/interface";
+import * as FanSpec from "@pc-builder/shared/part/info/FanSpec";
+import { LengthUnits } from "@pc-builder/shared/Units";
 
 import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

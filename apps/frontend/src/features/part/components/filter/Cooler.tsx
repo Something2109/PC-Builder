@@ -1,5 +1,5 @@
 import { MultipleChoiceInput } from "@/ui/Input";
-import * as Cooler from "@/utils/part/product/Cooler";
+import * as Cooler from "@pc-builder/shared/part/product/Cooler";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

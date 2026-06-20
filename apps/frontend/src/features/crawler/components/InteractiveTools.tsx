@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import axiosInstance from "@/lib/axios";
-import { ScraperInfo, Products } from "@/utils/crawler";
+import { ScraperInfo, Products } from "@pc-builder/shared/crawler";
 
 interface InteractiveToolsProps {
   scrapers: ScraperInfo[];

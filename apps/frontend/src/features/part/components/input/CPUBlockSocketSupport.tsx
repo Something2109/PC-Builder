@@ -1,7 +1,7 @@
 import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input } from "@/ui/Input";
-import * as CPUBlockSocketSupport from "@/utils/part/info/CPUBlockSocketSupport";
+import * as CPUBlockSocketSupport from "@pc-builder/shared/part/info/CPUBlockSocketSupport";
 
 import { Table } from "../utils/Table";
 import { GenericListInputForm } from "../utils/TanstackForm";

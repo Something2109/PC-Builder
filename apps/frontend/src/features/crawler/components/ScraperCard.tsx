@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import { ScraperInfo, CrawlerSession, CrawlState, ScraperType } from "@/utils/crawler";
+import { ScraperInfo, CrawlerSession, CrawlState, ScraperType } from "@pc-builder/shared/crawler";
 
 interface ScraperCardProps {
   scraper: ScraperInfo;

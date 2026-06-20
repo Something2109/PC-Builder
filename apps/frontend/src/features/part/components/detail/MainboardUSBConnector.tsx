@@ -1,5 +1,5 @@
-import { ExternalPorts } from "@/utils/interface";
-import * as MainboardUSBConnector from "@/utils/part/info/MainboardUSBConnector";
+import { ExternalPorts } from "@pc-builder/shared/interface";
+import * as MainboardUSBConnector from "@pc-builder/shared/part/info/MainboardUSBConnector";
 
 import { Table } from "../utils/Table";
 

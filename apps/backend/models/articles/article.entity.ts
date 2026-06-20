@@ -1,6 +1,6 @@
 import { Column, DataType, Default, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 
-import { Article, Content, ArticleStatus } from "@/utils/article";
+import { Article, Content, ArticleStatus } from "@pc-builder/shared/article";
 
 import { Tables } from "../interface";
 

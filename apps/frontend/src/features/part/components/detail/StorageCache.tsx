@@ -1,6 +1,6 @@
 import { UnitDisplay } from "@/ui/Display";
-import * as StorageCache from "@/utils/part/info/StorageCache";
-import { MemoryUnits } from "@/utils/Units";
+import * as StorageCache from "@pc-builder/shared/part/info/StorageCache";
+import { MemoryUnits } from "@pc-builder/shared/Units";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

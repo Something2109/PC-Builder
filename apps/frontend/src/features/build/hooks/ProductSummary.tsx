@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useBuildContext } from "./BuildContext";
-import Part, { Products } from "@/utils/part";
-import * as API from "@/utils/API";
+import Part, { Products } from "@pc-builder/shared/part";
+import * as API from "@pc-builder/shared/API";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 import { AxiosError } from "axios";

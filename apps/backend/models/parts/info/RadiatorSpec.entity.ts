@@ -9,9 +9,9 @@ import {
   Table,
 } from "sequelize-typescript";
 
-import { FormFactor, Material } from "@/utils/interface";
-import { Infos } from "@/utils/part";
-import * as RadiatorSpec from "@/utils/part/info/RadiatorSpec";
+import { FormFactor, Material } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as RadiatorSpec from "@pc-builder/shared/part/info/RadiatorSpec";
 
 import { PartInformation } from "..";
 import { ModelScopes, PartDefaultScope, defaultFilter } from "../../interface";

@@ -1,6 +1,6 @@
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
-import * as GPUMemory from "@/utils/part/info/GPUMemory";
-import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@/utils/Units";
+import * as GPUMemory from "@pc-builder/shared/part/info/GPUMemory";
+import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@pc-builder/shared/Units";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

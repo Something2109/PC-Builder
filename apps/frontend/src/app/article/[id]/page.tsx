@@ -3,9 +3,9 @@ import React from "react";
 
 import { ArticleComponent } from "@/features/article/components/Article";
 import { verifyToken } from "@/features/auth/server";
-import { Article } from "@/utils/article";
+import { Article } from "@pc-builder/shared/article";
 import { getBackendUrl } from "@/utils/path";
-import { Roles } from "@/utils/user";
+import { Roles } from "@pc-builder/shared/user";
 
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

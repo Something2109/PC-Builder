@@ -1,4 +1,4 @@
-import Part from "@/utils/part";
+import Part from "@pc-builder/shared/part";
 
 export class FilterOptionBuilder {
   private result: {

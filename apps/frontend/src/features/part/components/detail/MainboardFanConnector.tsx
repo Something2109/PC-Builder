@@ -1,4 +1,4 @@
-import * as MainboardFanConnector from "@/utils/part/info/MainboardFanConnector";
+import * as MainboardFanConnector from "@pc-builder/shared/part/info/MainboardFanConnector";
 
 import { Table } from "../utils/Table";
 

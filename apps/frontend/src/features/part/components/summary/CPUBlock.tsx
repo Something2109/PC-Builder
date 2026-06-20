@@ -1,4 +1,4 @@
-import * as CPUBlock from "@/utils/part/product/CPUBlock";
+import * as CPUBlock from "@pc-builder/shared/part/product/CPUBlock";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

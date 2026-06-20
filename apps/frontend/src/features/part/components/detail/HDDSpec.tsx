@@ -1,6 +1,6 @@
 import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
-import * as HDDSpec from "@/utils/part/info/HDDSpec";
-import { MemoryUnits } from "@/utils/Units";
+import * as HDDSpec from "@pc-builder/shared/part/info/HDDSpec";
+import { MemoryUnits } from "@pc-builder/shared/Units";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

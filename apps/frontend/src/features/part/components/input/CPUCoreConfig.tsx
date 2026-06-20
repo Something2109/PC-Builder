@@ -3,8 +3,8 @@ import { useRef } from "react";
 import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, UnitInput } from "@/ui/Input";
-import * as CPUCoreConfig from "@/utils/part/info/CPUCoreConfig";
-import { FrequencyUnits } from "@/utils/Units";
+import * as CPUCoreConfig from "@pc-builder/shared/part/info/CPUCoreConfig";
+import { FrequencyUnits } from "@pc-builder/shared/Units";
 
 import { Table } from "../utils/Table";
 import { GenericListInputForm } from "../utils/TanstackForm";

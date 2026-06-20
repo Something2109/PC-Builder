@@ -1,4 +1,4 @@
-import * as MainboardPowerConnector from "@/utils/part/info/MainboardPowerConnector";
+import * as MainboardPowerConnector from "@pc-builder/shared/part/info/MainboardPowerConnector";
 
 import { Table } from "../utils/Table";
 

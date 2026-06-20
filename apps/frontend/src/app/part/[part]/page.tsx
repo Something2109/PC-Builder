@@ -5,7 +5,7 @@ import { FilterBar } from "@/features/part/components/Filter";
 import SummaryTable from "@/features/part/components/Summary";
 import PaginationBar from "@/ui/PaginationBar";
 import { ToggleButton } from "@/ui/Toggle";
-import { Product } from "@/utils/part";
+import { Product } from "@pc-builder/shared/part";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function PartListPage({

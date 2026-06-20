@@ -1,4 +1,4 @@
-import * as Radiator from "@/utils/part/product/Radiator";
+import * as Radiator from "@pc-builder/shared/part/product/Radiator";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

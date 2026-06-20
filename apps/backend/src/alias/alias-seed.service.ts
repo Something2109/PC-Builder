@@ -2,8 +2,8 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 
 import AliasEntry from "@/models/alias/AliasEntry.entity";
-import defaultAliases from "@/utils/part/mapper/aliases.json";
-import { normalizeKey } from "@/utils/part/mapper/utils";
+import defaultAliases from "@pc-builder/shared/part/mapper/aliases.json";
+import { normalizeKey } from "@pc-builder/shared/part/mapper/utils";
 
 @Injectable()
 export class AliasSeedService {

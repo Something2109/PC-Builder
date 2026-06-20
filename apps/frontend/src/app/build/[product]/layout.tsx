@@ -1,4 +1,4 @@
-import { Products } from "@/utils/part";
+import { Products } from "@pc-builder/shared/part";
 import { notFound } from "next/navigation";
 
 export default async function BuildSummaryLayout({

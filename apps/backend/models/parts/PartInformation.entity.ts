@@ -18,7 +18,7 @@ import {
 } from "sequelize-typescript";
 
 import { ModelScopes, Tables, defaultFilter } from "@/models/interface";
-import Part, { Products, Infos } from "@/utils/part";
+import Part, { Products, Infos } from "@pc-builder/shared/part";
 
 import BrandModel from "./Brand.entity";
 import CaseFanSupportModel from "./info/CaseFanSupport.entity";

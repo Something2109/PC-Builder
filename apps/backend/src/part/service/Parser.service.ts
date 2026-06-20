@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 
-import * as API from "@/utils/API";
-import { Primitive } from "@/utils/interface";
-import Part, { Product, Mapping, Products } from "@/utils/part";
+import * as API from "@pc-builder/shared/API";
+import { Primitive } from "@pc-builder/shared/interface";
+import Part, { Product, Mapping, Products } from "@pc-builder/shared/part";
 
 import { ModelAttributeList } from "../interface/database.interface";
 import { FilterOptionBuilder } from "../interface/filterbuilder";
