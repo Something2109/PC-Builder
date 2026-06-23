@@ -41,12 +41,19 @@ export class MapperController {
       const raw = rawRecords[i];
       const mappedResult = await this.mapperService.safeMapRawPart(raw, product, fallbackBrand);
       if (mappedResult.success) {
-        results.push({ index: i, data: mappedResult.data });
+        results.push({
+          index: i,
+          data: mappedResult.data,
+          parsed: mappedResult.parsed,
+          mappings: mappedResult.mappings,
+        });
       } else {
         errors.push({
           index: i,
           raw,
           error: mappedResult.error,
+          parsed: mappedResult.parsed,
+          mappings: mappedResult.mappings,
         });
       }
     }

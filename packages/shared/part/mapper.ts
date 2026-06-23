@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { toError } from "../API";
 import { DTO as InfoDTOs, Name as Infos } from "./info";
 import { parseSingleValue, parseConnectorString } from "./mapper/parser";
 import { RawKeyResolver } from "./mapper/pipeline";
@@ -22,6 +23,20 @@ export class RawPartMapper {
     learner?: IAliasLearner,
     fallbackBrand?: string
   ): Promise<any> {
+    const res = await this.mapWithTrace(raw, product, registryOrBrand, learner, fallbackBrand);
+    return res.mapped;
+  }
+
+  /**
+   * Maps a raw scraped record and returns both the mapped DTO and resolution trace mappings.
+   */
+  static async mapWithTrace(
+    raw: Record<string, any>,
+    product: Products,
+    registryOrBrand?: IAliasRegistry | string,
+    learner?: IAliasLearner,
+    fallbackBrand?: string
+  ): Promise<{ mapped: any; mappings: { basic: BasicMapping[]; info: ResolvedMapping[] } }> {
     let registry: IAliasRegistry;
     let actualLearner: IAliasLearner | undefined = learner;
     let actualFallbackBrand = fallbackBrand;
@@ -53,7 +68,13 @@ export class RawPartMapper {
     this.applyBrandHeuristics(result, actualFallbackBrand);
     this.parseInfoFields(deduped.info, raw, product, result);
 
-    return result;
+    return {
+      mapped: result,
+      mappings: {
+        basic: deduped.basic,
+        info: deduped.info,
+      },
+    };
   }
 
   /**
@@ -249,12 +270,32 @@ export class RawPartMapper {
     fallbackBrand?: string
   ): Promise<any> {
     try {
-      const mapped = await this.map(raw, product, registryOrBrand, learner, fallbackBrand);
-      return PartDTO.safeParse(mapped);
+      const { mapped, mappings } = await this.mapWithTrace(
+        raw,
+        product,
+        registryOrBrand,
+        learner,
+        fallbackBrand
+      );
+      const parseResult = PartDTO.safeParse(mapped);
+      if (!parseResult.success) {
+        return {
+          success: false,
+          error: toError(parseResult.error.issues),
+          parsed: mapped,
+          mappings,
+        };
+      }
+      return {
+        success: true,
+        data: parseResult.data,
+        parsed: mapped,
+        mappings,
+      };
     } catch (error: any) {
       return {
         success: false,
-        error: new z.ZodError([{ path: [], message: error.message, code: "custom" }]),
+        error: error.message,
       };
     }
   }

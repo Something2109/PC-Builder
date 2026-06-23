@@ -14,6 +14,18 @@ function parseNumberValue(val: any, targetKey: string): number | undefined {
 
   const lowerKey = targetKey.toLowerCase();
 
+  // PCIe version extraction to avoid matching wrong numbers like width "x16"
+  if (targetKey === "version") {
+    if (str.toLowerCase().includes("pcie")) {
+      const pcieMatch = str.match(/pcie\s*(\d+(?:\.\d+)?)/i);
+      if (pcieMatch) {
+        const v = parseFloat(pcieMatch[1]);
+        if (v >= 1 && v <= 6) return v;
+      }
+      return undefined;
+    }
+  }
+
   // Memory conversions
   if (
     lowerKey.includes("capacity") ||
@@ -248,5 +260,28 @@ export function parseConnectorString(
       }
     }
   }
+
+  // Fallbacks for MainboardPCIe connector fields to ensure validation doesn't fail on missing attributes
+  if (
+    properties.includes("controller") &&
+    properties.includes("width") &&
+    properties.includes("version")
+  ) {
+    if (
+      result.version === undefined ||
+      isNaN(result.version) ||
+      result.version > 6 ||
+      result.version < 1
+    ) {
+      result.version = 4; // default to PCIe 4.0
+    }
+    if (result.width === undefined) {
+      result.width = "x16"; // default to x16 width
+    }
+    if (result.controller === undefined) {
+      result.controller = result.width === "x16" ? "CPU" : "Chipset"; // default controller based on width
+    }
+  }
+
   return result;
 }
