@@ -19,6 +19,7 @@ export default function Header() {
     { title: "Guide", link: "/guide" },
     { title: "Parts", link: "/part" },
     { title: "Build PC", link: "/build" },
+    { title: "Mapper Test", link: "/mapper" },
   ];
 
   return (
@@ -47,6 +48,16 @@ export default function Header() {
                 link="/crawler"
                 title="Crawler"
                 active={pathname.startsWith("/crawler")}
+              />
+              <NavigationButton
+                link="/aliases"
+                title="Aliases"
+                active={pathname.startsWith("/aliases")}
+              />
+              <NavigationButton
+                link="/mapper"
+                title="Mapper Test"
+                active={pathname.startsWith("/mapper")}
               />
             </Guard>
           </nav>
@@ -88,6 +99,18 @@ export default function Header() {
               link="/crawler"
               title="Crawler"
               active={pathname.startsWith("/crawler")}
+              onClick={() => setNavbar(false)}
+            />
+            <MobileNavigationButton
+              link="/aliases"
+              title="Aliases"
+              active={pathname.startsWith("/aliases")}
+              onClick={() => setNavbar(false)}
+            />
+            <MobileNavigationButton
+              link="/mapper"
+              title="Mapper Test"
+              active={pathname.startsWith("/mapper")}
               onClick={() => setNavbar(false)}
             />
           </Guard>
