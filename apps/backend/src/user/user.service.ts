@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import * as API from "@pc-builder/shared/API";
+import * as User from "@pc-builder/shared/user";
 import * as bcrypt from "bcrypt";
 import { Sequelize } from "sequelize-typescript";
 
 import UserModel, { UserModelScope } from "@/models/user/User.entity";
-import * as API from "@pc-builder/shared/API";
-import * as User from "@pc-builder/shared/user";
 
 @Injectable()
 export class UserService {

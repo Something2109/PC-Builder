@@ -1,5 +1,6 @@
-import { MultipleChoiceInput } from "@/ui/Input";
 import Part from "@pc-builder/shared/part";
+
+import { MultipleChoiceInput } from "@/ui/Input";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

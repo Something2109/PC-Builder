@@ -1,7 +1,6 @@
 import type { Article, Content } from "@pc-builder/shared/article";
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-
 import { ArticleStatus } from "@pc-builder/shared/article";
 import { Products } from "@pc-builder/shared/part";
 

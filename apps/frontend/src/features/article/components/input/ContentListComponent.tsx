@@ -15,9 +15,8 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import React from "react";
-
 import { Content as ArticleContent, ContentName } from "@pc-builder/shared/article";
+import React from "react";
 
 import { EditorBlock } from "./EditorBlock";
 

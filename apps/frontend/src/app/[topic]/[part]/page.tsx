@@ -1,3 +1,6 @@
+import { Summary } from "@pc-builder/shared/article";
+import { Products } from "@pc-builder/shared/part";
+import { Label } from "@pc-builder/shared/part/product";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -5,9 +8,6 @@ import React from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
-import { Summary } from "@pc-builder/shared/article";
-import { Products } from "@pc-builder/shared/part";
-import { Label } from "@pc-builder/shared/part/product";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function PartTopicPage({

@@ -1,12 +1,12 @@
 "use client";
 
+import { Roles } from "@pc-builder/shared/user";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import { UserPanel, Guard } from "@/features/auth";
 import { RowWrapper } from "@/ui/FlexWrapper";
-import { Roles } from "@pc-builder/shared/user";
 
 import { DarkModeButton } from "./body";
 

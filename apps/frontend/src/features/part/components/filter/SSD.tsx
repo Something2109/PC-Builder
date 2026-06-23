@@ -1,6 +1,7 @@
-import { MultipleChoiceInput, UnitMinMaxRangeInput } from "@/ui/Input";
 import * as SSD from "@pc-builder/shared/part/product/SSD";
 import { MemorySpeedUnit, MemoryUnits } from "@pc-builder/shared/Units";
+
+import { MultipleChoiceInput, UnitMinMaxRangeInput } from "@/ui/Input";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

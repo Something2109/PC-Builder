@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-
 import * as API from "@pc-builder/shared/API";
 import { Primitive } from "@pc-builder/shared/interface";
 import Part, { Product, Mapping, Products } from "@pc-builder/shared/part";

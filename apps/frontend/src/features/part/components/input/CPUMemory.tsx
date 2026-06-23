@@ -1,11 +1,11 @@
+import { InternalConnectors } from "@pc-builder/shared/interface";
+import * as CPUMemory from "@pc-builder/shared/part/info/CPUMemory";
+import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@pc-builder/shared/Units";
 import { useRef } from "react";
 
 import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { OptionSelect, SuffixInput, UnitInput } from "@/ui/Input";
-import { InternalConnectors } from "@pc-builder/shared/interface";
-import * as CPUMemory from "@pc-builder/shared/part/info/CPUMemory";
-import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@pc-builder/shared/Units";
 
 import { Table } from "../utils/Table";
 import { GenericListInputForm } from "../utils/TanstackForm";

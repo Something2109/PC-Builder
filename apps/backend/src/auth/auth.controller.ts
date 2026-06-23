@@ -10,12 +10,11 @@ import {
   Get,
   UsePipes,
 } from "@nestjs/common";
+import { Session, Tokens } from "@pc-builder/shared/API";
+import { LogInOptions } from "@pc-builder/shared/user";
 import { CookieOptions, Request, Response } from "express";
 import { getAccessToken, getRefreshToken } from "src/utils/auth/tokens";
 import { ZodValidationPipe } from "src/utils/utils.modules";
-
-import { Session, Tokens } from "@pc-builder/shared/API";
-import { LogInOptions } from "@pc-builder/shared/user";
 
 import { LoginAuthorizationGuard } from "./auth.guard";
 import { AuthService } from "./auth.service";

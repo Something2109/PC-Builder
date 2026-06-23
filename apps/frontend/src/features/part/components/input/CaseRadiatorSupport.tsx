@@ -1,8 +1,9 @@
+import { Case, FormFactor } from "@pc-builder/shared/interface";
+import * as CaseRadiatorSupport from "@pc-builder/shared/part/info/CaseRadiatorSupport";
+
 import { ArrayFormApi } from "@/type/form";
 import { ResponsiveWrapper } from "@/ui/FlexWrapper";
 import { ChoiceInput } from "@/ui/Input";
-import { Case, FormFactor } from "@pc-builder/shared/interface";
-import * as CaseRadiatorSupport from "@pc-builder/shared/part/info/CaseRadiatorSupport";
 
 import { Table } from "../utils/Table";
 import { GenericListInputForm } from "../utils/TanstackForm";

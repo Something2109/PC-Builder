@@ -1,3 +1,5 @@
+import { Infos } from "@pc-builder/shared/part";
+import * as CPUCoreConfig from "@pc-builder/shared/part/info/CPUCoreConfig";
 import {
   BelongsTo,
   Column,
@@ -8,9 +10,6 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-
-import { Infos } from "@pc-builder/shared/part";
-import * as CPUCoreConfig from "@pc-builder/shared/part/info/CPUCoreConfig";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

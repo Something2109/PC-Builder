@@ -1,8 +1,8 @@
+import { FormFactor, InternalConnectors } from "@pc-builder/shared/interface";
+import * as MainboardSpec from "@pc-builder/shared/part/info/MainboardSpec";
 import { ZodType } from "zod";
 
 import { Input, SuffixInput, OptionSelect } from "@/ui/Input";
-import { FormFactor, InternalConnectors } from "@pc-builder/shared/interface";
-import * as MainboardSpec from "@pc-builder/shared/part/info/MainboardSpec";
 
 import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

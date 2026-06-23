@@ -1,10 +1,10 @@
 "use client";
 
+import { ScraperInfo, Products } from "@pc-builder/shared/crawler";
 import Link from "next/link";
 import { useState } from "react";
 
 import axiosInstance from "@/lib/axios";
-import { ScraperInfo, Products } from "@pc-builder/shared/crawler";
 
 interface InteractiveToolsProps {
   scrapers: ScraperInfo[];

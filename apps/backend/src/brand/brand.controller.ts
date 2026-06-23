@@ -10,11 +10,10 @@ import {
   Query,
   UsePipes,
 } from "@nestjs/common";
-import { Role } from "src/utils/role/role.decorator";
-import { ZodValidationPipe } from "src/utils/utils.modules";
-
 import * as API from "@pc-builder/shared/API";
 import { Roles } from "@pc-builder/shared/user";
+import { Role } from "src/utils/role/role.decorator";
+import { ZodValidationPipe } from "src/utils/utils.modules";
 
 import { BrandService } from "./brand.service";
 import { CreateBrandDto, UpdateBrandDto } from "./dto/brand.dto";

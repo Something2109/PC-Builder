@@ -1,10 +1,10 @@
 "use client";
 
+import Part from "@pc-builder/shared/part";
+import { Infos, Information } from "@pc-builder/shared/part";
 import { lazy, LazyExoticComponent } from "react";
 
 import { ColumnWrapper } from "@/ui/FlexWrapper";
-import Part from "@pc-builder/shared/part";
-import { Infos, Information } from "@pc-builder/shared/part";
 
 type InfoTableComponent<T extends Infos> = React.FC<{
   defaultValue: Part.Model[T];

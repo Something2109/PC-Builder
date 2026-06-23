@@ -1,3 +1,6 @@
+import { InternalConnectors, Material } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as CPUBlockSpec from "@pc-builder/shared/part/info/CPUBlockSpec";
 import {
   BelongsTo,
   Column,
@@ -8,10 +11,6 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-
-import { InternalConnectors, Material } from "@pc-builder/shared/interface";
-import { Infos } from "@pc-builder/shared/part";
-import * as CPUBlockSpec from "@pc-builder/shared/part/info/CPUBlockSpec";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

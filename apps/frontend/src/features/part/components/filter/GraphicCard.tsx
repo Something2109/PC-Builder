@@ -1,6 +1,7 @@
-import { MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
 import * as GraphicCard from "@pc-builder/shared/part/product/GraphicCard";
 import { FrequencyUnits, LengthUnits } from "@pc-builder/shared/Units";
+
+import { MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

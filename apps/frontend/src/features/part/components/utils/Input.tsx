@@ -1,7 +1,7 @@
+import { ExternalPorts } from "@pc-builder/shared/interface";
 import { ChangeEventHandler, FunctionComponent, RefObject, useRef } from "react";
 
 import { Input, OptionSelect } from "@/ui/Input";
-import { ExternalPorts } from "@pc-builder/shared/interface";
 
 function LanEthernetInput({ ref }: { ref: RefObject<HTMLInputElement | null> }) {
   const SpeedRef = useRef<HTMLSelectElement>(null);

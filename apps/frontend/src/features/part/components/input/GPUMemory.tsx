@@ -1,9 +1,9 @@
-import { ZodType } from "zod";
-
-import { OptionSelect, SuffixInput, UnitInput } from "@/ui/Input";
 import { InternalConnectors } from "@pc-builder/shared/interface";
 import * as GPUMemory from "@pc-builder/shared/part/info/GPUMemory";
 import { MemorySpeedUnit, MemoryUnits, TransferSpeedUnit } from "@pc-builder/shared/Units";
+import { ZodType } from "zod";
+
+import { OptionSelect, SuffixInput, UnitInput } from "@/ui/Input";
 
 import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

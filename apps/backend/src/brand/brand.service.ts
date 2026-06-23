@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import * as API from "@pc-builder/shared/API";
 
 import BrandModel from "@/models/parts/Brand.entity";
-import * as API from "@pc-builder/shared/API";
 
 import { CreateBrandDto, UpdateBrandDto } from "./dto/brand.dto";
 

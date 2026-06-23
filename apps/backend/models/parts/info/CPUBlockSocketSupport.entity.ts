@@ -1,3 +1,5 @@
+import { Infos } from "@pc-builder/shared/part";
+import * as CPUBlockSocketSupport from "@pc-builder/shared/part/info/CPUBlockSocketSupport";
 import {
   BelongsTo,
   Column,
@@ -8,9 +10,6 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-
-import { Infos } from "@pc-builder/shared/part";
-import * as CPUBlockSocketSupport from "@pc-builder/shared/part/info/CPUBlockSocketSupport";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

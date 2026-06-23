@@ -1,8 +1,7 @@
+import Part, { Products } from "@pc-builder/shared/part";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { ChangeEventHandler, useRef, useState } from "react";
-
-import Part, { Products } from "@pc-builder/shared/part";
 
 export default function useSearchAction(part?: Products) {
   const router = useRouter();

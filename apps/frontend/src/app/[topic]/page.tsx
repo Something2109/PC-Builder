@@ -1,3 +1,4 @@
+import { Summary } from "@pc-builder/shared/article";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -5,7 +6,6 @@ import React from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
-import { Summary } from "@pc-builder/shared/article";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function TopicPage({ params }: { params: Promise<{ topic: string }> }) {

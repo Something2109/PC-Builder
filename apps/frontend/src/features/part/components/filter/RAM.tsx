@@ -1,6 +1,7 @@
-import { MultipleChoiceInput, UnitMinMaxRangeInput } from "@/ui/Input";
 import * as RAM from "@pc-builder/shared/part/product/RAM";
 import { MemoryUnits } from "@pc-builder/shared/Units";
+
+import { MultipleChoiceInput, UnitMinMaxRangeInput } from "@/ui/Input";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

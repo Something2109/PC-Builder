@@ -1,6 +1,7 @@
 "use client";
 
 import { DetailedHTMLProps, HTMLAttributes } from "react";
+
 import { mergeClass } from "./mergeClass";
 
 export function LoadingSpinner({

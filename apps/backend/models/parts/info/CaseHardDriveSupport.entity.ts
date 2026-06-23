@@ -1,3 +1,6 @@
+import { Case } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as CaseHardDriveSupport from "@pc-builder/shared/part/info/CaseHardDriveSupport";
 import {
   BelongsTo,
   Column,
@@ -8,10 +11,6 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-
-import { Case } from "@pc-builder/shared/interface";
-import { Infos } from "@pc-builder/shared/part";
-import * as CaseHardDriveSupport from "@pc-builder/shared/part/info/CaseHardDriveSupport";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

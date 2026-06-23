@@ -1,9 +1,9 @@
 "use client";
 
+import { Image as ImageType } from "@pc-builder/shared/article";
 import React, { useRef } from "react";
 
 import { useImageUpload } from "@/hooks/useImageUpload";
-import { Image as ImageType } from "@pc-builder/shared/article";
 
 interface ImageInputProps {
   content: ImageType;

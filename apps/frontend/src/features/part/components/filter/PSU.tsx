@@ -1,5 +1,6 @@
-import { MultipleChoiceInput, MinMaxRangeInput } from "@/ui/Input";
 import * as PSU from "@pc-builder/shared/part/product/PSU";
+
+import { MultipleChoiceInput, MinMaxRangeInput } from "@/ui/Input";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

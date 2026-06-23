@@ -1,3 +1,4 @@
+import { Product } from "@pc-builder/shared/part";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -5,7 +6,6 @@ import { FilterBar } from "@/features/part/components/Filter";
 import SummaryTable from "@/features/part/components/Summary";
 import PaginationBar from "@/ui/PaginationBar";
 import { ToggleButton } from "@/ui/Toggle";
-import { Product } from "@pc-builder/shared/part";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function PartListPage({

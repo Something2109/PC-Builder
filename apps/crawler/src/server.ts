@@ -1,10 +1,3 @@
-import cors from "cors";
-import express, { Request, Response } from "express";
-import { fork, ChildProcess } from "node:child_process";
-import fs from "node:fs";
-import path from "node:path";
-import { ZodError } from "zod";
-
 import {
   CrawlerSession,
   CrawlIngestItem,
@@ -16,6 +9,12 @@ import {
   CrawlExtractSchema,
   Products,
 } from "@pc-builder/shared";
+import cors from "cors";
+import express, { Request, Response } from "express";
+import { fork, ChildProcess } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { ZodError } from "zod";
 
 import { defaultStealthFetch } from "./core/fetcher";
 import { APIWebsiteInfo, InternalStage } from "./types/interface";

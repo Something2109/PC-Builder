@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
+import Part, { Infos, Products } from "@pc-builder/shared/part";
 import { Includeable, Model, ModelStatic, Transaction } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { CdnService } from "src/cdn/cdn.service";
 
 import { ModelScopes } from "@/models/interface";
 import { PartInformation } from "@/models/parts";
-import Part, { Infos, Products } from "@pc-builder/shared/part";
 
 import { DatabaseCRUDInterface } from "../interface/database.interface";
 

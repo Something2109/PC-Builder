@@ -8,10 +8,9 @@ import {
   ParseEnumPipe,
   NotFoundException,
 } from "@nestjs/common";
-import { Role } from "src/utils/role/role.decorator";
-
 import { Products } from "@pc-builder/shared/part";
 import { Roles } from "@pc-builder/shared/user";
+import { Role } from "src/utils/role/role.decorator";
 
 import { MapperService } from "./mapper.service";
 
@@ -47,7 +46,7 @@ export class MapperController {
         errors.push({
           index: i,
           raw,
-          error: mappedResult.error.errors || mappedResult.error.message,
+          error: mappedResult.error,
         });
       }
     }

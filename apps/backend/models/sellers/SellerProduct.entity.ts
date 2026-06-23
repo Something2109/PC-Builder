@@ -1,6 +1,5 @@
-import { Column, DataType, Default, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
-
 import { RetailProductType } from "@pc-builder/shared/retailer/Product";
+import { Column, DataType, Default, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 
 import { Tables } from "../interface";
 

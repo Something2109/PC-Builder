@@ -1,6 +1,7 @@
-import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
 import * as GraphicCardSpec from "@pc-builder/shared/part/info/GraphicCardSpec";
 import { LengthUnits } from "@pc-builder/shared/Units";
+
+import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

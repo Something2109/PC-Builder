@@ -1,8 +1,9 @@
+import { Products } from "@pc-builder/shared/part";
+import { Roles } from "@pc-builder/shared/user";
+
 import { AuthRole } from "@/features/auth";
 import PartForm from "@/features/part/components/input/Part";
 import { ColumnWrapper, ResponsiveWrapper } from "@/ui/FlexWrapper";
-import { Products } from "@pc-builder/shared/part";
-import { Roles } from "@pc-builder/shared/user";
 
 const roles = [Roles.ADMIN];
 

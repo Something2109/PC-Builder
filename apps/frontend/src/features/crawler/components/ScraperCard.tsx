@@ -1,9 +1,8 @@
 "use client";
 
+import { ScraperInfo, CrawlerSession, CrawlState, ScraperType } from "@pc-builder/shared/crawler";
 import Link from "next/link";
 import { useState } from "react";
-
-import { ScraperInfo, CrawlerSession, CrawlState, ScraperType } from "@pc-builder/shared/crawler";
 
 interface ScraperCardProps {
   scraper: ScraperInfo;

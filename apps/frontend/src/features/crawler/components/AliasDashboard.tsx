@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axiosInstance from "@/lib/axios";
 import { Products, Mapping, Information } from "@pc-builder/shared/part";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
+import React, { useState } from "react";
 import { z } from "zod";
+
+import axiosInstance from "@/lib/axios";
 
 interface AliasEntry {
   id: number;

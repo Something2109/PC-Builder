@@ -1,8 +1,8 @@
+import Part from "@pc-builder/shared/part";
 import Link from "next/link";
 import { TableHTMLAttributes } from "react";
 
 import { RowWrapper } from "@/ui/FlexWrapper";
-import Part from "@pc-builder/shared/part";
 
 import PartPicture from "../Picture";
 

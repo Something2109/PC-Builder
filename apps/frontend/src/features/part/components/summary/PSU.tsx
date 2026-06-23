@@ -1,5 +1,6 @@
-import { SuffixDisplay } from "@/ui/Display";
 import * as PSU from "@pc-builder/shared/part/product/PSU";
+
+import { SuffixDisplay } from "@/ui/Display";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

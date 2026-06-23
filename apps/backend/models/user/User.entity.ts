@@ -1,3 +1,4 @@
+import { Type, Roles, FilterOptions } from "@pc-builder/shared/user";
 import * as bcrypt from "bcrypt";
 import {
   Column,
@@ -13,8 +14,6 @@ import {
   Table,
   BeforeSave,
 } from "sequelize-typescript";
-
-import { Type, Roles, FilterOptions } from "@pc-builder/shared/user";
 
 import { defaultFilter, Tables } from "../interface";
 

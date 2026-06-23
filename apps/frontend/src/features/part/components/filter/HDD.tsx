@@ -1,6 +1,7 @@
-import { MultipleChoiceInput, MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
 import * as HDD from "@pc-builder/shared/part/product/HDD";
 import { MemorySpeedUnit, MemoryUnits } from "@pc-builder/shared/Units";
+
+import { MultipleChoiceInput, MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

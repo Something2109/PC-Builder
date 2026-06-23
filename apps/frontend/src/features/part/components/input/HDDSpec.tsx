@@ -1,9 +1,9 @@
-import { ZodType } from "zod";
-
-import { SuffixInput, UnitInput, OptionSelect } from "@/ui/Input";
 import { FormFactor, InternalConnectors } from "@pc-builder/shared/interface";
 import * as HDDSpec from "@pc-builder/shared/part/info/HDDSpec";
 import { MemoryUnits } from "@pc-builder/shared/Units";
+import { ZodType } from "zod";
+
+import { SuffixInput, UnitInput, OptionSelect } from "@/ui/Input";
 
 import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

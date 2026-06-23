@@ -1,9 +1,9 @@
 "use client";
 
+import { Paragraph as ParagraphType, ContentName } from "@pc-builder/shared/article";
 import { useState, KeyboardEvent } from "react";
 
 import { AutoGrowingTextArea } from "@/ui/Input";
-import { Paragraph as ParagraphType, ContentName } from "@pc-builder/shared/article";
 
 import { SlashMenu } from "./SlashMenu";
 

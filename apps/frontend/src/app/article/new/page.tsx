@@ -1,9 +1,9 @@
+import { Article, ArticleStatus } from "@pc-builder/shared/article";
+import { Roles } from "@pc-builder/shared/user";
 import React from "react";
 
 import { EditableArticle } from "@/features/article/components/Form";
 import { AuthRole } from "@/features/auth";
-import { Article, ArticleStatus } from "@pc-builder/shared/article";
-import { Roles } from "@pc-builder/shared/user";
 
 export default async function NewArticlePage({
   searchParams,

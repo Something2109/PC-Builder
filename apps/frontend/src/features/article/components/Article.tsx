@@ -1,5 +1,7 @@
 "use client";
 
+import { Article, Content, ContentName } from "@pc-builder/shared/article";
+import { Roles } from "@pc-builder/shared/user";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -7,8 +9,6 @@ import React, { useEffect, useState } from "react";
 
 import { Guard } from "@/features/auth";
 import { mergeClass } from "@/ui/mergeClass";
-import { Article, Content, ContentName } from "@pc-builder/shared/article";
-import { Roles } from "@pc-builder/shared/user";
 
 import { Picture } from "./display/Image";
 import { List } from "./display/List";

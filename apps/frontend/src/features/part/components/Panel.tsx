@@ -1,6 +1,5 @@
-import Link from "next/link";
-
 import Part, { Product } from "@pc-builder/shared/part";
+import Link from "next/link";
 
 import PartPicture from "./Picture";
 

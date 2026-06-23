@@ -1,10 +1,10 @@
+import * as API from "@pc-builder/shared/API";
+import Part from "@pc-builder/shared/part";
 import { notFound } from "next/navigation";
 
 import PartPanel from "@/features/part/components/Panel";
 import { SearchBar } from "@/layout/searchbar";
 import PaginationBar from "@/ui/PaginationBar";
-import * as API from "@pc-builder/shared/API";
-import Part from "@pc-builder/shared/part";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function ListPage({

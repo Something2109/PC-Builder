@@ -1,8 +1,8 @@
+import { Material, InternalConnectors } from "@pc-builder/shared/interface";
+import * as CPUBlockSpec from "@pc-builder/shared/part/info/CPUBlockSpec";
 import { ZodType } from "zod";
 
 import { OptionSelect } from "@/ui/Input";
-import { Material, InternalConnectors } from "@pc-builder/shared/interface";
-import * as CPUBlockSpec from "@pc-builder/shared/part/info/CPUBlockSpec";
 
 import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

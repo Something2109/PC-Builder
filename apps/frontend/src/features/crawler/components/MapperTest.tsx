@@ -1,143 +1,145 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
-import axiosInstance from "@/lib/axios";
 import { Products } from "@pc-builder/shared/part";
+import Link from "next/link";
+import React, { useState } from "react";
+
+import axiosInstance from "@/lib/axios";
 
 const SAMPLE_TEMPLATES: Record<string, string> = {
   mainboard: JSON.stringify(
     {
-      "Model": "Z790 AORUS XTREME X ICE",
-      "Brand": "Gigabyte",
-      "USB": "Chipset+Intel® Thunderbolt™ 4 Controller:\n<ol>\n<li>2 x USB Type-C® ports on the back panel, with USB 3.2 Gen 2 support</li>\n</ol>\n\nChipset:\n<ol>\n<li>2 x USB Type-C® ports with USB 3.2 Gen 2x2 support, available through the internal USB header</li>\n<li>2 x USB 3.2 Gen 2 Type-A ports (red) on the back panel</li>\n</ol>",
-      "Back Panel Connectors": "<ol>\n<li>10 x USB 3.2 Gen 2 Type-A ports (red)</li>\n<li>2 x RJ-45 ports</li>\n</ol>",
+      Model: "Z790 AORUS XTREME X ICE",
+      Brand: "Gigabyte",
+      USB: "Chipset+Intel® Thunderbolt™ 4 Controller:\n<ol>\n<li>2 x USB Type-C® ports on the back panel, with USB 3.2 Gen 2 support</li>\n</ol>\n\nChipset:\n<ol>\n<li>2 x USB Type-C® ports with USB 3.2 Gen 2x2 support, available through the internal USB header</li>\n<li>2 x USB 3.2 Gen 2 Type-A ports (red) on the back panel</li>\n</ol>",
+      "Back Panel Connectors":
+        "<ol>\n<li>10 x USB 3.2 Gen 2 Type-A ports (red)</li>\n<li>2 x RJ-45 ports</li>\n</ol>",
       "Form Factor": "E-ATX Form Factor; 30.5cm x 28.5cm",
-      "Chipset": "Intel Z790 Express Chipset"
+      Chipset: "Intel Z790 Express Chipset",
     },
     null,
     2
   ),
   cpu: JSON.stringify(
     {
-      "Model": "Intel Core i9-14900K",
-      "Brand": "Intel",
-      "CPU": "Intel Core i9-14900K",
-      "Cores": "24 cores (8 P-cores + 16 E-cores)",
+      Model: "Intel Core i9-14900K",
+      Brand: "Intel",
+      CPU: "Intel Core i9-14900K",
+      Cores: "24 cores (8 P-cores + 16 E-cores)",
       "L3 Cache": "36 MB Smart Cache",
-      "TDP": "125 W"
+      TDP: "125 W",
     },
     null,
     2
   ),
   gpu: JSON.stringify(
     {
-      "Model": "NVIDIA GeForce RTX 4090",
-      "Brand": "NVIDIA",
+      Model: "NVIDIA GeForce RTX 4090",
+      Brand: "NVIDIA",
       "Core Clock": "2235 MHz",
       "Boost Clock": "2520 MHz",
       "Memory Size": "24 GB",
-      "Memory Type": "GDDR6X"
+      "Memory Type": "GDDR6X",
     },
     null,
     2
   ),
   graphic_card: JSON.stringify(
     {
-      "Model": "ASUS ROG Strix RTX 4080 Super",
-      "Brand": "ASUS",
-      "cardwidth": "150 mm",
-      "cardlength": "357 mm",
-      "cardheight": "70 mm",
-      "recommendedpower": "850 W",
-      "outputs": "2x HDMI 2.1a | 3x DisplayPort 1.4a"
+      Model: "ASUS ROG Strix RTX 4080 Super",
+      Brand: "ASUS",
+      cardwidth: "150 mm",
+      cardlength: "357 mm",
+      cardheight: "70 mm",
+      recommendedpower: "850 W",
+      outputs: "2x HDMI 2.1a | 3x DisplayPort 1.4a",
     },
     null,
     2
   ),
   ram: JSON.stringify(
     {
-      "Model": "G.Skill Trident Z5 RGB 32GB (2x16GB) DDR5 6000MHz",
-      "Brand": "G.Skill",
-      "memoryspeed": "6000 MHz",
-      "memorysize": "32 GB",
-      "modules": "2x 16 GB",
-      "ddrtype": "DDR5"
+      Model: "G.Skill Trident Z5 RGB 32GB (2x16GB) DDR5 6000MHz",
+      Brand: "G.Skill",
+      memoryspeed: "6000 MHz",
+      memorysize: "32 GB",
+      modules: "2x 16 GB",
+      ddrtype: "DDR5",
     },
     null,
     2
   ),
   ssd: JSON.stringify(
     {
-      "Model": "Samsung 990 Pro 2TB M.2 NVMe SSD",
-      "Brand": "Samsung",
-      "size": "2 TB",
-      "formfactor": "M.2 2280",
-      "storageinterface": "PCIe Gen 4.0 x4",
-      "readspeed": "7450 MB/s",
-      "writespeed": "6900 MB/s"
+      Model: "Samsung 990 Pro 2TB M.2 NVMe SSD",
+      Brand: "Samsung",
+      size: "2 TB",
+      formfactor: "M.2 2280",
+      storageinterface: "PCIe Gen 4.0 x4",
+      readspeed: "7450 MB/s",
+      writespeed: "6900 MB/s",
     },
     null,
     2
   ),
   hdd: JSON.stringify(
     {
-      "Model": "Seagate BarraCuda 2TB 3.5\" HDD",
-      "Brand": "Seagate",
-      "storagesize": "2 TB",
-      "formfactor": "3.5 inch",
-      "storageinterface": "SATA III",
-      "rpm": "7200 RPM"
+      Model: 'Seagate BarraCuda 2TB 3.5" HDD',
+      Brand: "Seagate",
+      storagesize: "2 TB",
+      formfactor: "3.5 inch",
+      storageinterface: "SATA III",
+      rpm: "7200 RPM",
     },
     null,
     2
   ),
   psu: JSON.stringify(
     {
-      "Model": "Corsair RM1000x 1000W PSU",
-      "Brand": "Corsair",
-      "poweroutput": "1000 W",
-      "certification": "80 Plus Gold",
-      "modularity": "Fully Modular"
+      Model: "Corsair RM1000x 1000W PSU",
+      Brand: "Corsair",
+      poweroutput: "1000 W",
+      certification: "80 Plus Gold",
+      modularity: "Fully Modular",
     },
     null,
     2
   ),
   case: JSON.stringify(
     {
-      "Model": "Lian Li PC-O11 Dynamic EVO",
-      "Brand": "Lian Li",
-      "casetype": "Mid Tower",
-      "motherboardsupport": "E-ATX, ATX, Micro-ATX, Mini-ITX",
-      "cpucoolerheight": "167 mm",
-      "maxpsulength": "220 mm"
+      Model: "Lian Li PC-O11 Dynamic EVO",
+      Brand: "Lian Li",
+      casetype: "Mid Tower",
+      motherboardsupport: "E-ATX, ATX, Micro-ATX, Mini-ITX",
+      cpucoolerheight: "167 mm",
+      maxpsulength: "220 mm",
     },
     null,
     2
   ),
   cooler: JSON.stringify(
     {
-      "Model": "Noctua NH-D15 chromax.black",
-      "Brand": "Noctua",
-      "socketsupported": "LGA1700, LGA1200, AM4, AM5",
-      "fansize": "140 mm",
-      "fancount": "2 fans",
-      "rpm": "1500 RPM"
+      Model: "Noctua NH-D15 chromax.black",
+      Brand: "Noctua",
+      socketsupported: "LGA1700, LGA1200, AM4, AM5",
+      fansize: "140 mm",
+      fancount: "2 fans",
+      rpm: "1500 RPM",
     },
     null,
     2
   ),
   aio: JSON.stringify(
     {
-      "Model": "Corsair iCUE H150i Elite Capellix XT",
-      "Brand": "Corsair",
-      "socketssupported": "LGA1700, LGA1200, AM4, AM5",
-      "radiatorsize": "360 mm",
-      "fansize": "120 mm"
+      Model: "Corsair iCUE H150i Elite Capellix XT",
+      Brand: "Corsair",
+      socketssupported: "LGA1700, LGA1200, AM4, AM5",
+      radiatorsize: "360 mm",
+      fansize: "120 mm",
     },
     null,
     2
-  )
+  ),
 };
 
 interface MappedItem {
@@ -204,8 +206,8 @@ export default function MapperTest() {
       const axiosErr = err as AxiosErrorLike;
       setError(
         axiosErr.response?.data?.message ||
-        axiosErr.message ||
-        "Mapping endpoint error. Check server logs."
+          axiosErr.message ||
+          "Mapping endpoint error. Check server logs."
       );
     } finally {
       setLoading(false);
@@ -221,7 +223,8 @@ export default function MapperTest() {
             Specs Mapper Tester
           </h1>
           <p className="text-xs md:text-sm text-slate-400 mt-1">
-            Validate and test raw key-value scraped specs mapping into structured product schemas on-demand.
+            Validate and test raw key-value scraped specs mapping into structured product schemas
+            on-demand.
           </p>
         </div>
         <Link
@@ -246,7 +249,10 @@ export default function MapperTest() {
                 onChange={(e) => {
                   const val = e.target.value;
                   setProductType(val);
-                  setJsonInput(SAMPLE_TEMPLATES[val] || "{\n  \"Model\": \"Sample Model\",\n  \"Brand\": \"Sample Brand\"\n}");
+                  setJsonInput(
+                    SAMPLE_TEMPLATES[val] ||
+                      '{\n  "Model": "Sample Model",\n  "Brand": "Sample Brand"\n}'
+                  );
                 }}
                 className="bg-slate-950 border border-slate-700/80 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-blue-500"
               >
@@ -335,12 +341,19 @@ export default function MapperTest() {
                 <div className="flex gap-4 text-[10px] text-slate-400 border-b border-slate-800 pb-2.5">
                   <div>
                     Parsed Status:{" "}
-                    <span className={result.failedCount === 0 ? "text-emerald-400 font-bold" : "text-rose-400 font-bold"}>
+                    <span
+                      className={
+                        result.failedCount === 0
+                          ? "text-emerald-400 font-bold"
+                          : "text-rose-400 font-bold"
+                      }
+                    >
                       {result.failedCount === 0 ? "SUCCESS" : "VALIDATION ERRORS"}
                     </span>
                   </div>
                   <div>
-                    Mapped Fields: <span className="text-white font-bold">{result.mappedCount}</span>
+                    Mapped Fields:{" "}
+                    <span className="text-white font-bold">{result.mappedCount}</span>
                   </div>
                   <div>
                     Failures: <span className="text-white font-bold">{result.failedCount}</span>
@@ -348,12 +361,16 @@ export default function MapperTest() {
                 </div>
 
                 {/* Display validation errors if any */}
-                {result.failedCount > 0 && result.failed.map((fail: FailedItem, i: number) => (
-                  <div key={i} className="bg-rose-950/20 border border-rose-900/40 p-2.5 rounded-lg text-rose-400 text-[11px] whitespace-pre-wrap">
-                    <div className="font-bold mb-1">Index {fail.index} Error:</div>
-                    {JSON.stringify(fail.error, null, 2)}
-                  </div>
-                ))}
+                {result.failedCount > 0 &&
+                  result.failed.map((fail: FailedItem, i: number) => (
+                    <div
+                      key={i}
+                      className="bg-rose-950/20 border border-rose-900/40 p-2.5 rounded-lg text-rose-400 text-[11px] whitespace-pre-wrap"
+                    >
+                      <div className="font-bold mb-1">Index {fail.index} Error:</div>
+                      {JSON.stringify(fail.error, null, 2)}
+                    </div>
+                  ))}
 
                 {/* Display mapped object DTO */}
                 {result.mapped.length > 0 && (
@@ -369,7 +386,8 @@ export default function MapperTest() {
               </div>
             ) : (
               <div className="flex items-center justify-center h-full text-slate-600 italic">
-                Ready. Select a product type, adjust templates, and click &quot;Run Mapping Test&quot; to inspect results.
+                Ready. Select a product type, adjust templates, and click &quot;Run Mapping
+                Test&quot; to inspect results.
               </div>
             )}
           </div>

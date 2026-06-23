@@ -1,14 +1,14 @@
 "use client";
 
-import z from "zod";
+import Part, { Information } from "@pc-builder/shared/part";
 import { lazy, LazyExoticComponent, Suspense } from "react";
+import z from "zod";
 
 import { useInfoAction } from "@/features/part/hooks/InfoAction";
 import { Button } from "@/ui/Button";
 import { VerticalCollapsible } from "@/ui/Collapsible";
 import { LoadingSpinner } from "@/ui/LoadingSpinner";
 import { NotificationBar } from "@/ui/NotificationBar";
-import Part, { Information } from "@pc-builder/shared/part";
 
 import { InputFormComponent } from "./utils/TanstackForm";
 

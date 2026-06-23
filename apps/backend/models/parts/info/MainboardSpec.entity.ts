@@ -1,3 +1,6 @@
+import { InternalConnectors, FormFactor } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as MainboardSpec from "@pc-builder/shared/part/info/MainboardSpec";
 import {
   BelongsTo,
   Column,
@@ -8,10 +11,6 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-
-import { InternalConnectors, FormFactor } from "@pc-builder/shared/interface";
-import { Infos } from "@pc-builder/shared/part";
-import * as MainboardSpec from "@pc-builder/shared/part/info/MainboardSpec";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

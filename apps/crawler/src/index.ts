@@ -1,8 +1,7 @@
+import { Products } from "@pc-builder/shared";
 import fs from "node:fs";
 import path from "node:path";
 import { z } from "zod";
-
-import { Products } from "@pc-builder/shared";
 
 import { Crawler } from "./core/crawler";
 import { LocalFileStorageAdapter } from "./storage/storage";

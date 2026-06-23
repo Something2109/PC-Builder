@@ -1,5 +1,6 @@
 "use client";
 
+import { UnitInterface } from "@pc-builder/shared/Units";
 import {
   ChangeEvent,
   DetailedHTMLProps,
@@ -11,8 +12,6 @@ import {
   useRef,
   useEffect,
 } from "react";
-
-import { UnitInterface } from "@pc-builder/shared/Units";
 
 import { RowWrapper } from "./FlexWrapper";
 import { mergeClass } from "./mergeClass";

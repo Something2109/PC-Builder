@@ -6,10 +6,9 @@ import {
   ForbiddenException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { ROLE_METADATA_KEY } from "src/utils/role/role.decorator";
-
 import { Session, Tokens } from "@pc-builder/shared/API";
 import { Roles } from "@pc-builder/shared/user";
+import { ROLE_METADATA_KEY } from "src/utils/role/role.decorator";
 
 /**
  * The global guard used by the application.

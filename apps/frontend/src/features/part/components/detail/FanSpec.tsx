@@ -1,6 +1,7 @@
-import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
 import * as FanSpec from "@pc-builder/shared/part/info/FanSpec";
 import { LengthUnits } from "@pc-builder/shared/Units";
+
+import { SuffixDisplay, UnitDisplay } from "@/ui/Display";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

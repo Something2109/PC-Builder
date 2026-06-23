@@ -1,10 +1,10 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { ModuleRef } from "@nestjs/core";
 import { InjectModel } from "@nestjs/sequelize";
-
-import AliasEntry from "@/models/alias/AliasEntry.entity";
 import { IAliasRegistry, ResolvedTarget, HeuristicConfig } from "@pc-builder/shared/part";
 import { normalizeKey } from "@pc-builder/shared/part/mapper/utils";
+
+import AliasEntry from "@/models/alias/AliasEntry.entity";
 
 import { AliasSeedService } from "./alias-seed.service";
 

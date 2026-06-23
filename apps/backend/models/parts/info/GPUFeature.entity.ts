@@ -1,3 +1,5 @@
+import { Infos } from "@pc-builder/shared/part";
+import * as GPUFeature from "@pc-builder/shared/part/info/GPUFeature";
 import {
   BelongsTo,
   Column,
@@ -8,9 +10,6 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-
-import { Infos } from "@pc-builder/shared/part";
-import * as GPUFeature from "@pc-builder/shared/part/info/GPUFeature";
 
 import { PartInformation } from "..";
 import { ModelScopes, PartDefaultScope, defaultFilter } from "../../interface";

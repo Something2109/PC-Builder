@@ -1,5 +1,6 @@
-import { SuffixDisplay } from "@/ui/Display";
 import * as MainboardSpec from "@pc-builder/shared/part/info/MainboardSpec";
+
+import { SuffixDisplay } from "@/ui/Display";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

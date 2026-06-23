@@ -1,9 +1,9 @@
 "use client";
 
+import { Products } from "@pc-builder/shared/part";
 import Link from "next/link";
 
 import useSearchAction from "@/hooks/useSearchAction";
-import { Products } from "@pc-builder/shared/part";
 
 export function SearchBar({ q, part }: { q?: string; part?: Products }) {
   const [input, result, pending, onChange, onBlur, onEnter] = useSearchAction(part);

@@ -1,6 +1,7 @@
-import { UnitDisplay } from "@/ui/Display";
 import * as StoragePerformance from "@pc-builder/shared/part/info/StoragePerformance";
 import { MemorySpeedUnit } from "@pc-builder/shared/Units";
+
+import { UnitDisplay } from "@/ui/Display";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

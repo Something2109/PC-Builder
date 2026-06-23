@@ -6,10 +6,10 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectModel } from "@nestjs/sequelize";
-
-import RetailProduct from "@/models/sellers/SellerProduct.entity";
 import { CrawlIngestItem, ScraperInfo, CrawlerSession, Products } from "@pc-builder/shared/crawler";
 import { normalizeDomain } from "@pc-builder/shared/part/mapper/utils";
+
+import RetailProduct from "@/models/sellers/SellerProduct.entity";
 
 @Injectable()
 export class CrawlerService {

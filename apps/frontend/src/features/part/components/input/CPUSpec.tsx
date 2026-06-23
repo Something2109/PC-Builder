@@ -1,7 +1,7 @@
+import * as CPUSpec from "@pc-builder/shared/part/info/CPUSpec";
 import { ZodType } from "zod";
 
 import { Input, SuffixInput } from "@/ui/Input";
-import * as CPUSpec from "@pc-builder/shared/part/info/CPUSpec";
 
 import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

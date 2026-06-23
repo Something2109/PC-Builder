@@ -1,5 +1,6 @@
-import { SuffixDisplay } from "@/ui/Display";
 import * as GPU from "@pc-builder/shared/part/product/GPU";
+
+import { SuffixDisplay } from "@/ui/Display";
 
 import { GenericSummaryCells, InfoSummaryMapping } from "../utils/Summary";
 

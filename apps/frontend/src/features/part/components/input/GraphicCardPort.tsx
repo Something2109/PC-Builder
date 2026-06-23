@@ -1,10 +1,10 @@
+import { ExternalPorts } from "@pc-builder/shared/interface";
+import * as GraphicCardPort from "@pc-builder/shared/part/info/GraphicCardPort";
 import React, { useRef, useState } from "react";
 
 import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
-import { ExternalPorts } from "@pc-builder/shared/interface";
-import * as GraphicCardPort from "@pc-builder/shared/part/info/GraphicCardPort";
 
 import { PortInputFields } from "../utils/Input";
 import { Table } from "../utils/Table";

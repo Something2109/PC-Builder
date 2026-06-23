@@ -1,6 +1,7 @@
-import { UnitDisplay } from "@/ui/Display";
 import * as SSDSpec from "@pc-builder/shared/part/info/SSDSpec";
 import { MemoryUnits } from "@pc-builder/shared/Units";
+
+import { UnitDisplay } from "@/ui/Display";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

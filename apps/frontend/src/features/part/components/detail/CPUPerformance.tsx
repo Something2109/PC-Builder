@@ -1,6 +1,7 @@
-import { UnitDisplay, SuffixDisplay } from "@/ui/Display";
 import * as CPUPerformance from "@pc-builder/shared/part/info/CPUPerformance";
 import { FrequencyUnits } from "@pc-builder/shared/Units";
+
+import { UnitDisplay, SuffixDisplay } from "@/ui/Display";
 
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 

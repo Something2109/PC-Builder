@@ -1,5 +1,6 @@
-import { MultipleChoiceInput } from "@/ui/Input";
 import * as Radiator from "@pc-builder/shared/part/product/Radiator";
+
+import { MultipleChoiceInput } from "@/ui/Input";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

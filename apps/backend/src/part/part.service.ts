@@ -1,5 +1,4 @@
 import { BadRequestException, Inject, Injectable, Logger } from "@nestjs/common";
-
 import Part, { Products, Mapping } from "@pc-builder/shared/part";
 
 import {

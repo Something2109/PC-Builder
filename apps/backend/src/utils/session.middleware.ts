@@ -1,9 +1,8 @@
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Request, Response, NextFunction } from "express";
-
 import { Session } from "@pc-builder/shared/API";
 import { JwtPayload } from "@pc-builder/shared/user";
+import { Request, Response, NextFunction } from "express";
 
 import { getAccessToken } from "./auth/tokens";
 

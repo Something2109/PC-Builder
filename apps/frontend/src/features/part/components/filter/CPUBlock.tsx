@@ -1,5 +1,6 @@
-import { MultipleChoiceInput } from "@/ui/Input";
 import * as CPUBlock from "@pc-builder/shared/part/product/CPUBlock";
+
+import { MultipleChoiceInput } from "@/ui/Input";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 

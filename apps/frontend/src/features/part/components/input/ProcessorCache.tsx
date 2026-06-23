@@ -1,8 +1,8 @@
+import * as ProcessorCache from "@pc-builder/shared/part/info/ProcessorCache";
+import { MemoryUnits } from "@pc-builder/shared/Units";
 import { ZodType } from "zod";
 
 import { UnitInput } from "@/ui/Input";
-import * as ProcessorCache from "@pc-builder/shared/part/info/ProcessorCache";
-import { MemoryUnits } from "@pc-builder/shared/Units";
 
 import { GenericSingleInputForm } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

@@ -1,8 +1,8 @@
+import * as StoragePerformance from "@pc-builder/shared/part/info/StoragePerformance";
+import { MemorySpeedUnit } from "@pc-builder/shared/Units";
 import { ZodType } from "zod";
 
 import { UnitInput } from "@/ui/Input";
-import * as StoragePerformance from "@pc-builder/shared/part/info/StoragePerformance";
-import { MemorySpeedUnit } from "@pc-builder/shared/Units";
 
 import { GenericSingleInputForm } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

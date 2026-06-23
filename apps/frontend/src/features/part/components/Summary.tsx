@@ -1,8 +1,7 @@
 "use client";
 
-import { ComponentType, lazy, TableHTMLAttributes } from "react";
-
 import Part, { Products } from "@pc-builder/shared/part";
+import { ComponentType, lazy, TableHTMLAttributes } from "react";
 
 import { PartSummaryCells } from "./summary/Part";
 import { SummaryTable as Table } from "./utils/Summary";

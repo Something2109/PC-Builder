@@ -1,7 +1,7 @@
+import { Products } from "@pc-builder/shared/part";
 import Image, { StaticImageData } from "next/image";
 
 import { RedirectButton } from "@/ui/Button";
-import { Products } from "@pc-builder/shared/part";
 
 const title: { [key in Products]: string } = {
   [Products.CPU]: "CPU",

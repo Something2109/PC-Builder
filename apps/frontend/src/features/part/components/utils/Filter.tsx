@@ -1,9 +1,9 @@
+import { Products } from "@pc-builder/shared/part";
 import { useQuery } from "@tanstack/react-query";
 import { FunctionComponent, InputHTMLAttributes, SelectHTMLAttributes } from "react";
 
 import { VerticalCollapsible } from "@/ui/Collapsible";
 import { Toggler } from "@/ui/Toggle";
-import { Products } from "@pc-builder/shared/part";
 
 import { InfoLabel } from "../utils/Table";
 

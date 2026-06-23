@@ -1,9 +1,9 @@
+import { Products } from "@pc-builder/shared/part";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 import { SearchBar } from "@/layout/searchbar";
-import { Products } from "@pc-builder/shared/part";
 
 const categories = [
   {

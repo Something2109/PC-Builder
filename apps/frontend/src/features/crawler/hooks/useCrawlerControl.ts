@@ -1,10 +1,10 @@
 "use client";
 
+import { ScraperInfo, CrawlerSession } from "@pc-builder/shared/crawler";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 import axiosInstance from "@/lib/axios";
-import { ScraperInfo, CrawlerSession } from "@pc-builder/shared/crawler";
 
 interface AxiosErrorLike {
   response?: {

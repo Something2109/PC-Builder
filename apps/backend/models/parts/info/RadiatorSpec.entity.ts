@@ -1,3 +1,6 @@
+import { FormFactor, Material } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as RadiatorSpec from "@pc-builder/shared/part/info/RadiatorSpec";
 import {
   BelongsTo,
   Column,
@@ -8,10 +11,6 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-
-import { FormFactor, Material } from "@pc-builder/shared/interface";
-import { Infos } from "@pc-builder/shared/part";
-import * as RadiatorSpec from "@pc-builder/shared/part/info/RadiatorSpec";
 
 import { PartInformation } from "..";
 import { ModelScopes, PartDefaultScope, defaultFilter } from "../../interface";

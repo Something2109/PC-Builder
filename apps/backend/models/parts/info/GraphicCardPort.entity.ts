@@ -1,3 +1,6 @@
+import { ExternalPorts } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as GraphicCardPort from "@pc-builder/shared/part/info/GraphicCardPort";
 import {
   BelongsTo,
   Column,
@@ -8,10 +11,6 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-
-import { ExternalPorts } from "@pc-builder/shared/interface";
-import { Infos } from "@pc-builder/shared/part";
-import * as GraphicCardPort from "@pc-builder/shared/part/info/GraphicCardPort";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

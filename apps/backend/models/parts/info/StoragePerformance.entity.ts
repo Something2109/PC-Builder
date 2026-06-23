@@ -1,3 +1,5 @@
+import { Infos } from "@pc-builder/shared/part";
+import * as StoragePerformance from "@pc-builder/shared/part/info/StoragePerformance";
 import {
   BelongsTo,
   Column,
@@ -8,9 +10,6 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-
-import { Infos } from "@pc-builder/shared/part";
-import * as StoragePerformance from "@pc-builder/shared/part/info/StoragePerformance";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

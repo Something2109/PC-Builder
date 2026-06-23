@@ -1,7 +1,7 @@
+import * as GPUFeature from "@pc-builder/shared/part/info/GPUFeature";
 import { ZodType } from "zod";
 
 import { Input } from "@/ui/Input";
-import * as GPUFeature from "@pc-builder/shared/part/info/GPUFeature";
 
 import { GenericSingleInputForm, mapChange } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

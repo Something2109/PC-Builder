@@ -1,3 +1,6 @@
+import { FormFactor } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as CasePSUSupport from "@pc-builder/shared/part/info/CasePSUSupport";
 import {
   BelongsTo,
   Column,
@@ -8,10 +11,6 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-
-import { FormFactor } from "@pc-builder/shared/interface";
-import { Infos } from "@pc-builder/shared/part";
-import * as CasePSUSupport from "@pc-builder/shared/part/info/CasePSUSupport";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

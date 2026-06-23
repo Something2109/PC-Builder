@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-
-import AliasLearnerLog from "@/models/alias/AliasLearnerLog.entity";
 import { IAliasLearner, IAliasRegistry, ResolvedTarget } from "@pc-builder/shared/part";
 import { fuzzyMatch, fuzzyMatchBasic } from "@pc-builder/shared/part/mapper/resolver";
 import { normalizeKey } from "@pc-builder/shared/part/mapper/utils";
+
+import AliasLearnerLog from "@/models/alias/AliasLearnerLog.entity";
 
 @Injectable()
 export class DbAliasLearner implements IAliasLearner {

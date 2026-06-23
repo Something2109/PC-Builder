@@ -1,7 +1,5 @@
 import { Injectable, ConflictException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Document, Model } from "mongoose";
-
 import {
   Article,
   ArticleStatus,
@@ -10,6 +8,7 @@ import {
   UpdateArticleDto,
 } from "@pc-builder/shared/article";
 import { Products } from "@pc-builder/shared/part";
+import { Document, Model } from "mongoose";
 
 import { ArticleClass } from "../entities/Article.entity";
 

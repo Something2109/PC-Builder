@@ -7,10 +7,9 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { Roles } from "@pc-builder/shared/user";
 import { Request } from "express";
 import { Role } from "src/utils/role/role.decorator";
-
-import { Roles } from "@pc-builder/shared/user";
 
 import { CdnService } from "./cdn.service";
 

@@ -1,9 +1,9 @@
-import { ZodType } from "zod";
-
-import { UnitInput, OptionSelect } from "@/ui/Input";
 import { InternalConnectors } from "@pc-builder/shared/interface";
 import * as StorageCache from "@pc-builder/shared/part/info/StorageCache";
 import { MemoryUnits } from "@pc-builder/shared/Units";
+import { ZodType } from "zod";
+
+import { UnitInput, OptionSelect } from "@/ui/Input";
 
 import { GenericSingleInputForm } from "../utils/TanstackForm";
 import { InfoComponentObject } from "../utils/TanstackForm";

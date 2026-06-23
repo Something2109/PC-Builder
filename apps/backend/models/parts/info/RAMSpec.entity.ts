@@ -1,3 +1,6 @@
+import { FormFactor, InternalConnectors } from "@pc-builder/shared/interface";
+import { Infos } from "@pc-builder/shared/part";
+import * as RAMSpec from "@pc-builder/shared/part/info/RAMSpec";
 import {
   BelongsTo,
   Column,
@@ -8,10 +11,6 @@ import {
   Scopes,
   Table,
 } from "sequelize-typescript";
-
-import { FormFactor, InternalConnectors } from "@pc-builder/shared/interface";
-import { Infos } from "@pc-builder/shared/part";
-import * as RAMSpec from "@pc-builder/shared/part/info/RAMSpec";
 
 import { PartInformation } from "..";
 import { PartDefaultScope, ModelScopes, defaultFilter } from "../../interface";

@@ -2,9 +2,8 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import React from "react";
-
 import { Content as ArticleContent, ContentName } from "@pc-builder/shared/article";
+import React from "react";
 
 import { ImageInput } from "./Image";
 import { ListInput } from "./List";

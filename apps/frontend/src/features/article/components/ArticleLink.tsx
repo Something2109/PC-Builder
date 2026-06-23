@@ -1,13 +1,13 @@
 "use client";
 
+import { Summary } from "@pc-builder/shared/article";
+import { Roles } from "@pc-builder/shared/user";
 import Link from "next/link";
 import React from "react";
 
 import { Guard } from "@/features/auth";
 import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
 import { mergeClass } from "@/ui/mergeClass";
-import { Summary } from "@pc-builder/shared/article";
-import { Roles } from "@pc-builder/shared/user";
 
 const max_char = 180;
 

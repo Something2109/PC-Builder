@@ -1,5 +1,6 @@
 "use client";
 
+import { Products } from "@pc-builder/shared/part";
 import { useRouter } from "next/navigation";
 import { lazy, FormHTMLAttributes, LazyExoticComponent, FunctionComponent, Suspense } from "react";
 
@@ -7,7 +8,6 @@ import { Button } from "@/ui/Button";
 import { RowWrapper } from "@/ui/FlexWrapper";
 import { Input } from "@/ui/Input";
 import { LoadingSpinner } from "@/ui/LoadingSpinner";
-import { Products } from "@pc-builder/shared/part";
 
 import PartFilter from "./filter/Part";
 

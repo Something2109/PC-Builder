@@ -1,10 +1,10 @@
+import { InternalConnectors } from "@pc-builder/shared/interface";
+import * as PSUConnector from "@pc-builder/shared/part/info/PSUConnector";
 import React from "react";
 
 import { ArrayFormApi } from "@/type/form";
 import { DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
-import { InternalConnectors } from "@pc-builder/shared/interface";
-import * as PSUConnector from "@pc-builder/shared/part/info/PSUConnector";
 
 import { Table } from "../utils/Table";
 import { GenericListInputForm } from "../utils/TanstackForm";

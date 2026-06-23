@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-
 import { ContentName } from "@pc-builder/shared/article";
+import React, { useEffect, useRef } from "react";
 
 interface SlashMenuProps {
   onSelect: (type: ContentName) => void;

@@ -1,6 +1,5 @@
-import React from "react";
-
 import { Section as SectionType } from "@pc-builder/shared/article";
+import React from "react";
 
 import { ContentProps } from "../utils";
 

@@ -1,7 +1,4 @@
 import { Controller, Get, Post, Body, UsePipes } from "@nestjs/common";
-import { Role } from "src/utils/role/role.decorator";
-import { ZodValidationPipe } from "src/utils/utils.modules";
-
 import {
   CrawlStartPayload,
   CrawlStopPayload,
@@ -15,6 +12,8 @@ import {
   CrawlIngestSchema,
 } from "@pc-builder/shared/crawler";
 import { Roles } from "@pc-builder/shared/user";
+import { Role } from "src/utils/role/role.decorator";
+import { ZodValidationPipe } from "src/utils/utils.modules";
 
 import { CrawlerService } from "./crawler.service";
 

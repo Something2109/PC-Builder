@@ -1,10 +1,10 @@
+import { ExternalPorts } from "@pc-builder/shared/interface";
+import * as MainboardUSBConnector from "@pc-builder/shared/part/info/MainboardUSBConnector";
 import React, { useRef } from "react";
 
 import { ArrayFormApi } from "@/type/form";
 import { Button, DeleteButton } from "@/ui/Button";
 import { Input, OptionSelect } from "@/ui/Input";
-import { ExternalPorts } from "@pc-builder/shared/interface";
-import * as MainboardUSBConnector from "@pc-builder/shared/part/info/MainboardUSBConnector";
 
 import { Table } from "../utils/Table";
 import { GenericListInputForm } from "../utils/TanstackForm";

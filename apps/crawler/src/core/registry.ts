@@ -1,7 +1,6 @@
+import { normalizeDomain } from "@pc-builder/shared";
 import fs from "node:fs";
 import path from "node:path";
-
-import { normalizeDomain } from "@pc-builder/shared";
 
 import { APIWebsiteInfo } from "../types/interface";
 
