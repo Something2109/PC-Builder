@@ -2,12 +2,12 @@
 
 import { Article, Content, ContentName } from "@pc-builder/shared/article";
 import { Roles } from "@pc-builder/shared/user";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import { Guard } from "@/features/auth";
+import axiosInstance from "@/lib/axios";
 import { mergeClass } from "@/ui/mergeClass";
 
 import { Picture } from "./display/Image";
@@ -138,9 +138,7 @@ function ArticleComponent({ article }: { article: Article }) {
     if (isPublishing) return;
     setIsPublishing(true);
     try {
-      await axios.post(`/api/article/${article.id}/publish`, null, {
-        withCredentials: true,
-      });
+      await axiosInstance.post(`/article/${article.id}/publish`);
       router.refresh();
     } catch (error) {
       console.error("Failed to publish article:", error);
@@ -156,9 +154,7 @@ function ArticleComponent({ article }: { article: Article }) {
     if (!confirm("Are you sure you want to delete this article?")) return;
     setIsDeleting(true);
     try {
-      await axios.delete(`/api/article/${article.id}`, {
-        withCredentials: true,
-      });
+      await axiosInstance.delete(`/article/${article.id}`);
       router.push("/article");
       router.refresh();
     } catch (error) {
@@ -177,7 +173,7 @@ function ArticleComponent({ article }: { article: Article }) {
   return (
     <article className="w-full max-w-6xl mx-auto my-6 px-1 md:px-4">
       {/* Cover Header */}
-      <div className="relative w-full h-[200px] md:h-[300px] rounded-3xl overflow-hidden shadow-md group">
+      <div className="relative w-full h-50 md:h-75 rounded-3xl overflow-hidden shadow-md group">
         {article.cover ? (
           <img
             src={article.cover}

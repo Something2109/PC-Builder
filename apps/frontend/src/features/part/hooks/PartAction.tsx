@@ -1,13 +1,13 @@
 "use client";
 
 import Part from "@pc-builder/shared/part";
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { AxiosError, AxiosRequestConfig } from "axios";
 import { useActionState, useState } from "react";
 
+import axiosInstance from "@/lib/axios";
+
 function createPayload(formData: FormData | null) {
-  const RequestPayload: Omit<AxiosRequestConfig, "url"> = {
-    withCredentials: true,
-  };
+  const RequestPayload: Omit<AxiosRequestConfig, "url"> = {};
 
   if (formData) {
     const raw = Object.fromEntries(formData.entries()) as Record<string, string | undefined>;
@@ -31,13 +31,14 @@ export default function usePartAction(path: string, defaultValue?: Part.DTO) {
       let operation = "add";
       if (!prev) operation = formData ? "save" : "delete";
 
-      const RequestPayload = { ...createPayload(formData), url: path };
+      const targetPath = path.startsWith("/api") ? path.substring("/api".length) : path;
+      const RequestPayload = { ...createPayload(formData), url: targetPath };
 
       setError(null);
       if (!confirm(`Are you sure you want to ${operation} basic info?`)) return prev;
 
       try {
-        const response = await axios.request<Part.BasicInfo>(RequestPayload);
+        const response = await axiosInstance.request<Part.BasicInfo>(RequestPayload);
 
         alert(`Successfully ${operation} part info.`);
 
