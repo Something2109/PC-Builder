@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
 import { Products } from "@pc-builder/shared/part";
+import React, { useState } from "react";
+
+import { SAMPLE_TEMPLATES } from "../../constants";
 import { FormInputsEditor } from "./editor/FormInputsEditor";
 import JsonInputEditor from "./editor/JsonInputEditor";
-import { SAMPLE_TEMPLATES } from "../../constants";
 
 export interface MapperInputPanelProps {
   onSubmit: (data: { productType: Products; fallbackBrand: string; jsonInput: string }) => void;

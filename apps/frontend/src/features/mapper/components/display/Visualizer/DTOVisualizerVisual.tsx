@@ -1,10 +1,12 @@
-import React from "react";
-import { MappingTrace } from "../../../types";
 import Part from "@pc-builder/shared/part";
-import { DTOVisualizerSingleField } from "./Field/DTOVisualizerSingleField";
-import { DTOVisualizerArrayField } from "./Field/DTOVisualizerArrayField";
-import { hasErrorInSubtree } from "@/features/mapper";
+import React from "react";
+
 import { VerticalCollapsible } from "@/components/ui/Collapsible";
+import { hasErrorInSubtree } from "@/features/mapper";
+
+import { MappingTrace } from "../../../types";
+import { DTOVisualizerArrayField } from "./Field/DTOVisualizerArrayField";
+import { DTOVisualizerSingleField } from "./Field/DTOVisualizerSingleField";
 
 const basicFields = Part.BasicAttributes.options.filter((val) => !["id"].includes(val));
 

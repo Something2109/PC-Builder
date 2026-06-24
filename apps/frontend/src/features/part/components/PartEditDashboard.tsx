@@ -2,10 +2,12 @@
 
 import Part, { Mapping, Products } from "@pc-builder/shared/part";
 import { useState } from "react";
-import PartPicture from "./Picture";
+
+import { ResponsiveWrapper } from "@/ui/FlexWrapper";
+
 import { InfoForm } from "./Form";
 import PartForm from "./input/Part";
-import { ResponsiveWrapper } from "@/ui/FlexWrapper";
+import PartPicture from "./Picture";
 
 interface PartEditDashboardProps {
   part: Products;

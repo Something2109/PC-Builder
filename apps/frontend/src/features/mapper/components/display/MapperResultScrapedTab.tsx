@@ -1,6 +1,7 @@
 import React from "react";
-import { findMappedDTOPath } from "../../utils";
+
 import { MappingTrace } from "../../types";
+import { findMappedDTOPath } from "../../utils";
 
 interface MapperResultScrapedTabProps {
   raw: Record<string, unknown>;

@@ -3,9 +3,9 @@
 import Link from "next/link";
 import React from "react";
 
-import MapperInputPanel from "./input/MapperInputPanel";
-import MapperResultPanel from "./display/MapperResultPanel";
 import { useTestMapping } from "../hooks/useTestMapping";
+import MapperResultPanel from "./display/MapperResultPanel";
+import MapperInputPanel from "./input/MapperInputPanel";
 
 export default function MapperTest() {
   const { testMappingAsync, loading, result, error, lastMappedJson } = useTestMapping();

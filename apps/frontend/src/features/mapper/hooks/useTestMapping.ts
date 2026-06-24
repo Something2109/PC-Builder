@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { Products } from "@pc-builder/shared/part";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { Products } from "@pc-builder/shared/part";
+import { useState } from "react";
+
 import axiosInstance from "@/lib/axios";
+
 import { MapperResult } from "../types";
 
 export interface TestMappingParams {

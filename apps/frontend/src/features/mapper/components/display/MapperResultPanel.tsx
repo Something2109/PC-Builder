@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { MapperResult, MappedItem, FailedItem } from "../../types";
-import { DTOVisualizerVisual } from "./Visualizer/DTOVisualizerVisual";
-import { MapperResultScrapedTab } from "./MapperResultScrapedTab";
-import { flattenErrorObject } from "../../utils";
+
 import { CodeEditor } from "@/components/ui/CodeEditor";
 import { VerticalCollapsible } from "@/components/ui/Collapsible";
+
+import { MapperResult, MappedItem, FailedItem } from "../../types";
+import { flattenErrorObject } from "../../utils";
+import { MapperResultScrapedTab } from "./MapperResultScrapedTab";
+import { DTOVisualizerVisual } from "./Visualizer/DTOVisualizerVisual";
 
 interface MapperResultPanelProps {
   loading: boolean;
