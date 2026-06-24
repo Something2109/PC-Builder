@@ -3,6 +3,7 @@ import { MapperResult, MappedItem, FailedItem } from "../../types";
 import { DTOVisualizerVisual } from "./DTOVisualizerVisual";
 import { MapperResultScrapedTab } from "./MapperResultScrapedTab";
 import { flattenErrorObject } from "../../utils";
+import { CodeEditor } from "@/components/ui/CodeEditor";
 
 interface MapperResultPanelProps {
   loading: boolean;
@@ -10,12 +11,21 @@ interface MapperResultPanelProps {
   lastMappedJson: string;
 }
 
-interface MapperResultItemViewProps {
-  type: "success" | "failed";
+interface MapperSuccessResultItemViewProps {
+  type: "success";
   index: number;
-  item: MappedItem | FailedItem;
+  item: MappedItem;
   lastMappedJson: string;
 }
+
+interface MapperFailedResultItemViewProps {
+  type: "failed";
+  index: number;
+  item: FailedItem;
+  lastMappedJson: string;
+}
+
+type MapperResultItemViewProps = MapperSuccessResultItemViewProps | MapperFailedResultItemViewProps;
 
 // Enums for Tab states
 enum OutputTab {
@@ -50,7 +60,7 @@ function MapperResultItemView({ type, index, item, lastMappedJson }: MapperResul
   // Determine raw scraped specs for this item
   let rawSpecs: Record<string, unknown> = {};
   if (type === "failed") {
-    rawSpecs = (item as FailedItem).raw || {};
+    rawSpecs = item.raw || {};
   } else {
     try {
       const parsedInput = JSON.parse(lastMappedJson);
@@ -67,15 +77,14 @@ function MapperResultItemView({ type, index, item, lastMappedJson }: MapperResul
   // Parse validation errors if failed
   let flatErrors: Record<string, string> = {};
   if (type === "failed") {
-    const fail = item as FailedItem;
+    const fail = item;
     flatErrors =
       typeof fail.error === "object" && fail.error !== null
         ? flattenErrorObject(fail.error)
         : { "": String(fail.error) };
   }
 
-  const dataToRender =
-    type === "success" ? (item as MappedItem).data : (item as FailedItem).parsed || {};
+  const dataToRender = type === "success" ? item.data : item.parsed || {};
 
   // Tab definitions
   const mainTabs = [
@@ -156,9 +165,7 @@ function MapperResultItemView({ type, index, item, lastMappedJson }: MapperResul
                 errors={flatErrors}
               />
             ) : (
-              <pre className="text-slate-300 text-[11px] whitespace-pre-wrap bg-slate-950 p-3 rounded-lg border border-slate-900 max-h-80 overflow-y-auto leading-relaxed font-mono">
-                {JSON.stringify(dataToRender, null, 2)}
-              </pre>
+              <CodeEditor readOnly rows={10} value={JSON.stringify(dataToRender, null, 2)} />
             )}
           </div>
         )}
@@ -195,9 +202,12 @@ function MapperResultItemView({ type, index, item, lastMappedJson }: MapperResul
                 onlyErrors={true}
               />
             ) : (
-              <pre className="text-rose-300 text-[11px] whitespace-pre-wrap bg-slate-955 p-3 rounded-lg border border-slate-900 max-h-80 overflow-y-auto leading-relaxed font-mono">
-                {JSON.stringify((item as FailedItem).error, null, 2)}
-              </pre>
+              <CodeEditor
+                readOnly
+                rows={10}
+                value={JSON.stringify(item.error, null, 2)}
+                className="text-rose-300"
+              />
             )}
           </div>
         )}
@@ -261,12 +271,10 @@ export default function MapperResultPanel({
             {/* List of items */}
             {allItems.length > 0 ? (
               <div className="space-y-6">
-                {allItems.map(({ type, index, item }) => (
+                {allItems.map((itemObj) => (
                   <MapperResultItemView
-                    key={`${type}-${index}`}
-                    type={type}
-                    index={index}
-                    item={item}
+                    key={`${itemObj.type}-${itemObj.index}`}
+                    {...itemObj}
                     lastMappedJson={lastMappedJson}
                   />
                 ))}

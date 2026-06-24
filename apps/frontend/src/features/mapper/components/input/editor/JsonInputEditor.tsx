@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { CodeEditor } from "@/components/ui/CodeEditor";
 
 export interface JsonInputEditorProps {
   value: Record<string, unknown>;
@@ -51,13 +52,11 @@ export default function JsonInputEditor({ value, onChange, onError }: JsonInputE
 
   return (
     <div className="flex flex-col gap-1.5">
-      <textarea
-        required
+      <CodeEditor
         rows={15}
         value={text}
-        onChange={(e) => handleTextChange(e.target.value)}
+        onChange={handleTextChange}
         placeholder="Paste raw spec JSON here..."
-        className="font-mono bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 resize-y leading-relaxed"
       />
     </div>
   );
