@@ -1,5 +1,6 @@
 "use client";
 
+import { startTransition } from "react";
 import { useBuildContext } from "@/features/build/hooks/BuildContext";
 import { useValidation } from "@/features/build/hooks/Validation";
 
@@ -8,7 +9,7 @@ export default function BuildValidateForm() {
   const { validate, pending } = useValidation();
 
   return (
-    <form action={() => validate(list)}>
+    <form action={() => startTransition(() => validate(list))}>
       {pending ? (
         <div className="flex items-center gap-2 text-xs text-text/60 font-bold">
           <svg className="animate-spin h-4 w-4 text-accent-indigo" fill="none" viewBox="0 0 24 24">

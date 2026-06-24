@@ -1,5 +1,5 @@
 import { StandardSchemaV1, useForm, DeepKeys, DeepValue, Updater } from "@tanstack/react-form";
-import { ComponentType, FC, TableHTMLAttributes } from "react";
+import { ComponentType, FC, TableHTMLAttributes, startTransition } from "react";
 import { z, ZodType } from "zod";
 
 import { ArrayForm, ArrayFormApi, FieldApi, FormApi, FormOptions } from "@/type/form";
@@ -42,7 +42,7 @@ export function GenericInputForm<Form extends object>(
   const InputField = ({ pending, defaultValue, onSubmit, ...props }: InputFormProps<Form>) => {
     const form = useGenericForm({
       defaultValues: defaultValue,
-      onSubmit: ({ value }) => onSubmit(value),
+      onSubmit: ({ value }) => startTransition(() => onSubmit(value)),
       validators: { onChange: Schema },
     });
 
@@ -114,7 +114,7 @@ export function GenericListInputForm<Item extends object>(
   const InputField = ({ pending, defaultValue, onSubmit, ..._props }: InputFormProps<Item[]>) => {
     const form = useGenericForm<ArrayForm<Item>>({
       defaultValues: { items: defaultValue },
-      onSubmit: ({ value }) => onSubmit(value.items),
+      onSubmit: ({ value }) => startTransition(() => onSubmit(value.items)),
       validators: { onChange: Schema },
     });
 

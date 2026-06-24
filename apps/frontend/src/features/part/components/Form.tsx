@@ -1,7 +1,7 @@
 "use client";
 
 import Part, { Information } from "@pc-builder/shared/part";
-import { lazy, LazyExoticComponent, Suspense } from "react";
+import { lazy, LazyExoticComponent, Suspense, startTransition } from "react";
 import z from "zod";
 
 import { useInfoAction } from "@/features/part/hooks/InfoAction";
@@ -130,7 +130,7 @@ export function InfoForm<Info extends Information.Name>({
           </Suspense>
         </VerticalCollapsible>
       ) : (
-        <Button type="button" className="w-full" onClick={() => save({})} disabled={pending}>
+        <Button type="button" className="w-full" onClick={() => startTransition(() => save({}))} disabled={pending}>
           {pending
             ? `Adding ${Information.Label[info]} ...`
             : `Add ${Information.Label[info]} Info`}

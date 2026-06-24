@@ -1,7 +1,7 @@
 "use client";
 
 import Part, { Infos, Products } from "@pc-builder/shared/part";
-import { useState } from "react";
+import { useState, startTransition } from "react";
 
 import usePartAction from "@/features/part/hooks/PartAction";
 import { Button, RedirectButton } from "@/ui/Button";
@@ -66,7 +66,7 @@ export default function PartForm({
           )}
           <RowWrapper>
             {!pending && formValue && (
-              <Button type="submit" className="px-2 flex-1" formAction={() => save(null)}>
+              <Button type="submit" className="px-2 flex-1" formAction={() => startTransition(() => save(null))}>
                 Delete
               </Button>
             )}

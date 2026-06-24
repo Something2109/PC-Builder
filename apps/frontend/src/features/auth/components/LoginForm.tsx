@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import { ChangeEvent, InputHTMLAttributes, useState } from "react";
+import { ChangeEvent, InputHTMLAttributes, useState, startTransition } from "react";
 import { z } from "zod";
 
 import { useLoginAction } from "@/features/auth";
@@ -28,7 +28,9 @@ export function LoginForm({ pathname }: Readonly<{ pathname?: string }>) {
       const formData = new FormData();
       formData.append("username", value.username);
       formData.append("password", value.password);
-      formAction(formData);
+      startTransition(() => {
+        formAction(formData);
+      });
     },
   });
 
