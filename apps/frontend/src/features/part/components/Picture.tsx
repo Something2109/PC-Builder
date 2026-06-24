@@ -16,9 +16,14 @@ export default function PartPicture({
 } & ImgHTMLAttributes<HTMLImageElement>) {
   const defaultUrl = createDefaultUrl(part);
 
+  src = typeof src === "string" && src.length === 0 ? undefined : src;
+
   return (
     <picture
-      className={mergeClass("aspect-square rounded-lg content-center bg-white p-1", className)}
+      className={mergeClass(
+        "block aspect-square rounded-lg content-center bg-white p-1",
+        className
+      )}
     >
       <img
         src={src ?? defaultUrl}
