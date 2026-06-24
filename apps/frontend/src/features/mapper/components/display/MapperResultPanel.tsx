@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { MapperResult, MappedItem, FailedItem } from "../../types";
-import { DTOVisualizerVisual } from "./DTOVisualizerVisual";
+import { DTOVisualizerVisual } from "./Visualizer/DTOVisualizerVisual";
 import { MapperResultScrapedTab } from "./MapperResultScrapedTab";
 import { flattenErrorObject } from "../../utils";
 import { CodeEditor } from "@/components/ui/CodeEditor";
+import { VerticalCollapsible } from "@/components/ui/Collapsible";
 
 interface MapperResultPanelProps {
   loading: boolean;
@@ -94,9 +95,9 @@ function MapperResultItemView({ type, index, item, lastMappedJson }: MapperResul
   ];
 
   return (
-    <div className="bg-slate-900/20 border border-slate-800/80 rounded-xl p-4 space-y-4 shadow-lg text-left font-sans">
+    <VerticalCollapsible className="bg-slate-900/20 border border-slate-800/80 rounded-xl p-4 space-y-4 shadow-lg text-left font-sans">
       {/* Header */}
-      <div className="flex justify-between items-center border-b border-slate-900 pb-3">
+      <div className="flex justify-between items-center border-slate-900">
         <div className="flex items-center gap-2">
           <span className="bg-slate-900 text-slate-300 border border-slate-800 text-xs px-2.5 py-0.5 rounded-md font-mono font-bold">
             Index {index}
@@ -212,7 +213,7 @@ function MapperResultItemView({ type, index, item, lastMappedJson }: MapperResul
           </div>
         )}
       </div>
-    </div>
+    </VerticalCollapsible>
   );
 }
 
