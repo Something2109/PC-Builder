@@ -22,9 +22,6 @@ services:
       target: dev
     ports:
       - 5001:5001
-    depends_on:
-      nestjs-dev:
-        condition: service_healthy
     environment:
       - PORT=5001
       - BACKEND_URL=http://nestjs-dev:3000

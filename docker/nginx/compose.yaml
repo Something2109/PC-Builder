@@ -22,10 +22,5 @@ services:
       - 3000:80
     profiles:
       - development
-    depends_on:
-      nestjs-dev:
-        condition: service_healthy
-      nextjs-dev:
-        condition: service_healthy
     volumes:
       - ../../.cdn-data:/usr/share/nginx/html/cdn:ro
