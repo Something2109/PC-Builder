@@ -3,9 +3,11 @@
 import { HTMLAttributes, useState } from "react";
 
 import { ColumnWrapper } from "./FlexWrapper";
+import { mergeClass } from "./mergeClass";
 
 function VerticalCollapsible({
   children,
+  className,
   ...divAttributes
 }: {
   children: Iterable<React.ReactNode>;
@@ -14,19 +16,17 @@ function VerticalCollapsible({
   const [header, ...rest] = [...children];
 
   return (
-    <ColumnWrapper {...divAttributes}>
+    <ColumnWrapper className={mergeClass("gap-4", className)} {...divAttributes}>
       <button
         type="button"
-        className="flex flex-row gap-2 w-full p-2 border-b-2 justify-between"
+        className="flex flex-row gap-2 w-full m-0 justify-between"
         onClick={() => setCollapse(!collapse)}
       >
-        <div className="flex-1">{header}</div>
+        <div className="flex-1 text-left">{header}</div>
         <span className="font-bold">{collapse ? "+" : "-"}</span>
       </button>
 
-      <ColumnWrapper className={`${collapse ? "h-0" : "h-fit"} mx-2 overflow-auto`}>
-        {rest}
-      </ColumnWrapper>
+      {collapse && <ColumnWrapper className={`h-fit overflow-auto`}>{rest}</ColumnWrapper>}
     </ColumnWrapper>
   );
 }
