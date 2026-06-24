@@ -5,7 +5,6 @@ import { lazy, LazyExoticComponent, Suspense, startTransition } from "react";
 import z from "zod";
 
 import { useInfoAction } from "@/features/part/hooks/InfoAction";
-import { Button } from "@/ui/Button";
 import { VerticalCollapsible } from "@/ui/Collapsible";
 import { LoadingSpinner } from "@/ui/LoadingSpinner";
 import { NotificationBar } from "@/ui/NotificationBar";
@@ -121,22 +120,40 @@ export function InfoForm<Info extends Information.Name>({
   if (!Component) return undefined;
 
   return (
-    <div className="flex flex-col gap-1 w-full">
+    <div className="flex flex-col gap-3 w-full">
       {formValue ? (
-        <VerticalCollapsible className="sticky top-32">
-          <h1 className="text-4xl font-bold">{Information.Label[info]}</h1>
-          <Suspense fallback={<LoadingSpinner text="loading form specifications..." />}>
-            <Component pending={pending} onSubmit={save} defaultValue={formValue} />
-          </Suspense>
+        <VerticalCollapsible className="w-full">
+          <div className="flex items-center justify-between w-full border-b border-border/30 pb-2">
+            <h4 className="text-lg font-bold text-text/90 tracking-wide">
+              {Information.Label[info]}
+            </h4>
+          </div>
+          <div className="pt-3">
+            <Suspense fallback={<LoadingSpinner text="loading form specifications..." />}>
+              <Component pending={pending} onSubmit={save} defaultValue={formValue} />
+            </Suspense>
+          </div>
         </VerticalCollapsible>
       ) : (
-        <Button type="button" className="w-full" onClick={() => startTransition(() => save({}))} disabled={pending}>
+        <button
+          type="button"
+          className="w-full py-3.5 px-4 rounded-xl border border-dashed border-border/80 hover:border-accent-indigo text-text/60 hover:text-accent-indigo hover:bg-accent-indigo/5 font-semibold text-sm transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
+          onClick={() => startTransition(() => save({}))}
+          disabled={pending}
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
           {pending
-            ? `Adding ${Information.Label[info]} ...`
-            : `Add ${Information.Label[info]} Info`}
-        </Button>
+            ? `Adding ${Information.Label[info]}...`
+            : `Add ${Information.Label[info]} Specs`}
+        </button>
       )}
-      {error ? <NotificationBar message={error} remove={() => setError(null)} alert /> : undefined}
+      {error ? (
+        <div className="mt-2">
+          <NotificationBar message={error} remove={() => setError(null)} alert />
+        </div>
+      ) : undefined}
     </div>
   );
 }

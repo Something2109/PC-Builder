@@ -1,11 +1,9 @@
-import Part, { Products, Mapping } from "@pc-builder/shared/part";
+import Part, { Products } from "@pc-builder/shared/part";
 import { Roles } from "@pc-builder/shared/user";
 import { notFound } from "next/navigation";
 
 import { AuthRole } from "@/features/auth";
-import { InfoForm } from "@/features/part/components/Form";
-import PartForm from "@/features/part/components/input/Part";
-import { ResponsiveWrapper } from "@/ui/FlexWrapper";
+import PartEditDashboard from "@/features/part/components/PartEditDashboard";
 import { getBackendUrl } from "@/utils/path";
 
 const roles = [Roles.ADMIN];
@@ -26,12 +24,7 @@ export default async function PartDetailEditPage({
 
   return (
     <AuthRole roles={roles}>
-      <PartForm path={SaveLink} part={part} defaultValue={data} />
-      <ResponsiveWrapper className="w-full align-top flex-wrap">
-        {Mapping.Info[part].map((info) => (
-          <InfoForm key={info} path={SaveLink} info={info} defaultValue={data} />
-        ))}
-      </ResponsiveWrapper>
+      <PartEditDashboard part={part} id={id} defaultValue={data} saveLink={SaveLink} />
     </AuthRole>
   );
 }

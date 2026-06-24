@@ -1,108 +1,181 @@
 "use client";
 
-import Part, { Infos, Products } from "@pc-builder/shared/part";
-import { useState, startTransition } from "react";
-
+import Part, { Products } from "@pc-builder/shared/part";
+import { startTransition } from "react";
 import usePartAction from "@/features/part/hooks/PartAction";
-import { Button, RedirectButton } from "@/ui/Button";
-import { ColumnWrapper, ResponsiveWrapper, RowWrapper } from "@/ui/FlexWrapper";
-import { Input, TextArea } from "@/ui/Input";
 import { NotificationBar } from "@/ui/NotificationBar";
-
-import PartPicture from "../Picture";
-import { InfoComponent, InfoComponentObject } from "../utils/Table";
-
-const Components: InfoComponentObject<
-  Omit<Part.DTO, "id" | "part" | "name" | "image_url" | Infos>
-> = {
-  code_name: (props) => <Input {...props} />,
-  brand: (props) => <Input {...props} />,
-  series: (props) => <Input {...props} />,
-  url: ({ defaultValue, value: _, ...props }) => (
-    <Input defaultValue={defaultValue ?? undefined} {...props} required />
-  ),
-  launch_date: ({ defaultValue, value: _, ...props }) => (
-    <Input
-      type="date"
-      defaultValue={new Date(defaultValue ?? new Date()).toISOString().slice(0, 10)}
-      {...props}
-    />
-  ),
-};
-
-const PartInput = InfoComponent(Components, Part.Label);
 
 export default function PartForm({
   path,
-  part,
   defaultValue,
+  setImageUrl,
 }: Readonly<{
   path: string;
-  part: Products;
+  part?: Products;
   defaultValue?: Part.DTO;
+  setImageUrl?: (url: string) => void;
 }>) {
   const [formValue, save, pending, error, setError] = usePartAction(path, defaultValue);
 
-  const { name } = formValue ?? {};
+  const { name, brand, series, code_name, url, launch_date } = formValue ?? {};
+
+  // Form fields formatted beautifully
+  const formattedLaunchDate = launch_date
+    ? new Date(launch_date).toISOString().slice(0, 10)
+    : new Date().toISOString().slice(0, 10);
 
   return (
-    <form action={save}>
-      <ResponsiveWrapper className="w-full">
-        <PictureInput className="w-full lg:w-1/3" part={part} defaultValue={defaultValue} />
+    <form action={save} className="space-y-6">
+      {/* Product Name (Full Width) */}
+      <div className="space-y-2">
+        <label htmlFor="name" className="text-sm font-bold text-text/70 block">
+          Product Name
+        </label>
+        <textarea
+          id="name"
+          name="name"
+          placeholder="e.g. Intel Core i9-14900K"
+          className="w-full bg-background/40 dark:bg-background/10 border border-border/70 rounded-xl px-4 py-3 text-lg font-bold text-text focus:outline-none focus:border-accent-indigo focus:ring-2 focus:ring-accent-indigo/20 transition-all duration-200 resize-none min-h-15"
+          defaultValue={name ?? undefined}
+          required
+        />
+      </div>
 
-        <ColumnWrapper className="w-full lg:w-2/3 px-5 justify-center">
-          <TextArea
-            name="name"
-            placeholder="Name"
-            className="text-4xl font-bold mb-4"
-            defaultValue={name}
+      {/* 2-Column Grid for specs */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <label htmlFor="brand" className="text-sm font-bold text-text/70 block">
+            Brand
+          </label>
+          <input
+            type="text"
+            id="brand"
+            name="brand"
+            placeholder="e.g. Intel"
+            className="w-full bg-background/40 dark:bg-background/10 border border-border/70 rounded-xl px-4 py-2.5 text-text focus:outline-none focus:border-accent-indigo focus:ring-2 focus:ring-accent-indigo/20 transition-all duration-200"
+            defaultValue={brand ?? undefined}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="series" className="text-sm font-bold text-text/70 block">
+            Series
+          </label>
+          <input
+            type="text"
+            id="series"
+            name="series"
+            placeholder="e.g. Core i9"
+            className="w-full bg-background/40 dark:bg-background/10 border border-border/70 rounded-xl px-4 py-2.5 text-text focus:outline-none focus:border-accent-indigo focus:ring-2 focus:ring-accent-indigo/20 transition-all duration-200"
+            defaultValue={series ?? undefined}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="code_name" className="text-sm font-bold text-text/70 block">
+            Code Name
+          </label>
+          <input
+            type="text"
+            id="code_name"
+            name="code_name"
+            placeholder="e.g. Raptor Lake"
+            className="w-full bg-background/40 dark:bg-background/10 border border-border/70 rounded-xl px-4 py-2.5 text-text focus:outline-none focus:border-accent-indigo focus:ring-2 focus:ring-accent-indigo/20 transition-all duration-200"
+            defaultValue={code_name ?? undefined}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="launch_date" className="text-sm font-bold text-text/70 block">
+            Launch Date
+          </label>
+          <input
+            type="date"
+            id="launch_date"
+            name="launch_date"
+            className="w-full bg-background/40 dark:bg-background/10 border border-border/70 rounded-xl px-4 py-2.5 text-text focus:outline-none focus:border-accent-indigo focus:ring-2 focus:ring-accent-indigo/20 transition-all duration-200"
+            defaultValue={formattedLaunchDate}
+          />
+        </div>
+      </div>
+
+      {/* External Link & Image URL (Full Width) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <label htmlFor="url" className="text-sm font-bold text-text/70 block">
+            Brand Product URL
+          </label>
+          <input
+            type="url"
+            id="url"
+            name="url"
+            placeholder="https://..."
+            className="w-full bg-background/40 dark:bg-background/10 border border-border/70 rounded-xl px-4 py-2.5 text-text focus:outline-none focus:border-accent-indigo focus:ring-2 focus:ring-accent-indigo/20 transition-all duration-200"
+            defaultValue={url ?? undefined}
             required
           />
-          <PartInput defaultValue={defaultValue} />
-          {defaultValue?.url && (
-            <RedirectButton href={defaultValue?.url} target="_blank">
-              To brand page
-            </RedirectButton>
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="image_url" className="text-sm font-bold text-text/70 block">
+            Image URL
+          </label>
+          <input
+            type="url"
+            id="image_url"
+            name="image_url"
+            placeholder="https://..."
+            className="w-full bg-background/40 dark:bg-background/10 border border-border/70 rounded-xl px-4 py-2.5 text-text focus:outline-none focus:border-accent-indigo focus:ring-2 focus:ring-accent-indigo/20 transition-all duration-200"
+            defaultValue={defaultValue?.image_url ?? undefined}
+            onChange={(e) => setImageUrl?.(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="pt-4 border-t border-border/40 flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div className="w-full sm:w-auto">
+          {!pending && formValue && (
+            <button
+              type="button"
+              onClick={() => {
+                if (confirm("Are you sure you want to delete this part?")) {
+                  startTransition(() => save(null));
+                }
+              }}
+              className="w-full sm:w-auto px-6 py-2.5 border border-red-500/30 text-red-500 hover:bg-red-500/10 rounded-xl font-semibold transition-all duration-200 shadow-sm"
+            >
+              Delete Part
+            </button>
           )}
-          <RowWrapper>
-            {!pending && formValue && (
-              <Button type="submit" className="px-2 flex-1" formAction={() => startTransition(() => save(null))}>
-                Delete
-              </Button>
-            )}
-            <Button type="submit" className="w-full" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
-            </Button>
-          </RowWrapper>
-          {error && <NotificationBar message={error} remove={() => setError(null)} alert />}
-        </ColumnWrapper>
-      </ResponsiveWrapper>
+        </div>
+
+        <div className="flex gap-3 w-full sm:w-auto justify-end">
+          {defaultValue?.url && (
+            <a
+              href={defaultValue.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-2.5 border border-border/80 text-text/80 hover:text-text hover:bg-slate-500/5 rounded-xl font-semibold text-center transition-all duration-200"
+            >
+              Visit Brand Page
+            </a>
+          )}
+          <button
+            type="submit"
+            disabled={pending}
+            className="px-8 py-2.5 bg-linear-to-r from-accent-indigo to-accent-indigo/90 hover:from-accent-indigo/90 hover:to-accent-indigo text-white rounded-xl font-bold shadow-lg shadow-accent-indigo/20 hover:shadow-accent-indigo/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 active:translate-y-0"
+          >
+            {pending ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
+      </div>
+
+      {error && (
+        <div className="mt-4">
+          <NotificationBar message={error} remove={() => setError(null)} alert />
+        </div>
+      )}
     </form>
-  );
-}
-
-function PictureInput({
-  part,
-  className,
-  defaultValue,
-}: Readonly<{
-  part: Products;
-  className?: string;
-  defaultValue?: Part.DTO;
-}>) {
-  const [image, setImage] = useState<string | undefined>(defaultValue?.image_url ?? undefined);
-
-  return (
-    <ColumnWrapper className={className}>
-      <PartPicture className="w-full" part={part} src={image} onError={() => setImage(undefined)} />
-      <Input
-        type="url"
-        name="image_url"
-        id="image_url"
-        placeholder="Image URL"
-        defaultValue={defaultValue?.image_url ?? undefined}
-        onChange={(e) => setImage(e.target.value)}
-      />
-    </ColumnWrapper>
   );
 }
