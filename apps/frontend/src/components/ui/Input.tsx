@@ -32,7 +32,14 @@ function cleanEvent<T extends HTMLInputElement | HTMLTextAreaElement | HTMLSelec
       if (prop === "value") {
         return target.value || undefined;
       }
-      return Reflect.get(target, prop);
+      const value = Reflect.get(target, prop);
+      if (typeof value === "function") {
+        return value.bind(target);
+      }
+      return value;
+    },
+    set(target, prop, value) {
+      return Reflect.set(target, prop, value);
     },
   });
   const proxyEvent = new Proxy(e, {
@@ -40,7 +47,11 @@ function cleanEvent<T extends HTMLInputElement | HTMLTextAreaElement | HTMLSelec
       if (prop === "target" || prop === "currentTarget") {
         return proxyTarget;
       }
-      return Reflect.get(target, prop);
+      const value = Reflect.get(target, prop);
+      if (typeof value === "function") {
+        return value.bind(target);
+      }
+      return value;
     },
   });
   onChange(proxyEvent);
@@ -132,7 +143,14 @@ export function UnitInput<T extends string>({
             if (prop === "value") {
               return finalValue;
             }
-            return Reflect.get(target, prop);
+            const value = Reflect.get(target, prop);
+            if (typeof value === "function") {
+              return value.bind(target);
+            }
+            return value;
+          },
+          set(target, prop, value) {
+            return Reflect.set(target, prop, value);
           },
         });
         const proxyEvent = new Proxy(e, {
@@ -140,7 +158,11 @@ export function UnitInput<T extends string>({
             if (prop === "target" || prop === "currentTarget") {
               return proxyTarget;
             }
-            return Reflect.get(target, prop);
+            const value = Reflect.get(target, prop);
+            if (typeof value === "function") {
+              return value.bind(target);
+            }
+            return value;
           },
         });
         onChange(proxyEvent);
