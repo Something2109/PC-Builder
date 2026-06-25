@@ -1,13 +1,14 @@
 import { z } from "zod";
 
 import { InternalConnectors, Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { MemoryUnits, FrequencyUnits, MemorySpeedUnit } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 const Info = z.object({
   type: InternalConnectors.SGRAM,
-  speed: Primitive.Number,
-  capacity: Primitive.Number,
-  bandwidth: Primitive.Number,
+  speed: createUnit(FrequencyUnits, "MHz"),
+  capacity: createUnit(MemoryUnits, "GB"),
+  bandwidth: createUnit(MemorySpeedUnit, "GB/s"),
   bus_width: Primitive.Number,
 });
 

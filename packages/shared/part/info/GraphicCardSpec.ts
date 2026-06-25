@@ -1,12 +1,13 @@
 import { z } from "zod";
 
 import { InternalConnectors, Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { LengthUnits } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 const Info = z.object({
-  width: Primitive.Number,
-  length: Primitive.Number,
-  height: Primitive.Number,
+  width: createUnit(LengthUnits, "mm"),
+  length: createUnit(LengthUnits, "mm"),
+  height: createUnit(LengthUnits, "mm"),
 
   pcie: Primitive.Number,
   minimum_psu: Primitive.Number,

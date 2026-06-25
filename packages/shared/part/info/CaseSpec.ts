@@ -1,19 +1,20 @@
 import { z } from "zod";
 
 import { FormFactor, Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { LengthUnits } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 const Info = z.object({
   form_factor: FormFactor.Case,
 
-  width: Primitive.Number,
-  length: Primitive.Number,
-  height: Primitive.Number,
+  width: createUnit(LengthUnits, "mm"),
+  length: createUnit(LengthUnits, "mm"),
+  height: createUnit(LengthUnits, "mm"),
 
   expansion_slot: Primitive.Number,
 
-  max_cooler_height: Primitive.Number,
-  max_psu_length: Primitive.Number,
+  max_cooler_height: createUnit(LengthUnits, "mm"),
+  max_psu_length: createUnit(LengthUnits, "mm"),
 });
 
 export type Info = z.infer<typeof Info>;

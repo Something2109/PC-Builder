@@ -1,11 +1,12 @@
 import { z } from "zod";
 
 import { InternalConnectors, Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { MemoryUnits } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 const Info = z.object({
   type: InternalConnectors.RAM,
-  capacity: Primitive.Number,
+  capacity: createUnit(MemoryUnits, "MB"),
 });
 
 export type Info = z.infer<typeof Info>;

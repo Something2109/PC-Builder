@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 import { FormFactor, InternalConnectors, Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { MemoryUnits } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 export const MemoryCell = z.enum(["SLC", "MLC", "TLC", "QLC", "3D"]);
 
@@ -9,8 +10,8 @@ export type MemoryCell = z.infer<typeof MemoryCell>;
 
 const Info = z.object({
   memory_type: MemoryCell,
-  capacity: Primitive.Number,
-  tbw: Primitive.Number,
+  capacity: createUnit(MemoryUnits, "GB"),
+  tbw: createUnit(MemoryUnits, "TB"),
 
   form_factor: FormFactor.SSD,
   interface: InternalConnectors.Storage.SSD,

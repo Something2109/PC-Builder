@@ -1,14 +1,15 @@
 import { z } from "zod";
 
 import { InternalConnectors, Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { MemoryUnits, FrequencyUnits, MemorySpeedUnit } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 const Info = z.object({
   type: InternalConnectors.RAM,
-  speed: Primitive.Number,
-  capacity: Primitive.Number,
+  speed: createUnit(FrequencyUnits, "MHz"),
+  capacity: createUnit(MemoryUnits, "GB"),
   channel_count: Primitive.Number,
-  bandwidth: Primitive.Number,
+  bandwidth: createUnit(MemorySpeedUnit, "GB/s"),
 });
 
 export type Info = z.infer<typeof Info>;

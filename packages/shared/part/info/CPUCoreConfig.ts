@@ -1,14 +1,15 @@
 import { z } from "zod";
 
 import { Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { FrequencyUnits } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 const Info = z.object({
   name: Primitive.String,
   count: Primitive.Number,
 
-  base_frequency: Primitive.Number,
-  turbo_frequency: Primitive.Number,
+  base_frequency: createUnit(FrequencyUnits, "GHz"),
+  turbo_frequency: createUnit(FrequencyUnits, "GHz"),
 });
 
 export type Info = z.infer<typeof Info>;

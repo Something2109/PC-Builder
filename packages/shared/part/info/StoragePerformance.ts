@@ -1,11 +1,11 @@
 import { z } from "zod";
 
-import { Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { MemorySpeedUnit } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 const Info = z.object({
-  read_speed: Primitive.Number,
-  write_speed: Primitive.Number,
+  read_speed: createUnit(MemorySpeedUnit, "MB/s"),
+  write_speed: createUnit(MemorySpeedUnit, "MB/s"),
 });
 
 export type Info = z.infer<typeof Info>;

@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 import { FormFactor, InternalConnectors, Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { LengthUnits } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 export const Bearing = z.enum(["Fluid dynamic", "Ball", "Sleeve", "Rifle"]);
 
@@ -10,9 +11,9 @@ export type Bearing = z.infer<typeof Bearing>;
 const Info = z.object({
   form_factor: FormFactor.Fan,
 
-  width: Primitive.Number,
-  length: Primitive.Number,
-  height: Primitive.Number,
+  width: createUnit(LengthUnits, "mm"),
+  length: createUnit(LengthUnits, "mm"),
+  height: createUnit(LengthUnits, "mm"),
   count: Primitive.Number,
 
   voltage: Primitive.Number,

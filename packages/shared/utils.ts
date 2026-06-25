@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { UnitInterface } from "./Units";
+
 type FilterOptionsType<Info extends object, Attributes extends keyof Info> = {
   [key in Attributes]?: NonNullable<Required<Info>[key]> extends number
     ? number[]
@@ -54,6 +56,16 @@ function createDTO<T extends { [key: string]: z.ZodSchema }, Required extends ke
   return z.object(newSchema);
 }
 
-export { NumberFilterOptions, FilterOptions, createModel, createDTO };
+function createUnit<U extends string, DefaultU extends U>(
+  unitClass: UnitInterface<U>,
+  defaultUnit: DefaultU
+) {
+  return z.coerce
+    .number()
+    .refine((val) => val >= 0)
+    .meta({ unit: unitClass, target: defaultUnit });
+}
+
+export { NumberFilterOptions, FilterOptions, createModel, createDTO, createUnit };
 
 export type { FilterOptionsType };

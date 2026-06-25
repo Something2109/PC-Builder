@@ -1,11 +1,12 @@
 import { z } from "zod";
 
 import { FormFactor, InternalConnectors, Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { MemoryUnits } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 const Info = z.object({
   rotational_speed: Primitive.Number,
-  capacity: Primitive.Number,
+  capacity: createUnit(MemoryUnits, "GB"),
 
   form_factor: FormFactor.HDD,
   interface: InternalConnectors.Storage.HDD,

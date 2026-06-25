@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 import { FormFactor, Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { LengthUnits } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 export const Modular = z.enum(["Non-Modular", "Semi-Modular", "Full-Modular"]);
 
@@ -24,9 +25,9 @@ const Info = z.object({
   efficiency: Efficiency,
 
   form_factor: FormFactor.PSU,
-  width: Primitive.Number,
-  length: Primitive.Number,
-  height: Primitive.Number,
+  width: createUnit(LengthUnits, "mm"),
+  length: createUnit(LengthUnits, "mm"),
+  height: createUnit(LengthUnits, "mm"),
   modular: Modular,
 });
 

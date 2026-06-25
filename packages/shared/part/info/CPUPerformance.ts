@@ -1,11 +1,12 @@
 import { z } from "zod";
 
 import { Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { FrequencyUnits } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 const Info = z.object({
-  base_frequency: Primitive.Number,
-  turbo_frequency: Primitive.Number,
+  base_frequency: createUnit(FrequencyUnits, "GHz"),
+  turbo_frequency: createUnit(FrequencyUnits, "GHz"),
 
   tdp: Primitive.Number,
 });

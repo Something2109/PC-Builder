@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-import { Primitive } from "../../interface";
-import { createDTO, createModel } from "../../utils";
+import { MemoryUnits } from "../../Units";
+import { createDTO, createModel, createUnit } from "../../utils";
 
 const Info = z.object({
-  L1_cache: Primitive.Number,
-  L2_cache: Primitive.Number,
-  L3_cache: Primitive.Number,
+  L1_cache: createUnit(MemoryUnits, "MB"),
+  L2_cache: createUnit(MemoryUnits, "MB"),
+  L3_cache: createUnit(MemoryUnits, "MB"),
 });
 
 export type Info = z.infer<typeof Info>;
