@@ -8,7 +8,7 @@ import {
   BasicMapping,
   HeuristicConfig,
 } from "./types";
-import { normalizeKey, getLevenshteinDistance } from "./utils";
+import { normalizeKey, getLevenshteinDistance, getInnerSchema } from "./utils";
 
 // ─── Fuzzy Matcher ───────────────────────────────────────────────────
 
@@ -340,8 +340,18 @@ export function resolveConflicts(
       continue;
     }
 
-    // Multiple entries for the same (info, attr) — resolve by value quality
     const attrSchema = infoSchemas?.[group[0].info];
+    const unwrappedInfo = attrSchema ? getInnerSchema(attrSchema) : undefined;
+    const isArray = unwrappedInfo?.constructor?.name === "ZodArray";
+
+    if (isArray) {
+      // For multi-value tables, multiple raw keys for the same discrete attribute
+      // are not conflicts — keep all of them so we can build multiple rows.
+      resolved.push(...group);
+      continue;
+    }
+
+    // Multiple entries for the same (info, attr) — resolve by value quality
     let bestCandidate = group[0];
     let bestScore = -1;
 

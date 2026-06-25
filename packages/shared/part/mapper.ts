@@ -54,7 +54,7 @@ export class RawPartMapper {
     const resolved = await RawKeyResolver.resolve(raw, product, registry, actualLearner);
 
     // Phase 3: Resolve conflicts
-    const deduped = RawKeyResolver.resolveConflicts(resolved, raw);
+    const deduped = RawKeyResolver.resolveConflicts(resolved, raw, InfoDTOs);
 
     // Phase 4: Parse
     const result: Record<string, any> = { part: product };
@@ -150,15 +150,24 @@ export class RawPartMapper {
 
         if (elementUnwrappedName === "ZodObject") {
           const elementShape = (elementUnwrapped as any).shape;
-          const selfMapping = mappingsForInfo.find((m) => m.attribute === "_self");
+          const selfMappings = mappingsForInfo.filter((m) => m.attribute === "_self");
 
-          if (selfMapping && typeof raw[selfMapping.rawKey] === "string") {
-            const rawVal = raw[selfMapping.rawKey];
-            const items = rawVal
-              .split(/[|,;\n]+/)
-              .map((s: string) => s.trim())
-              .filter(Boolean);
-            const parsedArray = items.map((itemStr: string) =>
+          if (selfMappings.length > 0) {
+            const allItems: string[] = [];
+            for (const mapping of selfMappings) {
+              const rawVal = raw[mapping.rawKey];
+              if (typeof rawVal === "string") {
+                const items = rawVal
+                  .split(/[|,;\n]+/)
+                  .map((s: string) => s.trim())
+                  .filter(Boolean);
+                allItems.push(...items);
+              } else if (Array.isArray(rawVal)) {
+                allItems.push(...rawVal.map(String));
+              }
+            }
+
+            const parsedArray = allItems.map((itemStr: string) =>
               parseConnectorString(itemStr, elementShape)
             );
 
@@ -174,8 +183,9 @@ export class RawPartMapper {
             let maxLen = 0;
 
             for (const prop of properties) {
-              const propMapping = mappingsForInfo.find((m) => m.attribute === prop);
-              if (propMapping) {
+              const propMappings = mappingsForInfo.filter((m) => m.attribute === prop);
+              const allParsedItems: any[] = [];
+              for (const propMapping of propMappings) {
                 const rawVal = raw[propMapping.rawKey];
                 const items =
                   typeof rawVal === "string"
@@ -191,11 +201,12 @@ export class RawPartMapper {
                 const parsedItems = items
                   .map((item) => parseSingleValue(item, prop, propSchema))
                   .filter((v) => v !== undefined);
+                allParsedItems.push(...parsedItems);
+              }
 
-                if (parsedItems.length > 0) {
-                  extractedPropertyLists[prop] = parsedItems;
-                  maxLen = Math.max(maxLen, parsedItems.length);
-                }
+              if (allParsedItems.length > 0) {
+                extractedPropertyLists[prop] = allParsedItems;
+                maxLen = Math.max(maxLen, allParsedItems.length);
               }
             }
 
