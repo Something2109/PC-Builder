@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { FormFactor, InternalConnectors, Primitive } from "../../interface";
 import { LengthUnits } from "../../Units";
-import { createDTO, createModel, createUnit } from "../../utils";
+import { createDTO, createModel, createUnit, createSuffix } from "../../utils";
 
 export const Bearing = z.enum(["Fluid dynamic", "Ball", "Sleeve", "Rifle"]);
 
@@ -16,12 +16,12 @@ const Info = z.object({
   height: createUnit(LengthUnits, "mm"),
   count: Primitive.Number,
 
-  voltage: Primitive.Number,
+  voltage: createSuffix("V"),
 
-  speed: Primitive.Number,
-  airflow: Primitive.Number,
-  noise: Primitive.Number,
-  static_pressure: Primitive.Number,
+  speed: createSuffix("RPM"),
+  airflow: createSuffix("CFM"),
+  noise: createSuffix("dBA"),
+  static_pressure: createSuffix("mmH2O"),
   bearing: Bearing,
 
   connector: InternalConnectors.Fan.Connector,

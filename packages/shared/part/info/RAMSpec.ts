@@ -2,12 +2,12 @@ import { z } from "zod";
 
 import { FormFactor, InternalConnectors, Primitive } from "../../interface";
 import { MemoryUnits, FrequencyUnits } from "../../Units";
-import { createDTO, createModel, createUnit } from "../../utils";
+import { createDTO, createModel, createUnit, createSuffix } from "../../utils";
 
 const Info = z.object({
   speed: createUnit(FrequencyUnits, "MHz"),
   capacity: createUnit(MemoryUnits, "GB"),
-  voltage: Primitive.Number,
+  voltage: createSuffix("V"),
   latency: z.array(Primitive.Number),
   kit: Primitive.Number,
 

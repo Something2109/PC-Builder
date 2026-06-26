@@ -66,6 +66,13 @@ function createUnit<U extends string, DefaultU extends U>(
     .meta({ unit: unitClass, target: defaultUnit });
 }
 
-export { NumberFilterOptions, FilterOptions, createModel, createDTO, createUnit };
+function createSuffix(suffix: string) {
+  return z.coerce
+    .number()
+    .refine((val) => val >= 0)
+    .meta({ suffix });
+}
+
+export { NumberFilterOptions, FilterOptions, createModel, createDTO, createUnit, createSuffix };
 
 export type { FilterOptionsType };

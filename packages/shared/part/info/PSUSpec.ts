@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { FormFactor, Primitive } from "../../interface";
+import { FormFactor } from "../../interface";
 import { LengthUnits } from "../../Units";
-import { createDTO, createModel, createUnit } from "../../utils";
+import { createDTO, createModel, createUnit, createSuffix } from "../../utils";
 
 export const Modular = z.enum(["Non-Modular", "Semi-Modular", "Full-Modular"]);
 
@@ -21,7 +21,7 @@ export const Efficiency = z.enum([
 export type Efficiency = z.infer<typeof Efficiency>;
 
 const Info = z.object({
-  wattage: Primitive.Number,
+  wattage: createSuffix("W"),
   efficiency: Efficiency,
 
   form_factor: FormFactor.PSU,

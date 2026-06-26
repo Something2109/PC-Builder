@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { FormFactor, InternalConnectors, Primitive } from "../../interface";
+import { FormFactor, InternalConnectors } from "../../interface";
 import { LengthUnits, VolumeSpeedUnit } from "../../Units";
-import { createDTO, createModel, createUnit } from "../../utils";
+import { createDTO, createModel, createUnit, createSuffix } from "../../utils";
 
 const Info = z.object({
   form_factor: FormFactor.Pump,
@@ -11,9 +11,9 @@ const Info = z.object({
   length: createUnit(LengthUnits, "mm"),
   height: createUnit(LengthUnits, "mm"),
 
-  voltage: Primitive.Number,
-  wattage: Primitive.Number,
-  head_pressure: Primitive.Number,
+  voltage: createSuffix("V"),
+  wattage: createSuffix("W"),
+  head_pressure: createSuffix("m"),
   flow_rate: createUnit(VolumeSpeedUnit, "L/h"),
 
   power_connector: InternalConnectors.Power.Miscellanous,

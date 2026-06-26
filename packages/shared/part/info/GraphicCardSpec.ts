@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { InternalConnectors, Primitive } from "../../interface";
 import { LengthUnits } from "../../Units";
-import { createDTO, createModel, createUnit } from "../../utils";
+import { createDTO, createModel, createUnit, createSuffix } from "../../utils";
 
 const Info = z.object({
   width: createUnit(LengthUnits, "mm"),
@@ -10,7 +10,7 @@ const Info = z.object({
   height: createUnit(LengthUnits, "mm"),
 
   pcie: Primitive.Number,
-  minimum_psu: Primitive.Number,
+  minimum_psu: createSuffix("W"),
 
   power_connector: InternalConnectors.Power.GraphicCard,
   power_connector_count: Primitive.Number,

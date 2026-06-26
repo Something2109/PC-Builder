@@ -1,14 +1,13 @@
 import { z } from "zod";
 
-import { Primitive } from "../../interface";
 import { FrequencyUnits } from "../../Units";
-import { createDTO, createModel, createUnit } from "../../utils";
+import { createDTO, createModel, createUnit, createSuffix } from "../../utils";
 
 const Info = z.object({
   base_frequency: createUnit(FrequencyUnits, "GHz"),
   turbo_frequency: createUnit(FrequencyUnits, "GHz"),
 
-  tdp: Primitive.Number,
+  tdp: createSuffix("W"),
 });
 
 export type Info = z.infer<typeof Info>;

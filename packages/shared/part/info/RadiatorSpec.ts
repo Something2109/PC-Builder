@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { FormFactor, Material, Primitive } from "../../interface";
+import { FormFactor, Material } from "../../interface";
 import { LengthUnits } from "../../Units";
-import { createDTO, createModel, createUnit } from "../../utils";
+import { createDTO, createModel, createUnit, createSuffix } from "../../utils";
 
 const Info = z.object({
   form_factor: FormFactor.Radiator,
@@ -11,7 +11,7 @@ const Info = z.object({
   length: createUnit(LengthUnits, "mm"),
   height: createUnit(LengthUnits, "mm"),
 
-  fpi: Primitive.Number,
+  fpi: createSuffix("FPI"),
   material: Material.Metal,
 });
 
