@@ -30,12 +30,6 @@ export const DetailTableComponent: Partial<{
   ),
   [Infos.MAIN_USB]: lazy(() => import("@/features/part/components/detail/MainboardUSBConnector")),
   [Infos.MAIN_FAN]: lazy(() => import("@/features/part/components/detail/MainboardFanConnector")),
-  [Infos.RAM_SPEC]: lazy(() => import("@/features/part/components/detail/RAMSpec")),
-  [Infos.SSD_SPEC]: lazy(() => import("@/features/part/components/detail/SSDSpec")),
-  [Infos.HDD_SPEC]: lazy(() => import("@/features/part/components/detail/HDDSpec")),
-  [Infos.STORAGE_PERF]: lazy(() => import("@/features/part/components/detail/StoragePerformance")),
-  [Infos.STORAGE_CACHE]: lazy(() => import("@/features/part/components/detail/StorageCache")),
-  [Infos.PSU_SPEC]: lazy(() => import("@/features/part/components/detail/PSUSpec")),
   [Infos.CASE_MAIN]: lazy(() => import("@/features/part/components/detail/CaseMainboardSupport")),
   [Infos.CASE_FAN]: lazy(() => import("@/features/part/components/detail/CaseFanSupport")),
   [Infos.CASE_HARD_DRIVE]: lazy(
