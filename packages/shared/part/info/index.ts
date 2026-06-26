@@ -76,7 +76,7 @@ export enum Name {
   EXTERNAL_PORTS = "external_ports",
 }
 
-const Schemas = {
+export const Schemas = {
   [Name.CPU_SPEC]: CPUSpec.Schemas,
   [Name.CPU_PERF]: CPUPerformance.Schemas,
   [Name.CPU_CORES]: CPUCoreConfig.Schemas,
@@ -113,6 +113,45 @@ const Schemas = {
   [Name.PUMP_SPEC]: PumpSpec.Schemas,
   [Name.RADIATOR_SPEC]: RadiatorSpec.Schemas,
   [Name.EXTERNAL_PORTS]: PartExternalPorts.Schemas,
+};
+
+export const Labels = {
+  [Name.CPU_SPEC]: CPUSpec.Label,
+  [Name.CPU_PERF]: CPUPerformance.Label,
+  [Name.CPU_CORES]: CPUCoreConfig.Label,
+  [Name.CPU_MEMORY]: CPUMemory.Label,
+  [Name.GPU_SPEC]: GPUSpec.Label,
+  [Name.GPU_PERF]: GPUPerformance.Label,
+  [Name.GPU_MEMORY]: GPUMemory.Label,
+  [Name.GPU_FEAT]: GPUFeature.Label,
+  [Name.PROCESSOR_CACHE]: ProcessorCache.Label,
+  [Name.GRAPHIC_CARD_SPEC]: GraphicCardSpec.Label,
+  [Name.GRAPHIC_CARD_PORT]: GraphicCardPort.Label,
+  [Name.MAIN_SPEC]: MainboardSpec.Label,
+  [Name.MAIN_POWER]: MainboardPowerConnector.Label,
+  [Name.MAIN_PCIE]: MainboardPCIe.Label,
+  [Name.MAIN_STORAGE]: MainboardStorageConnector.Label,
+  [Name.MAIN_USB]: MainboardUSBConnector.Label,
+  [Name.MAIN_FAN]: MainboardFanConnector.Label,
+  [Name.RAM_SPEC]: RAMSpec.Label,
+  [Name.SSD_SPEC]: SSDSpec.Label,
+  [Name.HDD_SPEC]: HDDSpec.Label,
+  [Name.STORAGE_PERF]: StoragePerformance.Label,
+  [Name.STORAGE_CACHE]: StorageCache.Label,
+  [Name.PSU_SPEC]: PSUSpec.Label,
+  [Name.PSU_CONNECTOR]: PSUConnector.Label,
+  [Name.CASE_SPEC]: CaseSpec.Label,
+  [Name.CASE_MAIN]: CaseMainboardSupport.Label,
+  [Name.CASE_FAN]: CaseFanSupport.Label,
+  [Name.CASE_HARD_DRIVE]: CaseHardDriveSupport.Label,
+  [Name.CASE_RADIATOR]: CaseRadiatorSupport.Label,
+  [Name.CASE_PSU]: CasePSUSupport.Label,
+  [Name.FAN_SPEC]: FanSpec.Label,
+  [Name.CPU_BLOCK_SPEC]: CPUBlockSpec.Label,
+  [Name.CPU_BLOCK_SOCKET]: CPUBlockSocketSupport.Label,
+  [Name.PUMP_SPEC]: PumpSpec.Label,
+  [Name.RADIATOR_SPEC]: RadiatorSpec.Label,
+  [Name.EXTERNAL_PORTS]: PartExternalPorts.Label,
 };
 
 const MultipleValueInfo = [
