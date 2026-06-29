@@ -32,7 +32,9 @@ export default async function ListPage({
   const data = (await response.json()) as API.Payload<Part.Summary>;
 
   const page = options.get("page") ?? "1";
+  const limit = options.get("limit") ?? process.env.PageSize ?? "10";
   options.delete("page");
+  options.delete("limit");
 
   return (
     <div className="w-full space-y-6">
@@ -69,8 +71,9 @@ export default async function ListPage({
       <ServerTablePagination
         path={`/part?${options.toString()}`}
         page={Number(page)}
+        pageSize={Number(limit)}
         total={data.total}
-        totalPages={Math.ceil(data.total / Number(process.env.PageSize))}
+        totalPages={Math.ceil(data.total / Number(limit))}
         entryLabel="components"
       />
     </div>

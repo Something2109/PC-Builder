@@ -74,7 +74,6 @@ export function TablePagination({
               value={pageSize}
               onChange={(e) => {
                 onPageSizeChange(Number(e.target.value));
-                onPageChange(1);
               }}
               className="bg-card border border-border rounded px-2.5 py-1 text-xs text-text focus:outline-none focus:border-accent-indigo transition-colors"
             >

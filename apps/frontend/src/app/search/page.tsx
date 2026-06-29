@@ -14,6 +14,7 @@ export default async function Page({
   const query = await searchParams;
   const search = query["q"] ?? "";
   const page = query["page"] ?? "1";
+  const limit = query["limit"] ?? process.env.PageSize ?? "10";
 
   const params = new URLSearchParams(query);
 
@@ -38,8 +39,9 @@ export default async function Page({
       <ServerTablePagination
         path={`/search?q=${search}`}
         page={Number(page)}
+        pageSize={Number(limit)}
         total={data.total}
-        totalPages={Math.ceil(data.total / Number(process.env.PageSize))}
+        totalPages={Math.ceil(data.total / Number(limit))}
         entryLabel="results"
       />
     </>

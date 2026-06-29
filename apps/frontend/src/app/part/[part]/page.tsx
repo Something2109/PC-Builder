@@ -35,7 +35,9 @@ export default async function PartListPage({
   const data = await response.json();
 
   const page = options.get("page") ?? "1";
+  const limit = options.get("limit") ?? process.env.PageSize ?? "10";
   options.delete("page");
+  options.delete("limit");
 
   return (
     <div className="w-full space-y-6">
@@ -85,10 +87,11 @@ export default async function PartListPage({
 
       {/* Pagination */}
       <ServerTablePagination
-        path={`/part/${part}?${options}`}
+        path={`/part/${part}?${options.toString()}`}
         page={Number(page)}
+        pageSize={Number(limit)}
         total={data.total}
-        totalPages={Math.ceil(data.total / Number(process.env.PageSize))}
+        totalPages={Math.ceil(data.total / Number(limit))}
         entryLabel="items"
       />
     </div>
