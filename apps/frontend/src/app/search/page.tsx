@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import PartPanel from "@/features/part/components/Panel";
 import { SearchBar } from "@/layout/searchbar";
-import PaginationBar from "@/ui/PaginationBar";
+import { ServerTablePagination } from "@/components/ui/Table";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function Page({
@@ -35,10 +35,12 @@ export default async function Page({
           <PartPanel item={item} key={item.id} />
         ))}
       </div>
-      <PaginationBar
+      <ServerTablePagination
         path={`/search?q=${search}`}
-        current={Number(page)}
-        total={Math.floor(data.total / Number(process.env.PageSize))}
+        page={Number(page)}
+        total={data.total}
+        totalPages={Math.ceil(data.total / Number(process.env.PageSize))}
+        entryLabel="results"
       />
     </>
   );

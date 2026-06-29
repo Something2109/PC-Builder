@@ -5,7 +5,6 @@ import { useBuildContext } from "@/features/build/hooks/BuildContext";
 import SummaryTable from "@/features/part/components/Summary";
 import { FilterBar } from "@/features/part/components/Filter";
 import { ToggleButton } from "@/ui/Toggle";
-import PaginationBar from "@/ui/PaginationBar";
 import Part, { Product } from "@pc-builder/shared/part";
 import { use } from "react";
 import { useRouter } from "next/navigation";
@@ -13,6 +12,7 @@ import Link from "next/link";
 import LoadingPanel from "@/ui/LoadingPanel";
 import ErrorPanel from "@/ui/ErrorPanel";
 import { ColumnDef } from "@tanstack/react-table";
+import { TablePagination } from "@/components/ui/Table";
 
 export default function BuildProductSummary({
   params: productParams,
@@ -128,10 +128,12 @@ export default function BuildProductSummary({
       </div>
 
       {/* Pagination */}
-      <PaginationBar
-        path={setPage}
-        current={page}
-        total={Math.ceil(data.total / Number(process.env.PageSize))}
+      <TablePagination
+        total={data.total}
+        page={page}
+        totalPages={Math.ceil(data.total / Number(process.env.PageSize))}
+        onPageChange={setPage}
+        entryLabel={`${Product.Label[product].toLowerCase()}s`}
       />
     </div>
   );

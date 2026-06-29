@@ -1,21 +1,52 @@
 "use client";
 
-import { Table } from "@tanstack/react-table";
 import React from "react";
 
-interface TablePaginationProps<TData> {
-  table: Table<TData>;
+interface TablePaginationProps {
   total: number;
   page: number;
   totalPages: number;
-  pageSize: number;
-  onPageSizeChange: (size: number) => void;
+  pageSize?: number;
+  onPageSizeChange?: (size: number) => void;
   onPageChange: (page: number) => void;
   entryLabel?: string;
 }
 
-export function TablePagination<TData>({
-  table,
+// Generate the list of pages to show (with ellipsis if total pages is large)
+function getPageNumbers(current: number, total: number): (number | string)[] {
+  const pages: (number | string)[] = [];
+
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) {
+      pages.push(i);
+    }
+  } else {
+    // Always show page 1
+    pages.push(1);
+
+    if (current > 3) {
+      pages.push("...");
+    }
+
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    if (current < total - 2) {
+      pages.push("...");
+    }
+
+    // Always show last page
+    pages.push(total);
+  }
+
+  return pages;
+}
+
+export function TablePagination({
   total,
   page,
   totalPages,
@@ -23,52 +54,80 @@ export function TablePagination<TData>({
   onPageSizeChange,
   onPageChange,
   entryLabel = "entries",
-}: TablePaginationProps<TData>) {
+}: TablePaginationProps) {
   if (total === 0) return null;
 
+  const showLimitSelect = pageSize !== undefined && onPageSizeChange !== undefined;
+
   return (
-    <div className="flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-slate-400 mt-2">
+    <div className="flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-text/50 mt-4">
       <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
         <div>
-          Showing page <span className="text-white font-bold">{page}</span> of{" "}
-          <span className="text-white font-bold">{totalPages || 1}</span> (
-          <span className="text-white">{total}</span> total {entryLabel})
+          Showing page <span className="text-text font-bold">{page}</span> of{" "}
+          <span className="text-text font-bold">{totalPages || 1}</span> (
+          <span className="text-text font-bold">{total}</span> total {entryLabel})
         </div>
-        <div className="flex items-center gap-1.5">
-          <span>Show</span>
-          <select
-            value={pageSize}
-            onChange={(e) => {
-              onPageSizeChange(Number(e.target.value));
-              onPageChange(1);
-            }}
-            className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-blue-500"
-          >
-            {[5, 10, 20, 30, 40, 50].map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
-          <span>entries</span>
-        </div>
+        {showLimitSelect && (
+          <div className="flex items-center gap-1.5">
+            <span>Show</span>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                onPageSizeChange(Number(e.target.value));
+                onPageChange(1);
+              }}
+              className="bg-card border border-border rounded px-2.5 py-1 text-xs text-text focus:outline-none focus:border-accent-indigo transition-colors"
+            >
+              {[5, 10, 20, 30, 40, 50].map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+            <span>entries</span>
+          </div>
+        )}
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-1.5 items-center select-none">
         <button
           type="button"
-          disabled={!table.getCanPreviousPage()}
-          onClick={() => table.previousPage()}
-          className="px-3 py-1 rounded bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:text-white disabled:opacity-30 disabled:hover:bg-slate-800 disabled:hover:text-slate-400 text-white font-semibold cursor-pointer transition-all"
+          disabled={page <= 1}
+          onClick={() => onPageChange(page - 1)}
+          className="px-3 py-1.5 rounded bg-card border border-border hover:bg-accent-indigo/10 hover:border-accent-indigo/40 hover:text-text disabled:opacity-40 disabled:hover:bg-card disabled:hover:border-border disabled:hover:text-text/40 text-text/70 font-semibold cursor-pointer transition-all"
         >
-          Prev
+          &larr; Prev
         </button>
+        {getPageNumbers(page, totalPages).map((p, idx) => {
+          if (p === "...") {
+            return (
+              <span key={`ell-${idx}`} className="px-1.5 text-text/30">
+                ...
+              </span>
+            );
+          }
+          const isCurrent = p === page;
+          return (
+            <button
+              key={`page-${p}`}
+              type="button"
+              onClick={() => onPageChange(Number(p))}
+              className={`px-3.5 py-1.5 rounded border text-xs font-semibold cursor-pointer transition-all ${
+                isCurrent
+                  ? "bg-accent-indigo border-accent-indigo text-white font-bold"
+                  : "bg-card border-border text-text/70 hover:bg-accent-indigo/10 hover:border-accent-indigo/40 hover:text-text"
+              }`}
+            >
+              {p}
+            </button>
+          );
+        })}
         <button
           type="button"
-          disabled={!table.getCanNextPage()}
-          onClick={() => table.nextPage()}
-          className="px-3 py-1 rounded bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:text-white disabled:opacity-30 disabled:hover:bg-slate-800 disabled:hover:text-slate-400 text-white font-semibold cursor-pointer transition-all"
+          disabled={page >= totalPages}
+          onClick={() => onPageChange(page + 1)}
+          className="px-3 py-1.5 rounded bg-card border border-border hover:bg-accent-indigo/10 hover:border-accent-indigo/40 hover:text-text disabled:opacity-40 disabled:hover:bg-card disabled:hover:border-border disabled:hover:text-text/40 text-text/70 font-semibold cursor-pointer transition-all"
         >
-          Next
+          Next &rarr;
         </button>
       </div>
     </div>

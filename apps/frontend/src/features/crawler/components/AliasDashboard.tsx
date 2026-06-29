@@ -613,7 +613,6 @@ export default function AliasDashboard() {
           {/* Pagination */}
           {aliasData && (
             <TablePagination
-              table={aliasTable}
               total={aliasData.total}
               page={aliasData.page}
               totalPages={aliasData.totalPages}
@@ -670,7 +669,6 @@ export default function AliasDashboard() {
           {/* Pagination */}
           {logData && (
             <TablePagination
-              table={logTable}
               total={logData.total}
               page={logData.page}
               totalPages={logData.totalPages}

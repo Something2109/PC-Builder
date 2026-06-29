@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import PartPanel from "@/features/part/components/Panel";
 import { SearchBar } from "@/layout/searchbar";
-import PaginationBar from "@/ui/PaginationBar";
+import { ServerTablePagination } from "@/components/ui/Table";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function ListPage({
@@ -66,10 +66,12 @@ export default async function ListPage({
       </div>
 
       {/* Pagination */}
-      <PaginationBar
-        path={`/part`}
-        current={Number(page)}
-        total={Math.ceil(data.total / Number(process.env.PageSize))}
+      <ServerTablePagination
+        path={`/part?${options.toString()}`}
+        page={Number(page)}
+        total={data.total}
+        totalPages={Math.ceil(data.total / Number(process.env.PageSize))}
+        entryLabel="components"
       />
     </div>
   );

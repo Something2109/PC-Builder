@@ -4,8 +4,8 @@ import { notFound } from "next/navigation";
 
 import { FilterBar } from "@/features/part/components/Filter";
 import SummaryTable from "@/features/part/components/Summary";
-import PaginationBar from "@/ui/PaginationBar";
 import { ToggleButton } from "@/ui/Toggle";
+import { ServerTablePagination } from "@/components/ui/Table";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function PartListPage({
@@ -84,10 +84,12 @@ export default async function PartListPage({
       </div>
 
       {/* Pagination */}
-      <PaginationBar
+      <ServerTablePagination
         path={`/part/${part}?${options}`}
-        current={Number(page)}
-        total={Math.ceil(data.total / Number(process.env.PageSize))}
+        page={Number(page)}
+        total={data.total}
+        totalPages={Math.ceil(data.total / Number(process.env.PageSize))}
+        entryLabel="items"
       />
     </div>
   );
