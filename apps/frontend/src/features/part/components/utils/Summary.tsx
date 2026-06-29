@@ -1,4 +1,6 @@
+import { ColumnDef } from "@tanstack/react-table";
 import { FunctionComponent, HTMLAttributes } from "react";
+import React from "react";
 
 import { RowWrapper } from "@/ui/FlexWrapper";
 import { mergeClass } from "@/ui/mergeClass";
@@ -42,28 +44,28 @@ export function GenericSummaryCells<T extends Record<string, unknown>>(
   Labels: InfoLabel<T>,
   Attributes: string[],
   Classes?: Partial<Record<keyof T, string>>
-) {
-  return ({ defaultValue }: { defaultValue?: Partial<T> }) => {
-    if (!defaultValue)
-      return Attributes.map((attr) => (
-        <td key={`Header-${attr}`} className={Classes?.[attr]}>
-          {Labels[attr]}
-        </td>
-      ));
+): ColumnDef<T>[] {
+  return Attributes.map<ColumnDef<T>>((attr) => {
+    const label = Labels[attr];
+    const className = Classes?.[attr] ?? "";
+    const Component = Components[attr];
 
-    return Attributes.map((attr) => {
-      const Component = Components[attr];
-
-      return (
-        <td key={`Row-${defaultValue.id}-${attr}`} className={Classes?.[attr]}>
-          {Components[attr] && defaultValue[attr] && (
-            <RowWrapper>
-              <p className="lg:hidden">{Labels[attr]}:</p>
-              <Component value={defaultValue[attr]} />
-            </RowWrapper>
-          )}
-        </td>
-      );
-    });
-  };
+    return {
+      id: attr,
+      header: () => label,
+      cell: ({ row }) => {
+        const val = row.original[attr];
+        if (!Component || val === undefined || val === null) return null;
+        return (
+          <RowWrapper>
+            <p className="lg:hidden">{label}:</p>
+            <Component value={val as T[string]} />
+          </RowWrapper>
+        );
+      },
+      meta: {
+        className,
+      },
+    };
+  });
 }

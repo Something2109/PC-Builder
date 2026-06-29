@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { UnitInterface } from "@pc-builder/shared/Units";
+import { z } from "zod";
 
 export interface SchemaFieldConfig {
   type: "string" | "number" | "boolean" | "enum" | "array" | "object" | "unknown";

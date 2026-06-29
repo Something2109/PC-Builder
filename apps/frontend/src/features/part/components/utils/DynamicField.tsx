@@ -1,6 +1,6 @@
+import { DeepKeys } from "@tanstack/react-form";
 import React from "react";
 import { z } from "zod";
-import { DeepKeys } from "@tanstack/react-form";
 
 import { FieldApi } from "@/type/form";
 import { ChoiceInput, Input, OptionSelect, SuffixInput, UnitInput } from "@/ui/Input";

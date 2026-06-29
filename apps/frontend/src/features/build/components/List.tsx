@@ -6,6 +6,7 @@ import { useBuildContext } from "@/features/build/hooks/BuildContext";
 import { useValidation } from "@/features/build/hooks/Validation";
 import SummaryTable from "@/features/part/components/Summary";
 import Part, { Product, Products } from "@pc-builder/shared/part";
+import { ColumnDef } from "@tanstack/react-table";
 
 const ProductRenderOrder = [
   Products.CPU,
@@ -50,9 +51,13 @@ function ProductTypeComponent({ product }: { product: Products }) {
     ? "border-red-500/30 ring-1 ring-red-500/10 bg-red-500/2 shadow-xs shadow-red-500/5"
     : "border-border hover:border-accent-indigo/40 hover:shadow-md";
 
-  const RemoveButtonCell = ({ defaultValue }: { defaultValue?: Part.Summary }) => (
-    <td className="text-right p-3">
-      {defaultValue && (
+  const removeColumn: ColumnDef<Part.Summary> = {
+    id: "remove-action",
+    header: () => "",
+    cell: ({ row }) => {
+      const defaultValue = row.original;
+      if (!defaultValue) return null;
+      return (
         <button
           type="button"
           onClick={() => removeProduct(defaultValue)}
@@ -60,9 +65,12 @@ function ProductTypeComponent({ product }: { product: Products }) {
         >
           Remove
         </button>
-      )}
-    </td>
-  );
+      );
+    },
+    meta: {
+      className: "text-right p-3",
+    },
+  };
 
   return (
     <div
@@ -87,7 +95,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
         {!details || details.length === 0 ? (
           <Link
             href={`/build/${product}`}
-            className="flex items-center justify-center gap-2 w-full py-6 border border-dashed border-border/80 hover:border-accent-indigo hover:text-accent-indigo rounded-2xl text-text/40 hover:text-accent-indigo bg-slate-500/2 hover:bg-accent-indigo/5 transition-all duration-250 text-sm font-bold cursor-pointer group"
+            className="flex items-center justify-center gap-2 w-full py-6 border border-dashed border-border/80 hover:border-accent-indigo hover:text-accent-indigo rounded-2xl text-text/40 bg-slate-500/2 hover:bg-accent-indigo/5 transition-all duration-250 text-sm font-bold cursor-pointer group"
           >
             <span className="text-base group-hover:scale-120 transition-transform duration-250">
               +
@@ -96,7 +104,7 @@ function ProductTypeComponent({ product }: { product: Products }) {
           </Link>
         ) : (
           <div className="border border-border/60 rounded-xl overflow-x-auto bg-slate-50/5">
-            <SummaryTable part={product} data={details} Cells={[RemoveButtonCell]} />
+            <SummaryTable part={product} data={details} columns={[removeColumn]} />
           </div>
         )}
 

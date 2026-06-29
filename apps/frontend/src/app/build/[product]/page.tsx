@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LoadingPanel from "@/ui/LoadingPanel";
 import ErrorPanel from "@/ui/ErrorPanel";
+import { ColumnDef } from "@tanstack/react-table";
 
 export default function BuildProductSummary({
   params: productParams,
@@ -43,11 +44,13 @@ export default function BuildProductSummary({
     router.push("/build");
   };
 
-  const AddButton = ({ defaultValue }: { defaultValue?: Part.Summary }) => {
-    if (!defaultValue || !addable) return <td></td>;
-
-    return (
-      <td className="p-3 text-right">
+  const selectColumn: ColumnDef<Part.Summary> = {
+    id: "select-action",
+    header: () => "",
+    cell: ({ row }) => {
+      const defaultValue = row.original;
+      if (!defaultValue || !addable) return null;
+      return (
         <button
           type="button"
           onClick={() => add(defaultValue)}
@@ -55,8 +58,11 @@ export default function BuildProductSummary({
         >
           Select
         </button>
-      </td>
-    );
+      );
+    },
+    meta: {
+      className: "p-3 text-right",
+    },
   };
 
   return (
@@ -89,7 +95,7 @@ export default function BuildProductSummary({
                 checked={includeBuild}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-mint" />
+              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-mint" />
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-bold text-text group-hover:text-accent-indigo transition-colors">
@@ -118,7 +124,7 @@ export default function BuildProductSummary({
 
       {/* Product Table */}
       <div className="border border-border rounded-2xl overflow-x-auto bg-card shadow-sm">
-        <SummaryTable part={product} data={data.list} Cells={[AddButton]} />
+        <SummaryTable part={product} data={data.list} columns={[selectColumn]} />
       </div>
 
       {/* Pagination */}

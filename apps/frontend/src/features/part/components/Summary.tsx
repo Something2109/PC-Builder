@@ -1,59 +1,75 @@
 "use client";
 
 import Part, { Products } from "@pc-builder/shared/part";
-import { ComponentType, lazy, TableHTMLAttributes } from "react";
+import { ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { TableHTMLAttributes } from "react";
+import React from "react";
 
-import { PartSummaryCells } from "./summary/Part";
-import { SummaryTable as Table } from "./utils/Summary";
+import { DataTable } from "@/components/ui/Table";
+
+import AIO from "./summary/AIO";
+import Case from "./summary/Case";
+import Cooler from "./summary/Cooler";
+import CPU from "./summary/CPU";
+import CPUBlock from "./summary/CPUBlock";
+import Fan from "./summary/Fan";
+import GPU from "./summary/GPU";
+import GraphicCard from "./summary/GraphicCard";
+import HDD from "./summary/HDD";
+import Mainboard from "./summary/Mainboard";
+import { PartColumns } from "./summary/Part";
+import PSU from "./summary/PSU";
+import Pump from "./summary/Pump";
+import Radiator from "./summary/Radiator";
+import RAM from "./summary/RAM";
+import SSD from "./summary/SSD";
 
 export const SummaryInfoComponent = {
-  [Products.CPU]: lazy(() => import("@/features/part/components/summary/CPU")),
-  [Products.GPU]: lazy(() => import("@/features/part/components/summary/GPU")),
-  [Products.GRAPHIC_CARD]: lazy(() => import("@/features/part/components/summary/GraphicCard")),
-  [Products.MAIN]: lazy(() => import("@/features/part/components/summary/Mainboard")),
-  [Products.RAM]: lazy(() => import("@/features/part/components/summary/RAM")),
-  [Products.HDD]: lazy(() => import("@/features/part/components/summary/HDD")),
-  [Products.PSU]: lazy(() => import("@/features/part/components/summary/PSU")),
-  [Products.CASE]: lazy(() => import("@/features/part/components/summary/Case")),
-  [Products.COOLER]: lazy(() => import("@/features/part/components/summary/Cooler")),
-  [Products.AIO]: lazy(() => import("@/features/part/components/summary/AIO")),
-  [Products.FAN]: lazy(() => import("@/features/part/components/summary/Fan")),
-  [Products.SSD]: lazy(() => import("@/features/part/components/summary/SSD")),
-  [Products.CPU_BLOCK]: lazy(() => import("@/features/part/components/summary/CPUBlock")),
-  [Products.PUMP]: lazy(() => import("@/features/part/components/summary/Pump")),
-  [Products.RADIATOR]: lazy(() => import("@/features/part/components/summary/Radiator")),
+  [Products.CPU]: CPU,
+  [Products.GPU]: GPU,
+  [Products.GRAPHIC_CARD]: GraphicCard,
+  [Products.MAIN]: Mainboard,
+  [Products.RAM]: RAM,
+  [Products.HDD]: HDD,
+  [Products.PSU]: PSU,
+  [Products.CASE]: Case,
+  [Products.COOLER]: Cooler,
+  [Products.AIO]: AIO,
+  [Products.FAN]: Fan,
+  [Products.SSD]: SSD,
+  [Products.CPU_BLOCK]: CPUBlock,
+  [Products.PUMP]: Pump,
+  [Products.RADIATOR]: Radiator,
 };
 
-export default function SummaryTable({
+export default function SummaryTable<Type extends Products, Data = Part.Summary<Type>>({
   part,
   data,
-  Cells = [],
+  columns = [],
   ...rest
 }: {
-  part: Products;
-  data: Part.Summary<typeof part>[];
-  Cells?: ComponentType<{ defaultValue?: Part.Summary<typeof part> }>[];
+  part: Type;
+  data: Data[];
+  columns?: ColumnDef<Data>[];
 } & TableHTMLAttributes<HTMLTableElement>) {
-  const Components = [PartSummaryCells, SummaryInfoComponent[part], ...Cells];
+  const columnList = React.useMemo(
+    () => [...PartColumns, ...(SummaryInfoComponent[part] ?? []), ...columns] as ColumnDef<Data>[],
+    [part, columns]
+  );
+
+  const table = useReactTable({
+    data,
+    columns: columnList,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
-    <Table.Component {...rest}>
-      <Table.Head>
-        <Table.Row>
-          {Components.map((Component, index) => (
-            <Component key={`Header-${Component.name}-${index}`} />
-          ))}
-        </Table.Row>
-      </Table.Head>
-      <tbody>
-        {data.map((product) => (
-          <Table.Row key={`Row-${product.id}`} className="hover:rounded-lg hover:bg-line">
-            {Components.map((Component) => (
-              <Component key={`Row-${Component.name}-${product.id}`} defaultValue={product} />
-            ))}
-          </Table.Row>
-        ))}
-      </tbody>
-    </Table.Component>
+    <DataTable
+      table={table}
+      isLoading={false}
+      className={rest.className}
+      tableClassName="w-full border-separate border-spacing-0"
+      rowClassName="grid grid-cols-2 border-b-2 *:p-2 lg:table-row *:lg:border-b-2 hover:rounded-lg hover:bg-line"
+    />
   );
 }
