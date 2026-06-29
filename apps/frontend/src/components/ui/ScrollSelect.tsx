@@ -3,6 +3,7 @@
 import { Products } from "@pc-builder/shared/part";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
+import axiosInstance from "@/lib/axios";
 
 interface ScrollSelectProps {
   name: string;
@@ -64,15 +65,12 @@ export default function ScrollSelect({
       defaultValue.forEach(async (id) => {
         if (selectedNames.has(String(id))) return;
         try {
-          const res = await fetch(`/api/${attribute}/${id}`);
-          if (res.ok) {
-            const data = await res.json();
-            setSelectedNames((prev) => {
-              const next = new Map(prev);
-              next.set(String(id), data.name);
-              return next;
-            });
-          }
+          const { data } = await axiosInstance.get(`/api/${attribute}/${id}`);
+          setSelectedNames((prev) => {
+            const next = new Map(prev);
+            next.set(String(id), data.name);
+            return next;
+          });
         } catch (e) {
           console.error("Failed to fetch initial ID name:", id, e);
         }
@@ -94,9 +92,10 @@ export default function ScrollSelect({
         params.set("filter_q", debouncedSearchQuery);
       }
 
-      const res = await fetch(`/api/part/filter/${product}/${attribute}?${params.toString()}`);
-      if (!res.ok) throw new Error("Failed to fetch");
-      const resData = await res.json();
+      const { data: resData } = await axiosInstance.get(
+        `/api/part/filter/${product}/${attribute}`,
+        { params }
+      );
       return (resData[attribute] || []) as Option[];
     },
     initialPageParam: 1,
