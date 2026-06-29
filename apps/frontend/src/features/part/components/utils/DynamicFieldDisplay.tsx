@@ -31,9 +31,7 @@ export function DynamicFieldDisplay({ schema, value }: DynamicFieldDisplayProps)
 
       if (fieldConfig.suffixConfig) {
         return (
-          <SuffixDisplay suffix={fieldConfig.suffixConfig.suffix}>
-            {value as number}
-          </SuffixDisplay>
+          <SuffixDisplay suffix={fieldConfig.suffixConfig.suffix}>{value as number}</SuffixDisplay>
         );
       }
 

@@ -2,9 +2,9 @@ import * as API from "@pc-builder/shared/API";
 import Part from "@pc-builder/shared/part";
 import { notFound } from "next/navigation";
 
+import { ServerTablePagination } from "@/components/ui/Table";
 import PartPanel from "@/features/part/components/Panel";
 import { SearchBar } from "@/layout/searchbar";
-import { ServerTablePagination } from "@/components/ui/Table";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function ListPage({

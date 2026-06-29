@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { Products } from "@pc-builder/shared/part";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
 
 interface ScrollSelectProps {
   name: string;
@@ -78,17 +78,10 @@ export default function ScrollSelect({
         }
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultValue, attribute]);
+  }, [defaultValue, attribute, selectedNames]);
 
   // TanStack Infinite Query for options list
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
     queryKey: ["partFilterInfinite", product, attribute, context.toString(), debouncedSearchQuery],
     queryFn: async ({ pageParam = 1 }) => {
       const params = new URLSearchParams(context);

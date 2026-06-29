@@ -101,7 +101,11 @@ export function InfoForm<Info extends Information.Name>({
                 if (!Component) return null;
                 return (
                   <Suspense fallback={<LoadingSpinner text="loading form specifications..." />}>
-                    <Component pending={pending} onSubmit={save as unknown as (value: unknown) => void} defaultValue={formValue} />
+                    <Component
+                      pending={pending}
+                      onSubmit={save as unknown as (value: unknown) => void}
+                      defaultValue={formValue}
+                    />
                   </Suspense>
                 );
               })()

@@ -47,7 +47,7 @@ export function getInnerSchema(schema: z.ZodTypeAny): z.ZodTypeAny {
 export function inspectFieldSchema(schema: z.ZodTypeAny): SchemaFieldConfig {
   const unwrapped = getInnerSchema(schema);
   const unwrappedName = unwrapped?.constructor?.name;
-  
+
   const schemaName = schema?.constructor?.name;
   const isRequired = !(
     schemaName === "ZodOptional" ||
@@ -56,7 +56,9 @@ export function inspectFieldSchema(schema: z.ZodTypeAny): SchemaFieldConfig {
     schema instanceof z.ZodNullable
   );
 
-  const meta = (typeof unwrapped.meta === "function" ? unwrapped.meta() : undefined) as ZodMetadata | undefined;
+  const meta = (typeof unwrapped.meta === "function" ? unwrapped.meta() : undefined) as
+    | ZodMetadata
+    | undefined;
 
   // 1. Check for Unit metadata
   if (meta && meta.unit && meta.target) {

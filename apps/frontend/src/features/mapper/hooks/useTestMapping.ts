@@ -22,9 +22,13 @@ export function useTestMapping() {
       setErrorMessage(null);
       const parsedInput = JSON.parse(params.jsonInput);
       const url = `/mapper/map/${params.productType}`;
-      const queryParams = params.fallbackBrand ? { fallbackBrand: params.fallbackBrand } : undefined;
+      const queryParams = params.fallbackBrand
+        ? { fallbackBrand: params.fallbackBrand }
+        : undefined;
 
-      const response = await axiosInstance.post<MapperResult>(url, parsedInput, { params: queryParams });
+      const response = await axiosInstance.post<MapperResult>(url, parsedInput, {
+        params: queryParams,
+      });
       return response.data;
     },
     onSuccess: (data, variables) => {

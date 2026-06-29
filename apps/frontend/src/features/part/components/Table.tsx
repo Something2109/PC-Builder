@@ -53,8 +53,7 @@ export function InfoTable<Info extends Infos>({
   info: Infos;
   defaultValue?: Part.Model[Info];
 }>) {
-  if (!defaultValue || (Array.isArray(defaultValue) && defaultValue.length === 0))
-    return undefined;
+  if (!defaultValue || (Array.isArray(defaultValue) && defaultValue.length === 0)) return undefined;
 
   const isMultiple = Information.DTO[info] instanceof z.ZodArray;
 

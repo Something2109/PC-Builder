@@ -10,11 +10,7 @@ interface DynamicSchemaDisplayProps {
   defaultValue: unknown;
 }
 
-export function DynamicSchemaDisplay({
-  schema,
-  labels,
-  defaultValue,
-}: DynamicSchemaDisplayProps) {
+export function DynamicSchemaDisplay({ schema, labels, defaultValue }: DynamicSchemaDisplayProps) {
   const schemaName = schema?.constructor?.name;
 
   if (!defaultValue || (Array.isArray(defaultValue) && defaultValue.length === 0)) {
@@ -39,7 +35,10 @@ export function DynamicSchemaDisplay({
               <Table.Row key={key}>
                 <Table.Cell className="font-bold w-1/3">{labels[key] || key}</Table.Cell>
                 <Table.Cell>
-                  <DynamicFieldDisplay schema={shape[key] as unknown as z.ZodTypeAny} value={value} />
+                  <DynamicFieldDisplay
+                    schema={shape[key] as unknown as z.ZodTypeAny}
+                    value={value}
+                  />
                 </Table.Cell>
               </Table.Row>
             );

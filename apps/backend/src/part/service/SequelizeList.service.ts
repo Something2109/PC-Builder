@@ -227,9 +227,10 @@ class SequelizeContext {
     include: IncludeOptions[]
   ): Promise<{ id: number; name: string }[]> {
     const relationName = attribute === "brand" ? "brandRelation" : "seriesRelation";
-    const relationModel = attribute === "brand"
-      ? PartInformation.associations.brandRelation.target
-      : PartInformation.associations.seriesRelation.target;
+    const relationModel =
+      attribute === "brand"
+        ? PartInformation.associations.brandRelation.target
+        : PartInformation.associations.seriesRelation.target;
 
     const queryInclude = include.map((inc) => {
       if (inc.model === relationModel) {
@@ -248,10 +249,9 @@ class SequelizeContext {
     let queryWhere = where;
     if (this.filter_q) {
       queryWhere = {
-        [Op.and]: [
-          where,
-          sequelizeWhere(nameExpr, { [Op.like]: `%${this.filter_q}%` })
-        ].filter(Boolean) as WhereOptions[],
+        [Op.and]: [where, sequelizeWhere(nameExpr, { [Op.like]: `%${this.filter_q}%` })].filter(
+          Boolean
+        ) as WhereOptions[],
       };
     }
 
@@ -296,10 +296,9 @@ class SequelizeContext {
     let queryWhere = where;
     if (this.filter_q) {
       queryWhere = {
-        [Op.and]: [
-          where,
-          sequelizeWhere(attrExpr, { [Op.like]: `%${this.filter_q}%` })
-        ].filter(Boolean) as WhereOptions[],
+        [Op.and]: [where, sequelizeWhere(attrExpr, { [Op.like]: `%${this.filter_q}%` })].filter(
+          Boolean
+        ) as WhereOptions[],
       };
     }
 

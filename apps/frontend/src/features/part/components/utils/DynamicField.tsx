@@ -8,19 +8,17 @@ import { ChoiceInput, Input, OptionSelect, SuffixInput, UnitInput } from "@/ui/I
 import { inspectFieldSchema } from "./schemaInspector";
 import { mapChange } from "./TanstackForm";
 
-interface DynamicFieldProps<
-  TParentData extends object,
-  TName extends DeepKeys<TParentData>,
-> {
+interface DynamicFieldProps<TParentData extends object, TName extends DeepKeys<TParentData>> {
   field: FieldApi<TParentData, TName>;
   schema: z.ZodTypeAny;
   label: string;
 }
 
-export function DynamicField<
-  TParentData extends object,
-  TName extends DeepKeys<TParentData>,
->({ field, schema, label }: DynamicFieldProps<TParentData, TName>) {
+export function DynamicField<TParentData extends object, TName extends DeepKeys<TParentData>>({
+  field,
+  schema,
+  label,
+}: DynamicFieldProps<TParentData, TName>) {
   const fieldConfig = inspectFieldSchema(schema);
 
   switch (fieldConfig.type) {
@@ -33,7 +31,9 @@ export function DynamicField<
             placeholder={label}
             defaultValue={field.state.value as number}
             name={field.name as string}
-            onChange={(e) => field.handleChange(Number(e.target.value) as Parameters<typeof field.handleChange>[0])}
+            onChange={(e) =>
+              field.handleChange(Number(e.target.value) as Parameters<typeof field.handleChange>[0])
+            }
           />
         );
       }
@@ -46,7 +46,9 @@ export function DynamicField<
             placeholder={label}
             defaultValue={field.state.value as number}
             name={field.name as string}
-            onChange={(e) => field.handleChange(Number(e.target.value) as Parameters<typeof field.handleChange>[0])}
+            onChange={(e) =>
+              field.handleChange(Number(e.target.value) as Parameters<typeof field.handleChange>[0])
+            }
           />
         );
       }
@@ -57,7 +59,9 @@ export function DynamicField<
           placeholder={label}
           name={field.name as string}
           defaultValue={field.state.value as number}
-          onChange={(e) => field.handleChange(Number(e.target.value) as Parameters<typeof field.handleChange>[0])}
+          onChange={(e) =>
+            field.handleChange(Number(e.target.value) as Parameters<typeof field.handleChange>[0])
+          }
         />
       );
 
@@ -82,7 +86,9 @@ export function DynamicField<
           type="checkbox"
           name={field.name as string}
           checked={!!field.state.value}
-          onChange={(e) => field.handleChange(e.target.checked as Parameters<typeof field.handleChange>[0])}
+          onChange={(e) =>
+            field.handleChange(e.target.checked as Parameters<typeof field.handleChange>[0])
+          }
         />
       );
 
@@ -92,14 +98,7 @@ export function DynamicField<
         defaultValue: string | undefined;
         onChange: (e: { target: { value: string } }) => void;
       };
-      return (
-        <Input
-          type="text"
-          placeholder={label}
-          name={field.name as string}
-          {...stringProps}
-        />
-      );
+      return <Input type="text" placeholder={label} name={field.name as string} {...stringProps} />;
     }
   }
 }

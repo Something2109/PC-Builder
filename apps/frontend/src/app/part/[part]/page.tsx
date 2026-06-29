@@ -2,10 +2,9 @@ import { Product } from "@pc-builder/shared/part";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ServerTablePagination } from "@/components/ui/Table";
 import { FilterBar } from "@/features/part/components/Filter";
 import SummaryTable from "@/features/part/components/Summary";
-import { ToggleButton } from "@/ui/Toggle";
-import { ServerTablePagination } from "@/components/ui/Table";
 import { getBackendUrl } from "@/utils/path";
 
 export default async function PartListPage({
@@ -68,32 +67,55 @@ export default async function PartListPage({
         </div>
       </div>
 
-      {/* Control Bar (Filters & results count) */}
-      <div className="flex justify-between items-center p-4 rounded-2xl border border-border bg-card shadow-sm">
-        <span className="text-sm font-semibold text-text/50">
-          Showing {data.total} item{data.total !== 1 ? "s" : ""}
-        </span>
-        <ToggleButton label="Filters">
-          <div className="w-full mt-4 p-4 border border-border rounded-xl bg-card/50 text-left">
+      {/* Grid Layout for Sidebar + Main Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+        {/* Sidebar Column: Filters */}
+        <div className="lg:col-span-1 space-y-4">
+          {/* Mobile Collapsible Filters */}
+          <details className="lg:hidden border border-border rounded-2xl bg-card p-4 shadow-sm group">
+            <summary className="flex items-center justify-between cursor-pointer list-none select-none">
+              <h2 className="text-base font-bold text-text">Filters</h2>
+              <span className="text-text/60 font-bold transition-transform duration-200 group-open:rotate-180">
+                ▼
+              </span>
+            </summary>
+            <div className="mt-4 pt-4 border-t border-border/60">
+              <FilterBar className="w-full" part={part} context={options} />
+            </div>
+          </details>
+
+          {/* Desktop Static Sidebar Filters */}
+          <div className="hidden lg:block border border-border rounded-2xl bg-card p-5 shadow-sm space-y-4">
+            <h2 className="text-lg font-bold text-text border-b border-border/60 pb-3">Filters</h2>
             <FilterBar className="w-full" part={part} context={options} />
           </div>
-        </ToggleButton>
-      </div>
+        </div>
 
-      {/* Part List Table */}
-      <div className="border border-border rounded-2xl overflow-x-scroll bg-card shadow-sm">
-        <SummaryTable part={part} data={data.list} />
-      </div>
+        {/* Main Content Column */}
+        <div className="lg:col-span-3 space-y-6">
+          {/* Results Summary Bar */}
+          <div className="flex justify-between items-center p-4 rounded-2xl border border-border bg-card shadow-sm">
+            <span className="text-sm font-semibold text-text/50">
+              Showing {data.total} item{data.total !== 1 ? "s" : ""}
+            </span>
+          </div>
 
-      {/* Pagination */}
-      <ServerTablePagination
-        path={`/part/${part}?${options.toString()}`}
-        page={Number(page)}
-        pageSize={Number(limit)}
-        total={data.total}
-        totalPages={Math.ceil(data.total / Number(limit))}
-        entryLabel="items"
-      />
+          {/* Part List Table */}
+          <div className="border border-border rounded-2xl overflow-x-auto bg-card shadow-sm">
+            <SummaryTable part={part} data={data.list} />
+          </div>
+
+          {/* Pagination */}
+          <ServerTablePagination
+            path={`/part/${part}?${options.toString()}`}
+            page={Number(page)}
+            pageSize={Number(limit)}
+            total={data.total}
+            totalPages={Math.ceil(data.total / Number(limit))}
+            entryLabel="items"
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { lazy, FormHTMLAttributes, LazyExoticComponent, FunctionComponent, Suspense } from "react";
 
 import { Button } from "@/ui/Button";
-import { RowWrapper } from "@/ui/FlexWrapper";
 import { Input } from "@/ui/Input";
 import { LoadingSpinner } from "@/ui/LoadingSpinner";
 
@@ -64,28 +63,58 @@ export function FilterBar({
   const actionHandler = rest.action ?? (rest.onSubmit ? undefined : defaultAction);
 
   return (
-    <form className={`flex flex-col gap-1 ${className}`} action={actionHandler} {...rest}>
-      <RowWrapper className="flex-wrap justify-between gap-2 mb-10">
-        <RowWrapper className="w-full px-4 py-1 rounded-2xl border-2">
+    <form className={`flex flex-col gap-5 ${className}`} action={actionHandler} {...rest}>
+      <div className="flex flex-col gap-4">
+        {/* Search input field */}
+        <div className="w-full flex items-center gap-2 px-3 py-2 border border-border rounded-xl bg-slate-50/5 focus-within:border-accent-indigo focus-within:ring-1 focus-within:ring-accent-indigo transition-all">
+          <svg
+            className="w-4 h-4 text-text/40 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2.5"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
           <Input
-            className="focus:outline-none bg-transparent"
+            className="focus:outline-none bg-transparent text-sm w-full"
             name="q"
             defaultValue={options.get("q") || ""}
-            placeholder="Search"
+            placeholder="Search parts..."
           />
-        </RowWrapper>
-        <PartFilter product={part} context={options} />
-        <Suspense fallback={<LoadingSpinner text="loading filter options..." />}>
-          <Component product={part} context={options} />
-        </Suspense>
-      </RowWrapper>
-      <hr />
-      <RowWrapper className="justify-end">
-        <Button type="submit">Filter</Button>
-        <Button type="reset" onClick={() => router.replace(`/part/${part}`)}>
+        </div>
+
+        {/* Filters wrapping and stacking container */}
+        <div className="flex flex-wrap gap-2.5">
+          <PartFilter product={part} context={options} />
+          <Suspense fallback={<LoadingSpinner text="loading filter options..." />}>
+            <Component product={part} context={options} />
+          </Suspense>
+        </div>
+      </div>
+
+      <hr className="border-border/60" />
+
+      {/* Buttons */}
+      <div className="flex gap-3">
+        <Button
+          type="reset"
+          onClick={() => router.replace(`/part/${part}`)}
+          className="flex-1 py-2 text-xs"
+        >
           Reset
         </Button>
-      </RowWrapper>
+        <Button
+          type="submit"
+          className="flex-1 py-2 text-xs font-semibold text-white bg-accent-indigo hover:bg-accent-indigo/90 border-accent-indigo hover:border-accent-indigo/90 shadow-sm"
+        >
+          Filter
+        </Button>
+      </div>
     </form>
   );
 }

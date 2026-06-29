@@ -15,12 +15,7 @@ const BASIC_ATTRIBUTES = [
 ];
 
 interface AddAliasFormProps {
-  onSubmit: (payload: {
-    product: string;
-    info: string;
-    attribute: string;
-    alias: string;
-  }) => void;
+  onSubmit: (payload: { product: string; info: string; attribute: string; alias: string }) => void;
   onCancel: () => void;
   isPending: boolean;
 }

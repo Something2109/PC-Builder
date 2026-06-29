@@ -1,5 +1,7 @@
 import Part from "@pc-builder/shared/part";
+
 import ScrollSelect from "@/components/ui/ScrollSelect";
+
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<{

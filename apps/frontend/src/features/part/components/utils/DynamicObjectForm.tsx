@@ -42,7 +42,13 @@ function ObjectFormFields<T extends Record<string, unknown>>({
               <Table.Cell className="font-bold w-1/3">{fieldLabel}</Table.Cell>
               <Table.Cell>
                 <form.Field name={key as DeepKeys<T>}>
-                  {(field) => <DynamicField field={field} schema={shape[key] as unknown as z.ZodTypeAny} label={fieldLabel} />}
+                  {(field) => (
+                    <DynamicField
+                      field={field}
+                      schema={shape[key] as unknown as z.ZodTypeAny}
+                      label={fieldLabel}
+                    />
+                  )}
                 </form.Field>
               </Table.Cell>
             </Table.Row>
