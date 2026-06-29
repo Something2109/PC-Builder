@@ -87,6 +87,7 @@ export default function ScrollSelect({
       const params = new URLSearchParams(context);
       params.delete("page");
       params.delete("limit");
+      params.delete(attribute);
       params.set("page", String(pageParam));
       params.set("limit", "20");
       if (debouncedSearchQuery) {

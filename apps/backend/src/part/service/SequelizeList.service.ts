@@ -40,7 +40,10 @@ class SequelizeListService implements DatabaseListInterface {
     const filter: Part.Filter = {};
 
     const partPromises = part.map(async (attr) => {
-      const value = options.part?.[attr] ?? (await Context.filter(attr));
+      const value =
+        attr === "brand" || attr === "series"
+          ? await Context.filter(attr)
+          : (options.part?.[attr] ?? (await Context.filter(attr)));
       filter.part ??= {};
       filter.part[attr] = value as any;
     });
