@@ -1,9 +1,211 @@
 "use client";
 
-import { Products } from "@pc-builder/shared/part";
+import { useEffect, useRef, useState, RefObject } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
-import axiosInstance from "@/lib/axios";
+import { Products } from "@pc-builder/shared/part";
+import axios from "axios";
+
+interface Option {
+  id: number;
+  name: string;
+}
+
+// Click outside helper hook
+function useClickOutside(ref: RefObject<HTMLDivElement | null>, callback: () => void) {
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        callback();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [ref, callback]);
+}
+
+// Resolves names for initial selected IDs
+function useResolvedNames(attribute: string, defaultValue: string[]) {
+  const [selectedNames, setSelectedNames] = useState<Map<string, string>>(new Map());
+
+  useEffect(() => {
+    if (defaultValue && defaultValue.length > 0) {
+      defaultValue.forEach(async (id) => {
+        if (selectedNames.has(String(id))) return;
+        try {
+          const { data } = await axios.get(`/api/${attribute}/${id}`);
+          setSelectedNames((prev) => {
+            const next = new Map(prev);
+            next.set(String(id), data.name);
+            return next;
+          });
+        } catch (e) {
+          console.error("Failed to fetch initial ID name:", id, e);
+        }
+      });
+    }
+  }, [defaultValue, attribute, selectedNames]);
+
+  return { selectedNames, setSelectedNames };
+}
+
+// Fetches options with TanStack Infinite Query & Debounces search input
+function useInfiniteSelectQuery(
+  product: Products,
+  attribute: string,
+  context: URLSearchParams,
+  searchQuery: string
+) {
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  const query = useInfiniteQuery({
+    queryKey: ["partFilterInfinite", product, attribute, context.toString(), debouncedSearchQuery],
+    queryFn: async ({ pageParam = 1 }) => {
+      const params = new URLSearchParams(context);
+      params.delete("page");
+      params.delete("limit");
+      params.delete(attribute);
+      params.set("page", String(pageParam));
+      params.set("limit", "20");
+      if (debouncedSearchQuery) {
+        params.set("filter_q", debouncedSearchQuery);
+      }
+
+      const { data: resData } = await axios.get(`/api/part/filter/${product}/${attribute}`, {
+        params,
+      });
+      return (resData[attribute] || []) as Option[];
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.length >= 20 ? allPages.length + 1 : undefined;
+    },
+  });
+
+  const options = query.data ? query.data.pages.flat() : [];
+
+  return {
+    options,
+    fetchNextPage: query.fetchNextPage,
+    hasNextPage: query.hasNextPage,
+    isFetchingNextPage: query.isFetchingNextPage,
+    isLoading: query.isLoading,
+  };
+}
+
+interface ScrollSelectPanelProps {
+  product: Products;
+  attribute: string;
+  context: URLSearchParams;
+  selectedIds: string[];
+  toggleOption: (id: string, optName: string) => void;
+}
+
+// Dropdown Popover Sub-Component
+function ScrollSelectPanel({
+  product,
+  attribute,
+  context,
+  selectedIds,
+  toggleOption,
+}: Readonly<ScrollSelectPanelProps>) {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const { options, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteSelectQuery(product, attribute, context, searchQuery);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (scrollHeight - scrollTop <= clientHeight + 30) {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    }
+  };
+
+  return (
+    <div className="absolute left-0 right-0 z-50 mt-2 bg-background/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
+      {/* Search bar */}
+      <div className="p-3 border-b border-white/5 flex items-center gap-2 bg-white/5">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-4 h-4 text-text/40"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.604 10.604z"
+          />
+        </svg>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full bg-transparent border-none text-sm text-text placeholder-text/40 focus:outline-none focus:ring-0 p-0"
+          autoFocus
+        />
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={() => setSearchQuery("")}
+            className="text-text/40 hover:text-text/80 text-xs p-1"
+          >
+            Clear
+          </button>
+        )}
+      </div>
+
+      {/* Options List */}
+      <div
+        onScroll={handleScroll}
+        className="max-h-60 overflow-y-auto p-2 space-y-1 custom-scrollbar"
+      >
+        {isLoading && options.length === 0 ? (
+          <div className="py-8 text-center text-sm text-text/40">Loading options...</div>
+        ) : options.length === 0 ? (
+          <div className="py-8 text-center text-sm text-text/40">No options found</div>
+        ) : (
+          options.map((option) => {
+            const optIdStr = String(option.id);
+            const isChecked = selectedIds.includes(optIdStr);
+            return (
+              <label
+                key={option.id}
+                className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 cursor-pointer text-sm text-text/80 transition"
+              >
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={() => toggleOption(optIdStr, option.name)}
+                  className="rounded border-white/10 bg-transparent text-primary focus:ring-primary focus:ring-offset-background"
+                />
+                <span className="truncate">{option.name}</span>
+              </label>
+            );
+          })
+        )}
+
+        {isFetchingNextPage && (
+          <div className="py-2 text-center text-xs text-text/40 flex items-center justify-center gap-2">
+            <div className="w-3.5 h-3.5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            Loading more...
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 interface ScrollSelectProps {
   name: string;
@@ -14,11 +216,6 @@ interface ScrollSelectProps {
   value?: string[];
   onChange?: (value: string[]) => void;
   placeholder?: string;
-}
-
-interface Option {
-  id: number;
-  name: string;
 }
 
 export default function ScrollSelect({
@@ -32,79 +229,14 @@ export default function ScrollSelect({
   placeholder,
 }: Readonly<ScrollSelectProps>) {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [localSelectedIds, setLocalSelectedIds] = useState<string[]>(defaultValue);
-  const [selectedNames, setSelectedNames] = useState<Map<string, string>>(new Map());
 
   const selectedIds = value !== undefined ? value : localSelectedIds;
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Debounce search query
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, 300);
-    return () => clearTimeout(handler);
-  }, [searchQuery]);
-
-  // Click outside to close dropdown
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Resolve initial selected names from IDs
-  useEffect(() => {
-    if (defaultValue && defaultValue.length > 0) {
-      defaultValue.forEach(async (id) => {
-        if (selectedNames.has(String(id))) return;
-        try {
-          const { data } = await axiosInstance.get(`/api/${attribute}/${id}`);
-          setSelectedNames((prev) => {
-            const next = new Map(prev);
-            next.set(String(id), data.name);
-            return next;
-          });
-        } catch (e) {
-          console.error("Failed to fetch initial ID name:", id, e);
-        }
-      });
-    }
-  }, [defaultValue, attribute, selectedNames]);
-
-  // TanStack Infinite Query for options list
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
-    queryKey: ["partFilterInfinite", product, attribute, context.toString(), debouncedSearchQuery],
-    queryFn: async ({ pageParam = 1 }) => {
-      const params = new URLSearchParams(context);
-      params.delete("page");
-      params.delete("limit");
-      params.delete(attribute);
-      params.set("page", String(pageParam));
-      params.set("limit", "20");
-      if (debouncedSearchQuery) {
-        params.set("filter_q", debouncedSearchQuery);
-      }
-
-      const { data: resData } = await axiosInstance.get(
-        `/api/part/filter/${product}/${attribute}`,
-        { params }
-      );
-      return (resData[attribute] || []) as Option[];
-    },
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage.length >= 20 ? allPages.length + 1 : undefined;
-    },
-  });
-
-  const options = data ? data.pages.flat() : [];
+  // Invoke hooks
+  useClickOutside(containerRef, () => setIsOpen(false));
+  const { selectedNames, setSelectedNames } = useResolvedNames(attribute, defaultValue);
 
   const toggleOption = (id: string, optName: string) => {
     const nextSelected = selectedIds.includes(id)
@@ -123,15 +255,6 @@ export default function ScrollSelect({
       onChange(nextSelected);
     } else {
       setLocalSelectedIds(nextSelected);
-    }
-  };
-
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-    if (scrollHeight - scrollTop <= clientHeight + 30) {
-      if (hasNextPage && !isFetchingNextPage) {
-        fetchNextPage();
-      }
     }
   };
 
@@ -171,80 +294,13 @@ export default function ScrollSelect({
 
       {/* Popover Dropdown Panel */}
       {isOpen && (
-        <div className="absolute left-0 right-0 z-50 mt-2 bg-background/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
-          {/* Search bar */}
-          <div className="p-3 border-b border-white/5 flex items-center gap-2 bg-white/5">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-4 text-text/40"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.604 10.604z"
-              />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-transparent border-none text-sm text-text placeholder-text/40 focus:outline-none focus:ring-0 p-0"
-              autoFocus
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery("")}
-                className="text-text/40 hover:text-text/80 text-xs p-1"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-
-          {/* Options List */}
-          <div
-            onScroll={handleScroll}
-            className="max-h-60 overflow-y-auto p-2 space-y-1 custom-scrollbar"
-          >
-            {isLoading && options.length === 0 ? (
-              <div className="py-8 text-center text-sm text-text/40">Loading options...</div>
-            ) : options.length === 0 ? (
-              <div className="py-8 text-center text-sm text-text/40">No options found</div>
-            ) : (
-              options.map((option) => {
-                const optIdStr = String(option.id);
-                const isChecked = selectedIds.includes(optIdStr);
-                return (
-                  <label
-                    key={option.id}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 cursor-pointer text-sm text-text/80 transition"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isChecked}
-                      onChange={() => toggleOption(optIdStr, option.name)}
-                      className="rounded border-white/10 bg-transparent text-primary focus:ring-primary focus:ring-offset-background"
-                    />
-                    <span className="truncate">{option.name}</span>
-                  </label>
-                );
-              })
-            )}
-
-            {isFetchingNextPage && (
-              <div className="py-2 text-center text-xs text-text/40 flex items-center justify-center gap-2">
-                <div className="w-3.5 h-3.5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                Loading more...
-              </div>
-            )}
-          </div>
-        </div>
+        <ScrollSelectPanel
+          product={product}
+          attribute={attribute}
+          context={context}
+          selectedIds={selectedIds}
+          toggleOption={toggleOption}
+        />
       )}
     </div>
   );
