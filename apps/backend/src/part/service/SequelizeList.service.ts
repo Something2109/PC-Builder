@@ -11,6 +11,7 @@ import {
   Op,
   Order,
   WhereOptions,
+  where as sequelizeWhere,
 } from "sequelize";
 
 import { ModelScopes, defaultFilter } from "@/models/interface";
@@ -18,7 +19,7 @@ import { PartInformation } from "@/models/parts";
 
 import { DatabaseListInterface, ModelAttributeList } from "../interface/database.interface";
 
-type ListOptions = Part.Filter & API.PageOptions & API.SearchOptions;
+type ListOptions = Part.Filter & API.PageOptions & API.SearchOptions & { filter_q?: string };
 
 const filterToWhereMap: Record<string, ReturnType<typeof col>> = {
   brand: col("brandRelation.name"),
@@ -41,7 +42,7 @@ class SequelizeListService implements DatabaseListInterface {
     const partPromises = part.map(async (attr) => {
       const value = options.part?.[attr] ?? (await Context.filter(attr));
       filter.part ??= {};
-      filter.part[attr] = value as string[];
+      filter.part[attr] = value as any;
     });
 
     const infoPromises = Object.entries(infos).map(([key, attributes]) => {
@@ -50,7 +51,7 @@ class SequelizeListService implements DatabaseListInterface {
         const value = options[info]?.[attribute] ?? (await Context.filter(attribute, key as Infos));
 
         filter[info] ??= {};
-        filter[info][attribute] = value;
+        filter[info][attribute] = value as any;
       });
     });
 
@@ -81,9 +82,11 @@ class SequelizeContext {
   private readonly partWhere?: WhereOptions<PartInformation>;
   private readonly partFilter?: Part.Filter["part"];
   private readonly q?: string;
+  private readonly filter_q?: string;
 
   constructor(options: ListOptions, attrs?: { [key in Infos]?: string[] }) {
     this.q = options.q;
+    this.filter_q = options.filter_q;
     this.partFilter = options.part;
     this.PartModel = PartInformation.scope({
       method: [ModelScopes.FILTER, options.part],
@@ -193,6 +196,10 @@ class SequelizeContext {
       ];
     }
 
+    if (attribute === "brand" || attribute === "series") {
+      return await this.filterRelationAttribute(MainModel, attribute, where, options);
+    }
+
     const AttrType = MainModel.getAttributes()[attribute];
 
     if (!AttrType) throw new Error(`No attribute named ${attribute} in ${MainModel.name}`);
@@ -202,6 +209,72 @@ class SequelizeContext {
       : this.filterStringAttribute(MainModel, attribute, where, ...options));
 
     return result;
+  }
+
+  /**
+   * Create a new relation filter array of the {@link attribute} in {@link model}.
+   * The {@link include} list contains the models included in the query.
+   * @param model The model to get the values from.
+   * @param attribute The attribute (brand/series) to filter relation for.
+   * @param where The where query conditions.
+   * @param include The models to include in the query.
+   * @returns The created array of objects containing id and name.
+   */
+  protected async filterRelationAttribute(
+    model: ModelStatic<Model>,
+    attribute: string,
+    where: WhereOptions | undefined,
+    include: IncludeOptions[]
+  ): Promise<{ id: number; name: string }[]> {
+    const relationName = attribute === "brand" ? "brandRelation" : "seriesRelation";
+    const relationModel = attribute === "brand"
+      ? PartInformation.associations.brandRelation.target
+      : PartInformation.associations.seriesRelation.target;
+
+    const queryInclude = include.map((inc) => {
+      if (inc.model === relationModel) {
+        return {
+          ...inc,
+          attributes: ["id", "name"],
+          required: true,
+        };
+      }
+      return inc;
+    });
+
+    const idExpr = col(`${relationName}.id`);
+    const nameExpr = col(`${relationName}.name`);
+
+    let queryWhere = where;
+    if (this.filter_q) {
+      queryWhere = {
+        [Op.and]: [
+          where,
+          sequelizeWhere(nameExpr, { [Op.like]: `%${this.filter_q}%` })
+        ].filter(Boolean) as WhereOptions[],
+      };
+    }
+
+    const query = (await model.findAll({
+      where: queryWhere,
+      ...this.pageOptions,
+      attributes: [
+        [idExpr, "id"],
+        [nameExpr, "name"],
+      ],
+      group: [idExpr, nameExpr],
+      order: [nameExpr],
+      include: queryInclude,
+      raw: true,
+      subQuery: false,
+    })) as unknown as Record<string, any>[];
+
+    return query
+      .map((value) => ({
+        id: Number(value[`${relationName}.id`] ?? value.id),
+        name: String(value[`${relationName}.name`] ?? value.name),
+      }))
+      .filter((item) => item.id && item.name);
   }
 
   /**
@@ -220,8 +293,18 @@ class SequelizeContext {
   ): Promise<string[]> {
     const attrExpr = filterToWhereMap[attribute] || col(`${model.name}.${attribute}`);
 
+    let queryWhere = where;
+    if (this.filter_q) {
+      queryWhere = {
+        [Op.and]: [
+          where,
+          sequelizeWhere(attrExpr, { [Op.like]: `%${this.filter_q}%` })
+        ].filter(Boolean) as WhereOptions[],
+      };
+    }
+
     const query = (await model.findAll({
-      where,
+      where: queryWhere,
       ...this.pageOptions,
       attributes: [[attrExpr, attribute]],
       group: [attrExpr],

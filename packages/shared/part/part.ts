@@ -52,8 +52,8 @@ const BasicFilterSchema = z
     part: FilterOptions(Primitive.String),
     name: FilterOptions(Primitive.String),
     code_name: FilterOptions(Primitive.String),
-    brand: FilterOptions(Primitive.String),
-    series: FilterOptions(Primitive.String),
+    brand: FilterOptions(Primitive.Number),
+    series: FilterOptions(Primitive.Number),
 
     launch_date: FilterOptions(Primitive.String),
     url: FilterOptions(Primitive.String),

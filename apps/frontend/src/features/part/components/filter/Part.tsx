@@ -1,27 +1,29 @@
 import Part from "@pc-builder/shared/part";
-
-import { MultipleChoiceInput } from "@/ui/Input";
-
+import ScrollSelect from "@/components/ui/ScrollSelect";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<{
-  brand: string[];
-  series: string[];
+  brand: { id: number; name: string }[];
+  series: { id: number; name: string }[];
 }> = {
-  brand: ({ value, defaultValue }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3"
-      name={"brand"}
-      value={value}
-      defaultValue={defaultValue}
+  brand: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="brand"
+      attribute="brand"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as unknown as string[]}
+      placeholder="Select Brand"
     />
   ),
-  series: ({ value, defaultValue }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3"
-      name={"brand"}
-      value={value}
-      defaultValue={defaultValue}
+  series: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="series"
+      attribute="series"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as unknown as string[]}
+      placeholder="Select Series"
     />
   ),
 };

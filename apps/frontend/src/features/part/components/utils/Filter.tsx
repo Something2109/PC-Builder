@@ -8,7 +8,12 @@ import { Toggler } from "@/ui/Toggle";
 import { InfoLabel } from "../utils/Table";
 
 type CustomFilterComponent<Value> = FunctionComponent<
-  { value: NonNullable<Value>; defaultValue?: Value } & Omit<
+  {
+    value: NonNullable<Value>;
+    defaultValue?: Value;
+    product: Products;
+    context: URLSearchParams;
+  } & Omit<
     InputHTMLAttributes<HTMLInputElement> & SelectHTMLAttributes<HTMLSelectElement>,
     "defaultValue" | "value"
   >
@@ -18,7 +23,7 @@ export type FilterMapping<T extends Record<string, unknown>> = {
   [key in keyof Required<T>]: CustomFilterComponent<T[key]>;
 };
 
-export function GenericFilterBar<T extends Record<string, string[] | number[]>>(
+export function GenericFilterBar<T extends Record<string, unknown>>(
   Components: FilterMapping<T>,
   Labels: InfoLabel<T>
 ) {
@@ -83,6 +88,8 @@ function FilterAttributeComponent<Value>({
         placeholder={label}
         value={state}
         defaultValue={context.getAll(attribute) as Value}
+        product={product}
+        context={context}
       />
     </VerticalCollapsible>
   );

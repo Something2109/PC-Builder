@@ -57,7 +57,7 @@ class ParseService implements ParseServiceInterface {
   options(
     params: Record<string, string | string[]>,
     part?: Products
-  ): Part.Filter & API.PageOptions & API.SearchOptions {
+  ): Part.Filter & API.PageOptions & API.SearchOptions & { filter_q?: string } {
     const pageOptions: API.PageOptions & API.SearchOptions = API.toPageOptions(params);
 
     if (params.q) {
@@ -66,7 +66,12 @@ class ParseService implements ParseServiceInterface {
 
     const filter = this.buildFilterOptions(params, part);
 
-    return { ...filter.build(), ...pageOptions };
+    const result: any = { ...filter.build(), ...pageOptions };
+    if (params.filter_q) {
+      result.filter_q = Array.isArray(params.filter_q) ? params.filter_q[0] : params.filter_q;
+    }
+
+    return result;
   }
 
   attributes(attributes: string[], product?: Products) {
@@ -123,12 +128,14 @@ class ParseService implements ParseServiceInterface {
 
       if (!Array.isArray(option)) option = [option];
 
+      const parser = key === "brand" || key === "series" ? Primitive.Number : Primitive.String;
+
       const parsedOption = option
-        .map((val) => Primitive.String.safeParse(val))
+        .map((val) => parser.safeParse(val))
         .filter((val) => val.success)
         .map((val) => val.data);
 
-      builder.add("part", key, parsedOption);
+      builder.add("part", key, parsedOption as any);
     }
 
     if (part) {

@@ -32,7 +32,15 @@ function defaultFilter<T extends Model<Attributes, any>, Attributes extends {}>(
 
     if (!data || data.length === 0) return acc;
 
-    acc[key] = typeof data[0] === "number" ? { [Op.between]: data } : entries;
+    let targetKey = key;
+    if (key === "brand") targetKey = "brandId";
+    if (key === "series") targetKey = "seriesId";
+
+    if (typeof data[0] === "number" && targetKey !== "brandId" && targetKey !== "seriesId") {
+      acc[targetKey] = { [Op.between]: data };
+    } else {
+      acc[targetKey] = entries;
+    }
     return acc;
   }, {} as any);
 
