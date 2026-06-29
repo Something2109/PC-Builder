@@ -69,7 +69,8 @@ export default function SummaryTable<Type extends Products, Data = Part.Summary<
       isLoading={false}
       className={rest.className}
       tableClassName="w-full border-separate border-spacing-0"
-      rowClassName="grid grid-cols-2 border-b-2 *:p-2 lg:table-row *:lg:border-b-2 hover:rounded-lg hover:bg-line"
+      theadClassName="hidden lg:table-header-group bg-background/40 border-b border-border text-text/50 font-bold uppercase tracking-wider sticky top-0 z-10"
+      rowClassName="grid grid-cols-2 border-b-2 lg:table-row *:lg:border-b-2 hover:rounded-lg hover:bg-line"
     />
   );
 }
