@@ -26,7 +26,7 @@ function VerticalCollapsible({
         <span className="font-bold">{collapse ? "+" : "-"}</span>
       </button>
 
-      {collapse && <ColumnWrapper className={`h-fit overflow-auto`}>{rest}</ColumnWrapper>}
+      {collapse && <ColumnWrapper className="h-fit">{rest}</ColumnWrapper>}
     </ColumnWrapper>
   );
 }
