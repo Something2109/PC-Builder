@@ -1,21 +1,16 @@
- 
 "use client";
 
 import * as API from "@pc-builder/shared/API";
 import { useState, useCallback } from "react";
 
-export interface BaseTableQuery extends API.PageOptions {
-  [key: string]: any;
-}
-
-export interface UseTableStateProps<TQuery extends BaseTableQuery> {
+export interface UseTableStateProps<TQuery extends API.PageOptions> {
   initialState: TQuery;
   // Controlled external state (e.g. state managed globally or by parent)
   state?: TQuery;
   onChange?: (state: TQuery | ((prev: TQuery) => TQuery)) => void;
 }
 
-export function useTableState<TQuery extends BaseTableQuery>(props: UseTableStateProps<TQuery>) {
+export function useTableState<TQuery extends API.PageOptions>(props: UseTableStateProps<TQuery>) {
   // Local state fallback
   const [localState, setLocalState] = useState<TQuery>(props.initialState);
 
@@ -67,7 +62,7 @@ export function useTableState<TQuery extends BaseTableQuery>(props: UseTableStat
   );
 
   const setFilter = useCallback(
-    (key: keyof TQuery, value: any) => {
+    (key: keyof TQuery, value: TQuery[typeof key]) => {
       updateState((prev) => ({
         ...prev,
         [key]: value,
