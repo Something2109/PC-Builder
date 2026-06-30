@@ -1,8 +1,7 @@
 import * as CPUBlock from "@pc-builder/shared/part/product/CPUBlock";
 
-import ScrollSelect from "./ScrollSelect";
-
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<CPUBlock.Filter> = {
   socket: ({ defaultValue, product, context }) => (

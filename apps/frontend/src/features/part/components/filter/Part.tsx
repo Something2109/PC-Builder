@@ -1,8 +1,7 @@
 import Part from "@pc-builder/shared/part";
 
-import ScrollSelect from "./ScrollSelect";
-
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<{
   brand: { id: number; name: string }[];

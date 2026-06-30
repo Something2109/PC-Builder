@@ -2,9 +2,9 @@ import * as GPU from "@pc-builder/shared/part/product/GPU";
 import { FrequencyUnits, MemoryUnits } from "@pc-builder/shared/Units";
 
 import { MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
-import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<GPU.Filter> = {
   base_frequency: ({ value, defaultValue: _, ...props }) => (

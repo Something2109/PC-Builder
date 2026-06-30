@@ -1,8 +1,7 @@
 import * as AIO from "@pc-builder/shared/part/product/AIO";
 
-import ScrollSelect from "./ScrollSelect";
-
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<AIO.Filter> = {
   socket: ({ defaultValue, product, context }) => (

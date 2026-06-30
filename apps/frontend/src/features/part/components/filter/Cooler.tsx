@@ -1,8 +1,7 @@
 import * as Cooler from "@pc-builder/shared/part/product/Cooler";
 
-import ScrollSelect from "./ScrollSelect";
-
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<Cooler.Filter> = {
   socket: ({ defaultValue, product, context }) => (

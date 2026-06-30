@@ -1,8 +1,7 @@
 import * as Case from "@pc-builder/shared/part/product/Case";
 
-import ScrollSelect from "./ScrollSelect";
-
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<Case.Filter> = {
   form_factor: ({ defaultValue, product, context }) => (

@@ -2,9 +2,9 @@ import * as SSD from "@pc-builder/shared/part/product/SSD";
 import { MemorySpeedUnit, MemoryUnits } from "@pc-builder/shared/Units";
 
 import { UnitMinMaxRangeInput } from "@/ui/Input";
-import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<SSD.Filter> = {
   memory_type: ({ defaultValue, product, context }) => (

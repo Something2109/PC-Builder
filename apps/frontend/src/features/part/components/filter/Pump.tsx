@@ -1,9 +1,9 @@
 import * as Pump from "@pc-builder/shared/part/product/Pump";
 
 import { MinMaxRangeInput } from "@/ui/Input";
-import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<Pump.Filter> = {
   form_factor: ({ defaultValue, product, context }) => (

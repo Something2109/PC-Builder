@@ -1,8 +1,7 @@
 import * as Radiator from "@pc-builder/shared/part/product/Radiator";
 
-import ScrollSelect from "./ScrollSelect";
-
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<Radiator.Filter> = {
   form_factor: ({ defaultValue, product, context }) => (

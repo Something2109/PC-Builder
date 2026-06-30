@@ -2,9 +2,9 @@ import * as HDD from "@pc-builder/shared/part/product/HDD";
 import { MemorySpeedUnit, MemoryUnits } from "@pc-builder/shared/Units";
 
 import { MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
-import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<HDD.Filter> = {
   form_factor: ({ defaultValue, product, context }) => (

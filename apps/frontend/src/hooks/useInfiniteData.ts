@@ -1,7 +1,8 @@
-import axiosInstance from "@/lib/axios";
 import { Payload } from "@pc-builder/shared/API";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+
+import axiosInstance from "@/lib/axios";
 
 export function useInfiniteData<T>(path: string, context: URLSearchParams) {
   const query = useInfiniteQuery({

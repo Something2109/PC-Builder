@@ -2,9 +2,9 @@ import * as RAM from "@pc-builder/shared/part/product/RAM";
 import { MemoryUnits } from "@pc-builder/shared/Units";
 
 import { UnitMinMaxRangeInput } from "@/ui/Input";
-import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<RAM.Filter> = {
   form_factor: ({ defaultValue, product, context }) => (

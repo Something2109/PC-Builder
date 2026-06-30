@@ -1,8 +1,7 @@
 import * as Mainboard from "@pc-builder/shared/part/product/Mainboard";
 
-import ScrollSelect from "./ScrollSelect";
-
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<Mainboard.Filter> = {
   socket: ({ defaultValue, product, context }) => (

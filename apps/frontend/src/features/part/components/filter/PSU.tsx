@@ -1,9 +1,9 @@
 import * as PSU from "@pc-builder/shared/part/product/PSU";
 
 import { MinMaxRangeInput } from "@/ui/Input";
-import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<PSU.Filter> = {
   form_factor: ({ defaultValue, product, context }) => (

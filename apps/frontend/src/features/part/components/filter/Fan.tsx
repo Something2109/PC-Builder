@@ -1,8 +1,7 @@
 import * as Fan from "@pc-builder/shared/part/product/Fan";
 
-import ScrollSelect from "./ScrollSelect";
-
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
+import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<Fan.Filter> = {
   form_factor: ({ defaultValue, product, context }) => (

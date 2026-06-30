@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { Products } from "@pc-builder/shared/part";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
+
 import { useClickOutside } from "@/hooks/useClickOutside";
-import axiosInstance from "@/lib/axios";
 import { useDebounce } from "@/hooks/useDebounce";
+import axiosInstance from "@/lib/axios";
 
 interface Option {
   id: number;
