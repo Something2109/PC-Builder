@@ -5,7 +5,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 
 import { useClickOutside } from "@/hooks/useClickOutside";
-import { useDebounce } from "@/hooks/useDebounce";
+import { useDebounceValue } from "@/hooks/useDebounce";
 import axiosInstance from "@/lib/axios";
 
 interface Option {
@@ -19,7 +19,12 @@ type SelectOption = Option | string;
 function useResolvedNames(attribute: string, defaultValue: string[]) {
   const [selectedNames, setSelectedNames] = useState<Map<string, string>>(() => {
     const initialMap = new Map<string, string>();
-    if (defaultValue && defaultValue.length > 0 && attribute !== "brand" && attribute !== "series") {
+    if (
+      defaultValue &&
+      defaultValue.length > 0 &&
+      attribute !== "brand" &&
+      attribute !== "series"
+    ) {
       defaultValue.forEach((id) => initialMap.set(String(id), String(id)));
     }
     return initialMap;
@@ -55,7 +60,7 @@ function useInfiniteSelectQuery(
   context: URLSearchParams,
   searchQuery: string
 ) {
-  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const debouncedSearchQuery = useDebounceValue(searchQuery, 300);
 
   const query = useInfiniteQuery({
     queryKey: ["partFilterInfinite", product, attribute, context.toString(), debouncedSearchQuery],
@@ -68,10 +73,9 @@ function useInfiniteSelectQuery(
         params.set("filter_q", debouncedSearchQuery);
       }
 
-      const { data: resData } = await axiosInstance.get(
-        `/part/filter/${product}/${attribute}`,
-        { params }
-      );
+      const { data: resData } = await axiosInstance.get(`/part/filter/${product}/${attribute}`, {
+        params,
+      });
       return (resData[attribute] || []) as SelectOption[];
     },
     initialPageParam: 1,
@@ -169,9 +173,15 @@ function ScrollSelectPanel({
           <div className="py-8 text-center text-sm text-text/40">No options found</div>
         ) : (
           options.map((option) => {
-            const optId = typeof option === "object" && option !== null ? (option as unknown as Option).id : option;
+            const optId =
+              typeof option === "object" && option !== null
+                ? (option as unknown as Option).id
+                : option;
             const optIdStr = String(optId);
-            const optName = typeof option === "object" && option !== null ? (option as unknown as Option).name : option;
+            const optName =
+              typeof option === "object" && option !== null
+                ? (option as unknown as Option).name
+                : option;
             const isChecked = selectedIds.includes(optIdStr);
             return (
               <label
