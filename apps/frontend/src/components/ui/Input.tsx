@@ -16,9 +16,10 @@ import {
 import { RowWrapper } from "./FlexWrapper";
 import { mergeClass } from "./mergeClass";
 
-const defaultStyle = "only:w-full bg-transparent resize-none overflow-y-hidden";
-const rangeDivStyle = "relative hidden md:block w-full top-1.5";
-const rangeInputStyle = "absolute w-full first:bg-range-input";
+const defaultStyle =
+  "only:w-full px-3.5 py-1.5 text-sm bg-card/45 dark:bg-card/25 backdrop-blur-sm border border-border/80 dark:border-border/60 rounded-xl transition-all duration-200 focus:outline-none focus:border-accent-indigo focus:ring-2 focus:ring-accent-indigo/15 hover:border-accent-indigo/60 text-text placeholder-text/35 disabled:opacity-50 disabled:cursor-not-allowed";
+const rangeDivStyle = "relative hidden md:block flex-1 self-stretch";
+const rangeInputStyle = "absolute w-full top-1/2 -translate-y-1/2 first:bg-range-input";
 
 // Intercepts the default onChange event and proxies its target value
 // to return undefined instead of empty string.
@@ -76,7 +77,7 @@ export function TextArea({ className, onChange, ...rest }: TextAreaProps) {
     <textarea
       ref={textarea}
       rows={1}
-      className={mergeClass(`${defaultStyle} px-1`, className)}
+      className={mergeClass(`${defaultStyle} resize-none overflow-y-hidden`, className)}
       onInput={resize}
       onChange={(e) => {
         resize();
@@ -92,7 +93,7 @@ type InputProps = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLI
 export function Input({ className, onChange, ...rest }: InputProps) {
   return (
     <input
-      className={mergeClass(`${defaultStyle} px-1`, className)}
+      className={mergeClass(defaultStyle, className)}
       onChange={(e) => cleanEvent(e, onChange)}
       {...rest}
     />
@@ -101,9 +102,11 @@ export function Input({ className, onChange, ...rest }: InputProps) {
 
 export function SuffixInput({ suffix, ...rest }: { suffix: string } & InputProps) {
   return (
-    <RowWrapper className="items-baseline">
+    <RowWrapper className="items-center gap-2 w-full">
       <Input {...rest} />
-      <p>{suffix}</p>
+      <span className="text-sm font-semibold text-text/65 whitespace-nowrap bg-border/40 px-3 py-1.5 rounded-xl border border-border/60">
+        {suffix}
+      </span>
     </RowWrapper>
   );
 }
@@ -184,7 +187,10 @@ type SelectProps = DetailedHTMLProps<SelectHTMLAttributes<HTMLSelectElement>, HT
 export function Select({ className, onChange, ...rest }: SelectProps) {
   return (
     <select
-      className={mergeClass(defaultStyle, className)}
+      className={mergeClass(
+        `${defaultStyle} pr-10 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M7%209l3%203%203-3%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-position-[right_0.75rem_center] bg-size-[1.25rem_1.25rem] bg-no-repeat`,
+        className
+      )}
       onChange={(e) => cleanEvent(e, onChange)}
       {...rest}
     />
@@ -195,12 +201,12 @@ export function OptionSelect({ options, ...rest }: { options: string[] | number[
   return (
     <Select {...rest}>
       {!rest.required && (
-        <option className="text-background" value={""}>
+        <option className="bg-card text-text" value={""}>
           None
         </option>
       )}
       {options.map((value) => (
-        <option className="text-background" key={`options-${rest.name}-${value}`} value={value}>
+        <option className="bg-card text-text" key={`options-${rest.name}-${value}`} value={value}>
           {value}
         </option>
       ))}
@@ -219,10 +225,24 @@ export function ChoiceInput({
   const id = `choice-${type}-${name}-${value}`;
 
   return (
-    <RowWrapper>
-      <input type={type} id={id} name={name} value={value} {...rest} />
-      <label htmlFor={id}>{value}</label>
-    </RowWrapper>
+    <label
+      htmlFor={id}
+      className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl border border-border/80 dark:border-border bg-card/15 dark:bg-card/5 hover:bg-accent-indigo/5 hover:border-accent-indigo/40 transition-all cursor-pointer select-none text-sm text-text/85 font-medium"
+    >
+      <input
+        type={type}
+        id={id}
+        name={name}
+        value={value}
+        className={
+          type === "checkbox"
+            ? "rounded border-border/80 dark:border-border bg-transparent text-accent-indigo focus:ring-accent-indigo focus:ring-offset-background w-4 h-4 cursor-pointer"
+            : "rounded-full border-border/80 dark:border-border bg-transparent text-accent-indigo focus:ring-accent-indigo focus:ring-offset-background w-4 h-4 cursor-pointer"
+        }
+        {...rest}
+      />
+      <span>{value}</span>
+    </label>
   );
 }
 
@@ -236,7 +256,7 @@ export function MultipleChoiceInput({
   defaultValue?: string[];
 } & Omit<InputProps, "defaultValue" | "value">) {
   return (
-    <RowWrapper className={className}>
+    <RowWrapper className={mergeClass("flex-wrap gap-2", className)}>
       {value.map((val) => (
         <ChoiceInput
           {...props}
@@ -282,17 +302,18 @@ export function MinMaxRangeInput({ name, id, ...props }: InputProps) {
   }, []);
 
   return (
-    <RowWrapper className="overflow-clip">
+    <RowWrapper className="w-full items-center gap-3 bg-card/25 dark:bg-card/15 border border-border/80 dark:border-border rounded-xl px-3.5 py-1.5 transition-all duration-200 focus-within:border-accent-indigo focus-within:ring-2 focus-within:ring-accent-indigo/15">
       <input
         {...rest}
         type="number"
-        className={`${defaultStyle} text-right w-32`}
+        className="w-20 text-center bg-transparent border-none p-0 text-sm focus:ring-0 focus:outline-none text-text placeholder-text/30 font-medium"
         id={`${id}-min-input`}
         defaultValue={min}
         ref={minInput}
         onInput={onInput}
       />
       <div className={rangeDivStyle}>
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.75 bg-line/80 rounded-full pointer-events-none" />
         <input
           {...props}
           ref={minRangeInput}
@@ -314,11 +335,10 @@ export function MinMaxRangeInput({ name, id, ...props }: InputProps) {
           onInput={onRangeInput}
         />
       </div>
-      <span className="md:hidden">-</span>
       <input
         {...rest}
         type="number"
-        className={`${defaultStyle} text-left w-32`}
+        className="w-20 text-center bg-transparent border-none p-0 text-sm focus:ring-0 focus:outline-none text-text placeholder-text/30 font-medium"
         id={`${id}-max-input`}
         defaultValue={max}
         ref={maxInput}
@@ -370,16 +390,17 @@ export function UnitMinMaxRangeInput<T extends string>({
   }, [defaultUnit]);
 
   return (
-    <RowWrapper className="overflow-clip">
+    <RowWrapper className="w-full items-center gap-3 bg-card/25 dark:bg-card/15 border border-border/80 dark:border-border rounded-xl px-3.5 py-1.5 transition-all duration-200 focus-within:border-accent-indigo focus-within:ring-2 focus-within:ring-accent-indigo/15">
       <input
         {...props}
-        className={`${defaultStyle} text-right w-32`}
+        className="w-16 text-center bg-transparent border-none p-0 text-sm focus:ring-0 focus:outline-none text-text placeholder-text/30 font-medium"
         id={`${id}-min-input`}
         defaultValue={`${props.min} ${defaultUnit}`}
         ref={minInput}
         onInput={onInput}
       />
       <div className={rangeDivStyle}>
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.75 bg-line/80 rounded-full pointer-events-none" />
         <input
           {...props}
           ref={minRangeInput}
@@ -401,10 +422,9 @@ export function UnitMinMaxRangeInput<T extends string>({
           onInput={onRangeInput}
         />
       </div>
-      <span className="md:hidden">-</span>
       <input
         {...props}
-        className={`${defaultStyle} text-left w-32`}
+        className="w-16 text-center bg-transparent border-none p-0 text-sm focus:ring-0 focus:outline-none text-text placeholder-text/30 font-medium"
         id={`${id}-max-input`}
         defaultValue={`${props.max} ${defaultUnit}`}
         ref={maxInput}
