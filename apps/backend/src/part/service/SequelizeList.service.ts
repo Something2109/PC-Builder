@@ -87,6 +87,13 @@ class SequelizeContext {
   private readonly q?: string;
   private readonly filter_q?: string;
 
+  /**
+   * Initializes a new instance of the SequelizeContext class.
+   * Sets up query parameters, maps pagination/sorting, and initializes scoped sub-specification joins.
+   *
+   * @param options - The list, search, and filter options.
+   * @param attrs - (Optional) List of specification sub-model attributes to query.
+   */
   constructor(options: ListOptions, attrs?: { [key in Infos]?: string[] }) {
     this.q = options.q;
     this.filter_q = options.filter_q;
@@ -96,24 +103,58 @@ class SequelizeContext {
     });
 
     this.partWhere = this.createPartWhereOption(options.q);
-    this.pageOptions = {
+    this.pageOptions = this.buildPageOptions(options);
+    this.orderOptions = this.buildOrderOptions(options);
+    this.InfoModels = this.initializeInfoModels(options, attrs);
+  }
+
+  /**
+   * Translates query page and limit parameters into database offset and limit options.
+   *
+   * @param options - The list and query parameters.
+   * @returns An object containing database offset and limit values.
+   */
+  private buildPageOptions(options: ListOptions) {
+    return {
       offset: (options.page - 1) * options.limit,
       limit: options.limit,
     };
+  }
 
+  /**
+   * Builds the Sequelize Order configuration for sorting attributes.
+   *
+   * @param options - The list and query parameters.
+   * @returns The Order array configuration, or undefined if no valid sorting parameters are provided.
+   */
+  private buildOrderOptions(options: ListOptions): Order | undefined {
     if (
       options.sort_key &&
       Part.BasicAttributes.options.includes(options.sort_key as Part.BasicAttributes)
     ) {
       const orderCol = filterToWhereMap[options.sort_key] || options.sort_key;
-      this.orderOptions = [[orderCol, options.sort_order || "asc"]];
+      return [[orderCol, options.sort_order || "asc"]];
     }
+    return undefined;
+  }
 
-    this.InfoModels = {};
+  /**
+   * Dynamically maps sub-specification models and applies active filter scope methods.
+   * Automatically sets the joins as required (INNER JOIN) if they contain active filters.
+   *
+   * @param options - The list and query parameters.
+   * @param attrs - The mapped list of specification target attributes.
+   * @returns The compiled InfoModelContext.
+   */
+  private initializeInfoModels(
+    options: ListOptions,
+    attrs?: { [key in Infos]?: string[] }
+  ): InfoModelContext {
+    const infoModels: InfoModelContext = {};
     if (attrs) {
       Object.entries(attrs).forEach(([key, value]) => {
         const info = key as Infos;
-        this.InfoModels[info] = {
+        infoModels[info] = {
           model: PartInformation.associations[info].target.scope({
             method: [ModelScopes.FILTER, options[info]],
           }),
@@ -122,8 +163,15 @@ class SequelizeContext {
         };
       });
     }
+    return infoModels;
   }
 
+  /**
+   * Queries and compiles a paginated list of part records matching the current active criteria.
+   * Joins required specification tables and projects only the selected summary columns.
+   *
+   * @returns A promise resolving to a paginated list payload (containing count and items array).
+   */
   async list() {
     const include: IncludeOptions[] = this.InfoModels
       ? Object.values(this.InfoModels)
@@ -147,6 +195,14 @@ class SequelizeContext {
     return { total: count, list: rows.map((value) => value.toJSON()) };
   }
 
+  /**
+   * Retrieves unique filter options available for a specific attribute from the database.
+   * Isolates the target attribute to prevent self-filtering (excluding its own constraint from active parameters).
+   *
+   * @param attribute - The name of the target column/attribute.
+   * @param info - (Optional) The specification sub-model namespace if the attribute lives in a spec table.
+   * @returns A promise resolving to the list of available filter options (strings, numbers, or relations).
+   */
   async filter(attribute: string, info?: Infos) {
     const cleanPartModel = PartInformation.unscoped();
 
@@ -229,11 +285,13 @@ class SequelizeContext {
     where: WhereOptions | undefined,
     include: IncludeOptions[]
   ): Promise<{ id: number; name: string }[]> {
-    const relationName = attribute === "brand" ? "brandRelation" : "seriesRelation";
-    const relationModel =
-      attribute === "brand"
-        ? PartInformation.associations.brandRelation.target
-        : PartInformation.associations.seriesRelation.target;
+    const associationKey = `${attribute}Relation`;
+    const association = PartInformation.associations[associationKey];
+    if (!association) {
+      throw new Error(`Relation association for ${attribute} not found on PartInformation`);
+    }
+    const relationName = associationKey;
+    const relationModel = association.target;
 
     const queryInclude = include.map((inc) => {
       if (inc.model === relationModel) {
@@ -337,7 +395,6 @@ class SequelizeContext {
 
     const query = (await model.findOne({
       where,
-      ...this.pageOptions,
       attributes: [
         [fn("min", attrExpr), "min"],
         [fn("max", attrExpr), "max"],
