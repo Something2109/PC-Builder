@@ -17,45 +17,45 @@ const Components: FilterMapping<CPU.Filter> = {
       placeholder="Select Socket"
     />
   ),
-  total_cores: ({ value, defaultValue: _, ...props }) => (
-    <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
+  total_cores: ({ value: _, defaultValue, ...props }) => (
+    <MinMaxRangeInput min={defaultValue?.[0]} max={defaultValue?.[1]} {...props} />
   ),
-  total_threads: ({ value, defaultValue: _, ...props }) => (
-    <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
+  total_threads: ({ value: _, defaultValue, ...props }) => (
+    <MinMaxRangeInput min={defaultValue?.[0]} max={defaultValue?.[1]} {...props} />
   ),
 
-  base_frequency: ({ value, defaultValue: _, ...props }) => (
+  base_frequency: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={FrequencyUnits}
       defaultUnit="GHz"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
-  turbo_frequency: ({ value, defaultValue: _, ...props }) => (
+  turbo_frequency: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={FrequencyUnits}
       defaultUnit="GHz"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
-  L3_cache: ({ value, defaultValue: _, ...props }) => (
+  L3_cache: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemoryUnits}
       defaultUnit="MB"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
-  tdp: ({ value, defaultValue: _, ...props }) => (
-    <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
+  tdp: ({ value: _, defaultValue, ...props }) => (
+    <MinMaxRangeInput min={defaultValue?.[0]} max={defaultValue?.[1]} {...props} />
   ),
 };
 

@@ -27,13 +27,13 @@ const Components: FilterMapping<SSD.Filter> = {
       placeholder="Select SSD Form Factor"
     />
   ),
-  capacity: ({ value, defaultValue: _, ...props }) => (
+  capacity: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemoryUnits}
       defaultUnit="GB"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
@@ -47,23 +47,23 @@ const Components: FilterMapping<SSD.Filter> = {
       placeholder="Select Interface"
     />
   ),
-  read_speed: ({ value, defaultValue: _, ...props }) => (
+  read_speed: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemorySpeedUnit}
       defaultUnit="MB/s"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
-  write_speed: ({ value, defaultValue: _, ...props }) => (
+  write_speed: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemorySpeedUnit}
       defaultUnit="MB/s"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),

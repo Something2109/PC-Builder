@@ -7,33 +7,33 @@ import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 import ScrollSelect from "./ScrollSelect";
 
 const Components: FilterMapping<GPU.Filter> = {
-  base_frequency: ({ value, defaultValue: _, ...props }) => (
+  base_frequency: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={FrequencyUnits}
       defaultUnit="MHz"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
-  boost_frequency: ({ value, defaultValue: _, ...props }) => (
+  boost_frequency: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={FrequencyUnits}
       defaultUnit="MHz"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
-  memory_size: ({ value, defaultValue: _, ...props }) => (
+  memory_size: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemoryUnits}
       defaultUnit="GB"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
@@ -47,8 +47,8 @@ const Components: FilterMapping<GPU.Filter> = {
       placeholder="Select Memory Type"
     />
   ),
-  tdp: ({ value, defaultValue: _, ...props }) => (
-    <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
+  tdp: ({ value: _, defaultValue, ...props }) => (
+    <MinMaxRangeInput min={defaultValue?.[0]} max={defaultValue?.[1]} {...props} />
   ),
 };
 

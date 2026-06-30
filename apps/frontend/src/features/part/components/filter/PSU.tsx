@@ -16,8 +16,8 @@ const Components: FilterMapping<PSU.Filter> = {
       placeholder="Select PSU Form Factor"
     />
   ),
-  wattage: ({ value, defaultValue: _, ...props }) => (
-    <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
+  wattage: ({ value: _, defaultValue, ...props }) => (
+    <MinMaxRangeInput min={defaultValue?.[0]} max={defaultValue?.[1]} {...props} />
   ),
   efficiency: ({ defaultValue, product, context }) => (
     <ScrollSelect

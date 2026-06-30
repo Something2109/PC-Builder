@@ -6,58 +6,58 @@ import { MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<GraphicCard.Filter> = {
-  length: ({ value, defaultValue: _, ...props }) => (
+  length: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={LengthUnits}
       defaultUnit="mm"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
-  base_frequency: ({ value, defaultValue: _, ...props }) => (
+  base_frequency: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={FrequencyUnits}
       defaultUnit="MHz"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
-  boost_frequency: ({ value, defaultValue: _, ...props }) => (
+  boost_frequency: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={FrequencyUnits}
       defaultUnit="MHz"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
-  width: ({ value, defaultValue: _, ...props }) => (
+  width: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={LengthUnits}
       defaultUnit="mm"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
-  height: ({ value, defaultValue: _, ...props }) => (
+  height: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={LengthUnits}
       defaultUnit="mm"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),
-  minimum_psu: ({ value, defaultValue: _, ...props }) => (
-    <MinMaxRangeInput min={value[0]} max={value[1]} {...props} />
+  minimum_psu: ({ value: _, defaultValue, ...props }) => (
+    <MinMaxRangeInput min={defaultValue?.[0]} max={defaultValue?.[1]} {...props} />
   ),
 };
 

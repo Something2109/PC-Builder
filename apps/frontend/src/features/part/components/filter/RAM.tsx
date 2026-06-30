@@ -17,13 +17,13 @@ const Components: FilterMapping<RAM.Filter> = {
       placeholder="Select RAM Form Factor"
     />
   ),
-  capacity: ({ value, defaultValue: _, ...props }) => (
+  capacity: ({ value: _, defaultValue, ...props }) => (
     <UnitMinMaxRangeInput
       Unit={MemoryUnits}
       defaultUnit="GB"
       step={0.01}
-      min={value[0]}
-      max={value[1]}
+      min={defaultValue?.[0]}
+      max={defaultValue?.[1]}
       {...props}
     />
   ),

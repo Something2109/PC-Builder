@@ -16,8 +16,8 @@ const Components: FilterMapping<Pump.Filter> = {
       placeholder="Select Pump Form Factor"
     />
   ),
-  flow_rate: ({ value, defaultValue: _, ...props }) => (
-    <MinMaxRangeInput step={0.01} min={value[0]} max={value[1]} {...props} />
+  flow_rate: ({ value: _, defaultValue, ...props }) => (
+    <MinMaxRangeInput step={0.01} min={defaultValue?.[0]} max={defaultValue?.[1]} {...props} />
   ),
   power_connector: ({ defaultValue, product, context }) => (
     <ScrollSelect
