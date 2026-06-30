@@ -12,25 +12,35 @@ interface Option {
   name: string;
 }
 
+type SelectOption = Option | string;
+
 // Resolves names for initial selected IDs
 function useResolvedNames(attribute: string, defaultValue: string[]) {
-  const [selectedNames, setSelectedNames] = useState<Map<string, string>>(new Map());
+  const [selectedNames, setSelectedNames] = useState<Map<string, string>>(() => {
+    const initialMap = new Map<string, string>();
+    if (defaultValue && defaultValue.length > 0 && attribute !== "brand" && attribute !== "series") {
+      defaultValue.forEach((id) => initialMap.set(String(id), String(id)));
+    }
+    return initialMap;
+  });
 
   useEffect(() => {
-    if (defaultValue && defaultValue.length > 0) {
-      defaultValue.forEach(async (id) => {
-        if (selectedNames.has(String(id))) return;
-        try {
-          const { data } = await axiosInstance.get(`/api/${attribute}/${id}`);
-          setSelectedNames((prev) => {
-            const next = new Map(prev);
-            next.set(String(id), data.name);
-            return next;
-          });
-        } catch (e) {
-          console.error("Failed to fetch initial ID name:", id, e);
-        }
-      });
+    if (attribute === "brand" || attribute === "series") {
+      if (defaultValue && defaultValue.length > 0) {
+        defaultValue.forEach(async (id) => {
+          if (selectedNames.has(String(id))) return;
+          try {
+            const { data } = await axiosInstance.get(`/${attribute}/${id}`);
+            setSelectedNames((prev) => {
+              const next = new Map(prev);
+              next.set(String(id), data.name);
+              return next;
+            });
+          } catch (e) {
+            console.error("Failed to fetch initial ID name:", id, e);
+          }
+        });
+      }
     }
   }, [defaultValue, attribute, selectedNames]);
 
@@ -58,10 +68,10 @@ function useInfiniteSelectQuery(
       }
 
       const { data: resData } = await axiosInstance.get(
-        `/api/part/filter/${product}/${attribute}`,
+        `/part/filter/${product}/${attribute}`,
         { params }
       );
-      return (resData[attribute] || []) as Option[];
+      return (resData[attribute] || []) as SelectOption[];
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
@@ -158,20 +168,22 @@ function ScrollSelectPanel({
           <div className="py-8 text-center text-sm text-text/40">No options found</div>
         ) : (
           options.map((option) => {
-            const optIdStr = String(option.id);
+            const optId = typeof option === "object" && option !== null ? (option as unknown as Option).id : option;
+            const optIdStr = String(optId);
+            const optName = typeof option === "object" && option !== null ? (option as unknown as Option).name : option;
             const isChecked = selectedIds.includes(optIdStr);
             return (
               <label
-                key={option.id}
+                key={optIdStr}
                 className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 cursor-pointer text-sm text-text/80 transition"
               >
                 <input
                   type="checkbox"
                   checked={isChecked}
-                  onChange={() => toggleOption(optIdStr, option.name)}
+                  onChange={() => toggleOption(optIdStr, String(optName))}
                   className="rounded border-white/10 bg-transparent text-primary focus:ring-primary focus:ring-offset-background"
                 />
-                <span className="truncate">{option.name}</span>
+                <span className="truncate">{String(optName)}</span>
               </label>
             );
           })

@@ -1,32 +1,38 @@
 import * as AIO from "@pc-builder/shared/part/product/AIO";
 
-import { MultipleChoiceInput } from "@/ui/Input";
+import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<AIO.Filter> = {
-  socket: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3 justify-between"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  socket: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="socket"
+      attribute="socket"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select Socket"
     />
   ),
-  form_factor: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3 justify-between"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  form_factor: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="form_factor"
+      attribute="form_factor"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select Form Factor"
     />
   ),
-  cpu_plate: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3 justify-between"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  cpu_plate: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="cpu_plate"
+      attribute="cpu_plate"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select CPU Plate"
     />
   ),
 };

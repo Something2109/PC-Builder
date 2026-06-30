@@ -1,7 +1,8 @@
 import * as GPU from "@pc-builder/shared/part/product/GPU";
 import { FrequencyUnits, MemoryUnits } from "@pc-builder/shared/Units";
 
-import { MinMaxRangeInput, MultipleChoiceInput, UnitMinMaxRangeInput } from "@/ui/Input";
+import { MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
+import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
@@ -36,12 +37,14 @@ const Components: FilterMapping<GPU.Filter> = {
       {...props}
     />
   ),
-  memory_type: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  memory_type: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="memory_type"
+      attribute="memory_type"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select Memory Type"
     />
   ),
   tdp: ({ value, defaultValue: _, ...props }) => (

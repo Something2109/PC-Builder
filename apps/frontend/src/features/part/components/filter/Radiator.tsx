@@ -1,24 +1,28 @@
 import * as Radiator from "@pc-builder/shared/part/product/Radiator";
 
-import { MultipleChoiceInput } from "@/ui/Input";
+import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<Radiator.Filter> = {
-  form_factor: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  form_factor: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="form_factor"
+      attribute="form_factor"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select Radiator Form Factor"
     />
   ),
-  material: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  material: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="material"
+      attribute="material"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select Material"
     />
   ),
 };

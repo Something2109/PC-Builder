@@ -1,40 +1,48 @@
 import * as Case from "@pc-builder/shared/part/product/Case";
 
-import { MultipleChoiceInput } from "@/ui/Input";
+import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<Case.Filter> = {
-  form_factor: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  form_factor: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="form_factor"
+      attribute="form_factor"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select Case Form Factor"
     />
   ),
-  mainboard_support: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  mainboard_support: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="mainboard_support"
+      attribute="mainboard_support"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select Motherboard Support"
     />
   ),
-  radiator_support: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  radiator_support: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="radiator_support"
+      attribute="radiator_support"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select Radiator Support"
     />
   ),
-  psu_support: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  psu_support: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="psu_support"
+      attribute="psu_support"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select PSU Support"
     />
   ),
 };

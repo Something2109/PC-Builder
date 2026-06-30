@@ -1,17 +1,20 @@
 import * as CPU from "@pc-builder/shared/part/product/CPU";
 import { FrequencyUnits, MemoryUnits } from "@pc-builder/shared/Units";
 
-import { MultipleChoiceInput, MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
+import { MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
+import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<CPU.Filter> = {
-  socket: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  socket: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="socket"
+      attribute="socket"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select Socket"
     />
   ),
   total_cores: ({ value, defaultValue: _, ...props }) => (

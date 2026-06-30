@@ -1,17 +1,20 @@
 import * as HDD from "@pc-builder/shared/part/product/HDD";
 import { MemorySpeedUnit, MemoryUnits } from "@pc-builder/shared/Units";
 
-import { MultipleChoiceInput, MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
+import { MinMaxRangeInput, UnitMinMaxRangeInput } from "@/ui/Input";
+import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
 const Components: FilterMapping<HDD.Filter> = {
-  form_factor: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  form_factor: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="form_factor"
+      attribute="form_factor"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select HDD Form Factor"
     />
   ),
   capacity: ({ value, defaultValue: _, ...props }) => (
@@ -24,12 +27,14 @@ const Components: FilterMapping<HDD.Filter> = {
       {...props}
     />
   ),
-  interface: ({ defaultValue, value, ...props }) => (
-    <MultipleChoiceInput
-      className="flex-wrap gap-x-3"
-      defaultValue={defaultValue}
-      value={value}
-      {...props}
+  interface: ({ defaultValue, product, context }) => (
+    <ScrollSelect
+      name="interface"
+      attribute="interface"
+      product={product}
+      context={context}
+      defaultValue={defaultValue as string[]}
+      placeholder="Select Interface"
     />
   ),
   read_speed: ({ value, defaultValue: _, ...props }) => (
