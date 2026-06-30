@@ -48,17 +48,51 @@ class SequelizeListService implements DatabaseListInterface {
       filter.part[attr] = value as any;
     });
 
-    const infoPromises = Object.entries(infos).map(([key, attributes]) => {
+    const infoPromises = Object.entries(infos).map(async ([key, attributes]) => {
       const info = key as Infos;
-      return attributes.map(async (attribute) => {
-        const value = options[info]?.[attribute] ?? (await Context.filter(attribute, key as Infos));
+      const model = PartInformation.associations[info].target;
+      const attributesDefinition = model.getAttributes();
 
-        filter[info] ??= {};
-        filter[info][attribute] = value as any;
+      // Separate numeric ranges from discrete values
+      const numericAttrs = attributes.filter((attr) => {
+        const type = attributesDefinition[attr];
+        return type && type.type instanceof DataTypes.NUMBER;
       });
+      const discreteAttrs = attributes.filter((attr) => {
+        const type = attributesDefinition[attr];
+        return !type || !(type.type instanceof DataTypes.NUMBER);
+      });
+
+      const promises: Promise<void>[] = [];
+
+      // A. Consolidate range queries for this table into a single SELECT query
+      if (numericAttrs.length > 0) {
+        promises.push(
+          Context.filterNumbersForInfo(info, numericAttrs).then((ranges) => {
+            filter[info] ??= {};
+            Object.entries(ranges).forEach(([attr, val]) => {
+              filter[info]![attr] = val as any;
+            });
+          })
+        );
+      }
+
+      // B. Resolve discrete attributes (like socket)
+      discreteAttrs.forEach((attribute) => {
+        promises.push(
+          Promise.resolve(options[info]?.[attribute] ?? Context.filter(attribute, info)).then(
+            (value) => {
+              filter[info] ??= {};
+              filter[info]![attribute] = value as any;
+            }
+          )
+        );
+      });
+
+      await Promise.all(promises);
     });
 
-    await Promise.all([...partPromises, ...infoPromises.flat()]);
+    await Promise.all([...partPromises, ...infoPromises]);
 
     return filter;
   }
@@ -263,9 +297,12 @@ class SequelizeContext {
 
     if (!AttrType) throw new Error(`No attribute named ${attribute} in ${MainModel.name}`);
 
-    const result = await (AttrType instanceof DataTypes.NUMBER
-      ? this.filterNumberAttribute(MainModel, attribute, where, ...options)
-      : this.filterStringAttribute(MainModel, attribute, where, ...options));
+    if (AttrType.type instanceof DataTypes.NUMBER) {
+      const numberRes = await this.filterNumbers(MainModel, [attribute], where, ...options);
+      return numberRes[attribute] ?? [0, 0];
+    }
+
+    const result = await this.filterStringAttribute(MainModel, attribute, where, ...options);
 
     return result;
   }
@@ -378,32 +415,93 @@ class SequelizeContext {
   }
 
   /**
-   * Create a new number filter array of the {@link attribute} in {@link model}.
-   * The {@link include} list contains the models included in the query.
-   * @param model The model to get the values from.
-   * @param attribute The attribute to get the values from the model.
-   * @param include The models to include in the query.
-   * @returns The created number array of the {@link attribute}.
+   * Consolidates numeric range queries for a given sub-specification model, applying anti-self-filtering.
+   *
+   * @param info - The sub-specification model name.
+   * @param attributes - List of numeric attribute names in the spec model.
+   * @returns A promise resolving to a record mapping each attribute to its calculated [min, max] range.
    */
-  protected async filterNumberAttribute(
+  async filterNumbersForInfo(info: Infos, attributes: string[]): Promise<Record<string, number[]>> {
+    const cleanPartModel = PartInformation.unscoped();
+    const MainModel = this.InfoModels[info]?.model;
+    if (!MainModel || attributes.length === 0) return {};
+
+    const infoIncludeOptions: IncludeOptions[] = Object.entries(this.InfoModels)
+      .filter(([key]) => key !== info)
+      .map(([_, { model, required }]) => ({ model, attributes: [], required }));
+
+    const brandInclude = {
+      model: PartInformation.associations.brandRelation.target,
+      attributes: [],
+      required: false,
+    };
+    const seriesInclude = {
+      model: PartInformation.associations.seriesRelation.target,
+      attributes: [],
+      required: false,
+    };
+
+    const where = this.createPartWhereOption(this.q, "part.");
+    const options = [
+      {
+        model: cleanPartModel,
+        attributes: [],
+        required: true,
+        where: defaultFilter(this.partFilter),
+        include: [
+          brandInclude,
+          seriesInclude,
+          ...infoIncludeOptions.map((inc) => ({ ...inc, attributes: [] })),
+        ],
+      },
+    ];
+
+    return await this.filterNumbers(MainModel, attributes, where, ...options);
+  }
+
+  /**
+   * Calculates the minimum and maximum ranges for a list of numeric attributes in a single database query.
+   *
+   * @param model - The model containing the numeric attributes.
+   * @param attributes - An array of numeric attribute names.
+   * @param where - Query constraints.
+   * @param include - Related models to include.
+   * @returns A promise resolving to a record mapping each attribute to its [min, max] range.
+   */
+  protected async filterNumbers(
     model: ModelStatic<Model>,
-    attribute: string,
+    attributes: string[],
     where: WhereOptions | undefined,
     ...include: IncludeOptions[]
-  ): Promise<number[]> {
-    const attrExpr = filterToWhereMap[attribute] || col(`${model.name}.${attribute}`);
+  ): Promise<Record<string, number[]>> {
+    if (attributes.length === 0) return {};
 
-    const query = (await model.findOne({
+    const selectAttributes: any[] = [];
+    attributes.forEach((attr) => {
+      const attrExpr = filterToWhereMap[attr] || col(`${model.name}.${attr}`);
+      selectAttributes.push([fn("min", attrExpr), `${attr}_min`]);
+      selectAttributes.push([fn("max", attrExpr), `${attr}_max`]);
+    });
+
+    const query = (await model.findAll({
       where,
-      attributes: [
-        [fn("min", attrExpr), "min"],
-        [fn("max", attrExpr), "max"],
-      ],
+      attributes: selectAttributes,
       include,
       raw: true,
-    })) as unknown as { min: number; max: number } | null;
+      subQuery: false,
+    })) as unknown as Record<string, any>[];
 
-    return query ? [query.min, query.max] : [0, 0];
+    const rawRanges = query[0] || null;
+
+    const result: Record<string, number[]> = {};
+    attributes.forEach((attr) => {
+      result[attr] =
+        rawRanges && rawRanges[`${attr}_min`] !== null && rawRanges[`${attr}_max`] !== null
+          ? [Number(rawRanges[`${attr}_min`]), Number(rawRanges[`${attr}_max`])]
+          : [0, 0];
+    });
+
+    return result;
   }
 
   /**
