@@ -1,6 +1,6 @@
 import Part from "@pc-builder/shared/part";
 
-import ScrollSelect from "@/components/ui/ScrollSelect";
+import ScrollSelect from "./ScrollSelect";
 
 import { GenericFilterBar, FilterMapping } from "../utils/Filter";
 
