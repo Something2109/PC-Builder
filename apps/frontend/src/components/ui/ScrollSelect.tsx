@@ -1,26 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState, RefObject } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Products } from "@pc-builder/shared/part";
-import axios from "axios";
+import { useClickOutside } from "@/hooks/useClickOutside";
+import axiosInstance from "@/lib/axios";
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface Option {
   id: number;
   name: string;
-}
-
-// Click outside helper hook
-function useClickOutside(ref: RefObject<HTMLDivElement | null>, callback: () => void) {
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        callback();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [ref, callback]);
 }
 
 // Resolves names for initial selected IDs
@@ -32,7 +21,7 @@ function useResolvedNames(attribute: string, defaultValue: string[]) {
       defaultValue.forEach(async (id) => {
         if (selectedNames.has(String(id))) return;
         try {
-          const { data } = await axios.get(`/api/${attribute}/${id}`);
+          const { data } = await axiosInstance.get(`/api/${attribute}/${id}`);
           setSelectedNames((prev) => {
             const next = new Map(prev);
             next.set(String(id), data.name);
@@ -55,21 +44,12 @@ function useInfiniteSelectQuery(
   context: URLSearchParams,
   searchQuery: string
 ) {
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, 300);
-    return () => clearTimeout(handler);
-  }, [searchQuery]);
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   const query = useInfiniteQuery({
     queryKey: ["partFilterInfinite", product, attribute, context.toString(), debouncedSearchQuery],
     queryFn: async ({ pageParam = 1 }) => {
       const params = new URLSearchParams(context);
-      params.delete("page");
-      params.delete("limit");
       params.delete(attribute);
       params.set("page", String(pageParam));
       params.set("limit", "20");
@@ -77,9 +57,10 @@ function useInfiniteSelectQuery(
         params.set("filter_q", debouncedSearchQuery);
       }
 
-      const { data: resData } = await axios.get(`/api/part/filter/${product}/${attribute}`, {
-        params,
-      });
+      const { data: resData } = await axiosInstance.get(
+        `/api/part/filter/${product}/${attribute}`,
+        { params }
+      );
       return (resData[attribute] || []) as Option[];
     },
     initialPageParam: 1,
