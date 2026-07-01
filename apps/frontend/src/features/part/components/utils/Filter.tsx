@@ -2,6 +2,7 @@ import { Products } from "@pc-builder/shared/part";
 import { useQuery } from "@tanstack/react-query";
 import { FunctionComponent, InputHTMLAttributes, SelectHTMLAttributes } from "react";
 
+import { TransformedChangeEvent } from "@/components/ui/Input/base";
 import { VerticalCollapsible } from "@/ui/Collapsible";
 import { Toggler } from "@/ui/Toggle";
 
@@ -9,12 +10,14 @@ import { InfoLabel } from "../utils/Table";
 
 type CustomFilterComponent<Value> = FunctionComponent<
   {
+    value?: Value;
     defaultValue?: Value;
     product: Products;
     context: URLSearchParams;
+    onChange?: (value: TransformedChangeEvent<Value>) => void;
   } & Omit<
     InputHTMLAttributes<HTMLInputElement> & SelectHTMLAttributes<HTMLSelectElement>,
-    "defaultValue" | "value"
+    "defaultValue" | "value" | "onChange"
   >
 >;
 
