@@ -5,7 +5,10 @@ import { DetailedHTMLProps, SelectHTMLAttributes } from "react";
 import { mergeClass } from "../mergeClass";
 import { defaultStyle, cleanEvent } from "./base";
 
-export type SelectProps = DetailedHTMLProps<SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
+export type SelectProps = DetailedHTMLProps<
+  SelectHTMLAttributes<HTMLSelectElement>,
+  HTMLSelectElement
+>;
 
 export function Select({ className, onChange, ...rest }: SelectProps) {
   return (
