@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UsePipes } from "@nestjs/common";
+import { Controller, Get, Post, Body, Query, UsePipes } from "@nestjs/common";
 import {
   CrawlStartPayload,
   CrawlStopPayload,
@@ -10,6 +10,8 @@ import {
   CrawlTestSchema,
   CrawlExtractSchema,
   CrawlIngestSchema,
+  CrawlTraceIngestSchema,
+  CrawlTraceIngestPayload,
 } from "@pc-builder/shared/crawler";
 import { Roles } from "@pc-builder/shared/user";
 import { Role } from "src/utils/role/role.decorator";
@@ -73,5 +75,33 @@ export class CrawlerController {
   @UsePipes(new ZodValidationPipe(CrawlExtractSchema))
   async extractUrl(@Body() body: CrawlExtractPayload) {
     return this.crawlerService.extractUrl(body.name, body.url, body.product);
+  }
+
+  // 8. Ingest crawl trace logs (Private / Internal endpoint)
+  @Post("trace")
+  @UsePipes(new ZodValidationPipe(CrawlTraceIngestSchema))
+  async ingestTrace(@Body() body: CrawlTraceIngestPayload) {
+    return this.crawlerService.ingestCrawlTraces(body.traces);
+  }
+
+  // 9. GET /crawler/traces - Query crawl trace logs (Admin only)
+  @Get("traces")
+  @Role(Roles.ADMIN)
+  async getTraces(
+    @Query("sessionId") sessionId?: string,
+    @Query("scraperName") scraperName?: string,
+    @Query("product") product?: string,
+    @Query("status") status?: string,
+    @Query("page") page?: number,
+    @Query("limit") limit?: number
+  ) {
+    return this.crawlerService.getCrawlTraces({
+      sessionId,
+      scraperName,
+      product,
+      status,
+      page,
+      limit,
+    });
   }
 }

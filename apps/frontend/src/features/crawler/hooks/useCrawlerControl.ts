@@ -1,6 +1,6 @@
 "use client";
 
-import { ScraperInfo, CrawlerSession } from "@pc-builder/shared/crawler";
+import { ScraperInfo, CrawlerSession, CrawlProcessLog } from "@pc-builder/shared/crawler";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -114,4 +114,32 @@ export function useCrawlerControl() {
     handleStartCrawl,
     handleStopCrawl,
   };
+}
+
+export function useCrawlerTraces(
+  sessionId?: string,
+  scraperName?: string,
+  page = 1,
+  limit = 50,
+  pollingActive = true
+) {
+  return useQuery({
+    queryKey: ["crawlerTraces", sessionId, scraperName, page, limit],
+    queryFn: async () => {
+      const params: Record<string, string | number> = { page, limit };
+      if (sessionId) params.sessionId = sessionId;
+      if (scraperName) params.scraperName = scraperName;
+
+      const response = await axiosInstance.get<{
+        list: CrawlProcessLog[];
+        total: number;
+        page: number;
+        limit: number;
+        pages: number;
+      }>("/crawler/traces", { params });
+      return response.data;
+    },
+    enabled: Boolean(sessionId || scraperName),
+    refetchInterval: pollingActive ? 3000 : false,
+  });
 }

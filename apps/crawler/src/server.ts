@@ -12,6 +12,7 @@ import {
 import cors from "cors";
 import express, { Request, Response } from "express";
 import { fork, ChildProcess } from "node:child_process";
+import { randomUUID } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { ZodError } from "zod";
@@ -108,12 +109,21 @@ app.post("/start", (req: Request, res: Response) => {
     const productsToCrawl =
       products && Array.isArray(products) ? products : scraper.supportedProducts || [];
 
+    const sessionId = randomUUID();
+
     // Spawn child process
     const indexScript = fs.existsSync(path.join(__dirname, "index.ts"))
       ? path.join(__dirname, "index.ts")
       : path.join(__dirname, "index.js");
 
-    const args = ["--path", scraper.path, "--product", ...productsToCrawl];
+    const args = [
+      "--path",
+      scraper.path,
+      "--product",
+      ...productsToCrawl,
+      "--session-id",
+      sessionId,
+    ];
 
     const child = fork(indexScript, args, {
       execArgv: indexScript.endsWith(".ts")
@@ -122,6 +132,7 @@ app.post("/start", (req: Request, res: Response) => {
     });
 
     const session: CrawlerSession = {
+      sessionId,
       name,
       domain: scraper.domain,
       type: scraper.type,
@@ -168,6 +179,33 @@ app.post("/start", (req: Request, res: Response) => {
       }
     };
 
+    // Trace buffer
+    let traceBuffer: any[] = [];
+    let traceBufferTimeout: NodeJS.Timeout | null = null;
+
+    const flushTraceBuffer = async () => {
+      if (traceBuffer.length === 0) return;
+      const batch = [...traceBuffer];
+      traceBuffer = [];
+      if (traceBufferTimeout) {
+        clearTimeout(traceBufferTimeout);
+        traceBufferTimeout = null;
+      }
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/crawler/trace`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ traces: batch }),
+        });
+        if (!response.ok) {
+          console.error(`[Crawler Server] Failed to ingest trace batch: ${response.statusText}`);
+        }
+      } catch (err) {
+        console.error(`[Crawler Server] Error sending trace batch to backend:`, err);
+      }
+    };
+
     child.on("message", (message: any) => {
       if (message.progress) {
         session.progress = message.progress;
@@ -186,6 +224,13 @@ app.post("/start", (req: Request, res: Response) => {
         } else if (!bufferTimeout) {
           bufferTimeout = setTimeout(flushBuffer, 1500);
         }
+      } else if (message.trace) {
+        traceBuffer.push(message.trace);
+        if (traceBuffer.length >= 50) {
+          flushTraceBuffer();
+        } else if (!traceBufferTimeout) {
+          traceBufferTimeout = setTimeout(flushTraceBuffer, 1500);
+        }
       } else if (message.error) {
         session.errors.push(message.error);
       }
@@ -193,6 +238,7 @@ app.post("/start", (req: Request, res: Response) => {
 
     child.on("exit", (code) => {
       flushBuffer();
+      flushTraceBuffer();
       session.state = code === 0 ? CrawlState.COMPLETED : CrawlState.FAILED;
       session.endTime = new Date();
       console.log(`[Crawler Server] Scraper '${name}' exited with code ${code}`);

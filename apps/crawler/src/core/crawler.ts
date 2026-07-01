@@ -19,6 +19,7 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
   private readonly output: Writable;
   private readonly errorHandler: ErrorHandler;
   private readonly monitor?: Writable;
+  private readonly sessionId?: string;
 
   /**
    * The crawler constructor.
@@ -33,9 +34,11 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
       errorHandler?: ErrorHandler;
       logPath?: string;
       monitor?: Writable;
+      sessionId?: string;
     }
   ) {
     this.info = info;
+    this.sessionId = options?.sessionId;
 
     this.input = new Readable({
       objectMode: true,
@@ -46,7 +49,8 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
       options?.output ??
       (options?.adapter ? new StreamStorageWriter(options.adapter) : this.createDefaultOutput());
     this.errorHandler =
-      options?.errorHandler ?? new ErrorHandler({ path: options?.logPath ?? "./logs" });
+      options?.errorHandler ??
+      new ErrorHandler({ path: options?.logPath ?? "./logs", sessionId: this.sessionId });
     this.monitor = options?.monitor ?? new StreamMonitor({ logPath: options?.logPath ?? "./logs" });
   }
   /**
@@ -56,7 +60,7 @@ class Crawler<Raw, Final = Raw, Fetched = Response> {
    * @param products Optional list of products to start crawling with.
    */
   async crawl(products?: Products[]) {
-    const crawlStream = new CrawlStream(this.info);
+    const crawlStream = new CrawlStream(this.info, { sessionId: this.sessionId });
 
     // 1. Input Piping
     this.input.pipe(crawlStream, { end: false });

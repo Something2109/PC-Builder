@@ -5,11 +5,21 @@ import {
   BadRequestException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { InjectModel as InjectMongooseModel } from "@nestjs/mongoose";
 import { InjectModel } from "@nestjs/sequelize";
-import { CrawlIngestItem, ScraperInfo, CrawlerSession, Products } from "@pc-builder/shared/crawler";
+import {
+  CrawlIngestItem,
+  ScraperInfo,
+  CrawlerSession,
+  Products,
+  CrawlProcessLog,
+} from "@pc-builder/shared/crawler";
 import { normalizeDomain } from "@pc-builder/shared/part/mapper/utils";
+import { Model } from "mongoose";
 
 import RetailProduct from "@/models/sellers/SellerProduct.entity";
+
+import { CrawlProcessLogClass } from "./entities/CrawlProcessLog.entity";
 
 @Injectable()
 export class CrawlerService {
@@ -19,7 +29,9 @@ export class CrawlerService {
   constructor(
     private readonly configService: ConfigService,
     @InjectModel(RetailProduct)
-    private readonly retailProductModel: typeof RetailProduct
+    private readonly retailProductModel: typeof RetailProduct,
+    @InjectMongooseModel(CrawlProcessLogClass.name)
+    private readonly crawlLogModel: Model<CrawlProcessLogClass>
   ) {
     this.crawlerServiceUrl =
       this.configService.get<string>("CRAWLER_SERVICE_URL") || "http://crawler:5001";
@@ -127,5 +139,56 @@ export class CrawlerService {
     product: Products
   ): Promise<{ success: boolean; count: number; items: any[] }> {
     return this.callCrawler("/extract", "POST", { name, url, product });
+  }
+
+  async ingestCrawlTraces(traces: CrawlProcessLog[]): Promise<{ count: number }> {
+    if (!traces || !Array.isArray(traces) || traces.length === 0) {
+      return { count: 0 };
+    }
+    this.logger.log(`Ingesting batch of ${traces.length} crawl trace logs into MongoDB.`);
+    try {
+      await this.crawlLogModel.insertMany(traces);
+      return { count: traces.length };
+    } catch (err: any) {
+      this.logger.error("Failed to bulk save crawl trace logs to MongoDB:", err);
+      throw new InternalServerErrorException(`MongoDB trace ingestion failed: ${err.message}`);
+    }
+  }
+
+  async getCrawlTraces(params: {
+    sessionId?: string;
+    scraperName?: string;
+    product?: string;
+    status?: string;
+    page?: number;
+    limit?: number;
+  }) {
+    const page = params.page ? Number(params.page) : 1;
+    const limit = params.limit ? Number(params.limit) : 50;
+    const skip = (page - 1) * limit;
+
+    const query: Record<string, any> = {};
+    if (params.sessionId) query.sessionId = params.sessionId;
+    if (params.scraperName) query.scraperName = params.scraperName;
+    if (params.product) query.product = params.product;
+    if (params.status) query.status = params.status;
+
+    try {
+      const [list, total] = await Promise.all([
+        this.crawlLogModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).exec(),
+        this.crawlLogModel.countDocuments(query).exec(),
+      ]);
+
+      return {
+        list,
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      };
+    } catch (err: any) {
+      this.logger.error("Failed to query crawl trace logs from MongoDB:", err);
+      throw new InternalServerErrorException(`Failed to retrieve trace logs: ${err.message}`);
+    }
   }
 }

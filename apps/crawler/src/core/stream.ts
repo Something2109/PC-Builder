@@ -1,3 +1,4 @@
+import { normalizeDomain } from "@pc-builder/shared";
 import {
   Duplex,
   DuplexOptions,
@@ -36,6 +37,7 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
   private readonly cache = new HybridCrawlCache();
   private readonly rateLimiter = new HostRateLimiter();
   public readonly monitorStream: PassThrough;
+  private readonly sessionId?: string;
 
   // Pipeline stages
   private readonly inputTransform: Transform;
@@ -67,11 +69,14 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
     options?: Omit<DuplexOptions, "objectMode"> & {
       concurrency?: number;
       logPath?: string;
+      sessionId?: string;
     }
   ) {
     super({ objectMode: true, ...options });
 
     this.info = info;
+    this.sessionId = options?.sessionId;
+
     this.streamOptions = {
       concurrency: options?.concurrency ?? 10,
       highWaterMark: options?.highWaterMark ?? 64,
@@ -324,7 +329,40 @@ class CrawlStream<Raw, Final = Raw, Fetched = Response> extends Duplex {
             if (chunk.stage === InternalStage.Parse || chunk.stage === InternalStage.Extract) {
               const parseKey = chunk.data[chunk.stage];
               const parsedData = await self.cache.get<any>(parseKey);
+
+              let domain = "default";
+              try {
+                const urlStr = chunk.data.init.url.toString();
+                domain = normalizeDomain(new URL(urlStr).hostname);
+              } catch {
+                try {
+                  domain = normalizeDomain(chunk.data.init.url.toString());
+                } catch {}
+              }
+
+              const trace = {
+                sessionId: self.sessionId || "manual-run",
+                scraperName: domain,
+                product: chunk.product,
+                url: chunk.data.init.url.toString(),
+                status: "SUCCESS",
+                fetchStage: {
+                  statusCode: 200,
+                  responseTimeMs: 0,
+                },
+                extractStage: {
+                  success: true,
+                  itemsCount: 1,
+                },
+                parseStage: {
+                  success: true,
+                  parsedResult: parsedData,
+                },
+                createdAt: new Date().toISOString(),
+              };
+
               if (process.connected) {
+                process.send?.({ trace });
                 this.push({ result: parsedData, info: chunk });
               } else {
                 this.push(parsedData);

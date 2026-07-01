@@ -72,6 +72,7 @@ export const CrawlerProgressSchema = z.object({
 });
 
 export const CrawlerSessionSchema = z.object({
+  sessionId: z.string().optional(),
   name: z.string(),
   domain: z.string(),
   type: ScraperTypeSchema,
@@ -81,6 +82,40 @@ export const CrawlerSessionSchema = z.object({
   errors: z.array(SerializedErrorSchema),
   startTime: z.union([z.date(), z.string()]),
   endTime: z.union([z.date(), z.string()]).optional(),
+});
+
+export const CrawlProcessLogSchema = z.object({
+  sessionId: z.string(),
+  scraperName: z.string(),
+  product: ProductSchema,
+  url: z.string(),
+  status: z.enum(["SUCCESS", "FAILED"]),
+  fetchStage: z.object({
+    statusCode: z.number(),
+    responseTimeMs: z.number(),
+    rawPayload: z.string().optional(),
+  }),
+  extractStage: z.object({
+    success: z.boolean(),
+    itemsCount: z.number(),
+    extractedItems: z.array(z.record(z.string(), z.any())).optional(),
+  }),
+  parseStage: z.object({
+    success: z.boolean(),
+    parsedResult: z.any().optional(),
+  }),
+  errorDetails: z
+    .object({
+      stage: z.string(),
+      message: z.string(),
+      stack: z.string().optional(),
+    })
+    .optional(),
+  createdAt: z.union([z.date(), z.string()]).optional(),
+});
+
+export const CrawlTraceIngestSchema = z.object({
+  traces: z.array(CrawlProcessLogSchema),
 });
 
 export const ScraperInfoSchema = z.object({
@@ -101,3 +136,5 @@ export type CrawlIngestPayload = z.infer<typeof CrawlIngestSchema>;
 export type CrawlerProgress = z.infer<typeof CrawlerProgressSchema>;
 export type CrawlerSession = z.infer<typeof CrawlerSessionSchema>;
 export type ScraperInfo = z.infer<typeof ScraperInfoSchema>;
+export type CrawlProcessLog = z.infer<typeof CrawlProcessLogSchema>;
+export type CrawlTraceIngestPayload = z.infer<typeof CrawlTraceIngestSchema>;

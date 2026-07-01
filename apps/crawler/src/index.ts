@@ -73,8 +73,10 @@ if (process.connected) {
   adapter = new LocalFileStorageAdapter(savepath);
 }
 
+const sessionId = argumentList["session-id"]?.[0];
+
 /** Crawl session */
 
-const crawler = new Crawler(websiteInfo, { output, adapter });
+const crawler = new Crawler(websiteInfo, { output, adapter, sessionId });
 
 crawler.crawl(productList);
