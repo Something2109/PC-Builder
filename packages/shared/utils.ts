@@ -23,7 +23,7 @@ const NumberFilterOptions = FilterOptions(z.number()).transform((arg) => {
 
   if (arg.length === 1) return [0, arg[0]];
 
-  return [arg[0], arg[arg.length - 1]];
+  return [arg[0], arg[arg.length - 1]] as [number, number];
 });
 
 function createModel<T extends { [key: string]: z.ZodSchema }, Required extends keyof T = never>(
