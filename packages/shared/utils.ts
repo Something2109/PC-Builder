@@ -18,8 +18,8 @@ const FilterOptions = <T extends z.ZodType>(zodType: T) =>
       .map((val) => val.data);
   }, z.array(zodType));
 
-const NumberFilterOptions = FilterOptions(z.number()).transform((arg) => {
-  if (arg.length === 0) return [];
+const NumberFilterOptions = FilterOptions(z.number()).transform<[number, number]>((arg) => {
+  if (arg.length === 0) return [0, 0];
 
   if (arg.length === 1) return [0, arg[0]];
 
