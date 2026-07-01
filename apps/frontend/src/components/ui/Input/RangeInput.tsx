@@ -1,27 +1,20 @@
 "use client";
 
-import { ChangeEvent, RefObject, useRef } from "react";
 import { UnitInterface } from "@pc-builder/shared/Units";
-import { RowWrapper } from "../FlexWrapper";
-import { InputProps } from "./Input";
-import {
-  rangeDivStyle,
-  rangeInputStyle,
-  TransformedChangeEvent,
-  TransformedInputEvent,
-  transformEvent,
-} from "./base";
+import { ChangeEvent, RefObject, useRef } from "react";
+
 import { useDebounceFunction } from "@/hooks/useDebounce";
+
+import { RowWrapper } from "../FlexWrapper";
+import { rangeDivStyle, rangeInputStyle, TransformedChangeEvent, transformEvent } from "./base";
+import { InputProps } from "./Input";
 
 export type RangeInputChangeEvent = TransformedChangeEvent<[number, number], HTMLInputElement>;
 
-export type RangeInputInputEvent = TransformedInputEvent<[number, number], HTMLInputElement>;
-
-type InputRangeProps = Omit<InputProps, "value" | "defaultValue" | "onInput" | "onChange"> & {
+type InputRangeProps = Omit<InputProps, "value" | "defaultValue" | "onChange"> & {
   value?: [number, number];
   defaultValue?: [number, number];
   onChange?: (e: RangeInputChangeEvent) => void;
-  onInput?: (e: RangeInputInputEvent) => void;
 };
 
 type ElementTuple = [HTMLInputElement | null, HTMLInputElement | null];
@@ -32,7 +25,6 @@ export function MinMaxRangeInput({
   value,
   defaultValue,
   onChange,
-  onInput,
   min,
   max,
   ...rest
@@ -155,7 +147,6 @@ export function UnitMinMaxRangeInput<T extends string>({
   value,
   defaultValue,
   onChange,
-  onInput,
   min,
   max,
   ...props

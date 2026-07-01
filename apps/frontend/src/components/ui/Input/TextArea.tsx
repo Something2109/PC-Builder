@@ -7,6 +7,7 @@ import {
   useEffect,
   useRef,
 } from "react";
+
 import { mergeClass } from "../mergeClass";
 import { defaultStyle, cleanEvent } from "./base";
 

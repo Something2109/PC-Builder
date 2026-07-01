@@ -1,6 +1,7 @@
 "use client";
 
 import { DetailedHTMLProps, SelectHTMLAttributes } from "react";
+
 import { mergeClass } from "../mergeClass";
 import { defaultStyle, cleanEvent } from "./base";
 
