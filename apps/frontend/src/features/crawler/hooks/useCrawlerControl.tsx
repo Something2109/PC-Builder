@@ -2,7 +2,7 @@
 
 import { ScraperInfo, CrawlerSession, CrawlProcessLog } from "@pc-builder/shared/crawler";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, createContext, useContext, ReactNode } from "react";
 
 import axiosInstance from "@/lib/axios";
 
@@ -14,23 +14,20 @@ interface AxiosErrorLike {
   };
 }
 
-export function useCrawlerControl() {
-  const queryClient = useQueryClient();
-  const [error, setError] = useState<string | null>(null);
-  const [pollingActive, setPollingActive] = useState(true);
-  const [actionInProgress, setActionInProgress] = useState<string | null>(null);
-
-  // Fetch available scrapers
-  const { data: scrapers = [], isLoading: loadingScrapers } = useQuery<ScraperInfo[]>({
+// 1. Standalone Query Hook for Scrapers (Rarely updates, no polling)
+export function useCrawlerScrapers() {
+  return useQuery<ScraperInfo[]>({
     queryKey: ["crawlerScrapers"],
     queryFn: async () => {
       const response = await axiosInstance.get<ScraperInfo[]>("/crawler/scrapers");
       return response.data;
     },
   });
+}
 
-  // Poll active crawler sessions
-  const { data: sessions = [] } = useQuery<CrawlerSession[]>({
+// 2. Standalone Query Hook for Sessions (Updates frequently via polling)
+export function useCrawlerSessions(pollingActive = true) {
+  return useQuery<CrawlerSession[]>({
     queryKey: ["crawlerSessions"],
     queryFn: async () => {
       const response = await axiosInstance.get<CrawlerSession[]>("/crawler/status");
@@ -38,6 +35,26 @@ export function useCrawlerControl() {
     },
     refetchInterval: pollingActive ? 3000 : false,
   });
+}
+
+// 3. Crawler Control Context & Provider
+interface CrawlerControlContextType {
+  error: string | null;
+  setError: (error: string | null) => void;
+  pollingActive: boolean;
+  setPollingActive: (active: boolean) => void;
+  actionInProgress: string | null;
+  handleStartCrawl: (name: string, selectedProducts: string[]) => Promise<void>;
+  handleStopCrawl: (name: string) => Promise<void>;
+}
+
+const CrawlerControlContext = createContext<CrawlerControlContextType | undefined>(undefined);
+
+export function CrawlerControlProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
+  const [error, setError] = useState<string | null>(null);
+  const [pollingActive, setPollingActive] = useState(true);
+  const [actionInProgress, setActionInProgress] = useState<string | null>(null);
 
   // Start crawl session mutation
   const startCrawlMutation = useMutation({
@@ -102,20 +119,33 @@ export function useCrawlerControl() {
     }
   };
 
-  return {
-    scrapers,
-    sessions,
-    loadingScrapers,
-    error,
-    setError,
-    pollingActive,
-    setPollingActive,
-    actionInProgress,
-    handleStartCrawl,
-    handleStopCrawl,
-  };
+  return (
+    <CrawlerControlContext.Provider
+      value={{
+        error,
+        setError,
+        pollingActive,
+        setPollingActive,
+        actionInProgress,
+        handleStartCrawl,
+        handleStopCrawl,
+      }}
+    >
+      {children}
+    </CrawlerControlContext.Provider>
+  );
 }
 
+// 4. Hook to consume Crawler Control Context
+export function useCrawlerControl() {
+  const context = useContext(CrawlerControlContext);
+  if (context === undefined) {
+    throw new Error("useCrawlerControl must be used within a CrawlerControlProvider");
+  }
+  return context;
+}
+
+// 5. Standalone Query Hook for traces
 export function useCrawlerTraces(
   sessionId?: string,
   scraperName?: string,

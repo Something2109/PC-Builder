@@ -1,11 +1,10 @@
 "use client";
 
-interface CrawlerHeaderProps {
-  pollingActive: boolean;
-  onTogglePolling: () => void;
-}
+import { useCrawlerControl } from "../hooks/useCrawlerControl";
 
-export default function CrawlerHeader({ pollingActive, onTogglePolling }: CrawlerHeaderProps) {
+export default function CrawlerHeader() {
+  const { pollingActive, setPollingActive } = useCrawlerControl();
+
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
       <div>
@@ -31,7 +30,7 @@ export default function CrawlerHeader({ pollingActive, onTogglePolling }: Crawle
         </div>
         <button
           type="button"
-          onClick={onTogglePolling}
+          onClick={() => setPollingActive(!pollingActive)}
           className="px-2 py-1 rounded bg-blue-600 hover:bg-blue-500 transition-colors text-white cursor-pointer"
         >
           {pollingActive ? "Pause" : "Resume"}

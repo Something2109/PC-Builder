@@ -1,11 +1,10 @@
 "use client";
 
-interface ErrorBannerProps {
-  error: string | null;
-  onDismiss: () => void;
-}
+import { useCrawlerControl } from "../hooks/useCrawlerControl";
 
-export default function ErrorBanner({ error, onDismiss }: ErrorBannerProps) {
+export default function ErrorBanner() {
+  const { error, setError } = useCrawlerControl();
+
   if (!error) return null;
 
   return (
@@ -28,7 +27,7 @@ export default function ErrorBanner({ error, onDismiss }: ErrorBannerProps) {
       </div>
       <button
         type="button"
-        onClick={onDismiss}
+        onClick={() => setError(null)}
         className="text-rose-400 hover:text-white font-bold px-2 cursor-pointer"
       >
         ✕
