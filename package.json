@@ -19,13 +19,24 @@
     "crawl": "npm run crawl --workspace=apps/crawler",
     "install:all": "npm install",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
   "devDependencies": {
     "eslint": "^9.39.4",
     "eslint-plugin-perfectionist": "^5.9.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.3.3",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.60.1"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix"
+    ],
+    "*.{js,jsx,ts,tsx,css,md,json}": [
+      "prettier --write"
+    ]
   }
 }
