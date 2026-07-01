@@ -19,7 +19,6 @@ export default function Header() {
     { title: "Guide", link: "/guide" },
     { title: "Parts", link: "/part" },
     { title: "Build PC", link: "/build" },
-    { title: "Mapper Test", link: "/mapper" },
   ];
 
   return (
