@@ -9,7 +9,6 @@ import { InfoLabel } from "../utils/Table";
 
 type CustomFilterComponent<Value> = FunctionComponent<
   {
-    value: NonNullable<Value>;
     defaultValue?: Value;
     product: Products;
     context: URLSearchParams;
@@ -86,8 +85,7 @@ function FilterAttributeComponent<Value>({
         name={attribute}
         title={label}
         placeholder={label}
-        value={state}
-        defaultValue={context.getAll(attribute) as Value}
+        defaultValue={state}
         product={product}
         context={context}
       />
