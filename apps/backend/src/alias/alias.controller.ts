@@ -137,8 +137,12 @@ export class AliasController {
       alias: normAlias,
     });
 
-    // Refresh memory cache in DbAliasRegistry
-    await this.registry.reset();
+    // Refresh memory cache in DbAliasRegistry incrementally
+    if (body.product === "basic") {
+      await this.registry.addBasicAlias(body.attribute, normAlias);
+    } else {
+      await this.registry.addAlias(body.product, infoVal, body.attribute, normAlias);
+    }
 
     return created;
   }
@@ -176,14 +180,25 @@ export class AliasController {
       throw new BadRequestException("Another alias entry with these attributes already exists.");
     }
 
+    // Evict old cache
+    if (entry.product === "basic") {
+      await this.registry.removeBasicAlias(entry.attribute, entry.alias);
+    } else {
+      await this.registry.removeAlias(entry.product, entry.info, entry.attribute, entry.alias);
+    }
+
     await entry.update({
       ...body,
       info,
       alias,
     });
 
-    // Refresh memory cache in DbAliasRegistry
-    await this.registry.reset();
+    // Add new cache
+    if (product === "basic") {
+      await this.registry.addBasicAlias(attribute, alias);
+    } else {
+      await this.registry.addAlias(product, info, attribute, alias);
+    }
 
     return entry;
   }
@@ -198,8 +213,12 @@ export class AliasController {
 
     await entry.destroy();
 
-    // Refresh memory cache in DbAliasRegistry
-    await this.registry.reset();
+    // Refresh memory cache in DbAliasRegistry incrementally
+    if (entry.product === "basic") {
+      await this.registry.removeBasicAlias(entry.attribute, entry.alias);
+    } else {
+      await this.registry.removeAlias(entry.product, entry.info, entry.attribute, entry.alias);
+    }
 
     return { success: true };
   }
@@ -296,8 +315,12 @@ export class AliasController {
       },
     });
 
-    // Invalidate registry memory cache since we deleted the alias entry
-    await this.registry.reset();
+    // Invalidate registry memory cache incrementally
+    if (log.product === "basic") {
+      await this.registry.removeBasicAlias(log.attribute, normAlias);
+    } else {
+      await this.registry.removeAlias(log.product, log.info, log.attribute, normAlias);
+    }
 
     return { success: true, log };
   }

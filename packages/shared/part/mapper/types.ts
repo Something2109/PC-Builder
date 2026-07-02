@@ -98,6 +98,15 @@ export interface IAliasRegistry {
   /** Register a new BasicInfo alias. */
   addBasicAlias(attribute: string, alias: string): Promise<void>;
 
+  /** Evict an attribute-level alias. */
+  removeAlias(product: string, info: string, attribute: string, alias: string): Promise<void>;
+
+  /** Evict an info-level alias ("_self"). */
+  removeInfoAlias(product: string, info: string, alias: string): Promise<void>;
+
+  /** Evict a BasicInfo alias. */
+  removeBasicAlias(attribute: string, alias: string): Promise<void>;
+
   // ── Config ──
 
   getConfig(): HeuristicConfig;

@@ -151,6 +151,57 @@ export class DbAliasRegistry implements IAliasRegistry, OnModuleInit {
     this.basicReverse.set(normAlias, attribute);
   }
 
+  public async removeAlias(
+    product: string,
+    info: string,
+    attribute: string,
+    alias: string
+  ): Promise<void> {
+    const normAlias = normalizeKey(alias);
+    if (!normAlias) return;
+
+    // Update in-memory cache
+    if (this.productForward[product]?.[info]?.[attribute]) {
+      this.productForward[product][info][attribute] = this.productForward[product][info][
+        attribute
+      ].filter((a) => a !== alias && normalizeKey(a) !== normAlias);
+    }
+
+    const index = this.productReverse[product];
+    if (index) {
+      const targets = index.get(normAlias);
+      if (targets) {
+        const filtered = targets.filter((t) => !(t.info === info && t.attribute === attribute));
+        if (filtered.length > 0) {
+          index.set(normAlias, filtered);
+        } else {
+          index.delete(normAlias);
+        }
+      }
+    }
+
+    delete this.productTargetsCache[product];
+  }
+
+  public async removeInfoAlias(product: string, info: string, alias: string): Promise<void> {
+    await this.removeAlias(product, info, "_self", alias);
+  }
+
+  public async removeBasicAlias(attribute: string, alias: string): Promise<void> {
+    const normAlias = normalizeKey(alias);
+    if (!normAlias) return;
+
+    if (this.basicForward[attribute]) {
+      this.basicForward[attribute] = this.basicForward[attribute].filter(
+        (a) => a !== alias && normalizeKey(a) !== normAlias
+      );
+    }
+
+    if (this.basicReverse.get(normAlias) === attribute) {
+      this.basicReverse.delete(normAlias);
+    }
+  }
+
   // ── Config ───────────────────────────────────────────────────────
 
   public getConfig(): HeuristicConfig {
