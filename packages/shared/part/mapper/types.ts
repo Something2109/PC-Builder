@@ -1,3 +1,5 @@
+export const SELF_ATTRIBUTE = "_self";
+
 // ─── Resolved Target Types ───────────────────────────────────────────
 
 /**
@@ -6,7 +8,7 @@
  */
 export interface ResolvedTarget {
   info: string;
-  attribute: string; // "_self" for info-level match
+  attribute: string; // SELF_ATTRIBUTE for info-level match
 }
 
 /**

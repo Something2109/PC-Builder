@@ -21,6 +21,7 @@ import {
   UpdateAliasDto,
   BulkLearnSchema,
   BulkLearnDto,
+  SELF_ATTRIBUTE,
 } from "@pc-builder/shared/part";
 import { normalizeKey } from "@pc-builder/shared/part/mapper/utils";
 import { Roles } from "@pc-builder/shared/user";
@@ -284,7 +285,7 @@ export class AliasController {
     await log.save();
 
     // Register alias in DB (DbAliasRegistry handles database write and cache update)
-    if (log.attribute === "_self") {
+    if (log.attribute === SELF_ATTRIBUTE) {
       await this.registry.addInfoAlias(log.product, log.info, log.raw_key);
     } else {
       await this.registry.addAlias(log.product, log.info, log.attribute, log.raw_key);

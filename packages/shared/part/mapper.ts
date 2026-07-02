@@ -5,7 +5,13 @@ import { DTO as InfoDTOs, Name as Infos } from "./info";
 import { parseSingleValue, parseConnectorString } from "./mapper/parser";
 import { RawKeyResolver } from "./mapper/pipeline";
 import { AliasRegistry } from "./mapper/registry";
-import { IAliasRegistry, IAliasLearner, BasicMapping, ResolvedMapping } from "./mapper/types";
+import {
+  IAliasRegistry,
+  IAliasLearner,
+  BasicMapping,
+  ResolvedMapping,
+  SELF_ATTRIBUTE,
+} from "./mapper/types";
 import { getInnerSchema } from "./mapper/utils";
 import * as Mapping from "./mapping";
 import { BasicInfo, DTO as PartDTO } from "./part";
@@ -150,7 +156,7 @@ export class RawPartMapper {
 
         if (elementUnwrappedName === "ZodObject") {
           const elementShape = (elementUnwrapped as any).shape;
-          const selfMappings = mappingsForInfo.filter((m) => m.attribute === "_self");
+          const selfMappings = mappingsForInfo.filter((m) => m.attribute === SELF_ATTRIBUTE);
 
           if (selfMappings.length > 0) {
             const allItems: string[] = [];

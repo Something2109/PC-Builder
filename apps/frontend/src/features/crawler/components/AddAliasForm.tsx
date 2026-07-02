@@ -1,6 +1,6 @@
 "use client";
 
-import { Products, Mapping, Information } from "@pc-builder/shared/part";
+import { Products, Mapping, Information, SELF_ATTRIBUTE } from "@pc-builder/shared/part";
 import React, { useState } from "react";
 import { z } from "zod";
 
@@ -51,9 +51,9 @@ export function AddAliasForm({ onSubmit, onCancel, isPending }: AddAliasFormProp
     }
 
     const schema = Information.Info.shape[info as keyof typeof Information.Info.shape];
-    let attrs: string[] = ["_self"];
+    let attrs: string[] = [SELF_ATTRIBUTE];
     if (schema instanceof z.ZodObject) {
-      attrs = ["_self", ...Object.keys(schema.shape)];
+      attrs = [SELF_ATTRIBUTE, ...Object.keys(schema.shape)];
     }
     setNewAttribute(attrs[0]);
   };
@@ -76,13 +76,13 @@ export function AddAliasForm({ onSubmit, onCancel, isPending }: AddAliasFormProp
 
   const allowedAttributesForSelectedInfo = (() => {
     if (newProduct === "basic") return BASIC_ATTRIBUTES;
-    if (!newInfo) return ["_self"];
+    if (!newInfo) return [SELF_ATTRIBUTE];
 
     const schema = Information.Info.shape[newInfo as keyof typeof Information.Info.shape];
     if (schema instanceof z.ZodObject) {
-      return ["_self", ...Object.keys(schema.shape)];
+      return [SELF_ATTRIBUTE, ...Object.keys(schema.shape)];
     }
-    return ["_self"];
+    return [SELF_ATTRIBUTE];
   })();
 
   return (

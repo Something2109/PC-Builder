@@ -9,6 +9,7 @@ export * as Mapping from "./mapping";
 export { RawPartMapper } from "./mapper";
 export { AliasRegistry } from "./mapper/registry";
 export { AliasLearner } from "./mapper/learner";
+export { SELF_ATTRIBUTE } from "./mapper/types";
 export type {
   IAliasRegistry,
   IAliasLearner,

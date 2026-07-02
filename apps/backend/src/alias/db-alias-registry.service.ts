@@ -1,7 +1,12 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { ModuleRef } from "@nestjs/core";
 import { InjectModel } from "@nestjs/sequelize";
-import { IAliasRegistry, ResolvedTarget, HeuristicConfig } from "@pc-builder/shared/part";
+import {
+  IAliasRegistry,
+  ResolvedTarget,
+  HeuristicConfig,
+  SELF_ATTRIBUTE,
+} from "@pc-builder/shared/part";
 import { normalizeKey } from "@pc-builder/shared/part/mapper/utils";
 
 import AliasEntry from "@/models/alias/AliasEntry.entity";
@@ -53,7 +58,7 @@ export class DbAliasRegistry implements IAliasRegistry, OnModuleInit {
   // ── Forward Lookups ──────────────────────────────────────────────
 
   public getInfoAliases(product: string, info: string): string[] {
-    return this.productForward[product]?.[info]?.["_self"] || [];
+    return this.productForward[product]?.[info]?.[SELF_ATTRIBUTE] || [];
   }
 
   public getAttributeAliases(product: string, info: string, attribute: string): string[] {
@@ -124,7 +129,7 @@ export class DbAliasRegistry implements IAliasRegistry, OnModuleInit {
   }
 
   public async addInfoAlias(product: string, info: string, alias: string): Promise<void> {
-    await this.addAlias(product, info, "_self", alias);
+    await this.addAlias(product, info, SELF_ATTRIBUTE, alias);
   }
 
   public async addBasicAlias(attribute: string, alias: string): Promise<void> {
@@ -184,7 +189,7 @@ export class DbAliasRegistry implements IAliasRegistry, OnModuleInit {
   }
 
   public async removeInfoAlias(product: string, info: string, alias: string): Promise<void> {
-    await this.removeAlias(product, info, "_self", alias);
+    await this.removeAlias(product, info, SELF_ATTRIBUTE, alias);
   }
 
   public async removeBasicAlias(attribute: string, alias: string): Promise<void> {
@@ -255,7 +260,8 @@ export class DbAliasRegistry implements IAliasRegistry, OnModuleInit {
         const target = { info, attribute };
         this.addToReverseIndex(product, normAlias, target);
 
-        const normAttr = attribute === "_self" ? normalizeKey(info) : normalizeKey(attribute);
+        const normAttr =
+          attribute === SELF_ATTRIBUTE ? normalizeKey(info) : normalizeKey(attribute);
         this.addToReverseIndex(product, normAttr, target);
       }
     }

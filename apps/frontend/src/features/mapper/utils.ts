@@ -1,3 +1,5 @@
+import { SELF_ATTRIBUTE } from "@pc-builder/shared/part";
+
 import { KeyValueRow, MappingTrace } from "./types";
 
 // Helper: Parse JSON string to Row array
@@ -106,7 +108,7 @@ export function findSourceRawKey(
         return true;
       }
       // Info self mapping: mainboard_pcie._self
-      if (m.info === firstPart && m.attribute === "_self") {
+      if (m.info === firstPart && m.attribute === SELF_ATTRIBUTE) {
         return true;
       }
       return false;
@@ -139,7 +141,7 @@ export function findMappedDTOPath(rawKey: string, mappings?: MappingTrace): stri
   if (mappings.info) {
     const infoMatches = mappings.info.filter((m) => m.rawKey === rawKey);
     for (const m of infoMatches) {
-      if (m.attribute === "_self") {
+      if (m.attribute === SELF_ATTRIBUTE) {
         targets.push(m.info);
       } else {
         targets.push(`${m.info}.${m.attribute}`);

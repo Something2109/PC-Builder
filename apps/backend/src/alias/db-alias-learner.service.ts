@@ -1,6 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { IAliasLearner, IAliasRegistry, ResolvedTarget } from "@pc-builder/shared/part";
+import {
+  IAliasLearner,
+  IAliasRegistry,
+  ResolvedTarget,
+  SELF_ATTRIBUTE,
+} from "@pc-builder/shared/part";
 import { fuzzyMatch, fuzzyMatchBasic } from "@pc-builder/shared/part/mapper/resolver";
 import { normalizeKey } from "@pc-builder/shared/part/mapper/utils";
 
@@ -26,7 +31,7 @@ export class DbAliasLearner implements IAliasLearner {
 
     if (match && match.score >= 30) {
       // Register the alias for future instant hits (persists to DB via registry)
-      if (match.target.attribute === "_self") {
+      if (match.target.attribute === SELF_ATTRIBUTE) {
         await registry.addInfoAlias(product, match.target.info, rawKey);
       } else {
         await registry.addAlias(product, match.target.info, match.target.attribute, rawKey);
@@ -92,9 +97,11 @@ export class DbAliasLearner implements IAliasLearner {
     const coveredKeys = new Set<string>();
     const targets = registry.getProductTargets(product);
     for (const target of targets) {
-      coveredKeys.add(normalizeKey(target.attribute === "_self" ? target.info : target.attribute));
+      coveredKeys.add(
+        normalizeKey(target.attribute === SELF_ATTRIBUTE ? target.info : target.attribute)
+      );
       const aliases =
-        target.attribute === "_self"
+        target.attribute === SELF_ATTRIBUTE
           ? registry.getInfoAliases(product, target.info)
           : registry.getAttributeAliases(product, target.info, target.attribute);
       for (const alias of aliases) {

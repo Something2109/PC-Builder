@@ -1,5 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import { SELF_ATTRIBUTE } from "@pc-builder/shared/part";
 import defaultAliases from "@pc-builder/shared/part/mapper/aliases.json";
 import { normalizeKey } from "@pc-builder/shared/part/mapper/utils";
 
@@ -66,7 +67,7 @@ export class AliasSeedService {
           topValue as Record<string, Record<string, string[]>>
         )) {
           for (const [attrName, aliases] of Object.entries(infoValue)) {
-            const selfAliasName = attrName === "_self" ? infoName : attrName;
+            const selfAliasName = attrName === SELF_ATTRIBUTE ? infoName : attrName;
             addEntry(product, infoName, attrName, selfAliasName);
             for (const alias of aliases) {
               addEntry(product, infoName, attrName, alias);

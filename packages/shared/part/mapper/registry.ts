@@ -1,6 +1,7 @@
 import type { IAliasRegistry, ResolvedTarget, HeuristicConfig } from "./types";
 
 import defaultAliases from "./aliases.json";
+import { SELF_ATTRIBUTE } from "./types";
 import { normalizeKey } from "./utils";
 
 /**
@@ -55,7 +56,7 @@ export class AliasRegistry implements IAliasRegistry {
   // ── Forward Lookups ──────────────────────────────────────────────
 
   public getInfoAliases(product: string, info: string): string[] {
-    return this.productForward[product]?.[info]?.["_self"] || [];
+    return this.productForward[product]?.[info]?.[SELF_ATTRIBUTE] || [];
   }
 
   public getAttributeAliases(product: string, info: string, attribute: string): string[] {
@@ -118,7 +119,7 @@ export class AliasRegistry implements IAliasRegistry {
   }
 
   public async addInfoAlias(product: string, info: string, alias: string): Promise<void> {
-    await this.addAlias(product, info, "_self", alias);
+    await this.addAlias(product, info, SELF_ATTRIBUTE, alias);
   }
 
   public async addBasicAlias(attribute: string, alias: string): Promise<void> {
@@ -170,7 +171,7 @@ export class AliasRegistry implements IAliasRegistry {
   }
 
   public async removeInfoAlias(product: string, info: string, alias: string): Promise<void> {
-    await this.removeAlias(product, info, "_self", alias);
+    await this.removeAlias(product, info, SELF_ATTRIBUTE, alias);
   }
 
   public async removeBasicAlias(attribute: string, alias: string): Promise<void> {
@@ -255,7 +256,8 @@ export class AliasRegistry implements IAliasRegistry {
 
             // Add target attribute name itself to reverse index
             // (so "total_cores" matches "total_cores" exactly)
-            const normAttr = attrName === "_self" ? normalizeKey(infoName) : normalizeKey(attrName);
+            const normAttr =
+              attrName === SELF_ATTRIBUTE ? normalizeKey(infoName) : normalizeKey(attrName);
             this.addToReverseIndex(product, normAttr, {
               info: infoName,
               attribute: attrName,
