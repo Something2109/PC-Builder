@@ -83,3 +83,6 @@ export class CrawlProcessLogClass {
 }
 
 export const CrawlProcessLogSchema = SchemaFactory.createForClass(CrawlProcessLogClass);
+
+CrawlProcessLogSchema.index({ sessionId: 1, createdAt: -1 });
+CrawlProcessLogSchema.index({ scraperName: 1, createdAt: -1 });

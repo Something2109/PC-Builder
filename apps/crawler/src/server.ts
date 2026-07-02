@@ -29,6 +29,36 @@ app.use(express.json());
 
 const activeSessions = new Map<string, { child: ChildProcess; session: CrawlerSession }>();
 
+// Helper to fetch with retry and exponential backoff
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit,
+  retries = 3,
+  delayMs = 1000
+): Promise<globalThis.Response> {
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok && retries > 0) {
+      console.warn(
+        `[Crawler Server] Request to ${url} failed with status ${response.status}. Retrying in ${delayMs}ms... (${retries} retries left)`
+      );
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      return fetchWithRetry(url, options, retries - 1, delayMs * 2);
+    }
+    return response;
+  } catch (err) {
+    if (retries > 0) {
+      console.warn(
+        `[Crawler Server] Request to ${url} failed with error. Retrying in ${delayMs}ms... (${retries} retries left)`,
+        err
+      );
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      return fetchWithRetry(url, options, retries - 1, delayMs * 2);
+    }
+    throw err;
+  }
+}
+
 // Helper to resolve scraper configurations
 const crawlersDir = path.join(__dirname, "crawlers");
 
@@ -166,7 +196,7 @@ app.post("/start", (req: Request, res: Response) => {
       }
 
       try {
-        const response = await fetch(`${BACKEND_URL}/crawler/ingest`, {
+        const response = await fetchWithRetry(`${BACKEND_URL}/crawler/ingest`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ items: batch }),
@@ -193,7 +223,7 @@ app.post("/start", (req: Request, res: Response) => {
       }
 
       try {
-        const response = await fetch(`${BACKEND_URL}/crawler/trace`, {
+        const response = await fetchWithRetry(`${BACKEND_URL}/crawler/trace`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ traces: batch }),
@@ -421,7 +451,7 @@ app.post("/extract", async (req: Request, res: Response) => {
       }));
 
       try {
-        await fetch(`${BACKEND_URL}/crawler/ingest`, {
+        await fetchWithRetry(`${BACKEND_URL}/crawler/ingest`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ items: itemsToIngest }),
