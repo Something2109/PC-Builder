@@ -72,34 +72,6 @@ const CrawlInfo: APIWebsiteInfo<any, Record<string, string>> = {
         };
       });
 
-      // Pagination logic
-      const page = Number(requestUrl.searchParams.get("PageNumber") || "1"); // Wait, path used body form data for page info?
-      // path sent PageNumber in formBody.
-      // But we can't easily read formBody from here unless we check existing request?
-      // info.request.body is generic BodyInit?
-      // If we need to paginate, we must return next page request.
-
-      // existing code: result has pages count.
-      // if (link.page == 1) pages = ...
-      // But path used formBody.
-      // We can create next page request if we know current page.
-      // We assume page = 1 if not tracked?
-      // The issue is existing Crawler logic handled `pages` in earlier versions?
-      // No, `APIWebsiteInfo` is stateless.
-      // `gigabyte.ts` `path` accepts `page`.
-      // We need to return `next` request for page+1.
-
-      const totalPages = Number(dom.querySelector(".pageMaximumPage")?.textContent);
-      // We can try to guess current page from `info.index`? No.
-      // We should encode page number in the initial URL query param too even if unused by API, just for state tracking?
-      // Or we can rely on `gigabyte.ts` path implementation.
-      // But `extract` returns `next` requests which call `path`?
-      // if we return `this.path(product, page+1)` it works.
-      // But how do we know `current page` inside extract?
-      // We can add `page` to the query params of the `GetConsumerListPageInfo` URL in `path` function, even if implementation uses body.
-
-      // Let's modify path to add query param for tracking.
-
       return { raw: [], next };
     }
 

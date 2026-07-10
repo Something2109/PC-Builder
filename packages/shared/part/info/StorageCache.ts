@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { InternalConnectors, Primitive } from "../../interface";
+import { InternalConnectors } from "../../interface";
 import { MemoryUnits } from "../../Units";
 import { createDTO, createModel, createUnit } from "../../utils";
 

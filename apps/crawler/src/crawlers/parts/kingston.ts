@@ -14,7 +14,7 @@ const CrawlInfo: APIWebsiteInfo<Document, Record<string, string>> = {
 
   save: "parts",
 
-  path(product: Products, page = 1) {
+  path(product: Products) {
     if (mapping[product]) {
       const url = new URL(`${domain}/en/${mapping[product]}`);
 

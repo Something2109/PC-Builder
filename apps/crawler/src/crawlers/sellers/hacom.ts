@@ -35,7 +35,7 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, RetailProductType> = {
 
   save: "sellers",
 
-  path(product, page = 1) {
+  path(product) {
     if (mapping[product]) {
       const url = new URL(`${domain}/api-client/api/v1/TblItemV/get-list`);
 
@@ -61,7 +61,7 @@ const CrawlInfo: APIWebsiteInfo<HacomPartDataAPI, RetailProductType> = {
     return null;
   },
 
-  async extract(response, info) {
+  async extract(response) {
     const data: HacomJSONResponse = await response.json();
 
     if (Array.isArray(data.data)) {
