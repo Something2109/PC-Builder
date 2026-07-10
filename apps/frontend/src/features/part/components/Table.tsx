@@ -4,7 +4,7 @@ import Part, { Information, Infos } from "@pc-builder/shared/part";
 import { lazy, LazyExoticComponent, Suspense } from "react";
 import { z } from "zod";
 
-import { ColumnWrapper } from "@/ui/FlexWrapper";
+import { VerticalCollapsible } from "@/components/ui/Collapsible";
 import { LoadingSpinner } from "@/ui/LoadingSpinner";
 
 import { DynamicSchemaDisplay } from "./utils/DynamicSchemaDisplay";
@@ -58,25 +58,27 @@ export function InfoTable<Info extends Infos>({
   const isMultiple = Information.DTO[info] instanceof z.ZodArray;
 
   return (
-    <ColumnWrapper className="gap-4 text-wrap rounded-2xl border border-border bg-card p-4">
-      <h1 className="text-2xl font-bold">{Information.Label[info]}</h1>
-      {isMultiple ? (
-        (() => {
-          const Component = DetailTableComponent[info] as InfoTableComponent<Info>;
-          if (!Component) return null;
-          return (
-            <Suspense fallback={<LoadingSpinner text="loading specifications table..." />}>
-              <Component key={info} defaultValue={defaultValue} />
-            </Suspense>
-          );
-        })()
-      ) : (
-        <DynamicSchemaDisplay
-          schema={Information.Schemas[info]?.Info}
-          labels={Information.Labels[info] || {}}
-          defaultValue={defaultValue}
-        />
-      )}
-    </ColumnWrapper>
+    <VerticalCollapsible className="gap-4 text-wrap rounded-2xl border border-border bg-card p-4">
+      <h4 className="text-lg font-bold text-text/90 tracking-wide">{Information.Label[info]}</h4>
+      <div className="pt-3">
+        {isMultiple ? (
+          (() => {
+            const Component = DetailTableComponent[info] as InfoTableComponent<Info>;
+            if (!Component) return null;
+            return (
+              <Suspense fallback={<LoadingSpinner text="loading specifications table..." />}>
+                <Component key={info} defaultValue={defaultValue} />
+              </Suspense>
+            );
+          })()
+        ) : (
+          <DynamicSchemaDisplay
+            schema={Information.Schemas[info]?.Info}
+            labels={Information.Labels[info] || {}}
+            defaultValue={defaultValue}
+          />
+        )}
+      </div>
+    </VerticalCollapsible>
   );
 }

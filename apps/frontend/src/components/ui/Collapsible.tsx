@@ -1,33 +1,29 @@
 "use client";
 
-import { HTMLAttributes, useState } from "react";
+import { Children, HTMLAttributes, ReactNode } from "react";
 
 import { ColumnWrapper } from "./FlexWrapper";
-import { mergeClass } from "./mergeClass";
 
 function VerticalCollapsible({
   children,
   className,
-  ...divAttributes
+  open = true,
+  ...detailsAttributes
 }: {
-  children: Iterable<React.ReactNode>;
-} & HTMLAttributes<HTMLDivElement>) {
-  const [collapse, setCollapse] = useState(true);
-  const [header, ...rest] = [...children];
+  children: ReactNode;
+  open?: boolean;
+  name?: string;
+} & HTMLAttributes<HTMLDetailsElement>) {
+  const [header, ...rest] = Children.toArray(children);
 
   return (
-    <ColumnWrapper className={mergeClass("gap-4", className)} {...divAttributes}>
-      <button
-        type="button"
-        className="flex flex-row gap-2 w-full m-0 justify-between"
-        onClick={() => setCollapse(!collapse)}
-      >
-        <div className="flex-1 text-left">{header}</div>
-        <span className="font-bold">{collapse ? "+" : "-"}</span>
-      </button>
+    <details className={className} open={open} suppressHydrationWarning {...detailsAttributes}>
+      <summary className="flex flex-row gap-2 w-full m-0 justify-between cursor-pointer select-none outline-none [&::-webkit-details-marker]:hidden">
+        {header}
+      </summary>
 
-      {collapse && <ColumnWrapper className="h-fit">{rest}</ColumnWrapper>}
-    </ColumnWrapper>
+      <ColumnWrapper className="h-fit">{rest}</ColumnWrapper>
+    </details>
   );
 }
 

@@ -84,12 +84,10 @@ export function InfoForm<Info extends Information.Name>({
   return (
     <div className="flex flex-col gap-3 w-full">
       {formValue ? (
-        <VerticalCollapsible className="w-full">
-          <div className="flex items-center justify-between w-full border-b border-border/30 pb-2">
-            <h4 className="text-lg font-bold text-text/90 tracking-wide">
-              {Information.Label[info]}
-            </h4>
-          </div>
+        <VerticalCollapsible className="w-full" open>
+          <h4 className="text-lg font-bold text-text/90 tracking-wide">
+            {Information.Label[info]}
+          </h4>
           <div className="pt-3">
             {isMultiple ? (
               (() => {
