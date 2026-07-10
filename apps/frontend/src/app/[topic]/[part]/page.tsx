@@ -1,3 +1,4 @@
+import { getBackendUrl } from "@pc-builder/shared";
 import { Summary } from "@pc-builder/shared/article";
 import { Products } from "@pc-builder/shared/part";
 import { Label } from "@pc-builder/shared/part/product";
@@ -8,7 +9,6 @@ import React from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
-import { getBackendUrl } from "@/utils/path";
 
 export default async function PartTopicPage({
   params,

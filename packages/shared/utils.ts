@@ -75,6 +75,19 @@ function createSuffix(suffix: string) {
     .meta({ suffix });
 }
 
-export { NumberFilterOptions, FilterOptions, createModel, createDTO, createUnit, createSuffix };
+function getBackendUrl(path: string) {
+  const host = typeof process !== "undefined" ? process.env.BACKEND_HOST : undefined;
+  return new URL(path, host);
+}
+
+export {
+  NumberFilterOptions,
+  FilterOptions,
+  createModel,
+  createDTO,
+  createUnit,
+  createSuffix,
+  getBackendUrl,
+};
 
 export type { FilterOptionsType };

@@ -1,9 +1,9 @@
+import { getBackendUrl } from "@pc-builder/shared";
 import { Summary } from "@pc-builder/shared/article";
 import { Roles } from "@pc-builder/shared/user";
 import { notFound, redirect } from "next/navigation";
 
 import { verifyToken } from "@/features/auth/server";
-import { getBackendUrl } from "@/utils/path";
 
 export default async function PartTopicEditPage({
   params,

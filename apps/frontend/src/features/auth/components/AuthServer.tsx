@@ -1,8 +1,7 @@
+import { getBackendUrl } from "@pc-builder/shared";
 import { Tokens } from "@pc-builder/shared/API";
 import { JwtPayload } from "@pc-builder/shared/user";
 import { cookies } from "next/headers";
-
-import { getBackendUrl } from "@/utils/path";
 
 export async function verifyToken(): Promise<JwtPayload | null> {
   const cookie = await cookies();

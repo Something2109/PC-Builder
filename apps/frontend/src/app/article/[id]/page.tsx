@@ -1,3 +1,4 @@
+import { getBackendUrl } from "@pc-builder/shared";
 import { Article } from "@pc-builder/shared/article";
 import { Roles } from "@pc-builder/shared/user";
 import { notFound } from "next/navigation";
@@ -5,7 +6,6 @@ import React from "react";
 
 import { ArticleComponent } from "@/features/article/components/Article";
 import { verifyToken } from "@/features/auth/server";
-import { getBackendUrl } from "@/utils/path";
 
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

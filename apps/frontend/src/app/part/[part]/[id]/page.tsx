@@ -1,3 +1,4 @@
+import { getBackendUrl } from "@pc-builder/shared";
 import Part, { Products, Mapping, Product } from "@pc-builder/shared/part";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -5,7 +6,6 @@ import React from "react";
 
 import { PartTable } from "@/features/part/components/detail/Part";
 import { InfoTable } from "@/features/part/components/Table";
-import { getBackendUrl } from "@/utils/path";
 
 export default async function PartDetailPage({
   params,
