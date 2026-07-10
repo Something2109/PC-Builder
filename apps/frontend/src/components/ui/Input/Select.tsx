@@ -1,6 +1,6 @@
 "use client";
 
-import { DetailedHTMLProps, SelectHTMLAttributes } from "react";
+import { DetailedHTMLProps, SelectHTMLAttributes, useId } from "react";
 
 import { mergeClass } from "../mergeClass";
 import { defaultStyle, cleanEvent } from "./base";
@@ -23,7 +23,35 @@ export function Select({ className, onChange, ...rest }: SelectProps) {
   );
 }
 
-export function OptionSelect({ options, ...rest }: { options: string[] | number[] } & SelectProps) {
+type OptionListType = string[] | number[];
+
+type SelectOptionsType = OptionListType | Record<string, OptionListType>;
+
+function OptionList({ options }: { options: OptionListType }) {
+  const id = useId();
+
+  return options.map((value) => (
+    <option className="bg-card text-text" key={`options-${id}-${value}`} value={value}>
+      {value}
+    </option>
+  ));
+}
+
+function SelectOption({ options }: { options: SelectOptionsType }) {
+  const id = useId();
+
+  if (Array.isArray(options)) {
+    return <OptionList options={options} />;
+  }
+
+  return Object.entries(options).map(([label, value]) => (
+    <optgroup label={label} key={`options-${id}-${label}`}>
+      <OptionList options={value} />
+    </optgroup>
+  ));
+}
+
+export function OptionSelect({ options, ...rest }: { options: SelectOptionsType } & SelectProps) {
   return (
     <Select {...rest}>
       {!rest.required && (
@@ -31,11 +59,7 @@ export function OptionSelect({ options, ...rest }: { options: string[] | number[
           None
         </option>
       )}
-      {options.map((value) => (
-        <option className="bg-card text-text" key={`options-${rest.name}-${value}`} value={value}>
-          {value}
-        </option>
-      ))}
+      <SelectOption options={options} />
     </Select>
   );
 }
