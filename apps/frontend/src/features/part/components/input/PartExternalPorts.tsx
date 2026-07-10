@@ -127,17 +127,21 @@ function AddRow({
 
   return (
     <Table.Row>
-      <Table.Cell>
+      <Table.Cell className="min-w-40">
         <OptionSelect
-          options={ExternalPorts.Type.options}
-          value={type}
-          onChange={(e) => setType(e.target.value as ExternalPorts.Type)}
-          required
-        />
-        <OptionSelect
-          options={PortTypes[type]}
+          options={PortTypes}
           value={port}
-          onChange={(e) => setPort(e.target.value as PortSubtypes)}
+          onChange={(e) => {
+            const subtype = e.target.value as PortSubtypes;
+            const type = Object.keys(PortTypes).find((key) =>
+              PortTypes[key as keyof typeof PortTypes].includes(subtype as never)
+            );
+
+            if (!type) return;
+
+            setType(type as ExternalPorts.Type);
+            setPort(subtype);
+          }}
           required
         />
       </Table.Cell>
