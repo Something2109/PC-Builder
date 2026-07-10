@@ -37,9 +37,6 @@
     "@types/cookie-parser": "^1.4.8",
     "@types/express": "^5.0.0",
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^24.6.2",
-    "@types/sequelize": "^4.28.20",
-    "@types/uuid": "^10.0.0",
-    "typescript": "^5.5.4"
+    "@types/sequelize": "^4.28.20"
   }
 }
