@@ -227,20 +227,34 @@ export default function ScrollSelect({
   product,
   attribute,
   context,
-  defaultValue = [],
+  defaultValue: _defaultValue = [],
   value,
   onChange,
   placeholder,
 }: Readonly<ScrollSelectProps>) {
   const [isOpen, setIsOpen] = useState(false);
-  const [localSelectedIds, setLocalSelectedIds] = useState<string[]>(defaultValue);
+
+  // Extract initial selected IDs directly from the query context (which is always correct)
+  const initialSelectedIds = context.getAll(attribute);
+  const [localSelectedIds, setLocalSelectedIds] = useState<string[]>(initialSelectedIds);
+
+  // Keep track of the last URL query state we synced with
+  const [lastUrlSelectedIds, setLastUrlSelectedIds] = useState<string[]>(initialSelectedIds);
+
+  // Sync local selected IDs if URL context changes (e.g. from submission or reset)
+  const urlIdsStr = initialSelectedIds.join(",");
+  const lastUrlIdsStr = lastUrlSelectedIds.join(",");
+  if (urlIdsStr !== lastUrlIdsStr) {
+    setLastUrlSelectedIds(initialSelectedIds);
+    setLocalSelectedIds(initialSelectedIds);
+  }
 
   const selectedIds = value !== undefined ? value : localSelectedIds;
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Invoke hooks
   useClickOutside(containerRef, () => setIsOpen(false));
-  const { selectedNames, setSelectedNames } = useResolvedNames(attribute, defaultValue);
+  const { selectedNames, setSelectedNames } = useResolvedNames(attribute, initialSelectedIds);
 
   const toggleOption = (id: string, optName: string) => {
     const nextSelected = selectedIds.includes(id)
