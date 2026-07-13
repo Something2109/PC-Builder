@@ -144,6 +144,62 @@ export class RawPartMapper {
       if (!infoSchema) continue;
 
       const mappingsForInfo = infoMappings.filter((m) => m.info === infoName);
+
+      // Special dynamic parser for CPU Core Config
+      if (infoName === "cpu_core_config") {
+        const elementSchema = (getInnerSchema(infoSchema) as z.ZodArray<any>).element;
+        const elementShape = (getInnerSchema(elementSchema) as any).shape;
+
+        const coreTypes = [
+          { prefix: "performance-core", label: "Performance-core" },
+          { prefix: "efficient-core", label: "Efficient-core" },
+          { prefix: "low power efficient-core", label: "Low Power Efficient-core" },
+        ];
+
+        const list: any[] = [];
+
+        for (const coreType of coreTypes) {
+          let count: number | undefined;
+          let base_freq: any;
+          let turbo_freq: any;
+
+          for (const rawKey of Object.keys(raw)) {
+            const normKey = rawKey.toLowerCase();
+            if (normKey.includes(coreType.prefix)) {
+              if (normKey.includes("count") || normKey.includes("# of")) {
+                count = parseSingleValue(raw[rawKey], "count", elementShape.count);
+              } else if (normKey.includes("base")) {
+                base_freq = parseSingleValue(
+                  raw[rawKey],
+                  "base_frequency",
+                  elementShape.base_frequency
+                );
+              } else if (normKey.includes("max") || normKey.includes("turbo")) {
+                turbo_freq = parseSingleValue(
+                  raw[rawKey],
+                  "turbo_frequency",
+                  elementShape.turbo_frequency
+                );
+              }
+            }
+          }
+
+          if (count !== undefined && count > 0) {
+            list.push({
+              name: coreType.label,
+              count,
+              base_frequency: base_freq,
+              turbo_frequency: turbo_freq,
+            });
+          }
+        }
+
+        if (list.length > 0) {
+          result[infoName] = list;
+          continue;
+        }
+      }
+
       if (mappingsForInfo.length === 0) continue;
 
       const unwrappedInfo = getInnerSchema(infoSchema);
@@ -230,6 +286,26 @@ export class RawPartMapper {
                     }
                   }
                 }
+
+                // Memory type inference heuristics for incomplete raw data
+                if (infoName === "cpu_memory" && !obj.type) {
+                  if (obj.speed) {
+                    if (obj.speed >= 4800) obj.type = "DDR5";
+                    else if (obj.speed >= 2133) obj.type = "DDR4";
+                    else if (obj.speed >= 1066) obj.type = "DDR3";
+                    else if (obj.speed >= 533) obj.type = "DDR2";
+                    else obj.type = "DDR1";
+                  } else if (obj.bandwidth) {
+                    if (obj.bandwidth >= 40) obj.type = "DDR4";
+                    else if (obj.bandwidth >= 15) obj.type = "DDR3";
+                    else if (obj.bandwidth >= 5) obj.type = "DDR2";
+                    else obj.type = "DDR1";
+                  }
+                  if (!obj.type) {
+                    obj.type = "DDR4"; // default fallback for compatibility
+                  }
+                }
+
                 if (Object.keys(obj).length > 0) {
                   list.push(obj);
                 }
@@ -244,7 +320,16 @@ export class RawPartMapper {
         const subResult: Record<string, any> = {};
 
         for (const prop of properties) {
-          const propMapping = mappingsForInfo.find((m) => m.attribute === prop);
+          const propMapping = mappingsForInfo.find(
+            (m) =>
+              m.attribute === prop &&
+              !(
+                product === Products.CPU &&
+                infoName === "gpu_spec" &&
+                prop === "family" &&
+                m.rawKey.toLowerCase() === "family"
+              )
+          );
           if (propMapping) {
             const schema = shape[prop];
             const parsed = parseSingleValue(raw[propMapping.rawKey], prop, schema);

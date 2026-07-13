@@ -1,34 +1,78 @@
 {
   "basic": {
-    "product_name": ["name", "model", "productname", "marketingname", "title", "modelname"],
-    "code_name": ["codename", "processornumber", "modelnumber", "partnumber", "mpn"],
-    "brand": ["manufacturer", "vendor", "make"],
+    "product_name": ["marketingname", "model", "modelname", "name", "productname", "title"],
+    "code_name": [
+      "modelnumber",
+      "mpn",
+      "opn",
+      "partnumber",
+      "processornumber",
+      "productidboxed",
+      "productidtray"
+    ],
+    "brand": ["make", "manufacturer", "vendor"],
     "series": ["productcollection", "productline"],
-    "launch_date": ["launchdate", "released", "releasedate", "date"],
-    "url": ["link", "producturl", "originalurl"],
-    "image_url": ["imageurl", "img", "image", "imgurl", "picture"]
+    "launch_date": ["date", "launchdate", "released", "releasedate"],
+    "url": ["link", "originalurl", "producturl"],
+    "image_url": ["image", "imageurl", "img", "imgurl", "picture"]
   },
-
   "cpu": {
     "cpu_spec": {
       "_self": [],
-      "family": ["processorfamily", "cpufamily"],
-      "socket": ["sockets", "socketssupported", "cpusocket", "cpuinterface"],
-      "total_cores": ["totalcores", "cores", "corecount", "numberofcores", "cpucores"],
-      "total_threads": ["totalthreads", "threads", "threadcount", "numberofthreads", "cputhreads"],
-      "lithography": ["manufacturingtech", "processsize", "nanometer", "nm", "processornode"]
+      "family": ["cpufamily", "processorfamily", "verticalsegment"],
+      "socket": ["cpuinterface", "cpusocket", "infrastructure", "sockets", "socketssupported"],
+      "total_cores": [
+        "corecount",
+        "cores",
+        "cpucores",
+        "numberofcores",
+        "ofcpucores",
+        "totalcores"
+      ],
+      "total_threads": [
+        "cputhreads",
+        "numberofthreads",
+        "ofthreads",
+        "threadcount",
+        "threads",
+        "totalthreads"
+      ],
+      "lithography": [
+        "lithography",
+        "manufacturingtech",
+        "nanometer",
+        "nm",
+        "processornode",
+        "processortechnologyforcpucores",
+        "processsize"
+      ]
     },
     "cpu_performance": {
       "_self": [],
-      "base_frequency": ["basefrequency", "processorbasefrequency", "clockspeed", "baseclock"],
-      "turbo_frequency": [
-        "turbofrequency",
-        "maxturbofrequency",
-        "boostclock",
-        "maxboostclock",
-        "boostclockspeed"
+      "base_frequency": [
+        "baseclock",
+        "basefrequency",
+        "clockspeed",
+        "cpubasefreq",
+        "processorbasefrequency"
       ],
-      "tdp": ["maxtdp", "thermaldesignpower", "powerconsumption", "powerlimit"]
+      "turbo_frequency": [
+        "boostclock",
+        "boostclockspeed",
+        "cpumaxfreq",
+        "maxboostclock",
+        "maxturbofrequency",
+        "turbofrequency"
+      ],
+      "tdp": [
+        "defaulttdp",
+        "maxtdp",
+        "powerconsumption",
+        "powerlimit",
+        "processorbasepower",
+        "tdp",
+        "thermaldesignpower"
+      ]
     },
     "cpu_core_config": {
       "_self": ["coreconfig", "coreconfiguration", "cpucoreconfig"],
@@ -38,110 +82,157 @@
       "turbo_frequency": []
     },
     "cpu_memory": {
-      "_self": ["cpumemory", "memorysupport", "memoryspecs", "supportedmemory"],
-      "type": [],
-      "speed": [],
-      "capacity": [],
-      "channel_count": ["channels", "memorychannels"],
-      "bandwidth": ["memorybandwidth"]
+      "_self": ["cpumemory", "memoryspecs", "memorysupport", "supportedmemory"],
+      "type": ["memorytype", "memorytypes", "systemmemorytype"],
+      "speed": ["maximummemoryspeed", "systemmemoryspecification"],
+      "capacity": ["maxmemorysizedependentonmemorytype"],
+      "channel_count": ["channels", "maxofmemorychannels", "memorychannels"],
+      "bandwidth": ["maxmemorybandwidth", "memorybandwidth", "persocketmembw"]
     },
     "processor_cache": {
       "_self": ["cache", "processorcache"],
-      "L1_cache": ["l1cache", "level1cache", "l1"],
-      "L2_cache": ["l2cache", "level2cache", "l2"],
-      "L3_cache": ["l3cache", "smartcache", "level3cache", "l3"]
+      "L1_cache": ["l1", "l1cache", "level1cache"],
+      "L2_cache": ["l2", "l2cache", "level2cache", "totall2cache"],
+      "L3_cache": ["cache", "l3", "l3cache", "level3cache", "smartcache", "totall3cache"]
     },
     "gpu_spec": {
-      "_self": ["integratedgraphics", "igpu"],
-      "family": ["gpufamily", "igpufamily"],
-      "core_count": ["executionunits", "eu"],
+      "_self": ["igpu", "integratedgraphics"],
+      "family": ["gpubrand", "gpufamily", "gpuname", "graphicsmodel", "graphicsname", "igpufamily"],
+      "core_count": ["eu", "executionunits", "graphicscorecount", "xecores"],
       "rops": [],
       "tmus": [],
-      "execution_unit": [],
-      "ray_tracing": [],
+      "execution_unit": ["executionunits", "gpucu"],
+      "ray_tracing": ["raytracing"],
       "tensor": []
     },
     "gpu_performance": {
       "_self": [],
-      "base_frequency": ["gpubaseclock", "igpuclock"],
-      "boost_frequency": ["gpuboostclock"],
+      "base_frequency": ["gpubase", "gpubaseclock", "graphicsbasefrequency", "igpuclock"],
+      "boost_frequency": [
+        "gpuboostclock",
+        "gpumax",
+        "graphicsfrequency",
+        "graphicsmaxdynamicfrequency"
+      ],
       "tdp": []
     },
     "gpu_feature": {
       "_self": [],
-      "DirectX": ["directx"],
-      "OpenGL": ["opengl"],
-      "OpenCL": ["opencl"],
-      "Vulkan": ["vulkan"],
+      "DirectX": ["directx", "directxsupport"],
+      "OpenGL": ["opengl", "openglsupport"],
+      "OpenCL": ["opencl", "openclsupport"],
+      "Vulkan": ["vulkan", "vulkansupport"],
       "CUDA": []
     }
   },
-
   "gpu": {
     "gpu_spec": {
       "_self": [],
-      "family": ["gpufamily", "architecture"],
-      "core_count": ["corecount", "cudacores", "streamprocessors", "cores", "shaders"],
-      "rops": ["renderoutputunits"],
-      "tmus": ["texturemappingunits"],
-      "execution_unit": ["executionunits", "eu"],
-      "ray_tracing": ["rtcores", "raytracingcores", "rayaccelerators"],
-      "tensor": ["tensorcores"]
+      "family": ["architecture", "gpuarchitecture", "gpufamily", "microarchitecture"],
+      "core_count": [
+        "corecount",
+        "cores",
+        "cudacores",
+        "shaders",
+        "streamprocessors",
+        "xecores",
+        "xevectorengines"
+      ],
+      "rops": ["renderoutputunits", "rops"],
+      "tmus": ["texturemappingunits", "textureunits"],
+      "execution_unit": ["computeunits", "eu", "executionunits"],
+      "ray_tracing": [
+        "hardwareraytracing",
+        "rayaccelerators",
+        "raytracing",
+        "raytracingcores",
+        "raytracingunits",
+        "rtcores"
+      ],
+      "tensor": ["aiaccelerators", "tensorcores"]
     },
     "gpu_performance": {
       "_self": [],
-      "base_frequency": ["basefrequency", "coreclock", "engineclock", "gpuclock"],
-      "boost_frequency": ["boostfrequency", "boostclock", "boostclockspeed"],
-      "tdp": ["maxtdp", "powerlimit", "thermaldesignpower"]
+      "base_frequency": [
+        "basefrequency",
+        "coreclock",
+        "engineclock",
+        "gamefrequency",
+        "gpuclock",
+        "graphicsclock",
+        "graphicsclocklp"
+      ],
+      "boost_frequency": ["boostclock", "boostclockspeed", "boostfrequency", "peakengineclock"],
+      "tdp": [
+        "gpupower",
+        "maxtdp",
+        "powerlimit",
+        "tbp",
+        "tgp",
+        "thermaldesignpower",
+        "totalboardpowertbp",
+        "typicalboardpowerdesktop"
+      ]
     },
     "gpu_memory": {
-      "_self": ["vram", "memory"],
-      "type": ["memorytype", "vramtype"],
-      "speed": ["memoryspeed", "memoryclock"],
-      "capacity": ["memorysize", "vramsize", "memorycapacity"],
-      "bandwidth": ["memorybandwidth"],
-      "bus_width": ["memorybus", "buswidth", "memoryinterface"]
+      "_self": ["memory", "vram"],
+      "type": ["dedicatedmemorytype", "memorytype", "vramtype"],
+      "speed": ["graphicsmemoryspeed", "memoryclock", "memoryspeed"],
+      "capacity": [
+        "dedicatedmemorysize",
+        "maxmemorysize",
+        "memory",
+        "memorycapacity",
+        "memorysize",
+        "vramsize"
+      ],
+      "bandwidth": [
+        "effectivememorybandwidth",
+        "graphicsmemorybandwidth",
+        "memorybandwidth",
+        "peakmemorybandwidth"
+      ],
+      "bus_width": ["buswidth", "graphicsmemoryinterface", "memorybus", "memoryinterface"]
     },
     "gpu_feature": {
       "_self": [],
-      "DirectX": ["directx"],
-      "OpenGL": ["opengl"],
-      "OpenCL": ["opencl"],
-      "Vulkan": ["vulkan"],
+      "DirectX": ["directx", "directxsupport"],
+      "OpenGL": ["opengl", "openglsupport"],
+      "OpenCL": ["opencl", "openclsupport"],
+      "Vulkan": ["vulkan", "vulkansupport"],
       "CUDA": ["cuda"]
     },
     "processor_cache": {
       "_self": ["cache"],
-      "L1_cache": ["l1cache", "level1cache", "l1"],
-      "L2_cache": ["l2cache", "level2cache", "l2"],
-      "L3_cache": ["l3cache", "level3cache", "l3", "infinitycache"]
+      "L1_cache": ["l1", "l1cache", "level1cache"],
+      "L2_cache": ["l2", "l2cache", "level2cache"],
+      "L3_cache": ["amdinfinitycachetechnology", "infinitycache", "l3", "l3cache", "level3cache"]
     }
   },
-
   "graphic_card": {
     "graphic_card_spec": {
       "_self": [],
       "width": ["cardwidth"],
       "length": ["cardlength"],
       "height": ["cardheight", "slotwidth"],
-      "pcie": ["pcieversion", "pcieinterface"],
+      "pcie": ["pcieinterface", "pcieversion"],
       "minimum_psu": [
         "minimumpsu",
-        "recommendedpsu",
         "minpsu",
         "psurequirement",
-        "recommendedpower"
+        "recommendedpower",
+        "recommendedpsu"
       ],
       "power_connector": ["powerconnector"],
       "power_connector_count": ["powerconnectorcount"]
     },
     "gpu_memory": {
-      "_self": ["vram", "memory"],
+      "_self": ["memory", "vram"],
       "type": ["memorytype", "vramtype"],
-      "speed": ["memoryspeed", "memoryclock"],
+      "speed": ["memoryclock", "memoryspeed"],
       "capacity": ["memorysize", "vramsize"],
       "bandwidth": ["memorybandwidth"],
-      "bus_width": ["memorybus", "buswidth"]
+      "bus_width": ["buswidth", "memorybus"]
     },
     "gpu_performance": {
       "_self": [],
@@ -150,37 +241,36 @@
       "tdp": ["powerlimit"]
     },
     "graphic_card_external_port": {
-      "_self": ["displayports", "ports", "outputs", "videooutputs", "displayoutputs"],
+      "_self": ["displayoutputs", "displayports", "outputs", "ports", "videooutputs"],
       "type": [],
       "name": [],
       "count": []
     }
   },
-
   "mainboard": {
     "mainboard_spec": {
       "_self": [],
-      "form_factor": ["formfactor", "boardsize"],
-      "socket": ["cpusocket", "socketssupported", "sockets"],
+      "form_factor": ["boardsize", "formfactor"],
+      "socket": ["cpusocket", "sockets", "socketssupported"],
       "chipset": ["chipsettype"],
       "ram_form_factor": ["ramformfactor"],
-      "ram_interface": ["ramtype", "ddrtype", "memorytype"],
-      "ram_slot": ["ramslots", "memoryslots", "dimmslots"]
+      "ram_interface": ["ddrtype", "memorytype", "ramtype"],
+      "ram_slot": ["dimmslots", "memoryslots", "ramslots"]
     },
     "mainboard_power": {
-      "_self": ["powerconnectors", "powerconnector"],
+      "_self": ["powerconnector", "powerconnectors"],
       "type": [],
       "count": []
     },
     "mainboard_pcie": {
-      "_self": ["pcieslots", "pcie", "expansionslots"],
+      "_self": ["expansionslots", "pcie", "pcieslots"],
       "controller": [],
       "version": [],
       "width": [],
       "count": []
     },
     "mainboard_storage": {
-      "_self": ["storageconnectors", "sata", "m2", "storageinterfaces"],
+      "_self": ["m2", "sata", "storageconnectors", "storageinterfaces"],
       "form_factor": [],
       "count": []
     },
@@ -197,39 +287,37 @@
       "count": []
     },
     "external_ports": {
-      "_self": ["externalports", "io", "ioports", "backpanelports", "rearpanelports"],
+      "_self": ["backpanelports", "externalports", "io", "ioports", "rearpanelports"],
       "type": [],
       "name": [],
       "count": []
     }
   },
-
   "ram": {
     "ram_spec": {
       "_self": [],
-      "speed": ["memoryspeed", "frequency", "clockspeed"],
-      "capacity": ["size", "ramsize", "memorysize"],
+      "speed": ["clockspeed", "frequency", "memoryspeed"],
+      "capacity": ["memorysize", "ramsize", "size"],
       "voltage": ["dimmvoltage"],
       "latency": ["caslatency", "timing", "timings"],
       "kit": ["modules", "sticks"],
       "form_factor": ["formfactor", "ramformfactor"],
-      "interface": ["memoryinterface", "ddrtype", "ramtype"]
+      "interface": ["ddrtype", "memoryinterface", "ramtype"]
     }
   },
-
   "ssd": {
     "ssd_spec": {
       "_self": [],
-      "memory_type": ["nandtype", "flashtype", "memorycell"],
+      "memory_type": ["flashtype", "memorycell", "nandtype"],
       "capacity": ["size", "storagesize"],
-      "tbw": ["terabyteswritten", "endurance"],
+      "tbw": ["endurance", "terabyteswritten"],
       "form_factor": ["formfactor"],
-      "interface": ["storageinterface", "businterface"]
+      "interface": ["businterface", "storageinterface"]
     },
     "storage_performance": {
       "_self": [],
-      "read_speed": ["readspeed", "maxsequentialread", "sequentialread", "read"],
-      "write_speed": ["writespeed", "maxsequentialwrite", "sequentialwrite", "write"]
+      "read_speed": ["maxsequentialread", "read", "readspeed", "sequentialread"],
+      "write_speed": ["maxsequentialwrite", "sequentialwrite", "write", "writespeed"]
     },
     "storage_cache": {
       "_self": [],
@@ -237,7 +325,6 @@
       "capacity": ["cachesize"]
     }
   },
-
   "hdd": {
     "hdd_spec": {
       "_self": [],
@@ -249,42 +336,40 @@
     "storage_performance": {
       "_self": [],
       "read_speed": ["readspeed", "sequentialread"],
-      "write_speed": ["writespeed", "sequentialwrite"]
+      "write_speed": ["sequentialwrite", "writespeed"]
     },
     "storage_cache": {
       "_self": [],
-      "type": ["cachetype", "buffertype"],
-      "capacity": ["cachesize", "buffersize"]
+      "type": ["buffertype", "cachetype"],
+      "capacity": ["buffersize", "cachesize"]
     }
   },
-
   "psu": {
     "psu_spec": {
       "_self": [],
-      "wattage": ["poweroutput", "maxpower", "totalpower"],
-      "efficiency": ["certification", "80plus", "rating"],
+      "wattage": ["maxpower", "poweroutput", "totalpower"],
+      "efficiency": ["80plus", "certification", "rating"],
       "form_factor": ["formfactor", "psusize"],
       "width": [],
       "length": ["depth"],
       "height": [],
-      "modular": ["modularity", "cabletype"]
+      "modular": ["cabletype", "modularity"]
     },
     "psu_connector": {
-      "_self": ["connectors", "cables", "cableconnectors", "psuconnectors"],
+      "_self": ["cableconnectors", "cables", "connectors", "psuconnectors"],
       "type": [],
       "count": []
     }
   },
-
   "case": {
     "case_spec": {
       "_self": [],
-      "form_factor": ["formfactor", "casetype", "towersize"],
+      "form_factor": ["casetype", "formfactor", "towersize"],
       "width": [],
       "length": ["depth"],
       "height": [],
       "expansion_slot": ["expansionslots", "pcieslots"],
-      "max_cooler_height": ["cpucoolerheight", "maxcoolerheight", "coolerheight"],
+      "max_cooler_height": ["coolerheight", "cpucoolerheight", "maxcoolerheight"],
       "max_psu_length": ["maxpsulength", "psulength"]
     },
     "case_mainboard_support": {
@@ -292,13 +377,13 @@
       "form_factor": []
     },
     "case_fan_support": {
-      "_self": ["fansupport", "fanpositions", "supportedfans"],
+      "_self": ["fanpositions", "fansupport", "supportedfans"],
       "case_side": [],
       "form_factor": [],
       "count": []
     },
     "case_hard_drive_support": {
-      "_self": ["drivebays", "storagebays", "harddrivesupport"],
+      "_self": ["drivebays", "harddrivesupport", "storagebays"],
       "place": [],
       "form_factor": [],
       "count": []
@@ -319,11 +404,10 @@
       "count": []
     }
   },
-
   "cooler": {
     "cpu_block_spec": {
       "_self": ["cpublock", "heatsink"],
-      "plate": ["contactplate", "baseplate"],
+      "plate": ["baseplate", "contactplate"],
       "rgb": ["rgbtype"]
     },
     "cpu_block_socket": {
@@ -339,9 +423,9 @@
       "count": ["fancount"],
       "voltage": [],
       "speed": ["fanspeed", "maxrpm", "rpm"],
-      "airflow": ["maxairflow", "cfm"],
-      "noise": ["noiselevel", "maxnoise", "dba"],
-      "static_pressure": ["pressure", "mmh2o"],
+      "airflow": ["cfm", "maxairflow"],
+      "noise": ["dba", "maxnoise", "noiselevel"],
+      "static_pressure": ["mmh2o", "pressure"],
       "bearing": ["bearingtype"],
       "connector": ["fanconnector"],
       "rgb": ["rgbtype"]
@@ -356,11 +440,10 @@
       "material": ["finmaterial"]
     }
   },
-
   "aio": {
     "cpu_block_spec": {
       "_self": ["cpublock", "pumphead", "waterblock"],
-      "plate": ["contactplate", "baseplate"],
+      "plate": ["baseplate", "contactplate"],
       "rgb": ["rgbtype"]
     },
     "cpu_block_socket": {
@@ -376,9 +459,9 @@
       "count": ["fancount"],
       "voltage": [],
       "speed": ["fanspeed", "maxrpm", "rpm"],
-      "airflow": ["maxairflow", "cfm"],
-      "noise": ["noiselevel", "maxnoise", "dba"],
-      "static_pressure": ["pressure", "mmh2o"],
+      "airflow": ["cfm", "maxairflow"],
+      "noise": ["dba", "maxnoise", "noiselevel"],
+      "static_pressure": ["mmh2o", "pressure"],
       "bearing": ["bearingtype"],
       "connector": ["fanconnector"],
       "rgb": ["rgbtype"]
@@ -407,7 +490,6 @@
       "material": ["finmaterial", "tubematerial"]
     }
   },
-
   "fan": {
     "fan_spec": {
       "_self": [],
@@ -417,20 +499,19 @@
       "height": [],
       "count": ["fancount"],
       "voltage": [],
-      "speed": ["maxrpm", "fanspeed", "rpm"],
-      "airflow": ["maxairflow", "cfm"],
-      "noise": ["noiselevel", "maxnoise", "dba"],
-      "static_pressure": ["pressure", "mmh2o"],
+      "speed": ["fanspeed", "maxrpm", "rpm"],
+      "airflow": ["cfm", "maxairflow"],
+      "noise": ["dba", "maxnoise", "noiselevel"],
+      "static_pressure": ["mmh2o", "pressure"],
       "bearing": ["bearingtype"],
       "connector": ["fanconnector"],
       "rgb": ["rgbtype"]
     }
   },
-
   "cpu_block": {
     "cpu_block_spec": {
       "_self": [],
-      "plate": ["contactplate", "baseplate"],
+      "plate": ["baseplate", "contactplate"],
       "rgb": ["rgbtype"]
     },
     "cpu_block_socket": {
@@ -438,7 +519,6 @@
       "socket": []
     }
   },
-
   "pump": {
     "pump_spec": {
       "_self": [],
@@ -455,7 +535,6 @@
       "rgb": ["rgbtype"]
     }
   },
-
   "radiator": {
     "radiator_spec": {
       "_self": [],

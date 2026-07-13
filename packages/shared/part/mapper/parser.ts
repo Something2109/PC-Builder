@@ -148,10 +148,45 @@ function parseArrayValue(
   return undefined;
 }
 
+function inferMemoryType(val: string): string | undefined {
+  const s = val.toLowerCase();
+
+  if (s.includes("lpddr5") || s.includes("ddr5")) return "DDR5";
+  if (s.includes("lpddr4")) return "LPDDR4";
+  if (s.includes("ddr4")) return "DDR4";
+  if (s.includes("lpddr3")) return "LPDDR3";
+  if (s.includes("ddr3")) return "DDR3";
+  if (s.includes("ddr2")) return "DDR2";
+  if (s.includes("ddr1") || s.includes("ddr")) {
+    if (s.includes("1333") || s.includes("1600")) return "DDR3";
+    if (s.includes("800") || s.includes("667")) return "DDR2";
+    if (s.includes("400") || s.includes("333")) return "DDR1";
+  }
+
+  const speedMatch = s.match(/(\d+)\s*(?:mt\/s|mhz)?/i);
+  if (speedMatch) {
+    const speed = parseInt(speedMatch[1]);
+    if (speed >= 4800) return "DDR5";
+    if (speed >= 2133) return "DDR4";
+    if (speed >= 1066) return "DDR3";
+    if (speed >= 533) return "DDR2";
+    if (speed >= 200) return "DDR1";
+  }
+  return undefined;
+}
+
 function parseEnumValue(val: any, unwrapped: z.ZodEnum<any>): string | undefined {
   const options = getEnumOptions(unwrapped);
   if (typeof val === "string") {
     const cleaned = val.trim();
+
+    // If this enum represents a memory type, try inferring from raw string
+    const isRamEnum = options.some((opt: string) => opt.toUpperCase().includes("DDR"));
+    if (isRamEnum) {
+      const inferred = inferMemoryType(cleaned);
+      if (inferred && options.includes(inferred)) return inferred;
+    }
+
     const matched = options.find((opt: string) => opt.toLowerCase() === cleaned.toLowerCase());
     if (matched) return matched;
     const partialMatched = options.find((opt: string) =>
