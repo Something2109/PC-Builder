@@ -113,7 +113,6 @@ export default function PartForm({
             placeholder="https://..."
             className="w-full bg-background/40 dark:bg-background/10 border border-border/70 rounded-xl px-4 py-2.5 text-text focus:outline-none focus:border-accent-indigo focus:ring-2 focus:ring-accent-indigo/20 transition-all duration-200"
             defaultValue={url ?? undefined}
-            required
           />
         </div>
 

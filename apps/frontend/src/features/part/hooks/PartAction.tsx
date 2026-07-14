@@ -14,7 +14,7 @@ function createPayload(formData: FormData | null) {
     if (!raw.url) raw.url = undefined;
     if (!raw.image_url) raw.image_url = undefined;
 
-    const data = Part.BasicInfo.omit({ id: true, part: true }).parse(raw);
+    const data = Part.DTO.parse(raw);
     RequestPayload.method = "POST";
     RequestPayload.data = data;
   } else {

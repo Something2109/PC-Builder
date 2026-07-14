@@ -11,7 +11,6 @@ import {
   ParseEnumPipe,
   Inject,
   InternalServerErrorException,
-  UsePipes,
 } from "@nestjs/common";
 import Part, { Products } from "@pc-builder/shared/part";
 import { Roles } from "@pc-builder/shared/user";
@@ -68,8 +67,10 @@ export class PartController {
 
   @Role(Roles.ADMIN)
   @Post(":part")
-  @UsePipes(new ZodValidationPipe(Part.DTO))
-  async createPart(@Param("part", ProductValidator) part: Products, @Body() body: Part.DTO) {
+  async createPart(
+    @Param("part", ProductValidator) part: Products,
+    @Body(new ZodValidationPipe(Part.DTO)) body: Part.DTO
+  ) {
     const partInfo = await this.service.create(part, body);
 
     if (typeof partInfo !== "string") {
@@ -142,11 +143,10 @@ export class PartController {
 
   @Role(Roles.ADMIN)
   @Post(":part/:idOrSlug")
-  @UsePipes(new ZodValidationPipe(Part.DTO.partial()))
   async setPart(
     @Param("part", ProductValidator) part: Products,
     @Param("idOrSlug") idOrSlug: string,
-    @Body() body: Part.DTO
+    @Body(new ZodValidationPipe(Part.DTO.partial())) body: Part.DTO
   ) {
     const partInfo = await this.service.set(idOrSlug, part, body);
 

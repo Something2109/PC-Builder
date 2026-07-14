@@ -96,7 +96,7 @@ export const Model = createModel(BasicInfo, ["id", "name", "code_name"]).merge(
 
 export type Model = z.infer<typeof Model>;
 
-export const DTO = createDTO(BasicInfo.omit({ id: true }), ["name", "code_name"]).merge(
+export const DTO = createDTO(BasicInfo.omit({ id: true, slug: true }), ["name", "code_name"]).merge(
   z.object(Information.DTO).partial()
 );
 
