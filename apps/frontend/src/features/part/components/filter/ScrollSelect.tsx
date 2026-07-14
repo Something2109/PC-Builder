@@ -2,7 +2,7 @@
 
 import { Products } from "@pc-builder/shared/part";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useDebounceValue } from "@/hooks/useDebounce";
 import axiosInstance from "@/lib/axios";
@@ -112,6 +112,12 @@ function ScrollSelectPanel({
   toggleOption,
 }: Readonly<ScrollSelectPanelProps>) {
   const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Focus search input without scrolling the page to the bottom where dropdown-root resides
+    searchInputRef.current?.focus({ preventScroll: true });
+  }, []);
 
   const { options, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteSelectQuery(product, attribute, context, searchQuery);
@@ -144,12 +150,12 @@ function ScrollSelectPanel({
           />
         </svg>
         <input
+          ref={searchInputRef}
           type="text"
           placeholder="Search..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full bg-transparent border-none text-sm text-text placeholder-text/40 focus:outline-none focus:ring-0 p-0"
-          autoFocus
         />
         {searchQuery && (
           <button
