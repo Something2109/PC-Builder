@@ -5,7 +5,7 @@ import { useBuildContext } from "@/features/build/hooks/BuildContext";
 import SummaryTable from "@/features/part/components/Summary";
 import { FilterBar } from "@/features/part/components/Filter";
 import Part, { Product } from "@pc-builder/shared/part";
-import { use } from "react";
+import { use, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LoadingPanel from "@/ui/LoadingPanel";
@@ -24,6 +24,14 @@ export default function BuildProductSummary({
   const { loading, data, params, page, includeBuild, setParams, setPage, setIncludeBuild } =
     useProductSummary(product);
 
+  const add = useCallback(
+    (defaultValue: Part.Summary) => {
+      addDetails(defaultValue);
+      router.push("/build");
+    },
+    [router, addDetails]
+  );
+
   if (loading)
     return <LoadingPanel className="h-[70vh]" text={`Loading ${Product.Label[product]}s`} />;
 
@@ -38,31 +46,35 @@ export default function BuildProductSummary({
 
   const addable = !details[product] || Array.isArray(details[product]);
 
-  const add = (defaultValue: Part.Summary) => {
-    addDetails(defaultValue);
-    router.push("/build");
-  };
-
-  const selectColumn: ColumnDef<Part.Summary> = {
-    id: "select-action",
-    header: () => "",
-    cell: ({ row }) => {
-      const defaultValue = row.original;
-      if (!defaultValue || !addable) return null;
-      return (
-        <button
-          type="button"
-          onClick={() => add(defaultValue)}
-          className="px-4 py-2 text-xs font-bold text-white bg-accent-indigo hover:bg-accent-indigo/90 rounded-xl transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-0.5"
-        >
-          Select
-        </button>
-      );
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const selectColumn: (cols: ColumnDef<Part.Summary>[]) => ColumnDef<Part.Summary>[] = useCallback(
+    (cols) => {
+      return [
+        {
+          id: "select-action",
+          header: () => "",
+          cell: ({ row }) => {
+            const defaultValue = row.original;
+            if (!defaultValue || !addable) return null;
+            return (
+              <button
+                type="button"
+                onClick={() => add(defaultValue)}
+                className="px-4 py-2 text-xs font-bold text-white bg-accent-indigo hover:bg-accent-indigo/90 rounded-xl transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-0.5"
+              >
+                Select
+              </button>
+            );
+          },
+          meta: {
+            className: "p-3 text-right",
+          },
+        },
+        ...cols,
+      ];
     },
-    meta: {
-      className: "p-3 text-right",
-    },
-  };
+    [add, addable]
+  );
 
   return (
     <div className="w-full space-y-6">
@@ -146,7 +158,7 @@ export default function BuildProductSummary({
 
           {/* Product Table */}
           <div className="border border-border rounded-2xl overflow-x-auto bg-card shadow-sm">
-            <SummaryTable part={product} data={data.list} columns={[selectColumn]} />
+            <SummaryTable part={product} data={data.list} columns={selectColumn} />
           </div>
 
           {/* Pagination */}

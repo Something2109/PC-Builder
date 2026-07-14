@@ -50,12 +50,15 @@ export default function SummaryTable<Type extends Products, Data = Part.Summary<
 }: {
   part: Type;
   data: Data[];
-  columns?: ColumnDef<Data>[];
+  columns?: ColumnDef<Data>[] | ((cols: ColumnDef<Data>[]) => ColumnDef<Data>[]);
 } & TableHTMLAttributes<HTMLTableElement>) {
-  const columnList = React.useMemo(
-    () => [...PartColumns, ...(SummaryInfoComponent[part] ?? []), ...columns] as ColumnDef<Data>[],
-    [part, columns]
-  );
+  const columnList = React.useMemo(() => {
+    if (columns instanceof Function) {
+      return columns(PartColumns as ColumnDef<Data>[]);
+    }
+
+    return [...PartColumns, ...(SummaryInfoComponent[part] ?? []), ...columns] as ColumnDef<Data>[];
+  }, [part, columns]);
 
   const table = useReactTable({
     data,
