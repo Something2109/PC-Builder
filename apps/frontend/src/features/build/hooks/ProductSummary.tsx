@@ -36,7 +36,7 @@ function useProductSummary(product: Products): ProductLoad {
     setIncludeBuild(true);
   }
 
-  const { data = null, isFetching: loading } = useQuery<API.Payload<Part.Summary> | null>({
+  const { data = null, isLoading: loading } = useQuery<API.Payload<Part.Summary> | null>({
     queryKey: ["productSummary", product, params.toString(), page, includeBuild, list],
     queryFn: async () => {
       try {
