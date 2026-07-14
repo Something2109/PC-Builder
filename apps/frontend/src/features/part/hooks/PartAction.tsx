@@ -2,6 +2,7 @@
 
 import Part from "@pc-builder/shared/part";
 import { AxiosError, AxiosRequestConfig } from "axios";
+import { useRouter } from "next/navigation";
 import { useActionState, useState } from "react";
 
 import axiosInstance from "@/lib/axios";
@@ -25,6 +26,7 @@ function createPayload(formData: FormData | null) {
 }
 
 export default function usePartAction(path: string, defaultValue?: Part.DTO) {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [formValue, save, pending] = useActionState<Part.DTO | undefined, FormData | null>(
     async (prev, formData) => {
@@ -41,6 +43,24 @@ export default function usePartAction(path: string, defaultValue?: Part.DTO) {
         const response = await axiosInstance.request<Part.BasicInfo>(RequestPayload);
 
         alert(`Successfully ${operation} part info.`);
+
+        if (operation === "delete") {
+          const partCategory = prev?.part || targetPath.split("/")[2];
+          router.push(`/part/${partCategory}`);
+        } else {
+          router.refresh();
+
+          const newSlug = response.data.slug;
+          const partCategory = response.data.part;
+          const currentPath = window.location.pathname;
+          const expectedEditPath = `/part/${partCategory}/${newSlug}/edit`;
+
+          if (operation === "add") {
+            router.push(expectedEditPath);
+          } else if (currentPath.endsWith("/edit") && currentPath !== expectedEditPath) {
+            router.replace(expectedEditPath);
+          }
+        }
 
         return response.data;
       } catch (err) {

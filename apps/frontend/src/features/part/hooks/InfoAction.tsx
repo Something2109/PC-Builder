@@ -2,11 +2,13 @@
 
 import Part, { Information } from "@pc-builder/shared/part";
 import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 import { useRef, useActionState, useState } from "react";
 
 import axiosInstance from "@/lib/axios";
 
 export function useInfoAction(path: string, info: Information.Name, defaultValue: Part.DTO) {
+  const router = useRouter();
   const label = useRef(Information.Label[info]);
   const [error, setError] = useState<string | null>(null);
   const [formValue, save, pending] = useActionState<
@@ -23,6 +25,7 @@ export function useInfoAction(path: string, info: Information.Name, defaultValue
       const response = await axiosInstance.post<Part.DTO>(targetPath, { [info]: raw });
 
       alert(`Successfully ${operation} ${label.current} info.`);
+      router.refresh();
 
       return response.data[info];
     } catch (err) {
