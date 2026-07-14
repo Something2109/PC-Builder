@@ -11,20 +11,20 @@ const roles = [Roles.ADMIN];
 export default async function PartDetailEditPage({
   params,
 }: {
-  params: Promise<{ part: Products; id: string }>;
+  params: Promise<{ part: Products; slug: string }>;
 }) {
-  const { part, id } = await params;
+  const { part, slug } = await params;
 
-  const response = await fetch(getBackendUrl(`/api/part/${part}/${id}`));
+  const response = await fetch(getBackendUrl(`/api/part/${part}/${slug}`));
 
   if (!response.ok) return notFound();
 
-  const data = (await response.json()) as Part.DTO;
-  const SaveLink = `/api/part/${part}/${id}`;
+  const data = (await response.json()) as Part.Model;
+  const SaveLink = `/api/part/${part}/${slug}`;
 
   return (
     <AuthRole roles={roles}>
-      <PartEditDashboard part={part} id={id} defaultValue={data} saveLink={SaveLink} />
+      <PartEditDashboard part={part} id={data.id || slug} defaultValue={data} saveLink={SaveLink} />
     </AuthRole>
   );
 }

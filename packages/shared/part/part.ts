@@ -8,6 +8,8 @@ import * as Product from "./product";
 
 export * as Infer from "./infer";
 
+export { UUID, isUUID } from "../interface";
+
 export const BasicInfo = z.object({
   id: Primitive.String,
 
@@ -43,9 +45,9 @@ const BasicSummarySchema = BasicInfo.pick({
   id: true,
   part: true,
   name: true,
+  slug: true,
   brand: true,
   series: true,
-  slug: true,
   image_url: true,
 });
 

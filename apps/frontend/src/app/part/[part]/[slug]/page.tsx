@@ -10,11 +10,11 @@ import { InfoTable } from "@/features/part/components/Table";
 export default async function PartDetailPage({
   params,
 }: {
-  params: Promise<{ part: Products; id: string }>;
+  params: Promise<{ part: Products; slug: string }>;
 }) {
-  const { part, id } = await params;
+  const { part, slug } = await params;
 
-  const response = await fetch(getBackendUrl(`/api/part/${part}/${id}`));
+  const response = await fetch(getBackendUrl(`/api/part/${part}/${slug}`));
 
   if (!response.ok) return notFound();
 

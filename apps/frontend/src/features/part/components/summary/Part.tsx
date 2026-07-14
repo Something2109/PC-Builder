@@ -11,9 +11,9 @@ export const PartColumns: ColumnDef<Part.BasicInfo>[] = [
     id: "name",
     header: () => Part.Label.name,
     cell: ({ row }) => {
-      const { id, name, part, image_url } = row.original;
+      const { slug, name, part, image_url } = row.original;
       return (
-        <Link href={`/part/${part}/${id}`} className="block w-full max-w-full">
+        <Link href={`/part/${part}/${slug}`} className="block w-full max-w-full">
           <RowWrapper className="align-middle items-center font-bold lg:max-w-full lg:overflow-hidden lg:truncate">
             <PartPicture part={part} src={image_url ?? undefined} className="h-16 m-2 shrink-0" />
             <span className="lg:truncate">{name}</span>

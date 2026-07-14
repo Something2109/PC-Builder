@@ -8,6 +8,11 @@ export const Primitive = {
   Number: z.coerce.number().refine((val) => val >= 0),
 };
 
+export const UUID = z.uuid();
+
+export const isUUID = (val: unknown): val is string =>
+  typeof val === "string" && UUID.safeParse(val).success;
+
 export * as FormFactor from "./FormFactor";
 
 export * as InternalConnectors from "./InternalConnectors";

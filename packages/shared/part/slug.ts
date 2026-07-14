@@ -37,7 +37,7 @@ const NOISE_WORDS = [
  *   - 'Intel® Core™ i5-12400F Processor' -> 'intel-core-i5-12400f'
  *   - 'Asus TUF GAMING B660M-PLUS WIFI D4' -> 'asus-tuf-b660m-plus-wifi-d4'
  */
-export function generateSlug(name: string, productType?: Products): string {
+export function generateSlug(name: string, _productType?: Products): string {
   if (!name) {
     return "";
   }

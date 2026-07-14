@@ -3,6 +3,7 @@ import Part, { Infos, Products } from "@pc-builder/shared/part";
 import { Includeable, Model, ModelStatic, Transaction } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { CdnService } from "src/cdn/cdn.service";
+import { z } from "zod";
 
 import { ModelScopes } from "@/models/interface";
 import { PartInformation } from "@/models/parts";
@@ -40,23 +41,50 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     private readonly cdnService: CdnService
   ) {}
 
-  async get(id: string, infos?: Infos[], transaction?: Transaction): Promise<Part.Model | null> {
+  async get(
+    idOrSlug: string,
+    infos?: Infos[],
+    transaction?: Transaction
+  ): Promise<Part.Model | null> {
     const include = this.infoToModel(infos);
 
-    const instance = await this.PartModel.findByPk(id, {
-      include,
-      transaction,
-    });
+    const isUUID = z.string().uuid().safeParse(idOrSlug).success;
+    let instance: PartInformation | null = null;
+
+    if (isUUID) {
+      instance = await this.PartModel.findByPk(idOrSlug, {
+        include,
+        transaction,
+      });
+    } else {
+      instance = await this.PartModel.findOne({
+        where: { slug: idOrSlug },
+        include,
+        transaction,
+      });
+    }
 
     return instance?.toJSON() ?? null;
   }
 
-  async set(id: string, { part, ...data }: Part.DTO, infos?: Infos[]): Promise<Part.Model | null> {
+  async set(
+    idOrSlug: string,
+    { part, ...data }: Part.DTO,
+    infos?: Infos[]
+  ): Promise<Part.Model | null> {
     return await this.sequelize.transaction(async (transaction) => {
-      const instance =
-        (await this.validateCodename(data.code_name, id, transaction)) ||
-        (await this.PartModel.findByPk(id, { transaction }));
+      const isUUID = z.uuid().safeParse(idOrSlug).success;
+
+      let instance: PartInformation | null = null;
+      if (isUUID) {
+        instance = await this.PartModel.findByPk(idOrSlug, { transaction });
+      } else {
+        instance = await this.PartModel.findOne({ where: { slug: idOrSlug }, transaction });
+      }
+
       if (!instance) return null;
+
+      await this.validateCodename(data.code_name, instance.id, transaction);
 
       instance.set(data);
       if (!instance.part) instance.part = part as Products;
@@ -65,11 +93,12 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
 
       await instance.save({ transaction });
 
+      const realId = instance.id;
       if (infos) {
-        await Promise.all(infos.map((info) => this.setInfo(id, info, data[info], transaction)));
+        await Promise.all(infos.map((info) => this.setInfo(realId, info, data[info], transaction)));
       }
 
-      return await this.get(id, infos, transaction);
+      return await this.get(realId, infos, transaction);
     });
   }
 
@@ -108,14 +137,25 @@ class SequelizeCRUDService implements DatabaseCRUDInterface {
     }
   }
 
-  async delete(id: string, infos?: Infos[]): Promise<Part.Model | null> {
+  async delete(idOrSlug: string, infos?: Infos[]): Promise<Part.Model | null> {
     const include = this.infoToModel(infos);
 
     return await this.sequelize.transaction(async (transaction) => {
-      const instance = await this.PartModel.findByPk(id, {
-        include,
-        transaction,
-      });
+      const isUUID = z.string().uuid().safeParse(idOrSlug).success;
+
+      let instance: PartInformation | null = null;
+      if (isUUID) {
+        instance = await this.PartModel.findByPk(idOrSlug, {
+          include,
+          transaction,
+        });
+      } else {
+        instance = await this.PartModel.findOne({
+          where: { slug: idOrSlug },
+          include,
+          transaction,
+        });
+      }
       if (!instance) return null;
 
       await instance.destroy({ transaction });

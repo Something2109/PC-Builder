@@ -7,7 +7,6 @@ import {
   Query,
   NotFoundException,
   BadRequestException,
-  ParseUUIDPipe,
   Delete,
   ParseEnumPipe,
   Inject,
@@ -129,43 +128,43 @@ export class PartController {
     };
   }
 
-  @Get(":part/:id")
+  @Get(":part/:idOrSlug")
   async getPart(
     @Param("part", ProductValidator) part: Products,
-    @Param("id", ParseUUIDPipe) id: string
+    @Param("idOrSlug") idOrSlug: string
   ) {
-    const partInfo = await this.service.get(id, part);
+    const partInfo = await this.service.get(idOrSlug, part);
 
     if (partInfo) return partInfo;
 
-    throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
+    throw new NotFoundException(`Cannot find ${part} part with the ID/slug: ${idOrSlug}`);
   }
 
   @Role(Roles.ADMIN)
-  @Post(":part/:id")
+  @Post(":part/:idOrSlug")
   @UsePipes(new ZodValidationPipe(Part.DTO.partial()))
   async setPart(
     @Param("part", ProductValidator) part: Products,
-    @Param("id", ParseUUIDPipe) id: string,
+    @Param("idOrSlug") idOrSlug: string,
     @Body() body: Part.DTO
   ) {
-    const partInfo = await this.service.set(id, part, body);
+    const partInfo = await this.service.set(idOrSlug, part, body);
 
     if (partInfo) return partInfo;
 
-    throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
+    throw new NotFoundException(`Cannot find ${part} part with the ID/slug: ${idOrSlug}`);
   }
 
   @Role(Roles.ADMIN)
-  @Delete(":part/:id")
+  @Delete(":part/:idOrSlug")
   async deletePart(
     @Param("part", ProductValidator) part: Products,
-    @Param("id", ParseUUIDPipe) id: string
+    @Param("idOrSlug") idOrSlug: string
   ) {
-    const partInfo = await this.service.delete(id, part);
+    const partInfo = await this.service.delete(idOrSlug, part);
 
     if (partInfo) return partInfo;
 
-    throw new NotFoundException(`Cannot find ${part} part with the id: ${id}`);
+    throw new NotFoundException(`Cannot find ${part} part with the ID/slug: ${idOrSlug}`);
   }
 }

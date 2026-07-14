@@ -5,7 +5,7 @@ import PartPicture from "../Picture";
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<
-  Omit<Part.DTO, "id" | "part" | "name" | "url" | "image_url" | Infos>
+  Omit<Part.DTO, "id" | "part" | "name" | "slug" | "url" | "image_url" | Infos>
 > = {
   code_name: ({ defaultValue: value }) => value,
   brand: ({ defaultValue: value }) => value,
@@ -23,7 +23,7 @@ export function PartTable({
   defaultValue: Part.Model;
   className?: string;
 }) {
-  const { id, part, url } = defaultValue;
+  const { slug, part, url } = defaultValue;
 
   return (
     <div
@@ -67,7 +67,7 @@ export function PartTable({
         ) : null}
 
         <Link
-          href={`/part/${part}/${id}/edit`}
+          href={`/part/${part}/${slug}/edit`}
           className="w-full block text-center py-2.5 px-4 border border-border hover:border-accent-indigo/30 bg-card hover:bg-accent-indigo/5 text-text/80 hover:text-accent-indigo font-bold text-xs rounded-xl transition-all duration-200 cursor-pointer"
         >
           Edit Component Details

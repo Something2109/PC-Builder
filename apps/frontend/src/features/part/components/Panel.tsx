@@ -6,7 +6,7 @@ import PartPicture from "./Picture";
 export default function PartPanel({ item }: { item: Part.Summary }) {
   return (
     <Link
-      href={`/part/${item.part}/${item.id}`}
+      href={`/part/${item.part}/${item.slug}`}
       className="group flex flex-col rounded-2xl border border-border bg-card p-4 transition-all duration-300 hover:border-accent-indigo hover:shadow-xl hover:-translate-y-1"
     >
       <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-white/5 flex items-center justify-center p-2 mb-4">
