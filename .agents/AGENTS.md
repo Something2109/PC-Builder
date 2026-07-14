@@ -3,7 +3,9 @@
 Welcome to the PC-Builder project! This file serves as the main entry point to instruct AI agents on the system architecture, coding conventions, project structure, and data mapping conventions.
 
 > [!IMPORTANT]
-> You MUST read the respective documentation files in this directory before starting work on the frontend, backend, or mapping layers.
+>
+> - You MUST read the respective documentation files in this directory before starting work on the frontend, backend, or mapping layers.
+> - You MUST verify code correctness by running compilation, linting, and formatting checks (e.g., build verification, linting, and prettier formatting) before completing any task.
 
 ---
 

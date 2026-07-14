@@ -32,21 +32,29 @@ This document outlines the coding standards, styling conventions, naming pattern
 
 ---
 
-## 2. Formatting & Syntax Standards
+### Linting, Formatting, & Build Verification
 
-### Linting & Formatting Tooling
+Before completing any task, agents MUST verify code correctness by running the following commands:
 
-- **Prettier**: Configured in root [package.json](./package.json) with `.prettierrc`. Running Prettier formatting is mandatory before task completion.
-  - Command: `npm run format` (runs `prettier --write .` to format the workspace).
-- **ESLint**: Active in Next.js frontend, defined in [eslint.config.mjs](./apps/frontend/eslint.config.mjs). It overrides default Next ignores and enforces unused variables warnings:
-  ```javascript
-  "@typescript-eslint/no-unused-vars": [
-    "warn",
-    {
-      varsIgnorePattern: "^_",
-      argsIgnorePattern: "^_",
-    }
-  ]
+- **Code Formatting**: Format all files in the workspace using Prettier:
+  ```bash
+  npm run format
+  ```
+- **Linting Checks**: Run ESLint validations:
+  ```bash
+  npm run lint
+  ```
+- **Build Verification**: Run production build checks to ensure no TypeScript compilation, Next.js, or packaging errors exist:
+
+  ```bash
+  # 1. Build the shared packages library first
+  npm run build:shared
+
+  # 2. Build the NestJS backend
+  npm run build:backend
+
+  # 3. Build the Next.js frontend
+  npm run build --workspace=apps/frontend
   ```
 
 ### TypeScript Usage
