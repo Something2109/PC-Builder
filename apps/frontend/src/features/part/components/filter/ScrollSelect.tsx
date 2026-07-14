@@ -2,11 +2,11 @@
 
 import { Products } from "@pc-builder/shared/part";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { useClickOutside } from "@/hooks/useClickOutside";
 import { useDebounceValue } from "@/hooks/useDebounce";
 import axiosInstance from "@/lib/axios";
+import { DropdownWrapper } from "@/ui/Input";
 
 interface Option {
   id: number;
@@ -126,7 +126,7 @@ function ScrollSelectPanel({
   };
 
   return (
-    <div className="absolute left-0 right-0 z-50 mt-2 bg-background/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
+    <>
       {/* Search bar */}
       <div className="p-3 border-b border-white/5 flex items-center gap-2 bg-white/5">
         <svg
@@ -207,7 +207,7 @@ function ScrollSelectPanel({
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }
 
@@ -250,10 +250,6 @@ export default function ScrollSelect({
   }
 
   const selectedIds = value !== undefined ? value : localSelectedIds;
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Invoke hooks
-  useClickOutside(containerRef, () => setIsOpen(false));
   const { selectedNames, setSelectedNames } = useResolvedNames(attribute, initialSelectedIds);
 
   const toggleOption = (id: string, optName: string) => {
@@ -285,41 +281,45 @@ export default function ScrollSelect({
   };
 
   return (
-    <div className="relative w-full" ref={containerRef}>
-      {/* Hidden inputs to expose ID value for form submission (uncontrolled) */}
-      {selectedIds.map((id) => (
-        <input key={id} type="hidden" name={name} value={id} />
-      ))}
-
-      {/* Dropdown Toggle Button */}
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full text-left bg-background/20 backdrop-blur-md border border-white/10 hover:border-white/20 transition px-4 py-2 rounded-xl text-text flex items-center justify-between text-sm shadow-sm"
-      >
-        <span className="truncate pr-4">{getButtonText()}</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-        </svg>
-      </button>
-
-      {/* Popover Dropdown Panel */}
-      {isOpen && (
-        <ScrollSelectPanel
-          product={product}
-          attribute={attribute}
-          context={context}
-          selectedIds={selectedIds}
-          toggleOption={toggleOption}
-        />
-      )}
-    </div>
+    <DropdownWrapper
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+      className="space-y-0!"
+      panelClassName="overflow-hidden"
+      trigger={
+        <>
+          {/* Hidden inputs to expose ID value for form submission (uncontrolled) */}
+          {selectedIds.map((id) => (
+            <input key={id} type="hidden" name={name} value={id} />
+          ))}
+          {/* Dropdown Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className="w-full text-left bg-background/20 backdrop-blur-md border border-white/10 hover:border-white/20 transition px-4 py-2 rounded-xl text-text flex items-center justify-between text-sm shadow-sm"
+          >
+            <span className="truncate pr-4">{getButtonText()}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </button>
+        </>
+      }
+    >
+      <ScrollSelectPanel
+        product={product}
+        attribute={attribute}
+        context={context}
+        selectedIds={selectedIds}
+        toggleOption={toggleOption}
+      />
+    </DropdownWrapper>
   );
 }

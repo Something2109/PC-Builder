@@ -1,10 +1,13 @@
 "use client";
 
 import Part, { Products } from "@pc-builder/shared/part";
-import { startTransition } from "react";
+import { startTransition, useState } from "react";
 
 import usePartAction from "@/features/part/hooks/PartAction";
 import { NotificationBar } from "@/ui/NotificationBar";
+
+import BrandSelect from "./BrandSelect";
+import SeriesSelect from "./SeriesSelect";
 
 export default function PartForm({
   path,
@@ -19,6 +22,15 @@ export default function PartForm({
   const [formValue, save, pending, error, setError] = usePartAction(path, defaultValue);
 
   const { name, brand, series, code_name, url, launch_date } = formValue ?? {};
+
+  const brandValue = brand ?? "";
+  const [prevBrand, setPrevBrand] = useState(brandValue);
+  const [selectedBrand, setSelectedBrand] = useState(brandValue);
+
+  if (brandValue !== prevBrand) {
+    setPrevBrand(brandValue);
+    setSelectedBrand(brandValue);
+  }
 
   // Form fields formatted beautifully
   const formattedLaunchDate = launch_date
@@ -44,33 +56,8 @@ export default function PartForm({
 
       {/* 2-Column Grid for specs */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <label htmlFor="brand" className="text-sm font-bold text-text/70 block">
-            Brand
-          </label>
-          <input
-            type="text"
-            id="brand"
-            name="brand"
-            placeholder="e.g. Intel"
-            className="w-full bg-background/40 dark:bg-background/10 border border-border/70 rounded-xl px-4 py-2.5 text-text focus:outline-none focus:border-accent-indigo focus:ring-2 focus:ring-accent-indigo/20 transition-all duration-200"
-            defaultValue={brand ?? undefined}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="series" className="text-sm font-bold text-text/70 block">
-            Series
-          </label>
-          <input
-            type="text"
-            id="series"
-            name="series"
-            placeholder="e.g. Core i9"
-            className="w-full bg-background/40 dark:bg-background/10 border border-border/70 rounded-xl px-4 py-2.5 text-text focus:outline-none focus:border-accent-indigo focus:ring-2 focus:ring-accent-indigo/20 transition-all duration-200"
-            defaultValue={series ?? undefined}
-          />
-        </div>
+        <BrandSelect defaultValue={brand ?? ""} onChange={setSelectedBrand} />
+        <SeriesSelect brand={selectedBrand} defaultValue={series ?? ""} />
 
         <div className="space-y-2">
           <label htmlFor="code_name" className="text-sm font-bold text-text/70 block">
