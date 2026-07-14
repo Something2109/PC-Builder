@@ -119,7 +119,6 @@ export class AuthController {
     refresh_token_expires.setDate(refresh_token_expires.getDate() + 30);
     this.setTokenCookie(req, res, Tokens.REFRESH, refresh_token, {
       expires: refresh_token_expires,
-      path: "/api/auth/refresh",
     });
 
     req.csrfToken && req.csrfToken();
@@ -132,16 +131,26 @@ export class AuthController {
     token?: string,
     options?: CookieOptions
   ) {
-    token = token ? `Bearer ${token}` : "";
-
     const cookieOptions = {
       sameSite: "lax",
       secure: true,
       httpOnly: true,
+      path: "/",
       ...options,
     } as const;
 
-    req.cookies[name] = token;
-    res.cookie(name, token, cookieOptions);
+    if (!token) {
+      delete req.cookies[name];
+      res.clearCookie(name, {
+        sameSite: cookieOptions.sameSite,
+        secure: cookieOptions.secure,
+        httpOnly: cookieOptions.httpOnly,
+        path: cookieOptions.path,
+      });
+    } else {
+      const formattedToken = `Bearer ${token}`;
+      req.cookies[name] = formattedToken;
+      res.cookie(name, formattedToken, cookieOptions);
+    }
   }
 }

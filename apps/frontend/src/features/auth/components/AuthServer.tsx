@@ -7,7 +7,7 @@ export async function verifyToken(): Promise<JwtPayload | null> {
   const cookie = await cookies();
   const authCookie = cookie.get(Tokens.ACCESS);
 
-  if (!authCookie) return null;
+  if (!authCookie || !authCookie.value) return null;
 
   try {
     const apiResponse = await fetch(getBackendUrl("/api/auth/me"), {

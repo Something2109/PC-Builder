@@ -55,10 +55,12 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      // If the failed request was the refresh token request itself, reject
+      const url = originalRequest.url ?? "";
+      // If the failed request was refresh, login, or signup, do not attempt to refresh
       if (
-        originalRequest.url === "/auth/refresh" ||
-        originalRequest.url?.endsWith("/auth/refresh")
+        url.endsWith("/auth/refresh") ||
+        url.endsWith("/auth/login") ||
+        url.endsWith("/auth/signup")
       ) {
         return Promise.reject(error);
       }
@@ -86,6 +88,10 @@ axiosInstance.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError);
         isRefreshing = false;
+
+        if (typeof window !== "undefined") {
+          window.location.href = "/auth/login";
+        }
 
         return Promise.reject(refreshError);
       }

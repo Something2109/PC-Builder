@@ -9,7 +9,7 @@ const PROTECTED_PATHS = ["/admin", "/profile", "/build/save"];
 
 async function validateAccessToken(request: NextRequest) {
   const accessToken = request.cookies.get(Tokens.ACCESS);
-  if (!accessToken) return false;
+  if (!accessToken || !accessToken.value) return false;
 
   try {
     const apiResponse = await fetch(getBackendUrl("/api/auth/me"), {
@@ -26,17 +26,17 @@ async function validateAccessToken(request: NextRequest) {
   }
 }
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const accessToken = request.cookies.get(Tokens.ACCESS);
   const refreshToken = request.cookies.get(Tokens.REFRESH);
 
-  if (accessToken && (await validateAccessToken(request))) {
+  if (accessToken?.value && (await validateAccessToken(request))) {
     return NextResponse.next();
   }
 
-  if (refreshToken) {
+  if (refreshToken?.value) {
     try {
       const apiResponse = await fetch(getBackendUrl("/api/auth/refresh"), {
         method: "POST",
@@ -87,13 +87,22 @@ export async function proxy(request: NextRequest) {
         backendCookies.forEach((cookie) => response.headers.append("Set-Cookie", cookie));
 
         return response;
+      } else {
+        // Refresh token failed on backend (e.g., it is expired/invalid)
+        const response = PROTECTED_PATHS.some((path) => pathname.startsWith(path))
+          ? NextResponse.redirect(new URL("/auth/login", request.url))
+          : NextResponse.next();
+
+        response.cookies.delete(Tokens.ACCESS);
+        response.cookies.delete(Tokens.REFRESH);
+        return response;
       }
     } catch (error) {
       console.error("Token refresh failed:", error);
     }
   }
 
-  // 4. Final Fallback: If refresh failed and route is protected, login
+  // 4. Final Fallback: If refresh failed or was not attempted, and route is protected, login
   if (PROTECTED_PATHS.some((path) => pathname.startsWith(path))) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
