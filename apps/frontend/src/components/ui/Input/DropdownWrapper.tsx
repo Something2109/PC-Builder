@@ -86,7 +86,10 @@ export default function DropdownWrapper({
   const [mountNode, setMountNode] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    const el = document.getElementById("dropdown-root") ?? document.body;
+    const closestRoot = containerRef.current?.closest(
+      '[data-overlay-root="true"]'
+    ) as HTMLElement | null;
+    const el = closestRoot ?? document.getElementById("dropdown-root") ?? document.body;
     queueMicrotask(() => setMountNode(el));
   }, []);
 

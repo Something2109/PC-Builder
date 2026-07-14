@@ -18,7 +18,10 @@ export function ThemeBody({ children }: Readonly<{ children: React.ReactNode }>)
   }, []);
 
   return (
-    <body className={`${dark ? "dark" : ""} min-h-screen flex flex-col overflow-y-scroll`}>
+    <body
+      data-overlay-root="true"
+      className={`${dark ? "dark" : ""} min-h-screen flex flex-col overflow-y-scroll`}
+    >
       <DarkChanger value={setDark}>{children}</DarkChanger>
       <div id="dropdown-root" />
       <div id="modal-root" />

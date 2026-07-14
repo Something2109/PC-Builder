@@ -56,6 +56,7 @@ export default function ModalWrapper({
     >
       <div
         ref={modalRef}
+        data-overlay-root="true"
         className={mergeClass(
           "bg-card border border-border w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl p-6 relative flex flex-col space-y-4 animate-in zoom-in-95 duration-200",
           className
