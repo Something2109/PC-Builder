@@ -167,7 +167,10 @@ class SequelizeContext {
       Part.BasicAttributes.options.includes(options.sort_key as Part.BasicAttributes)
     ) {
       const orderCol = filterToWhereMap[options.sort_key] || options.sort_key;
-      return [[orderCol, options.sort_order || "asc"]];
+      return [
+        [orderCol, options.sort_order || "asc"],
+        ["name", "asc"],
+      ];
     }
     return undefined;
   }
