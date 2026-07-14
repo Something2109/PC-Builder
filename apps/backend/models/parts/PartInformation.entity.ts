@@ -1,4 +1,4 @@
-import Part, { Products, Infos } from "@pc-builder/shared/part";
+import Part, { Products, Infos, generateSlug } from "@pc-builder/shared/part";
 import { Includeable } from "sequelize";
 import {
   AllowNull,
@@ -117,6 +117,10 @@ import SeriesModel from "./Series.entity";
       name: "part_series_idx",
       fields: ["part", "series_id"],
     },
+    {
+      name: "slug_idx",
+      fields: ["slug"],
+    },
   ],
 })
 export default class PartInformation extends Model implements Part.Model {
@@ -138,6 +142,10 @@ export default class PartInformation extends Model implements Part.Model {
   @Unique
   @Column(DataType.STRING)
   declare code_name: string;
+
+  @AllowNull(false)
+  @Column(DataType.STRING)
+  declare slug: string;
 
   @ForeignKey(() => BrandModel)
   @AllowNull(true)
@@ -204,6 +212,13 @@ export default class PartInformation extends Model implements Part.Model {
       });
       instance.seriesId = seriesRecord.id;
       instance._tempSeries = null;
+    }
+  }
+
+  @BeforeSave
+  static generateSlugHook(instance: PartInformation) {
+    if (instance.name) {
+      instance.slug = generateSlug(instance.name, instance.part);
     }
   }
 

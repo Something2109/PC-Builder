@@ -29,3 +29,4 @@ export { RawKeyResolver } from "./mapper/pipeline";
 export type { PipelineResult } from "./mapper/pipeline";
 export { CreateAliasSchema, UpdateAliasSchema, BulkLearnSchema } from "./mapper/dto";
 export type { CreateAliasDto, UpdateAliasDto, BulkLearnDto } from "./mapper/dto";
+export { generateSlug } from "./slug";

@@ -11,9 +11,10 @@ export * as Infer from "./infer";
 export const BasicInfo = z.object({
   id: Primitive.String,
 
-  part: z.nativeEnum(Product.Name),
+  part: z.enum(Product.Name),
   name: Primitive.String,
   code_name: Primitive.String,
+  slug: Primitive.String,
   brand: Primitive.String,
   series: Primitive.String,
 
@@ -29,6 +30,7 @@ export const Label: { [key in Required<keyof BasicInfo>]: string } = {
   part: "Product Type",
   name: "Name",
   code_name: "Code Name",
+  slug: "Slug",
   brand: "Brand",
   series: "Series",
 
@@ -43,6 +45,7 @@ const BasicSummarySchema = BasicInfo.pick({
   name: true,
   brand: true,
   series: true,
+  slug: true,
   image_url: true,
 });
 
@@ -52,6 +55,7 @@ const BasicFilterSchema = z
     part: FilterOptions(Primitive.String),
     name: FilterOptions(Primitive.String),
     code_name: FilterOptions(Primitive.String),
+    slug: FilterOptions(Primitive.String),
     brand: FilterOptions(Primitive.Number),
     series: FilterOptions(Primitive.Number),
 
