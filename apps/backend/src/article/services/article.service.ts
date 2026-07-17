@@ -1,12 +1,6 @@
-import { Injectable, ConflictException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import {
-  Article,
-  ArticleStatus,
-  Summary,
-  CreateArticleDto,
-  UpdateArticleDto,
-} from "@pc-builder/shared/article";
+import { Article, ArticleStatus, Summary, ArticleDto } from "@pc-builder/shared/article";
 import { Products } from "@pc-builder/shared/part";
 import { Document, Model } from "mongoose";
 
@@ -101,19 +95,10 @@ export class ArticleService {
    * @param dto The article creation DTO.
    * @returns The new article object.
    */
-  async create(dto: CreateArticleDto): Promise<Article> {
-    let slug = dto.slug;
-
+  async create(dto: ArticleDto): Promise<Article> {
     // Ensure slug uniqueness in the database
-    let suffix = 1;
-    const originalSlug = slug;
-    while (await this.articleModel.findOne({ slug })) {
-      slug = `${originalSlug}-${suffix++}`;
-    }
-
     const instance = await this.articleModel.create({
       ...dto,
-      slug,
       views: 0,
       status: dto.status || ArticleStatus.Draft,
       publishedAt: dto.status === ArticleStatus.Published ? new Date() : null,
@@ -128,22 +113,11 @@ export class ArticleService {
    * @param dto The article update DTO.
    * @returns The updated article or null if none found.
    */
-  async update(id: string, dto: UpdateArticleDto): Promise<Article | null> {
+  async update(id: string, dto: ArticleDto): Promise<Article | null> {
     const instance = await this.articleModel.findById(id);
     if (!instance) return null;
 
     const updates: Partial<ArticleClass> = { ...dto } as any;
-
-    if (dto.slug && dto.slug !== instance.slug) {
-      // Check duplicate slug for other records
-      const duplicate = await this.articleModel.findOne({
-        slug: dto.slug,
-        _id: { $ne: id },
-      });
-      if (duplicate) {
-        throw new ConflictException("Slug is already taken by another article");
-      }
-    }
 
     if (dto.status === ArticleStatus.Published && instance.status !== ArticleStatus.Published) {
       updates.publishedAt = new Date();

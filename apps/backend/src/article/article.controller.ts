@@ -13,7 +13,7 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import * as API from "@pc-builder/shared/API";
-import { CreateArticleDto, UpdateArticleDto } from "@pc-builder/shared/article";
+import { ArticleDto, ArticleDtoSchema } from "@pc-builder/shared/article";
 import { Roles } from "@pc-builder/shared/user";
 import { Role } from "src/utils/role/role.decorator";
 import { ZodValidationPipe } from "src/utils/utils.modules";
@@ -22,8 +22,8 @@ import { QueryFilterPipe, ArticleFilter } from "./article.pipe";
 import { ArticleService } from "./services/article.service";
 import { ImageService } from "./services/image.service";
 
-const CreateValidator = new ZodValidationPipe(CreateArticleDto);
-const UpdateValidator = new ZodValidationPipe(UpdateArticleDto);
+const CreateValidator = new ZodValidationPipe(ArticleDtoSchema);
+const UpdateValidator = new ZodValidationPipe(ArticleDtoSchema);
 const QueryValidator = new QueryFilterPipe();
 
 @Controller("article")
@@ -50,14 +50,14 @@ export class ArticleController {
 
   @Role(Roles.ADMIN, Roles.GUEST)
   @Post()
-  async createArticle(@Body(CreateValidator) dto: CreateArticleDto) {
+  async createArticle(@Body(CreateValidator) dto: ArticleDto) {
     return this.articleService.create(dto);
   }
 
   // RESTful PUT endpoint
   @Role(Roles.ADMIN, Roles.GUEST)
   @Put(":id")
-  async updateArticle(@Param("id") id: string, @Body(UpdateValidator) dto: UpdateArticleDto) {
+  async updateArticle(@Param("id") id: string, @Body(UpdateValidator) dto: ArticleDto) {
     const result = await this.articleService.update(id, dto);
 
     if (!result) {
@@ -69,7 +69,7 @@ export class ArticleController {
   // Legacy POST endpoint for backward compatibility with frontend forms
   @Role(Roles.ADMIN, Roles.GUEST)
   @Post(":id")
-  async legacyUpdateArticle(@Param("id") id: string, @Body(UpdateValidator) dto: UpdateArticleDto) {
+  async legacyUpdateArticle(@Param("id") id: string, @Body(UpdateValidator) dto: ArticleDto) {
     const result = await this.articleService.update(id, dto);
 
     if (!result) {
