@@ -28,7 +28,7 @@ export default async function NewArticlePage({
 
   return (
     <AuthRole roles={[Roles.USER, Roles.ADMIN]}>
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full min-h-screen px-4 md:px-8 py-6">
         <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-6 border-b pb-3">
           Create New Article
         </h1>

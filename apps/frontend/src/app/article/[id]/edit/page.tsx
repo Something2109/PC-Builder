@@ -25,7 +25,7 @@ export default async function ArticleEditPage({ params }: { params: Promise<{ id
 
   return (
     <AuthRole roles={[Roles.USER, Roles.ADMIN]}>
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full min-h-screen px-4 md:px-8 py-6">
         <EditableArticle article={data as Article} />
       </div>
     </AuthRole>
