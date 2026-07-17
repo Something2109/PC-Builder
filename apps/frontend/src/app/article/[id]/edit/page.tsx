@@ -4,7 +4,7 @@ import { Roles } from "@pc-builder/shared/user";
 import { notFound } from "next/navigation";
 import React from "react";
 
-import { EditableArticle } from "@/features/article/components/Form";
+import { EditArticleClient } from "@/features/article/components/EditArticleClient";
 import { AuthRole } from "@/features/auth";
 
 export default async function ArticleEditPage({ params }: { params: Promise<{ id: string }> }) {
@@ -26,7 +26,7 @@ export default async function ArticleEditPage({ params }: { params: Promise<{ id
   return (
     <AuthRole roles={[Roles.USER, Roles.ADMIN]}>
       <div className="w-full min-h-screen px-4 md:px-8 py-6">
-        <EditableArticle article={data as Article} />
+        <EditArticleClient article={data as Article} />
       </div>
     </AuthRole>
   );

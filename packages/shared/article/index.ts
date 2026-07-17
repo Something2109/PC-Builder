@@ -92,21 +92,27 @@ export type Content = Paragraph | Image | List | Section;
 
 export const Content = z.union([Section, List, Paragraph, Image]);
 
-export const Article = z.object({
+export const ArticleBasicInfoSchema = z.object({
+  title: Primitive.String.min(3, "Title must be at least 3 characters"),
+  standfirst: Primitive.String,
+  cover: z.string().optional(),
+  icon: z.string().optional(),
+  topic: z.string().optional(),
+  part: z.string().optional(),
+});
+
+export type ArticleBasicInfo = z.infer<typeof ArticleBasicInfoSchema>;
+
+export const Article = ArticleBasicInfoSchema.extend({
+  status: z.enum(ArticleStatus).default(ArticleStatus.Draft),
+  content: ContentArray,
+
   id: Primitive.String,
   slug: z.string().min(3),
-  title: Primitive.String.min(3, "Title must be at least 3 characters"),
   author: Primitive.String,
-  standfirst: Primitive.String,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date().optional(),
   publishedAt: z.coerce.date().nullable().optional(),
-  content: ContentArray,
-  cover: z.string().optional(),
-  icon: z.string().optional(),
-  status: z.enum(ArticleStatus).default(ArticleStatus.Draft),
-  topic: z.string().optional(),
-  part: z.string().optional(),
   views: z.number().default(0),
 });
 
@@ -116,36 +122,9 @@ export const Summary = Article.omit({ content: true });
 
 export type Summary = z.infer<typeof Summary>;
 
-// Schemas for API Requests with automatic slugify transformations
-export const BaseEditArticleDto = Article.omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  views: true,
-}).partial({
-  slug: true,
-  status: true,
-  cover: true,
-  icon: true,
+export const ArticleDtoSchema = ArticleBasicInfoSchema.extend({
+  content: ContentArray,
+  status: z.enum(ArticleStatus).default(ArticleStatus.Draft),
 });
 
-export const CreateArticleDto = BaseEditArticleDto.transform((data) => {
-  return {
-    ...data,
-    slug: slugify(data.slug || data.title),
-  };
-});
-
-export type CreateArticleDto = z.infer<typeof CreateArticleDto>;
-
-export const UpdateArticleDto = BaseEditArticleDto.partial().transform((data) => {
-  const result = { ...data };
-  if (data.slug) {
-    result.slug = slugify(data.slug);
-  } else if (data.title) {
-    result.slug = slugify(data.title);
-  }
-  return result;
-});
-
-export type UpdateArticleDto = z.infer<typeof UpdateArticleDto>;
+export type ArticleDto = z.infer<typeof ArticleDtoSchema>;

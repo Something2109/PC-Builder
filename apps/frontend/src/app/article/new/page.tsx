@@ -2,7 +2,7 @@ import { Article, ArticleStatus } from "@pc-builder/shared/article";
 import { Roles } from "@pc-builder/shared/user";
 import React from "react";
 
-import { EditableArticle } from "@/features/article/components/Form";
+import { NewArticleClient } from "@/features/article/components/NewArticleClient";
 import { AuthRole } from "@/features/auth";
 
 export default async function NewArticlePage({
@@ -32,7 +32,7 @@ export default async function NewArticlePage({
         <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-6 border-b pb-3">
           Create New Article
         </h1>
-        <EditableArticle article={defaultArticle} isNew={true} />
+        <NewArticleClient defaultArticle={defaultArticle} />
       </div>
     </AuthRole>
   );
