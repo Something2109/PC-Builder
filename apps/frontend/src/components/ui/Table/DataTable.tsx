@@ -12,6 +12,7 @@ interface DataTableProps<TData> {
   tableClassName?: string;
   theadClassName?: string;
   rowClassName?: string;
+  onRowClick?: (row: TData) => void;
 }
 
 declare module "@tanstack/react-table" {
@@ -30,6 +31,7 @@ export function DataTable<TData>({
   tableClassName = "w-full border-collapse text-left text-xs",
   theadClassName = "bg-background/40 border-b border-border text-text/50 font-bold uppercase tracking-wider",
   rowClassName = "hover:bg-accent-indigo/5 transition-colors border-b border-border/50",
+  onRowClick,
 }: DataTableProps<TData>) {
   return (
     <div className={className}>
@@ -78,7 +80,22 @@ export function DataTable<TData>({
             </thead>
             <tbody className="divide-y divide-border/60 text-text/80">
               {table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className={rowClassName}>
+                <tr
+                  key={row.id}
+                  className={`${rowClassName} ${onRowClick ? "cursor-pointer" : ""}`}
+                  onClick={(e) => {
+                    const target = e.target as HTMLElement;
+                    if (
+                      target.closest("button") ||
+                      target.closest("a") ||
+                      target.closest("input") ||
+                      target.closest("select")
+                    ) {
+                      return;
+                    }
+                    onRowClick?.(row.original);
+                  }}
+                >
                   {row.getVisibleCells().map((cell) => {
                     const metaClass = cell.column.columnDef.meta?.className ?? "";
                     return (

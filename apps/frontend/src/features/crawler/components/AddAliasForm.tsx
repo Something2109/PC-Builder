@@ -18,13 +18,20 @@ interface AddAliasFormProps {
   onSubmit: (payload: { product: string; info: string; attribute: string; alias: string }) => void;
   onCancel: () => void;
   isPending: boolean;
+  initialValue?: {
+    id?: number;
+    product: string;
+    info: string;
+    attribute: string;
+    alias: string;
+  } | null;
 }
 
-export function AddAliasForm({ onSubmit, onCancel, isPending }: AddAliasFormProps) {
-  const [newProduct, setNewProduct] = useState("basic");
-  const [newInfo, setNewInfo] = useState("");
-  const [newAttribute, setNewAttribute] = useState(BASIC_ATTRIBUTES[0]);
-  const [newAlias, setNewAlias] = useState("");
+export function AddAliasForm({ onSubmit, onCancel, isPending, initialValue }: AddAliasFormProps) {
+  const [newProduct, setNewProduct] = useState(initialValue?.product ?? "basic");
+  const [newInfo, setNewInfo] = useState(initialValue?.info ?? "");
+  const [newAttribute, setNewAttribute] = useState(initialValue?.attribute ?? BASIC_ATTRIBUTES[0]);
+  const [newAlias, setNewAlias] = useState(initialValue?.alias ?? "");
 
   const handleProductChange = (prod: string) => {
     setNewProduct(prod);
@@ -92,7 +99,7 @@ export function AddAliasForm({ onSubmit, onCancel, isPending }: AddAliasFormProp
     >
       <div className="flex flex-row justify-between items-center border-b border-slate-800 pb-2">
         <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-          Add New Alias Mapping
+          {initialValue?.id ? "Edit Custom Alias Mapping" : "Add New Alias Mapping"}
         </h3>
         <button
           type="button"
@@ -188,7 +195,7 @@ export function AddAliasForm({ onSubmit, onCancel, isPending }: AddAliasFormProp
         {isPending && (
           <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
         )}
-        Register Alias
+        {initialValue?.id ? "Save Changes" : "Register Alias"}
       </button>
     </form>
   );

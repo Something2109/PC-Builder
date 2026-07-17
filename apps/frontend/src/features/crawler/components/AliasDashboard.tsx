@@ -104,6 +104,15 @@ export default function AliasDashboard() {
   // Add Alias Form State
   const [showAddForm, setShowAddForm] = useState(false);
 
+  // Selected row state for editing or pre-populating AddAliasForm
+  const [selectedRow, setSelectedRow] = useState<{
+    id?: number;
+    product: string;
+    info: string;
+    attribute: string;
+    alias: string;
+  } | null>(null);
+
   // Logs State
   const logTableState = useTableState<LogQuery>({
     initialState: {
@@ -154,6 +163,7 @@ export default function AliasDashboard() {
     onSuccess: () => {
       setAliasSuccess("Alias created successfully!");
       setShowAddForm(false);
+      setSelectedRow(null);
       queryClient.invalidateQueries({ queryKey: ["aliases"] });
       setTimeout(() => setAliasSuccess(null), 3000);
     },
@@ -161,6 +171,34 @@ export default function AliasDashboard() {
       console.error(err);
       const axiosErr = err as AxiosErrorLike;
       setAliasError(axiosErr.response?.data?.message || "Failed to create alias.");
+      setTimeout(() => setAliasError(null), 5000);
+    },
+  });
+
+  // Mutation: Update Alias
+  const updateAliasMutation = useMutation({
+    mutationFn: async (payload: {
+      id: number;
+      product: string;
+      info: string;
+      attribute: string;
+      alias: string;
+    }) => {
+      const { id, ...data } = payload;
+      const response = await axiosInstance.put(`/alias/${id}`, data);
+      return response.data;
+    },
+    onSuccess: () => {
+      setAliasSuccess("Alias updated successfully!");
+      setShowAddForm(false);
+      setSelectedRow(null);
+      queryClient.invalidateQueries({ queryKey: ["aliases"] });
+      setTimeout(() => setAliasSuccess(null), 3000);
+    },
+    onError: (err: unknown) => {
+      console.error(err);
+      const axiosErr = err as AxiosErrorLike;
+      setAliasError(axiosErr.response?.data?.message || "Failed to update alias.");
       setTimeout(() => setAliasError(null), 5000);
     },
   });
@@ -513,7 +551,11 @@ export default function AliasDashboard() {
       <div className="flex bg-slate-950/60 p-1.5 rounded-lg border border-slate-800/80 w-full max-w-md">
         <button
           type="button"
-          onClick={() => setActiveTab("aliases")}
+          onClick={() => {
+            setActiveTab("aliases");
+            setSelectedRow(null);
+            setShowAddForm(false);
+          }}
           className={`flex-1 py-2 rounded text-xs font-bold cursor-pointer transition-all ${
             activeTab === "aliases"
               ? "bg-blue-600 text-white shadow-md"
@@ -524,7 +566,11 @@ export default function AliasDashboard() {
         </button>
         <button
           type="button"
-          onClick={() => setActiveTab("logs")}
+          onClick={() => {
+            setActiveTab("logs");
+            setSelectedRow(null);
+            setShowAddForm(false);
+          }}
           className={`flex-1 py-2 rounded text-xs font-bold cursor-pointer transition-all ${
             activeTab === "logs"
               ? "bg-blue-600 text-white shadow-md"
@@ -553,14 +599,32 @@ export default function AliasDashboard() {
           {/* Add Drawer Toggle / Card */}
           {showAddForm ? (
             <AddAliasForm
-              onSubmit={(payload) => createAliasMutation.mutate(payload)}
-              onCancel={() => setShowAddForm(false)}
-              isPending={createAliasMutation.isPending}
+              key={
+                selectedRow
+                  ? `alias-form-${selectedRow.id || "new"}-${selectedRow.alias}-${selectedRow.attribute}`
+                  : "alias-form-empty"
+              }
+              initialValue={selectedRow}
+              onSubmit={(payload) => {
+                if (selectedRow?.id) {
+                  updateAliasMutation.mutate({ id: selectedRow.id, ...payload });
+                } else {
+                  createAliasMutation.mutate(payload);
+                }
+              }}
+              onCancel={() => {
+                setShowAddForm(false);
+                setSelectedRow(null);
+              }}
+              isPending={createAliasMutation.isPending || updateAliasMutation.isPending}
             />
           ) : (
             <button
               type="button"
-              onClick={() => setShowAddForm(true)}
+              onClick={() => {
+                setSelectedRow(null);
+                setShowAddForm(true);
+              }}
               className="w-full py-2.5 bg-blue-600/10 hover:bg-blue-600/25 border border-blue-500/20 hover:border-blue-500/40 text-blue-400 font-bold text-xs rounded-lg transition-all cursor-pointer inline-flex items-center justify-center gap-1.5"
             >
               + Register New Custom Alias Mapping
@@ -608,6 +672,16 @@ export default function AliasDashboard() {
             isLoading={loadingAliases}
             loadingMessage="Loading alias mappings..."
             emptyMessage="No alias mappings found matching search."
+            onRowClick={(row) => {
+              setSelectedRow({
+                id: row.id,
+                product: row.product,
+                info: row.info || "",
+                attribute: row.attribute,
+                alias: row.alias || "",
+              });
+              setShowAddForm(true);
+            }}
           />
 
           {/* Pagination */}
@@ -664,6 +738,15 @@ export default function AliasDashboard() {
             isLoading={loadingLogs}
             loadingMessage="Loading learning logs..."
             emptyMessage="No learning events found in history."
+            onRowClick={(row) => {
+              setSelectedRow({
+                product: row.product,
+                info: row.info || "",
+                attribute: row.attribute,
+                alias: row.raw_key || "",
+              });
+              setShowAddForm(true);
+            }}
           />
 
           {/* Pagination */}
