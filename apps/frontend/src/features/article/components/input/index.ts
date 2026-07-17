@@ -1,4 +1,3 @@
-export * from "./SlashMenu";
 export * from "./Paragraph";
 export * from "./Section";
 export * from "./List";
