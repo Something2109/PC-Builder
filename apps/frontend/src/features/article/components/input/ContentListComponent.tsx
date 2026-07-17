@@ -4,9 +4,12 @@ import type { ItemInstance } from "@headless-tree/core";
 
 import { Content as ArticleContent, ContentName } from "@pc-builder/shared/article";
 
+import { ContextMenuWrapper } from "@/components/ui/ContextMenu";
+
 import { useGenericTree } from "../../../../hooks/useGenericTree";
 import { GenericItemTreeStore, GenericFlattenItemTreeNode } from "../../../../utils/tree";
 import { ArticleTreeItemData } from "../../utils/articleTreeMapper";
+import { ArticleContextMenu } from "../form/ContextMenu";
 import { EditorBlock } from "./EditorBlock";
 
 const defaultValue: { [key in ContentName]: () => ArticleContent } = {
@@ -136,17 +139,22 @@ export function ContentListComponent({ store }: ContentListComponentProps) {
         {visibleNodes.map(
           (node: ItemInstance<GenericFlattenItemTreeNode<ArticleTreeItemData>>, index: number) => {
             return (
-              <EditorBlock
+              <ContextMenuWrapper
                 key={node.getId()}
-                node={node}
-                store={store}
-                index={index}
-                totalNodes={visibleNodes.length}
-                onInsertBelow={(type) => handleInsertBlockBelow(node.getId(), type)}
-                onDelete={() => handleDeleteBlock(node.getId())}
-                onMoveUp={() => handleMoveUp(node.getId())}
-                onMoveDown={() => handleMoveDown(node.getId())}
-              />
+                menu={({ onClose }) => (
+                  <ArticleContextMenu
+                    index={index}
+                    totalNodes={visibleNodes.length}
+                    onInsertBelow={(type) => handleInsertBlockBelow(node.getId(), type)}
+                    onDelete={() => handleDeleteBlock(node.getId())}
+                    onMoveUp={() => handleMoveUp(node.getId())}
+                    onMoveDown={() => handleMoveDown(node.getId())}
+                    onClose={onClose}
+                  />
+                )}
+              >
+                <EditorBlock node={node} store={store} />
+              </ContextMenuWrapper>
             );
           }
         )}

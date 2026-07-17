@@ -14,11 +14,6 @@ import {
 } from "@pc-builder/shared/article";
 import React from "react";
 
-import {
-  ContextMenuWrapper,
-  ContextMenuItem,
-  ContextMenuSeparator,
-} from "../../../../components/ui/ContextMenu";
 import { ImageInput } from "./Image";
 import { ListInput } from "./List";
 import { ParagraphInput } from "./Paragraph";
@@ -27,24 +22,9 @@ import { SectionInput } from "./Section";
 interface EditorBlockProps {
   node: ItemInstance<GenericFlattenItemTreeNode<ArticleTreeItemData>>;
   store: GenericTreeStore<ArticleTreeItemData>;
-  index: number;
-  totalNodes: number;
-  onInsertBelow: (type: ContentName) => void;
-  onDelete: () => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
 }
 
-export function EditorBlock({
-  node,
-  store,
-  index,
-  totalNodes,
-  onInsertBelow,
-  onDelete,
-  onMoveUp,
-  onMoveDown,
-}: EditorBlockProps) {
+export function EditorBlock({ node, store }: EditorBlockProps) {
   const level = node.getItemMeta().level;
   const isDragging =
     node
@@ -94,119 +74,41 @@ export function EditorBlock({
     ...(item.type === ContentName.Section || item.type === ContentName.List ? { content: [] } : {}),
   } as ArticleContent;
 
-  const renderContextMenu = ({ onClose }: { onClose: () => void }) => (
-    <>
-      <div className="px-3 py-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider select-none">
-        Add Part Below
-      </div>
-      <ContextMenuItem
-        onClick={() => {
-          onInsertBelow(ContentName.Paragraph);
-          onClose();
-        }}
-      >
-        <span>✏️</span> Paragraph
-      </ContextMenuItem>
-      <ContextMenuItem
-        onClick={() => {
-          onInsertBelow(ContentName.Section);
-          onClose();
-        }}
-      >
-        <span>Heading</span> Section Heading
-      </ContextMenuItem>
-      <ContextMenuItem
-        onClick={() => {
-          onInsertBelow(ContentName.List);
-          onClose();
-        }}
-      >
-        <span>•</span> Bullet List
-      </ContextMenuItem>
-      <ContextMenuItem
-        onClick={() => {
-          onInsertBelow(ContentName.Image);
-          onClose();
-        }}
-      >
-        <span>🖼️</span> Image Block
-      </ContextMenuItem>
-      <ContextMenuSeparator />
-      <div className="px-3 py-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider select-none">
-        Block Actions
-      </div>
-      <ContextMenuItem
-        disabled={index === 0}
-        onClick={() => {
-          onMoveUp();
-          onClose();
-        }}
-      >
-        <span>↑</span> Move Up
-      </ContextMenuItem>
-      <ContextMenuItem
-        disabled={index === totalNodes - 1}
-        onClick={() => {
-          onMoveDown();
-          onClose();
-        }}
-      >
-        <span>↓</span> Move Down
-      </ContextMenuItem>
-      <ContextMenuSeparator />
-      <ContextMenuItem
-        onClick={() => {
-          onDelete();
-          onClose();
-        }}
-        className="text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 font-semibold"
-      >
-        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-          />
-        </svg>
-        Delete Block
-      </ContextMenuItem>
-    </>
-  );
-
   return (
-    <ContextMenuWrapper menu={renderContextMenu}>
+    <div
+      {...node.getProps()}
+      style={{
+        opacity: isDragging ? 0.4 : undefined,
+      }}
+      className="relative w-full focus:outline-none"
+    >
+      {/* Visual Guidelines for Nested Items */}
+      {Array.from({ length: level }).map((_, i) => (
+        <div
+          key={i}
+          className="absolute border-l-2 border-dashed border-slate-200 dark:border-slate-800"
+          style={{
+            left: `${(i + 1) * 32 - 16}px`,
+            top: 0,
+            bottom: 0,
+          }}
+        />
+      ))}
+
+      {/* Inner Content Block */}
       <div
-        {...node.getProps()}
         style={{
-          paddingLeft: `${level * 32}px`,
-          opacity: isDragging ? 0.4 : undefined,
+          marginLeft: `${level * 32}px`,
         }}
         className={mergeClass(
-          "relative group/block flex items-center w-full gap-2 py-2 px-2 hover:bg-slate-50/50 dark:hover:bg-slate-900/10 rounded-xl transition-all border border-transparent focus:outline-none focus:border-blue-500/30",
+          "relative group/block flex items-center gap-2 py-2 px-2 hover:bg-slate-50/50 dark:hover:bg-slate-900/10 rounded-xl transition-all border border-transparent focus:outline-none focus:border-blue-500/30",
           isOver && "bg-blue-500/5 dark:bg-blue-600/5",
           isTargetAbove && "border-t-2 border-t-blue-500",
           isTargetBelow && "border-b-2 border-b-blue-500"
         )}
       >
-        {/* Visual Guidelines for Nested Items */}
-        {Array.from({ length: level }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute border-l-2 border-dashed border-slate-200 dark:border-slate-800"
-            style={{
-              left: `${(i + 1) * 32 - 16}px`,
-              top: 0,
-              bottom: 0,
-            }}
-          />
-        ))}
-
         {/* Drag handle appearing on the left when hovering */}
-        <div
-          className="absolute top-1/2 -translate-y-1/2 opacity-0 group-hover/block:opacity-100 transition-opacity duration-150 z-10 select-none flex items-center gap-1"
-          style={{ left: `${level * 32 + 4}px` }}
-        >
+        <div className="absolute top-1/2 left-1 -translate-y-1/2 opacity-0 group-hover/block:opacity-100 transition-opacity duration-150 z-10 select-none flex items-center gap-1">
           {node.isFolder() ? (
             <button
               type="button"
@@ -254,11 +156,7 @@ export function EditorBlock({
         {/* Specific Block Input Type Renderers with pl-15 offset for drag handle */}
         <div className="w-full pl-15">
           {item.type === ContentName.Paragraph && (
-            <ParagraphInput
-              content={contentObject as Paragraph}
-              onChange={handleUpdateParagraph}
-              onInsertBelow={onInsertBelow}
-            />
+            <ParagraphInput content={contentObject as Paragraph} onChange={handleUpdateParagraph} />
           )}
 
           {item.type === ContentName.Section && (
@@ -277,7 +175,7 @@ export function EditorBlock({
           )}
         </div>
       </div>
-    </ContextMenuWrapper>
+    </div>
   );
 }
 
