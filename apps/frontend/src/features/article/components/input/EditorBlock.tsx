@@ -14,7 +14,11 @@ import {
 } from "@pc-builder/shared/article";
 import React from "react";
 
-import { ContextMenuWrapper, ContextMenuItem, ContextMenuSeparator } from "./ContextMenu";
+import {
+  ContextMenuWrapper,
+  ContextMenuItem,
+  ContextMenuSeparator,
+} from "../../../../components/ui/ContextMenu";
 import { ImageInput } from "./Image";
 import { ListInput } from "./List";
 import { ParagraphInput } from "./Paragraph";
