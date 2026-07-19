@@ -162,7 +162,6 @@ app.post("/start", (req: Request, res: Response) => {
     });
 
     const session: CrawlerSession = {
-      sessionId,
       name,
       domain: scraper.domain,
       type: scraper.type,
