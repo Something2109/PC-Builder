@@ -1,7 +1,7 @@
 "use client";
 
-import type { GenericTreeStore, GenericFlattenItemTreeNode } from "../../../../utils/tree";
 import type { ArticleTreeItemData } from "../../utils/articleTreeMapper";
+import type { GenericTreeStore, GenericFlattenItemTreeNode } from "@/utils/tree";
 import type { ItemInstance } from "@headless-tree/core";
 
 import {

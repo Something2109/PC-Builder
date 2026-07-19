@@ -5,9 +5,9 @@ import type { ItemInstance } from "@headless-tree/core";
 import { Content as ArticleContent, ContentName } from "@pc-builder/shared/article";
 
 import { ContextMenuWrapper } from "@/components/ui/ContextMenu";
+import { useGenericTree } from "@/hooks/useGenericTree";
+import { GenericItemTreeStore, GenericFlattenItemTreeNode } from "@/utils/tree";
 
-import { useGenericTree } from "../../../../hooks/useGenericTree";
-import { GenericItemTreeStore, GenericFlattenItemTreeNode } from "../../../../utils/tree";
 import { ArticleTreeItemData } from "../../utils/articleTreeMapper";
 import { ArticleContextMenu } from "../form/ContextMenu";
 import { EditorBlock } from "./EditorBlock";

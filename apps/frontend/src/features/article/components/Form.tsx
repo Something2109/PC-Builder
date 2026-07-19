@@ -19,7 +19,7 @@ import {
   mapContentToTreeNodes,
   mapTreeNodesToContent,
 } from "../utils/articleTreeMapper";
-import { CoverInput, EmojiInput, SubmitBar } from "./form";
+import { CoverInput, EmojiInput, SubmitBar } from "./form/";
 import { ContentListComponent } from "./input";
 
 const extractArticleBasicInfo = (article: Article) => {
