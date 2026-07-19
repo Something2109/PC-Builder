@@ -7,7 +7,12 @@ import DropdownWrapper from "./DropdownWrapper";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type OptionListType = string[] | number[];
+type OptionType = string | number;
+type OptionWithLabelType = {
+  label: string;
+  value: OptionType;
+};
+type OptionListType = (string | number | OptionWithLabelType)[];
 type SelectOptionsType = OptionListType | Record<string, OptionListType>;
 
 export interface SelectProps {
@@ -35,13 +40,18 @@ export interface OptionSelectProps extends SelectProps {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function flatOptions(options: OptionListType): Array<{ value: string; label: string }> {
-  return options.map((o) => ({ value: String(o), label: String(o) }));
+  return options.map((o) => {
+    if (o !== null && typeof o === "object" && "label" in o && "value" in o) {
+      return { value: String(o.value), label: String(o.label) };
+    }
+    return { value: String(o), label: String(o) };
+  });
 }
 
 function allOptions(
   options: SelectOptionsType
 ): Array<{ value: string; label: string; group?: string }> {
-  if (Array.isArray(options)) return flatOptions(options as OptionListType);
+  if (Array.isArray(options)) return flatOptions(options);
   return Object.entries(options).flatMap(([group, list]) =>
     flatOptions(list).map((o) => ({ ...o, group }))
   );

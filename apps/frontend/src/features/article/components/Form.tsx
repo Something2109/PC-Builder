@@ -7,7 +7,7 @@ import {
   ArticleDto,
   ArticleBasicInfoSchema,
 } from "@pc-builder/shared/article";
-import { Name as ProductName } from "@pc-builder/shared/part/product";
+import { Name as ProductName, Label as ProductLabel } from "@pc-builder/shared/part/product";
 import { useForm } from "@tanstack/react-form";
 import { useRef, useMemo } from "react";
 
@@ -42,6 +42,11 @@ interface EditableArticleProps {
   onDelete?: () => Promise<void>;
   isSaving: boolean;
 }
+
+const PRODUCT_OPTIONS = Object.values(ProductName).map((value) => ({
+  label: ProductLabel[value],
+  value,
+}));
 
 function EditableArticle({
   article,
@@ -142,7 +147,7 @@ function EditableArticle({
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                       field.handleChange(e.target.value ? [e.target.value] : [])
                     }
-                    options={Object.values(ProductName)}
+                    options={PRODUCT_OPTIONS}
                     placeholder="Select a part category"
                     className="min-w-45"
                   />
