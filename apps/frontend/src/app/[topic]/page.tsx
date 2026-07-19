@@ -1,4 +1,3 @@
-import { getBackendUrl } from "@pc-builder/shared";
 import { Summary } from "@pc-builder/shared/article";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,6 +6,7 @@ import React from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
+import { getBackendUrl } from "@/utils/api";
 
 export default async function TopicPage({ params }: { params: Promise<{ topic: string }> }) {
   const { topic } = await params;

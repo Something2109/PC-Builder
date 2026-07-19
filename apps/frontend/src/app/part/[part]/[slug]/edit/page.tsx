@@ -1,10 +1,10 @@
-import { getBackendUrl } from "@pc-builder/shared";
 import Part, { Products } from "@pc-builder/shared/part";
 import { Roles } from "@pc-builder/shared/user";
 import { notFound } from "next/navigation";
 
 import { AuthRole } from "@/features/auth";
 import PartEditDashboard from "@/features/part/components/PartEditDashboard";
+import { getBackendUrl } from "@/utils/api";
 
 const roles = [Roles.ADMIN];
 

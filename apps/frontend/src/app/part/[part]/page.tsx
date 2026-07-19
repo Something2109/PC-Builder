@@ -1,4 +1,3 @@
-import { getBackendUrl } from "@pc-builder/shared";
 import { Product } from "@pc-builder/shared/part";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -6,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ServerTablePagination } from "@/components/ui/Table";
 import { FilterBar } from "@/features/part/components/Filter";
 import SummaryTable from "@/features/part/components/Summary";
+import { getBackendUrl } from "@/utils/api";
 
 export default async function PartListPage({
   params,

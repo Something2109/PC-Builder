@@ -1,4 +1,3 @@
-import { getBackendUrl } from "@pc-builder/shared";
 import { Article } from "@pc-builder/shared/article";
 import { Roles } from "@pc-builder/shared/user";
 import { notFound } from "next/navigation";
@@ -6,6 +5,7 @@ import React from "react";
 
 import { EditArticleClient } from "@/features/article/components/EditArticleClient";
 import { AuthRole } from "@/features/auth";
+import { getBackendUrl } from "@/utils/api";
 
 export default async function ArticleEditPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

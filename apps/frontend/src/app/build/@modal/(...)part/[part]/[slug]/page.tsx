@@ -1,4 +1,4 @@
-import { getBackendUrl } from "@pc-builder/shared";
+import { getBackendUrl } from "@/utils/api";
 import Part, { Products, Mapping } from "@pc-builder/shared/part";
 import { notFound } from "next/navigation";
 import React from "react";
