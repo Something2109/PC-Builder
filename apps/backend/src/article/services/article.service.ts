@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Article, ArticleStatus, Summary, ArticleDto } from "@pc-builder/shared/article";
+import { Article, ArticleStatus, Summary, ArticleDto, slugify } from "@pc-builder/shared/article";
 import { Products } from "@pc-builder/shared/part";
 import { Document, Model } from "mongoose";
 
@@ -97,8 +97,20 @@ export class ArticleService {
    */
   async create(dto: ArticleDto): Promise<Article> {
     // Ensure slug uniqueness in the database
+    let slug = slugify(dto.title);
+    if (!slug) {
+      slug = Math.random().toString(36).substring(2, 9);
+    }
+    const baseSlug = slug;
+    let counter = 1;
+    while (await this.articleModel.findOne({ slug })) {
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+
     const instance = await this.articleModel.create({
       ...dto,
+      slug,
       views: 0,
       status: dto.status || ArticleStatus.Draft,
       publishedAt: dto.status === ArticleStatus.Published ? new Date() : null,
