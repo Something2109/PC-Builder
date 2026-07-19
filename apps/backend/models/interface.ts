@@ -2,7 +2,6 @@ import { Op, WhereOptions } from "sequelize";
 import { Model } from "sequelize-typescript";
 
 enum Tables {
-  ARTICLE = "article",
   USER = "user",
   PART = "part_information",
   RETAIL_PRODUCT = "retail_product",

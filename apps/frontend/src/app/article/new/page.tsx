@@ -21,8 +21,8 @@ export default async function NewArticlePage({
     createdAt: new Date(),
     content: [],
     status: ArticleStatus.Draft,
-    topic: topic || "",
-    part: part || "",
+    topic: topic ? [topic] : [],
+    part: part ? [part] : [],
     views: 0,
   };
 

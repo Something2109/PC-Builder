@@ -202,19 +202,24 @@ function ArticleComponent({ article }: { article: Article }) {
       <div className={mergeClass("pt-16 pb-6 px-4 md:px-12", !article.icon ? "pt-8" : "")}>
         {/* Breadcrumb / Topic Badge */}
         <div className="flex flex-wrap items-center gap-2 mb-4 text-xs font-semibold text-slate-500 dark:text-slate-400">
-          {article.topic && (
-            <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full capitalize">
-              {article.topic}
-            </span>
-          )}
-          {article.part && (
-            <>
-              <span>/</span>
-              <span className="px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-full uppercase">
-                {article.part}
+          {article.topic &&
+            article.topic.map((t) => (
+              <span
+                key={t}
+                className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full capitalize"
+              >
+                {t}
               </span>
-            </>
-          )}
+            ))}
+          {article.part &&
+            article.part.map((p) => (
+              <React.Fragment key={p}>
+                <span>/</span>
+                <span className="px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-full uppercase">
+                  {p}
+                </span>
+              </React.Fragment>
+            ))}
 
           {/* Status Badge */}
           {article.status !== "published" && (

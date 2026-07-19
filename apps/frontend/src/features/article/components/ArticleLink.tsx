@@ -79,13 +79,22 @@ function ArticleLink({
         <ColumnWrapper className="gap-2">
           {/* Tag Badges */}
           <div className="flex flex-wrap gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-            {summary.topic && (
-              <span className="text-slate-500 dark:text-slate-400">{summary.topic}</span>
-            )}
-            {summary.topic && summary.part && <span>•</span>}
-            {summary.part && (
-              <span className="text-blue-600 dark:text-blue-400">{summary.part}</span>
-            )}
+            {summary.topic &&
+              summary.topic.map((t) => (
+                <span key={t} className="text-slate-500 dark:text-slate-400">
+                  {t}
+                </span>
+              ))}
+            {summary.topic &&
+              summary.topic.length > 0 &&
+              summary.part &&
+              summary.part.length > 0 && <span>•</span>}
+            {summary.part &&
+              summary.part.map((p) => (
+                <span key={p} className="text-blue-600 dark:text-blue-400">
+                  {p}
+                </span>
+              ))}
           </div>
 
           <h2 className="font-sans text-xl font-bold text-slate-800 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">

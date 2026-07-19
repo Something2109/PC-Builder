@@ -14,13 +14,13 @@ export class ArticleClass implements Omit<Article, "id"> {
   declare slug: string;
 
   @Prop({ type: [{ type: String }], index: true })
-  declare topic?: string;
+  declare topic: string[];
 
   @Prop({
     type: [{ type: String, enum: Object.values(Products) }],
     index: true,
   })
-  declare part?: Products;
+  declare part: Products[];
 
   @Prop({ type: String, required: true })
   declare title: string;

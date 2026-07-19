@@ -110,10 +110,12 @@ function EditableArticle({
                 <div>
                   <Input
                     name={field.name}
-                    value={field.state.value ?? ""}
+                    value={field.state.value ? field.state.value.join(", ") : ""}
                     onBlur={field.handleBlur}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      field.handleChange(e.target.value)
+                      field.handleChange(
+                        e.target.value ? e.target.value.split(", ").map((s) => s.trim()) : []
+                      )
                     }
                     type="text"
                     placeholder="e.g. introduction, guide"
@@ -136,9 +138,9 @@ function EditableArticle({
                 <div>
                   <OptionSelect
                     name={field.name}
-                    value={field.state.value ?? ""}
+                    value={field.state.value?.[0] ?? ""}
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                      field.handleChange(e.target.value)
+                      field.handleChange(e.target.value ? [e.target.value] : [])
                     }
                     options={Object.values(ProductName)}
                     placeholder="Select a part category"

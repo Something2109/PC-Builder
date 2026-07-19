@@ -16,8 +16,8 @@ export function NewArticleClient({ defaultArticle }: NewArticleClientProps) {
 
   const handleSubmit = async (payload: ArticleDto) => {
     const queryParams = new URLSearchParams();
-    if (payload.topic) queryParams.set("topic", payload.topic);
-    if (payload.part) queryParams.set("part", payload.part);
+    if (payload.topic && payload.topic.length > 0) queryParams.set("topic", payload.topic[0]);
+    if (payload.part && payload.part.length > 0) queryParams.set("part", payload.part[0]);
     await createArticle({ payload, queryParams });
   };
 

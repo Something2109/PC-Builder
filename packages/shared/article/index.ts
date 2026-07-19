@@ -97,8 +97,8 @@ export const ArticleBasicInfoSchema = z.object({
   standfirst: Primitive.String,
   cover: z.string().optional(),
   icon: z.string().optional(),
-  topic: z.string().optional(),
-  part: z.string().optional(),
+  topic: z.array(z.string()).default([]),
+  part: z.array(z.string()).default([]),
 });
 
 export type ArticleBasicInfo = z.infer<typeof ArticleBasicInfoSchema>;
