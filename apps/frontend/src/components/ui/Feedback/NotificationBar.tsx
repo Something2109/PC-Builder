@@ -1,4 +1,4 @@
-import { RowWrapper } from "@/ui/FlexWrapper";
+import { RowWrapper } from "@/ui/Layout/FlexWrapper";
 
 export function NotificationBar({
   message,

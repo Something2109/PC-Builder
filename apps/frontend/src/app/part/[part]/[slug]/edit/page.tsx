@@ -3,7 +3,7 @@ import { Roles } from "@pc-builder/shared/user";
 import { notFound } from "next/navigation";
 
 import { AuthRole } from "@/features/auth";
-import PartEditDashboard from "@/features/part/components/PartEditDashboard";
+import PartEditDashboard from "@/features/part/components/dashboard/PartEditDashboard";
 import { getBackendUrl } from "@/utils/api";
 
 const roles = [Roles.ADMIN];

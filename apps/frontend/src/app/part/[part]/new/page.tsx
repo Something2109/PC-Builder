@@ -3,7 +3,7 @@ import { Roles } from "@pc-builder/shared/user";
 
 import { AuthRole } from "@/features/auth";
 import PartForm from "@/features/part/components/input/Part";
-import { ColumnWrapper, ResponsiveWrapper } from "@/ui/FlexWrapper";
+import { ColumnWrapper, ResponsiveWrapper } from "@/ui/Layout/FlexWrapper";
 
 const roles = [Roles.ADMIN];
 

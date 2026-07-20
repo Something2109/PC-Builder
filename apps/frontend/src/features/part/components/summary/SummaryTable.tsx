@@ -7,22 +7,22 @@ import React from "react";
 
 import { DataTable } from "@/components/ui/Table";
 
-import AIO from "./summary/AIO";
-import Case from "./summary/Case";
-import Cooler from "./summary/Cooler";
-import CPU from "./summary/CPU";
-import CPUBlock from "./summary/CPUBlock";
-import Fan from "./summary/Fan";
-import GPU from "./summary/GPU";
-import GraphicCard from "./summary/GraphicCard";
-import HDD from "./summary/HDD";
-import Mainboard from "./summary/Mainboard";
-import { PartColumns } from "./summary/Part";
-import PSU from "./summary/PSU";
-import Pump from "./summary/Pump";
-import Radiator from "./summary/Radiator";
-import RAM from "./summary/RAM";
-import SSD from "./summary/SSD";
+import AIO from "./AIO";
+import Case from "./Case";
+import Cooler from "./Cooler";
+import CPU from "./CPU";
+import CPUBlock from "./CPUBlock";
+import Fan from "./Fan";
+import GPU from "./GPU";
+import GraphicCard from "./GraphicCard";
+import HDD from "./HDD";
+import Mainboard from "./Mainboard";
+import { PartColumns } from "./Part";
+import PSU from "./PSU";
+import Pump from "./Pump";
+import Radiator from "./Radiator";
+import RAM from "./RAM";
+import SSD from "./SSD";
 
 export const SummaryInfoComponent = {
   [Products.CPU]: CPU,

@@ -5,7 +5,7 @@ import { useActionState, useContext, useState } from "react";
 
 import axiosInstance from "@/lib/axios";
 
-import { AuthContext } from "../components/AuthContext";
+import { AuthContext } from "../components/provider/AuthContext";
 
 type LoginError = {
   message?: string;

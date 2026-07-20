@@ -2,9 +2,9 @@ import { Inter, Outfit } from "next/font/google";
 
 import { AuthWrapper } from "@/features/auth";
 import { verifyToken } from "@/features/auth/server";
-import { ThemeBody } from "@/layout/body";
-import Footer from "@/layout/footer";
-import Header from "@/layout/header";
+import { ThemeBody } from "@/layout/Body";
+import Footer from "@/layout/Footer";
+import Header from "@/layout/Header";
 import QueryProvider from "@/layout/QueryProvider";
 
 import "../../public/stylesheets/globals.css";

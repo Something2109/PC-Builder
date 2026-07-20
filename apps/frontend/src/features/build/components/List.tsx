@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useBuildContext } from "@/features/build/hooks/BuildContext";
 import { useValidation } from "@/features/build/hooks/Validation";
-import SummaryTable from "@/features/part/components/Summary";
+import SummaryTable from "@/features/part/components/summary/SummaryTable";
 import Part, { Product, Products } from "@pc-builder/shared/part";
 import { ColumnDef } from "@tanstack/react-table";
 

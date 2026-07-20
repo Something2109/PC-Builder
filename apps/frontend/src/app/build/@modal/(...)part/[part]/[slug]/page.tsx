@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import React from "react";
 
 import { PartTable } from "@/features/part/components/detail/Part";
-import { InfoTable } from "@/features/part/components/Table";
+import { InfoTable } from "@/features/part/components/detail/InfoTable";
 import InterceptedRouteModal from "@/components/ui/Modal/InterceptedRouteModal";
 
 export default async function PartDetailPageModal({

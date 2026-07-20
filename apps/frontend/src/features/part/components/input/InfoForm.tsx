@@ -5,12 +5,12 @@ import { lazy, LazyExoticComponent, Suspense, startTransition } from "react";
 import { z } from "zod";
 
 import { useInfoAction } from "@/features/part/hooks/InfoAction";
-import { VerticalCollapsible } from "@/ui/Collapsible";
-import { LoadingSpinner } from "@/ui/LoadingSpinner";
-import { NotificationBar } from "@/ui/NotificationBar";
+import { LoadingSpinner } from "@/ui/Feedback/LoadingSpinner";
+import { NotificationBar } from "@/ui/Feedback/NotificationBar";
+import { VerticalCollapsible } from "@/ui/Layout/Collapsible";
 
-import { DynamicSchemaForm } from "./utils/DynamicSchemaForm";
-import { InputFormComponent } from "./utils/TanstackForm";
+import { DynamicSchemaForm } from "../utils/DynamicSchemaForm";
+import { InputFormComponent } from "../utils/TanstackForm";
 
 const InputComponent: Partial<{
   [key in Information.Name]: LazyExoticComponent<

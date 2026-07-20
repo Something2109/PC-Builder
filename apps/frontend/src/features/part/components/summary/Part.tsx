@@ -2,9 +2,9 @@ import Part from "@pc-builder/shared/part";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
-import { RowWrapper } from "@/components/ui/FlexWrapper";
+import { RowWrapper } from "@/components/ui/Layout/FlexWrapper";
 
-import PartPicture from "../Picture";
+import PartPicture from "../catalog/PartPicture";
 
 export const PartColumns: ColumnDef<Part.BasicInfo>[] = [
   {

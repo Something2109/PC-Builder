@@ -4,7 +4,7 @@ import { ArticleStatus } from "@pc-builder/shared/article";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-import { RowWrapper } from "@/ui/FlexWrapper";
+import { RowWrapper } from "@/ui/Layout/FlexWrapper";
 
 interface SubmitBarProps {
   title: string;

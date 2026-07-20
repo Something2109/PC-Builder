@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { CodeEditor } from "@/components/ui/CodeEditor";
-import { VerticalCollapsible } from "@/components/ui/Collapsible";
+import { VerticalCollapsible } from "@/components/ui/Layout/Collapsible";
 
 import { MapperResult, MappedItem, FailedItem } from "../../types";
 import { flattenErrorObject } from "../../utils";

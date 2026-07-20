@@ -3,7 +3,7 @@
 import { Roles } from "@pc-builder/shared/user";
 import React from "react";
 
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 
 export interface GuardProps {
   roles?: Roles | Roles[];

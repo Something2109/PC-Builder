@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FunctionComponent, InputHTMLAttributes, SelectHTMLAttributes } from "react";
 
 import { TransformedChangeEvent } from "@/components/ui/Input/base";
-import { VerticalCollapsible } from "@/ui/Collapsible";
+import { VerticalCollapsible } from "@/ui/Layout/Collapsible";
 import { Toggler } from "@/ui/Toggle";
 
 import { InfoLabel } from "../utils/Table";

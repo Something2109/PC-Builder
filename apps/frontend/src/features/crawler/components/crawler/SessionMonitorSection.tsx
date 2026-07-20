@@ -1,6 +1,6 @@
 "use client";
 
-import { useCrawlerSessions, useCrawlerControl } from "../hooks/useCrawlerControl";
+import { useCrawlerSessions, useCrawlerControl } from "../../hooks/useCrawlerControl";
 import SessionMonitor from "./SessionMonitor";
 
 export default function SessionMonitorSection() {

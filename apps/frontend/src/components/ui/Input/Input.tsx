@@ -3,7 +3,7 @@
 import { UnitInterface } from "@pc-builder/shared/Units";
 import { ChangeEvent, DetailedHTMLProps, InputHTMLAttributes, useCallback, useRef } from "react";
 
-import { RowWrapper } from "../FlexWrapper";
+import { RowWrapper } from "../Layout/FlexWrapper";
 import { mergeClass } from "../mergeClass";
 import { defaultStyle, cleanEvent } from "./base";
 

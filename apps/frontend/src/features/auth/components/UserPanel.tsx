@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { useAuth, useLogoutAction } from "@/features/auth";
 import { Button, RedirectButton } from "@/ui/Button";
-import { ColumnWrapper } from "@/ui/FlexWrapper";
+import { ColumnWrapper } from "@/ui/Layout/FlexWrapper";
 
 const LoginPath = "/auth/login";
 

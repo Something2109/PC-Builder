@@ -1,7 +1,7 @@
 import Part from "@pc-builder/shared/part";
 import React from "react";
 
-import { VerticalCollapsible } from "@/components/ui/Collapsible";
+import { VerticalCollapsible } from "@/components/ui/Layout/Collapsible";
 import { hasErrorInSubtree } from "@/features/mapper";
 
 import { MappingTrace } from "../../../types";

@@ -2,8 +2,8 @@
 
 import { DetailedHTMLProps, HTMLAttributes, useEffect, useRef } from "react";
 
-import { ColumnWrapper } from "./FlexWrapper";
-import { mergeClass } from "./mergeClass";
+import { ColumnWrapper } from "../Layout/FlexWrapper";
+import { mergeClass } from "../mergeClass";
 
 export default function LoadingPanel({
   text,

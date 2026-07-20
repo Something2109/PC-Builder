@@ -3,8 +3,8 @@ import Part from "@pc-builder/shared/part";
 import { notFound } from "next/navigation";
 
 import { ServerTablePagination } from "@/components/ui/Table";
-import PartPanel from "@/features/part/components/Panel";
-import { SearchBar } from "@/layout/searchbar";
+import PartPanel from "@/features/part/components/catalog/PartPanel";
+import { SearchBar } from "@/layout/SearchBar";
 import { getBackendUrl } from "@/utils/api";
 
 export default async function ListPage({

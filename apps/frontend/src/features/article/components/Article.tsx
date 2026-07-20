@@ -10,9 +10,9 @@ import { Guard } from "@/features/auth";
 import axiosInstance from "@/lib/axios";
 import { mergeClass } from "@/ui/mergeClass";
 
-import { Picture } from "./display/Image";
 import { List } from "./display/List";
 import { Paragraph } from "./display/Paragraph";
+import { Picture } from "./display/Picture";
 import { Section } from "./display/Section";
 
 const Components = {

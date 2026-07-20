@@ -1,5 +1,5 @@
-export * from "./components/AuthContext";
-export * from "./components/Guard";
+export * from "./components/provider/AuthContext";
+export * from "./components/provider/Guard";
 export * from "./components/LoginForm";
 export * from "./components/UserPanel";
 export * from "./hooks/useAuth";

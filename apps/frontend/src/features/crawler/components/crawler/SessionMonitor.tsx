@@ -8,7 +8,7 @@ import {
 } from "@pc-builder/shared/crawler";
 import { useState } from "react";
 
-import { useCrawlerTraces } from "../hooks/useCrawlerControl";
+import { useCrawlerTraces } from "../../hooks/useCrawlerControl";
 
 interface SessionMonitorProps {
   sessions: CrawlerSession[];

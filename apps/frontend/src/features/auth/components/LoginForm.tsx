@@ -6,9 +6,9 @@ import { z } from "zod";
 
 import { useLoginAction } from "@/features/auth";
 import { Button } from "@/ui/Button";
+import { NotificationBar } from "@/ui/Feedback/NotificationBar";
 import { Input } from "@/ui/Input";
 import { mergeClass } from "@/ui/mergeClass";
-import { NotificationBar } from "@/ui/NotificationBar";
 
 const loginSchema = z.object({
   username: z.string().min(8, "Username must be at least 8 characters long."),

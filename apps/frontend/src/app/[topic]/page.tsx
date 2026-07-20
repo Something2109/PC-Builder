@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 
-import { EmptyState } from "@/components/ui/EmptyState";
+import { EmptyState } from "@/components/ui/Feedback/EmptyState";
 import { ArticleLink } from "@/features/article";
 import { verifyToken } from "@/features/auth/server";
 import { getBackendUrl } from "@/utils/api";

@@ -5,7 +5,7 @@ import { ChangeEvent, RefObject, useRef } from "react";
 
 import { useDebounceFunction } from "@/hooks/useDebounce";
 
-import { RowWrapper } from "../FlexWrapper";
+import { RowWrapper } from "../Layout/FlexWrapper";
 import { rangeDivStyle, rangeInputStyle, TransformedChangeEvent, transformEvent } from "./base";
 import { InputProps } from "./Input";
 

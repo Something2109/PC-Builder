@@ -1,12 +1,12 @@
 "use client";
 
-import { ColumnWrapper, ResponsiveWrapper } from "@/ui/FlexWrapper";
+import { ColumnWrapper, ResponsiveWrapper } from "@/ui/Layout/FlexWrapper";
 
-import { CrawlerControlProvider } from "../hooks/useCrawlerControl";
+import { CrawlerControlProvider } from "../../hooks/useCrawlerControl";
+import ScrapersGrid from "../scraper/ScrapersGrid";
+import InteractiveToolsSection from "../tools/InteractiveToolsSection";
 import CrawlerHeader from "./CrawlerHeader";
 import ErrorBanner from "./ErrorBanner";
-import InteractiveToolsSection from "./InteractiveToolsSection";
-import ScrapersGrid from "./ScrapersGrid";
 import SessionMonitorSection from "./SessionMonitorSection";
 
 export default function CrawlerControl() {

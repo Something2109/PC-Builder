@@ -2,7 +2,7 @@ import { Article, ArticleStatus } from "@pc-builder/shared/article";
 import { Roles } from "@pc-builder/shared/user";
 import React from "react";
 
-import { NewArticleClient } from "@/features/article/components/NewArticleClient";
+import { NewArticleClient } from "@/features/article/components/editor/NewArticleClient";
 import { AuthRole } from "@/features/auth";
 
 export default async function NewArticlePage({

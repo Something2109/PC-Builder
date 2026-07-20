@@ -3,7 +3,7 @@ import { Roles } from "@pc-builder/shared/user";
 import { notFound } from "next/navigation";
 import React from "react";
 
-import { EditArticleClient } from "@/features/article/components/EditArticleClient";
+import { EditArticleClient } from "@/features/article/components/editor/EditArticleClient";
 import { AuthRole } from "@/features/auth";
 import { getBackendUrl } from "@/utils/api";
 

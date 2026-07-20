@@ -4,7 +4,7 @@ import Part, { Products } from "@pc-builder/shared/part";
 import { startTransition, useState } from "react";
 
 import usePartAction from "@/features/part/hooks/PartAction";
-import { NotificationBar } from "@/ui/NotificationBar";
+import { NotificationBar } from "@/ui/Feedback/NotificationBar";
 
 import BrandSelect from "./BrandSelect";
 import SeriesSelect from "./SeriesSelect";

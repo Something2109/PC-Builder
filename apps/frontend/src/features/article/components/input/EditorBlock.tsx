@@ -14,10 +14,10 @@ import {
 } from "@pc-builder/shared/article";
 import React from "react";
 
-import { ImageInput } from "./Image";
-import { ListInput } from "./List";
-import { ParagraphInput } from "./Paragraph";
-import { SectionInput } from "./Section";
+import { ImageInput } from "./ImageInput";
+import { ListInput } from "./ListInput";
+import { ParagraphInput } from "./ParagraphInput";
+import { SectionInput } from "./SectionInput";
 
 interface EditorBlockProps {
   node: ItemInstance<GenericFlattenItemTreeNode<ArticleTreeItemData>>;

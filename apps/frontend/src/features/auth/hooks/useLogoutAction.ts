@@ -5,7 +5,7 @@ import { useContext, useTransition } from "react";
 
 import axiosInstance from "@/lib/axios";
 
-import { AuthContext } from "../components/AuthContext";
+import { AuthContext } from "../components/provider/AuthContext";
 
 const LoginPath = "/auth/login";
 

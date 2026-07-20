@@ -3,8 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ServerTablePagination } from "@/components/ui/Table";
-import { FilterBar } from "@/features/part/components/Filter";
-import SummaryTable from "@/features/part/components/Summary";
+import { FilterBar } from "@/features/part/components/filter/FilterBar";
+import SummaryTable from "@/features/part/components/summary/SummaryTable";
 import { getBackendUrl } from "@/utils/api";
 
 export default async function PartListPage({

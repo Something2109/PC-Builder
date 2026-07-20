@@ -1,6 +1,6 @@
 "use client";
 
-import { RowWrapper } from "../FlexWrapper";
+import { RowWrapper } from "../Layout/FlexWrapper";
 import { mergeClass } from "../mergeClass";
 import { InputProps } from "./Input";
 

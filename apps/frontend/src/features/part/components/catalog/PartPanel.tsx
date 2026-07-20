@@ -1,7 +1,7 @@
 import Part, { Product } from "@pc-builder/shared/part";
 import Link from "next/link";
 
-import PartPicture from "./Picture";
+import PartPicture from "./PartPicture";
 
 export default function PartPanel({ item }: { item: Part.Summary }) {
   return (

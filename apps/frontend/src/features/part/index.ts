@@ -1,10 +1,10 @@
-export * from "./components/Filter";
-export * from "./components/Form";
-export * from "./components/Panel";
-export { default as PartList } from "./components/PartList";
-export * from "./components/Picture";
-export * from "./components/Summary";
-export * from "./components/Table";
+export * from "./components/filter/FilterBar";
+export * from "./components/input/InfoForm";
+export * from "./components/catalog/PartPanel";
+export { default as PartList } from "./components/catalog/PartList";
+export * from "./components/catalog/PartPicture";
+export * from "./components/summary/SummaryTable";
+export * from "./components/detail/InfoTable";
 export * from "./hooks/InfoAction";
 export * from "./hooks/ObjectSet";
 export * from "./hooks/PartAction";

@@ -6,9 +6,9 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import { UserPanel, Guard } from "@/features/auth";
-import { RowWrapper } from "@/ui/FlexWrapper";
+import { RowWrapper } from "@/ui/Layout/FlexWrapper";
 
-import { DarkModeButton } from "./body";
+import { DarkModeButton } from "./Body";
 
 export default function Header() {
   const [navbar, setNavbar] = useState(false);

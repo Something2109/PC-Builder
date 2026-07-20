@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { FormApi } from "@/type/form";
 import { Button } from "@/ui/Button";
-import { RowWrapper } from "@/ui/FlexWrapper";
+import { RowWrapper } from "@/ui/Layout/FlexWrapper";
 
 import { DynamicField } from "./DynamicField";
 import { Table } from "./Table";

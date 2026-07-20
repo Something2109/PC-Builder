@@ -1,1 +1,1 @@
-export * from "./components/AuthServer";
+export * from "./components/provider/AuthServer";

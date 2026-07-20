@@ -3,7 +3,7 @@
 import { List as ListType } from "@pc-builder/shared/article";
 import React from "react";
 
-import { RowWrapper } from "@/ui/FlexWrapper";
+import { RowWrapper } from "@/ui/Layout/FlexWrapper";
 
 interface ListInputProps {
   content: ListType;

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-import { SearchBar } from "@/layout/searchbar";
+import { SearchBar } from "@/layout/SearchBar";
 
 const categories = [
   {

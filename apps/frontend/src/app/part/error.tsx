@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import ErrorPanel from "@/ui/ErrorPanel";
+import ErrorPanel from "@/ui/Feedback/ErrorPanel";
 
 export default function Error({
   error,

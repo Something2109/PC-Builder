@@ -1,6 +1,6 @@
 "use client";
 
-import { useCrawlerControl } from "../hooks/useCrawlerControl";
+import { useCrawlerControl } from "../../hooks/useCrawlerControl";
 
 export default function CrawlerHeader() {
   const { pollingActive, setPollingActive } = useCrawlerControl();

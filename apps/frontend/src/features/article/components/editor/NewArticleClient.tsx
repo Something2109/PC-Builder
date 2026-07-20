@@ -5,7 +5,7 @@ import React from "react";
 
 import { useCreateArticle } from "@/features/article/hooks/useCreateArticle";
 
-import { EditableArticle } from "./Form";
+import { EditableArticle } from "./EditableArticle";
 
 interface NewArticleClientProps {
   defaultArticle: Article;

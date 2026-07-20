@@ -1,7 +1,7 @@
 "use client";
 
 import BuildProductList from "@/features/build/components/List";
-import BuildValidateForm from "@/features/build/components/Form";
+import BuildValidateForm from "@/features/build/components/BuildValidateForm";
 import BuildResultList from "@/features/build/components/Result";
 import { useBuildContext } from "@/features/build/hooks/BuildContext";
 import Part, { Products } from "@pc-builder/shared/part";

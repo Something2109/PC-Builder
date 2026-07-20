@@ -2,8 +2,8 @@ import { FormFactor } from "@pc-builder/shared/interface";
 import * as CaseMainboardSupport from "@pc-builder/shared/part/info/CaseMainboardSupport";
 
 import { ArrayFormApi } from "@/type/form";
-import { ResponsiveWrapper } from "@/ui/FlexWrapper";
 import { ChoiceInput } from "@/ui/Input";
+import { ResponsiveWrapper } from "@/ui/Layout/FlexWrapper";
 
 import { Table } from "../utils/Table";
 import { GenericListInputForm } from "../utils/TanstackForm";

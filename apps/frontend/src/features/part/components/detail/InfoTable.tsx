@@ -4,10 +4,10 @@ import Part, { Information, Infos } from "@pc-builder/shared/part";
 import { lazy, LazyExoticComponent, Suspense } from "react";
 import { z } from "zod";
 
-import { VerticalCollapsible } from "@/components/ui/Collapsible";
-import { LoadingSpinner } from "@/ui/LoadingSpinner";
+import { VerticalCollapsible } from "@/components/ui/Layout/Collapsible";
+import { LoadingSpinner } from "@/ui/Feedback/LoadingSpinner";
 
-import { DynamicSchemaDisplay } from "./utils/DynamicSchemaDisplay";
+import { DynamicSchemaDisplay } from "../utils/DynamicSchemaDisplay";
 
 type InfoTableComponent<T extends Infos> = React.FC<{
   defaultValue: Part.Model[T];

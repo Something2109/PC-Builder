@@ -4,7 +4,7 @@ import {
   useCrawlerScrapers,
   useCrawlerSessions,
   useCrawlerControl,
-} from "../hooks/useCrawlerControl";
+} from "../../hooks/useCrawlerControl";
 import ScraperCard from "./ScraperCard";
 
 export default function ScrapersGrid() {

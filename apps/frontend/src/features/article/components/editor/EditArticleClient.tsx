@@ -6,7 +6,7 @@ import React from "react";
 import { useDeleteArticle } from "@/features/article/hooks/useDeleteArticle";
 import { useUpdateArticle } from "@/features/article/hooks/useUpdateArticle";
 
-import { EditableArticle } from "./Form";
+import { EditableArticle } from "./EditableArticle";
 
 interface EditArticleClientProps {
   article: Article;

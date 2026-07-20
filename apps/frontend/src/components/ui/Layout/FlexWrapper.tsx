@@ -1,6 +1,6 @@
 import { HTMLAttributes } from "react";
 
-import { mergeClass } from "./mergeClass";
+import { mergeClass } from "../mergeClass";
 
 type WrapperProps = Readonly<HTMLAttributes<HTMLDivElement>>;
 

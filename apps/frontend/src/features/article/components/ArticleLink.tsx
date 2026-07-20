@@ -6,7 +6,7 @@ import Link from "next/link";
 import React from "react";
 
 import { Guard } from "@/features/auth";
-import { ColumnWrapper, RowWrapper } from "@/ui/FlexWrapper";
+import { ColumnWrapper, RowWrapper } from "@/ui/Layout/FlexWrapper";
 import { mergeClass } from "@/ui/mergeClass";
 
 const max_char = 180;

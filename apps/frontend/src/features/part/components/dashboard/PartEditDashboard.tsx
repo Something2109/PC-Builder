@@ -3,11 +3,11 @@
 import Part, { Mapping, Products } from "@pc-builder/shared/part";
 import { useState } from "react";
 
-import { ResponsiveWrapper } from "@/ui/FlexWrapper";
+import { ResponsiveWrapper } from "@/ui/Layout/FlexWrapper";
 
-import { InfoForm } from "./Form";
-import PartForm from "./input/Part";
-import PartPicture from "./Picture";
+import PartPicture from "../catalog/PartPicture";
+import { InfoForm } from "../input/InfoForm";
+import PartForm from "../input/Part";
 
 interface PartEditDashboardProps {
   part: Products;

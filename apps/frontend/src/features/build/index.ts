@@ -1,4 +1,4 @@
-export * from "./components/Form";
+export * from "./components/BuildValidateForm";
 export * from "./components/List";
 export * from "./components/Result";
 export * from "./hooks/BuildContext";

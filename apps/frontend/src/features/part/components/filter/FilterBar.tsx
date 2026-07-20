@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { lazy, FormHTMLAttributes, LazyExoticComponent, FunctionComponent, Suspense } from "react";
 
 import { Button } from "@/ui/Button";
+import { LoadingSpinner } from "@/ui/Feedback/LoadingSpinner";
 import { Input } from "@/ui/Input";
-import { LoadingSpinner } from "@/ui/LoadingSpinner";
 
-import PartFilter from "./filter/Part";
+import PartFilter from "./Part";
 
 const FilterComponents: {
   [key in Products]: LazyExoticComponent<

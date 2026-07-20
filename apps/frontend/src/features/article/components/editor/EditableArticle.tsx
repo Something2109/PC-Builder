@@ -18,9 +18,9 @@ import {
   ArticleTreeItemData,
   mapContentToTreeNodes,
   mapTreeNodesToContent,
-} from "../utils/articleTreeMapper";
-import { CoverInput, EmojiInput, SubmitBar } from "./form/";
-import { ContentListComponent } from "./input";
+} from "../../utils/articleTreeMapper";
+import { CoverInput, EmojiInput, SubmitBar } from "../form/";
+import { ContentListInput } from "../input";
 
 const extractArticleBasicInfo = (article: Article) => {
   const info: ArticleBasicInfo = {
@@ -208,7 +208,7 @@ function EditableArticle({
 
         {/* Recursive Block List Editor */}
         <div className="space-y-2">
-          <ContentListComponent store={store} />
+          <ContentListInput store={store} />
         </div>
       </div>
 

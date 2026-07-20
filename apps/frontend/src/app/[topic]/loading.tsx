@@ -1,4 +1,4 @@
-import LoadingPanel from "@/ui/LoadingPanel";
+import LoadingPanel from "@/ui/Feedback/LoadingPanel";
 
 export default function Loading() {
   return <LoadingPanel className="h-[60vh]" text="Loading topic" />;

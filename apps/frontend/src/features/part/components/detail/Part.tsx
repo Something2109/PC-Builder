@@ -1,7 +1,7 @@
 import Part, { Infos, Product } from "@pc-builder/shared/part";
 import Link from "next/link";
 
-import PartPicture from "../Picture";
+import PartPicture from "../catalog/PartPicture";
 import { InfoComponent, InfoComponentObject } from "../utils/Table";
 
 const Components: InfoComponentObject<

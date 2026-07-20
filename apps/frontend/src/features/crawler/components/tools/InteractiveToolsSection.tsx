@@ -1,6 +1,6 @@
 "use client";
 
-import { useCrawlerScrapers } from "../hooks/useCrawlerControl";
+import { useCrawlerScrapers } from "../../hooks/useCrawlerControl";
 import InteractiveTools from "./InteractiveTools";
 
 export default function InteractiveToolsSection() {

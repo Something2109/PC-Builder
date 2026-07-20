@@ -38,11 +38,11 @@ const defaultValue: { [key in ContentName]: () => ArticleContent } = {
   }),
 };
 
-interface ContentListComponentProps {
+interface ContentListInputProps {
   store: GenericItemTreeStore<ArticleTreeItemData>;
 }
 
-export function ContentListComponent({ store }: ContentListComponentProps) {
+export function ContentListInput({ store }: ContentListInputProps) {
   const tree = useGenericTree(store, {
     getItemName: (node) => {
       if (node.item?.type === ContentName.Section) {

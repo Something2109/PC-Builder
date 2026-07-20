@@ -4,9 +4,9 @@ import Image from "next/image";
 import { DetailedHTMLProps, HTMLAttributes } from "react";
 
 import { Button } from "@/ui/Button";
-import { ColumnWrapper } from "@/ui/FlexWrapper";
+import { ColumnWrapper } from "@/ui/Layout/FlexWrapper";
 
-import { mergeClass } from "./mergeClass";
+import { mergeClass } from "../mergeClass";
 
 export default function ErrorPanel({
   text,

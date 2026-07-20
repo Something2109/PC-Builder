@@ -3,8 +3,8 @@
 import { Section as SectionType } from "@pc-builder/shared/article";
 import React from "react";
 
-import { RowWrapper } from "@/ui/FlexWrapper";
 import { AutoGrowingTextArea } from "@/ui/Input";
+import { RowWrapper } from "@/ui/Layout/FlexWrapper";
 
 interface SectionInputProps {
   content: SectionType;

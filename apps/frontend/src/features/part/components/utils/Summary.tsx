@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { FunctionComponent, HTMLAttributes } from "react";
 import React from "react";
 
-import { RowWrapper } from "@/ui/FlexWrapper";
+import { RowWrapper } from "@/ui/Layout/FlexWrapper";
 import { mergeClass } from "@/ui/mergeClass";
 
 import { InfoLabel } from "./Table";

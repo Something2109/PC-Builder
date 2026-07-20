@@ -2,14 +2,14 @@
 
 import useProductSummary from "@/features/build/hooks/ProductSummary";
 import { useBuildContext } from "@/features/build/hooks/BuildContext";
-import SummaryTable from "@/features/part/components/Summary";
-import { FilterBar } from "@/features/part/components/Filter";
+import SummaryTable from "@/features/part/components/summary/SummaryTable";
+import { FilterBar } from "@/features/part/components/filter/FilterBar";
 import Part, { Product } from "@pc-builder/shared/part";
 import { use, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import LoadingPanel from "@/ui/LoadingPanel";
-import ErrorPanel from "@/ui/ErrorPanel";
+import LoadingPanel from "@/ui/Feedback/LoadingPanel";
+import ErrorPanel from "@/ui/Feedback/ErrorPanel";
 import { ColumnDef } from "@tanstack/react-table";
 import { TablePagination } from "@/components/ui/Table";
 

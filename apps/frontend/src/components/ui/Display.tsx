@@ -3,8 +3,8 @@
 import { UnitInterface } from "@pc-builder/shared/Units";
 import { useState } from "react";
 
-import { RowWrapper } from "./FlexWrapper";
 import { OptionSelect } from "./Input";
+import { RowWrapper } from "./Layout/FlexWrapper";
 
 export function SuffixDisplay({
   suffix,
