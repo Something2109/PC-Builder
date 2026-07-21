@@ -12,7 +12,7 @@ import {
   List,
   Image,
 } from "@pc-builder/shared/article";
-import React from "react";
+import React, { useMemo, useSyncExternalStore } from "react";
 
 import { ImageInput } from "./ImageInput";
 import { ListInput } from "./ListInput";
@@ -24,6 +24,12 @@ interface EditorBlockProps {
   store: GenericTreeStore<ArticleTreeItemData>;
 }
 
+/**
+ * EditorBlock component renders a single node (paragraph, section heading, image, list) in the article editor canvas.
+ * It is subscribed to its specific node item's state changes to prevent unnecessary full-tree re-renders when typing.
+ *
+ * @param props - The props containing the node instance and the tree store.
+ */
 export function EditorBlock({ node, store }: EditorBlockProps) {
   const level = node.getItemMeta().level;
   const isDragging =
@@ -35,8 +41,10 @@ export function EditorBlock({ node, store }: EditorBlockProps) {
   const isTargetBelow = node.isDragTargetBelow?.() || false;
   const isOver = node.isDraggingOver?.() || false;
 
-  const itemData = node.getItemData();
-  const item = itemData.item!;
+  const [subscribe, getSnapshot] = useMemo(() => store.subscribeNode(node.getId()), [store, node]);
+  const item = useSyncExternalStore(subscribe, getSnapshot);
+
+  if (!item) return null;
 
   const handleUpdateParagraph = (val: string) => {
     store.setNodeItem(node.getId(), {
