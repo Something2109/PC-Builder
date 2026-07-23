@@ -50,10 +50,14 @@ export function useGenericTree<T>(
       const parentId = parentItem.getId();
       treeStore.updateChildren(parentId, newChildren);
     }),
-    canDrop: (_items, target) => {
+    canDrop: (items, target) => {
       const targetId = target.item.getId();
       if (!treeStore.getNode(targetId)) return false;
-      return target.item.isFolder();
+
+      return !items.some((dragged) => {
+        const draggedId = dragged.getId();
+        return draggedId === targetId || treeStore.isDescendant(draggedId, targetId);
+      });
     },
   });
 

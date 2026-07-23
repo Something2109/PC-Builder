@@ -76,6 +76,14 @@ export interface GenericTree<T = undefined> {
   getNode(id: string): GenericFlattenItemTreeNode<T> | null;
 
   /**
+   * Check if the given {@link childId} node is a child node of the given {@link id} node.
+   *
+   * @param id - The parent node id to check.
+   * @param childId - The child node id to check.
+   */
+  isDescendant(id: string, childId: string): boolean;
+
+  /**
    * Adds a new nested node tree to the tree under the specified parent.
    *
    * @param node - The nested node structure to add.
@@ -163,6 +171,22 @@ class GenericTreeHandler<T = undefined> implements GenericTree<T> {
    */
   getNode(id: string) {
     return this.flattenTree[id] ?? null;
+  }
+
+  /**
+   * Check if the given {@link childId} node is a child node of the given {@link id} node.
+   *
+   * @param id - The parent node id to check.
+   * @param childId - The child node id to check.
+   */
+  isDescendant(id: string, childId: string): boolean {
+    const node = this.getNode(id);
+    if (!node || !this.getNode(childId)) return false;
+
+    return (
+      node.children.includes(childId) ||
+      node.children.some((cid) => this.isDescendant(cid, childId))
+    );
   }
 
   /**
@@ -453,6 +477,16 @@ class GenericItemTreeStore<T = undefined> implements GenericTreeStore<T> {
    */
   getNode(id: string) {
     return this.handler.getNode(id);
+  }
+
+  /**
+   * Check if the given {@link childId} node is a child node of the given {@link id} node.
+   *
+   * @param id - The parent node id to check.
+   * @param childId - The child node id to check.
+   */
+  isDescendant(id: string, childId: string) {
+    return this.handler.isDescendant(id, childId);
   }
 
   /**
