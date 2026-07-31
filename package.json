@@ -16,7 +16,7 @@
     "build:mcp": "npm run build --workspace=apps/mcp-server",
     "start:mcp": "npm run start --workspace=apps/mcp-server",
     "serve:mcp": "npm run serve --workspace=apps/mcp-server",
-    "crawl": "npm run crawl --workspace=apps/crawler",
+    "crawl": "npm run start --workspace=apps/crawler --",
     "install:all": "npm install",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
