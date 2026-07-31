@@ -3,9 +3,9 @@
 ### Scope
 
 - Covers how to expose and implement PC parts listing, filtering, detail, create/update/delete in the NestJS backend.
-- Applies to routes under `api/part` with global prefix set in [apps/backend/controllers/main.ts](./apps/backend/controllers/main.ts).
+- Applies to routes under `api/part` with global prefix set in [apps/backend/src/main.ts](./apps/backend/src/main.ts).
 
-### Routing & Endpoints (in [apps/backend/controllers/part/part.controller.ts](./apps/backend/controllers/part/part.controller.ts))
+### Routing & Endpoints (in [apps/backend/src/part/part.controller.ts](./apps/backend/src/part/part.controller.ts))
 
 - `GET /part` — list all parts (paginated, query-filtered)
 - `GET /part/:part` — list by product type `:part` (paginated, query-filtered)
@@ -26,7 +26,7 @@
 - Role guard: `@Role(Roles.ADMIN)` for create/update/delete.
 - ID validation: `ParseUUIDPipe` for `:id`.
 
-### Service Responsibilities (in [apps/backend/controllers/part/part.service.ts](./apps/backend/controllers/part/part.service.ts))
+### Service Responsibilities (in [apps/backend/src/part/part.service.ts](./apps/backend/src/part/part.service.ts))
 
 - `list(params, product?)`:
   - Parse query via `ParseService.options(params, product)`.
@@ -52,14 +52,14 @@
 
 ### Data Access Layer
 
-- List: [apps/backend/controllers/part/service/SequelizeList.service.ts](./apps/backend/controllers/part/service/SequelizeList.service.ts)
-  - Builds dynamic Sequelize context from `Part.Filter & API.PageOptions & API.SearchOptions`.
-  - Supports: pagination, text search (`q`), per-attribute filtering (joins via `Infos` → include trees), and aggregation for filter values.
-- CRUD: [apps/backend/controllers/part/service/SequelizeCRUD.service.ts](./apps/backend/controllers/part/service/SequelizeCRUD.service.ts)
-  - `get(id, infos?)` with scoped includes per `infos`.
-  - `create(data, infos?)` with optional info upserts post-save.
-  - `set(id, data, infos?)` partial update across part and info tables.
-  - `delete(id)` hard delete (then return deleted or null if not found).
+- List: [apps/backend/src/part/service/SequelizeList.service.ts](./apps/backend/src/part/service/SequelizeList.service.ts)
+- Builds dynamic Sequelize context from `Part.Filter & API.PageOptions & API.SearchOptions`.
+- Supports: pagination, text search (`q`), per-attribute filtering (joins via `Infos` → include trees), and aggregation for filter values.
+- CRUD: [apps/backend/src/part/service/SequelizeCRUD.service.ts](./apps/backend/src/part/service/SequelizeCRUD.service.ts)
+- `get(id, infos?)` with scoped includes per `infos`.
+- `create(data, infos?)` with optional info upserts post-save.
+- `set(id, data, infos?)` partial update across part and info tables.
+- `delete(id)` hard delete (then return deleted or null if not found).
 
 ### Types & Mappings
 

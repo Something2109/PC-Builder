@@ -49,11 +49,11 @@ A Next.js (v15+) application using React 19, TailwindCSS, and Next.js App Router
 
 - **[package.json](./apps/frontend/package.json)**: Frontend dependencies, scripts, and dev tools (includes `@pc-builder/shared`).
 - **[next.config.js](./apps/frontend/next.config.js)**: Configures Next.js compilation, dev proxy, and image remote patterns.
-- **`apps/frontend/app/`**: Next.js App Router pages and API routes:
-  - `apps/frontend/app/[topic]/`: Topic-based routing.
-  - `apps/frontend/app/article/`: Notion-style article viewing and editing.
-  - `apps/frontend/app/build/`: Interactive PC builder with validation.
-  - `apps/frontend/app/part/`: Parts catalog, specs, and filters.
+- **`apps/frontend/src/app/`**: Next.js App Router pages and API routes:
+  - `apps/frontend/src/app/[topic]/`: Topic-based routing.
+  - `apps/frontend/src/app/article/`: Notion-style article viewing and editing.
+  - `apps/frontend/src/app/build/`: Interactive PC builder with validation.
+  - `apps/frontend/src/app/part/`: Parts catalog, specs, and filters.
 - **`apps/frontend/src/`**: Shared frontend resources:
   - `components/`: Low-level and reusable layout/UI components (e.g., modals, form fields, navigation).
   - `features/`: Domain-specific components grouped by module:
@@ -69,21 +69,21 @@ A Next.js (v15+) application using React 19, TailwindCSS, and Next.js App Router
 A NestJS (v11+) application providing a RESTful JSON API.
 
 - **[package.json](./apps/backend/package.json)**: NestJS microservices, database connectors, and security tools.
-- **`apps/backend/controllers/`**: NestJS modules, controllers, and services (business logic layer):
-  - [app.module.ts](./apps/backend/controllers/app.module.ts): Application root module configuring global filters, guards, and DB connections.
+- **`apps/backend/src/`**: NestJS modules, controllers, and services (business logic layer):
+  - [app.module.ts](./apps/backend/src/app.module.ts): Application root module configuring global filters, guards, and DB connections.
   - `article/`: Mongoose-powered endpoints for managing rich guides/articles.
   - `auth/`: JWT authentication endpoints, hashing, and token issuing.
   - `build/`: Logic for creating and validating PC builds (evaluates rules for component compatibility).
   - `part/`: Endpoints for parts catalog query, sorting, and details.
   - `user/`: User profile management.
-  - `utils/`: NestJS guards (e.g., [role.guard.ts](./apps/backend/controllers/utils/role/role.guard.ts)), middlewares (e.g., [session.middleware.ts](./apps/backend/controllers/utils/session.middleware.ts)), and pipes.
+  - `utils/`: NestJS guards (e.g., [role.guard.ts](./apps/backend/src/utils/role/role.guard.ts)), middlewares (e.g., [session.middleware.ts](./apps/backend/src/utils/session.middleware.ts)), and pipes.
 - **`apps/backend/models/`**: Sequelize MySQL entities, connection configuration, and database schemas:
   - [Connection.ts](./apps/backend/models/Connection.ts): Database connector instance configuring Sequelize with MySQL dialect parameters.
   - `parts/`: Tables representing specifications of CPU, GPU, RAM, Motherboard, Storage, Case, Power Supply, and Cooler.
   - `sellers/`: Maps component listings to external retailers and crawled pricing.
   - `user/`: User database model definition.
   - > [!NOTE]
-  - > The file `apps/backend/models/articles/article.entity.ts` is an unused Sequelize artifact. Articles are stored in MongoDB and managed by Mongoose schema defined under [Article.entity.ts](./apps/backend/controllers/article/entities/Article.entity.ts).
+  - > Articles are stored in MongoDB and managed by the Mongoose schema defined under [Article.entity.ts](./apps/backend/src/article/entities/Article.entity.ts).
 
 #### 🕷️ Crawler — `apps/crawler/`
 

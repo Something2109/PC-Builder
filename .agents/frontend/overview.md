@@ -7,7 +7,7 @@
 ### Tech Stack
 
 - Next.js ^15 (App Router), React ^19
-- Styling: TailwindCSS ^3 (dark mode via selector)
+- Styling: TailwindCSS ^4
 - Data fetching: Axios
 - Validation/types: Zod
 
@@ -22,14 +22,14 @@
 
 ### Routing Structure (App Router)
 
-- Root: [apps/frontend/app/](./apps/frontend/app/)
+- Root: [apps/frontend/src/app/](./apps/frontend/src/app/)
   - `/` → `app/page.tsx`
   - `/build` → `app/build/page.tsx`, with nested `[product]/`
   - `/part` → list, with dynamic segments `app/part/[part]/[id]/` and `new/`
   - `/article` → article list and `[id]/` with `edit/`
   - `/[topic]/[part]` → topic/part content and `edit/`
   - `/auth/login` and `/auth/refresh`
-  - `/search`, `/guide`, error and not-found boundaries
+  - `/search`, error and not-found boundaries
 
 ### Features & Components Overview
 
@@ -63,7 +63,7 @@
 
 ### Key Paths
 
-- App routes: `apps/frontend/app/*`
+- App routes: `apps/frontend/src/app/*`
 - UI features: `apps/frontend/src/features/*`
 - UI layout/shared: `apps/frontend/src/components/*`
 - Hooks & utilities: `apps/frontend/src/hooks/*`, `apps/frontend/src/utils/*`

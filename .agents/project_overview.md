@@ -10,7 +10,7 @@
 
 ### Tech stack
 
-- **Frontend**: Next.js ^15, React ^19, TailwindCSS ^3, Axios, Zod
+- **Frontend**: Next.js ^15, React ^19, TailwindCSS ^4, Axios, Zod
 - **Backend**: NestJS ^11, JWT, Sequelize (MySQL), Mongoose (MongoDB)
 - **Databases**: MySQL, MongoDB
 - **Infra**: Docker Compose (multi-file via includes), Nginx (reverse proxy)
@@ -58,7 +58,7 @@
   - `app/article/`: Article listing and `[id]/` detail/edit
   - `app/[topic]/[part]/`: Topic/part content with edit support
   - `app/auth/`: `login`, `refresh`
-  - `app/search/`, `app/guide/`, error and not-found boundaries
+  - `src/app/search/`, error and not-found boundaries
 - `src/`: Reusable components, features, hooks, and utils:
   - `src/components/layout/`: layout wrappers and UI headers
   - `src/components/ui/`: baseline primitives (modals, fields, grid)
@@ -71,15 +71,15 @@
 
 ### Backend layout (NestJS) — `apps/backend/`
 
-- Entry: `controllers/main.ts` sets global prefix `api`, attaches `cookieParser`, listens on `PORT` (default 3000)
-- Root module: `controllers/app.module.ts`
+- Entry: `src/main.ts` sets global prefix `api`, attaches `cookieParser`, listens on `PORT` (default 3000)
+- Root module: `src/app.module.ts`
   - Modules: `ArticleModule`, `AuthModule`, `PartModule`, `BuildModule`, `UserModule`
   - Databases: `SequelizeModule` (MySQL), `MongooseModule` (MongoDB)
   - Auth: Global `AuthGuard` via `APP_GUARD`, `JwtModule` configured with `JWT_SECRET`
   - Middleware: `SessionExtractionMiddleware` for all routes
-- Feature modules under `controllers/*` with entities/services/pipes/guards
+- Feature modules under `src/*` with entities/services/pipes/guards
 - SQL models live in `models/` with `sequelize-typescript` integration (CPU, GPU, Motherboard, etc.) and options in `models/sequelize.options.ts`
-- Mongo schemas used by Mongoose (e.g. for articles/content) under `controllers/article/entities/`
+- Mongo schemas used by Mongoose (e.g. for articles/content) under `src/article/entities/`
 
 ### Shared Library — `packages/shared/`
 

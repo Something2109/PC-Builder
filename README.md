@@ -119,7 +119,7 @@ All of the above are wired for you in the compose files; you primarily need to s
 - Dev services mount the repo and hot‑reload:
   - Next.js and NestJS dev containers use `develop.watch` to sync code to `/usr/local/app`.
   - Changes in the repo reflect live in containers without rebuilds.
-- API prefix is `api` (see `controllers/main.ts`). Call endpoints as `/api/...`.
+- API prefix is `api` (see `apps/backend/src/main.ts`). Call endpoints as `/api/...`.
 - When adding image sources, update `next.config.js` `images.remotePatterns`.
 - Tailwind configuration is under `tailwind.config.js`.
 
@@ -131,13 +131,14 @@ The project is structured as an **npm workspaces monorepo**:
   - **[frontend/](./apps/frontend)**: Next.js frontend application.
   - **[backend/](./apps/backend)**: NestJS backend API.
   - **[crawler/](./apps/crawler)**: Parts catalog crawler script.
+  - **[mcp-server/](./apps/mcp-server)**: MCP server exposing PC Builder tools over stdio or SSE.
 - **[packages/](./packages)**: Shared library modules.
   - **[shared/](./packages/shared)**: Common schemas (Zod), rules, and interfaces.
 - **[docker/](./docker)**: Service-specific Docker configurations and profiles.
 - **[compose.yaml](./compose.yaml)**: Root docker-compose configuration.
 
-For a comprehensive breakdown of files, directories, and architectural components, refer to **[.agent/project_structure.md](./.agent/project_structure.md)**.
-For coding standards, syntax formatting rules, and folder structure guidelines, refer to **[.agent/coding_conventions.md](./.agent/coding_conventions.md)**.
+For a comprehensive breakdown of files, directories, and architectural components, refer to **[.agents/project_structure.md](./.agents/project_structure.md)**.
+For coding standards, syntax formatting rules, and folder structure guidelines, refer to **[.agents/coding_conventions.md](./.agents/coding_conventions.md)**.
 
 ## Common Tasks
 

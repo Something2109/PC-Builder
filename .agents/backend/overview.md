@@ -3,7 +3,7 @@
 ### Purpose
 
 - Provides REST API for parts catalog, PC builds, articles, authentication, and users.
-- Serves under the global prefix `/api` (set in [apps/backend/controllers/main.ts](./apps/backend/controllers/main.ts)).
+- Serves under the global prefix `/api` (set in [apps/backend/src/main.ts](./apps/backend/src/main.ts)).
 
 ### Tech Stack
 
@@ -15,8 +15,8 @@
 
 ### Entry and Core Setup
 
-- [apps/backend/controllers/main.ts](./apps/backend/controllers/main.ts) initializes the app, sets `api` prefix, adds `cookieParser`, listens on `PORT` (default 3000).
-- [apps/backend/controllers/app.module.ts](./apps/backend/controllers/app.module.ts) wires:
+- [apps/backend/src/main.ts](./apps/backend/src/main.ts) initializes the app, sets `api` prefix, adds `cookieParser`, listens on `PORT` (default 3000).
+- [apps/backend/src/app.module.ts](./apps/backend/src/app.module.ts) wires:
   - `JwtModule` (global) with `JWT_SECRET`, `expiresIn: 30m`.
   - `SequelizeModule.forRoot(...)` using `MYSQL_HOST/PORT`, `DATABASE_*` and `ConnectionOptions`.
   - `MongooseModule.forRoot(...)` with detailed connection logging.
@@ -25,11 +25,11 @@
 
 ### Modules
 
-- `apps/backend/controllers/article/`: CRUD for articles; has `Article.entity.ts`, services for articles and images.
-- `apps/backend/controllers/auth/`: Login/refresh/guarding; `auth.guard.ts`, `auth.service.ts`.
-- `apps/backend/controllers/build/`: Build workflows and validations, exposes endpoints to compute/validate builds.
-- `apps/backend/controllers/part/`: Parts listing/filtering/detail; includes interfaces and Sequelize services.
-- `apps/backend/controllers/user/`: User management, guards, pipes, and service.
+- `apps/backend/src/article/`: CRUD for articles; has `Article.entity.ts`, services for articles and images.
+- `apps/backend/src/auth/`: Login/refresh/guarding; `auth.guard.ts`, `auth.service.ts`.
+- `apps/backend/src/build/`: Build workflows and validations, exposes endpoints to compute/validate builds.
+- `apps/backend/src/part/`: Parts listing/filtering/detail; includes interfaces and Sequelize services.
+- `apps/backend/src/user/`: User management, guards, pipes, and service.
 
 ### Data Stores
 
@@ -66,7 +66,7 @@
 
 ### Key Paths
 
-- App entry: [apps/backend/controllers/main.ts](./apps/backend/controllers/main.ts)
-- App module: [apps/backend/controllers/app.module.ts](./apps/backend/controllers/app.module.ts)
-- Feature modules: `apps/backend/controllers/*`
+- App entry: [apps/backend/src/main.ts](./apps/backend/src/main.ts)
+- App module: [apps/backend/src/app.module.ts](./apps/backend/src/app.module.ts)
+- Feature modules: `apps/backend/src/*`
 - Models/options: `apps/backend/models/*`

@@ -5,7 +5,7 @@
 - Covers listing, filtering, viewing, and editing PC parts in the Next.js app.
 - Uses server components for data fetching and client components for interactions.
 
-### Routes (under [apps/frontend/app/part/](./apps/frontend/app/part/))
+### Routes (under [apps/frontend/src/app/part/](./apps/frontend/src/app/part/))
 
 - `/part` — all parts listing with pagination and global search.
 - `/part/[part]` — listing by product type.
@@ -19,7 +19,7 @@
 - Transform URLSearchParams from `searchParams` into a flat list of entries to preserve arrays.
 - On not-ok responses, use `notFound()` boundary.
 
-Example pattern (from `apps/frontend/app/part/[part]/page.tsx`):
+Example pattern (from `apps/frontend/src/app/part/[part]/page.tsx`):
 
 - Build `URLSearchParams` from `searchParams`.
 - `fetch(`${BACKEND_HOST}/api/part/${part}?${options}`)`.

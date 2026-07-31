@@ -9,13 +9,13 @@ This document outlines the coding standards, styling conventions, naming pattern
 ### Directory & File Naming
 
 - **NestJS Controllers & Services**: Use kebab-case for filenames.
-  - E.g. [article.controller.ts](./apps/backend/controllers/article/article.controller.ts)
-  - E.g. [article.service.ts](./apps/backend/controllers/article/services/article.service.ts)
+  - E.g. [article.controller.ts](./apps/backend/src/article/article.controller.ts)
+  - E.g. [article.service.ts](./apps/backend/src/article/services/article.service.ts)
 - **Sequelize Models**: Use PascalCase for filenames ending with `.entity.ts`.
   - E.g. [PartInformation.entity.ts](./apps/backend/models/parts/PartInformation.entity.ts)
   - E.g. [SellerProduct.entity.ts](./apps/backend/models/sellers/SellerProduct.entity.ts)
 - **Mongoose Entities**: Use PascalCase for filenames ending with `.entity.ts`.
-  - E.g. [Article.entity.ts](./apps/backend/controllers/article/entities/Article.entity.ts)
+  - E.g. [Article.entity.ts](./apps/backend/src/article/entities/Article.entity.ts)
 - **React Components**: Use PascalCase for UI files.
   - E.g. [Article.tsx](./apps/frontend/src/features/article/components/Article.tsx)
 - **React Hooks**: Use camelCase starting with `use`.
@@ -26,7 +26,7 @@ This document outlines the coding standards, styling conventions, naming pattern
 - **TypeScript Interfaces/Types**: PascalCase.
   - E.g. `Article`, `Summary`, `Products` in [packages/shared/index.ts](./packages/shared/index.ts).
 - **Functions, Methods, Variables**: camelCase.
-  - E.g. `toArticleType` in [article.service.ts](./apps/backend/controllers/article/services/article.service.ts).
+  - E.g. `toArticleType` in [article.service.ts](./apps/backend/src/article/services/article.service.ts).
 - **Enums**: PascalCase for enum name; PascalCase or UPPERCASE for members.
   - E.g. `ArticleStatus` (Draft, Published).
 
